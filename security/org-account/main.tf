@@ -10,8 +10,8 @@ terraform {
 }
 
 resource "aws_organizations_account" "dfds" {
-    name                       = "dfds-${var.aws_account_name}"
-    email                      = "aws.${replace(var.aws_account_name, "-", ".")}@dfds.com"
+    name                       = "${var.aws_account_name}"
+    email                      = "aws.${replace(var.aws_account_name, "dfds-", "")}@${var.email_domain}"
     iam_user_access_to_billing = "ALLOW"
     role_name                  = "${var.aws_org_rolename}"
 }

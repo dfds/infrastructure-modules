@@ -9,3 +9,7 @@ variable "aws_account_name" {
 variable "aws_org_rolename" {
   type = "string"
 }
+
+variable "email_domain" {
+  type = "string"
+}
