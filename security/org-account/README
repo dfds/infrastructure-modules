@@ -1,0 +1,13 @@
+## How do you use a module?
+
+To use this module in your Terraform templates, create a `module` resource and set its `source` field to the Git URL of
+this repo. (see [module
+sources](https://www.terraform.io/docs/modules/sources.html)).
+
+For example, the following will point to the repo module source at the master branch:
+
+```hcl
+module "ecs_cluster" {
+  source = "git::git@github.com:dfds/infrastructure-modules.git//security/org-account"
+}
+```
