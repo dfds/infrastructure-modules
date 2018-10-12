@@ -1,7 +1,7 @@
 # Organisation account module 
 This module can be used to provision AWS accounts in the organisation.
 
-## How do you use a module?
+## How do you use this module?
 
 To use this module in your Terraform templates, create a `module` resource and set its `source` field to the Git URL of
 this repo. (see [module
