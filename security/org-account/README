@@ -7,7 +7,7 @@ sources](https://www.terraform.io/docs/modules/sources.html)).
 For example, the following will point to the repo module source at the master branch:
 
 ```hcl
-module "ecs_cluster" {
+module "org-account" {
   source = "git::git@github.com:dfds/infrastructure-modules.git//security/org-account"
 }
 ```
