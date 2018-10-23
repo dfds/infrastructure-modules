@@ -1,3 +1,5 @@
+#Outputs the key info about a new account.
+#This can be used to access the new account via assume role in case additional changes needs to be made to the account
 output "email" {
   value = "${aws_organizations_account.dfds.email}"
 }
