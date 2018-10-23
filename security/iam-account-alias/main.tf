@@ -12,6 +12,7 @@ terraform {
 }
 
 resource "aws_iam_account_alias" "dfds" {
-  account_alias = "${var.aws_account_name}"
-  provider      = "aws"
+    #This will change the current account's alias to the one defined in the tfvars file
+    account_alias = "${var.aws_account_name}"
+    provider      = "aws"
 }
