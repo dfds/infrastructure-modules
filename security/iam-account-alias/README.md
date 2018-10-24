@@ -29,6 +29,6 @@ terragrunt = {
   }
 }
 
-aws_region = eu-central-1
-aws_account_name = databaseaccount
+aws_region = "eu-central-1"
+aws_account_name = "databaseaccount"
 ```
