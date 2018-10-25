@@ -1,5 +1,5 @@
-# Cloudtrail module 
-This module can be used to configure A trail for AWS Cloudtrail in an aws account. The configured trail will send logs to an existing S3 bucket.
+# Cloudtrail S3 module 
+This module can be used to configure S3 bucket for storing AWS Cloudtrail in an aws account. 
 
 ## How do you use this module?
 
@@ -11,7 +11,7 @@ For example, the following will point to the repo module source at the master br
 ```hcl
 terragrunt = {
   terraform {
-  source = "git::git@github.com:dfds/infrastructure-modules.git//security/cloudtrail"
+  source = "git::git@github.com:dfds/infrastructure-modules.git//security/cloudtrail-s3"
   }
 }
 ```
@@ -28,13 +28,10 @@ A complete example of the tfvars file could look like this:
 ```hcl
 terragrunt = {
   terraform {
-  source = "git::git@github.com:dfds/infrastructure-modules.git//security/cloudtrail"
+  source = "git::git@github.com:dfds/infrastructure-modules.git//security/cloudtrail-3"
   }
 }
 
 aws_region = "eu-central-1"
-cloudtrail_trail_name = "mytrail"
 s3_bucket_name = "mybucket"
-s3_key_prefix = "myprefix"
-enable_cloudtrail = true
 ```
