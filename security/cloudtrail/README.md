@@ -11,7 +11,7 @@ For example, the following will point to the repo module source at the master br
 ```hcl
 terragrunt = {
   terraform {
-  source = "git::git@github.com:dfds/infrastructure-modules.git//security/cloudtrail"
+  source = "git::https://github.com/dfds/infrastructure-modules.git//security/cloudtrail"
   }
 }
 ```
@@ -28,7 +28,7 @@ A complete example of the tfvars file could look like this:
 ```hcl
 terragrunt = {
   terraform {
-  source = "git::git@github.com:dfds/infrastructure-modules.git//security/cloudtrail"
+  source = "git::https://github.com/dfds/infrastructure-modules.git//security/cloudtrail"
   }
 }
 
