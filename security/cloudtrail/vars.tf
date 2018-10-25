@@ -20,7 +20,3 @@ variable "cloudtrail_trail_name" {
   description = "The name to assign to the CloudTrail 'trail' that will be used to track all API calls in your AWS account."
   default     = "full-account"
 }
-
-variable "s3_key_prefix" {
-  description = "The S3 key prefix that precedes the name of the bucket you have designated for log file delivery. "
-}
