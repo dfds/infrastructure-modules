@@ -1,3 +1,3 @@
-output "s3_bucket_name" {
-  value = "${var.s3_bucket_name}"
+output "cloudtrail_s3_bucket" {
+  value = "${var.cloudtrail_s3_bucket}"
 }
