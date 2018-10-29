@@ -13,7 +13,7 @@ terraform {
 
 
 resource "aws_s3_bucket" "bucket" {
-  bucket = "${var.s3_bucket_name}"
+  bucket = "${var.cloudtrail_s3_bucket}"
   acl    = "private"
   policy = <<POLICY
 {
@@ -26,7 +26,7 @@ resource "aws_s3_bucket" "bucket" {
                 "Service": "cloudtrail.amazonaws.com"
             },
             "Action": "s3:GetBucketAcl",
-            "Resource": "arn:aws:s3:::${var.s3_bucket_name}"
+            "Resource": "arn:aws:s3:::${var.cloudtrail_s3_bucket}"
         },
         {
             "Sid": "AWSCloudTrailWrite",
@@ -35,7 +35,7 @@ resource "aws_s3_bucket" "bucket" {
                 "Service": "cloudtrail.amazonaws.com"
             },
             "Action": "s3:PutObject",
-            "Resource": "arn:aws:s3:::${var.s3_bucket_name}/*",
+            "Resource": "arn:aws:s3:::${var.cloudtrail_s3_bucket}/*",
             "Condition": {
                 "StringEquals": {
                     "s3:x-amz-acl": "bucket-owner-full-control"
