@@ -15,11 +15,6 @@ variable "s3_bucket_already_exists" {
   default     = false
 }
 
-variable "enable_cloudtrail" {
-  description = "Enables logging for the trail. Setting this to false will pause logging. (true or false)"
-  default     = true
-}
-
 variable "cloudtrail_trail_name" {
   description = "The name to assign to the CloudTrail 'trail' that will be used to track all API calls in your AWS account."
   default     = "full-account"

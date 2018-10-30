@@ -17,6 +17,6 @@ resource "aws_cloudtrail" "cloudtrail" {
   s3_key_prefix         = "${var.aws_account_name}"
   is_multi_region_trail = true
   include_global_service_events = true
-  enable_logging = "${var.enable_cloudtrail}"
+  enable_logging = true
   enable_log_file_validation = true
 }
