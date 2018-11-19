@@ -22,7 +22,7 @@ aws_account_name=$1
 aws_user=$2
 aws_audit_bucket=$3
 
-aws_account_id=$(aws sts get-caller-identity | jq '.["Account"]' -r)
+aws_account_id=$(aws sts get-caller-identity | jq '.["Account"]' -r)  && \
 
 echo "athena:
   s3_bucket: ${aws_audit_bucket}
@@ -34,10 +34,10 @@ accounts:
 
 
 echo "Exporting account iam data..."
-mkdir account-data
-aws iam get-account-authorization-details > account-data/account_iam_data.json
+mkdir account-data  && \
+aws iam get-account-authorization-details > account-data/account_iam_data.json && \
 echo "Done."
 
 echo "Running Cloudtracker..."
-cloudtracker --account ${aws_account_name} --user ${aws_user}
+cloudtracker --account ${aws_account_name} --user ${aws_user} && \
 echo "Done."
