@@ -34,6 +34,7 @@ accounts:
 
 
 echo "Exporting account iam data..."
+mkdir account-data
 aws iam get-account-authorization-details > account-data/account_iam_data.json
 echo "Done."
 
