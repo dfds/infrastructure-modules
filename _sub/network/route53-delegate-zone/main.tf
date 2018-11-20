@@ -1,8 +1,3 @@
-provider "aws" {
-    # The AWS region in which all resources will be created
-    version = "~> 1.40"
-}
-
 terraform {
     # The configuration for this backend will be filled in by Terragrunt
     backend "s3" {}
