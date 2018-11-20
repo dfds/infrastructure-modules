@@ -5,7 +5,7 @@ variable "aws_region" {
   type = "string"
 }
 
-variable "dns_zone_name" {
+variable "dns_child_zone_name" {
   type = "string"
 }
 
