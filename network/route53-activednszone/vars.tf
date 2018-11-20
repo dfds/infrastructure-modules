@@ -5,26 +5,14 @@ variable "aws_region" {
   type = "string"
 }
 
-variable "aws_dns_zone" {
+variable "dns_zone_name" {
   type = "string"
 }
 
-variable "aws_dns_id" {
+variable "dns_zone_id" {
   type = "string"
 }
 
-variable "route53-zone-ns0" {
-  type = "string"
-}
-
-variable "route53-zone-ns1" {
-  type = "string"
-}
-
-variable "route53-zone-ns2" {
-  type = "string"
-}
-
-variable "route53-zone-ns3" {
-  type = "string"
+variable "dns_zone_ns" {
+  type = "list"
 }

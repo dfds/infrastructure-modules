@@ -11,17 +11,12 @@ terraform {
     required_version = "~> 0.11.7"
 }
 
-resource "aws_route53_record" "nsrecord" {
+resource "aws_route53_record" "ns" {
     # This will create the record of type NS that enables a sub domain to be queried
-    zone_id = "${var.aws_dns_id}"
-    name    = "${var.aws_dns_zone}"
+    zone_id = "${var.dns_zone_id}"
+    name    = "${var.dns_zone_name}"
     type    = "NS"
-    ttl     = "30"
+    ttl     = "300"
 
-    records = [
-        "${var.route53-zone-ns0}",
-        "${var.route53-zone-ns1}",
-        "${var.route53-zone-ns2}",
-        "${var.route53-zone-ns3}",
-    ]
+    records = ["${var.dns_zone_ns}"]
 }
