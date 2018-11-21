@@ -1,6 +1,10 @@
 provider "aws" {
     # The AWS region in which all resources will be created
     region = "${var.aws_region}"
+
+    assume_role {
+        role_arn = "${var.assume_role_arn}"
+    }
 }
 
 terraform {
@@ -10,7 +14,7 @@ terraform {
 }
 
 resource "aws_organizations_account" "dfds" {
-    #Generated an organizational account based on the input from a tfvars file.
+    #Generate an organizational account based on the input from a tfvars file.
     name                       = "${var.aws_account_name}"
     email                      = "aws.${replace(var.aws_account_name, "dfds-", "")}@${var.email_domain}"
     iam_user_access_to_billing = "ALLOW"
