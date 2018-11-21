@@ -50,13 +50,12 @@ func TestTerraformAwsExample(t *testing.T) {
 
 		// Variables to pass to our Terraform code using -var options
 		Vars: map[string]interface{}{
-			"aws_dns_zone": expectedName,
+			"dns_zone_name": expectedName,
 			"aws_region": awsRegion,
 		},
 		// Environment variables to set when running Terraform
 		EnvVars: map[string]string{
 			"AWS_DEFAULT_REGION": awsRegion,
-			"AWS_PROFILE": "dfds-playground",
 		},
 	}
 
@@ -72,7 +71,7 @@ func TestTerraformAwsExample(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 
 	// Run `terraform output` to get the value of an output variable
-	zoneId := terraform.Output(t, terraformOptions, "route53-zone-id")
+	zoneId := terraform.Output(t, terraformOptions, "dns_zone_id")
 
 	zoneName := dfds.FindHostedZoneWithId(t, awsRegion, zoneId)
 	expectedName += "."
