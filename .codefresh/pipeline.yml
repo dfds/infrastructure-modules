@@ -2,6 +2,26 @@ version: '1.0'
 stages:
 
 steps:
+  build_terratest_image:
+    type: build
+    title: Build Terratest image with tests
+    dockerfile: Dockerfile
+    image_name: dfds/terratest-infrastructure-modules
+    tag: develop
+    no_cache: false
+    no_cf_cache: false
+    fail_fast: false
+    metadata:
+      set:
+        - qa: pending
+  run_image:
+    title: Run Terratest
+    image: '${{build_terratest_image}}'
+    commands:
+      - pwd
+      - printenv
+      - cd /go/src/project/test
+      - go test
   run_cloudtracker:
     title: Run Cloudtracker
     image: dfdsdk/docker-cloudtracker:2.1.0
