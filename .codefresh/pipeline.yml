@@ -14,3 +14,11 @@ steps:
     metadata:
       set:
         - qa: pending
+  run_image:
+    title: Run Terratest
+    image: '${{build_terratest_image}}'
+    commands:
+      - pwd
+      - printenv
+      - cd /go/src/project/test
+      - go test
