@@ -12,7 +12,7 @@ terraform {
 # Load IAM policy documents from module
 module "iam_policies" {
     source = "../../_sub/security/iam-policies"
-    iam_role_trusted_account = "${var.iam_role_trusted_account}"
+    iam_role_trusted_account_root_arn = "${var.iam_role_trusted_account_root_arn}"
 }
 
 # Create the role for the master account

@@ -30,12 +30,16 @@ data "aws_iam_policy_document" "create_s3_bucket" {
 
 
 # Create Org. Account
+# Seems to be enough permissions to *create* account, but not get status on creation, resulting in repeated attempts
+# May have been fixed by adding "organizations:DescribeCreateAccountStatus", "organizations:DescribeAccount"
 data "aws_iam_policy_document" "create_org_account" {
     statement {
         sid       = "OrgCreateAccount"
         actions   = [
+                "organizations:ListAccounts",
                 "organizations:CreateAccount",
-                "organizations:GetAccount"
+                "organizations:DescribeAccount",
+                "organizations:DescribeCreateAccountStatus"
             ]
         resources = ["*"]
         effect    = "Allow"
@@ -43,10 +47,33 @@ data "aws_iam_policy_document" "create_org_account" {
 }
 
 
+# Assume Non-core Accounts
+data "aws_iam_policy_document" "assume_noncore_accounts" {
+
+    statement {
+        sid       = "DoNotAssumeCore"
+        actions   = ["sts:AssumeRole"]
+        resources = ["${var.core_account_role_arns}"]
+        effect    = "Deny"
+    }
+
+    statement {
+        sid       = "DefaultAssumeAll"
+        actions   = ["sts:AssumeRole"]
+        resources = ["*"]
+        effect    = "Allow"
+    }
+
+}
+
+
+
 # ------------------------------------------------------------------------------
 # Trusted Account
 # ------------------------------------------------------------------------------
 data "aws_iam_policy_document" "trusted_account" {
+
+    count = "${signum(length(var.iam_role_trusted_account_root_arn))}"
 
   statement {
     effect  = "Allow"
@@ -54,7 +81,7 @@ data "aws_iam_policy_document" "trusted_account" {
 
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${var.iam_role_trusted_account}:root"]
+      identifiers = ["${element(var.iam_role_trusted_account_root_arn, 0)}"]
     }
 
   }

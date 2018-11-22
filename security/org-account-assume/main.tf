@@ -2,9 +2,32 @@ provider "aws" {
     # The AWS region in which all resources will be created
     region = "${var.aws_region}"
 
+}
+
+provider "aws" {
+    # The AWS region in which all resources will be created
+    region = "${var.aws_region}"
+
+    access_key = "${var.access_key_master}"
+    secret_key = "${var.secret_key_master}"
+
+    alias = "master"
+
+}
+
+provider "aws" {
+    # The AWS region in which all resources will be created
+    region = "${var.aws_region}"
+
+    access_key = "${var.access_key_master}"
+    secret_key = "${var.secret_key_master}"
+
     assume_role {
-        role_arn = "${var.assume_role_arn}"
+        # role_arn = "arn:aws:iam::454234050858:role/Prime"
+        role_arn = "arn:aws:iam::${aws_organizations_account.dfds.id}:role/${var.aws_org_rolename}"
     }
+
+    alias = "child"
 }
 
 terraform {
@@ -19,4 +42,16 @@ resource "aws_organizations_account" "dfds" {
     email                      = "aws.${replace(var.aws_account_name, "dfds-", "")}@${var.email_domain}"
     iam_user_access_to_billing = "ALLOW"
     role_name                  = "${var.aws_org_rolename}"
+
+    provider = "aws.master"
+}
+
+resource "aws_s3_bucket" "master" {
+    bucket = "dfds-random-master2"
+    provider = "aws.master"
+}
+
+resource "aws_s3_bucket" "child" {
+    bucket = "dfds-random-child2"
+    provider = "aws.child"
 }
