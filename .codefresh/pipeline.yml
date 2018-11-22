@@ -14,13 +14,3 @@ steps:
     metadata:
       set:
         - qa: pending
-
-  run_cloudtracker:
-    title: Run Cloudtracker
-    image: dfdsdk/docker-cloudtracker:2.1.0
-    when:
-    branch:
-      ignore:
-        - master
-    commands:
-      - sh -c "./src/run-cloudtracker.sh dfds-qa terratest-qa-user dfds-qa-audit"
