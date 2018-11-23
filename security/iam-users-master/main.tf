@@ -25,13 +25,6 @@ resource "aws_iam_access_key" "master_user_key" {
 }
 
 # 
-resource "aws_iam_user_policy" "create_org_account" {
-    name = "${var.create_org_account_iam_policy_name}"
-    user = "${aws_iam_user.master_user.id}"
-    policy = "${module.iam_policies.create_org_account}"
-}
-
-# 
 resource "aws_iam_user_policy" "assume_noncore_accounts" {
     name = "${var.assume_noncore_accounts_iam_policy_name}"
     user = "${aws_iam_user.master_user.id}"

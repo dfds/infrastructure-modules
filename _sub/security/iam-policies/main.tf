@@ -3,6 +3,17 @@
 # ------------------------------------------------------------------------------
 
 
+# Admin
+data "aws_iam_policy_document" "admin" {
+    statement {
+        sid       = "Admin"
+        actions   = ["*"]
+        resources = ["*"]
+        effect    = "Allow"
+    }
+}
+
+
 # Create Route53 Zone
 data "aws_iam_policy_document" "create_route53_zone" {
     statement {
