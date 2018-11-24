@@ -11,27 +11,29 @@ For example, the following will point to the repo module source at the master br
 ```hcl
 terragrunt = {
   terraform {
-  source = "git::https://github.com/dfds/infrastructure-modules.git//security/cloudtrail-s3"
+  source = "git::https://github.com/dfds/infrastructure-modules.git//security/s3-create-cloudtrail-bucket"
   }
 }
 ```
 
 This specific module requires the following variables to be present in the tfvars file along with the module reference:
 * aws_region
-* cloudtrail_trail_name
-* s3_bucket_name
-* s3_key_prefix
-* enable_cloudtrail
+* cloudtrail_s3_bucket
+
+The cloudtrail files that are put into the s3 bucket will have a default retention of 90 days.
+This setting can be modified by providing this optional parameter 
+* cloudtrail_logs_retention
 
 A complete example of the tfvars file could look like this:
 
 ```hcl
 terragrunt = {
   terraform {
-  source = "git::https://github.com/dfds/infrastructure-modules.git//security/cloudtrail-3"
+  source = "git::https://github.com/dfds/infrastructure-modules.git//security/s3-create-cloudtrail-bucket"
   }
 }
 
 aws_region = "eu-central-1"
-s3_bucket_name = "mybucket"
+cloudtrail_s3_bucket = "mybucket"
+cloudtrail_logs_retention = 180 # Optional
 ```
