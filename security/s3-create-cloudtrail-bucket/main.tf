@@ -18,6 +18,7 @@ resource "aws_s3_bucket" "bucket" {
       "Managed by" = "Terraform"
   }
 
+  force_destroy = true
   policy = <<POLICY
 {
   "Version": "2012-10-17",
