@@ -15,3 +15,11 @@ variable "aws_org_rolename" {
 variable "email_domain" {
   type = "string"
 }
+
+variable "cloudtrail_trail_name" {
+  type = "string"
+}
+
+variable "cloudtrail_s3_bucket" {
+  type = "string"
+}
