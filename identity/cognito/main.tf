@@ -26,17 +26,14 @@ resource "aws_cognito_user_pool_client" "client" {
   generate_secret     = true
 }
 
-resource "aws_iam_saml_provider" "testprovider" {
-  name                   = "testprovider"
-  saml_metadata_document = "${file("BlasterAzureAD.xml")}"
-}
-
 resource "aws_cognito_identity_provider" "adfs" {
   user_pool_id  = "${aws_cognito_user_pool.pool.id}"
   provider_name = "${var.user_pool_identity_provider_name}"
   provider_type = "SAML"
-  idp_identifiers = ["{aws_iam_saml_provider.testprovider.arn}"]
-
+  provider_details = {
+      // https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateIdentityProvider.html#CognitoUserPools-CreateIdentityProvider-request-AttributeMapping
+      MetadataFile = "${file("BlasterAzureAD.xml")}"
+  }
   attribute_mapping {
     Email    = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
     Name = "http://schemas.microsoft.com/identity/claims/displayname"
