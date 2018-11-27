@@ -8,6 +8,10 @@ variable "user_pool_name" {
   type = "string"
 }
 
+variable "identity_pool_name" {
+  type = "string"
+}
+
 variable "user_pool_domain_name" {
   type = "string"
 }

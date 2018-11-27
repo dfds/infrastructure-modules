@@ -28,7 +28,9 @@ func TestTerraformAwsExample(t *testing.T) {
 
 	// Give this EC2 Instance a unique ID for a name tag so we can distinguish it from any other EC2 Instance running
 	// in your AWS account
-	expectedName := fmt.Sprintf("dfds-ci-%v", random.Random(1,500000))
+	randomInt := random.Random(1,500000)
+	expectedName := fmt.Sprintf("dfdsuserpool%v", randomInt)
+	expectedIdentityPoolName := fmt.Sprintf("dfdsidpool%v", randomInt)
 
 	// Fixed to EU-Central-1, to avoid picking non-compliant region
 	awsRegion := "eu-central-1" 
@@ -51,6 +53,7 @@ func TestTerraformAwsExample(t *testing.T) {
 		// Variables to pass to our Terraform code using -var options
 		Vars: map[string]interface{}{
 			"user_pool_name": expectedName,
+			"identity_pool_name": expectedIdentityPoolName,
 			"user_pool_domain_name": expectedName,
 			"user_pool_client_name": "blaster",
 			"user_pool_identity_provider_name": "DFDSAzureAD",
