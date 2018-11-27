@@ -20,23 +20,34 @@ resource "aws_cognito_user_pool_domain" "main" {
   user_pool_id = "${aws_cognito_user_pool.pool.id}"
 }
 
-resource "aws_cognito_user_pool_client" "client" {
-  name = "${var.user_pool_client_name}"
-  user_pool_id = "${aws_cognito_user_pool.pool.id}"
-  generate_secret     = true
-}
-
 resource "aws_cognito_identity_provider" "adfs" {
   user_pool_id  = "${aws_cognito_user_pool.pool.id}"
   provider_name = "${var.user_pool_identity_provider_name}"
   provider_type = "SAML"
   provider_details = {
       // https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateIdentityProvider.html#CognitoUserPools-CreateIdentityProvider-request-AttributeMapping
-      MetadataFile = "${file("BlasterAzureAD.xml")}"
+      MetadataURL = "https://login.microsoftonline.com/${var.azure_ad_tenant_id}/FederationMetadata/2007-06/FederationMetadata.xml"
+      
   }
   attribute_mapping {
     Email    = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
     Name = "http://schemas.microsoft.com/identity/claims/displayname"
   }
 }
+
+
+resource "aws_cognito_user_pool_client" "client" {
+  name = "${var.user_pool_client_name}"
+  user_pool_id = "${aws_cognito_user_pool.pool.id}"
+  generate_secret     = true
+  allowed_oauth_flows = ["code"]
+  allowed_oauth_scopes = ["phone", "email","openid","profile","aws.cognito.signin.user.admin"]
+  supported_identity_providers = ["${var.user_pool_identity_provider_name}"]
+  callback_urls = ["${var.build_callback_url}"],
+  logout_urls = ["${var.build_logout_url}"]
+
+  depends_on = ["aws_cognito_identity_provider.adfs"]
+
+}
+
 

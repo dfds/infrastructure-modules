@@ -53,7 +53,10 @@ func TestTerraformAwsExample(t *testing.T) {
 			"user_pool_name": expectedName,
 			"user_pool_domain_name": expectedName,
 			"user_pool_client_name": "blaster",
-			"user_pool_identity_provider_name": "DFDSAzureAD",			
+			"user_pool_identity_provider_name": "DFDSAzureAD",
+			"azure_ad_tenant_id": "73a99466-ad05-4221-9f90-e7142aa2f6c1",
+			"build_callback_url": "https://build.dfds.com/sigin-oidc",
+			"build_logout_url": "https://build.dfds.com/logout",
 			"aws_region": awsRegion,
 		},
 		// Environment variables to set when running Terraform
