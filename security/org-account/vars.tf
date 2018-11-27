@@ -23,3 +23,8 @@ variable "cloudtrail_trail_name" {
 variable "cloudtrail_s3_bucket" {
   type = "string"
 }
+
+variable "tax_settings_document" {
+  type = "string"
+  default = "/codefresh/volume/pre-prime/master-account/taxsettings.json"
+}

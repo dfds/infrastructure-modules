@@ -14,3 +14,7 @@ output "aws_account_name" {
 output "aws_org_role" {
   value = "${var.aws_org_rolename}"
 }
+
+output "aws_org_role_arn" {
+  value = "${data.aws_iam_role.aws_org_role.arn}"
+}

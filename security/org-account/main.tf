@@ -46,3 +46,9 @@ resource "aws_cloudtrail" "cloudtrail" {
   enable_log_file_validation = true
   provider      = "aws.workload"
 }
+
+resource "null_resource" "apply_tax_settings" {
+  provisioner "local-exec" {
+    command = "python3 /src/taxregistrations.py ${data.aws_iam_role.aws_org_role.arn} ${var.tax_settings_document}"
+  }
+}
