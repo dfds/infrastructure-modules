@@ -6,9 +6,9 @@ Terraform modules for infrastructure
 
 ### Terraform Files
 
-main.tf
-outputs.tf
-vars.tf
+- main.tf
+- outputs.tf
+- vars.tf
 
 ### Terraform Module Folder Structure
 
