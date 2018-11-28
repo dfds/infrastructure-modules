@@ -26,5 +26,5 @@ variable "cloudtrail_s3_bucket" {
 
 variable "tax_settings_document" {
   type = "string"
-  default = "/codefresh/volume/pre-prime/master-account/taxsettings.json"
+  default = "./taxsettings.json"
 }
