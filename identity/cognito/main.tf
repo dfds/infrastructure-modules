@@ -45,9 +45,7 @@ resource "aws_cognito_user_pool_client" "client" {
   supported_identity_providers = ["${var.user_pool_identity_provider_name}"]
   callback_urls = ["${var.build_callback_url}"],
   logout_urls = ["${var.build_logout_url}"]
-
   depends_on = ["aws_cognito_identity_provider.adfs"]
-
 }
 resource "aws_cognito_identity_pool" "main" {
   identity_pool_name               = "${var.identity_pool_name}"
@@ -60,5 +58,112 @@ resource "aws_cognito_identity_pool" "main" {
   }
 }
 
-// TODO : https://www.terraform.io/docs/providers/aws/r/cognito_identity_pool_roles_attachment.html
+resource "aws_iam_role" "authenticated" {
+  name = "Cognito_${var.user_pool_name}_authenticated"
 
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "cognito-identity.amazonaws.com"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "cognito-identity.amazonaws.com:aud": "${aws_cognito_identity_pool.main.id}"
+        },
+        "ForAnyValue:StringLike": {
+          "cognito-identity.amazonaws.com:amr": "authenticated"
+        }
+      }
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "authenticated" {
+  name = "Cognito_${var.user_pool_name}_authenticated_policy"
+  role = "${aws_iam_role.authenticated.id}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "mobileanalytics:PutEvents",
+        "cognito-sync:*",
+        "cognito-identity:*",
+        "sts:AssumeRole"
+      ],
+      "Resource": [
+        "*"
+      ]
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role" "unauthenticated" {
+  name = "Cognito_${var.user_pool_name}_unauthenticated"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "cognito-identity.amazonaws.com"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "cognito-identity.amazonaws.com:aud": "${aws_cognito_identity_pool.main.id}"
+        },
+        "ForAnyValue:StringLike": {
+          "cognito-identity.amazonaws.com:amr": "unauthenticated"
+        }
+      }
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "unauthenticated" {
+  name = "Cognito_${var.user_pool_name}_unauthenticated_policy"
+  role = "${aws_iam_role.unauthenticated.id}"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "mobileanalytics:PutEvents",
+                "cognito-sync:*"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_cognito_identity_pool_roles_attachment" "main" {
+  identity_pool_id = "${aws_cognito_identity_pool.main.id}"
+  roles {
+    "authenticated" = "${aws_iam_role.authenticated.arn}"
+    "unauthenticated" = "${aws_iam_role.unauthenticated.arn}"
+  }
+}
