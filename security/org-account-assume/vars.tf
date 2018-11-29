@@ -17,6 +17,9 @@ variable "aws_org_rolename" {
   type = "string"
 }
 
+variable "prime_rolename" {
+  type = "string"
+}
 variable "email_domain" {
   type = "string"
 }
