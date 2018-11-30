@@ -17,7 +17,7 @@ locals {
   worker-node-userdata = <<USERDATA
 #!/bin/sh
 set -o xtrace
-/etc/eks/bootstrap.sh --apiserver-endpoint '${aws_eks_cluster.eks.endpoint}' --b64-cluster-ca '${aws_eks_cluster.eks.certificate_authority.0.data}' '${var.cluster_name}'
+/etc/eks/bootstrap.sh --apiserver-endpoint '${var.eks_endpoint}' --b64-cluster-ca '${var.eks_certificate_authority}' '${var.cluster_name}'
 USERDATA
 }
 
@@ -41,7 +41,7 @@ resource "aws_autoscaling_group" "eks" {
   max_size             = "${var.worker_instance_max_count}"
   min_size             = "${var.worker_instance_min_count}"
   name                 = "${var.cluster_name}"
-  vpc_zone_identifier  = "${var.subnet_ids}"
+  vpc_zone_identifier  = ["${var.subnet_ids}"]
 
   tag {
     key                 = "Name"

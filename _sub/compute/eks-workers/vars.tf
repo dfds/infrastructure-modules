@@ -9,3 +9,7 @@ variable "vpc_id" {}
 variable "subnet_ids" {
   type = "list"
 }
+
+variable "eks_endpoint" {}
+variable "eks_certificate_authority" {}
+

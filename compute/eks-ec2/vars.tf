@@ -12,3 +12,16 @@ variable "cluster_name" {
 variable "assume_role_arn" {
   type = "string"
 }
+
+variable "worker_instance_max_count" {
+  type = "string"
+}
+
+variable "worker_instance_min_count" {
+  type = "string"
+}
+
+variable "worker_instance_type" {
+  type = "string"
+}
+
