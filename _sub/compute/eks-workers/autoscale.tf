@@ -29,7 +29,7 @@ resource "aws_launch_configuration" "eks" {
   name_prefix                 = "${var.cluster_name}"
   security_groups             = ["${var.autoscale_security_group}"]
   user_data_base64            = "${base64encode(local.worker-node-userdata)}"
-
+  
   lifecycle {
     create_before_destroy = true
   }

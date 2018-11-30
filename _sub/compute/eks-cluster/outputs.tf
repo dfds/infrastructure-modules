@@ -18,3 +18,8 @@ output "eks_certificate_authority" {
   value = "${aws_eks_cluster.eks.certificate_authority.0.data}"
 }
 
+output "eks_role_arn" {
+  value = "${aws_iam_role.eks.arn}"
+}
+
+
