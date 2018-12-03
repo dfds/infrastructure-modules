@@ -39,6 +39,6 @@ module "eks_heptio" {
     cluster_name = "${var.cluster_name}"
     eks_endpoint = "${module.eks_cluster.eks_endpoint}"
     eks_certificate_authority = "${module.eks_cluster.eks_certificate_authority}"
-    eks_role_arn = "${module.eks_cluster.eks_role_arn}"
+    eks_role_arn = "${module.eks_workers.worker_role}"
     assume_role_arn = "${var.assume_role_arn}"
 }
