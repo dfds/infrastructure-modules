@@ -1,5 +1,5 @@
 variable "iam_role_trusted_account_root_arn" {
-    description = "The ID of the account trusted to assume the role"
+    description = "The ARN of the account trusted to assume the role"
     type = "list"
     default = []
 }

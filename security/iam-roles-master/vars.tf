@@ -12,8 +12,8 @@ variable "iam_role_description" {
     type = "string"
 }
 
-variable "iam_role_trusted_account" {
-    description = "The ID of the account trusted to assume the role"
+variable "iam_role_trusted_account_root_arn" {
+    description = "The ARN of the account trusted to assume the role"
     type = "string"
 }
 
