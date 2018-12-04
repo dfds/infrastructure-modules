@@ -27,6 +27,10 @@ resource "aws_iam_role_policy_attachment" "cni" {
   role       = "${aws_iam_role.eks.name}"
 }
 
+resource "aws_iam_role_policy_attachment" "AmazonEC2ContainerRegistryReadOnly" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role       = "${aws_iam_role.eks.name}"
+}
 
 resource "aws_iam_instance_profile" "eks" {
   name = "eks-${var.cluster_name}"
