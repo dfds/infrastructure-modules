@@ -4,7 +4,7 @@
 # ----------------------------------------------------------------------------------------------------------------------
 
 module "iam_policy_create_s3_bucket" {
-  source = "../iam-policy"
+  source = "../iam-policies"
 
   aws_account_id                       = "${var.aws_account_id}"
   # allow_access_from_other_account_arns = ["${var.allow_read_only_access_from_other_account_arns}"]
