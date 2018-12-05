@@ -42,6 +42,10 @@ resource "aws_autoscaling_group" "eks" {
   min_size             = "${var.worker_instance_min_count}"
   name                 = "${var.cluster_name}"
   vpc_zone_identifier  = ["${var.subnet_ids}"]
+  
+  # The following can be set in case of the default health check are not sufficient
+  #health_check_grace_period = 5
+  #default_cooldown = 15
 
   tag {
     key                 = "Name"
