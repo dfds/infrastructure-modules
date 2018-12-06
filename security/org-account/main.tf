@@ -52,6 +52,8 @@ module "cloudtrail" {
   cloudtrail_trail_name = "${var.cloudtrail_trail_name}"
   cloudtrail_s3_bucket  = "${var.cloudtrail_s3_bucket}"
   aws_account_name      = "${var.aws_account_name}"
+  aws_region = "${var.aws_region}"
+  
   providers = {
     aws = "aws.workload"
   }
