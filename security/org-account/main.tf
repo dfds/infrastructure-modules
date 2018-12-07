@@ -36,27 +36,15 @@ resource "aws_iam_account_alias" "dfds" {
     provider      = "aws.workload"
 }
 
-# resource "aws_cloudtrail" "cloudtrail" {
-#   name                  = "${var.cloudtrail_trail_name}"
-#   s3_bucket_name        = "${var.cloudtrail_s3_bucket}"
-#   s3_key_prefix         = "${var.aws_account_name}"
-#   is_multi_region_trail = true
-#   include_global_service_events = true
-#   enable_logging = true
-#   enable_log_file_validation = true
-#   provider      = "aws.workload"
-# }
-
-module "cloudtrail" {
-  source                = "../cloudtrail-config"  
-  cloudtrail_trail_name = "${var.cloudtrail_trail_name}"
-  cloudtrail_s3_bucket  = "${var.cloudtrail_s3_bucket}"
-  aws_account_name      = "${var.aws_account_name}"
-  aws_region = "${var.aws_region}"
-  
-  providers = {
-    aws = "aws.workload"
-  }
+resource "aws_cloudtrail" "cloudtrail" {
+  name                  = "${var.cloudtrail_trail_name}"
+  s3_bucket_name        = "${var.cloudtrail_s3_bucket}"
+  s3_key_prefix         = "${var.aws_account_name}"
+  is_multi_region_trail = true
+  include_global_service_events = true
+  enable_logging = true
+  enable_log_file_validation = true
+  provider      = "aws.workload"
 }
 
 resource "null_resource" "apply_tax_settings" {
