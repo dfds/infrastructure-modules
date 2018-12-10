@@ -36,15 +36,33 @@ resource "aws_iam_account_alias" "dfds" {
     provider      = "aws.workload"
 }
 
-resource "aws_cloudtrail" "cloudtrail" {
-  name                  = "${var.cloudtrail_trail_name}"
-  s3_bucket_name        = "${var.cloudtrail_s3_bucket}"
-  s3_key_prefix         = "${var.aws_account_name}"
-  is_multi_region_trail = true
-  include_global_service_events = true
-  enable_logging = true
-  enable_log_file_validation = true
-  provider      = "aws.workload"
+module "cloudtrail_s3_central" {
+  source = "../../_sub/storage/s3-cloudtrail-bucket"
+  create_s3_bucket = "${var.create_cloudtrail_s3_bucket}"
+  s3_bucket = "${var.cloudtrail_central_s3_bucket}"
+
+  providers = {
+    aws = "aws.workload"
+  }  
+}
+
+module "cloudtrail_s3_local" {
+  source = "../../_sub/storage/s3-cloudtrail-bucket"
+  create_s3_bucket = "${var.cloudtrail_local_s3_bucket != "" ? 1 : 0}"
+  s3_bucket = "${var.cloudtrail_local_s3_bucket}"
+
+  providers = {
+    aws = "aws.workload"
+  }  
+}
+
+module "cloudtrail_local" {
+  source = "../../_sub/security/cloudtrail-config"
+  s3_bucket = "${module.cloudtrail_s3_local.bucket_name}"
+  trail_name = "local-audit"
+  providers = {
+    aws = "aws.workload"
+  }      
 }
 
 resource "null_resource" "apply_tax_settings" {
