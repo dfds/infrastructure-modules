@@ -32,6 +32,8 @@ module "eks_workers" {
     subnet_ids = "${module.eks_cluster.subnet_ids}"
     eks_endpoint = "${module.eks_cluster.eks_endpoint}"
     eks_certificate_authority = "${module.eks_cluster.eks_certificate_authority}"
+    public_key = "${var.public_key}"
+    enable_ssh = "${var.enable_ssh}"
 }
 
 module "eks_heptio" {

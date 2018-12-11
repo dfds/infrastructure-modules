@@ -25,3 +25,12 @@ variable "worker_instance_type" {
   type = "string"
 }
 
+variable "public_key"  {
+  type = "string"
+}
+
+variable "enable_ssh" {
+  type = "string"
+  default = 0
+}
+
