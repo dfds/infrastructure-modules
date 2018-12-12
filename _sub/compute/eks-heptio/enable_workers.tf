@@ -1,15 +1,15 @@
 resource "local_file" "kubeconfig" {
     content = "${local.kubeconfig}"
-    filename = "${pathexpand("~/.kube/config")}"
+    filename = "${pathexpand("~/.kube/config_${var.cluster_name}")}"
 }
 
 resource "local_file" "enable-workers" {
 
     content = "${local.config-map-aws-auth}"
-    filename = "${pathexpand("./.terraform/data/config-map-aws-auth.yaml")}"
+    filename = "${pathexpand("./.terraform/data/config-map-aws-auth_${var.cluster_name}.yaml")}"
 
     provisioner "local-exec" {
-        command = "kubectl apply -f ${pathexpand("./.terraform/data/config-map-aws-auth.yaml")}"
+        command = "kubectl --kubeconfig ${local_file.kubeconfig.filename} apply -f ${pathexpand("./.terraform/data/config-map-aws-auth_${var.cluster_name}.yaml")}"
     }
 
     depends_on = ["local_file.kubeconfig"]
