@@ -8,7 +8,7 @@ data "external" "heptio_authenticator_aws" {
 }
 
 provider "kubernetes" {
+  config_path = "${local_file.kubeconfig.filename}"
   token                  = "${data.external.heptio_authenticator_aws.result.token}"
   load_config_file       = true
-  config_path = "${local_file.kubeconfig.filename}"
 }
