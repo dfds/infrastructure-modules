@@ -17,7 +17,7 @@ import (
 )
 
 // An example of how to test the Terraform module in examples/terraform-aws-example using Terratest.
-func TestTerraformAwsExample(t *testing.T) {
+func TestCognitoModules(t *testing.T) {
 	t.Parallel()
 
 	stateDirectory, err := ioutil.TempDir("", t.Name())
