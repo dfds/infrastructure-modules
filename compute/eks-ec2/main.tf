@@ -54,6 +54,7 @@ module "k8s_traefik" {
     autoscaling_group_id = "${module.eks_workers.autoscaling_group_id}"
     traefik_k8s_name = "${var.traefik_k8s_name}"
     alb_certificate_arn = "${var.alb_certificate_arn}"
+    nodes_sg_id = "${module.eks_workers.nodes_sg_id}"
 }
 
 module "k8s_service_account" {

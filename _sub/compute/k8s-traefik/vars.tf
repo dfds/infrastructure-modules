@@ -12,3 +12,5 @@ variable "autoscaling_group_id" {}
 variable "traefik_k8s_name" {}
 
 variable "alb_certificate_arn" {}
+
+variable "nodes_sg_id" {}
