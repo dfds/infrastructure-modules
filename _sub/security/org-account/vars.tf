@@ -6,7 +6,7 @@ variable "name" {
   type = "string"
 }
 
-variable "role_name" {
+variable "org_role_name" {
   type = "string"
 }
 

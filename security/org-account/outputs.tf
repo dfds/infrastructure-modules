@@ -9,10 +9,10 @@ output "name" {
   value = "${module.org_account.name}"
 }
 
-output "role_name" {
-  value = "${module.org_account.role_name}"
+output "org_role_name" {
+  value = "${module.org_account.org_role_name}"
 }
 
-output "role_arn" {
-  value = "${module.org_account.role_arn}"
+output "org_role_arn" {
+  value = "${module.org_account.org_role_arn}"
 }

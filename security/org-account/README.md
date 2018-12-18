@@ -20,7 +20,7 @@ This specific module requires the following variables to be present in the tfvar
 * aws_region
 * name
 * email
-* role_name
+* org_role_name
 
 A complete example of the tfvars file could look like this:
 
@@ -34,5 +34,5 @@ terragrunt = {
 aws_region = "eu-central-1"
 name = "accountname"
 email = "aws.accountname@company.tld"
-role_name = "OrgRole"
+org_role_name = "OrgRole"
 ```

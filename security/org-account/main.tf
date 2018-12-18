@@ -7,7 +7,8 @@ provider "aws" {
 
   # Assume the Organizational role in Workload account
   assume_role {
-    role_arn = "${module.org_account.role_arn}"
+    role_arn = "${module.org_account.org_role_arn}"
+
     # role_arn = "arn:aws:iam::490910914506:role/OrgRole"
   }
 
@@ -21,11 +22,11 @@ terraform {
 }
 
 module "org_account" {
-  source = "../../_sub/security/org-account"
-  name       = "${var.name}"
-  role_name  = "${var.role_name}"
-  email      = "${var.email}"
-  aws_region = "${var.aws_region}"
+  source        = "../../_sub/security/org-account"
+  name          = "${var.name}"
+  org_role_name = "${var.org_role_name}"
+  email         = "${var.email}"
+  aws_region    = "${var.aws_region}"
 }
 
 module "cloudtrail_s3_central" {
@@ -60,6 +61,6 @@ module "cloudtrail_local" {
 
 resource "null_resource" "apply_tax_settings" {
   provisioner "local-exec" {
-    command = "python3 /src/taxregistrations.py ${module.org_account.role_arn} ${var.tax_settings_document}"
+    command = "python3 /src/taxregistrations.py ${module.org_account.org_role_arn} ${var.tax_settings_document}"
   }
 }
