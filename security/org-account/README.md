@@ -18,9 +18,9 @@ terragrunt = {
 
 This specific module requires the following variables to be present in the tfvars file along with the module reference:
 * aws_region
-* aws_account_name
-* aws_org_rolename
-* email_domain - Notice that the complete email will be generated based on the account name and this domain name
+* name
+* email
+* role_name
 
 A complete example of the tfvars file could look like this:
 
@@ -31,8 +31,8 @@ terragrunt = {
   }
 }
 
-aws_region = eu-central-1
-aws_account_name = accountname
-aws_org_rolename = OrgRole
-email_domain = company.tld
+aws_region = "eu-central-1"
+name = "accountname"
+email = "aws.accountname@company.tld"
+role_name = "OrgRole"
 ```

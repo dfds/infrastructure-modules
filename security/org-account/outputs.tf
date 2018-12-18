@@ -1,20 +1,18 @@
-#Outputs the key info about a new account.
-#This can be used to access the new account via assume role in case additional changes needs to be made to the account
 output "email" {
-  value = "${aws_organizations_account.dfds.email}"
+  value = "${module.org_account.email}"
 }
-output "aws_account_id" {
-  value = "${aws_organizations_account.dfds.id}"
-}
-
-output "aws_account_name" {
-  value = "${aws_organizations_account.dfds.name}"
+output "id" {
+  value = "${module.org_account.id}"
 }
 
-output "aws_org_role" {
-  value = "${var.aws_org_rolename}"
+output "name" {
+  value = "${module.org_account.name}"
 }
 
-output "aws_org_role_arn" {
-  value = "${data.aws_iam_role.aws_org_role.arn}"
+output "role_name" {
+  value = "${module.org_account.role_name}"
+}
+
+output "role_arn" {
+  value = "${module.org_account.role_arn}"
 }

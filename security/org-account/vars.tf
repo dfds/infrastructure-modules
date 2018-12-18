@@ -4,16 +4,16 @@ variable "aws_region" {
   type = "string"
 }
 
-variable "aws_account_name" {
+variable "name" {
   type = "string"
 }
 
 
-variable "aws_org_rolename" {
+variable "role_name" {
   type = "string"
 }
 
-variable "email_domain" {
+variable "email" {
   type = "string"
 }
 
