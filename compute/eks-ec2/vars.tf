@@ -34,3 +34,7 @@ variable "enable_ssh" {
   default = 0
 }
 
+variable "traefik_k8s_name" {}
+
+variable "alb_certificate_arn" {}
+

@@ -44,3 +44,18 @@ module "eks_heptio" {
     eks_role_arn = "${module.eks_workers.worker_role}"
     assume_role_arn = "${var.assume_role_arn}"
 }
+
+
+module "k8s_traefik" {
+    source = "../../_sub/compute/k8s-traefik"
+    cluster_name = "${var.cluster_name}"
+    subnet_ids = "${module.eks_cluster.subnet_ids}"
+    vpc_id = "${module.eks_cluster.vpc_id}"
+    autoscaling_group_id = "${module.eks_workers.autoscaling_group_id}"
+    traefik_k8s_name = "${var.traefik_k8s_name}"
+    alb_certificate_arn = "${var.alb_certificate_arn}"
+}
+
+module "k8s_service_account" {
+    source = "../../_sub/compute/k8s-service-account"
+}
