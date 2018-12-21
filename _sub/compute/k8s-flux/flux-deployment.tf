@@ -104,4 +104,5 @@ resource "kubernetes_deployment" "flux" {
       }
     }
   }
+  provider = "kubernetes"
 }

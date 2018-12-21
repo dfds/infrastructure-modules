@@ -5,4 +5,5 @@ resource "kubernetes_secret" "flux" {
   }
 
   type = "Opaque"
+  provider = "kubernetes"
 }

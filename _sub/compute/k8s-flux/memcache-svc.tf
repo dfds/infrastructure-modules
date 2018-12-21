@@ -17,4 +17,5 @@ resource "kubernetes_service" "flux-memcached" {
       name = "memcached"
     }
   }
+  provider = "kubernetes"
 }

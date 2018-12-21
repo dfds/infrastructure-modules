@@ -6,6 +6,7 @@ resource "kubernetes_service_account" "flux" {
         name = "flux" 
     }
   }
+  provider = "kubernetes"
 }
 
 resource "kubernetes_cluster_role_binding" "flux" {
@@ -23,4 +24,5 @@ resource "kubernetes_cluster_role_binding" "flux" {
         name = "flux"
         namespace = "${var.namespace}"
     }
+    provider = "kubernetes"
 }

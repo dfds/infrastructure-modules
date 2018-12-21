@@ -37,4 +37,5 @@ resource "kubernetes_deployment" "flux-memcached" {
       }
     }
   }
+  provider = "kubernetes"
 }
