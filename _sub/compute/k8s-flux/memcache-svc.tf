@@ -17,5 +17,6 @@ resource "kubernetes_service" "flux-memcached" {
       name = "memcached"
     }
   }
+  depends_on = ["kubernetes_namespace.flux_namespace"]
   provider = "kubernetes"
 }

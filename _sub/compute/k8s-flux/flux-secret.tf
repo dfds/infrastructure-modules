@@ -5,5 +5,6 @@ resource "kubernetes_secret" "flux" {
   }
 
   type = "Opaque"
+  depends_on = ["kubernetes_namespace.flux_namespace"]
   provider = "kubernetes"
 }

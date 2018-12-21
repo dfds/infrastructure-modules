@@ -1,3 +1,9 @@
+resource "kubernetes_namespace" "flux_namespace" {
+  metadata {
+    name = "${var.namespace}"
+  }
+  provider = "kubernetes"
+}
 resource "kubernetes_deployment" "flux" {
   metadata {
     name = "flux"
@@ -104,5 +110,6 @@ resource "kubernetes_deployment" "flux" {
       }
     }
   }
+  depends_on = ["kubernetes_namespace.flux_namespace"]
   provider = "kubernetes"
 }

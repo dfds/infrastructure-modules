@@ -24,5 +24,6 @@ resource "kubernetes_cluster_role_binding" "flux" {
         name = "flux"
         namespace = "${var.namespace}"
     }
+    depends_on = ["kubernetes_namespace.flux_namespace"]
     provider = "kubernetes"
 }

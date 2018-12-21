@@ -16,4 +16,3 @@ variable "config_git_repo_url" {
 variable "config_git_repo_branch" {
   description = "Git branch to use."
 }
-
