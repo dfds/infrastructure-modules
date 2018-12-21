@@ -21,7 +21,9 @@ provider "aws" {
 
   # Assume the Organizational role in Workload account
   assume_role {
-    role_arn = "arn:aws:iam::${aws_organizations_account.dfds.id}:role/${var.aws_org_rolename}"
+    role_arn = "arn:aws:iam::${aws_organizations_account.dfds.id}:role/${var.org_role_name}"
+    # role_arn = "${module.org_account.org_role_arn}"
+    # role_arn = "arn:aws:iam::490910914506:role/OrgRole"
   }
 
   alias = "workload"
@@ -38,18 +40,12 @@ module "iam_policies" {
   iam_role_trusted_account_root_arn = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
 }
 
-resource "aws_organizations_account" "dfds" {
-  #Generate an organizational account based on the input from a tfvars file.
-  name                       = "${var.aws_account_name}"
-  email                      = "aws.${replace(var.aws_account_name, "dfds-", "")}@${var.email_domain}"
-  iam_user_access_to_billing = "ALLOW"
-  role_name                  = "${var.aws_org_rolename}"
-}
-
-resource "aws_iam_account_alias" "dfds" {
-  #This will change the current account's alias to the one defined in the tfvars file
-  account_alias = "${var.aws_account_name}"
-  provider      = "aws.workload"
+module "org_account" {
+  source        = "../../_sub/security/org-account"
+  name          = "${var.name}"
+  org_role_name = "${var.org_role_name}"
+  email         = "${var.email}"
+  aws_region    = "${var.aws_region}"
 }
 
 module "cloudtrail_s3_central" {
@@ -83,7 +79,7 @@ module "cloudtrail_local" {
 }
 
 resource "aws_iam_role" "prime" {
-  name               = "${var.prime_rolename}"
+  name               = "${var.prime_role_name}"
   description        = "Admin role to be assumed by Prime"
   assume_role_policy = "${module.iam_policies.trusted_account}"
   provider           = "aws.workload"
@@ -99,6 +95,6 @@ resource "aws_iam_role_policy" "prime-admin" {
 
 resource "null_resource" "apply_tax_settings" {
   provisioner "local-exec" {
-    command = "python3 /src/taxregistrations.py ${data.aws_iam_role.aws_org_role.arn} ${var.tax_settings_document}"
+    command = "python3 /src/taxregistrations.py ${module.org_account.org_role_arn} ${var.tax_settings_document}"
   }
 }

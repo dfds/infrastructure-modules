@@ -19,4 +19,3 @@ variable "enable_ssh" {
   type = "string"
   default = 0
 }
-

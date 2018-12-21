@@ -1,3 +1,3 @@
-# output "alb_fqdn" {
-#   value = "${module.k8s_traefik.alb_fqdn}"
-# }
+output "alb_fqdn" {
+  value = "${module.eks_alb.alb_fqdn}"
+}

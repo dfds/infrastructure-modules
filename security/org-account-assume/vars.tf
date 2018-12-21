@@ -9,21 +9,6 @@ variable "assume_role_arn" {
   description = "The ARN of the role to assume, for creating the account"
 }
 
-variable "aws_account_name" {
-  type = "string"
-}
-
-variable "aws_org_rolename" {
-  type = "string"
-}
-
-variable "prime_rolename" {
-  type = "string"
-}
-variable "email_domain" {
-  type = "string"
-}
-
 variable "access_key_master" {
   type = "string"
 }
@@ -32,10 +17,35 @@ variable "secret_key_master" {
   type = "string"
 }
 
+variable "name" {
+  type = "string"
+}
+
+variable "org_role_name" {
+  type = "string"
+}
+
+variable "prime_role_name" {
+  type = "string"
+}
+variable "email" {
+  type = "string"
+}
+
+variable "tax_settings_document" {
+  type = "string"
+  default = "./taxsettings.json"
+}
+
 variable "cloudtrail_trail_name" {
   type = "string"
 }
 
 variable "cloudtrail_s3_bucket" {
   type = "string"
+}
+
+variable "cloudtrail_local_s3_bucket" {
+  type = "string"
+  default = ""
 }

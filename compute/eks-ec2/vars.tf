@@ -34,10 +34,4 @@ variable "enable_ssh" {
   default = 0
 }
 
-variable "traefik_k8s_name" {}
-
 variable "alb_certificate_arn" {}
-
-variable "config_git_repo_url" {}
-
-variable "config_git_repo_branch" {}

@@ -10,7 +10,6 @@ provider "aws" {
 }
 
 terraform {
-  # The configuration for this backend will be filled in by Terragrunt
   backend          "s3"             {}
   required_version = "~> 0.11.7"
 }
@@ -44,24 +43,12 @@ module "eks_heptio" {
   assume_role_arn           = "${var.assume_role_arn}"
 }
 
-module "k8s_traefik" {
-  source               = "../../_sub/compute/k8s-traefik"
-  cluster_name         = "${var.cluster_name}"
+module "eks_alb" {
+  source               = "../../_sub/compute/eks-alb"
+  cluster_name         = "${module.eks_heptio.cluster_name}"
   subnet_ids           = "${module.eks_cluster.subnet_ids}"
   vpc_id               = "${module.eks_cluster.vpc_id}"
   autoscaling_group_id = "${module.eks_workers.autoscaling_group_id}"
-  traefik_k8s_name     = "${var.traefik_k8s_name}"
   alb_certificate_arn  = "${var.alb_certificate_arn}"
   nodes_sg_id          = "${module.eks_workers.nodes_sg_id}"
-}
-
-module "k8s_service_account" {
-  source = "../../_sub/compute/k8s-service-account"
-}
-
-module "k8s_flux" {
-  source              = "../../_sub/compute/k8s-flux"
-  config_git_repo_url = "${var.config_git_repo_url}"
-  config_git_repo_branch = "${var.config_git_repo_branch}"
-  namespace = "default"
 }

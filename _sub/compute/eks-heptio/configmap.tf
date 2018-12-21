@@ -31,10 +31,6 @@ users:
 KUBECONFIG
 }
 
-output "kubeconfig" {
-  value = "${local.kubeconfig}"
-}
-
 locals {
   config-map-aws-auth = <<CONFIGMAPAWSAUTH
 
@@ -52,8 +48,4 @@ data:
         - system:bootstrappers
         - system:nodes
 CONFIGMAPAWSAUTH
-}
-
-output "config-map-aws-auth" {
-  value = "${local.config-map-aws-auth}"
 }
