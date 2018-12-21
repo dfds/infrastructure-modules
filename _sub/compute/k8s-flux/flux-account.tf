@@ -1,7 +1,7 @@
 resource "kubernetes_service_account" "flux" {
   metadata {
     name = "flux"
-    # namespace = "kube-system"
+    namespace = "${var.namespace}"
     labels{
         name = "flux" 
     }

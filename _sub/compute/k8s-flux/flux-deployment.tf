@@ -110,6 +110,6 @@ resource "kubernetes_deployment" "flux" {
       }
     }
   }
-  depends_on = ["kubernetes_namespace.flux_namespace"]
+  depends_on = ["kubernetes_namespace.flux_namespace", "kubernetes_service_account.flux"]
   provider = "kubernetes"
 }
