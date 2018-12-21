@@ -33,3 +33,5 @@ variable "enable_ssh" {
   type = "string"
   default = 0
 }
+
+variable "alb_certificate_arn" {}
