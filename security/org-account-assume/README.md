@@ -20,19 +20,19 @@ This specific module requires the following variables to be present in the tfvar
 * aws_region
 * aws_account_name
 * aws_org_rolename
-* email_domain - Notice that the complete email will be generated based on the account name and this domain name
+* email
 
 A complete example of the tfvars file could look like this:
 
 ```hcl
 terragrunt = {
   terraform {
-  source = "git::git@github.com:dfds/infrastructure-modules.git//security/org-account"
+  source = "git::git@github.com:dfds/infrastructure-modules.git//security/org-account-assume"
   }
 }
 
 aws_region = eu-central-1
 aws_account_name = accountname
 aws_org_rolename = OrgRole
-email_domain = company.tld
+email = "aws.accountname@company.tld"
 ```

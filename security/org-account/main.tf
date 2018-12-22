@@ -8,8 +8,6 @@ provider "aws" {
   # Assume the Organizational role in Workload account
   assume_role {
     role_arn = "${module.org_account.org_role_arn}"
-
-    # role_arn = "arn:aws:iam::490910914506:role/OrgRole"
   }
 
   alias = "workload"
@@ -26,7 +24,15 @@ module "org_account" {
   name          = "${var.name}"
   org_role_name = "${var.org_role_name}"
   email         = "${var.email}"
-  aws_region    = "${var.aws_region}"
+}
+
+module "iam_account_alias" {
+  source        = "../../_sub/security/iam-account-alias"
+  account_alias = "${module.org_account.name}"
+
+  providers = {
+    aws = "aws.workload"
+  }
 }
 
 module "cloudtrail_s3_central" {

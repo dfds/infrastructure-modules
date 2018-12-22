@@ -4,9 +4,14 @@ variable "aws_region" {
   type = "string"
 }
 
-variable "assume_role_arn" {
+# variable "assume_role_arn" {
+#   type = "string"
+#   description = "The ARN of the role to assume, for creating the account"
+# }
+
+variable "master_account_id" {
   type = "string"
-  description = "The ARN of the role to assume, for creating the account"
+  description = "The AWS account ID of the Organizations Master account"
 }
 
 variable "access_key_master" {
@@ -35,14 +40,6 @@ variable "email" {
 variable "tax_settings_document" {
   type = "string"
   default = "./taxsettings.json"
-}
-
-variable "cloudtrail_trail_name" {
-  type = "string"
-}
-
-variable "cloudtrail_s3_bucket" {
-  type = "string"
 }
 
 variable "cloudtrail_local_s3_bucket" {
