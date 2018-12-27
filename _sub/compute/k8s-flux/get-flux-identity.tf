@@ -1,10 +1,10 @@
 resource "local_file" "get-flux-identity" {
 
-    content = ""
+    content = "${var.cluster_name} "
     filename = "${pathexpand("~/flux_public_ssh")}"
 
     provisioner "local-exec" {
-        command = "fluxctl --k8s-fwd-ns=${var.namespace} identity > ${pathexpand("~/flux_public_ssh")}"
+        command = "fluxctl --k8s-fwd-ns=${var.namespace} identity >> ${pathexpand("~/flux_public_ssh")}"
         environment {
             USER = "root"
             KUBECONFIG =  "${pathexpand("~/.kube/config_${var.cluster_name}")}"
