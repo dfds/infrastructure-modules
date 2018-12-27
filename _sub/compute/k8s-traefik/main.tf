@@ -36,10 +36,22 @@ resource "kubernetes_deployment" "traefik" {
       spec {
         service_account_name             = "${var.traefik_k8s_name}-ingress-controller"
         termination_grace_period_seconds = 60
+        volume {
+          name = "${kubernetes_service_account.traefik.default_secret_name}"
+          secret {
+            secret_name = "${kubernetes_service_account.traefik.default_secret_name}"
+          }
+        }
 
         container {
           image = "traefik"
           name  = "${var.traefik_k8s_name}"
+
+          volume_mount {
+            mount_path = "/var/run/secrets/kubernetes.io/serviceaccount"
+            name       = "${kubernetes_service_account.traefik.default_secret_name}"
+            read_only  = true
+          }
 
           port {
             name           = "http"
