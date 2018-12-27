@@ -23,4 +23,5 @@ module "k8s_flux" {
   cluster_name = "${var.cluster_name}"
   config_git_repo_url = "${var.config_git_repo_url}"
   config_git_repo_branch = "${var.config_git_repo_branch}"
+  config_git_repo_label = "${var.config_git_repo_label}"
 }

@@ -104,6 +104,7 @@ resource "kubernetes_deployment" "flux" {
             "--ssh-keygen-dir=/var/fluxd/keygen",
             "--git-url=${var.config_git_repo_url}",
             "--git-branch=${var.config_git_repo_branch}",
+            "--git-label=${var.config_git_repo_label}",
             "--listen-metrics=:3031"
           ]
         }
