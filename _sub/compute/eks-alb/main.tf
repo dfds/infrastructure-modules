@@ -12,7 +12,7 @@ resource "aws_autoscaling_attachment" "traefik" {
 }
 
 resource "aws_lb_target_group" "traefik" {
-  name_prefix = "${substr(var.cluster_name, 0, 6)}"
+  name_prefix = "${substr(var.cluster_name, 0, min(6, length(var.cluster_name)))}"
   port        = 30000
   protocol    = "HTTP"
   vpc_id      = "${var.vpc_id}"
