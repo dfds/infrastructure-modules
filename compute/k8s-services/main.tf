@@ -10,6 +10,7 @@ terraform {
 module "k8s_traefik" {
   source               = "../../_sub/compute/k8s-traefik"
   traefik_k8s_name     = "${var.traefik_k8s_name}"
+  cluster_name         = "${var.cluster_name}" 
 }
 
 module "k8s_service_account" {

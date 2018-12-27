@@ -90,3 +90,28 @@ resource "kubernetes_service" "traefik" {
   }
   provider = "kubernetes"
 }
+
+resource "null_resource" "create_traefik_role" {
+
+  provisioner "local-exec" {
+        command = "kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} apply -f ${pathexpand("./clusterrole_traefik.yaml")}"
+    }
+  
+}
+
+resource "kubernetes_cluster_role_binding" "example" {
+    metadata {
+        name = "${var.traefik_k8s_name}-ingress-controller"
+    }
+    role_ref {
+        api_group = "rbac.authorization.k8s.io"
+        kind = "ClusterRole"
+        name = "traefik-ingress-controller"
+    }
+    subject {
+        api_group = "" 
+        kind = "ServiceAccount"
+        name = "${var.traefik_k8s_name}-ingress-controller"
+        namespace = "kube-system"
+    }
+}
