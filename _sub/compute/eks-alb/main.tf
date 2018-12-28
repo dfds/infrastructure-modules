@@ -81,7 +81,7 @@ resource "aws_security_group" "traefik" {
     from_port   = 30001
     to_port     = 30001
     protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]
+    self        = true
   }
 
   egress {
