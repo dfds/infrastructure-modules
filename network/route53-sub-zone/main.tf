@@ -40,6 +40,6 @@ module "route53_delegate_zone" {
     dns_zone_ns = "${module.route53_create_zone.dns_zone_ns}"
 
   providers = {
-    aws = "aws"
+    aws = "aws.core"
   }
 }
