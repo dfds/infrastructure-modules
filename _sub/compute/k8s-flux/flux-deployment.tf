@@ -68,7 +68,7 @@ resource "kubernetes_deployment" "flux" {
 
         container {
           name              = "flux"
-          image             = "quay.io/weaveworks/flux:1.8.1"
+          image             = "quay.io/weaveworks/flux:1.8.2"
           image_pull_policy = "IfNotPresent"
 
           resources {
