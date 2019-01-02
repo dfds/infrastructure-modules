@@ -2,24 +2,21 @@
 #The values vill be propagated via a tfvars file
 variable "aws_region" {
   type = "string"
-  default = "eu-central-1"
 }
 
-variable "root_dns" {
+variable "workload_account_id" {
+  type = "string"
+  description = "The AWS account ID of the Workload account to create the DNS zone in"
+}
+
+variable "prime_role_name" {
   type = "string"
 }
 
-variable "aws_dns_zone" {
+variable "dns_zone_name" {
   type = "string"
 }
 
-variable "target_account_id" {
+variable "dns_parent_zone_name" {
   type = "string"
 }
-
-variable "role_to_assume" {
-  type = "string"
-  default = "OrgRole"
-  
-}
-
