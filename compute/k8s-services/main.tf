@@ -25,3 +25,8 @@ module "k8s_flux" {
   config_git_repo_branch = "${var.config_git_repo_branch}"
   config_git_repo_label = "${var.config_git_repo_label}"
 }
+
+module "k8s_helm" {
+  source       = "../../_sub/compute/k8s-helm"
+  cluster_name = "${var.cluster_name}"
+}
