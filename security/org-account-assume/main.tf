@@ -54,6 +54,16 @@ module "iam_account_alias" {
   }
 }
 
+module "iam_idp" {
+  source        = "../../_sub/security/iam-idp"
+  provider_name = "ADFS"
+  adfs_fqdn     = "${var.adfs_fqdn}"
+
+  providers = {
+    aws = "aws.workload"
+  }
+}
+
 module "cloudtrail_s3_local" {
   source           = "../../_sub/storage/s3-cloudtrail-bucket"
   create_s3_bucket = "${var.cloudtrail_local_s3_bucket != "" ? 1 : 0}"
@@ -95,6 +105,7 @@ resource "aws_iam_role_policy" "prime-admin" {
 #   }
 # }
 
+
 /*
 Does not work, because default provider already assumes a role, and cannot assume from there?
 How to solve/align this provider hell between org-account and org-account assume?
@@ -118,3 +129,4 @@ boto.exception.BotoServerError: BotoServerError: 403 Forbidden
   <RequestId>6a698849-057e-11e9-9d94-512276d00469</RequestId>
 </ErrorResponse>
 */
+

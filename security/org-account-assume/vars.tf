@@ -46,3 +46,8 @@ variable "cloudtrail_local_s3_bucket" {
   type = "string"
   default = ""
 }
+
+variable "adfs_fqdn" {
+    type = "string"
+    description = "The fully-qualified domain name of the ADFS server, e.g. adfs.company.tld"
+  }
