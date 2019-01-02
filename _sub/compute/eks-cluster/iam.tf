@@ -26,3 +26,25 @@ resource "aws_iam_role_policy_attachment" "service" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
   role       = "${aws_iam_role.eks.name}"
 }
+
+resource "aws_iam_role_policy" "deny_elb" {
+  name = "deny_elb"
+  role = "${aws_iam_role.eks.id}"
+
+  policy = <<POLICY
+{
+    "Version": "2012-10-17",
+    "Statement": [
+                {
+            "Effect": "Deny",
+            "Action": [
+                "elasticloadbalancing:CreateLoadBalancer",
+                "elasticloadbalancing:ModifyLoadBalancerAttributes",
+                "elasticloadbalancing:CreateLoadBalancerPolicy"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+POLICY
+}
