@@ -49,6 +49,21 @@ module "eks_alb" {
   subnet_ids           = "${module.eks_cluster.subnet_ids}"
   vpc_id               = "${module.eks_cluster.vpc_id}"
   autoscaling_group_id = "${module.eks_workers.autoscaling_group_id}"
-  alb_certificate_arn  = "${var.alb_certificate_arn}"
+  alb_certificate_arn  = "${module.eks_certificate.certificate_arn}"
   nodes_sg_id          = "${module.eks_workers.nodes_sg_id}"
+}
+
+module "eks_certificate" {
+  source = "../../network/amazon-certificate-manager-certificate"
+  certificate_domain = "*.${var.cluster_name}.${var.dns_zone_name}"
+  dns_zone_name = "${var.dns_zone_name}"
+}
+
+module "eks_domain" {
+  source = "../../network/route53-record"
+  zone_name = "${var.dns_zone_name}"
+  record_name = "*.${var.cluster_name}"
+  record_type = "CNAME"
+  record_ttl = "300"
+  record_value = "${module.eks_alb.alb_fqdn}"
 }
