@@ -25,6 +25,10 @@ variable "worker_instance_type" {
   type = "string"
 }
 
+variable "worker_instance_storage_size" {
+  default = 20
+}
+
 variable "public_key"  {
   type = "string"
 }

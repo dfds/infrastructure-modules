@@ -5,6 +5,8 @@ variable "worker_instance_max_count" {}
 
 variable "autoscale_security_group" {}
 
+variable "worker_instance_storage_size" {}
+
 variable "vpc_id" {}
 variable "subnet_ids" {
   type = "list"

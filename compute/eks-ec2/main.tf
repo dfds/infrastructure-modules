@@ -26,6 +26,7 @@ module "eks_workers" {
   worker_instance_max_count = "${var.worker_instance_max_count}"
   worker_instance_min_count = "${var.worker_instance_min_count}"
   worker_instance_type      = "${var.worker_instance_type}"
+  worker_instance_storage_size = "${var.worker_instance_storage_size}"
   vpc_id                    = "${module.eks_cluster.vpc_id}"
   subnet_ids                = "${module.eks_cluster.subnet_ids}"
   eks_endpoint              = "${module.eks_cluster.eks_endpoint}"

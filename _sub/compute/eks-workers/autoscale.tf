@@ -30,6 +30,13 @@ resource "aws_launch_configuration" "eks" {
   security_groups             = ["${aws_security_group.eks-node.id}"]
   user_data_base64            = "${base64encode(local.worker-node-userdata)}"
   key_name                    = "${aws_key_pair.eks-node.key_name}"
+
+  root_block_device = [
+    {
+      volume_size = "${var.worker_instance_storage_size}"
+      volume_type = "gp2"
+    },
+  ]
   
   lifecycle {
     create_before_destroy = true
