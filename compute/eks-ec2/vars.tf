@@ -40,3 +40,6 @@ variable "enable_ssh" {
 
 variable "dns_zone_name" {}
 
+variable "table_name" {}
+
+variable "workload_account_id" {}

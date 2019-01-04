@@ -68,3 +68,12 @@ module "eks_domain" {
   record_ttl = "300"
   record_value = "${module.eks_alb.alb_fqdn}"
 }
+
+module "eks_servicebroker" {
+  source = "../../_sub/compute/eks-servicebroker"
+  table_name = "${var.table_name}"
+  aws_region = "${var.aws_region}"
+  workload_account_id = "${var.workload_account_id}"
+  worker_role_id = "${module.eks_workers.worker_role_id}"
+}
+
