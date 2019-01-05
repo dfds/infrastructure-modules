@@ -27,7 +27,7 @@ module "k8s_flux" {
   config_git_private_key = "${base64decode(var.config_git_private_key_base64)}"
 }
 
-# module "k8s_helm" {
-#   source       = "../../_sub/compute/k8s-helm"
-#   cluster_name = "${var.cluster_name}"
-# }
+module "k8s_helm" {
+  source       = "../../_sub/compute/k8s-helm"
+  cluster_name = "${var.cluster_name}"
+}
