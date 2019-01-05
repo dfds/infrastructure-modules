@@ -24,6 +24,7 @@ module "k8s_flux" {
   config_git_repo_url = "${var.config_git_repo_url}"
   config_git_repo_branch = "${var.config_git_repo_branch}"
   config_git_repo_label = "${var.config_git_repo_label}"
+  config_git_private_key = "${base64decode(var.config_git_private_key_base64)}"
 }
 
 module "k8s_helm" {

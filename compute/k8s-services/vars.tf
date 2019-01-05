@@ -20,3 +20,8 @@ variable "config_git_repo_branch" {
 variable "config_git_repo_label" {
   description = "Git branch to use."
 }
+
+variable "config_git_private_key_base64" {
+  description = "Private key string encoded as base64 to access the git repo."
+}
+

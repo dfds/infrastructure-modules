@@ -13,7 +13,12 @@ variable "config_git_repo_label" {
   description = "Git branch to use."
 }
 
-variable "cluster_name" {
-  description = "Name of cluster"
-  
+variable "config_git_private_key" {
+  description = "Private key to access git repo."
 }
+
+variable "cluster_name" {
+  description = "Name of cluster"  
+}
+
+
