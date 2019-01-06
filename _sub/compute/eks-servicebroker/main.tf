@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "service-broker-table" {
-  name           = "${var.table_name}"
+  name           = "${var.table_name}-${var.cluster_name}"
   billing_mode   = "PROVISIONED"
   read_capacity  = 5
   write_capacity = 5

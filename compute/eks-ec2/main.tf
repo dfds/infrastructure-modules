@@ -75,5 +75,6 @@ module "eks_servicebroker" {
   aws_region = "${var.aws_region}"
   workload_account_id = "${var.workload_account_id}"
   worker_role_id = "${module.eks_workers.worker_role_id}"
+  cluster_name = "${var.cluster_name}"
 }
 

@@ -21,14 +21,16 @@ variable "config_git_repo_label" {
   description = "Git branch to use."
 }
 
+<<<<<<< HEAD
 variable "config_git_private_key_base64" {
   description = "Private key string encoded as base64 to access the git repo."
 }
 
-
+=======
 variable "table_name" {}
 variable "aws_region" {
   type = "string"
 }
 
 variable "workload_account_id" {}
+>>>>>>> Added servicebroker
