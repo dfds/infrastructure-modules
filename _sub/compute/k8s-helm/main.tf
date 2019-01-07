@@ -9,7 +9,7 @@ resource "kubernetes_service_account" "tiller" {
 
 resource "kubernetes_cluster_role_binding" "tiller-binding" {
     metadata {
-        name = "tiller-cluster-rule"
+        name = "tiller-cluster-role"
     }
     role_ref {
         api_group = "rbac.authorization.k8s.io"
@@ -17,9 +17,9 @@ resource "kubernetes_cluster_role_binding" "tiller-binding" {
         name = "cluster-admin"
     }
     subject {
-        api_group = "" 
+        api_group = ""
         kind = "ServiceAccount"
-        name = "tiller-cluster-rule"
+        name = "tiller"
         namespace = "kube-system"
     }
 }

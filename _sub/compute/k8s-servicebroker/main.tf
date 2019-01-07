@@ -4,19 +4,36 @@ provider "helm" {
     }
 }
 
-resource "helm_repository" "svc-cat" {
-    name = "svc-cat"
+resource "null_resource" "init_helm" {
+
+  provisioner "local-exec" {
+        command = "helm init --client-only"
+    }
+  
+}
+resource "helm_repository" "servicecatalog" {
+    name = "servicecatalog"
     url  = "https://svc-catalog-charts.storage.googleapis.com"
+
+    depends_on = 
+        [
+            "null_resource.init_helm"
+        ]
 }
 
 resource "helm_repository" "aws-sb" {
     name = "aws-sb"
     url  = "https://awsservicebroker.s3.amazonaws.com/charts"
+
+    depends_on = 
+        [
+            "null_resource.init_helm"
+        ]
 }
 
 resource "helm_release" "service-catalog" {
     name        = "catalog"
-    repository  = "${helm_repository.svc-cat.metadata.0.name}"
+    repository  = "${helm_repository.servicecatalog.metadata.0.name}"
     namespace   = "catalog"
     chart       = "catalog"
 }
@@ -37,7 +54,7 @@ resource "helm_release" "service-broker" {
     }
     set {
         name    = "brokerconfig.brokerid"
-        value   = "awsbroker-${var.cluster_name}"
+        value   = "${var.cluster_name}sb"
     }
     set_string {
         name    = "aws.targetaccountid"
