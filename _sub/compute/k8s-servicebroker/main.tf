@@ -5,10 +5,8 @@ provider "helm" {
 }
 
 resource "null_resource" "init_helm" {
-
-    # Nasty hack, but should force this to run every time
     triggers {
-        lastuseduuid = "${uuid()}"
+        build_number = "${timestamp()}"
     }
 
   provisioner "local-exec" {
