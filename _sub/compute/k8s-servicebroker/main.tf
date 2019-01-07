@@ -6,6 +6,11 @@ provider "helm" {
 
 resource "null_resource" "init_helm" {
 
+    # Nasty hack, but should force this to run every time
+    triggers {
+        lastuseduuid = "${uuid()}"
+    }
+
   provisioner "local-exec" {
         command = "helm init --client-only"
     }
