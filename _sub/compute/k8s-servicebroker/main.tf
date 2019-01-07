@@ -4,7 +4,7 @@ provider "helm" {
     }
 }
 
-resource "null_resource" "init_helm" {
+resource "null_resource" "init_helm_locally" {
     triggers {
         build_number = "${timestamp()}"
     }
@@ -20,7 +20,7 @@ resource "helm_repository" "servicecatalog" {
 
     depends_on = 
         [
-            "null_resource.init_helm"
+            "null_resource.init_helm_locally"
         ]
 }
 
@@ -30,7 +30,7 @@ resource "helm_repository" "aws-sb" {
 
     depends_on = 
         [
-            "null_resource.init_helm"
+            "null_resource.init_helm_locally"
         ]
 }
 
