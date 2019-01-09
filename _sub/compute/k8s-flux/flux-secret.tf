@@ -1,4 +1,4 @@
-resource "kubernetes_secret" "flux" {
+resource "kubernetes_secret" "flux-git-deploy" {
   metadata {
     name      = "flux-git-deploy"
     namespace = "${var.namespace}"

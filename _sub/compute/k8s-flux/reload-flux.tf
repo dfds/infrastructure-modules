@@ -1,6 +1,7 @@
 resource "null_resource" "restart-flux-pod" {
     triggers {
-        private_key_changed = "${sha512(kubernetes_secret.flux.data.identity)}"
+        git_private_key_changed = "${sha512(kubernetes_secret.flux-git-deploy.data.identity)}"
+        docker_secret_changed = "${sha512(kubernetes_secret.docker-registry-creds.data..dockerconfigjson)}"        
     }
   provisioner "local-exec" {
         command = "kubectl -n ${var.namespace} delete po --selector=name=flux"

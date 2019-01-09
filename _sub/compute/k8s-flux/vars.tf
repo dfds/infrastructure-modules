@@ -21,4 +21,19 @@ variable "cluster_name" {
   description = "Name of cluster"  
 }
 
+variable "docker_registry_endpoint" {
+  description = "The FQDN of docker registry server. A valid enpoint could be yourdomain.com"
+}
 
+variable "docker_registry_username" {
+  description = "Username for the user that enables Flux to read the docker registry information."
+}
+
+variable "docker_registry_password" {
+  description = "Password for the user that enables Flux to read the docker registry information."
+}
+
+
+variable "docker_registry_email" {
+  description = "Email address for the user that enables Flux to read the docker registry information."
+}

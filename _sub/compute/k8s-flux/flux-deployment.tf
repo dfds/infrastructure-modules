@@ -41,7 +41,7 @@ resource "kubernetes_deployment" "flux" {
           name = "git-key"
 
           secret {
-            secret_name  = "flux-git-deploy"
+            secret_name  = "${kubernetes_secret.flux-git-deploy.metadata.0.name}"
             default_mode = 0400
           }
         }
@@ -65,6 +65,15 @@ resource "kubernetes_deployment" "flux" {
             secret_name = "${kubernetes_service_account.flux.default_secret_name}"
           }
         }
+
+        volume {
+          name = "docker-creds"
+
+          secret {
+            secret_name  = "${kubernetes_secret.docker-registry-creds.metadata.0.name}" # "docker-image-registry"
+            default_mode = 0400
+          }
+        }        
 
         container {
           name              = "flux"
@@ -99,18 +108,25 @@ resource "kubernetes_deployment" "flux" {
             read_only  = true
           }
 
+          volume_mount {
+            name       = "docker-creds"
+            mount_path = "/docker-creds" #"/docker-creds/config.json" #"/etc/fluxd/ssh"
+            read_only  = true
+          }
+
           # args = "${var.flux_container_args}"
           args = [
             "--ssh-keygen-dir=/var/fluxd/keygen",
             "--git-url=${var.config_git_repo_url}",
             "--git-branch=${var.config_git_repo_branch}",
             "--git-label=${var.config_git_repo_label}",
-            "--listen-metrics=:3031"
+            "--listen-metrics=:3031",
+            "--docker-config=/docker-creds/.dockerconfigjson" # "--docker-config=/docker-creds/config.json"            
           ]
         }
       }
     }
   }
-  depends_on = ["kubernetes_namespace.flux_namespace", "kubernetes_service_account.flux", "kubernetes_secret.flux"]
+  depends_on = ["kubernetes_namespace.flux_namespace"]
   provider = "kubernetes"
 }

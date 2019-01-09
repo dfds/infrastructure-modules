@@ -25,6 +25,10 @@ module "k8s_flux" {
   config_git_repo_branch = "${var.config_git_repo_branch}"
   config_git_repo_label = "${var.config_git_repo_label}"
   config_git_private_key = "${base64decode(var.config_git_private_key_base64)}"
+  docker_registry_endpoint = "${var.docker_registry_endpoint}"
+  docker_registry_username = "${var.docker_registry_username}"
+  docker_registry_password = "${var.docker_registry_password}"
+  docker_registry_email = "${var.docker_registry_email}"
 }
 
 module "k8s_helm" {
