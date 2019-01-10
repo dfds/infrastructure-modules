@@ -2,17 +2,17 @@ package test
 
 import (
 	"fmt"
-	"testing"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
-	"os"
+	"testing"
 
-	"github.com/gruntwork-io/terratest/modules/files"
+	dfds "github.com/dfds/terratest/modules/aws"
 	"github.com/gruntwork-io/terratest/modules/aws"
+	"github.com/gruntwork-io/terratest/modules/files"
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
-	dfds "github.com/dfds/terratest/modules/aws"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,10 +21,10 @@ func TestTerraformAwsExample(t *testing.T) {
 	t.Parallel()
 
 	stateDirectory, err := ioutil.TempDir("", t.Name())
- 	if err != nil {
- 		t.Fatal(err)
-	 }
-	 remoteStateFile := filepath.Join(stateDirectory, "backend.tfstate")
+	if err != nil {
+		t.Fatal(err)
+	}
+	remoteStateFile := filepath.Join(stateDirectory, "backend.tfstate")
 
 	// Give this EC2 Instance a unique ID for a name tag so we can distinguish it from any other EC2 Instance running
 	// in your AWS account
@@ -32,14 +32,13 @@ func TestTerraformAwsExample(t *testing.T) {
 
 	// Pick a random AWS region to test in. This helps ensure your code works in all regions.
 	awsRegion := aws.GetRandomRegion(t, nil, nil)
-	terraformDir := "../network/route53-zone"
+	terraformDir := "../_sub/network/route53-sub-zone"
 	overridePath := filepath.Join(terraformDir, "override.tf")
 
 	err = files.CopyFile("fixtures/terraform-backend/main.tf", overridePath)
 	if err != nil {
 		t.Fatal(err)
 	}
-
 
 	terraformOptions := &terraform.Options{
 		// The path to where our Terraform code is located
@@ -51,7 +50,7 @@ func TestTerraformAwsExample(t *testing.T) {
 		// Variables to pass to our Terraform code using -var options
 		Vars: map[string]interface{}{
 			"dns_zone_name": expectedName,
-			"aws_region": awsRegion,
+			"aws_region":    awsRegion,
 		},
 		// Environment variables to set when running Terraform
 		EnvVars: map[string]string{
@@ -59,13 +58,11 @@ func TestTerraformAwsExample(t *testing.T) {
 		},
 	}
 
-
 	// Remove override as last thing
 	defer os.Remove(overridePath)
 
 	// At the end of the test, run `terraform destroy` to clean up any resources that were created
 	defer terraform.Destroy(t, terraformOptions)
-	
 
 	// This will run `terraform init` and `terraform apply` and fail the test if there are any errors
 	terraform.InitAndApply(t, terraformOptions)
