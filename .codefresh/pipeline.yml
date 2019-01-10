@@ -22,8 +22,8 @@ steps:
       - printenv
       - cd /go/src/project/test
       - go test
-  run_cloudtracker:
-    title: Run Cloudtracker
-    image: dfdsdk/docker-cloudtracker:2.1.0
-    commands:
-      - sh -c "./src/run-cloudtracker.sh dfds-qa terratest-qa-user dfds-qa-audit"
+  # run_cloudtracker:
+  #   title: Run Cloudtracker
+  #   image: dfdsdk/docker-cloudtracker:2.1.0
+  #   commands:
+  #     - sh -c "./src/run-cloudtracker.sh dfds-qa terratest-qa-user dfds-qa-audit"
