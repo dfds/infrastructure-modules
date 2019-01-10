@@ -16,7 +16,7 @@ import (
 )
 
 // An example of how to test the Terraform module in examples/terraform-aws-example using Terratest.
-func TestTerraformAwsExample(t *testing.T) {
+func TestAwsRoute53Zone(t *testing.T) {
 	t.Parallel()
 
 	stateDirectory, err := ioutil.TempDir("", t.Name())
@@ -31,13 +31,7 @@ func TestTerraformAwsExample(t *testing.T) {
 
 	// Pick a random AWS region to test in. This helps ensure your code works in all regions.
 	awsRegion := aws.GetRandomRegion(t, nil, nil)
-	terraformDir := "../_sub/network/route53-sub-zone"
-	// overridePath := filepath.Join(terraformDir, "override.tf")
-
-	// err = files.CopyFile("fixtures/terraform-backend/main.tf", overridePath)
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
+	terraformDir := "../_sub/examples/route53-sub-zone"
 
 	terraformOptions := &terraform.Options{
 		// The path to where our Terraform code is located
@@ -67,7 +61,7 @@ func TestTerraformAwsExample(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 
 	// Run `terraform output` to get the value of an output variable
-	zoneId := terraform.Output(t, terraformOptions, "dns_zone_id")
+	zoneID := terraform.Output(t, terraformOptions, "dns_zone_id")
 
 	zoneName := dfds.FindHostedZoneWithId(t, awsRegion, zoneId)
 	expectedName += "."

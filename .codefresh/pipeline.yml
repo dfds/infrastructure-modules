@@ -20,7 +20,7 @@ steps:
     commands:
       - pwd
       - printenv
-      - cd /go/src/project/_sub/test
+      - cd /go/src/project/test
       - go test
   # run_cloudtracker:
   #   title: Run Cloudtracker
