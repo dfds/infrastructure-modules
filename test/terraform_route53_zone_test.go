@@ -3,7 +3,6 @@ package test
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -51,8 +50,8 @@ func TestAwsRoute53Zone(t *testing.T) {
 		},
 	}
 
-	// Remove override as last thing
-	defer os.Remove(overridePath)
+	// // Remove override as last thing
+	// defer os.Remove(overridePath)
 
 	// At the end of the test, run `terraform destroy` to clean up any resources that were created
 	defer terraform.Destroy(t, terraformOptions)
@@ -63,7 +62,7 @@ func TestAwsRoute53Zone(t *testing.T) {
 	// Run `terraform output` to get the value of an output variable
 	zoneID := terraform.Output(t, terraformOptions, "dns_zone_id")
 
-	zoneName := dfds.FindHostedZoneWithId(t, awsRegion, zoneId)
+	zoneName := dfds.FindHostedZoneWithId(t, awsRegion, zoneID)
 	expectedName += "."
 	expectedName = strings.ToLower(expectedName)
 	assert.Equal(t, expectedName, zoneName)
