@@ -10,7 +10,6 @@ import (
 
 	dfds "github.com/dfds/terratest/modules/aws"
 	"github.com/gruntwork-io/terratest/modules/aws"
-	"github.com/gruntwork-io/terratest/modules/files"
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
@@ -33,12 +32,12 @@ func TestTerraformAwsExample(t *testing.T) {
 	// Pick a random AWS region to test in. This helps ensure your code works in all regions.
 	awsRegion := aws.GetRandomRegion(t, nil, nil)
 	terraformDir := "../_sub/network/route53-sub-zone"
-	overridePath := filepath.Join(terraformDir, "override.tf")
+	// overridePath := filepath.Join(terraformDir, "override.tf")
 
-	err = files.CopyFile("fixtures/terraform-backend/main.tf", overridePath)
-	if err != nil {
-		t.Fatal(err)
-	}
+	// err = files.CopyFile("fixtures/terraform-backend/main.tf", overridePath)
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
 
 	terraformOptions := &terraform.Options{
 		// The path to where our Terraform code is located
