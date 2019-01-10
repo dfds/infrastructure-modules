@@ -30,7 +30,7 @@ func TestAwsRoute53Zone(t *testing.T) {
 
 	// Pick a random AWS region to test in. This helps ensure your code works in all regions.
 	awsRegion := aws.GetRandomRegion(t, nil, nil)
-	terraformDir := "../_sub/examples/route53-sub-zone"
+	terraformDir := "../_sub/examples/route53-zone"
 
 	terraformOptions := &terraform.Options{
 		// The path to where our Terraform code is located
