@@ -43,3 +43,9 @@ variable "dns_zone_name" {}
 variable "table_name" {}
 
 variable "workload_account_id" {}
+
+
+#OIDC ALB_auth
+# variable "tenant_id" {}
+# variable "client_id" {}
+# variable "client_secret" {}
