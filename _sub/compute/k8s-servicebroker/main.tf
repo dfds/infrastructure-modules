@@ -10,6 +10,24 @@ resource "null_resource" "repo_init_helm" {
   }
 
   provisioner "local-exec" {
+    command = <<EOT
+        echo "Testing for Tiller"
+        count=1
+        while [ `kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} -n kube-system get pod -l name=tiller -o go-template --template "{{range .items}}{{.status.phase}}{{end}}"` != "Running" ]
+        do
+            if [$count -gt 5 ]; then
+                echo "Failed to get ready Tiller pod."
+                exit 1
+            fi
+            echo -n "."
+            count=$(( $count + 1 ))
+            sleep 5
+        done
+    EOT
+
+  }
+
+  provisioner "local-exec" {
     command = "helm init --client-only"
   }
 
@@ -23,23 +41,16 @@ resource "null_resource" "repo_init_helm" {
 }
 
 resource "helm_repository" "servicecatalog" {
-  triggers {
-    build_number = "${timestamp()}"
-  }
-
   name = "servicecatalog"
   url  = "https://svc-catalog-charts.storage.googleapis.com"
 
   depends_on = [
     "null_resource.repo_init_helm",
+    
   ]
 }
 
 resource "helm_repository" "aws-sb" {
-  triggers {
-    build_number = "${timestamp()}"
-  }
-
   name = "aws-sb"
   url  = "https://awsservicebroker.s3.amazonaws.com/charts"
 
