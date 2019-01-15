@@ -54,19 +54,19 @@ module "eks_alb" {
   nodes_sg_id          = "${module.eks_workers.nodes_sg_id}"
 }
 
-# Disabled until azure module is in place
-# module "eks_alb_auth" {
-#   source               = "../../_sub/compute/eks-alb-auth"
-#   cluster_name         = "${module.eks_heptio.cluster_name}"
-#   subnet_ids           = "${module.eks_cluster.subnet_ids}"
-#   vpc_id               = "${module.eks_cluster.vpc_id}"
-#   autoscaling_group_id = "${module.eks_workers.autoscaling_group_id}"
-#   alb_certificate_arn  = "${module.eks_certificate.certificate_arn}"
-#   nodes_sg_id          = "${module.eks_workers.nodes_sg_id}"
-#   tenant_id = "${var.tenant_id}"
-#   client_id = "${var.client_id}"
-#   client_secret = "${var.client_secret}"
-# }
+# Enabled temporarily - Agreed with Rune.
+module "eks_alb_auth" {
+  source               = "../../_sub/compute/eks-alb-auth"
+  cluster_name         = "${module.eks_heptio.cluster_name}"
+  subnet_ids           = "${module.eks_cluster.subnet_ids}"
+  vpc_id               = "${module.eks_cluster.vpc_id}"
+  autoscaling_group_id = "${module.eks_workers.autoscaling_group_id}"
+  alb_certificate_arn  = "${module.eks_certificate.certificate_arn}"
+  nodes_sg_id          = "${module.eks_workers.nodes_sg_id}"
+  tenant_id = "${var.tenant_id}"
+  client_id = "${var.client_id}"
+  client_secret = "${var.client_secret}"
+}
 
 module "eks_certificate" {
   source = "../../network/amazon-certificate-manager-certificate"
@@ -84,14 +84,14 @@ module "eks_domain" {
 }
 
 # Disabled until azure module is in place
-# module "eks_auth" {
-#   source = "../../network/route53-record"
-#   zone_name = "${var.dns_zone_name}"
-#   record_name = "internal.${var.cluster_name}"
-#   record_type = "CNAME"
-#   record_ttl = "300"
-#   record_value = "${module.eks_alb_auth.alb_fqdn}"
-# }
+module "eks_auth" {
+  source = "../../network/route53-record"
+  zone_name = "${var.dns_zone_name}"
+  record_name = "internal.${var.cluster_name}"
+  record_type = "CNAME"
+  record_ttl = "300"
+  record_value = "${module.eks_alb_auth.alb_fqdn}"
+}
 
 module "eks_servicebroker" {
   source = "../../_sub/compute/eks-servicebroker"
