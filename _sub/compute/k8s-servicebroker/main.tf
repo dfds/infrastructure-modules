@@ -12,19 +12,18 @@ resource "null_resource" "repo_init_helm" {
   provisioner "local-exec" {
     command = <<EOT
         echo "Testing for Tiller"
-        count=1
+        count=0
         while [ `kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} -n kube-system get pod -l name=tiller -o go-template --template "{{range .items}}{{.status.phase}}{{end}}"` != "Running" ]
         do
-            if [$count -gt 5 ]; then
+            if [ $count -gt 15 ]; then
                 echo "Failed to get ready Tiller pod."
                 exit 1
             fi
             echo -n "."
             count=$(( $count + 1 ))
-            sleep 5
+            sleep 3
         done
     EOT
-
   }
 
   provisioner "local-exec" {
@@ -68,6 +67,35 @@ resource "helm_release" "service-catalog" {
   depends_on = ["helm_repository.servicecatalog"]
 }
 
+resource "null_resource" "wait_for_servicecatalog" {
+   triggers {
+    build_number = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+    command = <<EOT
+        echo "Testing for ClusterServiceBroker definition"
+        count=0
+        exitStatus=99
+        echo 
+        while [ $exitStatus != 0 ]
+        do
+          kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} get clusterservicebroker
+          exitStatus=$?
+          echo -n ""
+          count=$(( $count + 1 ))
+          if [ $count -gt 5 ]; then
+            echo "Failed to find ClusterServiceBroker definition."
+            exit 1
+          fi
+          sleep 1
+        done  
+    EOT
+  }
+
+  depends_on = ["helm_release.service-catalog"]
+
+}
+
 resource "helm_release" "service-broker" {
   name       = "aws-servicebroker"
   repository = "${helm_repository.aws-sb.metadata.0.name}"
@@ -97,6 +125,6 @@ resource "helm_release" "service-broker" {
 
   depends_on = [
     "helm_repository.aws-sb",
-    "helm_release.service-catalog"
+    "null_resource.wait_for_servicecatalog"
   ]
 }

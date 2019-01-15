@@ -105,3 +105,5 @@ resource "aws_security_group_rule" "allow_traefik" {
 
   security_group_id = "${var.nodes_sg_id}"
 }
+
+go test *cognito*
