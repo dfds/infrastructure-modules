@@ -46,6 +46,6 @@ variable "workload_account_id" {}
 
 
 #OIDC ALB_auth
-# variable "tenant_id" {}
-# variable "client_id" {}
-# variable "client_secret" {}
+variable "tenant_id" {}
+variable "client_id" {}
+variable "client_secret" {}
