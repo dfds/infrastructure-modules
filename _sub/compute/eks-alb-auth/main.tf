@@ -40,11 +40,11 @@ resource "aws_lb_listener" "traefik_auth" {
     type = "authenticate-oidc"
 
     authenticate_oidc {
-      authorization_endpoint = "https://login.microsoftonline.com/${var.tenant_id}/oauth2/v2.0/authorize"
-      client_id              = "${var.client_id}"
-      client_secret          = "${var.client_secret}"
-      issuer                 = "https://login.microsoftonline.com/${var.tenant_id}/v2.0"
-      token_endpoint         = "https://login.microsoftonline.com/${var.tenant_id}/oauth2/v2.0/token"
+      authorization_endpoint = "https://login.microsoftonline.com/${var.azure_tenant_id}/oauth2/v2.0/authorize"
+      client_id              = "${var.azure_client_id}"
+      client_secret          = "${var.azure_client_secret}"
+      issuer                 = "https://login.microsoftonline.com/${var.azure_tenant_id}/v2.0"
+      token_endpoint         = "https://login.microsoftonline.com/${var.azure_tenant_id}/oauth2/v2.0/token"
       user_info_endpoint     = "https://graph.microsoft.com/oidc/userinfo"
     }
   }
