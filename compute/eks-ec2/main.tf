@@ -1,5 +1,5 @@
 provider "aws" {
-  # The AWS region in which all resources will be created
+
   region = "${var.aws_region}"
 
   version = "~> 1.40"
@@ -8,6 +8,7 @@ provider "aws" {
     role_arn = "${var.assume_role_arn}"
   }
 }
+
 
 terraform {
   backend          "s3"             {}
@@ -20,19 +21,19 @@ module "eks_cluster" {
 }
 
 module "eks_workers" {
-  source                    = "../../_sub/compute/eks-workers"
-  cluster_name              = "${var.cluster_name}"
-  autoscale_security_group  = "${module.eks_cluster.autoscale_security_group}"
-  worker_instance_max_count = "${var.worker_instance_max_count}"
-  worker_instance_min_count = "${var.worker_instance_min_count}"
-  worker_instance_type      = "${var.worker_instance_type}"
+  source                       = "../../_sub/compute/eks-workers"
+  cluster_name                 = "${var.cluster_name}"
+  autoscale_security_group     = "${module.eks_cluster.autoscale_security_group}"
+  worker_instance_max_count    = "${var.worker_instance_max_count}"
+  worker_instance_min_count    = "${var.worker_instance_min_count}"
+  worker_instance_type         = "${var.worker_instance_type}"
   worker_instance_storage_size = "${var.worker_instance_storage_size}"
-  vpc_id                    = "${module.eks_cluster.vpc_id}"
-  subnet_ids                = "${module.eks_cluster.subnet_ids}"
-  eks_endpoint              = "${module.eks_cluster.eks_endpoint}"
-  eks_certificate_authority = "${module.eks_cluster.eks_certificate_authority}"
-  public_key                = "${var.public_key}"
-  enable_ssh                = "${var.enable_ssh}"
+  vpc_id                       = "${module.eks_cluster.vpc_id}"
+  subnet_ids                   = "${module.eks_cluster.subnet_ids}"
+  eks_endpoint                 = "${module.eks_cluster.eks_endpoint}"
+  eks_certificate_authority    = "${module.eks_cluster.eks_certificate_authority}"
+  public_key                   = "${var.public_key}"
+  enable_ssh                   = "${var.enable_ssh}"
 }
 
 module "eks_heptio" {
@@ -54,7 +55,6 @@ module "eks_alb" {
   nodes_sg_id          = "${module.eks_workers.nodes_sg_id}"
 }
 
-# Enabled temporarily - Agreed with Rune.
 module "eks_alb_auth" {
   source               = "../../_sub/compute/eks-alb-auth"
   cluster_name         = "${module.eks_heptio.cluster_name}"
@@ -63,42 +63,40 @@ module "eks_alb_auth" {
   autoscaling_group_id = "${module.eks_workers.autoscaling_group_id}"
   alb_certificate_arn  = "${module.eks_certificate.certificate_arn}"
   nodes_sg_id          = "${module.eks_workers.nodes_sg_id}"
-  tenant_id = "${var.tenant_id}"
-  client_id = "${var.client_id}"
-  client_secret = "${var.client_secret}"
+  tenant_id            = "${var.tenant_id}"
+  client_id            = "${var.client_id}"
+  client_secret        = "${var.client_secret}"
 }
 
 module "eks_certificate" {
-  source = "../../network/amazon-certificate-manager-certificate"
+  source             = "../../_sub/network/acm-certificate"
   certificate_domain = "*.${var.cluster_name}.${var.dns_zone_name}"
-  dns_zone_name = "${var.dns_zone_name}"
+  dns_zone_name      = "${var.dns_zone_name}"
 }
 
 module "eks_domain" {
-  source = "../../network/route53-record"
-  zone_name = "${var.dns_zone_name}"
-  record_name = "*.${var.cluster_name}"
-  record_type = "CNAME"
-  record_ttl = "300"
+  source       = "../../network/route53-record"
+  zone_name    = "${var.dns_zone_name}"
+  record_name  = "*.${var.cluster_name}"
+  record_type  = "CNAME"
+  record_ttl   = "300"
   record_value = "${module.eks_alb.alb_fqdn}"
 }
 
-# Disabled until azure module is in place
 module "eks_auth" {
-  source = "../../network/route53-record"
-  zone_name = "${var.dns_zone_name}"
-  record_name = "internal.${var.cluster_name}"
-  record_type = "CNAME"
-  record_ttl = "300"
+  source       = "../../network/route53-record"
+  zone_name    = "${var.dns_zone_name}"
+  record_name  = "internal.${var.cluster_name}"
+  record_type  = "CNAME"
+  record_ttl   = "300"
   record_value = "${module.eks_alb_auth.alb_fqdn}"
 }
 
 module "eks_servicebroker" {
-  source = "../../_sub/compute/eks-servicebroker"
-  table_name = "${var.table_name}"
-  aws_region = "${var.aws_region}"
+  source              = "../../_sub/compute/eks-servicebroker"
+  table_name          = "${var.table_name}"
+  aws_region          = "${var.aws_region}"
   workload_account_id = "${var.workload_account_id}"
-  worker_role_id = "${module.eks_workers.worker_role_id}"
-  cluster_name = "${var.cluster_name}"
+  worker_role_id      = "${module.eks_workers.worker_role_id}"
+  cluster_name        = "${var.cluster_name}"
 }
-
