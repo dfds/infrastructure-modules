@@ -4,6 +4,6 @@ resource "azuread_application" "app" {
     reply_urls = "${var.reply_urls}"
 }
 
-resource "azurerm_azuread_service_principal" "app" {
+resource "azuread_service_principal" "app" {
     application_id = "${azuread_application.app.application_id}"
 }
