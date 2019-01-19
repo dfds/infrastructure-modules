@@ -1,6 +1,35 @@
+resource "aws_iam_role" "servicebroker_role" {
+  name        = "eks-${var.cluster_name}-servicebroker"
+  description = "Role the ServiceBroker process assumes"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::${var.workload_account_id}:role/${var.kiam_server_role_id}"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
 resource "aws_iam_role_policy" "allow_dynamodb_access" {
   name = "grant_dynamodb_access"
-  role = "${var.worker_role_id}"
+  role = "${aws_iam_role.servicebroker_role.id}"
 
   policy = <<POLICY
 {
@@ -44,7 +73,7 @@ POLICY
 
 resource "aws_iam_role_policy" "allow_resource_provisioning" {
   name = "allow_resource_provisioning"
-  role = "${var.worker_role_id}"
+  role = "${aws_iam_role.servicebroker_role.id}"
 
   policy = <<POLICY
 {

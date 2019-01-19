@@ -10,23 +10,6 @@ resource "null_resource" "repo_init_helm" {
   }
 
   provisioner "local-exec" {
-    command = <<EOT
-        echo "Testing for Tiller"
-        count=0
-        while [ `kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} -n kube-system get pod -l name=tiller -o go-template --template "{{range .items}}{{.status.phase}}{{end}}"` != "Running" ]
-        do
-            if [ $count -gt 15 ]; then
-                echo "Failed to get ready Tiller pod."
-                exit 1
-            fi
-            echo -n "."
-            count=$(( $count + 1 ))
-            sleep 3
-        done
-    EOT
-  }
-
-  provisioner "local-exec" {
     command = "helm init --client-only"
   }
 
@@ -37,6 +20,26 @@ resource "null_resource" "repo_init_helm" {
   provisioner "local-exec" {
     command = "helm repo add aws-sb https://awsservicebroker.s3.amazonaws.com/charts"
   }
+
+  provisioner "local-exec" {
+    command = <<EOT
+        echo "Testing for Tiller"
+        count=0
+        kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} -n kube-system get pod -l name=tiller -o yaml
+        while [ `kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} -n kube-system get pod -l name=tiller -o go-template --template='{{range .items}}{{range .status.conditions}}{{ if eq .type "Ready" }}{{ .status }} {{end}}{{end}}{{end}}'` != 'True' ]
+        do
+            if [ $count -gt 15 ]; then
+                echo "Failed to get ready Tiller pod."
+                exit 1
+            fi
+            echo "."
+            count=$(( $count + 1 ))
+            sleep 4
+        done
+        kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} -n kube-system get pod -l name=tiller -o yaml
+        sleep 60
+    EOT
+  }
 }
 
 resource "helm_repository" "servicecatalog" {
@@ -45,7 +48,6 @@ resource "helm_repository" "servicecatalog" {
 
   depends_on = [
     "null_resource.repo_init_helm",
-    
   ]
 }
 
@@ -68,9 +70,10 @@ resource "helm_release" "service-catalog" {
 }
 
 resource "null_resource" "wait_for_servicecatalog" {
-   triggers {
+  triggers {
     build_number = "${timestamp()}"
   }
+
   provisioner "local-exec" {
     command = <<EOT
         echo "Testing for ClusterServiceBroker definition"
@@ -83,17 +86,28 @@ resource "null_resource" "wait_for_servicecatalog" {
           exitStatus=$?
           echo -n ""
           count=$(( $count + 1 ))
-          if [ $count -gt 5 ]; then
+          if [ $count -gt 15 ]; then
             echo "Failed to find ClusterServiceBroker definition."
             exit 1
           fi
-          sleep 1
+          sleep 4
         done  
     EOT
   }
 
   depends_on = ["helm_release.service-catalog"]
+}
 
+resource "kubernetes_namespace" "sb_namespace" {
+  metadata {
+    name = "aws-sb"
+
+    annotations {
+      "iam.amazonaws.com/role" = "eks-${var.cluster_name}-servicebroker"
+    }
+  }
+
+  provider = "kubernetes"
 }
 
 resource "helm_release" "service-broker" {
@@ -125,6 +139,7 @@ resource "helm_release" "service-broker" {
 
   depends_on = [
     "helm_repository.aws-sb",
-    "null_resource.wait_for_servicecatalog"
+    "kubernetes_namespace.sb_namespace",
+    "null_resource.wait_for_servicecatalog",
   ]
 }

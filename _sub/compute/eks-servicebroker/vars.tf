@@ -6,6 +6,6 @@ variable "aws_region" {}
 
 variable "workload_account_id" {}
 
-variable "worker_role_id" {}
+variable "kiam_server_role_id" {}
 
 variable "cluster_name" {}
