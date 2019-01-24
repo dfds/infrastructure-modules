@@ -47,5 +47,4 @@ variable "workload_account_id" {}
 
 #OIDC ALB_auth
 variable "azure_tenant_id" {}
-# variable "azure_client_id" {}
-variable "azure_client_secret" {}
+variable "azure_subscription_id" {}

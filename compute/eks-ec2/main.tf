@@ -61,7 +61,9 @@ module "azure_app_registration" {
   name   = "Kubernetes EKS ${var.cluster_name}.${var.dns_zone_name}"
   homepage = "https://${var.cluster_name}.${var.dns_zone_name}"
   identifier_uris = ["https://${var.cluster_name}.${var.dns_zone_name}"]
-  reply_urls = ["https://${var.cluster_name}.${var.dns_zone_name}/oauth2/idpresponse"]
+  reply_urls = ["https://internal.${var.cluster_name}.${var.dns_zone_name}/oauth2/idpresponse"]
+  appreg_key_bucket = "raras-sandbox-state"
+  appreg_key_key = "eks/cluster/${var.cluster_name}_appreg_key.json"
 }
 
 module "eks_alb_auth" {
@@ -74,7 +76,7 @@ module "eks_alb_auth" {
   nodes_sg_id          = "${module.eks_workers.nodes_sg_id}"
   azure_tenant_id            = "${var.azure_tenant_id}"
   azure_client_id            = "${module.azure_app_registration.application_id}"
-  azure_client_secret        = "${var.azure_client_secret}"
+  azure_client_secret        = "${module.azure_app_registration.application_key}"
 }
 
 module "eks_certificate" {
