@@ -21,9 +21,9 @@ variable "reply_urls" {
 }
 
 variable "appreg_key_bucket" {
-    default = "The name of the S3 bucket in which to store a copy of the key file"
+    description = "The name of the S3 bucket in which to store a copy of the key file"
 }
 
 variable "appreg_key_key" {
-    default = "The path and file name of the key file in the S3 bucket"
+    description = "The path and file name of the key file in the S3 bucket"
 }
