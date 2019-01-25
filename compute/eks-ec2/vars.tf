@@ -44,6 +44,4 @@ variable "table_name" {}
 
 variable "workload_account_id" {}
 
-variable "azure_tenant_id" {}
-
 variable "terraform_state_s3_bucket" {}

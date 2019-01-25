@@ -74,7 +74,7 @@ module "eks_alb_auth" {
   autoscaling_group_id = "${module.eks_workers.autoscaling_group_id}"
   alb_certificate_arn  = "${module.eks_certificate.certificate_arn}"
   nodes_sg_id          = "${module.eks_workers.nodes_sg_id}"
-  azure_tenant_id            = "${var.azure_tenant_id}"
+  azure_tenant_id            = "${module.azure_app_registration.tenant_id}"
   azure_client_id            = "${module.azure_app_registration.application_id}"
   azure_client_secret        = "${module.azure_app_registration.application_key}"
 }
