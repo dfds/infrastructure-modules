@@ -1,5 +1,4 @@
 provider "aws" {
-
   region = "${var.aws_region}"
 
   version = "~> 1.40"
@@ -46,6 +45,12 @@ module "eks_heptio" {
   assume_role_arn           = "${var.assume_role_arn}"
 }
 
+module "apply_blaster_configmap" {
+  source       = "../../_sub/compute/k8s-blaster-configmap"
+  cluster_name = "${var.cluster_name}"
+  s3_bucket    = "${var.blaster_configmap_bucket}"
+}
+
 module "eks_alb" {
   source               = "../../_sub/compute/eks-alb"
   cluster_name         = "${module.eks_heptio.cluster_name}"
@@ -57,13 +62,13 @@ module "eks_alb" {
 }
 
 module "azure_app_registration" {
-  source = "../../_sub/security/azure-app-registration"
-  name   = "Kubernetes EKS ${var.cluster_name}.${var.dns_zone_name}"
-  homepage = "https://${var.cluster_name}.${var.dns_zone_name}"
-  identifier_uris = ["https://${var.cluster_name}.${var.dns_zone_name}"]
-  reply_urls = ["https://internal.${var.cluster_name}.${var.dns_zone_name}/oauth2/idpresponse"]
+  source            = "../../_sub/security/azure-app-registration"
+  name              = "Kubernetes EKS ${var.cluster_name}.${var.dns_zone_name}"
+  homepage          = "https://${var.cluster_name}.${var.dns_zone_name}"
+  identifier_uris   = ["https://${var.cluster_name}.${var.dns_zone_name}"]
+  reply_urls        = ["https://internal.${var.cluster_name}.${var.dns_zone_name}/oauth2/idpresponse"]
   appreg_key_bucket = "${var.terraform_state_s3_bucket}"
-  appreg_key_key = "keys/eks/${var.cluster_name}/appreg_key.json"
+  appreg_key_key    = "keys/eks/${var.cluster_name}/appreg_key.json"
 }
 
 module "eks_alb_auth" {
@@ -74,9 +79,9 @@ module "eks_alb_auth" {
   autoscaling_group_id = "${module.eks_workers.autoscaling_group_id}"
   alb_certificate_arn  = "${module.eks_certificate.certificate_arn}"
   nodes_sg_id          = "${module.eks_workers.nodes_sg_id}"
-  azure_tenant_id            = "${module.azure_app_registration.tenant_id}"
-  azure_client_id            = "${module.azure_app_registration.application_id}"
-  azure_client_secret        = "${module.azure_app_registration.application_key}"
+  azure_tenant_id      = "${module.azure_app_registration.tenant_id}"
+  azure_client_id      = "${module.azure_app_registration.application_id}"
+  azure_client_secret  = "${module.azure_app_registration.application_key}"
 }
 
 module "eks_certificate" {
