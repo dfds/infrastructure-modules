@@ -15,7 +15,7 @@ variable "alb_certificate_arn" {}
 
 variable "nodes_sg_id" {}
 
-variable "tenant_id" {}
-variable "client_id" {}
-variable "client_secret" {}
+variable "azure_tenant_id" {}
+variable "azure_client_id" {}
+variable "azure_client_secret" {}
 

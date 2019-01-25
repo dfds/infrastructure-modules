@@ -44,8 +44,4 @@ variable "table_name" {}
 
 variable "workload_account_id" {}
 
-
-#OIDC ALB_auth
-variable "tenant_id" {}
-variable "client_id" {}
-variable "client_secret" {}
+variable "terraform_state_s3_bucket" {}
