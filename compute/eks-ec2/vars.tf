@@ -45,3 +45,5 @@ variable "table_name" {}
 variable "workload_account_id" {}
 
 variable "terraform_state_s3_bucket" {}
+
+variable "blaster_configmap_bucket" {}
