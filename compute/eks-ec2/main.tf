@@ -47,7 +47,7 @@ module "eks_heptio" {
 
 module "apply_blaster_configmap" {
   source       = "../../_sub/compute/k8s-blaster-configmap"
-  cluster_name = "${var.cluster_name}"
+  cluster_name = "${module.eks_heptio.cluster_name}"
   s3_bucket    = "${var.blaster_configmap_bucket}"
 }
 
