@@ -103,7 +103,7 @@ resource "kubernetes_namespace" "sb_namespace" {
     name = "aws-sb"
 
     annotations {
-      "iam.amazonaws.com/role" = "eks-${var.cluster_name}-servicebroker"
+      "iam.amazonaws.com/permitted" = "eks-${var.cluster_name}-servicebroker"
     }
   }
 
@@ -130,6 +130,11 @@ resource "helm_release" "service-broker" {
   set {
     name  = "brokerconfig.brokerid"
     value = "${var.cluster_name}sb"
+  }
+
+  set {
+    name  = "annotations.iam.amazonaws.com/role"
+    value = "eks-${var.cluster_name}-servicebroker"
   }
 
   set_string {
