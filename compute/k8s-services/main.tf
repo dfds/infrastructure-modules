@@ -36,6 +36,12 @@ module "k8s_helm" {
   cluster_name = "${var.cluster_name}"
 }
 
+module "k8s_kiam" {
+  source       = "../../_sub/compute/k8s-kiam"
+  cluster_name = "${var.cluster_name}"
+  workload_account_id = "${var.workload_account_id}"
+}
+
 module "k8s_servicebroker" {
   source       = "../../_sub/compute/k8s-servicebroker"
   cluster_name = "${var.cluster_name}"
@@ -43,4 +49,3 @@ module "k8s_servicebroker" {
   aws_region = "${var.aws_region}"
   workload_account_id = "${var.workload_account_id}"
 }
-

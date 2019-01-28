@@ -108,11 +108,18 @@ module "eks_auth" {
   record_value = "${module.eks_alb_auth.alb_fqdn}"
 }
 
+module "eks_kiam" {
+  source              = "../../_sub/compute/eks-kiam"
+  cluster_name        = "${var.cluster_name}"
+  workload_account_id = "${var.workload_account_id}"
+  worker_role_id     = "${module.eks_workers.worker_role_id}"
+}
+
 module "eks_servicebroker" {
   source              = "../../_sub/compute/eks-servicebroker"
   table_name          = "${var.table_name}"
   aws_region          = "${var.aws_region}"
   workload_account_id = "${var.workload_account_id}"
-  worker_role_id      = "${module.eks_workers.worker_role_id}"
+  kiam_server_role_id = "${module.eks_kiam.kiam_server_role_id}"
   cluster_name        = "${var.cluster_name}"
 }
