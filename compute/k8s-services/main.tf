@@ -21,6 +21,7 @@ provider "kubernetes" {
 }
 
 provider "helm" {
+  version = "~> 0.8"
   kubernetes {
     config_path = "${pathexpand("~/.kube/config_${var.eks_cluster_name}")}"
   }
@@ -29,6 +30,7 @@ provider "helm" {
 # --------------------------------------------------
 # Get remote state of cluster deployment
 # --------------------------------------------------
+
 
 data "terraform_remote_state" "cluster" {
   backend = "s3"
@@ -44,7 +46,6 @@ data "terraform_remote_state" "cluster" {
 # --------------------------------------------------
 # KIAM
 # --------------------------------------------------
-
 module "kiam_deploy" {
   source                  = "../../_sub/compute/k8s-kiam"
   deploy                  = "${var.kiam_deploy}"
@@ -86,6 +87,49 @@ module "flux_deploy" {
   registry_username = "${var.flux_registry_username}"
   registry_password = "${var.flux_registry_password}"
   registry_email    = "${var.flux_registry_email}"
+}
+
+
+# --------------------------------------------------
+# ArgoCD
+# --------------------------------------------------
+
+module "argocd_deploy" {
+  source       = "../../_sub/compute/k8s-argocd"
+  deploy       = "${var.argocd_deploy}"
+  namespace = "argocd"
+
+  oidc_issuer = "https://sts.windows.net/${module.argocd_appreg.tenant_id}/" 
+  oidc_client_id = "${module.argocd_appreg.application_id}"
+  oidc_client_secret = "${module.argocd_appreg.application_key}"
+
+  external_url = "https://argo.${data.terraform_remote_state.cluster.eks_fqdn}"
+  host_url = "argo.${data.terraform_remote_state.cluster.eks_fqdn}"
+  grpc_host_url = "argogrpc.${data.terraform_remote_state.cluster.eks_fqdn}"  
+  argo_app_image = "jacobheidelbachdfds/argocd:v0.11.0-authfix"  
+  cluster_name = "${var.eks_cluster_name}"
+}
+
+module "argocd_appreg" {
+  source            = "../../_sub/security/azure-app-registration"
+  deploy            = "${var.argocd_deploy}"
+  name              = "ArgoCD ${data.terraform_remote_state.cluster.eks_fqdn}"
+  homepage          = "https://argo.${data.terraform_remote_state.cluster.eks_fqdn}"
+  identifier_uris   = ["https://argo.${data.terraform_remote_state.cluster.eks_fqdn}"]  
+  reply_urls        = ["https://argo.${data.terraform_remote_state.cluster.eks_fqdn}/auth/callback"]
+  appreg_key_bucket = "${var.terraform_state_s3_bucket}"
+  appreg_key_key    = "keys/eks/${var.eks_cluster_name}/appreg_argocd_key.json"
+  grant_aad_access  = true
+}
+
+module "argocd_grpc_dns" {
+  source       = "../../_sub/network/route53-record"
+  deploy       = "${var.argocd_deploy}"
+  zone_id      = "${data.terraform_remote_state.cluster.workload_dns_zone_id}"
+  record_name  =  ["argogrpc.${var.eks_cluster_name}"]
+  record_type  = "CNAME"
+  record_ttl   = "300"
+  record_value = "${data.terraform_remote_state.cluster.traefik_nlb_fqdn}"
 }
 
 
@@ -142,3 +186,4 @@ module "flux_deploy" {
 #   s3_acces_key       = "${var.harbor_s3_acces_key}"
 #   s3_secret_key      = "${var.harbor_s3_secret_key}"
 # }
+

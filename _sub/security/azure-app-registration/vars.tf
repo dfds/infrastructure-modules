@@ -31,3 +31,8 @@ variable "appreg_key_bucket" {
 variable "appreg_key_key" {
     description = "The path and file name of the key file in the S3 bucket"
 }
+
+variable "grant_aad_access" {
+  default = false
+  description = "Should an permission and grant be setup against Azure AD"
+}

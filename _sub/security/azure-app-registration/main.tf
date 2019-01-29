@@ -2,8 +2,8 @@ resource "azuread_application" "app" {
   count           = "${var.deploy}"
   name            = "${var.name}"
   homepage        = "${var.homepage}"
-  identifier_uris = "${var.identifier_uris}"
-  reply_urls      = "${var.reply_urls}"
+  identifier_uris = ["${var.identifier_uris}"]
+  reply_urls      = ["${var.reply_urls}"]
 }
 
 resource "azuread_service_principal" "app" {
@@ -22,6 +22,18 @@ resource "null_resource" "new_appreg_key" {
   provisioner "local-exec" {
     command = "${path.module}/create_key.sh ${azuread_application.app.application_id} s3://${var.appreg_key_bucket}/${var.appreg_key_key}"
   }
+}
+
+resource "null_resource" "grant_aad_access" {
+    count = "${var.deploy && var.grant_aad_access >= 1 ? 1 : 0}"
+    # Terraform does not seem to re-run script, unless a trigger is defined
+    triggers  {
+        timestamp = "${timestamp()}"
+    }
+
+    provisioner "local-exec" {
+         command = "${path.module}/grant_aad_access.sh ${azuread_application.app.application_id}"
+    }
 }
 
 data "external" "appreg_key" {
