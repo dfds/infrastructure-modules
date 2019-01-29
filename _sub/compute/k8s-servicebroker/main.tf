@@ -98,18 +98,6 @@ resource "null_resource" "wait_for_servicecatalog" {
   depends_on = ["helm_release.service-catalog"]
 }
 
-resource "kubernetes_namespace" "sb_namespace" {
-  metadata {
-    name = "aws-sb"
-
-    annotations {
-      "iam.amazonaws.com/permitted" = "eks-${var.cluster_name}-servicebroker"
-    }
-  }
-
-  provider = "kubernetes"
-}
-
 resource "helm_release" "service-broker" {
   name       = "aws-servicebroker"
   repository = "${helm_repository.aws-sb.metadata.0.name}"
@@ -133,7 +121,7 @@ resource "helm_release" "service-broker" {
   }
 
   set {
-    name  = "annotations.iam.amazonaws.com/role"
+    name = "annotations.iam.amazonaws.com/role"
     value = "eks-${var.cluster_name}-servicebroker"
   }
 
@@ -144,7 +132,18 @@ resource "helm_release" "service-broker" {
 
   depends_on = [
     "helm_repository.aws-sb",
-    "kubernetes_namespace.sb_namespace",
     "null_resource.wait_for_servicecatalog",
   ]
+}
+
+resource "null_resource" "annotate_namespace" {
+  triggers {
+    build_number = "${timestamp()}"
+  }
+
+  provisioner "local-exec" {
+    command = "kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} annotate ns aws-sb iam.amazonaws.com/permitted='eks-${var.cluster_name}-servicebroker'"
+  }
+
+  depends_on = ["helm_release.service-broker"]
 }
