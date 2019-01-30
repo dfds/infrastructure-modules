@@ -49,3 +49,10 @@ data:
         - system:nodes
 CONFIGMAPAWSAUTH
 }
+
+resource "aws_ssm_parameter" "kubeconfig" {
+  name        = "/eks/${var.cluster_name}/admin"
+  description = "The initial config file for eks ${var.cluster_name}"
+  type        = "SecureString"
+  value       = "${local.kubeconfig}"
+}
