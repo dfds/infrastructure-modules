@@ -145,7 +145,7 @@ resource "null_resource" "annotate_namespace" {
   }
 
   provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} annotate ns aws-sb iam.amazonaws.com/permitted='eks-${var.cluster_name}-servicebroker'"
+    command = "kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} annotate --overwrite ns aws-sb iam.amazonaws.com/permitted='eks-${var.cluster_name}-servicebroker'"
   }
 
   depends_on = ["helm_release.service-broker"]
