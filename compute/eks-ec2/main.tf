@@ -46,9 +46,10 @@ module "eks_heptio" {
 }
 
 module "apply_blaster_configmap" {
-  source       = "../../_sub/compute/k8s-blaster-configmap"
-  cluster_name = "${module.eks_heptio.cluster_name}"
-  s3_bucket    = "${var.blaster_configmap_bucket}"
+  source          = "../../_sub/compute/k8s-blaster-configmap"
+  cluster_name    = "${module.eks_heptio.cluster_name}"
+  s3_bucket       = "${var.blaster_configmap_bucket}"
+  assume_role_arn = "${var.assume_role_arn}"
 }
 
 module "eks_alb" {
@@ -112,7 +113,7 @@ module "eks_kiam" {
   source              = "../../_sub/compute/eks-kiam"
   cluster_name        = "${var.cluster_name}"
   workload_account_id = "${var.workload_account_id}"
-  worker_role_id     = "${module.eks_workers.worker_role_id}"
+  worker_role_id      = "${module.eks_workers.worker_role_id}"
 }
 
 module "eks_servicebroker" {
