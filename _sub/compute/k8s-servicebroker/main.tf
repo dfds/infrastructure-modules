@@ -86,11 +86,11 @@ resource "null_resource" "wait_for_servicecatalog" {
           exitStatus=$?
           echo -n ""
           count=$(( $count + 1 ))
-          if [ $count -gt 15 ]; then
+          if [ $count -gt 18 ]; then
             echo "Failed to find ClusterServiceBroker definition."
             exit 1
           fi
-          sleep 4
+          sleep 10
         done  
     EOT
   }
