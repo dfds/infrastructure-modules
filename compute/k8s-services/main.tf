@@ -1,3 +1,14 @@
+provider "aws" {
+
+  region = "${var.aws_region}"
+
+  version = "~> 1.40"
+
+  assume_role {
+    role_arn = "${var.assume_role_arn}"
+  }
+}
+
 provider "kubernetes" {
   config_path = "${pathexpand("~/.kube/config_${var.cluster_name}")}"
 }
@@ -15,6 +26,7 @@ module "k8s_traefik" {
 
 module "k8s_service_account" {
   source       = "../../_sub/compute/k8s-service-account"
+  cluster_name         = "${var.cluster_name}" 
 }
 
 module "k8s_flux" {
