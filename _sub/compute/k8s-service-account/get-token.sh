@@ -4,17 +4,17 @@ set -e
 eval "$(jq -r '@sh "CLUSTER_NAME=\(.cluster_name) DEFAULT_SECRET_NAME=\(.default_secret_name)"')"
 
 # get token for sa
-token=$(kubectl -n kube-system get secret $DEFAULT_SECRET_NAME -o json | jq '.data.token' | tr -d '"' | base64 --decode)
+token=$(kubectl --kubeconfig ~/.kube/config_$CLUSTER_NAME -n kube-system get secret $DEFAULT_SECRET_NAME -o json | jq '.data.token' | tr -d '"' | base64 --decode)
 
 # get current context
-context=`kubectl config current-context`
+context=`kubectl --kubeconfig ~/.kube/config_$CLUSTER_NAME config current-context`
 
 # get cluster name of context
-name=`kubectl config get-contexts $context | awk '{print $3}' | tail -n 1`
+name=`kubectl --kubeconfig ~/.kube/config_$CLUSTER_NAME config get-contexts $context | awk '{print $3}' | tail -n 1`
 
 # get endpoint of current context 
-endpoint=`kubectl config view -o jsonpath="{.clusters[?(@.name == \"$name\")].cluster.server}"`
-certificate=`kubectl config view --raw -o jsonpath="{.clusters[?(@.name == \"$name\")].cluster.certificate-authority-data}"`
+endpoint=`kubectl --kubeconfig ~/.kube/config_$CLUSTER_NAME config view -o jsonpath="{.clusters[?(@.name == \"$name\")].cluster.server}"`
+certificate=`kubectl --kubeconfig ~/.kube/config_$CLUSTER_NAME config view --raw -o jsonpath="{.clusters[?(@.name == \"$name\")].cluster.certificate-authority-data}"`
 
 # generate kubeconfig
 kubeconfig=$(cat <<KUBECONFIG
