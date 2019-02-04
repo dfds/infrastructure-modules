@@ -9,7 +9,7 @@ KEY_PATH_S3=$2
 
 
 # Login to Azure
-az login --service-principal --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID > /dev/null
+# az login --service-principal --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID > /dev/null
 
 
 # Determine if app key already exist in App Reg
