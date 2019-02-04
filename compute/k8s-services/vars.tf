@@ -48,3 +48,7 @@ variable "docker_registry_password" {
 variable "docker_registry_email" {
   description = "Email address for the user that enables Flux to read the docker registry information."
 }
+
+variable "assume_role_arn" {
+  type = "string"
+}
