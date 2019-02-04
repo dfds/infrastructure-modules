@@ -28,7 +28,7 @@ resource "null_resource" "repo_init_helm" {
         kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} -n kube-system get pod -l name=tiller -o yaml
         while [ `kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} -n kube-system get pod -l name=tiller -o go-template --template='{{range .items}}{{range .status.conditions}}{{ if eq .type "Ready" }}{{ .status }} {{end}}{{end}}{{end}}'` != 'True' ]
         do
-            if [ $count -gt 12 ]; then
+            if [ $count -gt 18 ]; then
                 echo "Failed to get ready Tiller pod."
                 exit 1
             fi
