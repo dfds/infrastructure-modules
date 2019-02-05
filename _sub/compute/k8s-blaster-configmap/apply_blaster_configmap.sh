@@ -21,20 +21,20 @@ function SplitAssumedCreds()
     AWS_ASSUMED_ACCESS_KEY_ID=${AWS_ASSUMED_CREDS[0]}
     AWS_ASSUMED_SECRET_ACCESS_KEY=${AWS_ASSUMED_CREDS[1]}
     AWS_ASSUMED_SESSION_TOKEN=${AWS_ASSUMED_CREDS[2]}
-    echo Assumed access key ID:    "$AWS_ASSUMED_ACCESS_KEY_ID"
-    echo Assumed secretaccess key: "${AWS_ASSUMED_SECRET_ACCESS_KEY:0:5}***${AWS_ASSUMED_SECRET_ACCESS_KEY: -5}"
-    echo Assumed session token:    "$AWS_ASSUMED_SESSION_TOKEN"
+    echo "Assumed access key ID:     $AWS_ASSUMED_ACCESS_KEY_ID"
+    echo "Assumed secret access key: ${AWS_ASSUMED_SECRET_ACCESS_KEY:0:5}***${AWS_ASSUMED_SECRET_ACCESS_KEY: -5}"
+    echo "Assumed session token:     $AWS_ASSUMED_SESSION_TOKEN"
 }
 
 
 # Generate AWS CLI config files, if 
 if [ -n "$3" ]; then
     AWS_ASSUME_ARN=$3
-    AWS_ASSUMED_CREDS=$(aws sts assume-role \
+    AWS_ASSUMED_CREDS=($(aws sts assume-role \
         --role-arn "$AWS_ASSUME_ARN" \
         --role-session-name "ApplyBlasterConfigmap" \
         --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' \
-        --output text)
+        --output text))
     SplitAssumedCreds
 fi
 
