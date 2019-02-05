@@ -1,12 +1,13 @@
 # Exit if any of the intermediate steps fail
 set -e
 
+# getting variables from query input as json and sets them as local variables with capitalized letters for use in this script
 eval "$(jq -r '@sh "CLUSTER_NAME=\(.cluster_name) DEFAULT_SECRET_NAME=\(.default_secret_name)"')"
 
-# get token for sa
+# get token from service account
 token=$(kubectl --kubeconfig ~/.kube/config_$CLUSTER_NAME -n kube-system get secret $DEFAULT_SECRET_NAME -o json | jq '.data.token' | tr -d '"' | base64 --decode)
 
-# get current context
+# get current context to pull data directly from the local kube config file
 context=`kubectl --kubeconfig ~/.kube/config_$CLUSTER_NAME config current-context`
 
 # get cluster name of context
@@ -14,9 +15,12 @@ name=`kubectl --kubeconfig ~/.kube/config_$CLUSTER_NAME config get-contexts $con
 
 # get endpoint of current context 
 endpoint=`kubectl --kubeconfig ~/.kube/config_$CLUSTER_NAME config view -o jsonpath="{.clusters[?(@.name == \"$name\")].cluster.server}"`
+
+# get certificate-authority for the cluster from the local config file
+# notice the --raw part to avoid the certificate getting redacted.
 certificate=`kubectl --kubeconfig ~/.kube/config_$CLUSTER_NAME config view --raw -o jsonpath="{.clusters[?(@.name == \"$name\")].cluster.certificate-authority-data}"`
 
-# generate kubeconfig
+# generate kubeconfig with pulled variables
 kubeconfig=$(cat <<KUBECONFIG
 apiVersion: v1
 clusters:
