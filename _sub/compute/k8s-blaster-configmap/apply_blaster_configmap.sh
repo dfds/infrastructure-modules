@@ -23,6 +23,11 @@ if [ -n "$3" ]; then
         --role-session-name "ApplyBlasterConfigmap" \
         --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' \
         --output text)
+fi
+
+
+# Extract credentials if assumed
+if [ -n "$AWS_ASSUMED_CREDS" ]; then
     AWS_ASSUMED_ACCESS_KEY_ID=${AWS_ASSUMED_CREDS[0]}
     AWS_ASSUMED_SECRET_ACCESS_KEY=${AWS_ASSUMED_CREDS[1]}
     AWS_ASSUMED_SESSION_TOKEN=${AWS_ASSUMED_CREDS[2]}
