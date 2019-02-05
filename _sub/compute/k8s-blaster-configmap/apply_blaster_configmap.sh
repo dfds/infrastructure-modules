@@ -26,7 +26,10 @@ if [ -n "$3" ]; then
     ) )
     AWS_ASSUMED_ACCESS_KEY_ID=${AWS_ASSUMED_CREDS[0]}
     AWS_ASSUMED_SECRET_ACCESS_KEY=${AWS_ASSUMED_CREDS[1]}
-    AWS_ASSUMED_SESSION_TOKEN=${AWS_ASSUMED_CREDS[2]}    
+    AWS_ASSUMED_SESSION_TOKEN=${AWS_ASSUMED_CREDS[2]}
+    echo Assumed access key ID:    "$AWS_ASSUMED_ACCESS_KEY_ID"
+    echo Assumed secretaccess key: "${AWS_ASSUMED_SECRET_ACCESS_KEY:0:5}***${AWS_ASSUMED_SECRET_ACCESS_KEY: -5}"
+    echo Assumed session token:    "$AWS_ASSUMED_SESSION_TOKEN"
 fi
 
 
