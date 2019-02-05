@@ -59,9 +59,9 @@ if [ $APPLY_CONFIGMAP -eq 1 ]; then
         AWS_ACCESS_KEY_ID=${AWS_ASSUMED_ACCESS_KEY_ID} \
         AWS_SECRET_ACCESS_KEY=${AWS_ASSUMED_SECRET_ACCESS_KEY} \
         AWS_SESSION_TOKEN=${AWS_ASSUMED_SESSION_TOKEN} \
-        aws s3 cp $CONFIGMAP_PATH_S3 - | kubectl apply -f -
+        aws s3 cp $CONFIGMAP_PATH_S3 - | kubectl --kubeconfig $KUBE_CONFIG_PATH apply -f -
     else
-        aws s3 cp $CONFIGMAP_PATH_S3 - | kubectl apply -f -
+        aws s3 cp $CONFIGMAP_PATH_S3 - | kubectl --kubeconfig $KUBE_CONFIG_PATH apply -f -
     fi
 
 else
