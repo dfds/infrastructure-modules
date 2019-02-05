@@ -2,6 +2,13 @@
 set -e
 
 
+# Ensure at least two arguments were passed
+if [ -z "$2" ]; then
+    echo "Need at least two arguments"
+    exit
+fi
+
+
 # Define varibales
 APPLY_CONFIGMAP=0
 KUBE_CONFIG_PATH=$1
@@ -23,7 +30,7 @@ fi
 
 
 # Determine if key file exists in S3
-if [ -n "$AWS_ASSUME_ARN" ]; then
+if [ -n "$AWS_ASSUMED_CREDS" ]; then
     AWS_ACCESS_KEY_ID=${AWS_ASSUMED_ACCESS_KEY_ID} \
     AWS_SECRET_ACCESS_KEY=${AWS_ASSUMED_SECRET_ACCESS_KEY} \
     AWS_SESSION_TOKEN=${AWS_ASSUMED_SESSION_TOKEN} \
@@ -38,13 +45,13 @@ if [ $APPLY_CONFIGMAP -eq 1 ]; then
 
     echo "Applying configmap from $CONFIGMAP_PATH_S3"
 
-    if [ -n "$AWS_ASSUME_ARN" ]; then
+    if [ -n "$AWS_ASSUMED_CREDS" ]; then
         AWS_ACCESS_KEY_ID=${AWS_ASSUMED_ACCESS_KEY_ID} \
         AWS_SECRET_ACCESS_KEY=${AWS_ASSUMED_SECRET_ACCESS_KEY} \
         AWS_SESSION_TOKEN=${AWS_ASSUMED_SESSION_TOKEN} \
-        aws s3 cp $CONFIGMAP_PATH_S3 - | kubectl -f -
+        aws s3 cp $CONFIGMAP_PATH_S3 - | kubectl apply -f -
     else
-        aws s3 cp $CONFIGMAP_PATH_S3 - | kubectl -f -
+        aws s3 cp $CONFIGMAP_PATH_S3 - | kubectl apply -f -
     fi
 
 else
