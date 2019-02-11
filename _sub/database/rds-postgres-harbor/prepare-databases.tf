@@ -1,6 +1,6 @@
 resource "kubernetes_namespace" "harbor-namespace" {
   metadata {
-    name = "${var.k8s_registry_namespace}"
+    name = "${var.harbor_k8s_namespace}"
   }
 
   provider = "kubernetes"

@@ -48,6 +48,6 @@ variable "subnet_ids" {
   type = "list"
 }
 
-variable "k8s_registry_namespace" {
+variable "harbor_k8s_namespace" {
   type = "string"
 }

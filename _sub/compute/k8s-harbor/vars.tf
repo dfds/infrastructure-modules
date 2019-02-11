@@ -27,25 +27,25 @@ variable "s3_region" {
 variable "s3_region_endpoint" {
   
 }
-variable "harbor_db_server_host" {
+variable "db_server_host" {
   
 }
-variable "harbor_db_server_username" {
-  
-}
-
-variable "harbor_db_server_password" {
+variable "db_server_username" {
   
 }
 
-variable "harbor_db_server_port" {
+variable "db_server_password" {
   
 }
 
-variable "cr_s3bucket_user_aws_access_key_id" {
+variable "db_server_port" {
+  
+}
+
+variable "s3_acces_key" {
    type = "string"
 }
 
-variable "cr_s3bucket_user_aws_secret_access_key" {
+variable "s3_secret_key" {
    type = "string"
 }

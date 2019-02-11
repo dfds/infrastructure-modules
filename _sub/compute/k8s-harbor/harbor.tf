@@ -48,12 +48,12 @@ resource "helm_release" "harbor" {
 
   set {
     name  = "persistence.imageChartStorage.s3.accesskey"
-    value = "${var.cr_s3bucket_user_aws_access_key_id}"
+    value = "${var.harbor_s3_acces_key}"
   }
 
   set {
     name  = "persistence.imageChartStorage.s3.secretkey"
-    value = "${var.cr_s3bucket_user_aws_secret_access_key}"
+    value = "${var.harbor_s3_secret_key}"
   }
 
   set {
@@ -203,22 +203,22 @@ resource "helm_release" "harbor" {
 
   set {
     name  = "database.external.host"
-    value = "${var.harbor_db_server_host}"
+    value = "${var.db_server_host}"
   }
 
   set {
     name  = "database.external.port"
-    value = "${var.harbor_db_server_port}"
+    value = "${var.db_server_port}"
   }
 
   set {
     name  = "database.external.username"
-    value = "${var.harbor_db_server_username}"
+    value = "${var.db_server_username}"
   }
 
   set {
     name  = "database.external.password"
-    value = "${var.harbor_db_server_password}"
+    value = "${var.db_server_password}"
   }
 
   set {

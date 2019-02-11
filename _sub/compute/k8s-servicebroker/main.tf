@@ -1,9 +1,3 @@
-provider "helm" {
-  kubernetes {
-    config_path = "${pathexpand("~/.kube/config_${var.cluster_name}")}"
-  }
-}
-
 resource "null_resource" "repo_init_helm" {
   triggers {
     build_number = "${timestamp()}"

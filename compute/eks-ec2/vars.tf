@@ -48,7 +48,7 @@ variable "terraform_state_s3_bucket" {}
 
 variable "blaster_configmap_bucket" {}
 
-variable "container_registry_bucket_name" {
+variable "harbor_s3_bucket" {
   type = "string"
 }
 
@@ -78,14 +78,14 @@ variable "harbor_db_server_password" {
 
 variable "harbor_db_server_port" {}
 
-variable "k8s_registry_namespace" {
+variable "harbor_k8s_namespace" {
   type = "string"
 }
 
-variable "cr_s3bucket_user_aws_access_key_id" {
+variable "harbor_s3_acces_key" {
    type = "string"
 }
 
-variable "cr_s3bucket_user_aws_secret_access_key" {
+variable "harbor_s3_secret_key" {
    type = "string"
 }
