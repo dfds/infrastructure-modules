@@ -23,7 +23,7 @@ resource "null_resource" "repo_init_helm" {
         while [ `kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} -n kube-system get pod -l name=tiller -o go-template --template='{{range .items}}{{range .status.conditions}}{{ if eq .type "Ready" }}{{ .status }} {{end}}{{end}}{{end}}'` != 'True' ]
         do
             if [ $count -gt 18 ]; then
-                echo "Failed to get ready Tiller pod."
+                echo "Failed to get ready Tiller pod (attempt ${count})."
                 exit 1
             fi
             echo "."
@@ -80,8 +80,8 @@ resource "null_resource" "wait_for_servicecatalog" {
           exitStatus=$?
           echo -n ""
           count=$(( $count + 1 ))
-          if [ $count -gt 18 ]; then
-            echo "Failed to find ClusterServiceBroker definition."
+          if [ $count -gt 60 ]; then
+            echo "Failed to find ClusterServiceBroker definition (attempt ${count})."
             exit 1
           fi
           sleep 10
