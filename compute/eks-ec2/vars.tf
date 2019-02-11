@@ -47,3 +47,45 @@ variable "workload_account_id" {}
 variable "terraform_state_s3_bucket" {}
 
 variable "blaster_configmap_bucket" {}
+
+variable "harbor_s3_bucket" {
+  type = "string"
+}
+
+variable "harbor_db_instance_size" {
+  type = "string"
+}
+
+variable "harbor_postgresdb_engine_version" {
+  type = "string"
+}
+
+variable "harbor_db_storage_size" {
+  type = "string"
+}
+
+variable "harbor_db_server_identifier" {
+  type = "string"
+}
+
+variable "harbor_db_server_username" {
+  type = "string"
+}
+
+variable "harbor_db_server_password" {
+  type = "string"
+}
+
+variable "harbor_db_server_port" {}
+
+variable "harbor_k8s_namespace" {
+  type = "string"
+}
+
+variable "harbor_s3_acces_key" {
+   type = "string"
+}
+
+variable "harbor_s3_secret_key" {
+   type = "string"
+}

@@ -13,6 +13,12 @@ provider "kubernetes" {
   config_path = "${pathexpand("~/.kube/config_${var.cluster_name}")}"
 }
 
+provider "helm" {
+  kubernetes {
+    config_path = "${pathexpand("~/.kube/config_${var.cluster_name}")}"
+  }
+}
+
 terraform {
   backend          "s3"             {}
   required_version = "~> 0.11.7"

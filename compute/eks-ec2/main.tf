@@ -10,6 +10,18 @@ provider "aws" {
 
 provider "azuread" {}
 
+# Kubernetes provider needed by Harbor
+# provider "kubernetes" {
+#   config_path = "${pathexpand("~/.kube/config_${var.cluster_name}")}"
+# }
+
+# Helm provider used by Harbor
+# provider "helm" {
+#   kubernetes {
+#     config_path = "${pathexpand("~/.kube/config_${var.cluster_name}")}"
+#   }
+# }
+
 terraform {
   backend          "s3"             {}
   required_version = "~> 0.11.7"
@@ -124,3 +136,47 @@ module "eks_servicebroker" {
   kiam_server_role_id = "${module.eks_kiam.kiam_server_role_id}"
   cluster_name        = "${var.cluster_name}"
 }
+
+# module "s3_harbor" {
+#   source    = "../../_sub/storage/s3-bucket"
+#   s3_bucket = "${var.harbor_s3_bucket}"
+# }
+
+# module "rds_postgres_harbor" {
+#   source                                 = "../../_sub/database/rds-postgres-harbor"
+#   vpc_id                                 = "${module.eks_cluster.vpc_id}"
+#   allow_connections_from_security_groups = ["${module.eks_workers.nodes_sg_id}"]
+#   subnet_ids                             = "${module.eks_cluster.subnet_ids}"
+
+#   postgresdb_engine_version = "${var.harbor_postgresdb_engine_version}"
+#   db_storage_size           = "${var.harbor_db_storage_size}"
+#   db_instance_size          = "${var.harbor_db_instance_size}"
+#   db_server_identifier      = "${var.harbor_db_server_identifier}"
+#   db_name                   = "postgres"
+#   db_username               = "${var.harbor_db_server_username}"
+#   db_password               = "${var.harbor_db_server_password}"
+#   port                      = "${var.harbor_db_server_port}"
+
+#   harbor_k8s_namespace = "${var.harbor_k8s_namespace}"
+# }
+
+# module "k8s_harbor" {
+#   source = "../../_sub/compute/k8s-harbor"
+
+#   bucket_name                    = "${module.s3_harbor.bucket_name}"
+#   worker_role_id                 = "${module.eks_workers.worker_role_id}"
+#   cluster_name                   = "${var.cluster_name}"
+#   namespace                      = "${var.k8s_registry_namespace}"
+#   registry_endpoint              = "registry.${var.cluster_name}.${var.dns_zone_name}"
+#   registry_endpoint_external_url = "https://registry.${var.cluster_name}.${var.dns_zone_name}"
+#   notary_endpoint                = "notary.${var.cluster_name}.${var.dns_zone_name}"
+#   s3_region                      = "${var.aws_region}"
+#   s3_region_endpoint             = "http://s3.${var.aws_region}.amazonaws.com"
+#   db_server_host                 = "${module.rds_postgres_harbor.harbor_db_address}"
+#   db_server_username             = "${var.harbor_db_server_username}"
+#   db_server_password             = "${var.harbor_db_server_password}"
+#   db_server_port                 = "${var.harbor_db_server_port}"
+
+#   s3_acces_key  = "${var.harbor_s3_acces_key}"
+#   s3_secret_key = "${var.harbor_s3_secret_key}"
+# }
