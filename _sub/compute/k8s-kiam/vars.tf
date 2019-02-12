@@ -1,4 +1,4 @@
 
 variable "cluster_name" {}
 
-variable "workload_account_id" {}
+variable "aws_workload_account_id" {}

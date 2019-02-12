@@ -1,4 +1,5 @@
 resource "aws_iam_role" "servicebroker_role" {
+  count       = "${var.deploy}"
   name        = "eks-${var.cluster_name}-servicebroker"
   description = "Role the ServiceBroker process assumes"
 
@@ -18,7 +19,7 @@ resource "aws_iam_role" "servicebroker_role" {
       "Sid": "",
       "Effect": "Allow",
       "Principal": {
-        "AWS": "arn:aws:iam::${var.workload_account_id}:role/${var.kiam_server_role_id}"
+        "AWS": "arn:aws:iam::${var.aws_workload_account_id}:role/${var.kiam_server_role_id}"
       },
       "Action": "sts:AssumeRole"
     }
@@ -28,8 +29,9 @@ EOF
 }
 
 resource "aws_iam_role_policy" "allow_dynamodb_access" {
-  name = "grant_dynamodb_access"
-  role = "${aws_iam_role.servicebroker_role.id}"
+  count = "${var.deploy}"
+  name  = "grant_dynamodb_access"
+  role  = "${aws_iam_role.servicebroker_role.id}"
 
   policy = <<POLICY
 {
@@ -52,7 +54,7 @@ resource "aws_iam_role_policy" "allow_dynamodb_access" {
         "dynamodb:GetItem",
         "dynamodb:DeleteItem"
       ],
-      "Resource": "arn:aws:dynamodb:${var.aws_region}:${var.workload_account_id}:table/${var.table_name}",
+      "Resource": "arn:aws:dynamodb:${var.aws_region}:${var.aws_workload_account_id}:table/${var.table_name}",
       "Effect": "Allow"
     },
     {
@@ -61,8 +63,8 @@ resource "aws_iam_role_policy" "allow_dynamodb_access" {
         "ssm:GetParameters"
       ],
       "Resource": [
-          "arn:aws:ssm:${var.aws_region}:${var.workload_account_id}:parameter/asb-*",
-          "arn:aws:ssm:${var.aws_region}:${var.workload_account_id}:parameter/Asb*"
+          "arn:aws:ssm:${var.aws_region}:${var.aws_workload_account_id}:parameter/asb-*",
+          "arn:aws:ssm:${var.aws_region}:${var.aws_workload_account_id}:parameter/Asb*"
       ],
       "Effect": "Allow"
     }
@@ -72,8 +74,9 @@ POLICY
 }
 
 resource "aws_iam_role_policy" "allow_resource_provisioning" {
-  name = "allow_resource_provisioning"
-  role = "${aws_iam_role.servicebroker_role.id}"
+  count = "${var.deploy}"
+  name  = "allow_resource_provisioning"
+  role  = "${aws_iam_role.servicebroker_role.id}"
 
   policy = <<POLICY
 {
@@ -82,7 +85,7 @@ resource "aws_iam_role_policy" "allow_resource_provisioning" {
       {
         "Sid": "SsmForSecretBindings",
         "Action": "ssm:PutParameter",
-        "Resource": "arn:aws:ssm:${var.aws_region}:${var.workload_account_id}:parameter/asb-*",
+        "Resource": "arn:aws:ssm:${var.aws_region}:${var.aws_workload_account_id}:parameter/asb-*",
         "Effect": "Allow"
       },
       {
@@ -101,7 +104,7 @@ resource "aws_iam_role_policy" "allow_resource_provisioning" {
             "cloudformation:CancelUpdateStack"
          ],
          "Resource": [
-            "arn:aws:cloudformation:${var.aws_region}:${var.workload_account_id}:stack/aws-service-broker-*/*"
+            "arn:aws:cloudformation:${var.aws_region}:${var.aws_workload_account_id}:stack/aws-service-broker-*/*"
          ],
          "Effect": "Allow"
       },

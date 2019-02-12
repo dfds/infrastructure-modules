@@ -4,7 +4,7 @@ provider "aws" {
   version = "~> 1.40"
 
   assume_role {
-    role_arn = "${var.assume_role_arn}"
+    role_arn = "${var.aws_assume_role_arn}"
   }
 }
 
@@ -12,13 +12,13 @@ provider "azuread" {}
 
 # Kubernetes provider needed by Harbor
 # provider "kubernetes" {
-#   config_path = "${pathexpand("~/.kube/config_${var.cluster_name}")}"
+#   config_path = "${pathexpand("~/.kube/config_${var.eks_cluster_name}")}"
 # }
 
 # Helm provider used by Harbor
 # provider "helm" {
 #   kubernetes {
-#     config_path = "${pathexpand("~/.kube/config_${var.cluster_name}")}"
+#     config_path = "${pathexpand("~/.kube/config_${var.eks_cluster_name}")}"
 #   }
 # }
 
@@ -29,39 +29,39 @@ terraform {
 
 module "eks_cluster" {
   source       = "../../_sub/compute/eks-cluster"
-  cluster_name = "${var.cluster_name}"
+  cluster_name = "${var.eks_cluster_name}"
 }
 
 module "eks_workers" {
   source                       = "../../_sub/compute/eks-workers"
-  cluster_name                 = "${var.cluster_name}"
-  autoscale_security_group     = "${module.eks_cluster.autoscale_security_group}"
-  worker_instance_max_count    = "${var.worker_instance_max_count}"
-  worker_instance_min_count    = "${var.worker_instance_min_count}"
-  worker_instance_type         = "${var.worker_instance_type}"
-  worker_instance_storage_size = "${var.worker_instance_storage_size}"
-  vpc_id                       = "${module.eks_cluster.vpc_id}"
-  subnet_ids                   = "${module.eks_cluster.subnet_ids}"
+  cluster_name                 = "${var.eks_cluster_name}"
   eks_endpoint                 = "${module.eks_cluster.eks_endpoint}"
   eks_certificate_authority    = "${module.eks_cluster.eks_certificate_authority}"
-  public_key                   = "${var.public_key}"
-  enable_ssh                   = "${var.enable_ssh}"
+  worker_instance_max_count    = "${var.eks_worker_instance_max_count}"
+  worker_instance_min_count    = "${var.eks_worker_instance_min_count}"
+  worker_instance_type         = "${var.eks_worker_instance_type}"
+  worker_instance_storage_size = "${var.eks_worker_instance_storage_size}"
+  autoscale_security_group     = "${module.eks_cluster.autoscale_security_group}"
+  vpc_id                       = "${module.eks_cluster.vpc_id}"
+  subnet_ids                   = "${module.eks_cluster.subnet_ids}"
+  enable_ssh                   = "${var.eks_worker_ssh_enable}"
+  public_key                   = "${var.eks_worker_ssh_public_key}"
 }
 
 module "eks_heptio" {
   source                    = "../../_sub/compute/eks-heptio"
-  cluster_name              = "${var.cluster_name}"
+  aws_assume_role_arn       = "${var.aws_assume_role_arn}"
+  cluster_name              = "${var.eks_cluster_name}"
   eks_endpoint              = "${module.eks_cluster.eks_endpoint}"
   eks_certificate_authority = "${module.eks_cluster.eks_certificate_authority}"
   eks_role_arn              = "${module.eks_workers.worker_role}"
-  assume_role_arn           = "${var.assume_role_arn}"
 }
 
 module "apply_blaster_configmap" {
-  source          = "../../_sub/compute/k8s-blaster-configmap"
-  cluster_name    = "${module.eks_heptio.cluster_name}"
-  s3_bucket       = "${var.blaster_configmap_bucket}"
-  assume_role_arn = "${var.assume_role_arn}"
+  source              = "../../_sub/compute/k8s-blaster-configmap"
+  aws_assume_role_arn = "${var.aws_assume_role_arn}"
+  cluster_name        = "${module.eks_heptio.cluster_name}"
+  s3_bucket           = "${var.blaster_configmap_bucket}"
 }
 
 module "eks_alb" {
@@ -76,12 +76,12 @@ module "eks_alb" {
 
 module "azure_app_registration" {
   source            = "../../_sub/security/azure-app-registration"
-  name              = "Kubernetes EKS ${var.cluster_name}.${var.dns_zone_name}"
-  homepage          = "https://${var.cluster_name}.${var.dns_zone_name}"
-  identifier_uris   = ["https://${var.cluster_name}.${var.dns_zone_name}"]
-  reply_urls        = ["https://internal.${var.cluster_name}.${var.dns_zone_name}/oauth2/idpresponse"]
+  name              = "Kubernetes EKS ${var.eks_cluster_name}.${var.dns_zone_name}"
+  homepage          = "https://${var.eks_cluster_name}.${var.dns_zone_name}"
+  identifier_uris   = ["https://${var.eks_cluster_name}.${var.dns_zone_name}"]
+  reply_urls        = ["https://internal.${var.eks_cluster_name}.${var.dns_zone_name}/oauth2/idpresponse"]
   appreg_key_bucket = "${var.terraform_state_s3_bucket}"
-  appreg_key_key    = "keys/eks/${var.cluster_name}/appreg_key.json"
+  appreg_key_key    = "keys/eks/${var.eks_cluster_name}/appreg_key.json"
 }
 
 module "eks_alb_auth" {
@@ -99,42 +99,44 @@ module "eks_alb_auth" {
 
 module "eks_certificate" {
   source             = "../../_sub/network/acm-certificate"
-  certificate_domain = "*.${var.cluster_name}.${var.dns_zone_name}"
+  certificate_domain = "*.${var.eks_cluster_name}.${var.dns_zone_name}"
   dns_zone_name      = "${var.dns_zone_name}"
 }
 
 module "eks_domain" {
   source       = "../../network/route53-record"
   zone_name    = "${var.dns_zone_name}"
-  record_name  = "*.${var.cluster_name}"
+  record_name  = "*.${var.eks_cluster_name}"
   record_type  = "CNAME"
-  record_ttl   = "300"
+  record_ttl   = "900"
   record_value = "${module.eks_alb.alb_fqdn}"
 }
 
 module "eks_auth" {
   source       = "../../network/route53-record"
   zone_name    = "${var.dns_zone_name}"
-  record_name  = "internal.${var.cluster_name}"
+  record_name  = "internal.${var.eks_cluster_name}"
   record_type  = "CNAME"
-  record_ttl   = "300"
+  record_ttl   = "900"
   record_value = "${module.eks_alb_auth.alb_fqdn}"
 }
 
 module "eks_kiam" {
-  source              = "../../_sub/compute/eks-kiam"
-  cluster_name        = "${var.cluster_name}"
-  workload_account_id = "${var.workload_account_id}"
-  worker_role_id      = "${module.eks_workers.worker_role_id}"
+  source                  = "../../_sub/compute/eks-kiam"
+  deploy                  = "${var.kiam_deploy}"
+  cluster_name            = "${var.eks_cluster_name}"
+  aws_workload_account_id = "${var.aws_workload_account_id}"
+  worker_role_id          = "${module.eks_workers.worker_role_id}"
 }
 
 module "eks_servicebroker" {
-  source              = "../../_sub/compute/eks-servicebroker"
-  table_name          = "${var.table_name}"
-  aws_region          = "${var.aws_region}"
-  workload_account_id = "${var.workload_account_id}"
-  kiam_server_role_id = "${module.eks_kiam.kiam_server_role_id}"
-  cluster_name        = "${var.cluster_name}"
+  source                  = "../../_sub/compute/eks-servicebroker"
+  deploy                  = "${var.servicebroker_deploy}"
+  aws_region              = "${var.aws_region}"
+  aws_workload_account_id = "${var.aws_workload_account_id}"
+  cluster_name            = "${var.eks_cluster_name}"
+  table_name              = "eks-servicebroker-${var.eks_cluster_name}"
+  kiam_server_role_id     = "${module.eks_kiam.kiam_server_role_id}"
 }
  
 module "param_store_admin_kube_config" {
@@ -151,16 +153,19 @@ module "param_store_default_kube_config" {
   key_value       = "${module.eks_heptio.user_configfile}"
 }
 
+
 # module "s3_harbor" {
 #   source    = "../../_sub/storage/s3-bucket"
 #   s3_bucket = "${var.harbor_s3_bucket}"
 # }
+
 
 # module "rds_postgres_harbor" {
 #   source                                 = "../../_sub/database/rds-postgres-harbor"
 #   vpc_id                                 = "${module.eks_cluster.vpc_id}"
 #   allow_connections_from_security_groups = ["${module.eks_workers.nodes_sg_id}"]
 #   subnet_ids                             = "${module.eks_cluster.subnet_ids}"
+
 
 #   postgresdb_engine_version = "${var.harbor_postgresdb_engine_version}"
 #   db_storage_size           = "${var.harbor_db_storage_size}"
@@ -171,19 +176,22 @@ module "param_store_default_kube_config" {
 #   db_password               = "${var.harbor_db_server_password}"
 #   port                      = "${var.harbor_db_server_port}"
 
+
 #   harbor_k8s_namespace = "${var.harbor_k8s_namespace}"
 # }
+
 
 # module "k8s_harbor" {
 #   source = "../../_sub/compute/k8s-harbor"
 
+
 #   bucket_name                    = "${module.s3_harbor.bucket_name}"
 #   worker_role_id                 = "${module.eks_workers.worker_role_id}"
-#   cluster_name                   = "${var.cluster_name}"
+#   cluster_name                   = "${var.eks_cluster_name}"
 #   namespace                      = "${var.k8s_registry_namespace}"
-#   registry_endpoint              = "registry.${var.cluster_name}.${var.dns_zone_name}"
-#   registry_endpoint_external_url = "https://registry.${var.cluster_name}.${var.dns_zone_name}"
-#   notary_endpoint                = "notary.${var.cluster_name}.${var.dns_zone_name}"
+#   registry_endpoint              = "registry.${var.eks_cluster_name}.${var.dns_zone_name}"
+#   registry_endpoint_external_url = "https://registry.${var.eks_cluster_name}.${var.dns_zone_name}"
+#   notary_endpoint                = "notary.${var.eks_cluster_name}.${var.dns_zone_name}"
 #   s3_region                      = "${var.aws_region}"
 #   s3_region_endpoint             = "http://s3.${var.aws_region}.amazonaws.com"
 #   db_server_host                 = "${module.rds_postgres_harbor.harbor_db_address}"
@@ -191,6 +199,8 @@ module "param_store_default_kube_config" {
 #   db_server_password             = "${var.harbor_db_server_password}"
 #   db_server_port                 = "${var.harbor_db_server_port}"
 
+
 #   s3_acces_key  = "${var.harbor_s3_acces_key}"
 #   s3_secret_key = "${var.harbor_s3_secret_key}"
 # }
+

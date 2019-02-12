@@ -51,12 +51,12 @@ resource "helm_release" "kiam" {
 
   set {
     name = "server.roleBaseArn"
-    value = "arn:aws:iam::${var.workload_account_id}:role/"
+    value = "arn:aws:iam::${var.aws_workload_account_id}:role/"
   }
 
   set {
     name = "server.assumeRoleArn"
-    value = "arn:aws:iam::${var.workload_account_id}:role/eks-${var.cluster_name}-kiam-server"
+    value = "arn:aws:iam::${var.aws_workload_account_id}:role/eks-${var.cluster_name}-kiam-server"
   }
 
   depends_on = [

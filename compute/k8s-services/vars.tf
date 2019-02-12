@@ -31,7 +31,7 @@ variable "aws_region" {
   type = "string"
 }
 
-variable "workload_account_id" {}
+variable "aws_workload_account_id" {}
 variable "docker_registry_endpoint" {
   description = "The FQDN of docker registry server. A valid enpoint could be yourdomain.com"
 }
@@ -49,6 +49,6 @@ variable "docker_registry_email" {
   description = "Email address for the user that enables Flux to read the docker registry information."
 }
 
-variable "assume_role_arn" {
+variable "aws_assume_role_arn" {
   type = "string"
 }

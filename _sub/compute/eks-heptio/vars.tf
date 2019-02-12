@@ -6,4 +6,4 @@ variable "eks_certificate_authority" {}
 
 variable "eks_role_arn" {}
 
-variable "assume_role_arn" {}
+variable "aws_assume_role_arn" {}

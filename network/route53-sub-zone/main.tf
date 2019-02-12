@@ -11,7 +11,7 @@ provider "aws" {
   alias = "workload"
 
   assume_role {
-    role_arn = "arn:aws:iam::${var.workload_account_id}:role/${var.prime_role_name}"
+    role_arn = "arn:aws:iam::${var.aws_workload_account_id}:role/${var.prime_role_name}"
   }
 }
 

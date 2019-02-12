@@ -4,7 +4,7 @@ variable "aws_region" {
   type = "string"
 }
 
-variable "workload_account_id" {
+variable "aws_workload_account_id" {
   type = "string"
   description = "The AWS account ID of the Workload account to create the DNS zone in"
 }

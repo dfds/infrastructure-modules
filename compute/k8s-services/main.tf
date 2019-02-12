@@ -5,7 +5,7 @@ provider "aws" {
   version = "~> 1.40"
 
   assume_role {
-    role_arn = "${var.assume_role_arn}"
+    role_arn = "${var.aws_assume_role_arn}"
   }
 }
 
@@ -64,7 +64,7 @@ module "k8s_helm" {
 module "k8s_kiam" {
   source       = "../../_sub/compute/k8s-kiam"
   cluster_name = "${var.cluster_name}"
-  workload_account_id = "${var.workload_account_id}"
+  workload_account_id = "${var.aws_workload_account_id}"
 }
 
 module "k8s_servicebroker" {
@@ -72,5 +72,5 @@ module "k8s_servicebroker" {
   cluster_name = "${var.cluster_name}"
   table_name = "${var.table_name}"
   aws_region = "${var.aws_region}"
-  workload_account_id = "${var.workload_account_id}"
+  workload_account_id = "${var.aws_workload_account_id}"
 }

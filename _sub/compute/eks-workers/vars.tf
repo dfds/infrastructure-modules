@@ -18,6 +18,5 @@ variable "eks_certificate_authority" {}
 variable "public_key" {}
 
 variable "enable_ssh" {
-  type = "string"
-  default = 0
+  default = false
 }

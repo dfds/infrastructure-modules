@@ -1,5 +1,6 @@
 resource "aws_dynamodb_table" "service-broker-table" {
-  name           = "${var.table_name}-${var.cluster_name}"
+  count          = "${var.deploy}"
+  name           = "${var.table_name}"
   billing_mode   = "PROVISIONED"
   read_capacity  = 5
   write_capacity = 5
@@ -10,10 +11,12 @@ resource "aws_dynamodb_table" "service-broker-table" {
     name = "id"
     type = "S"
   }
+
   attribute {
     name = "userid"
     type = "S"
   }
+
   attribute {
     name = "type"
     type = "S"
@@ -26,6 +29,6 @@ resource "aws_dynamodb_table" "service-broker-table" {
     write_capacity     = 5
     read_capacity      = 5
     projection_type    = "INCLUDE"
-    non_key_attributes = ["id","userid","type","locked"]
+    non_key_attributes = ["id", "userid", "type", "locked"]
   }
 }

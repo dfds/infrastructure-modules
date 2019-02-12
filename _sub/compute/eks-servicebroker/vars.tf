@@ -1,11 +1,14 @@
-#Initializes the variables needed to generate a new account
-#The values vill be propagated via a tfvars file
-variable "table_name" {}
+variable "deploy" {
+    default = true
+}
 
 variable "aws_region" {}
 
-variable "workload_account_id" {}
+variable "aws_workload_account_id" {}
+
+variable "cluster_name" {}
+
+variable "table_name" {}
 
 variable "kiam_server_role_id" {}
 
-variable "cluster_name" {}

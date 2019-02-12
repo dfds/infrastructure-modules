@@ -4,7 +4,7 @@ variable "aws_region" {
   type = "string"
 }
 
-# variable "assume_role_arn" {
+# variable "aws_assume_role_arn" {
 #   type = "string"
 #   description = "The ARN of the role to assume, for creating the account"
 # }
