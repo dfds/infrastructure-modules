@@ -1,12 +1,18 @@
 resource "kubernetes_namespace" "flux_namespace" {
+  count = "${var.deploy}"
+
   metadata {
     name = "${var.namespace}"
   }
+
   provider = "kubernetes"
 }
+
 resource "kubernetes_deployment" "flux" {
+  count = "${var.deploy}"
+
   metadata {
-    name = "flux"
+    name      = "flux"
     namespace = "${var.namespace}"
   }
 
@@ -73,7 +79,7 @@ resource "kubernetes_deployment" "flux" {
             secret_name  = "${kubernetes_secret.docker-registry-creds.metadata.0.name}" # "docker-image-registry"
             default_mode = 0400
           }
-        }        
+        }
 
         container {
           name              = "flux"
@@ -114,19 +120,20 @@ resource "kubernetes_deployment" "flux" {
             read_only  = true
           }
 
-          # args = "${var.flux_container_args}"
+          # args = "${var.container_args}"
           args = [
             "--ssh-keygen-dir=/var/fluxd/keygen",
-            "--git-url=${var.config_git_repo_url}",
-            "--git-branch=${var.config_git_repo_branch}",
-            "--git-label=${var.config_git_repo_label}",
+            "--git-url=${var.git_url}",
+            "--git-branch=${var.git_branch}",
+            "--git-label=${var.git_label}",
             "--listen-metrics=:3031",
-            "--docker-config=/docker-creds/.dockerconfigjson" # "--docker-config=/docker-creds/config.json"            
-          ]
+            "--docker-config=/docker-creds/.dockerconfigjson",
+          ] # "--docker-config=/docker-creds/config.json"            
         }
       }
     }
   }
+
   depends_on = ["kubernetes_namespace.flux_namespace"]
-  provider = "kubernetes"
+  provider   = "kubernetes"
 }

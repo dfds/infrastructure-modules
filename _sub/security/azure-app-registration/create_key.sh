@@ -8,12 +8,8 @@ APPLICATION_ID=$1
 KEY_PATH_S3=$2
 
 
-# Login to Azure
-# az login --service-principal --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID > /dev/null
-
-
 # Determine if app key already exist in App Reg
-NUM_KEYS_AZ=$(az ad sp credential list --id $APPLICATION_ID | jq length)
+NUM_KEYS_AZ=$(az ad sp credential list --id $APPLICATION_ID | jq length) || NUM_KEYS_AZ=0
 # NUM_KEYS_AZ=1 # debug
 if [ $NUM_KEYS_AZ -eq 0 ]; then
     CREATE_KEY=1

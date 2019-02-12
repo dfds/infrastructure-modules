@@ -1,5 +1,5 @@
 # resource "local_file" "get-flux-identity" {
-
+#   count = "${var.deploy}"
 #     content = "${var.cluster_name} "
 #     filename = "${pathexpand("~/flux_public_ssh_${var.cluster_name}")}"
 
@@ -17,6 +17,7 @@
 # }
 
 # data "local_file" "identity" {
+#   count = "${var.deploy}"
 #     filename = "${pathexpand("~/flux_public_ssh_${var.cluster_name}")}"
 #     depends_on = ["local_file.get-flux-identity"]
 # }

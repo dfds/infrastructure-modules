@@ -1,15 +1,17 @@
 resource "kubernetes_secret" "docker-registry-creds" {
+  count = "${var.deploy}"
+
   metadata {
-    name = "flux-docker-registry-creds"
+    name      = "flux-docker-registry-creds"
     namespace = "${var.namespace}"
   }
 
   data {
-    ".dockerconfigjson" = "{\"auths\":{\"${var.docker_registry_endpoint}\":{\"username\":\"${var.docker_registry_username}\",\"password\":\"${var.docker_registry_password}\",\"email\":\"${var.docker_registry_email}\",\"auth\":\"${base64encode("${var.docker_registry_username}:${var.docker_registry_password}")}\"}}}"
+    ".dockerconfigjson" = "{\"auths\":{\"${var.registry_endpoint}\":{\"username\":\"${var.registry_username}\",\"password\":\"${var.registry_password}\",\"email\":\"${var.registry_email}\",\"auth\":\"${base64encode("${var.registry_username}:${var.registry_password}")}\"}}}"
   }
 
   type = "kubernetes.io/dockerconfigjson"
 
   depends_on = ["kubernetes_namespace.flux_namespace"]
-  provider   = "kubernetes"  
+  provider   = "kubernetes"
 }

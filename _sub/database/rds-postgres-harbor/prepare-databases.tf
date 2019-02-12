@@ -1,4 +1,5 @@
-resource "kubernetes_namespace" "harbor-namespace" {
+resource "kubernetes_namespace" "harbor" {
+  count = "${var.deploy}"
   metadata {
     name = "${var.harbor_k8s_namespace}"
   }
@@ -6,29 +7,25 @@ resource "kubernetes_namespace" "harbor-namespace" {
   provider = "kubernetes"
 }
 
-data "null_data_source" "get-file-path" {
-  inputs = {
-    file = "${path.module}/run.sh"
-  }
-}
-
 resource "kubernetes_config_map" "harbor-db-init" {
+  count = "${var.deploy}"
   metadata {
     name      = "harbor-db-init-config"
-    namespace = "${kubernetes_namespace.harbor-namespace.metadata.0.name}"
+    namespace = "${kubernetes_namespace.harbor.metadata.0.name}"
   }
 
   data {
-    run.sh = "${file(data.null_data_source.get-file-path.outputs["file"])}"
+    run.sh = "${path.module}/run.sh"
   }
 
   provider = "kubernetes"
 }
 
 resource "kubernetes_deployment" "harbor-db-init" {
+  count = "${var.deploy}"
   metadata {
     name      = "harbor-db-init"
-    namespace = "${kubernetes_namespace.harbor-namespace.metadata.0.name}"
+    namespace = "${kubernetes_namespace.harbor.metadata.0.name}"
   }
 
   spec {
@@ -81,7 +78,7 @@ resource "kubernetes_deployment" "harbor-db-init" {
 
           env {
             name  = "PGHOST"
-            value = "${aws_db_instance.harbor-db.address}"
+            value = "${aws_db_instance.instance.address}"
           }
 
           env {
@@ -116,6 +113,6 @@ resource "kubernetes_deployment" "harbor-db-init" {
     }
   }
 
-  #   depends_on = ["kubernetes_namespace.harbor-namespace"]
+  #   depends_on = ["kubernetes_namespace.harbor"]
   provider = "kubernetes"
 }

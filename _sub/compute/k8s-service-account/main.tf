@@ -30,8 +30,9 @@ resource "kubernetes_cluster_role_binding" "deploy-user" {
 
 data "external" "get-token" {
   program = ["sh", "${path.module}/get-token.sh"]
+
   query = {
-    cluster_name = "${var.cluster_name}"
+    cluster_name        = "${var.cluster_name}"
     default_secret_name = "${kubernetes_service_account.deploy-user.default_secret_name}"
   }
 }
@@ -41,4 +42,5 @@ resource "aws_ssm_parameter" "kubeconfig" {
   description = "A config file for eks ${var.cluster_name} to use for deployments across the cluster"
   type        = "SecureString"
   value       = "${data.external.get-token.result["kubeconfig_json"]}"
+  overwrite   = true
 }

@@ -1,7 +1,7 @@
-variable "s3_bucket" {
-  description = "The name of the S3 Bucket."
+variable "deploy" {
+  default = true
 }
 
-variable "create_s3_bucket" {
-  default = false
+variable "s3_bucket" {
+  description = "The name of the S3 Bucket."
 }

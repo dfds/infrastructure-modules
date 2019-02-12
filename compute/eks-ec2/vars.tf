@@ -1,9 +1,15 @@
-#Initializes the variables needed to generate a new account
-#The values vill be propagated via a tfvars file
+# --------------------------------------------------
+# Terraform
+# --------------------------------------------------
 
 variable "terraform_state_s3_bucket" {
   type = "string"
 }
+
+
+# --------------------------------------------------
+# AWS
+# --------------------------------------------------
 
 variable "aws_region" {
   type = "string"
@@ -16,6 +22,11 @@ variable "aws_assume_role_arn" {
 variable "aws_workload_account_id" {
 
 }
+
+
+# --------------------------------------------------
+# EKS
+# --------------------------------------------------
 
 variable "eks_cluster_name" {
   type = "string"
@@ -45,57 +56,41 @@ variable "eks_worker_ssh_enable" {
   default = false
 }
 
-variable "dns_zone_name" {}
 
-variable "kiam_deploy" {
+# --------------------------------------------------
+# Traefik
+# --------------------------------------------------
+
+variable "traefik_deploy" {
   default = false
 }
 
-variable "servicebroker_deploy" {
+variable "traefik_dns_zone_name" {
+
+}
+
+variable "traefik_deploy_name" {
+}
+
+variable "traefik_alb_anon_deploy" {
   default = false
 }
 
+variable "traefik_alb_auth_deploy" {
+  default = false
+}
+
+variable "traefik_nlb_deploy" {
+  default = false
+}
+
+variable "blaster_configmap_deploy" {
+  default = false
+}
+
+
+# --------------------------------------------------
+# Blaster Configmap
+# --------------------------------------------------
 
 variable "blaster_configmap_bucket" {}
-
-# variable "harbor_s3_bucket" {
-#   type = "string"
-# }
-
-# variable "harbor_db_instance_size" {
-#   type = "string"
-# }
-
-# variable "harbor_postgresdb_engine_version" {
-#   type = "string"
-# }
-
-# variable "harbor_db_storage_size" {
-#   type = "string"
-# }
-
-# variable "harbor_db_server_identifier" {
-#   type = "string"
-# }
-
-# variable "harbor_db_server_username" {
-#   type = "string"
-# }
-
-# variable "harbor_db_server_password" {
-#   type = "string"
-# }
-
-# variable "harbor_db_server_port" {}
-
-# variable "harbor_k8s_namespace" {
-#   type = "string"
-# }
-
-# variable "harbor_s3_acces_key" {
-#    type = "string"
-# }
-
-# variable "harbor_s3_secret_key" {
-#    type = "string"
-# }
