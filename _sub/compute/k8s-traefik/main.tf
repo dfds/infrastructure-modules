@@ -63,7 +63,7 @@ resource "kubernetes_deployment" "traefik" {
             container_port = 8080
           }
 
-          args = ["--api", "--kubernetes", "--logLevel=INFO"]
+          args = ["--api", "--kubernetes", "--logLevel=INFO", "--metrics.prometheus"]
         }
       }
     }
@@ -75,6 +75,10 @@ resource "kubernetes_service" "traefik" {
   metadata {
     name      = "${var.traefik_k8s_name}-ingress-service"
     namespace = "kube-system"
+    annotations {
+      "prometheus.io/port" = "'8080'"
+      "prometheus.io/scrape" = "'true'"
+    }
   }
 
   spec {
