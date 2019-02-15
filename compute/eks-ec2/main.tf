@@ -136,6 +136,20 @@ module "eks_servicebroker" {
   kiam_server_role_id = "${module.eks_kiam.kiam_server_role_id}"
   cluster_name        = "${var.cluster_name}"
 }
+ 
+module "k8s_service_account_store_secret" {
+  source      = "../../_sub/security/ssm-parameter-store"
+  key_name        = "/eks/${var.cluster_name}/admin"
+  key_description = "Kube config file for intial admin"
+  key_value       = "${module.eks_heptio.admin_configfile}"
+}
+
+module "k8s_service_account_store_secret" {
+  source      = "../../_sub/security/ssm-parameter-store"
+  key_name        = "/eks/${var.cluster_name}/default_user"
+  key_description = "Kube config file for general users"
+  key_value       = "${module.eks_heptio.kubeconfig_users}"
+}
 
 # module "s3_harbor" {
 #   source    = "../../_sub/storage/s3-bucket"

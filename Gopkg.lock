@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  digest = "1:eaa4ac76be4c650e52d8ebc411348b1a1eed8d382b3d91c2c62df37cd446a8bd"
+  digest = "1:b45ca30c12f3befb90cb69488b1175aa638310abeb670730d88bd9659fb3fb69"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -52,6 +52,7 @@
     "service/s3/s3manager",
     "service/sns",
     "service/sqs",
+    "service/ssm",
     "service/sts",
   ]
   pruneopts = "UT"
@@ -80,11 +81,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:6502c3b01bbd0c0ed4533b03967e39b9957f1ef588032abc4431e59b9893f2dc"
+  digest = "1:2eaa4fc7240f71b3fca6554c8a811e4ec69ab0f65663100905cb06eb0ccd3f87"
   name = "github.com/dfds/terratest"
   packages = ["modules/aws"]
   pruneopts = "UT"
-  revision = "d8df2836b360bb682668365451ce86f90dd9c558"
+  revision = "78f1dc79d1d9484cba33d6db351693552b9aa3aa"
 
 [[projects]]
   digest = "1:ec6f9bf5e274c833c911923c9193867f3f18788c461f76f05f62bb1510e0ae65"

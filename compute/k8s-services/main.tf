@@ -35,6 +35,13 @@ module "k8s_service_account" {
   cluster_name         = "${var.cluster_name}" 
 }
 
+module "k8s_service_account_store_secret" {
+  source      = "../../_sub/security/ssm-parameter-store"
+  key_name        = "/eks/${var.cluster_name}/deploy_user"
+  key_description = "Kube config file for general deployment user"
+  key_value       = "${module.k8s_service_account.deploy_user_config}"
+}
+
 module "k8s_flux" {
   source       = "../../_sub/compute/k8s-flux"
   namespace = "${var.namespace}"

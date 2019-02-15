@@ -80,17 +80,3 @@ data:
         - system:nodes
 CONFIGMAPAWSAUTH
 }
-
-resource "aws_ssm_parameter" "kubeconfig_admin" {
-  name        = "/eks/${var.cluster_name}/admin"
-  description = "The initial config file for eks ${var.cluster_name}"
-  type        = "SecureString"
-  value       = "${local.kubeconfig}"
-}
-
-resource "aws_ssm_parameter" "kubeconfig_users" {
-  name        = "/eks/${var.cluster_name}/default"
-  description = "The default user config file for eks ${var.cluster_name_users}"
-  type        = "SecureString"
-  value       = "${local.kubeconfig}"
-}
