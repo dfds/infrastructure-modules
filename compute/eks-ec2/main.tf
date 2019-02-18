@@ -148,7 +148,7 @@ module "param_store_default_kube_config" {
   source      = "../../_sub/security/ssm-parameter-store"
   key_name        = "/eks/${var.cluster_name}/default_user"
   key_description = "Kube config file for general users"
-  key_value       = "${module.eks_heptio.kubeconfig_users}"
+  key_value       = "${module.eks_heptio.user_configfile}"
 }
 
 # module "s3_harbor" {
