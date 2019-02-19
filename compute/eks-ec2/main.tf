@@ -85,6 +85,12 @@ module "k8s_service_account" {
   cluster_name         = "${var.eks_cluster_name}" 
 }
 
+module "k8s_service_account_store_secret" {
+  source      = "../../_sub/security/ssm-parameter-store"
+  key_name        = "/eks/${var.eks_cluster_name}/deploy_user"
+  key_description = "Kube config file for general deployment user"
+  key_value       = "${module.k8s_service_account.deploy_user_config}"
+}
 
 # --------------------------------------------------
 # Traefik
@@ -164,14 +170,14 @@ module "traefik_alb_anon_dns" {
  
 module "param_store_admin_kube_config" {
   source      = "../../_sub/security/ssm-parameter-store"
-  key_name        = "/eks/${var.cluster_name}/admin"
+  key_name        = "/eks/${var.eks_cluster_name}/admin"
   key_description = "Kube config file for intial admin"
   key_value       = "${module.eks_heptio.admin_configfile}"
 }
 
 module "param_store_default_kube_config" {
   source      = "../../_sub/security/ssm-parameter-store"
-  key_name        = "/eks/${var.cluster_name}/default_user"
+  key_name        = "/eks/${var.eks_cluster_name}/default_user"
   key_description = "Kube config file for general users"
   key_value       = "${module.eks_heptio.user_configfile}"
 }

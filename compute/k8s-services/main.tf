@@ -40,27 +40,6 @@ data "terraform_remote_state" "cluster" {
   }
 }
 
-module "k8s_service_account_store_secret" {
-  source      = "../../_sub/security/ssm-parameter-store"
-  key_name        = "/eks/${var.cluster_name}/deploy_user"
-  key_description = "Kube config file for general deployment user"
-  key_value       = "${module.k8s_service_account.deploy_user_config}"
-}
-
-module "k8s_flux" {
-  source       = "../../_sub/compute/k8s-flux"
-  namespace = "${var.namespace}"
-  cluster_name = "${var.cluster_name}"
-  config_git_repo_url = "${var.config_git_repo_url}"
-  config_git_repo_branch = "${var.config_git_repo_branch}"
-  config_git_repo_label = "${var.config_git_repo_label}"
-  config_git_private_key = "${base64decode(var.config_git_private_key_base64)}"
-  docker_registry_endpoint = "${var.docker_registry_endpoint}"
-  docker_registry_username = "${var.docker_registry_username}"
-  docker_registry_password = "${var.docker_registry_password}"
-  docker_registry_email = "${var.docker_registry_email}"
-}
-
 # --------------------------------------------------
 # KIAM
 # --------------------------------------------------
