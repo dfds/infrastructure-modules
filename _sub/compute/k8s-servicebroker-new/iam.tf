@@ -28,6 +28,7 @@ resource "aws_iam_role" "servicebroker_role" {
 EOF
 }
 
+
 resource "aws_iam_role_policy" "allow_dynamodb_access" {
   count = "${var.deploy}"
   name  = "grant_dynamodb_access"

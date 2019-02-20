@@ -3,23 +3,26 @@
 # ------------------------------------------------------------------------------
 
 resource "aws_db_subnet_group" "harbor-db-sg" {
-  name_prefix = "harbor-rds" # "${var.name_prefix}"
+  count       = "${var.deploy}"
+  name_prefix = "harbor-rds"                           # "${var.name_prefix}"
   description = "Database subnet group for harbor-rds"
   subnet_ids  = ["${var.subnet_ids}"]
 
   tags = {
     Name = "Harbor-rds subnet group"
-  }  
+  }
 }
 
 # ------------------------------------------------------------------------------
 # CREATE THE SECURITY GROUP THAT CONTROLS WHAT TRAFFIC CAN CONNECT TO THE DB
 # ------------------------------------------------------------------------------
 resource "aws_security_group" "db" {
+  count       = "${var.deploy}"
   name        = "harbor-postgres-db"
   description = "Security group for Harbor Postgres Db"
   vpc_id      = "${var.vpc_id}"
-#   tags        = "${var.custom_tags}"
+
+  #   tags        = "${var.custom_tags}"
   tags = "${
     map(
      "Name", "Harbor-db"

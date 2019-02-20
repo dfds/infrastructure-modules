@@ -1,4 +1,5 @@
 resource "aws_lb" "traefik" {
+  count = "${var.deploy}"
   name               = "${var.cluster_name}-traefik-alb"
   internal           = false
   load_balancer_type = "application"
@@ -7,11 +8,13 @@ resource "aws_lb" "traefik" {
 }
 
 resource "aws_autoscaling_attachment" "traefik" {
+  count = "${var.deploy}"
   autoscaling_group_name = "${var.autoscaling_group_id}"
   alb_target_group_arn   = "${aws_lb_target_group.traefik.arn}"
 }
 
 resource "aws_lb_target_group" "traefik" {
+  count = "${var.deploy}"
   name_prefix = "${substr(var.cluster_name, 0, min(6, length(var.cluster_name)))}"
   port        = 30000
   protocol    = "HTTP"
@@ -30,6 +33,7 @@ resource "aws_lb_target_group" "traefik" {
 }
 
 resource "aws_lb_listener" "traefik" {
+  count = "${var.deploy}"
   load_balancer_arn = "${aws_lb.traefik.arn}"
   port              = "443"
   protocol          = "HTTPS"
@@ -43,6 +47,7 @@ resource "aws_lb_listener" "traefik" {
 }
 
 resource "aws_lb_listener" "http-to-https" {
+  count = "${var.deploy}"
   load_balancer_arn = "${aws_lb.traefik.arn}"
   port              = "80"
   protocol          = "HTTP"
@@ -59,6 +64,7 @@ resource "aws_lb_listener" "http-to-https" {
 }
 
 resource "aws_security_group" "traefik" {
+  count = "${var.deploy}"
   name        = "allow_traefik-${var.cluster_name}"
   description = "Allow traefik connection for ${var.cluster_name}"
   vpc_id      = "${var.vpc_id}"
@@ -97,6 +103,7 @@ resource "aws_security_group" "traefik" {
 }
 
 resource "aws_security_group_rule" "allow_traefik" {
+  count = "${var.deploy}"
   type            = "ingress"
   from_port       = 30000
   to_port         = 30001

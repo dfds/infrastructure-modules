@@ -1,4 +1,5 @@
 resource "aws_lb" "traefik_auth" {
+  count              = "${var.deploy}"
   name               = "${var.cluster_name}-traefik-alb-auth"
   internal           = false
   load_balancer_type = "application"
@@ -7,11 +8,13 @@ resource "aws_lb" "traefik_auth" {
 }
 
 resource "aws_autoscaling_attachment" "traefik_auth" {
+  count                  = "${var.deploy}"
   autoscaling_group_name = "${var.autoscaling_group_id}"
   alb_target_group_arn   = "${aws_lb_target_group.traefik_auth.arn}"
 }
 
 resource "aws_lb_target_group" "traefik_auth" {
+  count       = "${var.deploy}"
   name_prefix = "${substr(var.cluster_name, 0, min(6, length(var.cluster_name)))}"
   port        = 30000
   protocol    = "HTTP"
@@ -30,6 +33,7 @@ resource "aws_lb_target_group" "traefik_auth" {
 }
 
 resource "aws_lb_listener" "traefik_auth" {
+  count             = "${var.deploy}"
   load_balancer_arn = "${aws_lb.traefik_auth.arn}"
   port              = "443"
   protocol          = "HTTPS"
@@ -56,6 +60,7 @@ resource "aws_lb_listener" "traefik_auth" {
 }
 
 resource "aws_lb_listener" "http-to-https" {
+  count             = "${var.deploy}"
   load_balancer_arn = "${aws_lb.traefik_auth.arn}"
   port              = "80"
   protocol          = "HTTP"
@@ -72,6 +77,7 @@ resource "aws_lb_listener" "http-to-https" {
 }
 
 resource "aws_security_group" "traefik_auth" {
+  count       = "${var.deploy}"
   name        = "allow_traefik-${var.cluster_name}-auth"
   description = "Allow traefik connection for ${var.cluster_name} with authentication via oidc"
   vpc_id      = "${var.vpc_id}"
@@ -91,10 +97,10 @@ resource "aws_security_group" "traefik_auth" {
   }
 
   ingress {
-    from_port   = 30001
-    to_port     = 30001
-    protocol    = "TCP"
-    self        = true
+    from_port = 30001
+    to_port   = 30001
+    protocol  = "TCP"
+    self      = true
   }
 
   egress {
@@ -104,14 +110,12 @@ resource "aws_security_group" "traefik_auth" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-    egress {
+  egress {
     from_port   = 443
     to_port     = 443
     protocol    = "TCP"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
-  
 
   tags {
     Name = "${var.cluster_name}-traefik-auth-sg"
@@ -119,10 +123,11 @@ resource "aws_security_group" "traefik_auth" {
 }
 
 resource "aws_security_group_rule" "allow_traefik_auth" {
-  type            = "ingress"
-  from_port       = 30000
-  to_port         = 30001
-  protocol        = "tcp"
+  count                    = "${var.deploy}"
+  type                     = "ingress"
+  from_port                = 30000
+  to_port                  = 30001
+  protocol                 = "tcp"
   source_security_group_id = "${aws_security_group.traefik_auth.id}"
 
   security_group_id = "${var.nodes_sg_id}"

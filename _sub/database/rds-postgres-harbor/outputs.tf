@@ -1,3 +1,3 @@
-output "harbor_db_address" {
-  value = "${aws_db_instance.harbor-db.address}"
+output "db_address" {
+  value = "${element(concat(aws_db_instance.instance.*.id, list("")), 0)}"
 }

@@ -3,4 +3,5 @@ resource "aws_ssm_parameter" "putSecureString" {
   description = "${var.key_description}"
   type        = "SecureString"
   value       = "${var.key_value}"
+  overwrite   = true
 }

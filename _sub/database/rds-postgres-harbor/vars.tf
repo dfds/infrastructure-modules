@@ -1,17 +1,21 @@
+variable "deploy" {
+  default = true
+}
+
+variable "harbor_k8s_namespace" {
+  type = "string"
+}
+
 variable "postgresdb_engine_version" {
   type = "string"
   default = "10.6"
 }
 
-variable "db_storage_size" {
-  type = "string"
-  default = 5
-}
-
 variable "db_instance_size" {
   type = "string"
-  default = "db.t3.micro"
 }
+
+variable "db_storage_size" {}
 
 variable "db_server_identifier" {
   type = "string"
@@ -26,7 +30,7 @@ variable "db_username" {
 }
 
 variable "db_password" {
-  default = "Harbor12345"
+  type = "string"
 }
 
 variable "allow_connections_from_security_groups" {
@@ -43,11 +47,7 @@ variable "port" {
   default = 1433
 }
 
-
 variable "subnet_ids" {
   type = "list"
 }
 
-variable "harbor_k8s_namespace" {
-  type = "string"
-}

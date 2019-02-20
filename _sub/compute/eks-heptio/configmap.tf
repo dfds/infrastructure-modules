@@ -27,7 +27,7 @@ users:
         - "-i"
         - "${var.cluster_name}"
         - "-r"
-        - "${var.assume_role_arn}"
+        - "${var.aws_assume_role_arn}"
 KUBECONFIG
 }
 

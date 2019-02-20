@@ -50,7 +50,7 @@ resource "aws_security_group_rule" "eks-cluster-ingress-node-https" {
 
 #Enable SSH access to nodes by tfvars set to 1
 resource "aws_security_group_rule" "ssh-access-to-worker-nodes" {
-  count                    = "${var.enable_ssh ? 1 : 0}"
+  count                    = "${var.enable_ssh}"
   description              = "Allow SSH access to worker nodes"
   cidr_blocks              = ["0.0.0.0/0"]
   from_port                = 22

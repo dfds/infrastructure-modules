@@ -124,7 +124,7 @@ resource "helm_release" "service-broker" {
 
   set_string {
     name  = "aws.targetaccountid"
-    value = "${var.workload_account_id}"
+    value = "${var.aws_workload_account_id}"
   }
 
   depends_on = [

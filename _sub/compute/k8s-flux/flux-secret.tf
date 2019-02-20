@@ -1,11 +1,13 @@
 resource "kubernetes_secret" "flux-git-deploy" {
+  count = "${var.deploy}"
+
   metadata {
     name      = "flux-git-deploy"
     namespace = "${var.namespace}"
   }
 
   data {
-    identity = "${var.config_git_private_key}"
+    identity = "${var.git_key}"
   }
 
   type       = "Opaque"

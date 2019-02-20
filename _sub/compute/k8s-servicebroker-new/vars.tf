@@ -11,4 +11,3 @@ variable "cluster_name" {}
 variable "table_name" {}
 
 variable "kiam_server_role_id" {}
-
