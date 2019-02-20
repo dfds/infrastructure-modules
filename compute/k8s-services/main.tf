@@ -45,7 +45,7 @@ data "terraform_remote_state" "cluster" {
 # --------------------------------------------------
 
 module "kiam_deploy" {
-  source                  = "../../_sub/compute/k8s-kiam-new"                           # rename before release
+  source                  = "../../_sub/compute/k8s-kiam"                           # rename before release
   deploy                  = "${var.kiam_deploy}"
   cluster_name            = "${var.eks_cluster_name}"
   aws_workload_account_id = "${var.aws_workload_account_id}"
@@ -57,7 +57,7 @@ module "kiam_deploy" {
 # --------------------------------------------------
 
 module "servicebroker_deploy" {
-  source                  = "../../_sub/compute/k8s-servicebroker-new"  # rename before release
+  source                  = "../../_sub/compute/k8s-servicebroker"  # rename before release
   deploy                  = "${var.servicebroker_deploy}"
   aws_region              = "${var.aws_region}"
   aws_workload_account_id = "${var.aws_workload_account_id}"
