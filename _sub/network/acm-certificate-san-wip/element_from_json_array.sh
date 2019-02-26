@@ -1,0 +1,1 @@
+cat ${1} | jq --arg index ${2} '.[$index|tonumber]'
