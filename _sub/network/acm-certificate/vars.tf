@@ -4,4 +4,4 @@ variable "deploy" {
 
 variable "dns_zone_name" {}
 
-variable "certificate_domain" {}
+variable "domain_name" {}

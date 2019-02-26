@@ -16,12 +16,17 @@ provider "aws" {
   }
 }
 
+provider "aws" {
+  region  = "${var.aws_region}"
+  version = "~> 1.40"
+  alias   = "core"
+}
+
 provider "azuread" {}
 
 provider "kubernetes" {
   config_path = "${pathexpand("~/.kube/config_${var.eks_cluster_name}")}"
 }
-
 
 # --------------------------------------------------
 # EKS Cluster
@@ -65,7 +70,6 @@ module "apply_blaster_configmap" {
   s3_bucket           = "${var.blaster_configmap_bucket}"
 }
 
-
 # --------------------------------------------------
 # Tiller (Helm server)
 # --------------------------------------------------
@@ -75,18 +79,17 @@ module "k8s_helm" {
   cluster_name = "${var.eks_cluster_name}"
 }
 
-
 # --------------------------------------------------
 # Deployment service account
 # --------------------------------------------------
 
 module "k8s_service_account" {
   source       = "../../_sub/compute/k8s-service-account"
-  cluster_name         = "${var.eks_cluster_name}" 
+  cluster_name = "${var.eks_cluster_name}"
 }
 
 module "k8s_service_account_store_secret" {
-  source      = "../../_sub/security/ssm-parameter-store"
+  source          = "../../_sub/security/ssm-parameter-store"
   key_name        = "/eks/${var.eks_cluster_name}/deploy_user"
   key_description = "Kube config file for general deployment user"
   key_value       = "${module.k8s_service_account.deploy_user_config}"
@@ -106,10 +109,11 @@ module "traefik_deploy" {
 }
 
 module "traefik_alb_cert" {
-  source             = "../../_sub/network/acm-certificate"
-  deploy             = "${var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy ? 1 : 0}"
-  certificate_domain = "*.${var.eks_cluster_name}.${var.traefik_dns_zone_name}"
-  dns_zone_name      = "${var.traefik_dns_zone_name}"
+  source         = "../../_sub/network/acm-certificate-san"
+  deploy         = "${var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy ? 1 : 0}"
+  domain_name    = "*.${var.eks_cluster_name}.${var.traefik_dns_zone_name}"
+  dns_zone_name  = "${var.traefik_dns_zone_name}"
+  core_alt_names = "${var.traefik_alb_cert_core_alt_names}"
 }
 
 module "traefik_alb_auth_appreg" {
@@ -167,16 +171,16 @@ module "traefik_alb_anon_dns" {
   record_ttl   = "900"
   record_value = "${module.traefik_alb_anon.alb_fqdn}"
 }
- 
+
 module "param_store_admin_kube_config" {
-  source      = "../../_sub/security/ssm-parameter-store"
+  source          = "../../_sub/security/ssm-parameter-store"
   key_name        = "/eks/${var.eks_cluster_name}/admin"
   key_description = "Kube config file for intial admin"
   key_value       = "${module.eks_heptio.admin_configfile}"
 }
 
 module "param_store_default_kube_config" {
-  source      = "../../_sub/security/ssm-parameter-store"
+  source          = "../../_sub/security/ssm-parameter-store"
   key_name        = "/eks/${var.eks_cluster_name}/default_user"
   key_description = "Kube config file for general users"
   key_value       = "${module.eks_heptio.user_configfile}"
@@ -188,3 +192,4 @@ module "param_store_default_kube_config" {
 # deploy             = "${var.traefik_nlb_deploy && var.argocd_deploy ? 1 : 0}"
 # ...
 # }
+

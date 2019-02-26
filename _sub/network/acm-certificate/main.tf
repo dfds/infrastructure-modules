@@ -1,6 +1,6 @@
 resource "aws_acm_certificate" "cert" {
   count = "${var.deploy}"
-  domain_name       = "${var.certificate_domain}"
+  domain_name       = "${var.domain_name}"
   validation_method = "DNS"
 
   lifecycle {
