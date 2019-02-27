@@ -6,7 +6,7 @@
 resource "aws_acm_certificate" "cert" {
   count                     = "${var.deploy}"
   domain_name               = "${var.domain_name}"
-  subject_alternative_names = "${var.core_alt_names}"
+  subject_alternative_names = "${var.core_alias}"
   validation_method         = "DNS"
 
   lifecycle {
@@ -36,7 +36,7 @@ resource "local_file" "validate_json" {
 
 # Read the JSON file back, one instance per element in the JSON array
 data "external" "validate_json" {
-  count      = "${var.deploy ? length(var.core_alt_names) + 1 : 0}"
+  count      = "${var.deploy ? length(var.core_alias) + 1 : 0}"
   depends_on = ["local_file.validate_json"]
   program    = ["bash", "element_from_json_array.sh", "${pathexpand("./validate.json")}", "${count.index}"]
 }
@@ -62,7 +62,7 @@ resource "aws_route53_record" "workload" {
 
 # Create validation DNS record(s) in the core DNS zone (alternative names specified)
 resource "aws_route53_record" "core" {
-  count   = "${var.deploy ? length(var.core_alt_names) : 0}"
+  count   = "${var.deploy ? length(var.core_alias) : 0}"
   name    = "${lookup(local.validate_json[count.index + 1], "resource_record_name")}"
   type    = "${lookup(local.validate_json[count.index + 1], "resource_record_type")}"
   zone_id = "${local.core_dns_zone_id}"

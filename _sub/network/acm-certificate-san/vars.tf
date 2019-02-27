@@ -10,7 +10,7 @@ variable "dns_zone_name" {
   description = "The name of the DNS zone in which the common name resides. E.g. 'workload1.company.tld'"
 }
 
-variable "core_alt_names" {
+variable "core_alias" {
   description = "A list of aliases/alternative names in the *parent* domain, the certficate should also be valid for. E.g. 'prettyurl.company.tld'"
   type = "list"
   default = []

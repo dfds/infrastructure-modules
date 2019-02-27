@@ -14,7 +14,7 @@ data "aws_route53_zone" "workload" {
 
 # Read core DNS zone
 data "aws_route53_zone" "core" {
-  count        = "${var.deploy && length(var.core_alt_names) >= 1 ? 1 : 0}"
+  count        = "${var.deploy && length(var.core_alias) >= 1 ? 1 : 0}"
   name         = "${local.core_dns_zone_name}."
   private_zone = false
   provider     = "aws.core"

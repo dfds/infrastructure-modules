@@ -71,31 +71,6 @@ module "apply_blaster_configmap" {
 }
 
 # --------------------------------------------------
-# Tiller (Helm server)
-# --------------------------------------------------
-
-module "k8s_helm" {
-  source       = "../../_sub/compute/k8s-helm"
-  cluster_name = "${var.eks_cluster_name}"
-}
-
-# --------------------------------------------------
-# Deployment service account
-# --------------------------------------------------
-
-module "k8s_service_account" {
-  source       = "../../_sub/compute/k8s-service-account"
-  cluster_name = "${var.eks_cluster_name}"
-}
-
-module "k8s_service_account_store_secret" {
-  source          = "../../_sub/security/ssm-parameter-store"
-  key_name        = "/eks/${var.eks_cluster_name}/deploy_user"
-  key_description = "Kube config file for general deployment user"
-  key_value       = "${module.k8s_service_account.deploy_user_config}"
-}
-
-# --------------------------------------------------
 # Traefik
 # Depends on a lot of input data from the cluster,
 # so it makes sense to keep in this module
@@ -110,19 +85,19 @@ module "traefik_deploy" {
 
 module "traefik_alb_cert" {
   source         = "../../_sub/network/acm-certificate-san"
-  deploy         = "${var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy ? 1 : 0}"
-  domain_name    = "*.${var.eks_cluster_name}.${var.traefik_dns_zone_name}"
-  dns_zone_name  = "${var.traefik_dns_zone_name}"
-  core_alt_names = "${var.traefik_alb_cert_core_alt_names}"
+  deploy         = "${var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy ? 1 : 0}"
+  domain_name    = "*.${local.eks_fqdn}"
+  dns_zone_name  = "${var.workload_dns_zone_name}"
+  core_alias     = "${var.traefik_alb_core_alias}"
 }
 
 module "traefik_alb_auth_appreg" {
   source            = "../../_sub/security/azure-app-registration"
   deploy            = "${var.traefik_alb_auth_deploy}"
-  name              = "Kubernetes EKS ${var.eks_cluster_name}.${var.traefik_dns_zone_name}"
-  homepage          = "https://${var.eks_cluster_name}.${var.traefik_dns_zone_name}"
-  identifier_uris   = ["https://${var.eks_cluster_name}.${var.traefik_dns_zone_name}"]
-  reply_urls        = ["https://internal.${var.eks_cluster_name}.${var.traefik_dns_zone_name}/oauth2/idpresponse"]
+  name              = "Kubernetes EKS ${local.eks_fqdn}"
+  homepage          = "https://${local.eks_fqdn}"
+  identifier_uris   = ["https://${local.eks_fqdn}"]
+  reply_urls        = ["https://internal.${local.eks_fqdn}/oauth2/idpresponse"]
   appreg_key_bucket = "${var.terraform_state_s3_bucket}"
   appreg_key_key    = "keys/eks/${var.eks_cluster_name}/appreg_alb_key.json"
 }
@@ -144,11 +119,21 @@ module "traefik_alb_auth" {
 module "traefik_alb_auth_dns" {
   source       = "../../_sub/network/route53-record"
   deploy       = "${var.traefik_alb_auth_deploy}"
-  zone_name    = "${var.traefik_dns_zone_name}"
-  record_name  = "internal.${var.eks_cluster_name}"
+  zone_id      = "${local.workload_dns_zone_id}"
+  record_name  = ["internal.${var.eks_cluster_name}"]
   record_type  = "CNAME"
   record_ttl   = "900"
   record_value = "${module.traefik_alb_auth.alb_fqdn}"
+}
+
+module "traefik_alb_auth_dns_core_alias" {
+  source       = "../../_sub/network/route53-record"
+  deploy       = "${var.traefik_alb_auth_deploy == 1 ? signum(length(var.traefik_alb_core_alias)) : 0}"
+  zone_id      = "${local.core_dns_zone_id}"
+  record_name  = "${var.traefik_alb_core_alias}"
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = "${element(concat(module.traefik_alb_auth_dns.record_name, list("")), 0)}"
 }
 
 module "traefik_alb_anon" {
@@ -165,8 +150,8 @@ module "traefik_alb_anon" {
 module "traefik_alb_anon_dns" {
   source       = "../../_sub/network/route53-record"
   deploy       = "${var.traefik_alb_anon_deploy}"
-  zone_name    = "${var.traefik_dns_zone_name}"
-  record_name  = "*.${var.eks_cluster_name}"
+  zone_id      = "${local.workload_dns_zone_id}"
+  record_name  = ["*.${var.eks_cluster_name}"]
   record_type  = "CNAME"
   record_ttl   = "900"
   record_value = "${module.traefik_alb_anon.alb_fqdn}"

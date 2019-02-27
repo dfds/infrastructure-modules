@@ -20,6 +20,8 @@ variable "aws_assume_role_arn" {
 
 variable "aws_workload_account_id" {}
 
+variable "workload_dns_zone_name" {}
+
 # --------------------------------------------------
 # EKS
 # --------------------------------------------------
@@ -60,8 +62,6 @@ variable "traefik_deploy" {
   default = false
 }
 
-variable "traefik_dns_zone_name" {}
-
 variable "traefik_deploy_name" {}
 
 variable "traefik_alb_anon_deploy" {
@@ -72,7 +72,7 @@ variable "traefik_alb_auth_deploy" {
   default = false
 }
 
-variable "traefik_alb_cert_core_alt_names" {
+variable "traefik_alb_core_alias" {
   description = "A list of aliases/alternative names in the *parent* domain, the certficate should also be valid for. E.g. 'prettyurl.company.tld'"
   type    = "list"
   default = []
