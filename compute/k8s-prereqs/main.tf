@@ -7,6 +7,11 @@ terraform {
   required_version = "~> 0.11.7"
 }
 
+provider "aws" {
+  region  = "${var.aws_region}"
+  version = "~> 1.60"
+}
+
 provider "kubernetes" {
   config_path = "${pathexpand("~/.kube/config_${var.eks_cluster_name}")}"
 }
