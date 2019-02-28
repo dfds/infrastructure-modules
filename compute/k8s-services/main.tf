@@ -9,7 +9,7 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "~> 1.40"
+  version = "~> 1.60"
 
   assume_role {
     role_arn = "${var.aws_assume_role_arn}"
@@ -40,24 +40,26 @@ data "terraform_remote_state" "cluster" {
   }
 }
 
+
 # --------------------------------------------------
 # KIAM
 # --------------------------------------------------
 
 module "kiam_deploy" {
-  source                  = "../../_sub/compute/k8s-kiam"                           # rename before release
+  source                  = "../../_sub/compute/k8s-kiam"
   deploy                  = "${var.kiam_deploy}"
   cluster_name            = "${var.eks_cluster_name}"
   aws_workload_account_id = "${var.aws_workload_account_id}"
   worker_role_id          = "${data.terraform_remote_state.cluster.eks_worker_role_id}"
 }
 
+
 # --------------------------------------------------
 # Service Broker
 # --------------------------------------------------
 
 module "servicebroker_deploy" {
-  source                  = "../../_sub/compute/k8s-servicebroker"  # rename before release
+  source                  = "../../_sub/compute/k8s-servicebroker"
   deploy                  = "${var.servicebroker_deploy}"
   aws_region              = "${var.aws_region}"
   aws_workload_account_id = "${var.aws_workload_account_id}"
@@ -65,6 +67,7 @@ module "servicebroker_deploy" {
   table_name              = "eks-servicebroker-${var.eks_cluster_name}"
   kiam_server_role_id     = "${module.kiam_deploy.kiam_server_role_id}"
 }
+
 
 # --------------------------------------------------
 # Flux
@@ -84,6 +87,7 @@ module "flux_deploy" {
   registry_password = "${var.flux_registry_password}"
   registry_email    = "${var.flux_registry_email}"
 }
+
 
 # --------------------------------------------------
 # Harbor

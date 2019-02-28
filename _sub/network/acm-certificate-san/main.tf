@@ -38,7 +38,7 @@ resource "local_file" "validate_json" {
 data "external" "validate_json" {
   count      = "${var.deploy ? length(var.core_alias) + 1 : 0}"
   depends_on = ["local_file.validate_json"]
-  program    = ["bash", "element_from_json_array.sh", "${pathexpand("./validate.json")}", "${count.index}"]
+  program    = ["bash", "${path.module}/element_from_json_array.sh", "${pathexpand("./validate.json")}", "${count.index}"]
 }
 
 # Save the output in variable
