@@ -19,6 +19,7 @@ data "aws_route53_zone" "core" {
   count        = "${signum(length(var.traefik_alb_core_alias))}"
   name         = "${local.core_dns_zone_name}."
   private_zone = false
+  provider     = "aws.core"
 }
 
 # Get DNS zone IDs
