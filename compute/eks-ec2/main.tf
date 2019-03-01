@@ -104,7 +104,7 @@ module "traefik_alb_auth_appreg" {
   name              = "Kubernetes EKS ${local.eks_fqdn}"
   homepage          = "https://${local.eks_fqdn}"
   identifier_uris   = ["https://${local.eks_fqdn}"]
-  reply_urls        = ["https://internal.${local.eks_fqdn}/oauth2/idpresponse"]
+  reply_urls        = ["${local.traefik_alb_auth_appreg_reply_urls}"]
   appreg_key_bucket = "${var.terraform_state_s3_bucket}"
   appreg_key_key    = "keys/eks/${var.eks_cluster_name}/appreg_alb_key.json"
 }
@@ -130,7 +130,7 @@ module "traefik_alb_auth_dns" {
   record_name  = ["internal.${var.eks_cluster_name}"]
   record_type  = "CNAME"
   record_ttl   = "900"
-  record_value = "${module.traefik_alb_auth.alb_fqdn}"
+  record_value = "${module.traefik_alb_auth.alb_fqdn}."
 }
 
 module "traefik_alb_auth_dns_core_alias" {
@@ -140,7 +140,7 @@ module "traefik_alb_auth_dns_core_alias" {
   record_name  = "${var.traefik_alb_core_alias}"
   record_type  = "CNAME"
   record_ttl   = "900"
-  record_value = "${element(concat(module.traefik_alb_auth_dns.record_name, list("")), 0)}"
+  record_value = "${element(concat(module.traefik_alb_auth_dns.record_name, list("")), 0)}.${var.workload_dns_zone_name}."
 
   providers {
     aws = "aws.core"
