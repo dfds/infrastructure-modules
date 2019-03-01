@@ -37,10 +37,10 @@ data "external" "get-token" {
   }
 }
 
-resource "aws_ssm_parameter" "kubeconfig" {
-  name        = "/eks/${var.cluster_name}/deploy-user"
-  description = "A config file for eks ${var.cluster_name} to use for deployments across the cluster"
-  type        = "SecureString"
-  value       = "${data.external.get-token.result["kubeconfig_json"]}"
-  overwrite   = true
-}
+# resource "aws_ssm_parameter" "kubeconfig" {
+#   name        = "/eks/${var.cluster_name}/deploy_user"
+#   description = "A config file for eks ${var.cluster_name} to use for deployments across the cluster"
+#   type        = "SecureString"
+#   value       = "${data.external.get-token.result["kubeconfig_json"]}"
+#   overwrite   = true
+# }

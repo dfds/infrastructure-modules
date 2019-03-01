@@ -31,6 +31,11 @@ output "eks_fqdn" {
 }
 
 
+output "blaster_configmap_bucket" {
+    value = "${module.blaster_configmap_bucket.bucket_name}"
+}
+
+
 # --------------------------------------------------
 # Traefik
 # --------------------------------------------------

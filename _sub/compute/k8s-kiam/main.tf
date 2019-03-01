@@ -28,7 +28,7 @@ resource "aws_iam_role_policy" "server_node" {
       "Action": [
         "sts:AssumeRole"
       ],
-      "Resource": "arn:aws:iam::${var.aws_workload_account_id}:role/eks-${var.cluster_name}-kiam-server"
+      "Resource": "${local.kiam_server_role_arn}"
     }
     ]
   }

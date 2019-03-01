@@ -10,6 +10,10 @@ terraform {
 provider "aws" {
   region  = "${var.aws_region}"
   version = "~> 1.60"
+
+  assume_role {
+    role_arn = "${var.aws_assume_role_arn}"
+  }
 }
 
 provider "kubernetes" {

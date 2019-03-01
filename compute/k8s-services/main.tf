@@ -53,7 +53,19 @@ module "kiam_deploy" {
 }
 
 # --------------------------------------------------
-# Service Broker
+# Blaster - depends on KIAM
+# --------------------------------------------------
+
+module "blaster_namespace" {
+  source                   = "../../_sub/compute/k8s-blaster-namespace"
+  deploy                   = "${var.blaster_deploy}"
+  cluster_name             = "${var.eks_cluster_name}"
+  blaster_configmap_bucket = "${data.terraform_remote_state.cluster.blaster_configmap_bucket}"
+  kiam_server_role_arn     = "${module.kiam_deploy.server_role_arn}"
+}
+
+# --------------------------------------------------
+# Service Broker - depends on KIAM
 # --------------------------------------------------
 
 module "servicebroker_deploy" {
@@ -67,8 +79,8 @@ module "servicebroker_deploy" {
   namespace               = "aws-sb"
   chart_repo              = "aws-sb"
   chart_name              = "aws-servicebroker"
-  chart_version           = "1.0.0-beta.4" # find with 'helm search aws-sb/'
-  kiam_server_role_id     = "${module.kiam_deploy.kiam_server_role_id}"
+  chart_version           = "1.0.0-beta.4"                              # find with 'helm search aws-sb/'
+  kiam_server_role_id     = "${module.kiam_deploy.server_role_id}"
 }
 
 # --------------------------------------------------
