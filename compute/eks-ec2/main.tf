@@ -3,7 +3,7 @@
 # --------------------------------------------------
 
 terraform {
-  backend "s3" {}
+  backend          "s3"             {}
   required_version = "~> 0.11.7"
 }
 
@@ -63,9 +63,9 @@ module "eks_heptio" {
 }
 
 module "blaster_configmap_bucket" {
-  source              = "../../_sub/storage/s3-bucket"
-  deploy              = "${var.blaster_configmap_deploy}"
-  s3_bucket           = "${var.blaster_configmap_bucket}"
+  source    = "../../_sub/storage/s3-bucket"
+  deploy    = "${var.blaster_configmap_deploy}"
+  s3_bucket = "${var.blaster_configmap_bucket}"
 }
 
 module "blaster_configmap_apply" {
@@ -76,7 +76,6 @@ module "blaster_configmap_apply" {
   s3_bucket           = "${module.blaster_configmap_bucket.bucket_name}"
   configmap_key       = "configmap_${module.eks_heptio.cluster_name}_blaster.yml"
 }
-
 
 # --------------------------------------------------
 # Traefik
@@ -92,11 +91,11 @@ module "traefik_deploy" {
 }
 
 module "traefik_alb_cert" {
-  source         = "../../_sub/network/acm-certificate-san"
-  deploy         = "${var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy ? 1 : 0}"
-  domain_name    = "*.${local.eks_fqdn}"
-  dns_zone_name  = "${var.workload_dns_zone_name}"
-  core_alias     = "${var.traefik_alb_core_alias}"
+  source        = "../../_sub/network/acm-certificate-san"
+  deploy        = "${var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy ? 1 : 0}"
+  domain_name   = "*.${local.eks_fqdn}"
+  dns_zone_name = "${var.workload_dns_zone_name}"
+  core_alias    = "${var.traefik_alb_core_alias}"
 }
 
 module "traefik_alb_auth_appreg" {
@@ -142,6 +141,10 @@ module "traefik_alb_auth_dns_core_alias" {
   record_type  = "CNAME"
   record_ttl   = "900"
   record_value = "${element(concat(module.traefik_alb_auth_dns.record_name, list("")), 0)}"
+
+  providers {
+    aws = "aws.core"
+  }
 }
 
 module "traefik_alb_anon" {
