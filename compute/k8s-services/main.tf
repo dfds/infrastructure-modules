@@ -63,7 +63,7 @@ module "servicebroker_deploy" {
   aws_workload_account_id = "${var.aws_workload_account_id}"
   cluster_name            = "${var.eks_cluster_name}"
   table_name              = "eks-servicebroker-${var.eks_cluster_name}"
-  deploy_name             = "$aws-servicebroker"
+  deploy_name             = "aws-servicebroker"
   namespace               = "aws-sb"
   chart_repo              = "aws-sb"
   chart_name              = "aws-servicebroker"
