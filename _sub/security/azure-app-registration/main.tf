@@ -25,23 +25,9 @@ resource "null_resource" "new_appreg_key" {
 }
 
 data "external" "appreg_key" {
-  count = "${var.deploy}"
-
+  count      = "${var.deploy}"
   depends_on = ["null_resource.new_appreg_key"]
-
-  program = ["sh", "${path.module}/read_key.sh"]
-
-  query = {
-    key_path_s3 = "s3://${var.appreg_key_bucket}/${var.appreg_key_key}"
-  }
-}
-
-data "external" "null_dummy" {
-  count = 0
-
-  depends_on = ["null_resource.new_appreg_key"]
-
-  program = ["sh", "${path.module}/read_key.sh"]
+  program    = ["sh", "${path.module}/read_key.sh"]
 
   query = {
     key_path_s3 = "s3://${var.appreg_key_bucket}/${var.appreg_key_key}"

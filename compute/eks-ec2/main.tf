@@ -62,13 +62,21 @@ module "eks_heptio" {
   eks_role_arn              = "${module.eks_workers.worker_role}"
 }
 
-module "apply_blaster_configmap" {
+module "blaster_configmap_bucket" {
+  source              = "../../_sub/storage/s3-bucket"
+  deploy              = "${var.blaster_configmap_deploy}"
+  s3_bucket           = "${var.blaster_configmap_bucket}"
+}
+
+module "blaster_configmap_apply" {
   source              = "../../_sub/compute/k8s-blaster-configmap"
   deploy              = "${var.blaster_configmap_deploy}"
   aws_assume_role_arn = "${var.aws_assume_role_arn}"
   cluster_name        = "${module.eks_heptio.cluster_name}"
-  s3_bucket           = "${var.blaster_configmap_bucket}"
+  s3_bucket           = "${module.blaster_configmap_bucket.bucket_name}"
+  configmap_key       = "configmap_${module.eks_heptio.cluster_name}_blaster.yml"
 }
+
 
 # --------------------------------------------------
 # Traefik
@@ -80,7 +88,7 @@ module "traefik_deploy" {
   source       = "../../_sub/compute/k8s-traefik"
   deploy       = "${var.traefik_deploy}"
   deploy_name  = "${var.traefik_deploy_name}"
-  cluster_name = "${var.eks_cluster_name}"
+  cluster_name = "${module.eks_heptio.cluster_name}"
 }
 
 module "traefik_alb_cert" {
