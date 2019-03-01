@@ -33,65 +33,6 @@ resource "aws_dynamodb_table" "service-broker-table" {
   }
 }
 
-# resource "null_resource" "repo_init_helm" {
-#  count          = "${var.deploy}"
-#   triggers {
-#     build_number = "${timestamp()}"
-#   }
-
-#   provisioner "local-exec" {
-#     command = "helm init --client-only"
-#   }
-
-#   provisioner "local-exec" {
-#     command = "helm repo add servicecatalog https://svc-catalog-charts.storage.googleapis.com"
-#   }
-
-#   provisioner "local-exec" {
-#     command = "helm repo add aws-sb https://awsservicebroker.s3.amazonaws.com/charts"
-#   }
-
-#   provisioner "local-exec" {
-#     command = <<EOT
-#         echo "Testing for Tiller"
-#         count=0
-#         kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} -n kube-system get pod -l name=tiller -o yaml
-#         while [ `kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} -n kube-system get pod -l name=tiller -o go-template --template='{{range .items}}{{range .status.conditions}}{{ if eq .type "Ready" }}{{ .status }} {{end}}{{end}}{{end}}'` != 'True' ]
-#         do
-#             if [ $count -gt 18 ]; then
-#                 echo "Failed to get ready Tiller pod."
-#                 exit 1
-#             fi
-#             echo "."
-#             count=$(( $count + 1 ))
-#             sleep 10
-#         done
-#         kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} -n kube-system get pod -l name=tiller -o yaml
-#         sleep 60
-#     EOT
-#   }
-# }
-
-# resource "helm_repository" "servicecatalog" {
-#   count          = "${var.deploy}"
-#   name = "servicecatalog"
-#   url  = "https://svc-catalog-charts.storage.googleapis.com"
-
-#   # depends_on = [
-#   #   "null_resource.repo_init_helm",
-#   # ]
-# }
-
-# resource "helm_repository" "aws-sb" {
-#   count          = "${var.deploy}"
-#   name = "aws-sb"
-#   url  = "https://awsservicebroker.s3.amazonaws.com/charts"
-
-#   # depends_on = [
-#   #   "null_resource.repo_init_helm",
-#   # ]
-# }
-
 resource "helm_release" "service-catalog" {
   count      = "${var.deploy}"
   name       = "catalog"
@@ -135,11 +76,11 @@ resource "null_resource" "wait_for_servicecatalog" {
 
 resource "helm_release" "service-broker" {
   count        = "${var.deploy}"
-  name         = "aws-servicebroker"
-  repository   = "aws-sb"
-  namespace    = "aws-sb"
-  chart        = "aws-servicebroker"
-  version      = "1.0.0-beta.3"
+  name         = "${var.deploy_name}"
+  namespace    = "${var.namespace}"
+  repository   = "${var.chart_repo}"
+  chart        = "${var.chart_name}"
+  version      = "${var.chart_version}"
   force_update = "true"
 
   set {
@@ -149,7 +90,7 @@ resource "helm_release" "service-broker" {
 
   set {
     name  = "aws.tablename"
-    value = "${var.table_name}-${var.cluster_name}"
+    value = "${var.table_name}"
   }
 
   set {
