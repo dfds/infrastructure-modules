@@ -7,7 +7,7 @@ output "vpc_id" {
 }
 
 output "subnet_ids" {
-  value = "${aws_subnet.eks.*.id}"
+  value = ["${aws_subnet.eks.*.id}"]
 }
 
 output "eks_endpoint" {
@@ -21,5 +21,3 @@ output "eks_certificate_authority" {
 output "eks_role_arn" {
   value = "${aws_iam_role.eks.arn}"
 }
-
-

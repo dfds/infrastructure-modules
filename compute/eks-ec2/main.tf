@@ -77,6 +77,7 @@ module "blaster_configmap_apply" {
   configmap_key       = "configmap_${module.eks_heptio.cluster_name}_blaster.yml"
 }
 
+
 # --------------------------------------------------
 # Traefik
 # Depends on a lot of input data from the cluster,
@@ -182,10 +183,17 @@ module "param_store_default_kube_config" {
   key_value       = "${module.eks_heptio.user_configfile}"
 }
 
-# module "traefik_nlb" {
-# Currently used only with Argo CD
-# source             = "../../_sub/network/acm-certificate"
-# deploy             = "${var.traefik_nlb_deploy && var.argocd_deploy ? 1 : 0}"
-# ...
-# }
+
+module "traefik_nlb" {
+  source             = "../../_sub/compute/eks-nlb"
+  #deploy             = "${var.traefik_nlb_deploy && var.argocd_deploy ? 1 : 0}"
+  deploy             = "${var.traefik_nlb_deploy}"
+  cluster_name        = "${module.eks_heptio.cluster_name}"
+  subnet_ids          = "${module.eks_cluster.subnet_ids}"
+  vpc_id              = "${module.eks_cluster.vpc_id}"
+  nlb_certificate_arn = "${module.traefik_alb_cert.certificate_arn}"
+  nodes_sg_id         = "${module.eks_workers.nodes_sg_id}"
+  cidr_blocks         = "${var.traefik_nlb_cidr_blocks}"
+  autoscaling_group_id = "${module.eks_workers.autoscaling_group_id}"
+}
 

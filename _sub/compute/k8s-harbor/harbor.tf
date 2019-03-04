@@ -257,7 +257,7 @@ resource "helm_release" "harbor" {
   }
 
   #--------------------------------------------------------------#
-  # Note: A combinitation of set and raw yaml values override was need to get this to work
+  # Note: A combinitation of set and raw yaml values override was needed to get this to work
   #--------------------------------------------------------------#
   values = [<<EOF
     expose:

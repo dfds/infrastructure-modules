@@ -82,6 +82,11 @@ variable "traefik_nlb_deploy" {
   default = false
 }
 
+variable "traefik_nlb_cidr_blocks" {
+  type = "list"
+  default = []
+}
+
 variable "blaster_configmap_deploy" {
   default = false
 }

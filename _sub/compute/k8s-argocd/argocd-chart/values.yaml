@@ -1,0 +1,23 @@
+oidc:
+  issuer: https://sts.windows.net/0f23c4db-5ee2-47ba-8b54-98254d2a1b74/
+  clientID: id
+  clientSecret: secret
+
+externalUrl: https://argo.linus.samdi.dfds.cloud
+adminPassword:
+
+repositories:
+  - url: https://github.com/helm/charts.git
+  # - passwordSecret:
+  #     key: password
+  #     name: repo-argo-app-2963738972
+  #   url: https://github.com/dfds/argo-app.git
+  #   usernameSecret:
+  #     key: username
+  #     name: repo-argo-app-2963738972
+  # - url: https://github.com/argoproj/argocd-example-apps.git
+
+hostUrl: argo.linus.samdi.dfds.cloud
+grpcHostUrl: argogrpc.linus.samdi.dfds.cloud
+
+argoAppImage: jacobheidelbachdfds/argocd:v0.11.0-authfix
