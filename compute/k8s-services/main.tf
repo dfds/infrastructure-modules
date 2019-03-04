@@ -27,10 +27,10 @@ provider "helm" {
   }
 }
 
+
 # --------------------------------------------------
 # Get remote state of cluster deployment
 # --------------------------------------------------
-
 
 data "terraform_remote_state" "cluster" {
   backend = "s3"
@@ -42,9 +42,11 @@ data "terraform_remote_state" "cluster" {
   }
 }
 
+
 # --------------------------------------------------
 # KIAM
 # --------------------------------------------------
+
 module "kiam_deploy" {
   source                  = "../../_sub/compute/k8s-kiam"
   deploy                  = "${var.kiam_deploy}"
@@ -52,6 +54,7 @@ module "kiam_deploy" {
   aws_workload_account_id = "${var.aws_workload_account_id}"
   worker_role_id          = "${data.terraform_remote_state.cluster.eks_worker_role_id}"
 }
+
 
 # --------------------------------------------------
 # Blaster - depends on KIAM
@@ -64,6 +67,7 @@ module "blaster_namespace" {
   blaster_configmap_bucket = "${data.terraform_remote_state.cluster.blaster_configmap_bucket}"
   kiam_server_role_arn     = "${module.kiam_deploy.server_role_arn}"
 }
+
 
 # --------------------------------------------------
 # Service Broker - depends on KIAM
@@ -84,6 +88,7 @@ module "servicebroker_deploy" {
   kiam_server_role_id     = "${module.kiam_deploy.server_role_id}"
 }
 
+
 # --------------------------------------------------
 # Flux
 # --------------------------------------------------
@@ -102,6 +107,7 @@ module "flux_deploy" {
   registry_password = "${var.flux_registry_password}"
   registry_email    = "${var.flux_registry_email}"
 }
+
 
 # --------------------------------------------------
 # ArgoCD

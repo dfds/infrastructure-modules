@@ -32,15 +32,15 @@ then
     exit 1
 fi
 
-# Download CLI matching the deployed version of Argo CD. Always bundled with platform.
-curl -o argocd https://$HOSTURL/download/argocd-linux-amd64
-# Make sure CLI is executable
-chmod +x argocd
+# # Download CLI matching the deployed version of Argo CD. Always bundled with platform.
+# curl -o argocd https://$HOSTURL/download/argocd-linux-amd64
+# # Make sure CLI is executable
+# chmod +x argocd
 
 # Default Argo CD password is derived from pod-name
 oldpassword=`kubectl --kubeconfig $KUBECONFIG get pods -n argocd -l app=argocd-server -o name | cut -d'/' -f 2`
 
 # Setup Argo CD context with existing password. Uses GRPC
-./argocd login $GRPCURL --username admin --password "$oldpassword"
+argocd login $GRPCURL --username admin --password "$oldpassword"
 # Change password to desired
-./argocd account update-password --current-password "$oldpassword" --new-password "$PASSWORD"
+argocd account update-password --current-password "$oldpassword" --new-password "$PASSWORD"
