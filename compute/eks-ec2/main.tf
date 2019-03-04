@@ -72,32 +72,6 @@ module "apply_blaster_configmap" {
 
 
 # --------------------------------------------------
-# Tiller (Helm server)
-# --------------------------------------------------
-
-module "k8s_helm" {
-  source       = "../../_sub/compute/k8s-helm"
-  cluster_name = "${module.eks_heptio.cluster_name}"
-}
-
-
-# --------------------------------------------------
-# Deployment service account
-# --------------------------------------------------
-
-module "k8s_service_account" {
-  source       = "../../_sub/compute/k8s-service-account"
-  cluster_name         = "${module.eks_heptio.cluster_name}" 
-}
-
-module "k8s_service_account_store_secret" {
-  source      = "../../_sub/security/ssm-parameter-store"
-  key_name        = "/eks/${module.eks_heptio.cluster_name}/deploy_user"
-  key_description = "Kube config file for general deployment user"
-  key_value       = "${module.k8s_service_account.deploy_user_config}"
-}
-
-# --------------------------------------------------
 # Traefik
 # Depends on a lot of input data from the cluster,
 # so it makes sense to keep in this module
