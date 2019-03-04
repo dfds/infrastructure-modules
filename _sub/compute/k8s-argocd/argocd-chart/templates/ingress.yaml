@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: argocd-server-http-ingress
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          serviceName: argocd-server
+          servicePort: http
+    host: {{ .Values.hostUrl }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: argocd-server-grpc-ingress
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    ingress.kubernetes.io/protocol: h2c
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          serviceName: argocd-server
+          servicePort: https
+    host:  {{ .Values.grpcHostUrl }}

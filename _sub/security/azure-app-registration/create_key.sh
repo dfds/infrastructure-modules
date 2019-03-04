@@ -16,6 +16,10 @@ if [ $NUM_KEYS_AZ -eq 0 ]; then
 fi
 
 
+#az ad app permission add --id $APPLICATION_ID --api 00000002-0000-0000-c000-000000000000 --api-permissions 311a71cc-e848-46a1-bdf8-97ff7156d8e6=Scope
+#az ad app permission grant --id $APPLICATION_ID --api 00000002-0000-0000-c000-000000000000
+
+
 # Determine if key file exists in S3
 aws s3 ls $KEY_PATH_S3 >/dev/null || CREATE_KEY=1
 
