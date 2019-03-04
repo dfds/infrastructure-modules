@@ -95,7 +95,7 @@ module "traefik_alb_cert" {
   deploy        = "${var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy ? 1 : 0}"
   domain_name   = "*.${local.eks_fqdn}"
   dns_zone_name = "${var.workload_dns_zone_name}"
-  core_alias    = "${var.traefik_alb_core_alias}"
+  core_alias    = "${var.traefik_alb_auth_core_alias}"
 }
 
 module "traefik_alb_auth_appreg" {
@@ -135,9 +135,9 @@ module "traefik_alb_auth_dns" {
 
 module "traefik_alb_auth_dns_core_alias" {
   source       = "../../_sub/network/route53-record"
-  deploy       = "${var.traefik_alb_auth_deploy == 1 ? signum(length(var.traefik_alb_core_alias)) : 0}"
+  deploy       = "${var.traefik_alb_auth_deploy == 1 ? signum(length(var.traefik_alb_auth_core_alias)) : 0}"
   zone_id      = "${local.core_dns_zone_id}"
-  record_name  = "${var.traefik_alb_core_alias}"
+  record_name  = "${var.traefik_alb_auth_core_alias}"
   record_type  = "CNAME"
   record_ttl   = "900"
   record_value = "${element(concat(module.traefik_alb_auth_dns.record_name, list("")), 0)}.${var.workload_dns_zone_name}."

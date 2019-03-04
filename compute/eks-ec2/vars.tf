@@ -72,7 +72,7 @@ variable "traefik_alb_auth_deploy" {
   default = false
 }
 
-variable "traefik_alb_core_alias" {
+variable "traefik_alb_auth_core_alias" {
   description = "A list of aliases/alternative names in the *parent* domain, the certficate should also be valid for. E.g. 'prettyurl.company.tld'"
   type    = "list"
   default = []

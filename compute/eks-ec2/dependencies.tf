@@ -16,7 +16,7 @@ data "aws_route53_zone" "workload" {
 }
 
 data "aws_route53_zone" "core" {
-  count        = "${signum(length(var.traefik_alb_core_alias))}"
+  count        = "${signum(length(var.traefik_alb_auth_core_alias))}"
   name         = "${local.core_dns_zone_name}."
   private_zone = false
   provider     = "aws.core"
@@ -30,9 +30,9 @@ locals {
 
 # Generate Traefik authenticated ALB app registration reply URLs
 locals {
-  traefik_alb_auth_appreg_reply_join        = "^${join("$,^", var.traefik_alb_core_alias)}$"
+  traefik_alb_auth_endpoints                = "${concat(list("internal.${local.eks_fqdn}"), var.traefik_alb_auth_core_alias)}"
+  traefik_alb_auth_appreg_reply_join        = "^${join("$,^", local.traefik_alb_auth_endpoints)}$"
   traefik_alb_auth_appreg_reply_replace_pre = "${replace(local.traefik_alb_auth_appreg_reply_join, "^", "https://")}"
   traefik_alb_auth_appreg_reply_replace_end = "${replace(local.traefik_alb_auth_appreg_reply_replace_pre, "$", "/oauth2/idpresponse")}"
-  traefik_alb_auth_appreg_reply_split       = "${split(",", local.traefik_alb_auth_appreg_reply_replace_end)}"
-  traefik_alb_auth_appreg_reply_urls        = "${concat(list("https://internal.${local.eks_fqdn}/oauth2/idpresponse"), local.traefik_alb_auth_appreg_reply_split)}"
-}
+  traefik_alb_auth_appreg_reply_urls        = "${split(",", local.traefik_alb_auth_appreg_reply_replace_end)}"
+}  
