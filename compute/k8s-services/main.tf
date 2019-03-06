@@ -16,17 +16,23 @@ provider "aws" {
   }
 }
 
+provider "aws" {
+  region  = "${var.aws_region}"
+  version = "~> 1.60"
+  alias   = "core"
+}
+
 provider "kubernetes" {
   config_path = "${pathexpand("~/.kube/config_${var.eks_cluster_name}")}"
 }
 
 provider "helm" {
   version = "~> 0.8"
+
   kubernetes {
     config_path = "${pathexpand("~/.kube/config_${var.eks_cluster_name}")}"
   }
 }
-
 
 # --------------------------------------------------
 # Get remote state of cluster deployment
@@ -42,6 +48,108 @@ data "terraform_remote_state" "cluster" {
   }
 }
 
+# --------------------------------------------------
+# Traefik
+# --------------------------------------------------
+
+module "traefik_deploy" {
+  source       = "../../_sub/compute/k8s-traefik"
+  deploy       = "${var.traefik_deploy}"
+  deploy_name  = "${var.traefik_deploy_name}"
+  cluster_name = "${var.eks_cluster_name}"
+}
+
+module "traefik_alb_cert" {
+  source        = "../../_sub/network/acm-certificate-san"
+  deploy        = "${var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy ? 1 : 0}"
+  domain_name   = "*.${local.eks_fqdn}"
+  dns_zone_name = "${var.workload_dns_zone_name}"
+  core_alias    = "${var.traefik_alb_auth_core_alias}"
+}
+
+module "traefik_alb_auth_appreg" {
+  source            = "../../_sub/security/azure-app-registration"
+  deploy            = "${var.traefik_alb_auth_deploy}"
+  name              = "Kubernetes EKS ${local.eks_fqdn}"
+  homepage          = "https://${local.eks_fqdn}"
+  identifier_uris   = ["https://${local.eks_fqdn}"]
+  reply_urls        = ["${local.traefik_alb_auth_appreg_reply_urls}"]
+  appreg_key_bucket = "${var.terraform_state_s3_bucket}"
+  appreg_key_key    = "keys/eks/${var.eks_cluster_name}/appreg_alb_key.json"
+}
+
+module "traefik_alb_auth" {
+  source               = "../../_sub/compute/eks-alb-auth"
+  deploy               = "${var.traefik_alb_auth_deploy}"
+  cluster_name         = "${var.eks_cluster_name}"
+  vpc_id               = "${data.terraform_remote_state.cluster.eks_cluster_vpc_id}"
+  subnet_ids           = ["${data.terraform_remote_state.cluster.eks_cluster_subnet_ids}"]
+  autoscaling_group_id = "${data.terraform_remote_state.cluster.eks_worker_autoscaling_group_id}"
+  alb_certificate_arn  = "${module.traefik_alb_cert.certificate_arn}"
+  nodes_sg_id          = "${data.terraform_remote_state.cluster.eks_cluster_nodes_sg_id}"
+  azure_tenant_id      = "${module.traefik_alb_auth_appreg.tenant_id}"
+  azure_client_id      = "${module.traefik_alb_auth_appreg.application_id}"
+  azure_client_secret  = "${module.traefik_alb_auth_appreg.application_key}"
+}
+
+module "traefik_alb_auth_dns" {
+  source       = "../../_sub/network/route53-record"
+  deploy       = "${var.traefik_alb_auth_deploy}"
+  zone_id      = "${local.workload_dns_zone_id}"
+  record_name  = ["internal.${var.eks_cluster_name}"]
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = "${module.traefik_alb_auth.alb_fqdn}."
+}
+
+module "traefik_alb_auth_dns_core_alias" {
+  source       = "../../_sub/network/route53-record"
+  deploy       = "${var.traefik_alb_auth_deploy == 1 ? signum(length(var.traefik_alb_auth_core_alias)) : 0}"
+  zone_id      = "${local.core_dns_zone_id}"
+  record_name  = "${var.traefik_alb_auth_core_alias}"
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = "${element(concat(module.traefik_alb_auth_dns.record_name, list("")), 0)}.${var.workload_dns_zone_name}."
+
+  providers {
+    aws = "aws.core"
+  }
+}
+
+module "traefik_alb_anon" {
+  source               = "../../_sub/compute/eks-alb"
+  deploy               = "${var.traefik_alb_anon_deploy}"
+  cluster_name         = "${var.eks_cluster_name}"
+  vpc_id               = "${data.terraform_remote_state.cluster.eks_cluster_vpc_id}"
+  subnet_ids           = ["${data.terraform_remote_state.cluster.eks_cluster_subnet_ids}"]
+  autoscaling_group_id = "${data.terraform_remote_state.cluster.eks_worker_autoscaling_group_id}"
+  alb_certificate_arn  = "${module.traefik_alb_cert.certificate_arn}"
+  nodes_sg_id          = "${data.terraform_remote_state.cluster.eks_cluster_nodes_sg_id}"
+}
+
+module "traefik_alb_anon_dns" {
+  source       = "../../_sub/network/route53-record"
+  deploy       = "${var.traefik_alb_anon_deploy}"
+  zone_id      = "${local.workload_dns_zone_id}"
+  record_name  = ["*.${var.eks_cluster_name}"]
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = "${module.traefik_alb_anon.alb_fqdn}"
+}
+
+module "traefik_nlb" {
+  source = "../../_sub/compute/eks-nlb"
+
+  #deploy             = "${var.traefik_nlb_deploy && var.argocd_deploy ? 1 : 0}"
+  deploy               = "${var.traefik_nlb_deploy}"
+  cluster_name         = "${var.eks_cluster_name}"
+  vpc_id               = "${data.terraform_remote_state.cluster.eks_cluster_vpc_id}"
+  subnet_ids           = ["${data.terraform_remote_state.cluster.eks_cluster_subnet_ids}"]
+  nlb_certificate_arn  = "${module.traefik_alb_cert.certificate_arn}"
+  nodes_sg_id          = "${data.terraform_remote_state.cluster.eks_cluster_nodes_sg_id}"
+  cidr_blocks          = "${var.traefik_nlb_cidr_blocks}"
+  autoscaling_group_id = "${data.terraform_remote_state.cluster.eks_worker_autoscaling_group_id}"
+}
 
 # --------------------------------------------------
 # KIAM
@@ -55,7 +163,6 @@ module "kiam_deploy" {
   worker_role_id          = "${data.terraform_remote_state.cluster.eks_worker_role_id}"
 }
 
-
 # --------------------------------------------------
 # Blaster - depends on KIAM
 # --------------------------------------------------
@@ -67,7 +174,6 @@ module "blaster_namespace" {
   blaster_configmap_bucket = "${data.terraform_remote_state.cluster.blaster_configmap_bucket}"
   kiam_server_role_arn     = "${module.kiam_deploy.server_role_arn}"
 }
-
 
 # --------------------------------------------------
 # Service Broker - depends on KIAM
@@ -88,7 +194,6 @@ module "servicebroker_deploy" {
   kiam_server_role_id     = "${module.kiam_deploy.server_role_id}"
 }
 
-
 # --------------------------------------------------
 # Flux
 # --------------------------------------------------
@@ -108,34 +213,33 @@ module "flux_deploy" {
   registry_email    = "${var.flux_registry_email}"
 }
 
-
 # --------------------------------------------------
 # ArgoCD
 # --------------------------------------------------
 
 module "argocd_deploy" {
-  source       = "../../_sub/compute/k8s-argocd"
-  deploy       = "${var.argocd_deploy}"
+  source    = "../../_sub/compute/k8s-argocd"
+  deploy    = "${var.argocd_deploy}"
   namespace = "argocd"
 
-  oidc_issuer = "https://sts.windows.net/${module.argocd_appreg.tenant_id}/" 
-  oidc_client_id = "${module.argocd_appreg.application_id}"
+  oidc_issuer        = "https://sts.windows.net/${module.argocd_appreg.tenant_id}/"
+  oidc_client_id     = "${module.argocd_appreg.application_id}"
   oidc_client_secret = "${module.argocd_appreg.application_key}"
 
-  external_url = "https://argo.${data.terraform_remote_state.cluster.eks_fqdn}"
-  host_url = "argo.${data.terraform_remote_state.cluster.eks_fqdn}"
-  grpc_host_url = "argogrpc.${data.terraform_remote_state.cluster.eks_fqdn}"  
-  argo_app_image = "jacobheidelbachdfds/argocd:v0.11.0-authfix"  
-  cluster_name = "${var.eks_cluster_name}"
+  external_url   = "https://argo.${local.eks_fqdn}"
+  host_url       = "argo.${local.eks_fqdn}"
+  grpc_host_url  = "argogrpc.${local.eks_fqdn}"
+  argo_app_image = "jacobheidelbachdfds/argocd:v0.11.0-authfix"
+  cluster_name   = "${var.eks_cluster_name}"
 }
 
 module "argocd_appreg" {
   source            = "../../_sub/security/azure-app-registration"
   deploy            = "${var.argocd_deploy}"
-  name              = "ArgoCD ${data.terraform_remote_state.cluster.eks_fqdn}"
-  homepage          = "https://argo.${data.terraform_remote_state.cluster.eks_fqdn}"
-  identifier_uris   = ["https://argo.${data.terraform_remote_state.cluster.eks_fqdn}"]  
-  reply_urls        = ["https://argo.${data.terraform_remote_state.cluster.eks_fqdn}/auth/callback"]
+  name              = "ArgoCD ${local.eks_fqdn}"
+  homepage          = "https://argo.${local.eks_fqdn}"
+  identifier_uris   = ["https://argo.${local.eks_fqdn}"]
+  reply_urls        = ["https://argo.${local.eks_fqdn}/auth/callback"]
   appreg_key_bucket = "${var.terraform_state_s3_bucket}"
   appreg_key_key    = "keys/eks/${var.eks_cluster_name}/appreg_argocd_key.json"
   grant_aad_access  = true
@@ -144,13 +248,12 @@ module "argocd_appreg" {
 module "argocd_grpc_dns" {
   source       = "../../_sub/network/route53-record"
   deploy       = "${var.argocd_deploy}"
-  zone_id      = "${data.terraform_remote_state.cluster.workload_dns_zone_id}"
-  record_name  =  ["argogrpc.${var.eks_cluster_name}"]
+  zone_id      = "${local.workload_dns_zone_id}"
+  record_name  = ["argogrpc.${var.eks_cluster_name}"]
   record_type  = "CNAME"
   record_ttl   = "300"
-  record_value = "${data.terraform_remote_state.cluster.traefik_nlb_fqdn}"
+  record_value = "${module.traefik_nlb.nlb_fqdn}"
 }
-
 
 # --------------------------------------------------
 # Harbor
@@ -169,9 +272,9 @@ module "argocd_grpc_dns" {
 #   deploy = "${var.harbor_deploy}"
 
 
-#   vpc_id                                 = "${module.eks_cluster.vpc_id}"
+#   vpc_id                                 = "${data.terraform_remote_state.cluster.eks_cluster_vpc_id}"
 #   allow_connections_from_security_groups = ["${module.eks_workers.nodes_sg_id}"]
-#   subnet_ids                             = "${module.eks_cluster.subnet_ids}"
+#   subnet_ids                             = ["${data.terraform_remote_state.cluster.eks_cluster_subnet_ids}"]
 
 
 #   # postgresdb_engine_version = "${var.harbor_postgresdb_engine_version}"

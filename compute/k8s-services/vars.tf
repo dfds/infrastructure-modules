@@ -24,12 +24,51 @@ variable "aws_assume_role_arn" {
   type = "string"
 }
 
+variable "workload_dns_zone_name" {}
+
 # --------------------------------------------------
 # EKS
 # --------------------------------------------------
 
 variable "eks_cluster_name" {
   type = "string"
+}
+
+# --------------------------------------------------
+# Traefik
+# --------------------------------------------------
+
+variable "traefik_deploy" {
+  default = false
+}
+
+variable "traefik_deploy_name" {}
+
+variable "traefik_alb_anon_deploy" {
+  default = false
+}
+
+variable "traefik_alb_auth_deploy" {
+  default = false
+}
+
+variable "traefik_alb_auth_core_alias" {
+  description = "A list of aliases/alternative names in the *parent* domain, the certficate should also be valid for. E.g. 'prettyurl.company.tld'"
+  type    = "list"
+  default = []
+}
+
+variable "traefik_nlb_deploy" {
+  default = false
+}
+
+variable "traefik_nlb_cidr_blocks" {
+  type = "list"
+  default = []
+}
+
+variable "blaster_configmap_deploy" {
+  default = false
 }
 
 # --------------------------------------------------
@@ -55,7 +94,6 @@ variable "blaster_deploy" {
 variable "servicebroker_deploy" {
   default = false
 }
-
 
 # --------------------------------------------------
 # ArgoCD
