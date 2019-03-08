@@ -1,4 +1,5 @@
 resource "helm_release" "harbor" {
+  count = "${var.deploy}"
   name      = "harbor-registry"
   namespace = "${var.namespace}"
   chart     = "${path.module}/harbor-chart"
@@ -46,15 +47,15 @@ resource "helm_release" "harbor" {
     value = "${var.s3_region}"
   }
 
-  set {
-    name  = "persistence.imageChartStorage.s3.accesskey"
-    value = "${var.harbor_s3_acces_key}"
-  }
+  # set {
+  #   name  = "persistence.imageChartStorage.s3.accesskey"
+  #   value = "${var.s3_acces_key}"
+  # }
 
-  set {
-    name  = "persistence.imageChartStorage.s3.secretkey"
-    value = "${var.harbor_s3_secret_key}"
-  }
+  # set {
+  #   name  = "persistence.imageChartStorage.s3.secretkey"
+  #   value = "${var.s3_secret_key}"
+  # }
 
   set {
     name  = "persistence.imageChartStorage.s3.bucket"
@@ -256,6 +257,15 @@ resource "helm_release" "harbor" {
     value = "v1.7.1"
   }
 
+  set {
+    name = "persistence.resourcePolicy"
+    value = ""
+  }
+
+  set {
+    name = "harborAdminPassword"
+    value = "${var.portal_admin_password}"
+  }
   #--------------------------------------------------------------#
   # Note: A combinitation of set and raw yaml values override was needed to get this to work
   #--------------------------------------------------------------#

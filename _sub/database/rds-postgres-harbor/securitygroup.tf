@@ -4,13 +4,17 @@
 
 resource "aws_db_subnet_group" "harbor-db-sg" {
   count       = "${var.deploy}"
-  name_prefix = "harbor-rds"                           # "${var.name_prefix}"
-  description = "Database subnet group for harbor-rds"
+  name_prefix = "${var.ressource_name_prefix}"
+  description = "Database subnet group for harbor"
   subnet_ids  = ["${var.subnet_ids}"]
 
   tags = {
     Name = "Harbor-rds subnet group"
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }  
 }
 
 # ------------------------------------------------------------------------------
@@ -18,25 +22,31 @@ resource "aws_db_subnet_group" "harbor-db-sg" {
 # ------------------------------------------------------------------------------
 resource "aws_security_group" "db" {
   count       = "${var.deploy}"
-  name        = "harbor-postgres-db"
+  name_prefix = "${var.ressource_name_prefix}"
   description = "Security group for Harbor Postgres Db"
   vpc_id      = "${var.vpc_id}"
-
-  #   tags        = "${var.custom_tags}"
   tags = "${
     map(
      "Name", "Harbor-db"
     )
   }"
+
+  lifecycle {
+    create_before_destroy = true
+  }  
 }
 
 resource "aws_security_group_rule" "allow_connections_from_security_group" {
-  count                    = "${length(var.allow_connections_from_security_groups)}"
+  count        = "${var.deploy && length(var.allow_connections_from_security_groups) >= 0 ? length(var.allow_connections_from_security_groups) : 0}"
   type                     = "ingress"
   from_port                = "${var.port}"
   to_port                  = "${var.port}"
   protocol                 = "tcp"
   source_security_group_id = "${element(var.allow_connections_from_security_groups, count.index)}"
 
-  security_group_id = "${aws_security_group.db.id}"
+  security_group_id = "${element(concat(aws_security_group.db.*.id, list("")), 0)}"  
+
+  lifecycle {
+    create_before_destroy = true
+  }  
 }

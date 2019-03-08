@@ -107,17 +107,13 @@ variable "argocd_deploy" {
 # Harbor
 # --------------------------------------------------
 
-# variable "harbor_deploy" {
-#   default = false
-# }
+variable "harbor_deploy" {
+  default = false
+}
 
-# variable "harbor_k8s_namespace" {
-#   type = "string"
-# }
-
-# variable "harbor_s3_bucket" {
-#   type = "string"
-# }
+variable "harbor_k8s_namespace" {
+  type = "string"
+}
 
 # variable "harbor_s3_acces_key" {
 #   type = "string"
@@ -127,33 +123,21 @@ variable "argocd_deploy" {
 #   type = "string"
 # }
 
-# variable "harbor_db_instance_size" {
-#   type = "string"
-# }
+variable "harbor_db_instance_size" {
+  type = "string"
+}
 
-# variable "harbor_postgresdb_engine_version" {
-#   type = "string"
-# }
+variable "harbor_postgresdb_engine_version" {
+  type = "string"
+}
 
-# variable "harbor_db_storage_size" {
-#   type = "string"
-# }
+variable "harbor_db_storage_size" {
+  type = "string"
+}
 
-# variable "harbor_db_server_identifier" {
-#   type = "string"
-# }
-
-# variable "harbor_db_server_username" {
-#   type = "string"
-# }
-
-# variable "harbor_db_server_password" {
-#   type = "string"
-# }
-
-# variable "harbor_db_server_port" {}
-
-# variable "harbor_registry_endpoint_external_url" {}
+variable "harbor_db_server_username" {
+  type = "string"
+}
 
 
 # --------------------------------------------------
