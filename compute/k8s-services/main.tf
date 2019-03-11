@@ -269,7 +269,7 @@ module "harbor_postgres" {
   source = "../../_sub/database/rds-postgres-harbor"
   deploy = "${var.harbor_deploy}"
   vpc_id                                 = "${data.terraform_remote_state.cluster.eks_cluster_vpc_id}"
-  allow_connections_from_security_groups = ["${data.terraform_remote_state.cluster.eks_worker_nodes_sg_id}"]
+  allow_connections_from_security_groups = ["${data.terraform_remote_state.cluster.eks_cluster_nodes_sg_id}"]
   subnet_ids                             = "${data.terraform_remote_state.cluster.eks_cluster_subnet_ids}"
 
   postgresdb_engine_version = "${var.harbor_postgresdb_engine_version}"
