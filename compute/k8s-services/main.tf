@@ -259,63 +259,77 @@ module "argocd_grpc_dns" {
 # Harbor
 # --------------------------------------------------
 
+module "harbor_s3" {
+  source    = "../../_sub/storage/s3-bucket"
+  deploy    = "${var.harbor_deploy}"
+  s3_bucket = "harbor-${var.eks_cluster_name}"
+}
 
-# module "harbor_s3" {
-#   source    = "../../_sub/storage/s3-bucket"
-#   deploy    = "${var.harbor_deploy}"
-#   s3_bucket = "${var.harbor_s3_bucket}"
-# }
+module "harbor_postgres" {
+  source = "../../_sub/database/rds-postgres-harbor"
+  deploy = "${var.harbor_deploy}"
+  vpc_id                                 = "${data.terraform_remote_state.cluster.eks_cluster_vpc_id}"
+  allow_connections_from_security_groups = ["${data.terraform_remote_state.cluster.eks_cluster_nodes_sg_id}"]
+  subnet_ids                             = "${data.terraform_remote_state.cluster.eks_cluster_subnet_ids}"
 
+  postgresdb_engine_version = "${var.harbor_postgresdb_engine_version}"
+  db_storage_size           = "${var.harbor_db_storage_size}"
+  db_instance_size          = "${var.harbor_db_instance_size}"
+  ressource_name_prefix = "harbor-${var.eks_cluster_name}"
+  db_name                   = "postgres"
+  db_username               = "${var.harbor_db_server_username}"
+  db_password               ="${module.harbor_db_password.random_string}"
+  harbor_k8s_namespace = "${var.harbor_k8s_namespace}"
+}
 
-# module "harbor_postgres" {
-#   source = "../../_sub/database/rds-postgres-harbor"
-#   deploy = "${var.harbor_deploy}"
+module "harbor_db_password" {
+  source = "../../_sub/security/random-string-generate"    
+  deploy = "${var.harbor_deploy}"
+  special_character_enabled = false
+}
 
-
-#   vpc_id                                 = "${data.terraform_remote_state.cluster.eks_cluster_vpc_id}"
-#   allow_connections_from_security_groups = ["${module.eks_workers.nodes_sg_id}"]
-#   subnet_ids                             = ["${data.terraform_remote_state.cluster.eks_cluster_subnet_ids}"]
-
-
-#   # postgresdb_engine_version = "${var.harbor_postgresdb_engine_version}"
-#   db_storage_size           = "${var.harbor_db_storage_size}"
-#   db_instance_size          = "${var.harbor_db_instance_size}"
-#   db_server_identifier      = "${var.harbor_db_server_identifier}"
-#   db_name                   = "postgres-${var.eks_cluster_name}"
-#   db_username               = "${var.harbor_db_server_username}"
-#   db_password               = "${var.harbor_db_server_password}"
-#   port                      = "${var.harbor_db_server_port}"
-
-
-#   harbor_k8s_namespace = "${var.harbor_k8s_namespace}"
-# }
-
-
-# module "harbor_deploy" {
-#   source = "../../_sub/compute/k8s-harbor"
-#   deploy = "${var.harbor_deploy}"
-
-
-#   cluster_name   = "${var.eks_cluster_name}"
-#   namespace      = "${var.harbor_k8s_namespace}"
-#   worker_role_id = "${data.terraform_remote_state.cluster.eks_worker_role_id}"
+module "harbor_db_password_store" {
+  source = "../../_sub/security/ssm-parameter-store"
+  deploy = "${var.harbor_deploy}"
+  key_name = "/eks/${var.eks_cluster_name}/harbor_db_password"
+  key_description = "Default admin passwpord for Harbor database"  
+  key_value = "${module.harbor_db_password.random_string}"
+}
 
 
-#   registry_endpoint              = "registry.${var.eks_cluster_name}.${var.dns_zone_name}"
-#   registry_endpoint_external_url = "https://registry.${var.eks_cluster_name}.${var.dns_zone_name}"
-#   notary_endpoint                = "notary.${var.eks_cluster_name}.${var.dns_zone_name}"
+module "harbor_admin_password" {
+  source = "../../_sub/security/random-string-generate"    
+  deploy = "${var.harbor_deploy}"
+  special_character_enabled = false
+}
+
+module "harbor_admin_password_store" {
+  source = "../../_sub/security/ssm-parameter-store"
+  deploy = "${var.harbor_deploy}"
+  key_name = "/eks/${var.eks_cluster_name}/harbor_admin_password"
+  key_description = "Default admin passwpord for Harbor portal"  
+  key_value = "${module.harbor_db_password.random_string}"
+}
 
 
-#   db_server_host     = "${module.harbor_postgres.db_address}"
-#   db_server_username = "${var.harbor_db_server_username}"
-#   db_server_password = "${var.harbor_db_server_password}"
-#   db_server_port     = "${var.harbor_db_server_port}"
+module "harbor_deploy" {
+  source = "../../_sub/compute/k8s-harbor"
+  deploy = "${var.harbor_deploy}"
+  cluster_name   = "${var.eks_cluster_name}"
+  namespace      = "${var.harbor_k8s_namespace}"
+  registry_endpoint              = "registry.${local.eks_fqdn}"
+  registry_endpoint_external_url = "https://registry.${local.eks_fqdn}"
+  notary_endpoint                = "notary.${local.eks_fqdn}"
+  db_server_host     = "${module.harbor_postgres.db_address}"
+  db_server_username = "${var.harbor_db_server_username}"
+  db_server_password = "${module.harbor_db_password.random_string}"
+  db_server_port     = "${module.harbor_postgres.db_port}"
+  bucket_name        = "${module.harbor_s3.bucket_name}"
+  s3_region          = "${var.aws_region}"
+  s3_region_endpoint = "http://s3.${var.aws_region}.amazonaws.com"
+  # s3_acces_key       = """ # "${var.harbor_s3_acces_key}"
+  # s3_secret_key      = "" # "${var.harbor_s3_secret_key}"
 
-
-#   bucket_name        = "${module.harbor_s3.bucket_name}"
-#   s3_region          = "${var.aws_region}"
-#   s3_region_endpoint = "http://s3.${var.aws_region}.amazonaws.com"
-#   s3_acces_key       = "${var.harbor_s3_acces_key}"
-#   s3_secret_key      = "${var.harbor_s3_secret_key}"
-# }
+  portal_admin_password = "${module.harbor_admin_password.random_string}"
+}
 

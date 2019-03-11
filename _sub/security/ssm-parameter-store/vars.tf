@@ -4,3 +4,6 @@ variable "key_name" {}
 variable "key_description" {}
 # Parameter value or "content"
 variable "key_value" {}
+variable "deploy" {
+  default = true
+}

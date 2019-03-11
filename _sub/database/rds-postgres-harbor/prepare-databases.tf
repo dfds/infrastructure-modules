@@ -15,7 +15,7 @@ resource "kubernetes_config_map" "harbor-db-init" {
   }
 
   data {
-    run.sh = "${path.module}/run.sh"
+    run.sh =  "${file("${path.module}/run.sh")}"
   }
 
   provider = "kubernetes"

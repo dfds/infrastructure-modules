@@ -1,4 +1,6 @@
-variable "worker_role_id" {}
+variable "deploy" {
+  default = true
+}
 
 variable "bucket_name" {}
 
@@ -42,10 +44,14 @@ variable "db_server_port" {
   
 }
 
-variable "s3_acces_key" {
-   type = "string"
-}
+# variable "s3_acces_key" {
+#    type = "string"
+# }
 
-variable "s3_secret_key" {
-   type = "string"
+# variable "s3_secret_key" {
+#    type = "string"
+# }
+
+variable "portal_admin_password" {
+  
 }

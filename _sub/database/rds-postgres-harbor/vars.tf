@@ -17,9 +17,11 @@ variable "db_instance_size" {
 
 variable "db_storage_size" {}
 
-variable "db_server_identifier" {
+variable "ressource_name_prefix" {
   type = "string"
+  description = "String for prefixing the name of the generated resource"
 }
+
 
 variable "db_name" {
   type = "string"
