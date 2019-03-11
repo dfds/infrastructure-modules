@@ -3,20 +3,13 @@ set -e
 
 # Set arguments to better names
 KUBECONFIG=$1
-HOSTURL=$2
-GRPCURL=$3
-PASSWORD=$4
+GRPCURL=$2
+PASSWORD=$3
 
 # Exit if variable is empty
 if [ -z "$KUBECONFIG" ]
 then
     echo "\$KUBECONFIG is empty"
-    exit 1
-fi
-# Exit if variable is empty
-if [ -z "$HOSTURL" ]
-then
-    echo "\$HOSTURL is empty"
     exit 1
 fi
 # Exit if variable is empty
@@ -31,11 +24,6 @@ then
     echo "\$PASSWORD is empty"
     exit 1
 fi
-
-# # Download CLI matching the deployed version of Argo CD. Always bundled with platform.
-# curl -o argocd https://$HOSTURL/download/argocd-linux-amd64
-# # Make sure CLI is executable
-# chmod +x argocd
 
 # Default Argo CD password is derived from pod-name
 oldpassword=`kubectl --kubeconfig $KUBECONFIG get pods -n argocd -l app=argocd-server -o name | cut -d'/' -f 2`

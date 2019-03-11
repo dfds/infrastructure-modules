@@ -55,7 +55,7 @@ resource "null_resource" "set_password" {
   count = "${var.deploy}"
 
   provisioner "local-exec" {
-    command = "${path.module}/set-admin-password.sh ${pathexpand("~/.kube/config_${var.cluster_name}")} ${var.host_url} ${var.grpc_host_url} ${element(concat(random_string.password.*.result, list("")), 0)}"
+    command = "${path.module}/set-admin-password.sh ${pathexpand("~/.kube/config_${var.cluster_name}")} ${var.grpc_host_url} ${element(concat(random_string.password.*.result, list("")), 0)}"
   }
 
   triggers {
@@ -64,3 +64,17 @@ resource "null_resource" "set_password" {
 
   depends_on = ["helm_release.argocd"]
 }
+
+
+resource "null_resource" "create_project" {
+  count = "${var.deploy}"
+
+  provisioner "local-exec" {
+    command = "${path.module}/create-project.sh ${var.grpc_host_url} ${element(concat(random_string.password.*.result, list("")), 0)} selfservice" 
+  }
+
+  depends_on = ["helm_release.argocd",
+  "null_resource.set_password"]
+}
+
+
