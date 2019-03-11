@@ -38,10 +38,6 @@ output "eks_cluster_vpc_id" {
     value = "${module.eks_cluster.vpc_id}"
 }
 
-output "eks_worker_nodes_sg_id" {
-  value = "${module.eks_workers.nodes_sg_id}"
-}
-
 output "eks_cluster_subnet_ids" {
     value = "${module.eks_cluster.subnet_ids}"
 }
