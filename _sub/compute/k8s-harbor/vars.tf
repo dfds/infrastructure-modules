@@ -11,7 +11,6 @@ variable "cluster_name" {
   
 }
 
-
 variable "registry_endpoint" {
   
 }
@@ -44,14 +43,18 @@ variable "db_server_port" {
   
 }
 
-# variable "s3_acces_key" {
-#    type = "string"
-# }
-
-# variable "s3_secret_key" {
-#    type = "string"
-# }
-
 variable "portal_admin_password" {
   
+}
+
+variable "db_server_default_db_name" {
+  
+}
+
+variable "aws_workload_account_id" {
+  description = "Workload account ID where Kiam is running"
+}
+
+variable "kiam_server_role_id" {
+  description = "The ID of the AWS Role assigned to Kiam server."
 }

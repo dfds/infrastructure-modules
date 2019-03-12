@@ -18,16 +18,3 @@ resource "aws_db_instance" "instance" {
   deletion_protection         = false
   skip_final_snapshot         = true
 }
-
-# resource "aws_db_parameter_group" "harbor-dbparams" {
-# count = "${var.deploy}"
-
-#   name   = "harbor-postgres10"
-#   family = "postgres10"
-
-
-#   parameter {
-#     name  = "rds.force_ssl"
-#     value = "0"
-#   }
-# }

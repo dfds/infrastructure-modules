@@ -115,14 +115,6 @@ variable "harbor_k8s_namespace" {
   type = "string"
 }
 
-# variable "harbor_s3_acces_key" {
-#   type = "string"
-# }
-
-# variable "harbor_s3_secret_key" {
-#   type = "string"
-# }
-
 variable "harbor_db_instance_size" {
   type = "string"
 }
@@ -139,6 +131,10 @@ variable "harbor_db_server_username" {
   type = "string"
 }
 
+variable "harbor_postgresdb_default_db_name" {
+  type = "string"
+  default = "postgres"
+}
 
 # --------------------------------------------------
 # Flux
