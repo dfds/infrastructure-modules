@@ -8,14 +8,14 @@ locals {
   # Append a list item with a map containing the null-valued keys we need to extract.
   # If result is empty, the list will have a single element containing the null-valued keys.
   # If not empty, the first element will be the actual result, followed by the nullvalued keys.
-  result_list = "${concat(data.external.appreg_key.*.result, list(map("password", "", "tenant", "")))}"
+  result_list = "${concat(concat(data.external.aad_access_appreg_key.*.result, data.external.no_aad_access_appreg_key.*.result), list(map("password", "", "tenant", "")))}"
 }
 
 output "application_id" {
   # Default value set to "00000000-0000-0000-0000-000000000000" to avoid:
   # InvalidLoadBalancerAction: The 'client id' field must be between 1 and 1024 characters in length
   # when count is zero.
-  value = "${element(concat(azuread_application.app.*.application_id, list("00000000-0000-0000-0000-000000000000")), 0)}"
+  value = "${var.grant_aad_access ? "${element(concat(azuread_application.aad_access.*.application_id, list("00000000-0000-0000-0000-000000000000")), 0)}" : "${element(concat(azuread_application.no_aad_access.*.application_id, list("00000000-0000-0000-0000-000000000000")), 0)}"}"
 }
 
 output "application_key" {
