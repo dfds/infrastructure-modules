@@ -256,7 +256,7 @@ module "argocd_grpc_dns" {
 }
 
 # --------------------------------------------------
-# Harbor
+# Harbor - depends on KIAM
 # --------------------------------------------------
 
 module "harbor_s3" {
@@ -275,11 +275,10 @@ module "harbor_postgres" {
   postgresdb_engine_version = "${var.harbor_postgresdb_engine_version}"
   db_storage_size           = "${var.harbor_db_storage_size}"
   db_instance_size          = "${var.harbor_db_instance_size}"
-  ressource_name_prefix = "harbor-${var.eks_cluster_name}"
-  db_name                   = "postgres"
+  ressource_name_prefix     = "harbor-${var.eks_cluster_name}"
+  db_name                   = "${var.harbor_postgresdb_default_db_name}"
   db_username               = "${var.harbor_db_server_username}"
   db_password               ="${module.harbor_db_password.random_string}"
-  harbor_k8s_namespace = "${var.harbor_k8s_namespace}"
 }
 
 module "harbor_db_password" {
@@ -296,7 +295,6 @@ module "harbor_db_password_store" {
   key_value = "${module.harbor_db_password.random_string}"
 }
 
-
 module "harbor_admin_password" {
   source = "../../_sub/security/random-string-generate"    
   deploy = "${var.harbor_deploy}"
@@ -308,9 +306,8 @@ module "harbor_admin_password_store" {
   deploy = "${var.harbor_deploy}"
   key_name = "/eks/${var.eks_cluster_name}/harbor_admin_password"
   key_description = "Default admin passwpord for Harbor portal"  
-  key_value = "${module.harbor_db_password.random_string}"
+  key_value = "${module.harbor_admin_password.random_string}"
 }
-
 
 module "harbor_deploy" {
   source = "../../_sub/compute/k8s-harbor"
@@ -327,9 +324,9 @@ module "harbor_deploy" {
   bucket_name        = "${module.harbor_s3.bucket_name}"
   s3_region          = "${var.aws_region}"
   s3_region_endpoint = "http://s3.${var.aws_region}.amazonaws.com"
-  # s3_acces_key       = """ # "${var.harbor_s3_acces_key}"
-  # s3_secret_key      = "" # "${var.harbor_s3_secret_key}"
-
+  db_server_default_db_name = "${var.harbor_postgresdb_default_db_name}"
   portal_admin_password = "${module.harbor_admin_password.random_string}"
+  aws_workload_account_id = "${var.aws_workload_account_id}"
+  kiam_server_role_id     = "${module.kiam_deploy.server_role_id}"  
 }
 

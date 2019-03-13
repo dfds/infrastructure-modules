@@ -2,10 +2,6 @@ variable "deploy" {
   default = true
 }
 
-variable "harbor_k8s_namespace" {
-  type = "string"
-}
-
 variable "postgresdb_engine_version" {
   type = "string"
   default = "10.6"

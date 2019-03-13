@@ -1,7 +1,11 @@
 resource "kubernetes_namespace" "harbor" {
   count = "${var.deploy}"
   metadata {
-    name = "${var.harbor_k8s_namespace}"
+    name = "${var.namespace}"
+
+    annotations {
+      "iam.amazonaws.com/permitted" = "${element(concat(aws_iam_role.harbor.*.name, list("")), 0)}"
+    }
   }
 
   provider = "kubernetes"
@@ -78,27 +82,27 @@ resource "kubernetes_deployment" "harbor-db-init" {
 
           env {
             name  = "PGHOST"
-            value = "${aws_db_instance.instance.address}"
+            value = "${var.db_server_host}"
           }
 
           env {
             name  = "PGPORT"
-            value = "${var.port}"
+            value = "${var.db_server_port}"
           }
 
           env {
             name  = "PGDATABASE"
-            value = "${var.db_name}"
+            value = "${var.db_server_default_db_name}"
           }
 
           env {
             name  = "PGUSER"
-            value = "${var.db_username}"
+            value = "${var.db_server_username}"
           }
 
           env {
             name  = "PGPASSWORD"
-            value = "${var.db_password}"
+            value = "${var.db_server_password}"
           }
 
           command = [
@@ -113,6 +117,5 @@ resource "kubernetes_deployment" "harbor-db-init" {
     }
   }
 
-  #   depends_on = ["kubernetes_namespace.harbor"]
   provider = "kubernetes"
 }
