@@ -2,7 +2,6 @@ locals {
   SIGN_IN_AND_READ_USER_PROFILE = "311a71cc-e848-46a1-bdf8-97ff7156d8e6"
 }
 
-
 # --------------------------------------------------
 # Grant AAD access True
 # --------------------------------------------------
@@ -17,16 +16,15 @@ resource "azuread_application" "aad_access" {
     resource_app_id = "00000002-0000-0000-c000-000000000000"
 
     resource_access {
-      id = "${local.SIGN_IN_AND_READ_USER_PROFILE}"
+      id   = "${local.SIGN_IN_AND_READ_USER_PROFILE}"
       type = "Scope"
     }
   }
-
 }
 
 resource "azuread_service_principal" "aad_access" {
   count          = "${var.deploy && var.grant_aad_access ? 1 : 0}"
-  application_id = "${azuread_application.aad_access.application_id}"
+  application_id = "${element(concat(azuread_application.aad_access.*.application_id, list("00000000-0000-0000-0000-000000000000")), 0)}"
 }
 
 resource "null_resource" "aad_access_appreg_key" {
@@ -38,12 +36,12 @@ resource "null_resource" "aad_access_appreg_key" {
   }
 
   provisioner "local-exec" {
-    command = "${path.module}/create_key.sh ${azuread_application.aad_access.application_id} s3://${var.appreg_key_bucket}/${var.appreg_key_key}"
+    command = "${path.module}/create_key.sh ${element(concat(azuread_application.aad_access.*.application_id, list("00000000-1337-0000-0000-000000000000")), 0)} s3://${var.appreg_key_bucket}/${var.appreg_key_key}"
   }
 }
 
 data "external" "aad_access_appreg_key" {
-  count      = "${var.deploy}"
+  count = "${var.deploy && var.grant_aad_access ? 1 : 0}"
   depends_on = ["null_resource.aad_access_appreg_key"]
   program    = ["sh", "${path.module}/read_key.sh"]
 
@@ -52,13 +50,12 @@ data "external" "aad_access_appreg_key" {
   }
 }
 
-
 # --------------------------------------------------
 # Grant AAD access False
 # --------------------------------------------------
 
 resource "azuread_application" "no_aad_access" {
-  count           = "${var.deploy && var.grant_aad_access == "false" ? 1 : 0}"
+  count           = "${var.deploy && !var.grant_aad_access ? 1 : 0}"
   name            = "${var.name}"
   homepage        = "${var.homepage}"
   identifier_uris = ["${var.identifier_uris}"]
@@ -66,12 +63,12 @@ resource "azuread_application" "no_aad_access" {
 }
 
 resource "azuread_service_principal" "no_aad_access" {
-  count          = "${var.deploy && var.grant_aad_access == "false" ? 1 : 0}"
-  application_id = "${azuread_application.no_aad_access.application_id}"
+  count           = "${var.deploy && !var.grant_aad_access ? 1 : 0}"
+  application_id = "${element(concat(azuread_application.no_aad_access.*.application_id, list("00000000-0000-0000-0000-000000000000")), 0)}"
 }
 
 resource "null_resource" "no_aad_access_appreg_key" {
-  count = "${var.deploy && var.grant_aad_access == "false" ? 1 : 0}"
+  count           = "${var.deploy && !var.grant_aad_access ? 1 : 0}"
 
   # Terraform does not seem to re-run script, unless a trigger is defined
   triggers {
@@ -79,12 +76,12 @@ resource "null_resource" "no_aad_access_appreg_key" {
   }
 
   provisioner "local-exec" {
-    command = "${path.module}/create_key.sh ${azuread_application.no_aad_access.application_id} s3://${var.appreg_key_bucket}/${var.appreg_key_key}"
+    command = "${path.module}/create_key.sh ${element(concat(azuread_application.no_aad_access.*.application_id, list("00000000-0000-1337-0000-000000000000")), 0)} s3://${var.appreg_key_bucket}/${var.appreg_key_key}"
   }
 }
 
 data "external" "no_aad_access_appreg_key" {
-  count      = "${var.deploy}"
+  count           = "${var.deploy && !var.grant_aad_access ? 1 : 0}"
   depends_on = ["null_resource.no_aad_access_appreg_key"]
   program    = ["sh", "${path.module}/read_key.sh"]
 
@@ -93,7 +90,6 @@ data "external" "no_aad_access_appreg_key" {
   }
 }
 
-
 # resource "null_resource" "grant_aad_access" {
 #     count = "${var.deploy && var.grant_aad_access >= 1 ? 1 : 0}"
 #     # Terraform does not seem to re-run script, unless a trigger is defined
@@ -101,7 +97,9 @@ data "external" "no_aad_access_appreg_key" {
 #         timestamp = "${timestamp()}"
 #     }
 
+
 #     provisioner "local-exec" {
 #          command = "${path.module}/grant_aad_access.sh ${azuread_application.app.application_id}"
 #     }
 # }
+

@@ -217,6 +217,18 @@ module "flux_deploy" {
 # ArgoCD
 # --------------------------------------------------
 
+module "argocd_appreg" {
+  source            = "../../_sub/security/azure-app-registration"
+  deploy            = "${var.argocd_deploy}"
+  name              = "ArgoCD ${local.eks_fqdn}"
+  homepage          = "https://argo.${local.eks_fqdn}"
+  identifier_uris   = ["https://argo.${local.eks_fqdn}"]
+  reply_urls        = ["https://argo.${local.eks_fqdn}/auth/callback"]
+  appreg_key_bucket = "${var.terraform_state_s3_bucket}"
+  appreg_key_key    = "keys/eks/${var.eks_cluster_name}/appreg_argocd_key.json"
+  grant_aad_access  = true
+}
+
 module "argocd_deploy" {
   source    = "../../_sub/compute/k8s-argocd"
   deploy    = "${var.argocd_deploy}"
@@ -231,18 +243,6 @@ module "argocd_deploy" {
   grpc_host_url  = "argogrpc.${local.eks_fqdn}"
   argo_app_image = "jacobheidelbachdfds/argocd:v0.11.0-authfix"
   cluster_name   = "${var.eks_cluster_name}"
-}
-
-module "argocd_appreg" {
-  source            = "../../_sub/security/azure-app-registration"
-  deploy            = "${var.argocd_deploy}"
-  name              = "ArgoCD ${local.eks_fqdn}"
-  homepage          = "https://argo.${local.eks_fqdn}"
-  identifier_uris   = ["https://argo.${local.eks_fqdn}"]
-  reply_urls        = ["https://argo.${local.eks_fqdn}/auth/callback"]
-  appreg_key_bucket = "${var.terraform_state_s3_bucket}"
-  appreg_key_key    = "keys/eks/${var.eks_cluster_name}/appreg_argocd_key.json"
-  grant_aad_access  = true
 }
 
 module "argocd_grpc_dns" {

@@ -12,10 +12,10 @@ locals {
 }
 
 output "application_id" {
-  # Default value set to "00000000-0000-0000-0000-000000000000" to avoid:
+  # Default value set to "00000000-****-****-****-000000000000" to avoid:
   # InvalidLoadBalancerAction: The 'client id' field must be between 1 and 1024 characters in length
   # when count is zero.
-  value = "${var.grant_aad_access ? "${element(concat(azuread_application.aad_access.*.application_id, list("00000000-0000-0000-0000-000000000000")), 0)}" : "${element(concat(azuread_application.no_aad_access.*.application_id, list("00000000-0000-0000-0000-000000000000")), 0)}"}"
+  value = "${var.grant_aad_access ? "${element(concat(azuread_application.aad_access.*.application_id, list("00000000-1337-0000-0000-000000000000")), 0)}" : "${element(concat(azuread_application.no_aad_access.*.application_id, list("00000000-0000-1337-0000-000000000000")), 0)}"}"
 }
 
 output "application_key" {
