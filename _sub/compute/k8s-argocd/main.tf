@@ -30,7 +30,6 @@ resource "helm_release" "argocd" {
   namespace    = "${var.namespace}"
   chart        = "${path.module}/argocd-chart"
   version      = "0.0.1"
-  force_update = "true"
 
   values = [
     <<EOF
