@@ -26,7 +26,13 @@ then
 fi
 
 # Default Argo CD password is derived from pod-name
-oldpassword=`kubectl --kubeconfig $KUBECONFIG get pods -n argocd -l app=argocd-server -o name | cut -d'/' -f 2`
+oldpassword=`kubectl --kubeconfig $KUBECONFIG get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2`
+
+if [-z "$oldpassword"]
+then
+    echo "Unable to find existing default password for ArgoCD server"
+    exit 1
+fi
 
 # Setup Argo CD context with existing password. Uses GRPC
 argocd login $GRPCURL --username admin --password "$oldpassword"
