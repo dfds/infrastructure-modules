@@ -241,7 +241,7 @@ module "argocd_deploy" {
   external_url   = "https://argo.${local.eks_fqdn}"
   host_url       = "argo.${local.eks_fqdn}"
   grpc_host_url  = "argogrpc.${local.eks_fqdn}"
-  argo_app_image = "argoproj/argocd:v0.12.0-rc4"
+  argo_app_image = "argoproj/argocd:v0.12.0-rc5"
   cluster_name   = "${var.eks_cluster_name}"
 }
 
