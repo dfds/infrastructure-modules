@@ -20,4 +20,5 @@ repositories:
 hostUrl: argo.linus.samdi.dfds.cloud
 grpcHostUrl: argogrpc.linus.samdi.dfds.cloud
 
-argoAppImage: jacobheidelbachdfds/argocd:v0.11.0-authfix
+#argoAppImage: jacobheidelbachdfds/argocd:v0.11.0-authfix
+argoAppImage: argoproj/argocd:v0.12.0-rc4
