@@ -45,3 +45,18 @@ variable "cluster_name" {
   description ="Cluster Name"
   type = "string"
 }
+
+variable "rsa_keypair_key" {
+  type = "string"
+  description = "Name of key in parameter store, where private rsa key can be found"
+}
+
+variable "default_repository" {
+  type = "string"
+  description = "Default configuration repository to add to ArgoCD"
+}
+
+variable "rsa_keypay_parameterstore_aws_region" {
+  type = "string"
+  description = "The region where Private RSA Key is located"
+}

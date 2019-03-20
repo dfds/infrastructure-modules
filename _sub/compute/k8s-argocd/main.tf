@@ -1,10 +1,16 @@
+provider "aws" {
+  version = "~> 1.60.0"
+  region = "${var.rsa_keypay_parameterstore_aws_region}"
+
+  alias = "parameterstore"
+}
+
 resource "kubernetes_namespace" "argocd_namespace" {
   count = "${var.deploy}"
 
   metadata {
     name = "${var.namespace}"
   }
-
   provider = "kubernetes"
 }
 
@@ -23,6 +29,23 @@ resource "aws_ssm_parameter" "putSecureString" {
   value       = "${element(concat(random_string.password.*.result, list("")), 0)}"
   overwrite   = "true"
 }
+
+data "aws_ssm_parameter" "privateKey" {
+  name = "${var.rsa_keypair_key}"
+  with_decryption = true
+  provider = "aws.parameterstore"
+}
+
+locals {
+  id_rsa_filename = "${path.module}/id_rsa"
+}
+
+
+resource "local_file" "privateKey" {
+    sensitive_content = "${data.aws_ssm_parameter.privateKey.value}"
+    filename = "${local.id_rsa_filename}"
+}
+
 
 resource "helm_release" "argocd" {
   count        = "${var.deploy}"
@@ -64,7 +87,6 @@ resource "null_resource" "set_password" {
   depends_on = ["helm_release.argocd"]
 }
 
-
 resource "null_resource" "create_project" {
   count = "${var.deploy}"
 
@@ -74,6 +96,18 @@ resource "null_resource" "create_project" {
 
   depends_on = ["helm_release.argocd",
   "null_resource.set_password"]
+}
+
+resource "null_resource" "create_repo" {
+  count = "${var.deploy}"
+
+  provisioner "local-exec" {
+    command = "${path.module}/create-repo.sh ${var.grpc_host_url} ${element(concat(random_string.password.*.result, list("")), 0)} ${var.default_repository} ${local.id_rsa_filename}" 
+  }
+
+  depends_on = ["helm_release.argocd",
+  "null_resource.set_password",
+  "local_file.privateKey"]
 }
 
 

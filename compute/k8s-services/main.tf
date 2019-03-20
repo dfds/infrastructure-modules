@@ -243,6 +243,10 @@ module "argocd_deploy" {
   grpc_host_url  = "argogrpc.${local.eks_fqdn}"
   argo_app_image = "argoproj/argocd:v0.12.0-rc5"
   cluster_name   = "${var.eks_cluster_name}"
+  rsa_keypair_key= "/eks/argocd/rsa_private"
+  rsa_keypay_parameterstore_aws_region = "eu-central-1"
+  default_repository = "${var.argocd_default_repository}"
+  
 }
 
 module "argocd_grpc_dns" {

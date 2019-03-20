@@ -103,6 +103,10 @@ variable "argocd_deploy" {
   default = false
 }
 
+variable "argocd_default_repository" {
+  type = "string"
+}
+
 # --------------------------------------------------
 # Harbor
 # --------------------------------------------------
