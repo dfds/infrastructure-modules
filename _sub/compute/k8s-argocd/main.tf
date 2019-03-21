@@ -1,7 +1,10 @@
 provider "aws" {
   version = "~> 1.60.0"
   region = "${var.rsa_keypay_parameterstore_aws_region}"
-
+  
+  assume_role {
+    role_arn = "${var.aws_assume_role_arn}"
+  }
   alias = "parameterstore"
 }
 

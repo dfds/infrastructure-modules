@@ -60,3 +60,7 @@ variable "rsa_keypay_parameterstore_aws_region" {
   type = "string"
   description = "The region where Private RSA Key is located"
 }
+
+variable "aws_assume_role_arn" {
+  default = ""
+}

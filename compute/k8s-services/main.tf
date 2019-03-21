@@ -246,7 +246,7 @@ module "argocd_deploy" {
   rsa_keypair_key= "/eks/argocd/rsa_private"
   rsa_keypay_parameterstore_aws_region = "eu-central-1"
   default_repository = "${var.argocd_default_repository}"
-  
+  aws_assume_role_arn = "${var.aws_assume_role_arn}"
 }
 
 module "argocd_grpc_dns" {
