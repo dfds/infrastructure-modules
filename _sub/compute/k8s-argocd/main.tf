@@ -38,6 +38,11 @@ data "aws_ssm_parameter" "privateKey" {
 
 locals {
   id_rsa_filename = "${path.module}/id_rsa"
+  project = "selfservice"
+  namespace = "selfservice"
+  appname = "argocd-janitor"
+  k8sserver = "https://kubernetes.default.svc"
+  kustomize_path = "selfservice/overlays/production"
 }
 
 
@@ -110,4 +115,13 @@ resource "null_resource" "create_repo" {
   "local_file.privateKey"]
 }
 
+resource "null_resource" "create_argocdjanitor" {
+  count = "${var.deploy}"
 
+  provisioner "local-exec" {
+    command = "${path.module}/create-application.sh ${var.grpc_host_url} ${element(concat(random_string.password.*.result, list("")), 0)} ${local.appname} ${local.namespace} ${local.project} ${local.k8sserver} ${var.default_repository} ${local.kustomize_path}" 
+  }
+
+  depends_on = ["helm_release.argocd",
+  "null_resource.create_repo"]
+}
