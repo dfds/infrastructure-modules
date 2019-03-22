@@ -163,5 +163,5 @@ EOF
 resource "aws_iam_role_policy_attachment" "argocdjanitor" {
   count      = "${var.deploy}"
   role       = "${element(concat(aws_iam_role.self_service.*.name, list("")), 0)}"
-  policy_arn = "${element(concat(aws_iam_policy.param_store.*.arn, list("")), 0)}"
+  policy_arn = "${element(concat(aws_iam_policy.argocdjanitor.*.arn, list("")), 0)}"
 }
