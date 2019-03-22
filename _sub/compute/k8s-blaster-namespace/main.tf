@@ -137,3 +137,31 @@ resource "aws_iam_role_policy_attachment" "param-store" {
   role       = "${element(concat(aws_iam_role.self_service.*.name, list("")), 0)}"
   policy_arn = "${element(concat(aws_iam_policy.param_store.*.arn, list("")), 0)}"
 }
+
+resource "aws_iam_policy" "argocdjanitor" {
+  count       = "${var.deploy}"
+  name        = "argocdjanitor"
+  description = "Permissions for argocd password"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssm:GetParameter",
+                "ssm:GetParameters"
+            ],
+            "Resource": "arn:aws:ssm:eu-west-1:*:parameter/eks/${var.cluster_name}/argocd_admin"
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "argocdjanitor" {
+  count      = "${var.deploy}"
+  role       = "${element(concat(aws_iam_role.self_service.*.name, list("")), 0)}"
+  policy_arn = "${element(concat(aws_iam_policy.param_store.*.arn, list("")), 0)}"
+}
