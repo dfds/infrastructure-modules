@@ -46,7 +46,7 @@ resource "kubernetes_deployment" "traefik" {
         }
 
         container {
-          image = "traefik"
+          image = "traefik:v1.7.9"
           name  = "${var.deploy_name}"
 
           volume_mount {
