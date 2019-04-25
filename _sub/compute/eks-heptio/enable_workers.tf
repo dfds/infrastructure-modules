@@ -7,11 +7,13 @@ locals {
   path_default_configmap = "${pathexpand("./.terraform/data/config-map-aws-auth_${var.cluster_name}.yaml")}"
 }
 
-resource "local_file" "enable-workers-default" {
-  count = "${var.blaster_configmap_apply ? 0 : 1}"
-
+resource "local_file" "default-configmap" {
   content  = "${local.config-map-aws-auth}"
   filename = "${local.path_default_configmap}"
+}
+
+resource "null_resource" "enable-workers-default" {
+  count = "${var.blaster_configmap_apply ? 0 : 1}"
 
   provisioner "local-exec" {
     command = "kubectl --kubeconfig ${local_file.kubeconfig.filename} apply -f ${local.path_default_configmap}"
