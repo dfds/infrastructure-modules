@@ -45,29 +45,32 @@ module "eks_workers" {
   public_key                   = "${var.eks_worker_ssh_public_key}"
 }
 
-module "eks_heptio" {
-  source                    = "../../_sub/compute/eks-heptio"
-  aws_assume_role_arn       = "${var.aws_assume_role_arn}"
-  cluster_name              = "${var.eks_cluster_name}"
-  eks_endpoint              = "${module.eks_cluster.eks_endpoint}"
-  eks_certificate_authority = "${module.eks_cluster.eks_certificate_authority}"
-  eks_role_arn              = "${module.eks_workers.worker_role}"
-}
-
 module "blaster_configmap_bucket" {
   source    = "../../_sub/storage/s3-bucket"
   deploy    = "${var.blaster_configmap_deploy}"
   s3_bucket = "${var.blaster_configmap_bucket}"
 }
 
-module "blaster_configmap_apply" {
-  source              = "../../_sub/compute/k8s-blaster-configmap"
-  deploy              = "${var.blaster_configmap_deploy}"
-  aws_assume_role_arn = "${var.aws_assume_role_arn}"
-  cluster_name        = "${module.eks_heptio.cluster_name}"
-  s3_bucket           = "${module.blaster_configmap_bucket.bucket_name}"
-  configmap_key       = "configmap_${module.eks_heptio.cluster_name}_blaster.yml"
+module "eks_heptio" {
+  source                      = "../../_sub/compute/eks-heptio"
+  aws_assume_role_arn         = "${var.aws_assume_role_arn}"
+  cluster_name                = "${var.eks_cluster_name}"
+  eks_endpoint                = "${module.eks_cluster.eks_endpoint}"
+  eks_certificate_authority   = "${module.eks_cluster.eks_certificate_authority}"
+  eks_role_arn                = "${module.eks_workers.worker_role}"
+  blaster_configmap_apply     = "${var.blaster_configmap_deploy}"
+  blaster_configmap_s3_bucket = "${module.blaster_configmap_bucket.bucket_name}"
+  blaster_configmap_key       = "configmap_${module.eks_heptio.cluster_name}_blaster.yml"
 }
+
+# module "blaster_configmap_apply" {
+#   source              = "../../_sub/compute/k8s-blaster-configmap"
+#   deploy              = "${var.blaster_configmap_deploy}"
+#   aws_assume_role_arn = "${var.aws_assume_role_arn}"
+#   cluster_name        = "${module.eks_heptio.cluster_name}"
+#   s3_bucket           = "${module.blaster_configmap_bucket.bucket_name}"
+#   configmap_key       = "configmap_${module.eks_heptio.cluster_name}_blaster.yml"
+# }
 
 module "param_store_admin_kube_config" {
   source          = "../../_sub/security/ssm-parameter-store"
