@@ -79,8 +79,8 @@ resource "kubernetes_service" "traefik" {
     name      = "${var.deploy_name}-ingress-service"
     namespace = "kube-system"
     annotations {
-      "prometheus.io/port" = "'8080'"
-      "prometheus.io/scrape" = "'true'"
+      "prometheus.io/port" = "8080"
+      "prometheus.io/scrape" = "true"
     }
   }
 
