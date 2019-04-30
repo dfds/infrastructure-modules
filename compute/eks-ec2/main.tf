@@ -88,8 +88,6 @@ module "param_store_default_kube_config" {
   key_description = "Kube config file for general users"
   key_value       = "${module.eks_heptio.user_configfile}"
 }
-<<<<<<< Updated upstream
-=======
 
 module "cloudwatch_agent_config_bucket" {
   source    = "../../_sub/storage/s3-bucket"
@@ -103,4 +101,3 @@ module "cloudwatch_agent_copy_config_to_bucket" {
   target_bucket = "${module.cloudwatch_agent_config_bucket.bucket_name}"
   file = "${var.eks_worker_cloudwatch_agent_config_file}"
 }
->>>>>>> Stashed changes
