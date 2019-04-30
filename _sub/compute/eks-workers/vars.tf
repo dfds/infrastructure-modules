@@ -20,3 +20,13 @@ variable "public_key" {}
 variable "enable_ssh" {
   default = false
 }
+
+variable "cloudwatch_agent_config_bucket" {
+}
+
+variable "cloudwatch_agent_config_file" {
+}
+
+variable "cloudwatch_agent_enabled" {
+  default = false
+}

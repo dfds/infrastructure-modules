@@ -18,7 +18,23 @@ locals {
 #!/bin/sh
 set -o xtrace
 /etc/eks/bootstrap.sh --apiserver-endpoint '${var.eks_endpoint}' --b64-cluster-ca '${var.eks_certificate_authority}' '${var.cluster_name}'
+
 USERDATA
+
+  worker-node-userdata-cw-agent = <<USERDATA
+#!/bin/sh
+set -o xtrace
+/etc/eks/bootstrap.sh --apiserver-endpoint '${var.eks_endpoint}' --b64-cluster-ca '${var.eks_certificate_authority}' '${var.cluster_name}'
+mkdir  /var/cloudwatch/
+
+wget https://s3.amazonaws.com/amazoncloudwatch-agent/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm -P /var/cloudwatch
+sudo rpm -U /var/cloudwatch/amazon-cloudwatch-agent.rpm
+
+sudo aws s3 cp s3://${var.cloudwatch_agent_config_bucket} /var/cloudwatch/ --recursive
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/var/cloudwatch/${var.cloudwatch_agent_config_file} -s
+
+USERDATA
+
 }
 
 resource "aws_launch_configuration" "eks" {
@@ -28,7 +44,7 @@ resource "aws_launch_configuration" "eks" {
   instance_type               = "${var.worker_instance_type}"
   name_prefix                 = "${var.cluster_name}"
   security_groups             = ["${aws_security_group.eks-node.id}"]
-  user_data_base64            = "${base64encode(local.worker-node-userdata)}"
+  user_data_base64            = "${var.cloudwatch_agent_enabled ? base64encode(local.worker-node-userdata-cw-agent) : base64encode(local.worker-node-userdata) }"
   key_name                    = "${aws_key_pair.eks-node.key_name}"
 
   root_block_device = [
@@ -67,3 +83,31 @@ resource "aws_autoscaling_group" "eks" {
     propagate_at_launch = true
   }
 }
+
+# resource "aws_cloudwatch_dashboard" "main" {
+#   dashboard_name = "my-dashboard"
+
+#   dashboard_body = <<EOF
+#  {
+#     "widgets": [
+#         {
+#             "type": "metric",
+#             "x": 0,
+#             "y": 0,
+#             "width": 18,
+#             "height": 3,
+#             "properties": {
+#                 "metrics": [
+#                     [ "CWAgent", "disk_used_percent", "path", "/", "InstanceId", "i-0d563241a42ddcab1", "AutoScalingGroupName", "kay", "ImageId", "ami-0e82e73403dd69fa3", "InstanceType", "t3.medium", "device", "nvme0n1p1", "fstype", "xfs" ],
+#                     [ ".", "disk_used", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "." ]
+#                 ],
+#                 "view": "singleValue",
+#                 "region": "eu-west-1",
+#                 "period": 300,
+#                 "title": "Disk usage terraform"
+#             }
+#         }
+#     ]
+# }
+#  EOF
+# }
