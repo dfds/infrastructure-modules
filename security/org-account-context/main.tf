@@ -66,3 +66,15 @@ module "iam_idp" {
     aws = "aws.workload"
   }
 }
+
+locals {
+  account_created_message = <<EOF
+  {"messageId":"874ba750-ae81-446f-90c7-01b49228c327","type":"aws_context_account_created","data":{"contextId":"${var.context_id}","accountId":"${module.org_account.id}","roleArn":"${module.iam_capability_role.arn}","roleEmail":"${module.org_account.email}"}}
+  EOF
+}
+
+resource "null_resource" "produce_account_created" {
+  provisioner "local-exec" {
+    command = "echo '${local.account_created_message}' | kafkacat -P -b ${var.kafka_broker} -X security.protocol=SASL_SSL -X sasl.mechanisms=PLAIN -X sasl.username=${var.kafka_username} -X sasl.password=${var.kafka_password} -X api.version.request=true -t ${var.kafka_topic} -k ${var.kafka_key}"
+  }
+}
