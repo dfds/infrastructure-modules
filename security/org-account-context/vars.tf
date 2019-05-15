@@ -47,3 +47,19 @@ variable "context_id" {
   type = "string"
   description = "The ID of the context, for which to create and AWS account"
 }
+
+variable "correlation_id" {
+  type = "string"
+}
+
+variable "kafka_broker" {
+  type = "string"
+}
+
+variable "kafka_username" {
+  type = "string"
+}
+
+variable "kafka_password" {
+  type = "string"
+}
