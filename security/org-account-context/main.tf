@@ -92,9 +92,9 @@ module "kafka_produce_account_created" {
   correlation_id = "${var.correlation_id}"
   sender = "org-account-context created by terraform"
   payload = "${local.account_created_payload}"
-  key = "johnjohnson"
+  key = "${var.capability_id}"
   broker = "${var.kafka_broker}"
-  topic = "sre-test"
+  topic = "build.capabilities"
   username = "${var.kafka_username}"
   password = "${var.kafka_password}"
 }
