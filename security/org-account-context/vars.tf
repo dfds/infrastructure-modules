@@ -52,6 +52,21 @@ variable "correlation_id" {
   type = "string"
 }
 
+variable "capability_root_id" {
+  type = "string"
+}
+
+variable "capability_name" {
+  type = "string"
+}
+variable "capability_id" {
+  type = "string"
+}
+
+variable "context_name" {
+  type = "string"
+}
+
 variable "kafka_broker" {
   type = "string"
 }
