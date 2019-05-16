@@ -1,3 +1,7 @@
+# --------------------------------------------------
+# Init
+# --------------------------------------------------
+
 provider "aws" {
   version = "~> 1.60.0"
   region  = "${var.aws_region}"
@@ -41,6 +45,11 @@ module "iam_policies" {
   iam_role_trusted_account_root_arn = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
 }
 
+
+# --------------------------------------------------
+# Create account
+# --------------------------------------------------
+
 module "org_account" {
   source        = "../../_sub/security/org-account"
   name          = "${var.name}"
@@ -67,6 +76,11 @@ module "iam_idp" {
   }
 }
 
+
+# --------------------------------------------------
+# Capability IAM role
+# --------------------------------------------------
+
 module "iam_role_capability" {
   source = "../../_sub/security/iam-role"
   role_name = "Capability"
@@ -79,6 +93,38 @@ module "iam_role_capability" {
     aws = "aws.workload"
   }
 }
+
+
+# --------------------------------------------------
+# IAM deployment user
+# --------------------------------------------------
+
+module "iam_user_deploy" {
+  source = "../../_sub/security/iam-user"
+  user_name = "Deploy"
+  user_policy_name = "Admin"
+  user_policy_document = "${module.iam_policies.admin}"
+
+  providers = {
+    aws = "aws.workload"
+  }
+}
+
+module "iam_user_deploy_store_credentials" {
+  source = "../../_sub/security/ssm-parameter-store"
+  key_name = "/managed/deploy_${module.iam_user_deploy.access_key}"
+  key_description = "AWS credentials for the IAM 'Deploy' user"
+  key_value = "${module.iam_user_deploy.secret_key}"
+
+  providers = {
+    aws = "aws.workload"
+  }
+}
+
+
+# --------------------------------------------------
+# aws_context_account_created event
+# --------------------------------------------------
 
 locals {
   account_created_payload = <<EOF
