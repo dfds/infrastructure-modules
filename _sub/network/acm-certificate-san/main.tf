@@ -11,6 +11,7 @@ resource "aws_acm_certificate" "cert" {
 
   lifecycle {
     create_before_destroy = true
+    ignore_changes = ["subject_alternative_names"] # workaround to https://github.com/terraform-providers/terraform-provider-aws/issues/8531
   }
 }
 
@@ -34,16 +35,30 @@ resource "local_file" "validate_json" {
   filename = "${pathexpand("./validate.json")}"
 }
 
+/*
+- Duplicate external.validate_json
+- First: Return one element, matching cert CN
+- Second: Return all elements, not matching cert CN
+*/
+
+
 # Read the JSON file back, one instance per element in the JSON array
-data "external" "validate_json" {
-  count      = "${var.deploy ? length(var.core_alias) + 1 : 0}"
+data "external" "validate_json_workload" {
+  count      = "${var.deploy}"
   depends_on = ["local_file.validate_json"]
-  program    = ["bash", "${path.module}/element_from_json_array.sh", "${pathexpand("./validate.json")}", "${count.index}"]
+  program    = ["bash", "${path.module}/element_from_json_array.sh", "${pathexpand("./validate.json")}", "==", "${var.domain_name}", "${count.index}"]
+}
+
+data "external" "validate_json_core" {
+  count      = "${var.deploy ? length(var.core_alias) : 0}"
+  depends_on = ["local_file.validate_json"]
+  program    = ["bash", "${path.module}/element_from_json_array.sh", "${pathexpand("./validate.json")}", "!=", "${var.domain_name}", "${count.index}"]
 }
 
 # Save the output in variable
 locals {
-  validate_json = "${data.external.validate_json.*.result}"
+  validate_json_workload = "${data.external.validate_json_workload.*.result}"
+  validate_json_core = "${data.external.validate_json_core.*.result}"
 }
 
 # --------------------------------------------------
@@ -53,20 +68,20 @@ locals {
 # Create validation DNS record in the workload DNS zone
 resource "aws_route53_record" "workload" {
   count   = "${var.deploy}"
-  name    = "${lookup(local.validate_json[0], "resource_record_name")}"
-  type    = "${lookup(local.validate_json[0], "resource_record_type")}"
+  name    = "${lookup(local.validate_json_workload[0], "resource_record_name")}"
+  type    = "${lookup(local.validate_json_workload[0], "resource_record_type")}"
   zone_id = "${local.dns_zone_id}"
-  records = ["${lookup(local.validate_json[0], "resource_record_value")}"]
+  records = ["${lookup(local.validate_json_workload[0], "resource_record_value")}"]
   ttl     = 60
 }
 
 # Create validation DNS record(s) in the core DNS zone (alternative names specified)
 resource "aws_route53_record" "core" {
   count   = "${var.deploy ? length(var.core_alias) : 0}"
-  name    = "${lookup(local.validate_json[count.index + 1], "resource_record_name")}"
-  type    = "${lookup(local.validate_json[count.index + 1], "resource_record_type")}"
+  name    = "${lookup(local.validate_json_core[count.index], "resource_record_name")}"
+  type    = "${lookup(local.validate_json_core[count.index], "resource_record_type")}"
   zone_id = "${local.core_dns_zone_id}"
-  records = ["${lookup(local.validate_json[count.index + 1], "resource_record_value")}"]
+  records = ["${lookup(local.validate_json_core[count.index], "resource_record_value")}"]
   ttl     = 60
 
   provider = "aws.core"
