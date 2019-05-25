@@ -41,31 +41,55 @@ resource "aws_iam_role_policy" "cloudwatch-agent-config-bucket" {
   name = "eks-${var.cluster_name}-cl-agent-config-bucket"
   role = "${aws_iam_role.eks.id}"
 
- policy = <<EOF
+  policy = <<EOF
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": [
-                "s3:PutAccountPublicAccessBlock",
-                "s3:GetAccountPublicAccessBlock",
-                "s3:ListAllMyBuckets",
-                "s3:HeadBucket"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Sid": "VisualEditor1",
-            "Effect": "Allow",
-            "Action": "s3:*",
-            "Resource": [
-                "arn:aws:s3:::${var.cloudwatch_agent_config_bucket}/*",
-                "arn:aws:s3:::${var.cloudwatch_agent_config_bucket}"
-            ]
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": [
+          "s3:PutAccountPublicAccessBlock",
+          "s3:GetAccountPublicAccessBlock",
+          "s3:ListAllMyBuckets",
+          "s3:HeadBucket"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "VisualEditor1",
+      "Effect": "Allow",
+      "Action": "s3:*",
+      "Resource": [
+          "arn:aws:s3:::${var.cloudwatch_agent_config_bucket}/*",
+          "arn:aws:s3:::${var.cloudwatch_agent_config_bucket}"
+      ]
+    }
+  ]
 }
 EOF
 }
+
+resource "aws_iam_role_policy" "cloudwatch_agent_metrics" {
+  name = "cloudwatch_agent_metrics"
+  role = "${aws_iam_role.eks.id}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "ec2:Describe*",
+        "cloudwatch:PutMetricData",
+        "cloudwatch:GetMetricStatistics",
+        "cloudwatch:ListMetrics"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+

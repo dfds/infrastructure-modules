@@ -53,7 +53,7 @@ resource "aws_launch_configuration" "eks" {
       volume_type = "gp2"
     },
   ]
-  
+
   lifecycle {
     create_before_destroy = true
   }
@@ -66,7 +66,7 @@ resource "aws_autoscaling_group" "eks" {
   min_size             = "${var.worker_instance_min_count}"
   name                 = "${var.cluster_name}"
   vpc_zone_identifier  = ["${var.subnet_ids}"]
-  
+
   # The following can be set in case of the default health check are not sufficient
   #health_check_grace_period = 5
   #default_cooldown = 15
@@ -83,31 +83,3 @@ resource "aws_autoscaling_group" "eks" {
     propagate_at_launch = true
   }
 }
-
-# resource "aws_cloudwatch_dashboard" "main" {
-#   dashboard_name = "my-dashboard"
-
-#   dashboard_body = <<EOF
-#  {
-#     "widgets": [
-#         {
-#             "type": "metric",
-#             "x": 0,
-#             "y": 0,
-#             "width": 18,
-#             "height": 3,
-#             "properties": {
-#                 "metrics": [
-#                     [ "CWAgent", "disk_used_percent", "path", "/", "InstanceId", "i-0d563241a42ddcab1", "AutoScalingGroupName", "kay", "ImageId", "ami-0e82e73403dd69fa3", "InstanceType", "t3.medium", "device", "nvme0n1p1", "fstype", "xfs" ],
-#                     [ ".", "disk_used", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "." ]
-#                 ],
-#                 "view": "singleValue",
-#                 "region": "eu-west-1",
-#                 "period": 300,
-#                 "title": "Disk usage terraform"
-#             }
-#         }
-#     ]
-# }
-#  EOF
-# }
