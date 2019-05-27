@@ -9,3 +9,7 @@ variable "org_role_name" {
 variable "email" {
   type = "string"
 }
+
+variable "sleep_after" {
+  default = 0
+}
