@@ -55,7 +55,7 @@ provider "aws" {
     name          = "${var.name}"
     org_role_name = "${var.org_role_name}"
     email         = "${var.email}"
-    sleep_after   = 10
+    sleep_after   = 30
   }
 
   module "iam_account_alias" {
