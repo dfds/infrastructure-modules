@@ -3,7 +3,7 @@
 # --------------------------------------------------
 
 provider "aws" {
-  version = "~> 1.60.0"
+  version = "~> 2.11.0"
   region  = "${var.aws_region}"
 
   # Assume role in Master account
@@ -13,13 +13,13 @@ provider "aws" {
 }
 
   provider "aws" {
-    version = "~> 1.60.0"
+    version = "~> 2.11.0"
     region  = "${var.aws_region}"
     alias   = "core"
   }
 
   provider "aws" {
-    version = "~> 1.60.0"
+    version = "~> 2.11.0"
     region  = "${var.aws_region}"
 
     # Need explicit credentials in Master, to be able to assume Organizational Role in Workload account
@@ -55,6 +55,7 @@ provider "aws" {
     name          = "${var.name}"
     org_role_name = "${var.org_role_name}"
     email         = "${var.email}"
+    parent_id     = "${var.parent_id}"
     sleep_after   = 30
   }
 
