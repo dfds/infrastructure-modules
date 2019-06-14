@@ -87,6 +87,7 @@ provider "aws" {
     source = "../../_sub/security/iam-role"
     role_name = "Capability"
     role_description = ""
+    max_session_duration = 28800 # 8 hours
     assume_role_policy = "${module.iam_idp.adfs_assume_policy}"
     role_policy_name = "Admin"
     role_policy_document = "${module.iam_policies.admin}"
