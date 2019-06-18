@@ -1,6 +1,7 @@
 locals {
   message = <<EOF
-{"version":"${var.message_version}","eventName":"${var.event_name}","x-correlationId":"${var.correlation_id}","x-sender":"${var.sender}","payload":${var.payload}}EOF
+{"version":"${var.message_version}","eventName":"${var.event_name}","x-correlationId":"${var.correlation_id}","x-sender":"${var.sender}","payload":${var.payload}}
+EOF
 }
 
 resource "null_resource" "message" {
