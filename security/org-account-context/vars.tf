@@ -38,11 +38,6 @@ variable "email" {
   type = "string"
 }
 
-variable "parent_id" {
-  type = "string"
-  description = "The ID of the parent AWS Organization OU. Defaults to the root."
-}
-
 variable "adfs_fqdn" {
   type        = "string"
   description = "The fully-qualified domain name of the ADFS server, e.g. adfs.company.tld"
