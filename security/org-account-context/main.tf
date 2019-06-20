@@ -137,6 +137,7 @@ provider "aws" {
 
   module "kafka_produce_account_created" {
     source = "../../_sub/misc/kafka-message"
+    publish = "${var.publish_message}"
     event_name = "aws_context_account_created"
     message_version = "1"
     correlation_id = "${var.correlation_id}"

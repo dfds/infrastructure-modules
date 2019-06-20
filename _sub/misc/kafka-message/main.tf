@@ -9,6 +9,8 @@ resource "null_resource" "message" {
     message_checksum = "${sha256(local.message)}"
   }
 
+  count = "${var.publish}"
+
   provisioner "local-exec" {
     command = "echo '${var.key}:${local.message}' | kafkacat -P -b ${var.broker} -t ${var.topic} -K: -X security.protocol=SASL_SSL -X sasl.mechanisms=PLAIN -X sasl.username=${var.username} -X sasl.password=${var.password} -X api.version.request=true -X ssl.ca.location=/etc/ssl/certs/ca-certificates.crt"
   }

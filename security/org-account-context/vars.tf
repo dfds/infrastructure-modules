@@ -39,7 +39,7 @@ variable "email" {
 }
 
 variable "parent_id" {
-  type = "string"  
+  type = "string"
   description = "The ID of the parent AWS Organization OU. Defaults to the root."
 }
 
@@ -82,4 +82,8 @@ variable "kafka_username" {
 
 variable "kafka_password" {
   type = "string"
+}
+
+variable "publish_message" {
+  default = true
 }
