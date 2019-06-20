@@ -55,7 +55,7 @@ provider "aws" {
     name          = "${var.name}"
     org_role_name = "${var.org_role_name}"
     email         = "${var.email}"
-    parent_id     = "${var.parent_id}"
+    parent_id     = "r-65k1"
     sleep_after   = 30
   }
 
