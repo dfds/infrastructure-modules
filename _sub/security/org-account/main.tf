@@ -22,7 +22,7 @@ resource "aws_organizations_account" "move_org_account" {
   name                       = "${aws_organizations_account.org_account_root.name}"
   email                      = "${aws_organizations_account.org_account_root.email}"
   iam_user_access_to_billing = "ALLOW"
-  role_name                  = "${aws_organizations_account.org_account_root.role_name}
+  role_name                  = "${aws_organizations_account.org_account_root.role_name}"
   parent_id                  = "${var.parent_id}"
 
  provisioner "local-exec" {
