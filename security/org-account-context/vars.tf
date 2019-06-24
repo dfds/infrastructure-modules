@@ -44,7 +44,7 @@ variable "adfs_fqdn" {
 }
 
 variable "context_id" {
-  type = "string"
+  type        = "string"
   description = "The ID of the context, for which to create and AWS account"
 }
 
@@ -59,6 +59,7 @@ variable "capability_root_id" {
 variable "capability_name" {
   type = "string"
 }
+
 variable "capability_id" {
   type = "string"
 }
@@ -81,4 +82,10 @@ variable "kafka_password" {
 
 variable "publish_message" {
   default = true
+}
+
+variable "parent_id" {
+  type        = "string"
+  description = "The ID of the parent AWS Organization OU."
+  default     = ""
 }
