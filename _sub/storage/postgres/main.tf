@@ -38,13 +38,11 @@ resource "aws_db_instance" "postgres" {
   backup_retention_period = 10
   apply_immediately       = true
   identifier              = "${var.application}-postgres-${var.environment}"
-  snapshot_identifier = "${data.aws_db_snapshot.db_snapshot.id}"
   parameter_group_name    = "${aws_db_parameter_group.dbparams.name}"
   vpc_security_group_ids  = ["${aws_security_group.pgsg.id}"]
 
   # deletion_protection
-  //final_snapshot_identifier = "${var.application}-postgres-final-${var.environment}"
-  final_snapshot_identifier = "${var.db_snapshot}-final-${var.environment}"
+  final_snapshot_identifier = "${var.application}-postgres-final-${var.environment}"
 
   # configurable
   storage_type        = "${var.db_storage_type}"
@@ -62,7 +60,6 @@ resource "aws_db_instance" "postgres" {
 
   tags {
     environment = "${var.environment}"
-    restored_from = "${var.db_snapshot}"
   }
 #Do not re-provision database upon snapshot changes
  lifecycle {

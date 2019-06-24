@@ -2,9 +2,6 @@ variable "aws_region" {
     type = "string"
 }
 
-variable "db_snapshot" {
-  type = "string"
-}
 
 variable "application" {
   type = "string"

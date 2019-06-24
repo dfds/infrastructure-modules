@@ -21,9 +21,8 @@ provider "aws" {
 # Postgres database
 # --------------------------------------------------
 
-module "postgres_restore" {
-  source       = "../../_sub/storage/postgres-restore"
-  db_snapshot = "${var.db_snapshot}"
+module "postgres" {
+  source       = "../../_sub/storage/postgres"
   application = "${var.application}"
   db_name = "${var.db_name}"
   db_master_username = "${var.db_master_username}"
@@ -35,7 +34,7 @@ module "param_store_pghost" {
   source          = "../../_sub/security/ssm-parameter-store"
   key_name        = "/${var.application}/postgres/${var.environment}/pghost"
   key_description = "PG host for postgres database ${var.application}-${var.environment}"
-  key_value       = "${module.postgres_restore.pghost}"
+  key_value       = "${module.postgres.pghost}"
 }
 
 module "param_store_pguser" {
@@ -70,5 +69,5 @@ module "param_store_pgconnection_string" {
   source          = "../../_sub/security/ssm-parameter-store"
   key_name        = "/${var.application}/postgres/${var.environment}/pgconnection_string"
   key_description = "PG connection string for postgres database ${var.application}-${var.environment}"
-  key_value       = "${module.postgres_restore.pgconnection_string}"
+  key_value       = "${module.postgres.pgconnection_string}"
 }
