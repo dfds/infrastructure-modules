@@ -89,3 +89,9 @@ variable "parent_id" {
   description = "The ID of the parent AWS Organization OU."
   default     = ""
 }
+
+variable "kiam_role_arn" {
+  type = "string"
+  description = "Optional: The KIAM role ARN that can assume roles"
+  default = ""
+}
