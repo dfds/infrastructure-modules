@@ -115,9 +115,12 @@ module "iam_user_deploy" {
 
 module "iam_user_deploy_store_credentials" {
   source          = "../../_sub/security/ssm-parameter-store"
-  key_name        = "/managed/deploy_${module.iam_user_deploy.access_key}"
+  key_name        = "/managed/deploy/aws-creds"
   key_description = "AWS credentials for the IAM 'Deploy' user"
-  key_value       = "${module.iam_user_deploy.secret_key}"
+  key_value       = <<EOF
+AWS_ACCESS_KEY_ID=${module.iam_user_deploy.access_key}
+AWS_SECRET_ACCESS_KEY=${module.iam_user_deploy.secret_key}
+EOF
 
   providers = {
     aws = "aws.workload"
