@@ -45,16 +45,19 @@ module "iam_policies" {
   iam_role_trusted_account_root_arn = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
 }
 
-
 # --------------------------------------------------
 # Create account
 # --------------------------------------------------
 
 module "org_account" {
-  source        = "../../_sub/security/org-account"
-  name          = "${var.name}"
-  org_role_name = "${var.org_role_name}"
-  email         = "${var.email}"
+  source            = "../../_sub/security/org-account"
+  name              = "${var.name}"
+  org_role_name     = "${var.org_role_name}"
+  email             = "${var.email}"
+  parent_id         = "${var.parent_id}"
+  master_account_id = "${var.master_account_id}"
+  prime_role_name   = "${var.prime_role_name}"
+  sleep_after       = 30
 }
 
 module "iam_account_alias" {
@@ -67,26 +70,27 @@ module "iam_account_alias" {
 }
 
 module "iam_idp" {
-  source        = "../../_sub/security/iam-idp"
-  provider_name = "ADFS"
-  adfs_fqdn     = "${var.adfs_fqdn}"
+  source           = "../../_sub/security/iam-idp"
+  provider_name    = "ADFS"
+  adfs_fqdn        = "${var.adfs_fqdn}"
+  assume_role_arns = ["${var.kiam_role_arn}"]
 
   providers = {
     aws = "aws.workload"
   }
 }
 
-
 # --------------------------------------------------
 # Capability IAM role
 # --------------------------------------------------
 
 module "iam_role_capability" {
-  source = "../../_sub/security/iam-role"
-  role_name = "Capability"
-  role_description = ""
-  assume_role_policy = "${module.iam_idp.adfs_assume_policy}"
-  role_policy_name = "Admin"
+  source               = "../../_sub/security/iam-role"
+  role_name            = "Capability"
+  role_description     = ""
+  max_session_duration = 28800                                       # 8 hours
+  assume_role_policy   = "${module.iam_idp.adfs_role_assume_policy}"
+  role_policy_name     = "Admin"
   role_policy_document = "${module.iam_policies.admin}"
 
   providers = {
@@ -94,15 +98,14 @@ module "iam_role_capability" {
   }
 }
 
-
 # --------------------------------------------------
 # IAM deployment user
 # --------------------------------------------------
 
 module "iam_user_deploy" {
-  source = "../../_sub/security/iam-user"
-  user_name = "Deploy"
-  user_policy_name = "Admin"
+  source               = "../../_sub/security/iam-user"
+  user_name            = "Deploy"
+  user_policy_name     = "Admin"
   user_policy_document = "${module.iam_policies.admin}"
 
   providers = {
@@ -111,16 +114,18 @@ module "iam_user_deploy" {
 }
 
 module "iam_user_deploy_store_credentials" {
-  source = "../../_sub/security/ssm-parameter-store"
-  key_name = "/managed/deploy_${module.iam_user_deploy.access_key}"
+  source          = "../../_sub/security/ssm-parameter-store"
+  key_name        = "/managed/deploy/aws-creds"
   key_description = "AWS credentials for the IAM 'Deploy' user"
-  key_value = "${module.iam_user_deploy.secret_key}"
+  key_value       = <<EOF
+AWS_ACCESS_KEY_ID=${module.iam_user_deploy.access_key}
+AWS_SECRET_ACCESS_KEY=${module.iam_user_deploy.secret_key}
+EOF
 
   providers = {
     aws = "aws.workload"
   }
 }
-
 
 # --------------------------------------------------
 # aws_context_account_created event
@@ -128,19 +133,20 @@ module "iam_user_deploy_store_credentials" {
 
 locals {
   account_created_payload = <<EOF
-{"contextId":"${var.context_id}","accountId":"${module.org_account.id}","roleArn":"${module.iam_role_capability.arn}","roleEmail":"${module.org_account.email}","capabilityRootId":"${var.capability_root_id}","capabilityName":"${var.capability_name}","contextName":"${var.context_name}","capabilityId":"${var.capability_id}"}EOF
+  {"contextId":"${var.context_id}","accountId":"${module.org_account.id}","roleArn":"${module.iam_role_capability.arn}","roleEmail":"${module.org_account.email}","capabilityRootId":"${var.capability_root_id}","capabilityName":"${var.capability_name}","contextName":"${var.context_name}","capabilityId":"${var.capability_id}"}EOF
 }
 
 module "kafka_produce_account_created" {
-  source = "../../_sub/misc/kafka-message"
-  event_name = "aws_context_account_created"
+  source          = "../../_sub/misc/kafka-message"
+  publish         = "${var.publish_message}"
+  event_name      = "aws_context_account_created"
   message_version = "1"
-  correlation_id = "${var.correlation_id}"
-  sender = "org-account-context created by terraform"
-  payload = "${local.account_created_payload}"
-  key = "${var.capability_id}"
-  broker = "${var.kafka_broker}"
-  topic = "build.capabilities"
-  username = "${var.kafka_username}"
-  password = "${var.kafka_password}"
+  correlation_id  = "${var.correlation_id}"
+  sender          = "org-account-context created by terraform"
+  payload         = "${local.account_created_payload}"
+  key             = "${var.capability_id}"
+  broker          = "${var.kafka_broker}"
+  topic           = "build.capabilities"
+  username        = "${var.kafka_username}"
+  password        = "${var.kafka_password}"
 }

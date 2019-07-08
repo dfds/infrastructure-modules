@@ -33,3 +33,7 @@ variable "username" {
 variable "password" {
   type        = "string"
 }
+
+variable "publish" {
+  default = true
+}
