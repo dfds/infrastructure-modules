@@ -8,5 +8,5 @@ The connection strings, passwords etc can be found in parameter store in the sam
 * aws_region = "eu-central-1" (Destructive if changed)
 * application = "application" (Destrutive if changed)
 * db_master_username = "test" (Destrutive if changed)
-* db_master_password = "testtesttest" (Cna be used for changing password)
+* db_master_password = "testtesttest" (Can be used for changing password)
 * skip_final_snapshot = false (Optional and should NOT be set to true for production)
