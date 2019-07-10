@@ -94,10 +94,3 @@ module "cloudwatch_agent_config_bucket" {
   deploy    = "${var.eks_worker_cloudwatch_agent_config_deploy}"
   s3_bucket = "${var.eks_cluster_name}-cl-agent-config"
 }
-
-module "cloudwatch_agent_copy_config_to_bucket" {
-  source    = "../../_sub/storage/s3-bucket-copyfile-helper"
-  deploy = "${var.eks_worker_cloudwatch_agent_config_deploy}"
-  target_bucket = "${module.cloudwatch_agent_config_bucket.bucket_name}"
-  file = "${var.eks_worker_cloudwatch_agent_config_file}"
-}
