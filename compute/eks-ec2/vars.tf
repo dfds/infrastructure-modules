@@ -62,3 +62,16 @@ variable "blaster_configmap_deploy" {
 }
 
 variable "blaster_configmap_bucket" {}
+
+
+# --------------------------------------------------
+# Cloudwatch agent setup
+# --------------------------------------------------
+
+variable "eks_worker_cloudwatch_agent_config_deploy" {
+  default = false
+}
+
+variable "eks_worker_cloudwatch_agent_config_file" {
+  type = "string"
+}
