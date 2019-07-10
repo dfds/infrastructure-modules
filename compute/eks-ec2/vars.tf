@@ -74,4 +74,5 @@ variable "eks_worker_cloudwatch_agent_config_deploy" {
 
 variable "eks_worker_cloudwatch_agent_config_file" {
   type = "string"
+  default = "aws-cloudwatch-agent-conf.json"
 }

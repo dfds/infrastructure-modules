@@ -44,7 +44,7 @@ module "eks_workers" {
   enable_ssh                   = "${var.eks_worker_ssh_enable}"
   public_key                   = "${var.eks_worker_ssh_public_key}"
   cloudwatch_agent_config_bucket = "${var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none" }"
-  cloudwatch_agent_config_file = "${module.cloudwatch_agent_copy_config_to_bucket.file_name}"
+  cloudwatch_agent_config_file = "${var.eks_worker_cloudwatch_agent_config_file}"
   cloudwatch_agent_enabled = "${var.eks_worker_cloudwatch_agent_config_deploy}"
 }
 
@@ -93,11 +93,4 @@ module "cloudwatch_agent_config_bucket" {
   source    = "../../_sub/storage/s3-bucket"
   deploy    = "${var.eks_worker_cloudwatch_agent_config_deploy}"
   s3_bucket = "${var.eks_cluster_name}-cl-agent-config"
-}
-
-module "cloudwatch_agent_copy_config_to_bucket" {
-  source    = "../../_sub/storage/s3-bucket-copyfile-helper"
-  deploy = "${var.eks_worker_cloudwatch_agent_config_deploy}"
-  target_bucket = "${module.cloudwatch_agent_config_bucket.bucket_name}"
-  file = "${var.eks_worker_cloudwatch_agent_config_file}"
 }
