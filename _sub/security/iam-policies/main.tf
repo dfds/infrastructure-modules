@@ -47,10 +47,14 @@ data "aws_iam_policy_document" "create_org_account" {
     statement {
         sid       = "OrgCreateAccount"
         actions   = [
-                "organizations:ListAccounts",
                 "organizations:CreateAccount",
                 "organizations:DescribeAccount",
-                "organizations:DescribeCreateAccountStatus"
+                "organizations:DescribeCreateAccountStatus",
+                "organizations:ListAccounts",
+                "organizations:ListAccountsForParent",
+                "organizations:ListParents",
+                "organizations:ListRoots",
+                "organizations:MoveAccount"
             ]
         resources = ["*"]
         effect    = "Allow"
