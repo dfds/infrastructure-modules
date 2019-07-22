@@ -2,7 +2,7 @@ resource "kubernetes_service_account" "traefik" {
   count = "${var.deploy}"
   metadata {
     name      = "${var.deploy_name}-ingress-controller"
-    namespace = "kube-system"
+    namespace = "${var.namespace}"
   }
   provider = "kubernetes"
 }
@@ -11,7 +11,7 @@ resource "kubernetes_deployment" "traefik" {
   count = "${var.deploy}"
   metadata {
     name      = "${var.deploy_name}-ingress-controller"
-    namespace = "kube-system"
+    namespace = "${var.namespace}"
 
     labels {
       k8s-app = "${var.deploy_name}"
@@ -19,7 +19,7 @@ resource "kubernetes_deployment" "traefik" {
   }
 
   spec {
-    replicas = 2
+    replicas = "${var.replicas}"
 
     selector {
       match_labels {
@@ -46,7 +46,7 @@ resource "kubernetes_deployment" "traefik" {
         }
 
         container {
-          image = "traefik:v1.7.9"
+          image = "traefik:${var.release_tag}"
           name  = "${var.deploy_name}"
 
           volume_mount {
@@ -76,11 +76,14 @@ resource "kubernetes_deployment" "traefik" {
 resource "kubernetes_service" "traefik" {
   count = "${var.deploy}"
   metadata {
-    name      = "${var.deploy_name}-ingress-service"
-    namespace = "kube-system"
+    name      = "${var.deploy_name}"
+    namespace = "${var.namespace}"
     annotations {
       "prometheus.io/port" = "8080"
       "prometheus.io/scrape" = "true"
+    }
+    labels {
+      scrape-service-metrics = "true"
     }
   }
 
@@ -133,6 +136,6 @@ resource "kubernetes_cluster_role_binding" "example" {
         api_group = "" 
         kind = "ServiceAccount"
         name = "${var.deploy_name}-ingress-controller"
-        namespace = "kube-system"
+        namespace = "${var.namespace}"
     }
 }
