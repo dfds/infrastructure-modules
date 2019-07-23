@@ -16,21 +16,21 @@ provider "aws" {
   }
 }
 
-module "aws_cloudfront_www" {
-  source       = "../../_sub/cdn/cloudfront"
-  cdn_origins = var.cdn_origins
-  acm_certificate_arn = var.acm_certificate_arn  
-  cdn_comment = var.cdn_comment
-  aliases = ["www.${var.cdn_domain_name}"] 
-}
+# module "aws_cloudfront_www" {
+#   source       = "../../_sub/cdn/cloudfront"
+#   cdn_origins = var.cdn_origins
+#   acm_certificate_arn = var.acm_certificate_arn  
+#   cdn_comment = var.cdn_comment
+#   aliases = ["www.${var.cdn_domain_name}"] 
+# }
 
-module "aws_cloudfront_redirect" {
-  source       = "../../_sub/cdn/cloudfront"
-  cdn_origins = local.redirect_origin
-  acm_certificate_arn = var.acm_certificate_arn  
-  cdn_comment = "Root redirect for ${var.cdn_comment}"
-  aliases = ["${var.cdn_domain_name}"]
-}
+# module "aws_cloudfront_redirect" {
+#   source       = "../../_sub/cdn/cloudfront"
+#   cdn_origins = local.redirect_origin
+#   acm_certificate_arn = var.acm_certificate_arn  
+#   cdn_comment = "Root redirect for ${var.cdn_comment}"
+#   aliases = ["${var.cdn_domain_name}"]
+# }
 
 # TODO: enable staging for api gateway 
 module "aws_api_gateway" {
