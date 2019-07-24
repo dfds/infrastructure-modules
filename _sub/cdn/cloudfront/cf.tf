@@ -38,7 +38,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
           for_each = it.value.is_s3_origin ? [1] : [] # apply s3 origin settings
           iterator = s3_origin_config
           content {
-            origin_access_identity = "${aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path}"
+            origin_access_identity = "${var.origin_access_identity}"
           }          
         }
 

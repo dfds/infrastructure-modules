@@ -16,10 +16,17 @@ provider "aws" {
   }
 }
 
+module "aws_cf_oai" {
+  source       = "../../_sub/cdn/cloudfront_oai"
+  comment = "${var.cdn_comment} Canonical user id"
+}
+
+
 module "aws_cloudfront" {
   source       = "../../_sub/cdn/cloudfront"
   cdn_origins = var.cdn_origins
   acm_certificate_arn = var.acm_certificate_arn  
   cdn_comment = var.cdn_comment  
   aliases = "${var.cdn_domain_name == "" ? [] : [var.cdn_domain_name]}"
+  origin_access_identity = "${module.aws_cf_oai.origin_access_identity}"
 }

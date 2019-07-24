@@ -14,3 +14,7 @@ variable "aliases" {
   default = []
   type = "list"
 }
+
+variable "origin_access_identity" {
+  default = ""
+}
