@@ -33,24 +33,24 @@ provider "aws" {
 # }
 
 # TODO: enable staging for api gateway 
-module "aws_api_gateway" {
-  source       = "../../_sub/network/api-gateway-lambda"
-  api_gateway_rest_api_name = "main-cdn-api"
-  lambda_function_invoke_arn = "${module.aws_lambda_function.lambda_function_invoke_arn}"
-  lambda_function_name = "${module.aws_lambda_function.lambda_function_name}"  
-}
+# module "aws_api_gateway" {
+#   source       = "../../_sub/network/api-gateway-lambda"
+#   api_gateway_rest_api_name = "main-cdn-api"
+#   lambda_function_invoke_arn = "${module.aws_lambda_function.lambda_function_invoke_arn}"
+#   lambda_function_name = "${module.aws_lambda_function.lambda_function_name}"  
+# }
 
-# Lambda and API-gateway to enable manipulating http request
-module "aws_lambda_function" {
-  source = "../../_sub/compute/lambda"
-  lambda_function_name = "main-cdn-api-root-redirect"
-  lambda_role_name = "main-cdn-api-root-redirect"
-  lambda_function_handler = "lambda-root-redirect" # filename without fileextension 
-  lambda_env_variables =  {SITE_DOMAIN = "${var.cdn_domain_name}"}
+# # Lambda and API-gateway to enable manipulating http request
+# module "aws_lambda_function" {
+#   source = "../../_sub/compute/lambda"
+#   lambda_function_name = "main-cdn-api-root-redirect"
+#   lambda_role_name = "main-cdn-api-root-redirect"
+#   lambda_function_handler = "lambda-root-redirect" # filename without fileextension 
+#   lambda_env_variables =  {SITE_DOMAIN = "${var.cdn_domain_name}"}
 
-  s3_bucket = "${module.s3_bucket.bucket_name}"
-  s3_key = "${module.s3_object_upload.s3_object_key}"
-}
+#   s3_bucket = "${module.s3_bucket.bucket_name}"
+#   s3_key = "${module.s3_object_upload.s3_object_key}"
+# }
 
 # TODO: should be produced via CD pipeline
 module "s3_object_upload" { 
