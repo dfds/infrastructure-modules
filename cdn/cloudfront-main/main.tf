@@ -65,3 +65,7 @@ module "s3_bucket" { # for the lambda function
   deploy = 1
   s3_bucket = "${var.cf_lambda_s3bucket}"  
 }
+
+output "sometest-test" {
+  value = "somevalue"
+}
