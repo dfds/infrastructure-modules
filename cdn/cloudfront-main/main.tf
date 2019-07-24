@@ -32,7 +32,7 @@ module "aws_cloudfront_redirect" {
   aliases = ["${var.cdn_domain_name}"]
 }
 
-TODO: enable staging for api gateway 
+# TODO: enable staging for api gateway 
 module "aws_api_gateway" {
   source       = "../../_sub/network/api-gateway-lambda"
   api_gateway_rest_api_name = "main-cdn-api"
@@ -40,7 +40,7 @@ module "aws_api_gateway" {
   lambda_function_name = "${module.aws_lambda_function.lambda_function_name}"  
 }
 
-# # Lambda and API-gateway to enable manipulating http request
+# Lambda and API-gateway to enable manipulating http request
 module "aws_lambda_function" {
   source = "../../_sub/compute/lambda"
   lambda_function_name = "main-cdn-api-root-redirect"
