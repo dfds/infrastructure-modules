@@ -41,16 +41,16 @@ provider "aws" {
 # }
 
 # # Lambda and API-gateway to enable manipulating http request
-# module "aws_lambda_function" {
-#   source = "../../_sub/compute/lambda"
-#   lambda_function_name = "main-cdn-api-root-redirect"
-#   lambda_role_name = "main-cdn-api-root-redirect"
-#   lambda_function_handler = "lambda-root-redirect" # filename without fileextension 
-#   lambda_env_variables =  {SITE_DOMAIN = "${var.cdn_domain_name}"}
+module "aws_lambda_function" {
+  source = "../../_sub/compute/lambda"
+  lambda_function_name = "main-cdn-api-root-redirect"
+  lambda_role_name = "main-cdn-api-root-redirect"
+  lambda_function_handler = "lambda-root-redirect" # filename without fileextension 
+  lambda_env_variables =  {SITE_DOMAIN = "${var.cdn_domain_name}"}
 
-#   s3_bucket = "${module.s3_bucket.bucket_name}"
-#   s3_key = "${module.s3_object_upload.s3_object_key}"
-# }
+  s3_bucket = "${module.s3_bucket.bucket_name}"
+  s3_key = "${module.s3_object_upload.s3_object_key}"
+}
 
 # TODO: should be produced via CD pipeline
 module "s3_object_upload" { 
@@ -63,9 +63,5 @@ module "s3_object_upload" {
 module "s3_bucket" { # for the lambda function
   source = "../../_sub/storage/s3-bucket"
   deploy = 1
-  s3_bucket = "${var.cf_lambda_s3bucket}"  
-}
-
-output "sometest-test" {
-  value = "somevalue"
+  s3_bucket = "${var.cf_lambda_s3bucket}"
 }

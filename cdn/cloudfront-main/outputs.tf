@@ -7,9 +7,5 @@
 # }
 
 output "s3_object_key" {
-  value = "${module.s3_object_upload.s3_object_key} Test!!"
-}
-
-output "sometest" {
-  value = "somevalue"
+  value = "${module.s3_object_upload.s3_object_key}"
 }
