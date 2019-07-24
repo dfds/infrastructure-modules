@@ -16,29 +16,29 @@ provider "aws" {
   }
 }
 
-# module "aws_cloudfront_www" {
-#   source       = "../../_sub/cdn/cloudfront"
-#   cdn_origins = var.cdn_origins
-#   acm_certificate_arn = var.acm_certificate_arn  
-#   cdn_comment = var.cdn_comment
-#   aliases = ["www.${var.cdn_domain_name}"] 
-# }
+module "aws_cloudfront_www" {
+  source       = "../../_sub/cdn/cloudfront"
+  cdn_origins = var.cdn_origins
+  acm_certificate_arn = var.acm_certificate_arn  
+  cdn_comment = var.cdn_comment
+  aliases = ["www.${var.cdn_domain_name}"] 
+}
 
-# module "aws_cloudfront_redirect" {
-#   source       = "../../_sub/cdn/cloudfront"
-#   cdn_origins = local.redirect_origin
-#   acm_certificate_arn = var.acm_certificate_arn  
-#   cdn_comment = "Root redirect for ${var.cdn_comment}"
-#   aliases = ["${var.cdn_domain_name}"]
-# }
+module "aws_cloudfront_redirect" {
+  source       = "../../_sub/cdn/cloudfront"
+  cdn_origins = local.redirect_origin
+  acm_certificate_arn = var.acm_certificate_arn  
+  cdn_comment = "Root redirect for ${var.cdn_comment}"
+  aliases = ["${var.cdn_domain_name}"]
+}
 
-# TODO: enable staging for api gateway 
-# module "aws_api_gateway" {
-#   source       = "../../_sub/network/api-gateway-lambda"
-#   api_gateway_rest_api_name = "main-cdn-api"
-#   lambda_function_invoke_arn = "${module.aws_lambda_function.lambda_function_invoke_arn}"
-#   lambda_function_name = "${module.aws_lambda_function.lambda_function_name}"  
-# }
+TODO: enable staging for api gateway 
+module "aws_api_gateway" {
+  source       = "../../_sub/network/api-gateway-lambda"
+  api_gateway_rest_api_name = "main-cdn-api"
+  lambda_function_invoke_arn = "${module.aws_lambda_function.lambda_function_invoke_arn}"
+  lambda_function_name = "${module.aws_lambda_function.lambda_function_name}"  
+}
 
 # # Lambda and API-gateway to enable manipulating http request
 module "aws_lambda_function" {
