@@ -16,6 +16,38 @@ provider "aws" {
   }
 }
 
+module "aws_route53_cf_redirect_record" {
+  source = "../../_sub/network/route53-alias-record"
+  # A record for dfds-ex.com
+  deploy = "${var.cf_main_hosted_zone_deploy}"
+  zone_id = "${module.route53_hosted_zone.dns_zone_id}"
+  record_name = "${var.cf_main_dns_zone}"
+  record_type = "A"
+  alias_target_dns_name = "${module.aws_cloudfront_redirect.distribution_domain_name}"
+  alias_target_zone_id = "${module.aws_cloudfront_redirect.distribution_hosted_zone_id}"
+}
+
+module "aws_route53_cf_www_record" {
+  source = "../../_sub/network/route53-record"
+  # CName record for www
+  deploy = "${var.cf_main_hosted_zone_deploy}"
+  zone_id = "${module.route53_hosted_zone.dns_zone_id}"
+  record_name = "www.${var.cf_main_dns_zone}"
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = "${module.aws_cloudfront_www.distribution_domain_name}"  
+}
+
+# ------------------prereqs for route53records----------------------------------------#
+
+module "aws_cloudfront_redirect" {
+  source       = "../../_sub/cdn/cloudfront"
+  cdn_origins = local.redirect_origin
+  acm_certificate_arn = var.acm_certificate_arn  
+  cdn_comment = "Root redirect for ${var.cdn_comment}"
+  aliases = ["${var.cdn_domain_name}"] # ## via local or cdn_domain_name ??
+}
+
 module "aws_cloudfront_www" {
   source       = "../../_sub/cdn/cloudfront"
   cdn_origins = var.cdn_origins
@@ -24,13 +56,21 @@ module "aws_cloudfront_www" {
   aliases = ["www.${var.cdn_domain_name}"] 
 }
 
-module "aws_cloudfront_redirect" {
-  source       = "../../_sub/cdn/cloudfront"
-  cdn_origins = local.redirect_origin
-  acm_certificate_arn = var.acm_certificate_arn  
-  cdn_comment = "Root redirect for ${var.cdn_comment}"
-  aliases = ["${var.cdn_domain_name}"]
+# ------------------prereqs for cf + route53records----------------------------------------#
+module "cf_domain_cert" { # TODO: Missing
+  source        = "../../_sub/network/acm-certificate-san"
+  deploy        = "${var.cf_main_hosted_zone_deploy}" #"${var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy ? 1 : 0}"
+  domain_name   = ["www.${var.cdn_domain_name}"] 
+  dns_zone_name = "*.${module.route53_hosted_zone.dns_zone_name}"
+  core_alias    = ["${var.cdn_domain_name}"]  
 }
+
+module "route53_hosted_zone" {
+  source = "../../_sub/network/route53-zone"  
+  deploy = "${var.cf_main_hosted_zone_deploy}"
+  dns_zone_name = "${var.cf_main_dns_zone}"
+}
+# ---------------------------------------------------------#
 
 # TODO: enable staging for api gateway 
 module "aws_api_gateway" {
@@ -60,7 +100,8 @@ module "s3_object_upload" {
   filepath = "${var.lambda_zip_filepath}"
 }
 
-module "s3_bucket" { # for the lambda function
+# Bucket for lambda function
+module "s3_bucket" { 
   source = "../../_sub/storage/s3-bucket"
   deploy = 1
   s3_bucket = "${var.cf_lambda_s3bucket}"

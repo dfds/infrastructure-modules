@@ -66,31 +66,31 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
       iterator = it # alias for iterator. Otherwise the name would be of the dynamic blog "ordered_cache_behavior"
 
       content {
-        target_origin_id = it.value.origin_domain_name # origin # TODO: Do not use domainname as id
+        target_origin_id = it.value.origin_domain_name # origin
         path_pattern = it.value.cache_behavior_path_pattern # path
-        allowed_methods  = it.value.cache_behavior_allowed_methods # ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-        cached_methods   = it.value.cache_behavior_cached_methods # ["GET", "HEAD"]
+        allowed_methods  = it.value.cache_behavior_allowed_methods
+        cached_methods   = it.value.cache_behavior_cached_methods
         
 
         forwarded_values {
-          query_string = it.value.cache_behavior_forwarded_values_query_string # false
+          query_string = it.value.cache_behavior_forwarded_values_query_string
 
           cookies {
-            forward = it.value.cache_behavior_forwarded_values_cookies_forward #"none"
+            forward = it.value.cache_behavior_forwarded_values_cookies_forward
           }
         }
 
-        viewer_protocol_policy = it.value.cache_behavior_viewer_protocol_policy # "allow-all"
-        min_ttl                = it.value.cache_behavior_min_ttl #0
-        default_ttl            = it.value.cache_behavior_default_ttl #86400
-        max_ttl                = it.value.cache_behavior_max_ttl #31536000       
+        viewer_protocol_policy = it.value.cache_behavior_viewer_protocol_policy
+        min_ttl                = it.value.cache_behavior_min_ttl
+        default_ttl            = it.value.cache_behavior_default_ttl
+        max_ttl                = it.value.cache_behavior_max_ttl
       }       
     }
 
   default_cache_behavior { 
     allowed_methods  = "${length(var.cdn_origins) == 1 ? var.cdn_origins[0].cache_behavior_allowed_methods: ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"] }" # This to allow redirect 
     cached_methods   = "${length(var.cdn_origins) == 1 ? var.cdn_origins[0].cache_behavior_cached_methods: ["HEAD", "GET"] }" 
-    target_origin_id = var.cdn_origins[0].origin_domain_name # "dummy.dfds.com" # TODO: Do not use domainname as id
+    target_origin_id = var.cdn_origins[0].origin_domain_name
 
     forwarded_values {
       query_string = "${length(var.cdn_origins) == 1 ? var.cdn_origins[0].cache_behavior_forwarded_values_query_string: false }" 

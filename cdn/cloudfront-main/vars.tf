@@ -68,3 +68,12 @@ variable "cdn_domain_name" {
 variable "cf_lambda_s3bucket" {}
 
 variable "lambda_zip_filepath" {}
+
+
+variable "cf_main_hosted_zone_deploy" {
+  
+}
+
+variable "cf_main_dns_zone" {
+  default = ""
+}
