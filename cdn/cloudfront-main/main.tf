@@ -16,6 +16,12 @@ provider "aws" {
   }
 }
 
+provider "aws" {
+  region  = "${var.aws_region}"
+  version = "~> 2.15"
+  alias   = "core"
+}
+
 module "aws_route53_cf_redirect_record" {
   source = "../../_sub/network/route53-alias-record"
   # A record for dfds-ex.com
