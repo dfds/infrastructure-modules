@@ -77,3 +77,7 @@ variable "cf_main_hosted_zone_deploy" {
 variable "cf_main_dns_zone" {
   default = ""
 }
+
+variable "cf_domain_cert_deploy" {
+  
+}

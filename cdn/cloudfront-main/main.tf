@@ -43,26 +43,27 @@ module "aws_route53_cf_www_record" {
 module "aws_cloudfront_redirect" {
   source       = "../../_sub/cdn/cloudfront"
   cdn_origins = local.redirect_origin
-  acm_certificate_arn = var.acm_certificate_arn  
+  acm_certificate_arn = "${module.cf_domain_cert.certificate_arn}" #var.acm_certificate_arn  
   cdn_comment = "Root redirect for ${var.cdn_comment}"
-  aliases = ["${var.cdn_domain_name}"] # ## via local or cdn_domain_name ??
+  aliases = ["${var.cf_main_dns_zone}"]  # ["${var.cdn_domain_name}"] # via local or cdn_domain_name ??
 }
 
 module "aws_cloudfront_www" {
   source       = "../../_sub/cdn/cloudfront"
   cdn_origins = var.cdn_origins
-  acm_certificate_arn = var.acm_certificate_arn  
+  acm_certificate_arn = "${module.cf_domain_cert.certificate_arn}" #var.acm_certificate_arn  
   cdn_comment = var.cdn_comment
-  aliases = ["www.${var.cdn_domain_name}"] 
+  aliases = ["www.${var.cf_main_dns_zone}"]  # ["www.${var.cdn_domain_name}"]
 }
 
-# ------------------prereqs for cf + route53records----------------------------------------#
+# ------------------prereqs for cf + route53records----------------------------------------# Can be created separatly 
 module "cf_domain_cert" {
   source        = "../../_sub/network/acm-certificate-san-simple"
-  deploy        = "${var.cf_main_hosted_zone_deploy}" #"${var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy ? 1 : 0}"
-  domain_name   = ["www.${var.cdn_domain_name}"] 
-  dns_zone_name = "*.${module.route53_hosted_zone.dns_zone_name}"
-  subject_alternative_names    = ["${var.cdn_domain_name}"]  
+  deploy        = "${var.cf_domain_cert_deploy}" #"${var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy ? 1 : 0}"
+  domain_name   = "www.${var.cf_main_dns_zone}" #"www.${var.cdn_domain_name}"
+  # dns_zone_name = "*.${module.route53_hosted_zone.dns_zone_name}"
+  dns_zone_id = "${var.cf_main_hosted_zone_deploy ? module.route53_hosted_zone.dns_zone_id: data.aws_route53_zone.zone[0].id}"
+  subject_alternative_names    = ["${var.cf_main_dns_zone}"] #["${var.cdn_domain_name}"]  
 }
 
 module "route53_hosted_zone" {
@@ -70,6 +71,13 @@ module "route53_hosted_zone" {
   deploy = "${var.cf_main_hosted_zone_deploy}"
   dns_zone_name = "${var.cf_main_dns_zone}"
 }
+
+data "aws_route53_zone" "zone" {
+  count        = "${var.cf_main_hosted_zone_deploy ? 0: 1}"
+  name         = "${var.cf_main_dns_zone}."
+  private_zone = false
+}
+
 # ---------------------------------------------------------#
 
 # TODO: enable staging for api gateway 
