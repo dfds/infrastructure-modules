@@ -21,7 +21,7 @@ module "aws_route53_cf_redirect_record" {
   # A record for dfds-ex.com
   deploy = "${var.cf_main_hosted_zone_deploy}"
   zone_id = "${module.route53_hosted_zone.dns_zone_id}"
-  record_name = "${var.cf_main_dns_zone}"
+  record_name = ["${var.cf_main_dns_zone}"]
   record_type = "A"
   alias_target_dns_name = "${module.aws_cloudfront_redirect.distribution_domain_name}"
   alias_target_zone_id = "${module.aws_cloudfront_redirect.distribution_hosted_zone_id}"
@@ -32,7 +32,7 @@ module "aws_route53_cf_www_record" {
   # CName record for www
   deploy = "${var.cf_main_hosted_zone_deploy}"
   zone_id = "${module.route53_hosted_zone.dns_zone_id}"
-  record_name = "www.${var.cf_main_dns_zone}"
+  record_name = ["www.${var.cf_main_dns_zone}"]
   record_type  = "CNAME"
   record_ttl   = "900"
   record_value = "${module.aws_cloudfront_www.distribution_domain_name}"  
