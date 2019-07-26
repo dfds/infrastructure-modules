@@ -16,12 +16,6 @@ provider "aws" {
   }
 }
 
-provider "aws" {
-  region  = "${var.aws_region}"
-  version = "~> 2.15"
-  alias   = "core"
-}
-
 module "aws_route53_cf_redirect_record" {
   source = "../../_sub/network/route53-alias-record"
   # A record for dfds-ex.com
@@ -68,7 +62,7 @@ module "cf_domain_cert" {
   deploy        = "${var.cf_main_hosted_zone_deploy}" #"${var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy ? 1 : 0}"
   domain_name   = ["www.${var.cdn_domain_name}"] 
   dns_zone_name = "*.${module.route53_hosted_zone.dns_zone_name}"
-  core_alias    = ["${var.cdn_domain_name}"]  
+  subject_alternative_names    = ["${var.cdn_domain_name}"]  
 }
 
 module "route53_hosted_zone" {
