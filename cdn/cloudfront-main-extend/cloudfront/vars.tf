@@ -71,7 +71,7 @@ variable "lambda_zip_filepath" {}
 
 
 variable "cf_main_hosted_zone_deploy" {
-  
+  default = ""
 }
 
 variable "cf_main_dns_zone" {

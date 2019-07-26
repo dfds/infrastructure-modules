@@ -17,36 +17,13 @@ provider "aws" {
 }
 
 
-## TODO: put into own folder
-module "aws_route53_cf_redirect_record" {
-  source = "../../_sub/network/route53-alias-record"
-  # A record for dfds-ex.com
-  deploy = "${var.cf_route53_records_deploy}"
-  zone_id = "${var.cf_main_hosted_zone_deploy ? module.route53_hosted_zone.dns_zone_id: data.aws_route53_zone.zone[0].id}"
-  record_name = ["${var.cf_main_dns_zone}"]
-  record_type = "A"
-  alias_target_dns_name = "${module.aws_cloudfront_redirect.distribution_domain_name}"
-  alias_target_zone_id = "${module.aws_cloudfront_redirect.distribution_hosted_zone_id}"
-}
-
-module "aws_route53_cf_www_record" {
-  source = "../../_sub/network/route53-record"
-  # CName record for www
-  deploy = "${var.cf_route53_records_deploy}"
-  zone_id = "${var.cf_main_hosted_zone_deploy ? module.route53_hosted_zone.dns_zone_id: data.aws_route53_zone.zone[0].id}"
-  record_name = ["www.${var.cf_main_dns_zone}"]
-  record_type  = "CNAME"
-  record_ttl   = "900"
-  record_value = "${module.aws_cloudfront_www.distribution_domain_name}"  
-}
-
 # # ------------------prereqs for route53records----------------------------------------#
 
 module "aws_cloudfront_redirect" {
   source       = "../../_sub/cdn/cloudfront"
   cdn_origins = local.redirect_origin
   # acm_certificate_arn = "${module.cf_domain_cert.certificate_arn}" #var.acm_certificate_arn  
-  acm_certificate_arn = "${var.cf_domain_cert_deploy ? module.cf_domain_cert.certificate_arn: data.aws_acm_certificate.cf_domain_cert[0].arn}"
+  acm_certificate_arn = "${length(var.acm_certificate_arn) == 0 ? data.aws_acm_certificate.cf_domain_cert.arn : var.acm_certificate_arn}"
   cdn_comment = "Root redirect for ${var.cdn_comment}"
   aliases = ["${var.cf_main_dns_zone}"]  # ["${var.cdn_domain_name}"] # via local or cdn_domain_name ??
 }
@@ -55,39 +32,24 @@ module "aws_cloudfront_www" {
   source       = "../../_sub/cdn/cloudfront"
   cdn_origins = var.cdn_origins
   # acm_certificate_arn = "${module.cf_domain_cert.certificate_arn}" #var.acm_certificate_arn  
-  acm_certificate_arn = "${var.cf_domain_cert_deploy ? module.cf_domain_cert.certificate_arn: data.aws_acm_certificate.cf_domain_cert[0].arn}"
+  acm_certificate_arn = "${length(var.acm_certificate_arn) == 0 ? data.aws_acm_certificate.cf_domain_cert.arn : var.acm_certificate_arn}"
   cdn_comment = var.cdn_comment
   aliases = ["www.${var.cf_main_dns_zone}"]  # ["www.${var.cdn_domain_name}"]
 }
 
 # ------------------prereqs for cf + route53records----------------------------------------# Can be created separatly 
-module "cf_domain_cert" {
-  source        = "../../_sub/network/acm-certificate-san-simple"
-  deploy        = "${var.cf_domain_cert_deploy}" #"${var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy ? 1 : 0}"
-  domain_name   = "www.${var.cf_main_dns_zone}" #"www.${var.cdn_domain_name}"
-  # dns_zone_name = "*.${module.route53_hosted_zone.dns_zone_name}"
-  dns_zone_id = "${var.cf_main_hosted_zone_deploy ? module.route53_hosted_zone.dns_zone_id: data.aws_route53_zone.zone[0].id}"
-  subject_alternative_names    = ["${var.cf_main_dns_zone}"] #["${var.cdn_domain_name}"]  
-}
-
-module "route53_hosted_zone" {
-  source = "../../_sub/network/route53-zone"  
-  deploy = "${var.cf_main_hosted_zone_deploy}"
-  dns_zone_name = "${var.cf_main_dns_zone}"
-}
 
 # Find a certificate that is issued
 data "aws_acm_certificate" "cf_domain_cert" {
-  count = "${var.cf_domain_cert_deploy ? 0 : 1}"
   domain   = "www.${var.cf_main_dns_zone}"
   statuses = ["ISSUED"]
 }
 
 data "aws_route53_zone" "zone" {
-  count        = "${var.cf_main_hosted_zone_deploy ? 0: 1}"
   name         = "${var.cf_main_dns_zone}."
   private_zone = false
 }
+
 
 
 # ---------------------------------------------------------#
