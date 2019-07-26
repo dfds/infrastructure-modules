@@ -63,8 +63,8 @@ module "aws_cloudfront_www" {
 }
 
 # ------------------prereqs for cf + route53records----------------------------------------#
-module "cf_domain_cert" { # TODO: Missing
-  source        = "../../_sub/network/acm-certificate-san"
+module "cf_domain_cert" {
+  source        = "../../_sub/network/acm-certificate-san-simple"
   deploy        = "${var.cf_main_hosted_zone_deploy}" #"${var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy ? 1 : 0}"
   domain_name   = ["www.${var.cdn_domain_name}"] 
   dns_zone_name = "*.${module.route53_hosted_zone.dns_zone_name}"
