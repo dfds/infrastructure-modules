@@ -78,10 +78,7 @@ variable "cf_main_dns_zone" {
   default = ""
 }
 
-variable "cf_domain_cert_deploy" {
-  
+variable "cf_route53_records_deploy" {
+  default = false
 }
 
-variable "cf_route53_records_deploy" {
-  
-}

@@ -17,16 +17,9 @@ provider "aws" {
 }
 
 module "cf_domain_cert" {
-  source        = "../../_sub/network/acm-certificate-san-simple"
-  deploy        = "${var.cf_domain_cert_deploy}" #"${var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy ? 1 : 0}"
-  domain_name   = "www.${var.cf_main_dns_zone}" #"www.${var.cdn_domain_name}"
-  # dns_zone_name = "*.${module.route53_hosted_zone.dns_zone_name}"
+source =        "../../../_sub/network/acm-certificate-san-simple"
+  deploy        = "${var.cf_domain_cert_deploy}"
+  domain_name   = "www.${var.cf_main_dns_zone}"
   dns_zone_id = "${length(var.dns_zone_id) == 0 ? data.aws_route53_zone.zone.id : var.dns_zone_id}"
   subject_alternative_names    = ["${var.cf_main_dns_zone}"] #["${var.cdn_domain_name}"]  
-}
-
-
-data "aws_route53_zone" "zone" {  
-  name         = "${var.cf_main_dns_zone}."
-  private_zone = false
 }
