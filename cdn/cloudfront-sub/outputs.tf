@@ -1,5 +1,5 @@
 output "aws_cloudfront_oai_arn" {
-  value = "${module.aws_cloudfront.oai_arn} (${var.cdn_comment})"
+  value = "${module.aws_cf_oai.oai_arn} (${var.cdn_comment})"
 }
 
 output "aws_cloudfront_distribution_domain_name" {

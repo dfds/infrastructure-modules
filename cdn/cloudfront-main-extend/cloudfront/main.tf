@@ -16,6 +16,16 @@ provider "aws" {
   }
 }
 
+provider "aws" {
+  region  = var.aws_acm_region
+  version = "~> 2.15"  # from 2.11 Minimum required 2.14
+  alias  = "acm"
+
+  assume_role {
+    role_arn = var.aws_assume_role_arn
+  }
+}
+
 module "aws_route53_cf_redirect_record" { # As of now, AWS Terraform providor does not have a data source for aws_cloudfront_distribution
   source = "../cf-route53-records"
   aws_region = "${var.aws_region}"
@@ -65,8 +75,8 @@ module "aws_lambda_function" {
   lambda_function_name = "main-cdn-api-root-redirect"
   lambda_role_name = "main-cdn-api-root-redirect"
   lambda_function_handler = "lambda-root-redirect" # filename without fileextension 
-  lambda_env_variables =  {SITE_DOMAIN = "${var.cdn_domain_name}"}
-
+  lambda_env_variables =  {SITE_DOMAIN = "${var.cf_main_dns_zone}"}
+  aws_region = "${var.aws_region}"
   s3_bucket = "${module.s3_bucket.bucket_name}"
   s3_key = "${module.s3_object_upload.s3_object_key}"
 }

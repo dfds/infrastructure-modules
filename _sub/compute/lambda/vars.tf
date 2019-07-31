@@ -12,9 +12,6 @@ variable "lambda_function_handler" {
 
 variable "lambda_env_variables" {
   type = "map"
-  default = {
-    SITE_DOMAIN = "bar" # TODO: Remove
-  }
 }
 
 variable "s3_bucket" {
@@ -29,3 +26,6 @@ variable "runtime" {
   default = "nodejs10.x"
 }
 
+variable "aws_region" {
+  
+}

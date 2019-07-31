@@ -14,6 +14,11 @@ variable "aws_region" {
   type = "string"
 }
 
+variable "aws_acm_region" {
+  type = "string"
+}
+
+
 variable "aws_assume_role_arn" {
   type = "string"
 }
@@ -22,7 +27,7 @@ variable "cdn_origins" {
   type = "list"
 
   default = [{ 
-    origin_domain_name                              = "example.com" # probably not needed?/should taken from domain provided 
+    origin_domain_name                              = "example.com"
     origin_origin_path                              = ""
     default_root_object                             = "index.html"
     is_s3_origin                                    = false
