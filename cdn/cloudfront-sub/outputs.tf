@@ -10,7 +10,9 @@ output "aws_cloudfront_distribution_domain_name_commented" {
   # value = "${var.enable_output_comments ? "${module.aws_cf_dist.distribution_domain_name(var.cf_dist_comment)}" : "${module.aws_cf_dist.distribution_domain_name}" }"
   # env_name = "${var.env == "prod"? "" : "-${var.env}"}"
 
-  value = "${var.enable_output_comments ? module.aws_cf_dist.distribution_domain_name : ""}"
+  # value = "${var.enable_output_comments ? module.aws_cf_dist.distribution_domain_name : ""}"
+
+  value = "${var.enable_output_comments ? "${module.aws_cf_dist.distribution_domain_name} (${var.cf_dist_comment})" : module.aws_cf_dist.distribution_domain_name }" 
 }
 
 
