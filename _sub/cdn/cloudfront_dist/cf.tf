@@ -1,13 +1,19 @@
 resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   price_class = "PriceClass_100"
+  
   aliases = "${var.aliases}"
 
-  # viewer_certificate {
-  #   cloudfront_default_certificate = "${var.acm_certificate_arn == "" ? true: false}"
-  #   # acm_certificate_arn = "${var.acm_certificate_arn}"
-  #   # # ssl_support_method = "sni-only"
-  #   minimum_protocol_version = "TLSv1" # TLSv1.2_2018 ?    
-  # }
+  lifecycle {
+    ignore_changes = ["viewer_certificate.ssl_support_method"] # workaround to https://github.com/terraform-providers/terraform-provider-aws/issues/8531
+  }
+
+
+  viewer_certificate {
+    cloudfront_default_certificate = "${var.acm_certificate_arn == "" ? true: false}"
+    acm_certificate_arn = "${var.acm_certificate_arn}"
+    ssl_support_method = "sni-only"
+    minimum_protocol_version = "TLSv1" # TLSv1.2_2018 ?    
+  }
 
   # dynamic "viewer_certificate" {
   #   for_each = length(var.acm_certificate_arn) == 0 ? [1] : []
@@ -20,31 +26,31 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   #   }          
   # }
 
-  dynamic "viewer_certificate" {
-    for_each = length(var.acm_certificate_arn) > 0 ? [1] : []
+  # dynamic "viewer_certificate" {
+  #   for_each = length(var.acm_certificate_arn) > 0 ? [1] : []
     
-    iterator = it
+  #   iterator = it
     
-    content {      
-      cloudfront_default_certificate = false
-      acm_certificate_arn = "${var.acm_certificate_arn}"
-      ssl_support_method = "sni-only"
-      minimum_protocol_version = "TLSv1" # TLSv1.2_2018 ?   
-    }          
-  }  
+  #   content {      
+  #     cloudfront_default_certificate = false
+  #     acm_certificate_arn = "${var.acm_certificate_arn}"
+  #     ssl_support_method = "sni-only"
+  #     minimum_protocol_version = "TLSv1" # TLSv1.2_2018 ?   
+  #   }          
+  # }  
 
-  dynamic "viewer_certificate" {
-    for_each = length(var.acm_certificate_arn) == 0 ? [1] : []
+  # dynamic "viewer_certificate" {
+  #   for_each = length(var.acm_certificate_arn) == 0 ? [1] : []
     
-    iterator = it
+  #   iterator = it
     
-    content {      
-      cloudfront_default_certificate = true
-      # acm_certificate_arn = "${var.acm_certificate_arn}"
-      # ssl_support_method = "sni-only"
-      minimum_protocol_version = "TLSv1" # TLSv1.2_2018 ?   
-    }          
-  }  
+  #   content {      
+  #     cloudfront_default_certificate = true
+  #     # acm_certificate_arn = "${var.acm_certificate_arn}"
+  #     # ssl_support_method = "sni-only"
+  #     minimum_protocol_version = "TLSv1" # TLSv1.2_2018 ?   
+  #   }          
+  # }  
 
   http_version        = "http2"      # Supported HTTP Versions
   default_root_object = "index.html" # Default Root Object
