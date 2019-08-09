@@ -4,7 +4,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   aliases = "${var.aliases}"
 
   lifecycle {
-    ignore_changes = ["viewer_certificate.ssl_support_method"] # workaround to https://github.com/terraform-providers/terraform-provider-aws/issues/8531
+    ignore_changes = ["viewer_certificate[0].ssl_support_method"] # workaround to https://github.com/terraform-providers/terraform-provider-aws/issues/8531
   }
 
 
