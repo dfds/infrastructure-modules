@@ -18,6 +18,10 @@ variable "aws_acm_region" {
   type = "string"
 }
 
+variable "aws_lambda_edge_region" {
+  type = "string"
+}
+
 
 variable "aws_assume_role_arn" {
   type = "string"
@@ -73,6 +77,10 @@ variable "cdn_domain_name" {
 variable "cf_lambda_s3bucket" {}
 
 variable "lambda_zip_filepath" {}
+
+variable "lambda_edge_zip_filepath" {
+  
+}
 
 
 variable "cf_main_hosted_zone_deploy" {

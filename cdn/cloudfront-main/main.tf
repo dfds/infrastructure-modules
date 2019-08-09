@@ -43,21 +43,24 @@ module "aws_route53_cf_www_record" {
 # # ------------------prereqs for route53records----------------------------------------#
 
 module "aws_cloudfront_redirect" {
-  source       = "../../_sub/cdn/cloudfront"
-  cdn_origins = local.redirect_origin
+  source       = "../../_sub/cdn/cloudfront_dist"
+  origins = local.redirect_origin
   # acm_certificate_arn = "${module.cf_domain_cert.certificate_arn}" #var.acm_certificate_arn  
   acm_certificate_arn = "${var.cf_domain_cert_deploy ? module.cf_domain_cert.certificate_arn: data.aws_acm_certificate.cf_domain_cert[0].arn}"
-  cdn_comment = "Root redirect for ${var.cdn_comment}"
+  # TODO: make it possible to get certificate arn from variable 
+  comment = "Root redirect for ${var.cdn_comment}"
   aliases = ["${var.cf_main_dns_zone}"]  # ["${var.cdn_domain_name}"] # via local or cdn_domain_name ??
 }
 
 module "aws_cloudfront_www" {
-  source       = "../../_sub/cdn/cloudfront"
-  cdn_origins = var.cdn_origins
+  source       = "../../_sub/cdn/cloudfront_dist"
+  origins = var.cdn_origins
   # acm_certificate_arn = "${module.cf_domain_cert.certificate_arn}" #var.acm_certificate_arn  
   acm_certificate_arn = "${var.cf_domain_cert_deploy ? module.cf_domain_cert.certificate_arn: data.aws_acm_certificate.cf_domain_cert[0].arn}"
-  cdn_comment = var.cdn_comment
+  # TODO: make it possible to get certificate arn from variable 
+  comment = var.cdn_comment
   aliases = ["www.${var.cf_main_dns_zone}"]  # ["www.${var.cdn_domain_name}"]
+  lambda_edge_qualified_arn = "${module.aws_cf_dist_default_behavior_lambda_function.lambda_function_qualified_arn}"
 }
 
 # ------------------prereqs for cf + route53records----------------------------------------# Can be created separatly 
@@ -67,6 +70,8 @@ module "cf_domain_cert" {
   domain_name   = "www.${var.cf_main_dns_zone}" #"www.${var.cdn_domain_name}"
   # dns_zone_name = "*.${module.route53_hosted_zone.dns_zone_name}"
   dns_zone_id = "${var.cf_main_hosted_zone_deploy ? module.route53_hosted_zone.dns_zone_id: data.aws_route53_zone.zone[0].id}"
+  # TODO: make it possible to get zoneid from variable 
+
   subject_alternative_names    = ["${var.cf_main_dns_zone}"] #["${var.cdn_domain_name}"]  
 }
 
@@ -76,18 +81,44 @@ module "route53_hosted_zone" {
   dns_zone_name = "${var.cf_main_dns_zone}"
 }
 
-# Find a certificate that is issued
-data "aws_acm_certificate" "cf_domain_cert" {
-  count = "${var.cf_domain_cert_deploy ? 0 : 1}"
-  domain   = "www.${var.cf_main_dns_zone}"
-  statuses = ["ISSUED"]
-}
 
-data "aws_route53_zone" "zone" {
-  count        = "${var.cf_main_hosted_zone_deploy ? 0: 1}"
-  name         = "${var.cf_main_dns_zone}."
-  private_zone = false
-}
+
+# ---------------------------------------------------------#
+
+# # TODO: enable staging for api gateway 
+# module "aws_api_gateway" {
+#   source       = "../../_sub/network/api-gateway-lambda"
+#   api_gateway_rest_api_name = "main-cdn-api"
+#   lambda_function_invoke_arn = "${module.aws_lambda_function.lambda_function_invoke_arn}"
+#   lambda_function_name = "${module.aws_lambda_function.lambda_function_name}"  
+# }
+
+# # Lambda and API-gateway to enable manipulating http request
+# module "aws_lambda_function" {
+#   source = "../../_sub/compute/lambda"
+#   lambda_function_name = "main-cdn-api-root-redirect"
+#   lambda_role_name = "main-cdn-api-root-redirect"
+#   lambda_function_handler = "lambda-root-redirect" # filename without fileextension 
+#   lambda_env_variables =  {SITE_DOMAIN = "${var.cdn_domain_name}"}
+
+#   s3_bucket = "${module.s3_bucket.bucket_name}"
+#   s3_key = "${module.s3_object_upload.s3_object_key}"
+# }
+
+# # TODO: should be produced via CD pipeline
+# module "s3_object_upload" { 
+#   source = "../../_sub/misc/s3-bucket-object"
+#   s3_bucket = "${module.s3_bucket.bucket_name}"
+#   key = "${var.lambda_zip_filepath}"
+#   filepath = "${var.lambda_zip_filepath}"
+# }
+
+# # Bucket for lambda function
+# module "s3_bucket" { 
+#   source = "../../_sub/storage/s3-bucket"
+#   deploy = 1
+#   s3_bucket = "${var.cf_lambda_s3bucket}"
+# }
 
 
 # ---------------------------------------------------------#
@@ -96,29 +127,52 @@ data "aws_route53_zone" "zone" {
 module "aws_api_gateway" {
   source       = "../../_sub/network/api-gateway-lambda"
   api_gateway_rest_api_name = "main-cdn-api"
-  lambda_function_invoke_arn = "${module.aws_lambda_function.lambda_function_invoke_arn}"
-  lambda_function_name = "${module.aws_lambda_function.lambda_function_name}"  
+  lambda_function_invoke_arn = "${module.aws_api_gateway_lambda_function.lambda_function_invoke_arn}"
+  lambda_function_name = "${module.aws_api_gateway_lambda_function.lambda_function_name}"    
 }
 
 # Lambda and API-gateway to enable manipulating http request
-module "aws_lambda_function" {
+module "aws_api_gateway_lambda_function" {
   source = "../../_sub/compute/lambda"
-  lambda_function_name = "main-cdn-api-root-redirect"
-  lambda_role_name = "main-cdn-api-root-redirect"
+  lambda_function_name = "main-cdn-api-root-redirect" #TODO; need propper prefix 
+  lambda_role_name = "main-cdn-api-root-redirect" #TODO; need propper prefix 
   lambda_function_handler = "lambda-root-redirect" # filename without fileextension 
-  lambda_env_variables =  {SITE_DOMAIN = "${var.cdn_domain_name}"}
-
+  lambda_env_variables =  {SITE_DOMAIN = "${var.cf_main_dns_zone}"}
+  aws_region = "${var.aws_region}"
   s3_bucket = "${module.s3_bucket.bucket_name}"
-  s3_key = "${module.s3_object_upload.s3_object_key}"
+  s3_key = "${module.s3_object_upload_api_lambda.s3_object_key}"
+}
+
+# Lambda@funtion to manipulating http request
+module "aws_cf_dist_default_behavior_lambda_function" { # must be attached to default behavior
+  source = "../../_sub/compute/lambda-edge"
+  lambda_function_name = "main-cdn-default-redirect-rules" #TODO; need propper prefix 
+  lambda_role_name = "main-cdn-default-redirect-rules" #TODO; need propper prefix 
+  lambda_function_handler = "lambda-redirect-rules" # filename without fileextension 
+  # lambda_env_variables =  {SITE_DOMAIN = "${var.cf_main_dns_zone}"}
+  aws_region = "${var.aws_region}"
+  s3_bucket = "${module.s3_bucket.bucket_name}"
+  s3_key = "${module.s3_object_upload_lambda_edge.s3_object_key}"
+  publish = true
+
 }
 
 # TODO: should be produced via CD pipeline
-module "s3_object_upload" { 
+module "s3_object_upload_lambda_edge" { 
+  source = "../../_sub/misc/s3-bucket-object"
+  s3_bucket = "${module.s3_bucket.bucket_name}"
+  key = "${var.lambda_edge_zip_filepath}"
+  filepath = "${var.lambda_edge_zip_filepath}"
+}
+
+# TODO: should be produced via CD pipeline
+module "s3_object_upload_api_lambda" { 
   source = "../../_sub/misc/s3-bucket-object"
   s3_bucket = "${module.s3_bucket.bucket_name}"
   key = "${var.lambda_zip_filepath}"
   filepath = "${var.lambda_zip_filepath}"
 }
+
 
 # Bucket for lambda function
 module "s3_bucket" { 

@@ -22,3 +22,17 @@ locals {
         }
     ]
 }
+
+
+# Find a certificate that is issued
+data "aws_acm_certificate" "cf_domain_cert" {
+  count = "${var.cf_domain_cert_deploy ? 0 : 1}"
+  domain   = "www.${var.cf_main_dns_zone}"
+  statuses = ["ISSUED"]
+}
+
+data "aws_route53_zone" "zone" {
+  count        = "${var.cf_main_hosted_zone_deploy ? 0: 1}"
+  name         = "${var.cf_main_dns_zone}."
+  private_zone = false
+}

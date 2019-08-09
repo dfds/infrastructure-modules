@@ -17,7 +17,7 @@ provider "aws" {
 }
 
 module "route53_hosted_zone" {
-  source = "../../../_sub/network/route53-zone"  
+  source = "../../../_sub/network/route53-zone"
   deploy = "${var.cf_main_hosted_zone_deploy}"
   dns_zone_name = "${var.cf_main_dns_zone}"
 }

@@ -12,6 +12,8 @@ variable "lambda_function_handler" {
 
 variable "lambda_env_variables" {
   type = "map"
+
+  default = {}
 }
 
 variable "s3_bucket" {
@@ -29,3 +31,8 @@ variable "runtime" {
 variable "aws_region" {
   
 }
+
+variable "publish" {
+  default = false
+}
+

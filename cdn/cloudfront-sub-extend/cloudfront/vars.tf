@@ -1,24 +1,29 @@
+# # --------------------------------------------------
+# # Terraform
+# # --------------------------------------------------
+
+# variable "terraform_state_s3_bucket" {
+#   type = "string"
+# }
+
 # --------------------------------------------------
-# Terraform
+# AWS
 # --------------------------------------------------
 
 variable "aws_region" {
   type = "string"
 }
 
+variable "aws_acm_region" {
+  type = "string"
+}
+
+
 variable "aws_assume_role_arn" {
   type = "string"
 }
 
-# --------------------------------------------------
-# AWS
-# --------------------------------------------------
-
-variable "cf_dist_comment" {
-  type = "string"
-}
-
-variable "cf_dist_origins" {
+variable "cdn_origins" {
   type = "list"
 
   default = [{ 
@@ -40,40 +45,45 @@ variable "cf_dist_origins" {
     cache_behavior_default_ttl                      = 0
     cache_behavior_max_ttl                          = 0
   }]
-  
-  description = "Enable creating cloudfront even with none existing origins"
+
+  #    type = list(object({
+  #   name               = string
+  #   pool_ipv6_prefixes = list(string)
+  #   pool_ipv4_prefixes = list(string)
+  #   cidr_ipv6          = string
+  #   cidr_ipv4          = string
+  #   enable_dhcp        = bool
+  # }))
+  description = "Enable creating main cdn even with none existing origins"
 }
 
-variable "cf_dist_domain_name" {
+variable "cdn_comment" {
+  type = "string"
+}
+
+variable "acm_certificate_arn" {
+  default = ""
+}
+
+variable "cdn_domain_name" {
   default = ""
   type = "string"
 }
 
-variable "cf_dist_lambda_s3bucket" {
-  description = "The s3 bucket that contains the lambda function zip file."
-}
+variable "cf_lambda_s3bucket" {}
+
+variable "lambda_zip_filepath" {}
 
 
-variable "cf_dist_lambda_edge_zip_filepath" { 
-  description = "The path of the zip file that contains lambda source code to uploade."
-}
-
-
-variable "cf_dist_lambda_edge_prefix" {
+variable "cf_main_hosted_zone_deploy" {
   default = ""
-  description = "A proper prefix for lambda@edge function."
 }
 
-
-variable "cf_dist_domain_certificate_arn" {
+variable "cf_main_dns_zone" {
   default = ""
-  description = "The arn of the certificate that covers the custom domain if aliases is added to the cloudfront distribution."
 }
 
-variable "cf_dist_lambda_function_handler" {
-  description = "Name of the file the contains lambda code without file extension. Example 'redirect-rules'"
-}
-
-variable "deploy_lambda_edge_func" {
+variable "cf_route53_records_deploy" {
   default = false
 }
+

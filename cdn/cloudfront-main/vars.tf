@@ -82,6 +82,13 @@ variable "cf_domain_cert_deploy" {
   
 }
 
-variable "cf_route53_records_deploy" {
+
+
+
+variable "lambda_edge_zip_filepath" {
   
+}
+
+variable "cf_route53_records_deploy" {
+  default = false
 }

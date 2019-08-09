@@ -23,11 +23,11 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   #   }
 
   is_ipv6_enabled = false         
-  comment         = "${var.cdn_comment}"
+  comment         = "${var.comment}"
   enabled         = true
 
   dynamic "origin" {
-    for_each = var.cdn_origins
+    for_each = var.origins
     iterator = it
       content {
         domain_name = it.value.origin_domain_name
@@ -62,7 +62,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   }
 
   dynamic "ordered_cache_behavior" {
-      for_each = length(var.cdn_origins) > 1 ? var.cdn_origins : [] # if only 1 record then we only define the default behavior
+      for_each = length(var.origins) > 1 ? var.origins : [] # if only 1 record then we only define the default behavior
       iterator = it # alias for iterator. Otherwise the name would be of the dynamic blog "ordered_cache_behavior"
 
       content {
@@ -88,21 +88,33 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     }
 
   default_cache_behavior { 
-    allowed_methods  = "${length(var.cdn_origins) == 1 ? var.cdn_origins[0].cache_behavior_allowed_methods: ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"] }" # This to allow redirect 
-    cached_methods   = "${length(var.cdn_origins) == 1 ? var.cdn_origins[0].cache_behavior_cached_methods: ["HEAD", "GET"] }" 
-    target_origin_id = var.cdn_origins[0].origin_domain_name
+    allowed_methods  = "${length(var.origins) == 1 ? var.origins[0].cache_behavior_allowed_methods: ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"] }" # This to allow redirect 
+    cached_methods   = "${length(var.origins) == 1 ? var.origins[0].cache_behavior_cached_methods: ["HEAD", "GET"] }" 
+    target_origin_id = var.origins[0].origin_domain_name
 
     forwarded_values {
-      query_string = "${length(var.cdn_origins) == 1 ? var.cdn_origins[0].cache_behavior_forwarded_values_query_string: false }" 
+      query_string = "${length(var.origins) == 1 ? var.origins[0].cache_behavior_forwarded_values_query_string: false }" 
 
       cookies {
-        forward = "${length(var.cdn_origins) == 1 ? var.cdn_origins[0].cache_behavior_forwarded_values_cookies_forward: "none" }" 
+        forward = "${length(var.origins) == 1 ? var.origins[0].cache_behavior_forwarded_values_cookies_forward: "none" }" 
       }
     }
 
-    viewer_protocol_policy = "${length(var.cdn_origins) == 1 ? var.cdn_origins[0].cache_behavior_viewer_protocol_policy: "allow-all" }" 
-    min_ttl                = "${length(var.cdn_origins) == 1 ? var.cdn_origins[0].cache_behavior_min_ttl: 0 }" 
-    default_ttl            = "${length(var.cdn_origins) == 1 ? var.cdn_origins[0].cache_behavior_default_ttl: 0 }" 
-    max_ttl                = "${length(var.cdn_origins) == 1 ? var.cdn_origins[0].cache_behavior_max_ttl: 0 }" 
+    viewer_protocol_policy = "${length(var.origins) == 1 ? var.origins[0].cache_behavior_viewer_protocol_policy: "allow-all" }" 
+    min_ttl                = "${length(var.origins) == 1 ? var.origins[0].cache_behavior_min_ttl: 0 }" 
+    default_ttl            = "${length(var.origins) == 1 ? var.origins[0].cache_behavior_default_ttl: 0 }" 
+    max_ttl                = "${length(var.origins) == 1 ? var.origins[0].cache_behavior_max_ttl: 0 }" 
+
+
+    dynamic "lambda_function_association"{
+      for_each = length(var.lambda_edge_qualified_arn) > 0 ? [1] : []
+      iterator = it
+
+      content{
+        event_type   = "origin-request"
+        lambda_arn   = "${var.lambda_edge_qualified_arn}"
+        include_body = false
+      }
+    }
   }    
 }
