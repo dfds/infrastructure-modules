@@ -34,7 +34,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   }  
 
   dynamic "viewer_certificate" {
-    for_each = []
+    for_each = length(var.acm_certificate_arn) == 0 ? [1] : []
     
     iterator = it
     
