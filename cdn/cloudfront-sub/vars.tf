@@ -77,3 +77,7 @@ variable "cf_dist_lambda_function_handler" {
 variable "deploy_lambda_edge_func" {
   default = false
 }
+
+variable "enable_output_comments" {
+  default = false
+}
