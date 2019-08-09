@@ -4,7 +4,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   aliases = "${var.aliases}"
 
   # lifecycle {
-  #   ignore_changes = ["viewer_certificate[0].ssl_support_method"] # workaround to https://github.com/terraform-providers/terraform-provider-aws/issues/8531
+  #   ignore_changes = ["viewer_certificate[0].ssl_support_method"]
   # }
 
 
@@ -12,7 +12,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     cloudfront_default_certificate = "${var.acm_certificate_arn == "" ? true: false}"
     acm_certificate_arn = "${var.acm_certificate_arn}"
     ssl_support_method = "${var.acm_certificate_arn == "" ? "sni-only": ""}"
-    minimum_protocol_version = "TLSv1.2_2018" #"TLSv1" # TLSv1.2_2018 ?    
+    minimum_protocol_version = "TLSv1" # TLSv1.2_2018 ?    
   }
 
   # dynamic "viewer_certificate" {
