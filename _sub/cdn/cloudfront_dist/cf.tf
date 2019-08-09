@@ -2,12 +2,12 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   price_class = "PriceClass_100"
   aliases = "${var.aliases}"
 
-  viewer_certificate{
-    cloudfront_default_certificate = "${var.acm_certificate_arn == "" ? true: false}"
-    # acm_certificate_arn = "${var.acm_certificate_arn}"
-    # # ssl_support_method = "sni-only"
-    minimum_protocol_version = "TLSv1" # TLSv1.2_2018 ?    
-  }
+  # viewer_certificate {
+  #   cloudfront_default_certificate = "${var.acm_certificate_arn == "" ? true: false}"
+  #   # acm_certificate_arn = "${var.acm_certificate_arn}"
+  #   # # ssl_support_method = "sni-only"
+  #   minimum_protocol_version = "TLSv1" # TLSv1.2_2018 ?    
+  # }
 
   # dynamic "viewer_certificate" {
   #   for_each = length(var.acm_certificate_arn) == 0 ? [1] : []
@@ -22,6 +22,19 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
 
   dynamic "viewer_certificate" {
     for_each = length(var.acm_certificate_arn) > 0 ? [1] : []
+    
+    iterator = it
+    
+    content {      
+      # cloudfront_default_certificate = false
+      acm_certificate_arn = "${var.acm_certificate_arn}"
+      ssl_support_method = "sni-only"
+      # minimum_protocol_version = "TLSv1" # TLSv1.2_2018 ?   
+    }          
+  }  
+
+  dynamic "viewer_certificate" {
+    for_each = []
     
     iterator = it
     
