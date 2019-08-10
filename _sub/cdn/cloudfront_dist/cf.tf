@@ -3,9 +3,9 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   
   aliases = "${var.aliases}"
 
-  lifecycle {
-    ignore_changes = ["viewer_certificate[0].ssl_support_method"]
-  }
+  # lifecycle {
+  #   ignore_changes = ["viewer_certificate[0].ssl_support_method"]
+  # }
 
 
   viewer_certificate {
