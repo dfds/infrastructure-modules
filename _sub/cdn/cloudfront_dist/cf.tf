@@ -1,6 +1,6 @@
 locals {
   # Determine the certificate type
-  is_iam_cert = var.iam_certificate_id != ""
+  # is_iam_cert = var.iam_certificate_id != ""
   is_acm_cert = var.acm_certificate_arn != ""
 }
 
