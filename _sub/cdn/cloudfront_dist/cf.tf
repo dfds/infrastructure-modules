@@ -14,7 +14,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   # }
 
   viewer_certificate {
-    cloudfront_default_certificate = local.is_acm_cert # "${var.acm_certificate_arn == "" ? true: false}"
+    cloudfront_default_certificate = local.is_acm_cert ? false : true # "${var.acm_certificate_arn == "" ? true: false}"
     acm_certificate_arn = local.is_acm_cert ? var.acm_certificate_arn : null #"${local.is_acm_cert ? null: var.acm_certificate_arn}" # "${var.acm_certificate_arn}"
     ssl_support_method = local.is_acm_cert ? "sni-only" : null # "${var.acm_certificate_arn == "" ? null: "sni-only" }" # "${var.acm_certificate_arn == "" ? "sni-only": ""}"
     minimum_protocol_version = "TLSv1" # TLSv1.2_2018 ?    
