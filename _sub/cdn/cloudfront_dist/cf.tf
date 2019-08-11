@@ -1,3 +1,9 @@
+locals {
+  # Determine the certificate type
+  is_iam_cert = var.iam_certificate_id != ""
+  is_acm_cert = var.acm_certificate_arn != ""
+}
+
 resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   price_class = "PriceClass_100"
   
@@ -6,12 +12,6 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   # lifecycle {
   #   ignore_changes = ["viewer_certificate[0].ssl_support_method"]
   # }
-
-locals {
-  # Determine the certificate type
-  is_iam_cert = var.iam_certificate_id != ""
-  is_acm_cert = var.acm_certificate_arn != ""
-}
 
   viewer_certificate {
     cloudfront_default_certificate = local.is_acm_cert # "${var.acm_certificate_arn == "" ? true: false}"
