@@ -54,6 +54,7 @@ data "aws_iam_policy_document" "create_org_account" {
                 "organizations:ListAccountsForParent",
                 "organizations:ListParents",
                 "organizations:ListRoots",
+                "organizations:ListTagsForResource",
                 "organizations:MoveAccount"
             ]
         resources = ["*"]
