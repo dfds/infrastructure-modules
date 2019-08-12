@@ -22,7 +22,7 @@ provider "aws" {
 
 module "aws_cf_oai" {
   source       = "../../_sub/cdn/cloudfront_oai"
-  comment = "${var.cf_dist_comment} user used for accessing s3 buckets"
+  comment = "${var.cf_dist_comment} user for accessing s3 buckets"
 }
 
 
