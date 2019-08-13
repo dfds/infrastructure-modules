@@ -32,7 +32,7 @@ module "aws_cf_dist" {
   acm_certificate_arn = "${var.cf_dist_domain_certificate_arn}"
   comment = var.cf_dist_comment
   aliases = "${length(var.cf_dist_domain_name) == 0 ? [] : [var.cf_dist_domain_name]}"
-  lambda_edge_qualified_arn = "${var.deploy_lambda_edge_func ? module.aws_cf_dist_default_behavior_lambda_function.lambda_function_qualified_arn : "" }"
+  lambda_edge_qualified_arn = "${var.deploy_lambda_edge_func ? module.aws_cf_dist_default_behavior_lambda_function.lambda_function_qualified_arn : null }"
   origin_access_identity = "${module.aws_cf_oai.origin_access_identity}"
 }
 
