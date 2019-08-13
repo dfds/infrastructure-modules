@@ -42,10 +42,10 @@ module "aws_cf_dist" {
 
 # Lambda@funtion to manipulating http request
 module "aws_cf_dist_default_behavior_lambda_function" { 
-  source = "../../_sub/compute/lambda-edge" # TODO: make it optional
+  source = "../../_sub/compute/lambda-edge"
   deploy = "${var.deploy_lambda_edge_func}"
-  lambda_function_name = "${local.lamda_edge_prefix}-cf-redirect-rules" #TODO; need propper prefix
-  lambda_role_name = "${local.lamda_edge_prefix}-cf-default-redirect-rules" #TODO; need propper prefix 
+  lambda_function_name = "${local.lamda_edge_prefix}-cf-redirect-rules"
+  lambda_role_name = "${local.lamda_edge_prefix}-cf-default-redirect-rules"
 
   lambda_function_handler = "${var.cf_dist_lambda_function_handler}" 
   # aws_region = "${var.aws_region}"

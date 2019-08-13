@@ -1,4 +1,5 @@
 resource "aws_iam_role" "role" {
+  count = "${var.deploy ? 1 :0}"
   name = "${var.lambda_role_name}"
  
   assume_role_policy = <<POLICY
@@ -22,8 +23,10 @@ POLICY
 }
 
 resource "aws_iam_role_policy" "cloudwatch_logs" {
+  count = "${var.deploy ? 1 :0}"
   name = "${var.lambda_role_name}"
-  role = "${aws_iam_role.role.id}"
+  role = "${element(concat(aws_iam_role.role.*.id, list("")), 0)}"
+  # role = "${aws_iam_role.role.id}"
 
   policy = <<EOF
 {

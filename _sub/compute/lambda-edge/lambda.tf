@@ -1,7 +1,8 @@
 resource "aws_lambda_function" "lambda" {
   count = "${var.deploy ? 1 :0}"
   function_name = "${var.lambda_function_name}"
-  role          = "${aws_iam_role.role.arn}"
+  # role          = "${aws_iam_role.role.arn}"
+  role = "${element(concat(aws_iam_role.role.*.arn, list("")), 0)}"
   handler       = "${var.lambda_function_handler}.handler"
   runtime       = "${var.runtime}"
 
