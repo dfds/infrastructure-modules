@@ -28,3 +28,20 @@ variable "lambda_edge_qualified_arn" {
   default = ""
 }
 
+variable "logging_enable" {
+  default = false
+}
+
+variable "logging_include_cookies" {
+  description = "Specifies whether you want CloudFront to include cookies in access logs (default: false)"
+  default = false
+}
+
+
+variable "logging_bucket" {
+  
+}
+
+variable "logging_prefix" {
+  
+}

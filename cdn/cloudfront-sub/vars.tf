@@ -82,3 +82,20 @@ variable "enable_output_comments" {
   default = false
   description = "Enable this option activate helper comments to make it easier to distinguish between module outputs. If this module is called from another module then this option should be disabled"
 }
+
+variable "cf_dist_logging_enable" {
+  default = false
+}
+
+variable "cf_dist_logging_include_cookies" {
+  default = false
+}
+
+
+variable "cf_dist_logging_bucket" {
+  default = ""
+}
+
+variable "cf_dist_logging_prefix" {
+  default = ""
+}

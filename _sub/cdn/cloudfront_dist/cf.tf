@@ -60,15 +60,16 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   http_version        = "http2"      # Supported HTTP Versions
   default_root_object = "index.html" # Default Root Object
 
-  # Logging
-  # Bucket for Logs
-  # Log Prefix
-  # Cookie Logging
-  #  logging_config {
-  #     include_cookies = false
-  #     bucket          = "${aws_s3_bucket.logbucket.bucket_domain_name}"
-  #     prefix          = "${var.project_name}-${var.environment}"
-  #   }
+  dynamic "logging_config" {
+    for_each = var.logging_enable ? [1] : []
+    content {
+      logging_config {
+          include_cookies = "${var.logging_include_cookies}"
+          bucket          = "${var.logging_bucket}"
+          prefix          = "${var.logging_prefix}"
+      }
+    }
+  }
 
   is_ipv6_enabled = false         
   comment         = "${var.comment}"
