@@ -63,13 +63,13 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   dynamic "logging_config" {
     for_each = var.logging_enable ? [1] : []
     content {
-      logging_config {
-          include_cookies = "${var.logging_include_cookies}"
-          bucket          = "${var.logging_bucket}"
-          prefix          = "${var.logging_prefix}"
-      }
+      include_cookies = "${var.logging_include_cookies}"
+      bucket          = "${var.logging_bucket}"
+      prefix          = "${var.logging_prefix}"      
     }
   }
+
+  
 
   is_ipv6_enabled = false         
   comment         = "${var.comment}"
