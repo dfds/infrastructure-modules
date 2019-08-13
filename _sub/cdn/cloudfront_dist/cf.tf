@@ -155,7 +155,7 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
 
 
     dynamic "lambda_function_association"{
-      for_each = length(var.lambda_edge_qualified_arn) > 0 ? [1] : []
+      for_each = var.lambda_edge_qualified_arn != null ? [1] : [] #length(var.lambda_edge_qualified_arn) > 0 ? [1] : []
       iterator = it
 
       content{
