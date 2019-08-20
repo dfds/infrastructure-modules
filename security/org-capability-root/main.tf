@@ -56,4 +56,5 @@ module "org_policy_denyvpncreation" {
   name             = "DenyVPNCreation"
   description      = "Deny creating VPN"
   policy           = "${local.denyvpncreation_policy}"
+  attach_target_id = "${module.capability_ou.id}"
 }
