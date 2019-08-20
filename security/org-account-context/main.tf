@@ -147,7 +147,7 @@ module "kafka_produce_account_created" {
   payload         = "${local.account_created_payload}"
   key             = "${var.capability_id}"
   broker          = "${var.kafka_broker}"
-  topic           = "build.capabilities"
+  topic           = "build.selfservice.events.capabilities"
   username        = "${var.kafka_username}"
   password        = "${var.kafka_password}"
 }
