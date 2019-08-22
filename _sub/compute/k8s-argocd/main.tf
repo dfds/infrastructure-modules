@@ -1,10 +1,11 @@
 provider "aws" {
   version = "~> 1.60.0"
-  region = "${var.rsa_keypay_parameterstore_aws_region}"
-  
+  region  = "${var.rsa_keypay_parameterstore_aws_region}"
+
   assume_role {
     role_arn = "${var.aws_assume_role_arn}"
   }
+
   alias = "parameterstore"
 }
 
@@ -14,6 +15,7 @@ resource "kubernetes_namespace" "argocd_namespace" {
   metadata {
     name = "${var.namespace}"
   }
+
   provider = "kubernetes"
 }
 
@@ -34,33 +36,32 @@ resource "aws_ssm_parameter" "putSecureString" {
 }
 
 data "aws_ssm_parameter" "privateKey" {
-  name = "${var.rsa_keypair_key}"
+  name            = "${var.rsa_keypair_key}"
   with_decryption = true
-  provider = "aws.parameterstore"
+  provider        = "aws.parameterstore"
 }
 
 locals {
   id_rsa_filename = "${path.module}/id_rsa"
-  project = "selfservice"
-  namespace = "selfservice"
-  appname = "argocd-janitor"
-  k8sserver = "https://kubernetes.default.svc"
-  kustomize_path = "selfservice/overlays/production"
+  project         = "selfservice"
+  namespace       = "selfservice"
+  appname         = "argocd-janitor"
+  k8sserver       = "https://kubernetes.default.svc"
+  kustomize_path  = "selfservice/overlays/production"
 }
-
 
 resource "local_file" "privateKey" {
-    sensitive_content = "${data.aws_ssm_parameter.privateKey.value}"
-    filename = "${local.id_rsa_filename}"
+  count             = "${var.deploy}"
+  sensitive_content = "${data.aws_ssm_parameter.privateKey.value}"
+  filename          = "${local.id_rsa_filename}"
 }
 
-
 resource "helm_release" "argocd" {
-  count        = "${var.deploy}"
-  name         = "argocd"
-  namespace    = "${var.namespace}"
-  chart        = "${path.module}/argocd-chart"
-  version      = "0.0.1"
+  count     = "${var.deploy}"
+  name      = "argocd"
+  namespace = "${var.namespace}"
+  chart     = "${path.module}/argocd-chart"
+  version   = "0.0.1"
 
   values = [
     <<EOF
@@ -99,32 +100,35 @@ resource "null_resource" "create_project" {
   count = "${var.deploy}"
 
   provisioner "local-exec" {
-    command = "${path.module}/create-project.sh ${var.grpc_host_url} ${element(concat(random_string.password.*.result, list("")), 0)} selfservice" 
+    command = "${path.module}/create-project.sh ${var.grpc_host_url} ${element(concat(random_string.password.*.result, list("")), 0)} selfservice"
   }
 
   depends_on = ["helm_release.argocd",
-  "null_resource.set_password"]
+    "null_resource.set_password",
+  ]
 }
 
 resource "null_resource" "create_repo" {
   count = "${var.deploy}"
 
   provisioner "local-exec" {
-    command = "${path.module}/create-repo.sh ${var.grpc_host_url} ${element(concat(random_string.password.*.result, list("")), 0)} ${var.default_repository} ${local.id_rsa_filename}" 
+    command = "${path.module}/create-repo.sh ${var.grpc_host_url} ${element(concat(random_string.password.*.result, list("")), 0)} ${var.default_repository} ${local.id_rsa_filename}"
   }
 
   depends_on = ["helm_release.argocd",
-  "null_resource.set_password",
-  "local_file.privateKey"]
+    "null_resource.set_password",
+    "local_file.privateKey",
+  ]
 }
 
 resource "null_resource" "create_argocdjanitor" {
   count = "${var.deploy}"
 
   provisioner "local-exec" {
-    command = "${path.module}/create-application.sh ${var.grpc_host_url} ${element(concat(random_string.password.*.result, list("")), 0)} ${local.appname} ${local.namespace} ${local.project} ${local.k8sserver} ${var.default_repository} ${local.kustomize_path}" 
+    command = "${path.module}/create-application.sh ${var.grpc_host_url} ${element(concat(random_string.password.*.result, list("")), 0)} ${local.appname} ${local.namespace} ${local.project} ${local.k8sserver} ${var.default_repository} ${local.kustomize_path}"
   }
 
   depends_on = ["helm_release.argocd",
-  "null_resource.create_repo"]
+    "null_resource.create_repo",
+  ]
 }
