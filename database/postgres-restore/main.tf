@@ -22,7 +22,7 @@ provider "aws" {
 # --------------------------------------------------
 
 module "postgres_restore" {
-  source       = "../../_sub/storage/postgres-restore"
+  source       = "../../_sub/database/postgres-restore"
   db_snapshot = "${var.db_snapshot}"
   application = "${var.application}"
   db_name = "${var.db_name}"

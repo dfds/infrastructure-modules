@@ -22,7 +22,7 @@ provider "aws" {
 # --------------------------------------------------
 
 module "postgres" {
-  source       = "../../_sub/storage/postgres"
+  source       = "../../_sub/database/postgres"
   application = "${var.application}"
   db_name = "${var.db_name}"
   db_master_username = "${var.db_master_username}"
