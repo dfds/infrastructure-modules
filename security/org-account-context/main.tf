@@ -103,7 +103,7 @@ module "iam_role_ecr_push" {
   role_name            = "ecr-push"
   role_description     = ""
   max_session_duration = 3600
-  assume_role_policy   = "${data.aws_iam_policy_document.assume_role_policy_self}"
+  assume_role_policy   = "${data.aws_iam_policy_document.assume_role_policy_self.json}"
   role_policy_name     = "PushToECR"
   role_policy_document = "${module.iam_policies.push_to_ecr}"
 
