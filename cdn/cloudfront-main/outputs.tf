@@ -1,0 +1,31 @@
+output "aws_cloudfront_distribution_www_domain_name" {
+  value = "${module.aws_cloudfront_www.distribution_domain_name} (${var.cdn_comment})"
+}
+
+output "aws_cloudfront_distribution_redirect_domain_name" {
+  value = "${module.aws_cloudfront_redirect.distribution_domain_name} (${var.cdn_comment})"
+}
+
+
+
+
+# output "s3_object_key" {
+#   value = "${module.s3_object_upload.s3_object_key}"
+# }
+
+
+# output "aws_fqdns" {
+#   value = "${module.cf_domain_cert.aws_fqdns}"
+# }
+
+
+
+# output "sometest" {
+#   value = "${module.cf_domain_cert.sometest}"
+# }
+
+
+# output "count_domainnames" {
+# #   value = "count_localdomains"
+#   value = "${module.cf_domain_cert.count_localdomains}"
+# }
