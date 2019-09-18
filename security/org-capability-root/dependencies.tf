@@ -21,7 +21,8 @@ locals {
                 "organizations:*",
                 "route53:*",
                 "support:*",
-                "waf:*"
+                "waf:*",
+				"s3:List*"
             ],
             "Resource": "*",
             "Condition": {
