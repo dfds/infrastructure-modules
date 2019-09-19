@@ -1,4 +1,9 @@
-variable "cluster_name" {}
+variable "cluster_name" {
+    type = "string"
+}
+variable "cluster_version" {
+  type = "string"
+}
 variable "worker_instance_type" {}
 variable "worker_instance_min_count" {}
 variable "worker_instance_max_count" {}

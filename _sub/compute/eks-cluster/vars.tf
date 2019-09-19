@@ -1,1 +1,7 @@
-variable "cluster_name" {}
+variable "cluster_name" {
+  type = "string"
+}
+
+variable "cluster_version" {
+  type = "string"
+}

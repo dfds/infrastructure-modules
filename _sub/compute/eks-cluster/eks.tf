@@ -1,7 +1,7 @@
 resource "aws_eks_cluster" "eks" {
   name            = "${var.cluster_name}"
   role_arn        = "${aws_iam_role.eks.arn}"
-  version         = "1.11"
+  version         = "${var.cluster_version}"
   
   enabled_cluster_log_types = ["api", "audit", "authenticator"]
   #enabled_cluster_log_types = ["api", "audit", "authenticator","controllerManager","scheduler"]
