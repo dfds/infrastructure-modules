@@ -57,7 +57,7 @@ module "org_account" {
   parent_id         = "${var.parent_id}"
   master_account_id = "${var.master_account_id}"
   prime_role_name   = "${var.prime_role_name}"
-  sleep_after       = 30
+  sleep_after       = 60
 }
 
 module "iam_account_alias" {
