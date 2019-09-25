@@ -1,7 +1,5 @@
 locals {
   kubeconfig = <<KUBECONFIG
-
-
 apiVersion: v1
 clusters:
 - cluster:
@@ -33,8 +31,6 @@ KUBECONFIG
 
 locals {
   kubeconfig_users = <<KUBECONFIG
-
-
 apiVersion: v1
 clusters:
 - cluster:
@@ -64,8 +60,6 @@ KUBECONFIG
 
 locals {
   config-map-aws-auth = <<CONFIGMAPAWSAUTH
-
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
