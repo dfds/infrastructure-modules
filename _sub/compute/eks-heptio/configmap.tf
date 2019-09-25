@@ -40,13 +40,13 @@ clusters:
 - cluster:
     server: ${var.eks_endpoint}
     certificate-authority-data: ${var.eks_certificate_authority}
-  name: kubernetes
+  name: hellman
 contexts:
 - context:
-    cluster: kubernetes
+    cluster: hellman
     user: aws
-  name: aws
-current-context: aws
+  name: hellman-aws
+current-context: hellman-aws
 kind: Config
 preferences: {}
 users:
