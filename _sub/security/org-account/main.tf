@@ -12,6 +12,8 @@ resource "aws_organizations_account" "org_account" {
 
 resource "null_resource" "ubsubscribe_spam" {
 
+  depends_on = ["aws_organizations_account.org_account"]
+
   provisioner "local-exec" {
     command = "curl -v 'https://pages.awscloud.com/index.php/leadCapture/save2' --data 'Email=${replace(var.email, "@", "%40")}&preferenceCenterCategory=no&preferenceCenterGettingStarted=no&preferenceCenterOnlineInPersonEvents=no&preferenceCenterMonthlyAWSNewsletter=no&preferenceCenterTrainingandBestPracticeContent=no&preferenceCenterProductandServiceAnnoucements=no&preferenceCenterSurveys=no&PreferenceCenter_AWS_Partner_Events_Co__c=no&preferenceCenterOtherAWSCommunications=no&formVid=19260'"
   }
