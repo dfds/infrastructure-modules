@@ -68,6 +68,12 @@ module "eks_heptio" {
   blaster_configmap_key       = "configmap_${module.eks_heptio.cluster_name}_blaster.yml"
 }
 
+module "eks_addons" {
+  source          = "../../_sub/compute/eks-addons"
+  kubeconfig_path = "${pathexpand("~/.kube/config_${module.eks_heptio.cluster_name}")}"
+  cluster_version = "${var.eks_cluster_version}"
+}
+
 # module "blaster_configmap_apply" {
 #   source              = "../../_sub/compute/k8s-blaster-configmap"
 #   deploy              = "${var.blaster_configmap_deploy}"
