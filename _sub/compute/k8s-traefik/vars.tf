@@ -9,8 +9,8 @@ variable "namespace" {
   default = "kube-system"
 }
 
-variable "release_tag" {
-  default = "v1.7.9"
+variable "version" {
+  default = "1.7.9"
 }
 
 variable "replicas" {

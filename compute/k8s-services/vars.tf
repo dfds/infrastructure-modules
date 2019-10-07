@@ -42,6 +42,10 @@ variable "traefik_deploy" {
   default = false
 }
 
+variable "traefik_version" {
+  type = "string"
+}
+
 variable "traefik_deploy_name" {}
 
 variable "traefik_alb_anon_deploy" {
