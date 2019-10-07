@@ -15,10 +15,10 @@ locals {
         "1.14", "1.3.1"
     )}"
     vpccni_version_map = "${map(
-        "1.11", "1.5",
-        "1.12", "1.5",
-        "1.13", "1.5",
-        "1.14", "1.5"
+        "1.11", "1.5.3",
+        "1.12", "1.5.3",
+        "1.13", "1.5.3",
+        "1.14", "1.5.3"
     )}"
 }
 
@@ -28,4 +28,6 @@ locals {
     kubeproxy_version = "${local.kubeproxy_version_map[var.cluster_version]}"
     coredns_version = "${local.coredns_version_map[var.cluster_version]}"
     vpccni_version = "${local.vpccni_version_map[var.cluster_version]}"
+    vpccni_minorversion = "${join(".", slice(split(".", local.vpccni_version), 0, 2))}"
+
 }
