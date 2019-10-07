@@ -55,6 +55,7 @@ data "terraform_remote_state" "cluster" {
 module "traefik_deploy" {
   source       = "../../_sub/compute/k8s-traefik"
   deploy       = "${var.traefik_deploy}"
+  version      = "${var.traefik_version}"
   deploy_name  = "${var.traefik_deploy_name}"
   cluster_name = "${var.eks_cluster_name}"
 }
@@ -238,15 +239,15 @@ module "argocd_deploy" {
   oidc_client_id     = "${module.argocd_appreg.application_id}"
   oidc_client_secret = "${module.argocd_appreg.application_key}"
 
-  external_url   = "https://argo.${local.eks_fqdn}"
-  host_url       = "argo.${local.eks_fqdn}"
-  grpc_host_url  = "argogrpc.${local.eks_fqdn}"
-  argo_app_image = "argoproj/argocd:v0.12.0"
-  cluster_name   = "${var.eks_cluster_name}"
-  rsa_keypair_key= "/eks/argocd/rsa_private"
+  external_url                         = "https://argo.${local.eks_fqdn}"
+  host_url                             = "argo.${local.eks_fqdn}"
+  grpc_host_url                        = "argogrpc.${local.eks_fqdn}"
+  argo_app_image                       = "argoproj/argocd:v0.12.0"
+  cluster_name                         = "${var.eks_cluster_name}"
+  rsa_keypair_key                      = "/eks/argocd/rsa_private"
   rsa_keypay_parameterstore_aws_region = "eu-central-1"
-  default_repository = "${var.argocd_default_repository}"
-  aws_assume_role_arn = "${var.aws_assume_role_arn}"
+  default_repository                   = "${var.argocd_default_repository}"
+  aws_assume_role_arn                  = "${var.aws_assume_role_arn}"
 }
 
 module "argocd_grpc_dns" {
@@ -270,8 +271,8 @@ module "harbor_s3" {
 }
 
 module "harbor_postgres" {
-  source = "../../_sub/database/rds-postgres-harbor"
-  deploy = "${var.harbor_deploy}"
+  source                                 = "../../_sub/database/rds-postgres-harbor"
+  deploy                                 = "${var.harbor_deploy}"
   vpc_id                                 = "${data.terraform_remote_state.cluster.eks_cluster_vpc_id}"
   allow_connections_from_security_groups = ["${data.terraform_remote_state.cluster.eks_cluster_nodes_sg_id}"]
   subnet_ids                             = "${data.terraform_remote_state.cluster.eks_cluster_subnet_ids}"
@@ -282,55 +283,54 @@ module "harbor_postgres" {
   ressource_name_prefix     = "harbor-${var.eks_cluster_name}"
   db_name                   = "${var.harbor_postgresdb_default_db_name}"
   db_username               = "${var.harbor_db_server_username}"
-  db_password               ="${module.harbor_db_password.random_string}"
+  db_password               = "${module.harbor_db_password.random_string}"
 }
 
 module "harbor_db_password" {
-  source = "../../_sub/security/random-string-generate"    
-  deploy = "${var.harbor_deploy}"
+  source                    = "../../_sub/security/random-string-generate"
+  deploy                    = "${var.harbor_deploy}"
   special_character_enabled = false
 }
 
 module "harbor_db_password_store" {
-  source = "../../_sub/security/ssm-parameter-store"
-  deploy = "${var.harbor_deploy}"
-  key_name = "/eks/${var.eks_cluster_name}/harbor_db_password"
-  key_description = "Default admin passwpord for Harbor database"  
-  key_value = "${module.harbor_db_password.random_string}"
+  source          = "../../_sub/security/ssm-parameter-store"
+  deploy          = "${var.harbor_deploy}"
+  key_name        = "/eks/${var.eks_cluster_name}/harbor_db_password"
+  key_description = "Default admin passwpord for Harbor database"
+  key_value       = "${module.harbor_db_password.random_string}"
 }
 
 module "harbor_admin_password" {
-  source = "../../_sub/security/random-string-generate"    
-  deploy = "${var.harbor_deploy}"
+  source                    = "../../_sub/security/random-string-generate"
+  deploy                    = "${var.harbor_deploy}"
   special_character_enabled = false
 }
 
 module "harbor_admin_password_store" {
-  source = "../../_sub/security/ssm-parameter-store"
-  deploy = "${var.harbor_deploy}"
-  key_name = "/eks/${var.eks_cluster_name}/harbor_admin_password"
-  key_description = "Default admin passwpord for Harbor portal"  
-  key_value = "${module.harbor_admin_password.random_string}"
+  source          = "../../_sub/security/ssm-parameter-store"
+  deploy          = "${var.harbor_deploy}"
+  key_name        = "/eks/${var.eks_cluster_name}/harbor_admin_password"
+  key_description = "Default admin passwpord for Harbor portal"
+  key_value       = "${module.harbor_admin_password.random_string}"
 }
 
 module "harbor_deploy" {
-  source = "../../_sub/compute/k8s-harbor"
-  deploy = "${var.harbor_deploy}"
-  cluster_name   = "${var.eks_cluster_name}"
-  namespace      = "${var.harbor_k8s_namespace}"
+  source                         = "../../_sub/compute/k8s-harbor"
+  deploy                         = "${var.harbor_deploy}"
+  cluster_name                   = "${var.eks_cluster_name}"
+  namespace                      = "${var.harbor_k8s_namespace}"
   registry_endpoint              = "registry.${local.eks_fqdn}"
   registry_endpoint_external_url = "https://registry.${local.eks_fqdn}"
   notary_endpoint                = "notary.${local.eks_fqdn}"
-  db_server_host     = "${module.harbor_postgres.db_address}"
-  db_server_username = "${var.harbor_db_server_username}"
-  db_server_password = "${module.harbor_db_password.random_string}"
-  db_server_port     = "${module.harbor_postgres.db_port}"
-  bucket_name        = "${module.harbor_s3.bucket_name}"
-  s3_region          = "${var.aws_region}"
-  s3_region_endpoint = "http://s3.${var.aws_region}.amazonaws.com"
-  db_server_default_db_name = "${var.harbor_postgresdb_default_db_name}"
-  portal_admin_password = "${module.harbor_admin_password.random_string}"
-  aws_workload_account_id = "${var.aws_workload_account_id}"
-  kiam_server_role_id     = "${module.kiam_deploy.server_role_id}"  
+  db_server_host                 = "${module.harbor_postgres.db_address}"
+  db_server_username             = "${var.harbor_db_server_username}"
+  db_server_password             = "${module.harbor_db_password.random_string}"
+  db_server_port                 = "${module.harbor_postgres.db_port}"
+  bucket_name                    = "${module.harbor_s3.bucket_name}"
+  s3_region                      = "${var.aws_region}"
+  s3_region_endpoint             = "http://s3.${var.aws_region}.amazonaws.com"
+  db_server_default_db_name      = "${var.harbor_postgresdb_default_db_name}"
+  portal_admin_password          = "${module.harbor_admin_password.random_string}"
+  aws_workload_account_id        = "${var.aws_workload_account_id}"
+  kiam_server_role_id            = "${module.kiam_deploy.server_role_id}"
 }
-
