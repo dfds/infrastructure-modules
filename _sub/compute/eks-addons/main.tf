@@ -22,7 +22,7 @@ resource "null_resource" "coredns" {
 
 resource "null_resource" "vpccni" {
   provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${var.kubeconfig_path} apply -f https://raw.githubusercontent.com/aws/amazon-vpc-cni-k8s/release-${local.vpccni_version}/config/v${local.vpccni_version}/aws-k8s-cni.yaml"
+    command = "kubectl --kubeconfig ${var.kubeconfig_path} apply -f https://raw.githubusercontent.com/aws/amazon-vpc-cni-k8s/release-${local.vpccni_version}/config/v${local.vpccni_minorversion}/aws-k8s-cni.yaml"
   }
 
   triggers {
