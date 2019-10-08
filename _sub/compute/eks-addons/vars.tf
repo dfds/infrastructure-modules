@@ -5,3 +5,19 @@ variable "cluster_version" {
 variable "kubeconfig_path" {
   type = "string"
 }
+
+
+variable "kubeproxy_version_override" {
+  type = "string"
+  default = ""
+}
+
+variable "coredns_version_override" {
+  type = "string"
+  default = ""
+}
+
+variable "vpccni_version_override" {
+  type = "string"
+  default = ""
+}
