@@ -25,9 +25,9 @@ locals {
 
 # Lookup actual add-on versions
 locals {
-    kubeproxy_version = "${local.kubeproxy_version_map[var.cluster_version]}"
-    coredns_version = "${local.coredns_version_map[var.cluster_version]}"
-    vpccni_version = "${local.vpccni_version_map[var.cluster_version]}"
+    kubeproxy_version = "${var.kubeproxy_version_override == "" ? local.kubeproxy_version_map[var.cluster_version] : var.kubeproxy_version_override}"
+    coredns_version = "${var.coredns_version_override == "" ? local.coredns_version_map[var.cluster_version] : var.coredns_version_override}"
+    vpccni_version = "${var.vpccni_version_override == "" ? local.vpccni_version_map[var.cluster_version] : var.vpccni_version_override}"
     vpccni_minorversion = "${join(".", slice(split(".", local.vpccni_version), 0, 2))}"
 
 }
