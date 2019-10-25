@@ -35,3 +35,5 @@ variable "cloudwatch_agent_config_file" {
 variable "cloudwatch_agent_enabled" {
   default = false
 }
+
+variable "worker_inotify_max_user_watches" {}

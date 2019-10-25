@@ -3,7 +3,7 @@
 # --------------------------------------------------
 
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "~> 0.11.7"
 }
 
@@ -31,23 +31,24 @@ module "eks_cluster" {
 }
 
 module "eks_workers" {
-  source                         = "../../_sub/compute/eks-workers"
-  cluster_name                   = "${var.eks_cluster_name}"
-  cluster_version                = "${var.eks_cluster_version}"
-  eks_endpoint                   = "${module.eks_cluster.eks_endpoint}"
-  eks_certificate_authority      = "${module.eks_cluster.eks_certificate_authority}"
-  worker_instance_max_count      = "${var.eks_worker_instance_max_count}"
-  worker_instance_min_count      = "${var.eks_worker_instance_min_count}"
-  worker_instance_type           = "${var.eks_worker_instance_type}"
-  worker_instance_storage_size   = "${var.eks_worker_instance_storage_size}"
-  autoscale_security_group       = "${module.eks_cluster.autoscale_security_group}"
-  vpc_id                         = "${module.eks_cluster.vpc_id}"
-  subnet_ids                     = "${module.eks_cluster.subnet_ids}"
-  enable_ssh                     = "${var.eks_worker_ssh_enable}"
-  public_key                     = "${var.eks_worker_ssh_public_key}"
-  cloudwatch_agent_config_bucket = "${var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none" }"
-  cloudwatch_agent_config_file   = "${var.eks_worker_cloudwatch_agent_config_file}"
-  cloudwatch_agent_enabled       = "${var.eks_worker_cloudwatch_agent_config_deploy}"
+  source                          = "../../_sub/compute/eks-workers"
+  cluster_name                    = "${var.eks_cluster_name}"
+  cluster_version                 = "${var.eks_cluster_version}"
+  eks_endpoint                    = "${module.eks_cluster.eks_endpoint}"
+  eks_certificate_authority       = "${module.eks_cluster.eks_certificate_authority}"
+  worker_instance_max_count       = "${var.eks_worker_instance_max_count}"
+  worker_instance_min_count       = "${var.eks_worker_instance_min_count}"
+  worker_instance_type            = "${var.eks_worker_instance_type}"
+  worker_instance_storage_size    = "${var.eks_worker_instance_storage_size}"
+  worker_inotify_max_user_watches = "${var.eks_worker_inotify_max_user_watches}"
+  autoscale_security_group        = "${module.eks_cluster.autoscale_security_group}"
+  vpc_id                          = "${module.eks_cluster.vpc_id}"
+  subnet_ids                      = "${module.eks_cluster.subnet_ids}"
+  enable_ssh                      = "${var.eks_worker_ssh_enable}"
+  public_key                      = "${var.eks_worker_ssh_public_key}"
+  cloudwatch_agent_config_bucket  = "${var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"}"
+  cloudwatch_agent_config_file    = "${var.eks_worker_cloudwatch_agent_config_file}"
+  cloudwatch_agent_enabled        = "${var.eks_worker_cloudwatch_agent_config_deploy}"
 }
 
 module "blaster_configmap_bucket" {

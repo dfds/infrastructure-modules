@@ -19,20 +19,25 @@ locals {
 set -o xtrace
 /etc/eks/bootstrap.sh --apiserver-endpoint '${var.eks_endpoint}' --b64-cluster-ca '${var.eks_certificate_authority}' '${var.cluster_name}'
 
+echo fs.inotify.max_user_watches=${var.worker_inotify_max_user_watches} | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
 USERDATA
 
   worker-node-userdata-cw-agent = <<USERDATA
 #!/bin/sh
 set -o xtrace
 /etc/eks/bootstrap.sh --apiserver-endpoint '${var.eks_endpoint}' --b64-cluster-ca '${var.eks_certificate_authority}' '${var.cluster_name}'
-mkdir  /var/cloudwatch/
+
+echo fs.inotify.max_user_watches=${var.worker_inotify_max_user_watches} | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+
+mkdir /var/cloudwatch/
 
 wget https://s3.amazonaws.com/amazoncloudwatch-agent/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm -P /var/cloudwatch
 sudo rpm -U /var/cloudwatch/amazon-cloudwatch-agent.rpm
 
 sudo aws s3 cp s3://${var.cloudwatch_agent_config_bucket} /var/cloudwatch/ --recursive
 sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/var/cloudwatch/${var.cloudwatch_agent_config_file} -s
-
 USERDATA
 
 }

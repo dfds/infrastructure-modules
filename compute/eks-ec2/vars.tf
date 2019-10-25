@@ -56,6 +56,10 @@ variable "eks_worker_ssh_enable" {
   default = false
 }
 
+variable "eks_worker_inotify_max_user_watches" {
+  default = 32768 # default t3.large is 8192 which is too low
+}
+
 
 # --------------------------------------------------
 # Blaster Configmap
