@@ -54,8 +54,8 @@ fi
 
 
 # Output current configmap
-echo "Current configmap:"
-kubectl --kubeconfig $KUBE_CONFIG_PATH -n kube-system get configmap aws-auth -o yaml
+# echo "Current configmap:"
+# kubectl --kubeconfig $KUBE_CONFIG_PATH -n kube-system get configmap aws-auth -o yaml
 
 
 # Apply configmap
@@ -72,7 +72,7 @@ if [ $APPLY_S3_CONFIGMAP -eq 1 ]; then
         aws s3 cp $CONFIGMAP_PATH_S3 /tmp/${CONFIGMAP_KEY}
     fi
 
-    cat /tmp/${CONFIGMAP_KEY}
+    # cat /tmp/${CONFIGMAP_KEY}
     kubectl --kubeconfig $KUBE_CONFIG_PATH apply -f /tmp/${CONFIGMAP_KEY}
 
 else
