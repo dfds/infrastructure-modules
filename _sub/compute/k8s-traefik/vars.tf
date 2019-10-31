@@ -9,8 +9,7 @@ variable "namespace" {
   default = "kube-system"
 }
 
-variable "version" {
-  default = "1.7.9"
+variable "image_version" {
 }
 
 variable "replicas" {

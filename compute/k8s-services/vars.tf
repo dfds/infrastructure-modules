@@ -44,6 +44,7 @@ variable "traefik_deploy" {
 
 variable "traefik_version" {
   type = "string"
+  default = "1.7.19"
 }
 
 variable "traefik_deploy_name" {}

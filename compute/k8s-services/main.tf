@@ -53,11 +53,11 @@ data "terraform_remote_state" "cluster" {
 # --------------------------------------------------
 
 module "traefik_deploy" {
-  source       = "../../_sub/compute/k8s-traefik"
-  deploy       = "${var.traefik_deploy}"
-  version      = "${var.traefik_version}"
-  deploy_name  = "${var.traefik_deploy_name}"
-  cluster_name = "${var.eks_cluster_name}"
+  source        = "../../_sub/compute/k8s-traefik"
+  deploy        = "${var.traefik_deploy}"
+  image_version = "${var.traefik_version}"
+  deploy_name   = "${var.traefik_deploy_name}"
+  cluster_name  = "${var.eks_cluster_name}"
 }
 
 module "traefik_alb_cert" {
