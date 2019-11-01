@@ -1,5 +1,6 @@
 output "kubeconfig" {
   value = "${local.kubeconfig}"
+  sensitive = true
 }
 
 output "config-map-aws-auth" {

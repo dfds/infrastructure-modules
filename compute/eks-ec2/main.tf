@@ -17,8 +17,7 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  # config_path = "${local.kubeconfig_path}"
-  config_path = "${data.null_data_source.paths.outputs["kubeconfig"]}"
+  config_path = "${local.kubeconfig_path}"
 }
 
 # --------------------------------------------------
@@ -62,8 +61,7 @@ module "eks_heptio" {
   source                      = "../../_sub/compute/eks-heptio"
   aws_assume_role_arn         = "${var.aws_assume_role_arn}"
   cluster_name                = "${var.eks_cluster_name}"
-  # kubeconfig_path             = "${local.kubeconfig_path}"
-  kubeconfig_path             = "${data.null_data_source.paths.outputs["kubeconfig"]}"
+  kubeconfig_path             = "${local.kubeconfig_path}"
   eks_endpoint                = "${module.eks_cluster.eks_endpoint}"
   eks_certificate_authority   = "${module.eks_cluster.eks_certificate_authority}"
   eks_role_arn                = "${module.eks_workers.worker_role}"

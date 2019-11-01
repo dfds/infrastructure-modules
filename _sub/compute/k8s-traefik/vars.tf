@@ -15,3 +15,7 @@ variable "image_version" {
 variable "replicas" {
   default = 2
 }
+
+variable "kubeconfig_path" {
+  type = "string"
+}

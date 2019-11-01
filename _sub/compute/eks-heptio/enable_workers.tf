@@ -1,12 +1,15 @@
+locals {
+  temp_kubeconfig_path = "./kube_${var.cluster_name}.config"
+}
+
 resource "local_file" "kubeconfig" {
   content  = "${local.kubeconfig}"
-  filename = "${var.kubeconfig_path}"
+  filename = "${local.temp_kubeconfig_path}"
 
-  lifecycle {
-    ignore_changes = [
-      "filename",
-    ]
+  provisioner "local-exec" {
+    command = "bash -c '${path.module}/move_kubeconfig.sh ${local.temp_kubeconfig_path} ${var.kubeconfig_path}'"
   }
+
 }
 
 locals {

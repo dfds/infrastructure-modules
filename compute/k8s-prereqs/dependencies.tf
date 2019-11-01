@@ -1,3 +1,3 @@
 locals {
-    kubeconfig_path = "${pathexpand("~/.kube/config_${var.eks_cluster_name}")}"
+    kubeconfig_path = "${pathexpand("~/.kube/${var.eks_cluster_name}.config")}"
 }

@@ -117,7 +117,7 @@ resource "null_resource" "create_traefik_role" {
   count = "${var.deploy}"
 
   provisioner "local-exec" {
-        command = "kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} apply -f ${path.module}/ingress-clusterrole.yaml"
+        command = "kubectl --kubeconfig ${var.kubeconfig_path} apply -f ${path.module}/ingress-clusterrole.yaml"
     }
   
 }

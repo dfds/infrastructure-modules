@@ -17,7 +17,7 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  config_path = "${pathexpand("~/.kube/config_${var.eks_cluster_name}")}"
+  config_path = "${local.kubeconfig_path}"
 }
 
 # --------------------------------------------------
@@ -25,17 +25,20 @@ provider "kubernetes" {
 # --------------------------------------------------
 
 module "k8s_helm" {
-  source       = "../../_sub/compute/k8s-helm"
-  cluster_name = "${var.eks_cluster_name}"
+  source          = "../../_sub/compute/k8s-helm"
+  cluster_name    = "${var.eks_cluster_name}"
+  kubeconfig_path = "${local.kubeconfig_path}"
 }
+
 
 # --------------------------------------------------
 # Deployment service account
 # --------------------------------------------------
 
 module "k8s_service_account" {
-  source       = "../../_sub/compute/k8s-service-account"
-  cluster_name = "${var.eks_cluster_name}"
+  source          = "../../_sub/compute/k8s-service-account"
+  cluster_name    = "${var.eks_cluster_name}"
+  kubeconfig_path = "${local.kubeconfig_path}"
 }
 
 module "k8s_service_account_store_secret" {

@@ -1,6 +1,30 @@
-locals {
-    kubeconfig_path = "${pathexpand("~/.kube/config_${var.eks_cluster_name}")}"
+# --------------------------------------------------
+# Get remote state of cluster deployment
+# --------------------------------------------------
+
+data "terraform_remote_state" "cluster" {
+  backend = "s3"
+
+  config {
+    bucket = "${var.terraform_state_s3_bucket}"
+    key    = "${var.aws_region}/k8s-${var.eks_cluster_name}/cluster/terraform.tfstate"
+    region = "${var.terraform_state_region}"
+  }
 }
+
+
+# --------------------------------------------------
+# Path to kubeconfig file
+# --------------------------------------------------
+
+locals {
+    kubeconfig_path = "${pathexpand("~/.kube/${var.eks_cluster_name}.config")}"
+}
+
+
+
+# --------------------------------------------------
+
 
 # Generate EKS fully-qualified domain name
 locals {

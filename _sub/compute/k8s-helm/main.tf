@@ -35,7 +35,7 @@ resource "null_resource" "init_helm_and_wait" {
   }
 
   provisioner "local-exec" {
-    command = "helm init --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} --skip-refresh --upgrade --service-account tiller"
+    command = "helm init --kubeconfig ${var.kubeconfig_path} --skip-refresh --upgrade --service-account tiller"
   }
 
   depends_on = ["kubernetes_cluster_role_binding.tiller-binding"]

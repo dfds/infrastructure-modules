@@ -34,6 +34,7 @@ data "external" "get-token" {
   query = {
     cluster_name        = "${var.cluster_name}"
     default_secret_name = "${kubernetes_service_account.deploy-user.default_secret_name}"
+    kubeconfig_path     = "${var.kubeconfig_path}"
   }
 }
 
@@ -44,3 +45,4 @@ data "external" "get-token" {
 #   value       = "${data.external.get-token.result["kubeconfig_json"]}"
 #   overwrite   = true
 # }
+

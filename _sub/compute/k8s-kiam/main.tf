@@ -114,8 +114,7 @@ resource "null_resource" "repo_init_helm" {
     command = <<EOT
         echo "Testing for Tiller"
         count=0
-        kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} -n kube-system get pod -l name=tiller -o yaml
-        while [ `kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} -n kube-system get pod -l name=tiller -o go-template --template='{{range .items}}{{range .status.conditions}}{{ if eq .type "Ready" }}{{ .status }} {{end}}{{end}}{{end}}'` != 'True' ]
+        while [ `kubectl --kubeconfig ${var.kubeconfig_path} -n kube-system get pod -l name=tiller -o go-template --template='{{range .items}}{{range .status.conditions}}{{ if eq .type "Ready" }}{{ .status }} {{end}}{{end}}{{end}}'` != 'True' ]
         do
             if [ $count -gt 15 ]; then
                 echo "Failed to get ready Tiller pod."
@@ -125,7 +124,6 @@ resource "null_resource" "repo_init_helm" {
             count=$(( $count + 1 ))
             sleep 4
         done
-        kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} -n kube-system get pod -l name=tiller -o yaml
     EOT
   }
 }
