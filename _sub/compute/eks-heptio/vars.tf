@@ -15,3 +15,7 @@ variable "blaster_configmap_apply" {
 variable "blaster_configmap_s3_bucket" {}
 
 variable "blaster_configmap_key" {}
+
+variable "kubeconfig_path" {
+  type = "string"
+}

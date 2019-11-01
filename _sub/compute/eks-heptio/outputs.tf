@@ -22,4 +22,6 @@ output "user_configfile" {
   value = "${local.kubeconfig_users}"
 }
 
-
+output "kubeconfig_path" {
+  value = "${var.kubeconfig_path}"
+}

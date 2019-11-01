@@ -1,3 +1,7 @@
+locals {
+    kubeconfig_path = "${pathexpand("~/.kube/config_${var.eks_cluster_name}")}"
+}
+
 # Generate EKS fully-qualified domain name
 locals {
   eks_fqdn = "${var.eks_cluster_name}.${var.workload_dns_zone_name}"

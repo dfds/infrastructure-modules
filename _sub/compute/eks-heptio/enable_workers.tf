@@ -1,6 +1,12 @@
 resource "local_file" "kubeconfig" {
   content  = "${local.kubeconfig}"
-  filename = "${pathexpand("~/.kube/config_${var.cluster_name}")}"
+  filename = "${var.kubeconfig_path}"
+
+  lifecycle {
+    ignore_changes = [
+      "filename",
+    ]
+  }
 }
 
 locals {
@@ -16,10 +22,11 @@ resource "null_resource" "enable-workers-default" {
   count = "${var.blaster_configmap_apply ? 0 : 1}"
 
   provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${local_file.kubeconfig.filename} apply -f ${local.path_default_configmap}"
+    command = "kubectl --kubeconfig ${var.kubeconfig_path} apply -f ${local.path_default_configmap}"
   }
 
   depends_on = ["local_file.kubeconfig", "local_file.default-configmap"]
+
 }
 
 resource "null_resource" "enable-workers-from-s3" {
@@ -31,8 +38,9 @@ resource "null_resource" "enable-workers-from-s3" {
   }
 
   provisioner "local-exec" {
-    command = "bash ${path.module}/apply_blaster_configmap.sh ${pathexpand("~/.kube/config_${var.cluster_name}")} ${var.blaster_configmap_s3_bucket} ${var.blaster_configmap_key} ${local.path_default_configmap} ${var.aws_assume_role_arn}"
+    command = "bash ${path.module}/apply_blaster_configmap.sh ${var.kubeconfig_path} ${var.blaster_configmap_s3_bucket} ${var.blaster_configmap_key} ${local.path_default_configmap} ${var.aws_assume_role_arn}"
   }
 
   depends_on = ["local_file.kubeconfig", "local_file.default-configmap"]
+
 }

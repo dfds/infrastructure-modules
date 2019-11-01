@@ -25,7 +25,8 @@ Gotchas:
 - The element() interpolation can only be used against simple lists - i.e. not lists containing maps, like validation_options does
 - Using "[index]" to access element in list, doesn't work with "concat(aws_acm_certificate.cert.*.domain_validation_options, list(list(map("resource_record_name", ""))))"
 - Local variables are not consistently calculated, so output from a resource cannot reliably be processed by a local variable - e.g. to select a specific element of a list
-- Passing the results via a local file, and read it with "data external" seems to force the local variable to be calculated
+  - Passing the results via a local file, and read it with "data external" seems to force the local variable to be calculated
+  - Perhaps using null_data_source can fix this?-  https://www.terraform.io/docs/providers/null/data_source.html
 - "external" data cannot handle lists (https://github.com/terraform-providers/terraform-provider-external/issues/2)
 */
 
