@@ -4,7 +4,7 @@
 
 provider "helm" {
   kubernetes {
-    config_path = "${pathexpand("~/.kube/config_${var.cluster_name}")}"
+    config_path = "${var.kubeconfig_path}"
   }
 
   home = "${pathexpand("~/.helm_${var.cluster_name}_kiam")}"
