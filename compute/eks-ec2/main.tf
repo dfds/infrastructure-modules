@@ -76,6 +76,15 @@ module "eks_addons" {
   cluster_version = "${var.eks_cluster_version}"
 }
 
+module "eks_s3_public_kubeconfig" {
+  source  = "../../_sub/storage/s3-bucket-object"
+  deploy  = "${signum(length(var.eks_public_s3_bucket))}"
+  bucket  = "${var.eks_public_s3_bucket}"
+  key     = "kubeconfig/${var.eks_cluster_name}-saml.config"
+  content = "${module.eks_heptio.user_configfile}"
+  acl     = "public-read"
+}
+
 module "param_store_admin_kube_config" {
   source          = "../../_sub/security/ssm-parameter-store"
   key_name        = "/eks/${var.eks_cluster_name}/admin"
