@@ -65,7 +65,7 @@ resource "kubernetes_deployment" "traefik" {
             container_port = 8080
           }
 
-          args = ["--api", "--kubernetes", "--logLevel=INFO", "--metrics.prometheus"]
+          args = ["--api", "--kubernetes", "--logLevel=INFO", "--metrics.prometheus", "--accessLog.format=json"]
         }
       }
     }
