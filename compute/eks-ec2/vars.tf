@@ -33,7 +33,7 @@ variable "eks_cluster_version" {
 }
 
 variable "eks_cluster_zones" {
-  default = 3
+  default = 2 # Set to the number of AZs Hellman currently uses, to reduce risk of destroying/recreating cluster, until a better solution is in place
 }
 
 variable "eks_worker_instance_type" {
