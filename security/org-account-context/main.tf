@@ -12,11 +12,11 @@ provider "aws" {
   }
 }
 
-# provider "aws" {
-#   version = "~> 2.21.0"
-#   region  = "${var.aws_region}"
-#   alias   = "core"
-# }
+provider "aws" {
+  version = "~> 2.21.0"
+  region  = "${var.aws_region}"
+  alias   = "core"
+}
 
 provider "aws" {
   version = "~> 2.21.0"
