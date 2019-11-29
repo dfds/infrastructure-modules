@@ -12,11 +12,11 @@ provider "aws" {
   }
 }
 
-provider "aws" {
-  version = "~> 2.21.0"
-  region  = "${var.aws_region}"
-  alias   = "core"
-}
+# provider "aws" {
+#   version = "~> 2.21.0"
+#   region  = "${var.aws_region}"
+#   alias   = "core"
+# }
 
 provider "aws" {
   version = "~> 2.21.0"
@@ -42,7 +42,7 @@ terraform {
 
 module "iam_policies" {
   source                            = "../../_sub/security/iam-policies"
-  iam_role_trusted_account_root_arn = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+  iam_role_trusted_account_root_arn = ["arn:aws:iam::${var.core_account_id}:root"] # Account ID from variable instead of data.aws_caller_identity - seemd to get rate-throttled
 }
 
 # --------------------------------------------------

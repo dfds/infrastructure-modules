@@ -14,6 +14,11 @@ variable "master_account_id" {
   description = "The AWS account ID of the Organizations Master account"
 }
 
+variable "core_account_id" {
+  type        = "string"
+  description = "The AWS account ID of the Organizations Core account"
+}
+
 variable "access_key_master" {
   type = "string"
 }
