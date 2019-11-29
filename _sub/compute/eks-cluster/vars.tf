@@ -5,3 +5,5 @@ variable "cluster_name" {
 variable "cluster_version" {
   type = "string"
 }
+
+variable "cluster_zones" {}

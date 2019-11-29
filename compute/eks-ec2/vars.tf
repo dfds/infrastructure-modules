@@ -32,6 +32,10 @@ variable "eks_cluster_version" {
   type = "string"
 }
 
+variable "eks_cluster_zones" {
+  default = 3
+}
+
 variable "eks_worker_instance_type" {
   type = "string"
 }
