@@ -52,6 +52,60 @@ module "eks_workers" {
   cloudwatch_agent_enabled        = "${var.eks_worker_cloudwatch_agent_config_deploy}"
 }
 
+/*
+TO DO:
+Move node security group (currently in workers) to separate sub
+Move ec2 keypair (currently in workers) to separate sub
+Use same IAM role for all nodegroups or separate?
+ - If same, move worker/node IAM role (currently in workers) to separate sub
+Create separate eks-workers module (eks-nodegroup-unmanaged?) for easier migration
+ - Try and use same input and output as for aws_eks_node_group, for easier migration
+Feature toggle nodegroups
+Test 0, 1, more-subnets-than-AZs
+*/
+
+module "eks_nodegroup1_subnet" {
+  source       = "../../_sub/network/vpc-subnet"
+  deploy       = "${signum(length(var.eks_nodegroup1_subnets))}"
+  name         = "eks-${var.eks_cluster_name}-nodegroup1"
+  cluster_name = "${var.eks_cluster_name}"                       # Let's see if it works without
+  vpc_id       = "${module.eks_cluster.vpc_id}"
+  subnets      = "${var.eks_nodegroup1_subnets}"
+}
+
+module "eks_workers_keypair" {
+  source = "../../_sub/compute/ec2-keypair"
+  name = ""
+  public_key = "${var.eks_worker_ssh_public_key}"
+}
+
+module "eks_nodegroup1_workers" {
+  source = "../../_sub/compute/eks-nodegroup-unmanaged"
+
+  # deploy                          = "${signum(length(var.eks_nodegroup1_subnets))}"
+  cluster_name            = "${var.eks_cluster_name}"
+  version                 = "${var.eks_cluster_version}"
+  nodegroup_name          = "nodegroup1"
+  node_role_arn           = ""
+  scaling_config_min_size = "${var.eks_nodegroup1_worker_instance_min_count}"
+  scaling_config_max_size = "${var.eks_nodegroup1_worker_instance_max_count}"
+  subnet_ids              = "${module.eks_nodegroup1_subnet.subnet_ids}"
+  disk_size               = "${var.eks_nodegroup1_worker_instance_type}"
+  instance_types          = "${var.eks_nodegroup1_worker_instance_type}"
+  ec2_ssh_key             = "${module.eks_workers_keypair.key_name}"
+  
+  ssh_ip_whitelist = "${eks_nodegroup1_worker_ssh_ip_whitelist}"
+
+  cloudwatch_agent_config_bucket  = "${var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"}"
+  cloudwatch_agent_config_file    = "${var.eks_worker_cloudwatch_agent_config_file}"
+  cloudwatch_agent_enabled        = "${var.eks_worker_cloudwatch_agent_config_deploy}"
+  eks_endpoint                    = "${module.eks_cluster.eks_endpoint}"
+  eks_certificate_authority       = "${module.eks_cluster.eks_certificate_authority}"
+  worker_inotify_max_user_watches = "${var.eks_worker_inotify_max_user_watches}"
+  autoscale_security_group        = "${module.eks_cluster.autoscale_security_group}"
+  vpc_id                          = "${module.eks_cluster.vpc_id}"
+}
+
 module "blaster_configmap_bucket" {
   source    = "../../_sub/storage/s3-bucket"
   deploy    = "${var.blaster_configmap_deploy}"

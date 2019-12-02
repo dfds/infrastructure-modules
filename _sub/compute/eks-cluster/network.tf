@@ -46,7 +46,7 @@ resource "aws_route_table" "eks" {
 }
 
 resource "aws_route_table_association" "eks" {
-  count = 2
+  count = "${var.cluster_zones}"
 
   subnet_id      = "${aws_subnet.eks.*.id[count.index]}"
   route_table_id = "${aws_route_table.eks.id}"
