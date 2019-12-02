@@ -61,7 +61,7 @@ variable "eks_worker_ssh_enable" {
   default = false
 }
 
-variable "eks_worker_ssh_ip_public_key" {
+variable "eks_worker_ssh_public_key" {
   type = "string"
 }
 
@@ -85,8 +85,8 @@ variable "eks_nodegroup1_subnets" {
 }
 
 variable "eks_nodegroup1_worker_instance_type" {
-  type = "string"
-  default = ""
+  type = "list"
+  default = []
 }
 
 variable "eks_nodegroup1_worker_instance_min_count" {

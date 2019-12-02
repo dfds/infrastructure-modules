@@ -20,7 +20,9 @@ variable "subnet_ids" {
 variable "eks_endpoint" {}
 variable "eks_certificate_authority" {}
 
-variable "public_key" {}
+variable "ec2_ssh_key" {
+  type = "string"
+}
 
 variable "enable_ssh" {
   default = false

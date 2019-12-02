@@ -1,7 +1,7 @@
 data "aws_ami" "eks-worker" {
   filter {
     name   = "name"
-    values = ["amazon-eks-node-${var.version}-*"]
+    values = ["amazon-eks-node-${var.cluster_version}-*"]
   }
 
   most_recent = true
@@ -50,7 +50,7 @@ resource "aws_launch_configuration" "eks" {
   name_prefix                 = "${var.cluster_name}"
   security_groups             = ["${aws_security_group.eks-node.id}"]
   user_data_base64            = "${var.cloudwatch_agent_enabled ? base64encode(local.worker-node-userdata-cw-agent) : base64encode(local.worker-node-userdata) }"
-  key_name                    = "${aws_key_pair.eks-node.key_name}"
+  key_name                    = "${var.ec2_ssh_key}"
 
   root_block_device = [
     {

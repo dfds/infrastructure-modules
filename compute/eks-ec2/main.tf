@@ -31,6 +31,19 @@ module "eks_cluster" {
   cluster_zones   = "${var.eks_cluster_zones}"
 }
 
+module "eks_workers_keypair" {
+  source     = "../../_sub/compute/ec2-keypair"
+  name       = "eks-${var.eks_cluster_name}-workers"
+  public_key = "${var.eks_worker_ssh_public_key}"
+}
+
+module "eks_workers_iam_role" {
+  source     = "../../_sub/security/iam-role"
+}
+module "eks_workers_security_group" {
+  source     = "../../_sub/network/security-group-eks"
+}
+
 module "eks_workers" {
   source                          = "../../_sub/compute/eks-workers"
   cluster_name                    = "${var.eks_cluster_name}"
@@ -46,7 +59,7 @@ module "eks_workers" {
   vpc_id                          = "${module.eks_cluster.vpc_id}"
   subnet_ids                      = "${module.eks_cluster.subnet_ids}"
   enable_ssh                      = "${var.eks_worker_ssh_enable}"
-  public_key                      = "${var.eks_worker_ssh_public_key}"
+  ec2_ssh_key                     = "${module.eks_workers_keypair.key_name}"
   cloudwatch_agent_config_bucket  = "${var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"}"
   cloudwatch_agent_config_file    = "${var.eks_worker_cloudwatch_agent_config_file}"
   cloudwatch_agent_enabled        = "${var.eks_worker_cloudwatch_agent_config_deploy}"
@@ -55,13 +68,11 @@ module "eks_workers" {
 /*
 TO DO:
 Move node security group (currently in workers) to separate sub
-Move ec2 keypair (currently in workers) to separate sub
 Use same IAM role for all nodegroups or separate?
  - If same, move worker/node IAM role (currently in workers) to separate sub
-Create separate eks-workers module (eks-nodegroup-unmanaged?) for easier migration
- - Try and use same input and output as for aws_eks_node_group, for easier migration
 Feature toggle nodegroups
-Test 0, 1, more-subnets-than-AZs
+ - Test 0, 1, more-subnets-than-AZs
+
 */
 
 module "eks_nodegroup1_subnet" {
@@ -73,28 +84,22 @@ module "eks_nodegroup1_subnet" {
   subnets      = "${var.eks_nodegroup1_subnets}"
 }
 
-module "eks_workers_keypair" {
-  source = "../../_sub/compute/ec2-keypair"
-  name = ""
-  public_key = "${var.eks_worker_ssh_public_key}"
-}
-
 module "eks_nodegroup1_workers" {
   source = "../../_sub/compute/eks-nodegroup-unmanaged"
 
   # deploy                          = "${signum(length(var.eks_nodegroup1_subnets))}"
   cluster_name            = "${var.eks_cluster_name}"
-  version                 = "${var.eks_cluster_version}"
+  cluster_version         = "${var.eks_cluster_version}"
   nodegroup_name          = "nodegroup1"
-  node_role_arn           = ""
+  node_role_arn           = "${module.eks_workers_iam_role.arn}"
   scaling_config_min_size = "${var.eks_nodegroup1_worker_instance_min_count}"
   scaling_config_max_size = "${var.eks_nodegroup1_worker_instance_max_count}"
   subnet_ids              = "${module.eks_nodegroup1_subnet.subnet_ids}"
-  disk_size               = "${var.eks_nodegroup1_worker_instance_type}"
+  disk_size               = "${var.eks_worker_instance_storage_size}"
   instance_types          = "${var.eks_nodegroup1_worker_instance_type}"
   ec2_ssh_key             = "${module.eks_workers_keypair.key_name}"
-  
-  ssh_ip_whitelist = "${eks_nodegroup1_worker_ssh_ip_whitelist}"
+
+  ssh_ip_whitelist = "${var.eks_nodegroup1_worker_ssh_ip_whitelist}"
 
   cloudwatch_agent_config_bucket  = "${var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"}"
   cloudwatch_agent_config_file    = "${var.eks_worker_cloudwatch_agent_config_file}"
