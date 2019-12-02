@@ -44,11 +44,11 @@ USERDATA
 
 resource "aws_launch_configuration" "eks" {
   associate_public_ip_address = true
-  iam_instance_profile        = "${aws_iam_instance_profile.eks.name}"
+  iam_instance_profile        = "${var.iam_instance_profile}"
   image_id                    = "${data.aws_ami.eks-worker.id}"
   instance_type               = "${element(var.instance_types, 0)}"
   name_prefix                 = "${var.cluster_name}"
-  security_groups             = ["${aws_security_group.eks-node.id}"]
+  security_groups             = "${var.security_groups}"
   user_data_base64            = "${var.cloudwatch_agent_enabled ? base64encode(local.worker-node-userdata-cw-agent) : base64encode(local.worker-node-userdata) }"
   key_name                    = "${var.ec2_ssh_key}"
 

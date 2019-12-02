@@ -48,7 +48,7 @@ resource "aws_launch_configuration" "eks" {
   iam_instance_profile        = "${aws_iam_instance_profile.eks.name}"
   image_id                    = "${data.aws_ami.eks-worker.id}"
   instance_type               = "${var.worker_instance_type}"
-  security_groups             = ["${aws_security_group.eks-node.id}"]
+  security_groups             = "${var.security_groups}"
   user_data_base64            = "${var.cloudwatch_agent_enabled ? base64encode(local.worker-node-userdata-cw-agent) : base64encode(local.worker-node-userdata) }"
   key_name                    = "${var.ec2_ssh_key}"
 

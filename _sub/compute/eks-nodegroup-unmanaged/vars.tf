@@ -10,9 +10,18 @@ variable "nodegroup_name" {
   type = "string"
 }
 
-variable "node_role_arn" {
+# variable "node_role_arn" {
+#   type = "string"
+# }
+
+variable "iam_instance_profile" {
   type = "string"
 }
+
+variable "security_groups" {
+  type = "list"
+}
+
 
 variable "scaling_config_min_size" {}
 
@@ -28,17 +37,11 @@ variable "instance_types" {
   type = "list"
 }
 
-variable "ssh_ip_whitelist" {
-  type = "list"
-}
-
 variable "ec2_ssh_key" {
   type = "string"
 }
 
 variable "autoscale_security_group" {}
-
-variable "vpc_id" {}
 
 variable "eks_endpoint" {}
 variable "eks_certificate_authority" {}

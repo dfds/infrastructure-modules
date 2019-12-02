@@ -31,7 +31,7 @@ output "eks_worker_autoscaling_group_id" {
 }
 
 output "eks_cluster_nodes_sg_id" {
-  value = "${module.eks_workers.nodes_sg_id}"
+  value = "${module.eks_workers_security_group.id}"
 }
 
 output "eks_cluster_vpc_id" {
