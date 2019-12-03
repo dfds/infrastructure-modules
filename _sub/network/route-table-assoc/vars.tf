@@ -1,3 +1,6 @@
+variable "count" {
+}
+
 variable "subnet_ids" {
   type = "list"
 }

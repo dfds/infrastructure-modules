@@ -6,7 +6,7 @@ resource "aws_subnet" "subnet" {
 
   tags = "${
     map(
-      "Name", "${var.name}-${data.aws_availability_zones.available.zone_ids[count.index]}",
+      "Name", "${var.name}-${data.aws_availability_zones.available.names[count.index]}",
       "kubernetes.io/cluster/${var.cluster_name}", "shared"
     )
   }"

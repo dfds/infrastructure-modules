@@ -77,6 +77,7 @@ module "eks_workers" {
 
 module "eks_workers_route_table_assoc" {
   source         = "../../_sub/network/route-table-assoc"
+  count          = "${length(var.eks_cluster_zones)}" # need to pass count explicitly, otherwise: value of 'count' cannot be computed
   subnet_ids     = "${module.eks_cluster.subnet_ids}"
   route_table_id = "${module.eks_route_table.id}"
 }
@@ -85,6 +86,10 @@ module "eks_workers_route_table_assoc" {
 TO DO:
 Move worker/node IAM role (currently in workers) to separate sub
 Destroys security group. Takes long time. Might be destructive Can we move state?
+  terragrunt state mv module.eks_workers.aws_key_pair.eks-node module.eks_workers_keypair.aws_key_pair.pair
+  terragrunt state mv module.eks_workers.aws_security_group_rule.eks-cluster-ingress-node-https module.eks_workers_security_group.aws_security_group_rule.eks-cluster-ingress-node-https
+  terragrunt state mv module.eks_workers.aws_security_group_rule.eks-node-ingress-cluster module.eks_workers_security_group.aws_security_group_rule.eks-node-ingress-cluster 
+  terragrunt state mv module.eks_workers.aws_security_group_rule.eks-node-ingress-self module.eks_workers_security_group.aws_security_group_rule.eks-node-ingress-self
   terragrunt state mv module.eks_workers.aws_security_group.eks-node module.eks_workers_security_group.aws_security_group.eks-node
   terragrunt state mv module.eks_cluster.aws_internet_gateway.eks module.eks_route_table.aws_internet_gateway.gw
   terragrunt state mv module.eks_cluster.aws_route_table.eks module.eks_route_table.aws_route_table.table
@@ -134,6 +139,7 @@ module "eks_nodegroup1_workers" {
 
 module "eks_nodegroup1_route_table_assoc" {
   source         = "../../_sub/network/route-table-assoc"
+  count          = "${length(var.eks_nodegroup1_subnets)}" # need to pass count explicitly, otherwise: value of 'count' cannot be computed
   subnet_ids     = "${module.eks_nodegroup1_subnet.subnet_ids}"
   route_table_id = "${module.eks_route_table.id}"
 }
