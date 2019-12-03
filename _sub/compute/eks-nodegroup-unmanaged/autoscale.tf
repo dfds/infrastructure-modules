@@ -47,8 +47,8 @@ resource "aws_launch_configuration" "eks" {
   iam_instance_profile        = "${var.iam_instance_profile}"
   image_id                    = "${data.aws_ami.eks-worker.id}"
   instance_type               = "${element(var.instance_types, 0)}"
-  name_prefix                 = "${var.cluster_name}"
-  security_groups             = "${var.security_groups}"
+  name_prefix                 = "eks-${var.cluster_name}-${var.nodegroup_name}-"
+  security_groups             = ["${var.security_groups}"]
   user_data_base64            = "${var.cloudwatch_agent_enabled ? base64encode(local.worker-node-userdata-cw-agent) : base64encode(local.worker-node-userdata) }"
   key_name                    = "${var.ec2_ssh_key}"
 
@@ -65,7 +65,7 @@ resource "aws_launch_configuration" "eks" {
 }
 
 resource "aws_autoscaling_group" "eks" {
-  name                 = "${var.cluster_name}"
+  name                 = "eks-${var.cluster_name}-${var.nodegroup_name}"
   launch_configuration = "${aws_launch_configuration.eks.id}"
   min_size             = "${var.scaling_config_min_size}"
   max_size             = "${var.scaling_config_max_size}"

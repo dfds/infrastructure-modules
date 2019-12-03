@@ -9,7 +9,7 @@ terraform {
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "~> 2.00"
+  version = "~> 2.31"
 
   assume_role {
     role_arn = "${var.aws_assume_role_arn}"
@@ -46,7 +46,7 @@ module "eks_workers_security_group" {
   vpc_id                   = "${module.eks_cluster.vpc_id}"
   cluster_name             = "${var.eks_cluster_name}"
   autoscale_security_group = "${module.eks_cluster.autoscale_security_group}"
-  ssh_ip_whitelist         = "${var.eks_nodegroup1_worker_ssh_ip_whitelist}"
+  ssh_ip_whitelist         = "${var.eks_worker_ssh_ip_whitelist}"
 }
 
 module "eks_workers" {
@@ -72,15 +72,20 @@ module "eks_workers" {
 /*
 TO DO:
 Move worker/node IAM role (currently in workers) to separate sub
+Destroys security group. Takes long time. Might be destructive Can we move state?
+  terragrunt state mv module.eks_workers.aws_security_group.eks-node module.eks_workers_security_group.aws_security_group.eks-node
+Remove from tfstate: eks_worker_ssh_enable = false
+Sort AZs to avoud re-create, in case it's returned in different order
 Feature toggle nodegroups
  - Test 0, 1, more-subnets-than-AZs
+Route table missing InternetGateway
 
 */
 
 module "eks_nodegroup1_subnet" {
   source       = "../../_sub/network/vpc-subnet-eks"
   deploy       = "${signum(length(var.eks_nodegroup1_subnets))}"
-  name         = "eks-${var.eks_cluster_name}-nodegroup1"
+  name         = "eks-${var.eks_cluster_name}-ng1"
   cluster_name = "${var.eks_cluster_name}"                       # Let's see if it works without
   vpc_id       = "${module.eks_cluster.vpc_id}"
   subnets      = "${var.eks_nodegroup1_subnets}"
@@ -92,7 +97,7 @@ module "eks_nodegroup1_workers" {
   # deploy                          = "${signum(length(var.eks_nodegroup1_subnets))}"
   cluster_name    = "${var.eks_cluster_name}"
   cluster_version = "${var.eks_cluster_version}"
-  nodegroup_name  = "nodegroup1"
+  nodegroup_name  = "ng1"
 
   # node_role_arn           = "${module.eks_workers_iam_role.arn}"
   iam_instance_profile    = "${module.eks_workers.iam_instance_profile_name}"
@@ -101,7 +106,7 @@ module "eks_nodegroup1_workers" {
   scaling_config_max_size = "${var.eks_nodegroup1_worker_instance_max_count}"
   subnet_ids              = "${module.eks_nodegroup1_subnet.subnet_ids}"
   disk_size               = "${var.eks_worker_instance_storage_size}"
-  instance_types          = "${var.eks_nodegroup1_worker_instance_type}"
+  instance_types          = "${var.eks_nodegroup1_worker_instance_types}"
   ec2_ssh_key             = "${module.eks_workers_keypair.key_name}"
 
   cloudwatch_agent_config_bucket  = "${var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"}"

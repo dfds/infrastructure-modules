@@ -52,15 +52,6 @@ variable "eks_worker_instance_storage_size" {
   default = 20
 }
 
-variable "eks_nodegroup1_worker_ssh_ip_whitelist" {
-  type = "list"
-}
-
-
-variable "eks_worker_ssh_enable" {
-  default = false
-}
-
 variable "eks_worker_ssh_public_key" {
   type = "string"
 }
@@ -75,6 +66,11 @@ variable "eks_public_s3_bucket" {
   default     = ""
 }
 
+variable "eks_worker_ssh_ip_whitelist" {
+  type = "list"
+}
+
+
 # --------------------------------------------------
 # EKS Nodegroup 1
 # --------------------------------------------------
@@ -84,7 +80,7 @@ variable "eks_nodegroup1_subnets" {
   default = []
 }
 
-variable "eks_nodegroup1_worker_instance_type" {
+variable "eks_nodegroup1_worker_instance_types" {
   type = "list"
   default = []
 }
