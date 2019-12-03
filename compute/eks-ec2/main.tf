@@ -31,6 +31,12 @@ module "eks_cluster" {
   cluster_zones   = "${var.eks_cluster_zones}"
 }
 
+module "eks_route_table" {
+  source       = "../../_sub/network/route-table"
+  cluster_name = "${var.eks_cluster_name}"
+  vpc_id       = "${module.eks_cluster.vpc_id}"
+}
+
 module "eks_workers_keypair" {
   source     = "../../_sub/compute/ec2-keypair"
   name       = "eks-${var.eks_cluster_name}-workers"
@@ -69,17 +75,25 @@ module "eks_workers" {
   cloudwatch_agent_enabled        = "${var.eks_worker_cloudwatch_agent_config_deploy}"
 }
 
+module "eks_workers_route_table_assoc" {
+  source         = "../../_sub/network/route-table-assoc"
+  subnet_ids     = "${module.eks_cluster.subnet_ids}"
+  route_table_id = "${module.eks_route_table.id}"
+}
+
 /*
 TO DO:
 Move worker/node IAM role (currently in workers) to separate sub
 Destroys security group. Takes long time. Might be destructive Can we move state?
   terragrunt state mv module.eks_workers.aws_security_group.eks-node module.eks_workers_security_group.aws_security_group.eks-node
+  terragrunt state mv module.eks_cluster.aws_internet_gateway.eks module.eks_route_table.aws_internet_gateway.gw
+  terragrunt state mv module.eks_cluster.aws_route_table.eks module.eks_route_table.aws_route_table.table
+  terragrunt state mv module.eks_cluster.aws_route_table_association.eks[0] module.eks_workers_route_table_assoc.aws_route_table_association.assoc[0]
+  terragrunt state mv module.eks_cluster.aws_route_table_association.eks[1] module.eks_workers_route_table_assoc.aws_route_table_association.assoc[1]
 Remove from tfstate: eks_worker_ssh_enable = false
 Sort AZs to avoud re-create, in case it's returned in different order
 Feature toggle nodegroups
  - Test 0, 1, more-subnets-than-AZs
-Route table missing InternetGateway
-
 */
 
 module "eks_nodegroup1_subnet" {
@@ -116,6 +130,12 @@ module "eks_nodegroup1_workers" {
   eks_certificate_authority       = "${module.eks_cluster.eks_certificate_authority}"
   worker_inotify_max_user_watches = "${var.eks_worker_inotify_max_user_watches}"
   autoscale_security_group        = "${module.eks_cluster.autoscale_security_group}"
+}
+
+module "eks_nodegroup1_route_table_assoc" {
+  source         = "../../_sub/network/route-table-assoc"
+  subnet_ids     = "${module.eks_nodegroup1_subnet.subnet_ids}"
+  route_table_id = "${module.eks_route_table.id}"
 }
 
 module "blaster_configmap_bucket" {
