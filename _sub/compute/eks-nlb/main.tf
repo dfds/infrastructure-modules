@@ -1,6 +1,5 @@
-
 resource "aws_lb" "nlb" {
-  count = "${var.deploy}"
+  count              = "${var.deploy}"
   name               = "${var.cluster_name}-nlb"
   internal           = false
   load_balancer_type = "network"
@@ -8,13 +7,13 @@ resource "aws_lb" "nlb" {
 }
 
 resource "aws_autoscaling_attachment" "nlb" {
-  count = "${var.deploy}"
-  autoscaling_group_name = "${var.autoscaling_group_id}"
+  count                  = "${var.deploy ? length(var.autoscaling_group_ids) : 0}"
+  autoscaling_group_name = "${var.autoscaling_group_ids[count.index]}"
   alb_target_group_arn   = "${aws_lb_target_group.nlb.arn}"
 }
 
 resource "aws_lb_target_group" "nlb" {
-  count = "${var.deploy}"
+  count       = "${var.deploy}"
   name_prefix = "${substr(var.cluster_name, 0, min(6, length(var.cluster_name)))}"
   port        = 30000
   protocol    = "TCP"
@@ -27,7 +26,7 @@ resource "aws_lb_target_group" "nlb" {
 
 #
 resource "aws_lb_listener" "nlb" {
-  count = "${var.deploy}"
+  count             = "${var.deploy}"
   load_balancer_arn = "${aws_lb.nlb.arn}"
   port              = "443"
   protocol          = "TLS"
@@ -42,12 +41,12 @@ resource "aws_lb_listener" "nlb" {
 
 #
 resource "aws_security_group_rule" "allow_argo" {
-  count = "${var.deploy}"
-  type            = "ingress"
-  from_port       = 30000
-  to_port         = 30001
-  protocol        = "tcp"
+  count     = "${var.deploy}"
+  type      = "ingress"
+  from_port = 30000
+  to_port   = 30001
+  protocol  = "tcp"
 
-  cidr_blocks     = ["${var.cidr_blocks}"]
+  cidr_blocks       = ["${var.cidr_blocks}"]
   security_group_id = "${var.nodes_sg_id}"
 }

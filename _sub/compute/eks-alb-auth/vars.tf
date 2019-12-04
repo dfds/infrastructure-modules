@@ -8,7 +8,10 @@ variable "subnet_ids" {
   type = "list"
 }
 variable "vpc_id" {}
-variable "autoscaling_group_id" {}
+
+variable "autoscaling_group_ids" {
+  type = "list"
+}
 
 # variable "traefik_k8s_name" {}
 

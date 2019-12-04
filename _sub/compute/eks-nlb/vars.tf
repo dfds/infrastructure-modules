@@ -21,7 +21,6 @@ variable "nlb_certificate_arn" {
   
 }
 
-variable "autoscaling_group_id" {
-  
+variable "autoscaling_group_ids" {
+  type = "list"
 }
-

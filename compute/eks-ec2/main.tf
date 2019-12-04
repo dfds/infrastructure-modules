@@ -37,6 +37,15 @@ module "eks_route_table" {
   vpc_id       = "${module.eks_cluster.vpc_id}"
 }
 
+module "eks_workers_subnet" {
+  source       = "../../_sub/network/vpc-subnet-eks"
+  deploy       = "${signum(length(var.eks_worker_subnets))}"
+  name         = "eks-${var.eks_cluster_name}"
+  cluster_name = "${var.eks_cluster_name}"
+  vpc_id       = "${module.eks_cluster.vpc_id}"
+  subnets      = "${var.eks_worker_subnets}"
+}
+
 module "eks_workers_keypair" {
   source     = "../../_sub/compute/ec2-keypair"
   name       = "eks-${var.eks_cluster_name}-workers"
@@ -85,30 +94,22 @@ module "eks_workers_route_table_assoc" {
 /*
 TO DO:
 Move worker/node IAM role (currently in workers) to separate sub
-Destroys security group. Takes long time. Might be destructive Can we move state?
-  terragrunt state mv module.eks_workers.aws_key_pair.eks-node module.eks_workers_keypair.aws_key_pair.pair
-  terragrunt state mv module.eks_workers.aws_security_group_rule.eks-cluster-ingress-node-https module.eks_workers_security_group.aws_security_group_rule.eks-cluster-ingress-node-https
-  terragrunt state mv module.eks_workers.aws_security_group_rule.eks-node-ingress-cluster module.eks_workers_security_group.aws_security_group_rule.eks-node-ingress-cluster 
-  terragrunt state mv module.eks_workers.aws_security_group_rule.eks-node-ingress-self module.eks_workers_security_group.aws_security_group_rule.eks-node-ingress-self
-  terragrunt state mv module.eks_workers.aws_security_group.eks-node module.eks_workers_security_group.aws_security_group.eks-node
-  terragrunt state mv module.eks_cluster.aws_internet_gateway.eks module.eks_route_table.aws_internet_gateway.gw
-  terragrunt state mv module.eks_cluster.aws_route_table.eks module.eks_route_table.aws_route_table.table
-  terragrunt state mv module.eks_cluster.aws_route_table_association.eks[0] module.eks_workers_route_table_assoc.aws_route_table_association.assoc[0]
-  terragrunt state mv module.eks_cluster.aws_route_table_association.eks[1] module.eks_workers_route_table_assoc.aws_route_table_association.assoc[1]
+
+terragrunt state mv module.eks_workers.aws_key_pair.eks-node module.eks_workers_keypair.aws_key_pair.pair
+terragrunt state mv module.eks_workers.aws_security_group_rule.eks-cluster-ingress-node-https module.eks_workers_security_group.aws_security_group_rule.eks-cluster-ingress-node-https
+terragrunt state mv module.eks_workers.aws_security_group_rule.eks-node-ingress-cluster module.eks_workers_security_group.aws_security_group_rule.eks-node-ingress-cluster 
+terragrunt state mv module.eks_workers.aws_security_group_rule.eks-node-ingress-self module.eks_workers_security_group.aws_security_group_rule.eks-node-ingress-self
+terragrunt state mv module.eks_workers.aws_security_group.eks-node module.eks_workers_security_group.aws_security_group.eks-node
+terragrunt state mv module.eks_cluster.aws_internet_gateway.eks module.eks_route_table.aws_internet_gateway.gw
+terragrunt state mv module.eks_cluster.aws_route_table.eks module.eks_route_table.aws_route_table.table
+terragrunt state mv module.eks_cluster.aws_route_table_association.eks[0] module.eks_workers_route_table_assoc.aws_route_table_association.assoc[0]
+terragrunt state mv module.eks_cluster.aws_route_table_association.eks[1] module.eks_workers_route_table_assoc.aws_route_table_association.assoc[1]
+
 Remove from tfstate: eks_worker_ssh_enable = false
 Sort AZs to avoud re-create, in case it's returned in different order
 Feature toggle nodegroups
  - Test 0, 1, more-subnets-than-AZs
 */
-
-module "eks_nodegroup1_subnet" {
-  source       = "../../_sub/network/vpc-subnet-eks"
-  deploy       = "${signum(length(var.eks_nodegroup1_subnets))}"
-  name         = "eks-${var.eks_cluster_name}-ng1"
-  cluster_name = "${var.eks_cluster_name}"                       # Let's see if it works without
-  vpc_id       = "${module.eks_cluster.vpc_id}"
-  subnets      = "${var.eks_nodegroup1_subnets}"
-}
 
 module "eks_nodegroup1_workers" {
   source = "../../_sub/compute/eks-nodegroup-unmanaged"
@@ -121,11 +122,11 @@ module "eks_nodegroup1_workers" {
   # node_role_arn           = "${module.eks_workers_iam_role.arn}"
   iam_instance_profile    = "${module.eks_workers.iam_instance_profile_name}"
   security_groups         = ["${module.eks_workers_security_group.id}"]
-  scaling_config_min_size = "${var.eks_nodegroup1_worker_instance_min_count}"
-  scaling_config_max_size = "${var.eks_nodegroup1_worker_instance_max_count}"
-  subnet_ids              = "${module.eks_nodegroup1_subnet.subnet_ids}"
+  scaling_config_min_size = "${var.eks_nodegroup1_instance_min_count}"
+  scaling_config_max_size = "${var.eks_nodegroup1_instance_max_count}"
+  subnet_ids              = "${module.eks_workers_subnet.subnet_ids}"
   disk_size               = "${var.eks_worker_instance_storage_size}"
-  instance_types          = "${var.eks_nodegroup1_worker_instance_types}"
+  instance_types          = "${var.eks_nodegroup1_instance_types}"
   ec2_ssh_key             = "${module.eks_workers_keypair.key_name}"
 
   cloudwatch_agent_config_bucket  = "${var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"}"
@@ -139,8 +140,8 @@ module "eks_nodegroup1_workers" {
 
 module "eks_nodegroup1_route_table_assoc" {
   source         = "../../_sub/network/route-table-assoc"
-  count          = "${length(var.eks_nodegroup1_subnets)}" # need to pass count explicitly, otherwise: value of 'count' cannot be computed
-  subnet_ids     = "${module.eks_nodegroup1_subnet.subnet_ids}"
+  count          = "${length(var.eks_worker_subnets)}" # need to pass count explicitly, otherwise: value of 'count' cannot be computed
+  subnet_ids     = "${module.eks_workers_subnet.subnet_ids}"
   route_table_id = "${module.eks_route_table.id}"
 }
 

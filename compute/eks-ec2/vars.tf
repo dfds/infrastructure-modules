@@ -66,6 +66,11 @@ variable "eks_public_s3_bucket" {
   default     = ""
 }
 
+variable "eks_worker_subnets" {
+  type    = "list"
+  default = []
+}
+
 variable "eks_worker_ssh_ip_whitelist" {
   type = "list"
 }
@@ -75,21 +80,16 @@ variable "eks_worker_ssh_ip_whitelist" {
 # EKS Nodegroup 1
 # --------------------------------------------------
 
-variable "eks_nodegroup1_subnets" {
-  type    = "list"
-  default = []
-}
-
-variable "eks_nodegroup1_worker_instance_types" {
+variable "eks_nodegroup1_instance_types" {
   type = "list"
   default = []
 }
 
-variable "eks_nodegroup1_worker_instance_min_count" {
+variable "eks_nodegroup1_instance_min_count" {
   default = 0
 }
 
-variable "eks_nodegroup1_worker_instance_max_count" {
+variable "eks_nodegroup1_instance_max_count" {
   default = 0
 }
 
