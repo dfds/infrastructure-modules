@@ -94,19 +94,6 @@ module "eks_workers_route_table_assoc" {
 /*
 TO DO:
 Move worker/node IAM role (currently in workers) to separate sub
-
-terragrunt state mv module.eks_workers.aws_key_pair.eks-node module.eks_workers_keypair.aws_key_pair.pair
-terragrunt state mv module.eks_workers.aws_security_group_rule.eks-cluster-ingress-node-https module.eks_workers_security_group.aws_security_group_rule.eks-cluster-ingress-node-https
-terragrunt state mv module.eks_workers.aws_security_group_rule.eks-node-ingress-cluster module.eks_workers_security_group.aws_security_group_rule.eks-node-ingress-cluster 
-terragrunt state mv module.eks_workers.aws_security_group_rule.eks-node-ingress-self module.eks_workers_security_group.aws_security_group_rule.eks-node-ingress-self
-terragrunt state mv module.eks_workers.aws_security_group.eks-node module.eks_workers_security_group.aws_security_group.eks-node
-terragrunt state mv module.eks_cluster.aws_internet_gateway.eks module.eks_route_table.aws_internet_gateway.gw
-terragrunt state mv module.eks_cluster.aws_route_table.eks module.eks_route_table.aws_route_table.table
-terragrunt state mv module.eks_cluster.aws_route_table_association.eks[0] module.eks_workers_route_table_assoc.aws_route_table_association.assoc[0]
-terragrunt state mv module.eks_cluster.aws_route_table_association.eks[1] module.eks_workers_route_table_assoc.aws_route_table_association.assoc[1]
-
-Remove from tfstate: eks_worker_ssh_enable = false
-Sort AZs to avoud re-create, in case it's returned in different order
 Feature toggle nodegroups
  - Test 0, 1, more-subnets-than-AZs
 */
