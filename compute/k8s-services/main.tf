@@ -67,17 +67,17 @@ module "traefik_alb_auth_appreg" {
 }
 
 module "traefik_alb_auth" {
-  source               = "../../_sub/compute/eks-alb-auth"
-  deploy               = "${var.traefik_alb_auth_deploy}"
-  cluster_name         = "${var.eks_cluster_name}"
-  vpc_id               = "${data.terraform_remote_state.cluster.eks_cluster_vpc_id}"
-  subnet_ids           = ["${data.terraform_remote_state.cluster.eks_cluster_subnet_ids}"]
-  autoscaling_group_id = "${data.terraform_remote_state.cluster.eks_worker_autoscaling_group_id}"
-  alb_certificate_arn  = "${module.traefik_alb_cert.certificate_arn}"
-  nodes_sg_id          = "${data.terraform_remote_state.cluster.eks_cluster_nodes_sg_id}"
-  azure_tenant_id      = "${module.traefik_alb_auth_appreg.tenant_id}"
-  azure_client_id      = "${module.traefik_alb_auth_appreg.application_id}"
-  azure_client_secret  = "${module.traefik_alb_auth_appreg.application_key}"
+  source                = "../../_sub/compute/eks-alb-auth"
+  deploy                = "${var.traefik_alb_auth_deploy}"
+  cluster_name          = "${var.eks_cluster_name}"
+  vpc_id                = "${data.terraform_remote_state.cluster.eks_cluster_vpc_id}"
+  subnet_ids            = ["${data.terraform_remote_state.cluster.eks_worker_subnet_ids}"]
+  autoscaling_group_ids = ["${data.terraform_remote_state.cluster.eks_worker_autoscaling_group_ids}"]
+  alb_certificate_arn   = "${module.traefik_alb_cert.certificate_arn}"
+  nodes_sg_id           = "${data.terraform_remote_state.cluster.eks_cluster_nodes_sg_id}"
+  azure_tenant_id       = "${module.traefik_alb_auth_appreg.tenant_id}"
+  azure_client_id       = "${module.traefik_alb_auth_appreg.application_id}"
+  azure_client_secret   = "${module.traefik_alb_auth_appreg.application_key}"
 }
 
 module "traefik_alb_auth_dns" {
@@ -105,14 +105,14 @@ module "traefik_alb_auth_dns_core_alias" {
 }
 
 module "traefik_alb_anon" {
-  source               = "../../_sub/compute/eks-alb"
-  deploy               = "${var.traefik_alb_anon_deploy}"
-  cluster_name         = "${var.eks_cluster_name}"
-  vpc_id               = "${data.terraform_remote_state.cluster.eks_cluster_vpc_id}"
-  subnet_ids           = ["${data.terraform_remote_state.cluster.eks_cluster_subnet_ids}"]
-  autoscaling_group_id = "${data.terraform_remote_state.cluster.eks_worker_autoscaling_group_id}"
-  alb_certificate_arn  = "${module.traefik_alb_cert.certificate_arn}"
-  nodes_sg_id          = "${data.terraform_remote_state.cluster.eks_cluster_nodes_sg_id}"
+  source                = "../../_sub/compute/eks-alb"
+  deploy                = "${var.traefik_alb_anon_deploy}"
+  cluster_name          = "${var.eks_cluster_name}"
+  vpc_id                = "${data.terraform_remote_state.cluster.eks_cluster_vpc_id}"
+  subnet_ids            = ["${data.terraform_remote_state.cluster.eks_worker_subnet_ids}"]
+  autoscaling_group_ids = ["${data.terraform_remote_state.cluster.eks_worker_autoscaling_group_ids}"]
+  alb_certificate_arn   = "${module.traefik_alb_cert.certificate_arn}"
+  nodes_sg_id           = "${data.terraform_remote_state.cluster.eks_cluster_nodes_sg_id}"
 }
 
 module "traefik_alb_anon_dns" {
@@ -126,17 +126,16 @@ module "traefik_alb_anon_dns" {
 }
 
 module "traefik_nlb" {
-  source = "../../_sub/compute/eks-nlb"
-
-  #deploy             = "${var.traefik_nlb_deploy && var.argocd_deploy ? 1 : 0}"
-  deploy               = "${var.traefik_nlb_deploy}"
-  cluster_name         = "${var.eks_cluster_name}"
-  vpc_id               = "${data.terraform_remote_state.cluster.eks_cluster_vpc_id}"
-  subnet_ids           = ["${data.terraform_remote_state.cluster.eks_cluster_subnet_ids}"]
-  nlb_certificate_arn  = "${module.traefik_alb_cert.certificate_arn}"
-  nodes_sg_id          = "${data.terraform_remote_state.cluster.eks_cluster_nodes_sg_id}"
-  cidr_blocks          = "${var.traefik_nlb_cidr_blocks}"
-  autoscaling_group_id = "${data.terraform_remote_state.cluster.eks_worker_autoscaling_group_id}"
+  source                = "../../_sub/compute/eks-nlb"
+  deploy                = "${var.traefik_nlb_deploy && var.argocd_deploy ? 1 : 0}"
+  deploy                = "${var.traefik_nlb_deploy}"
+  cluster_name          = "${var.eks_cluster_name}"
+  vpc_id                = "${data.terraform_remote_state.cluster.eks_cluster_vpc_id}"
+  subnet_ids            = ["${data.terraform_remote_state.cluster.eks_worker_subnet_ids}"]
+  nlb_certificate_arn   = "${module.traefik_alb_cert.certificate_arn}"
+  nodes_sg_id           = "${data.terraform_remote_state.cluster.eks_cluster_nodes_sg_id}"
+  cidr_blocks           = "${var.traefik_nlb_cidr_blocks}"
+  autoscaling_group_ids = ["${data.terraform_remote_state.cluster.eks_worker_autoscaling_group_ids}"]
 }
 
 # --------------------------------------------------

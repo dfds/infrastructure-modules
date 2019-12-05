@@ -44,17 +44,17 @@ USERDATA
 
 resource "aws_launch_configuration" "eks" {
   associate_public_ip_address = true
-  name_prefix                 = "${var.cluster_name}"
-  iam_instance_profile        = "${aws_iam_instance_profile.eks.name}"
+  iam_instance_profile        = "${var.iam_instance_profile}"
   image_id                    = "${data.aws_ami.eks-worker.id}"
-  instance_type               = "${var.worker_instance_type}"
+  instance_type               = "${element(var.instance_types, 0)}"
+  name_prefix                 = "eks-${var.cluster_name}-${var.nodegroup_name}-"
   security_groups             = ["${var.security_groups}"]
   user_data_base64            = "${var.cloudwatch_agent_enabled ? base64encode(local.worker-node-userdata-cw-agent) : base64encode(local.worker-node-userdata) }"
   key_name                    = "${var.ec2_ssh_key}"
 
   root_block_device = [
     {
-      volume_size = "${var.worker_instance_storage_size}"
+      volume_size = "${var.disk_size}"
       volume_type = "gp2"
     },
   ]
@@ -65,11 +65,11 @@ resource "aws_launch_configuration" "eks" {
 }
 
 resource "aws_autoscaling_group" "eks" {
-  name                 = "${var.cluster_name}"
-  desired_capacity     = "${var.worker_instance_min_count}"
+  name                 = "eks-${var.cluster_name}-${var.nodegroup_name}"
   launch_configuration = "${aws_launch_configuration.eks.id}"
-  min_size             = "${var.worker_instance_min_count}"
-  max_size             = "${var.worker_instance_max_count}"
+  min_size             = "${var.scaling_config_min_size}"
+  max_size             = "${var.scaling_config_max_size}"
+  desired_capacity     = "${var.scaling_config_min_size}"
   vpc_zone_identifier  = ["${var.subnet_ids}"]
 
   # The following can be set in case of the default health check are not sufficient
@@ -78,7 +78,7 @@ resource "aws_autoscaling_group" "eks" {
 
   tag {
     key                 = "Name"
-    value               = "eks-${var.cluster_name}-worker"
+    value               = "eks-${var.cluster_name}-${var.nodegroup_name}"
     propagate_at_launch = true
   }
 

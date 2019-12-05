@@ -12,18 +12,19 @@ variable "autoscale_security_group" {}
 
 variable "worker_instance_storage_size" {}
 
-variable "vpc_id" {}
 variable "subnet_ids" {
+  type = "list"
+}
+
+variable "security_groups" {
   type = "list"
 }
 
 variable "eks_endpoint" {}
 variable "eks_certificate_authority" {}
 
-variable "public_key" {}
-
-variable "enable_ssh" {
-  default = false
+variable "ec2_ssh_key" {
+  type = "string"
 }
 
 variable "cloudwatch_agent_config_bucket" {

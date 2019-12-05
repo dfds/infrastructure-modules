@@ -56,19 +56,41 @@ variable "eks_worker_ssh_public_key" {
   type = "string"
 }
 
-variable "eks_worker_ssh_enable" {
-  default = false
-}
-
 variable "eks_worker_inotify_max_user_watches" {
   default = 32768 # default t3.large is 8192 which is too low
 }
 
 variable "eks_public_s3_bucket" {
   description = "The name of the public S3 bucket, where non-sensitive Kubeconfig will be copied to."
-  type = "string"
-  default = ""
- 
+  type        = "string"
+  default     = ""
+}
+
+variable "eks_worker_subnets" {
+  type    = "list"
+  default = []
+}
+
+variable "eks_worker_ssh_ip_whitelist" {
+  type = "list"
+}
+
+
+# --------------------------------------------------
+# EKS Nodegroup 1
+# --------------------------------------------------
+
+variable "eks_nodegroup1_instance_types" {
+  type = "list"
+  default = []
+}
+
+variable "eks_nodegroup1_instance_min_count" {
+  default = 0
+}
+
+variable "eks_nodegroup1_instance_max_count" {
+  default = 0
 }
 
 
@@ -82,7 +104,6 @@ variable "blaster_configmap_deploy" {
 
 variable "blaster_configmap_bucket" {}
 
-
 # --------------------------------------------------
 # Cloudwatch agent setup
 # --------------------------------------------------
@@ -92,6 +113,6 @@ variable "eks_worker_cloudwatch_agent_config_deploy" {
 }
 
 variable "eks_worker_cloudwatch_agent_config_file" {
-  type = "string"
+  type    = "string"
   default = "aws-cloudwatch-agent-conf.json"
 }
