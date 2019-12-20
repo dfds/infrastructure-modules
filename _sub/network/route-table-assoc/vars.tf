@@ -3,9 +3,10 @@
 # }
 
 variable "subnet_ids" {
-  type = "list"
+  type = list(string)
 }
 
 variable "route_table_id" {
-  type = "string"
+  type = string
 }
+
