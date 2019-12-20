@@ -27,6 +27,7 @@ users:
         - "-r"
         - "${var.aws_assume_role_arn}"
 KUBECONFIG
+
 }
 
 locals {
@@ -56,6 +57,7 @@ users:
         - "-i"
         - "${var.cluster_name}"
 KUBECONFIG
+
 }
 
 locals {
@@ -73,4 +75,6 @@ data:
         - system:bootstrappers
         - system:nodes
 CONFIGMAPAWSAUTH
+
 }
+
