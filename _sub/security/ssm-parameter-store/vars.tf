@@ -1,9 +1,16 @@
 # Parameter key name for parameter store
-variable "key_name" {}
+variable "key_name" {
+}
+
 # Parameter description
-variable "key_description" {}
+variable "key_description" {
+}
+
 # Parameter value or "content"
-variable "key_value" {}
+variable "key_value" {
+}
+
 variable "deploy" {
   default = true
 }
+
