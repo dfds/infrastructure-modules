@@ -1,13 +1,13 @@
 variable "cluster_name" {
-  type = "string"
+  type = string
 }
 
 variable "cluster_version" {
-  type = "string"
+  type = string
 }
 
 variable "nodegroup_name" {
-  type = "string"
+  type = string
 }
 
 # variable "node_role_arn" {
@@ -15,43 +15,53 @@ variable "nodegroup_name" {
 # }
 
 variable "iam_instance_profile" {
-  type = "string"
+  type = string
 }
 
 variable "security_groups" {
-  type = "list"
+  type = list(string)
 }
 
+variable "scaling_config_min_size" {
+}
 
-variable "scaling_config_min_size" {}
-
-variable "scaling_config_max_size" {}
+variable "scaling_config_max_size" {
+}
 
 variable "subnet_ids" {
-  type = "list"
+  type = list(string)
 }
 
-variable "disk_size" {}
+variable "disk_size" {
+}
 
 variable "instance_types" {
-  type = "list"
+  type = list(string)
 }
 
 variable "ec2_ssh_key" {
-  type = "string"
+  type = string
 }
 
-variable "autoscale_security_group" {}
+variable "autoscale_security_group" {
+}
 
-variable "eks_endpoint" {}
-variable "eks_certificate_authority" {}
+variable "eks_endpoint" {
+}
 
-variable "cloudwatch_agent_config_bucket" {}
+variable "eks_certificate_authority" {
+}
 
-variable "cloudwatch_agent_config_file" {}
+variable "cloudwatch_agent_config_bucket" {
+}
+
+variable "cloudwatch_agent_config_file" {
+}
 
 variable "cloudwatch_agent_enabled" {
   default = false
 }
 
-variable "worker_inotify_max_user_watches" {}
+variable "worker_inotify_max_user_watches" {
+}
+
