@@ -15,21 +15,22 @@ resource "aws_iam_role" "eks" {
   ]
 }
 POLICY
+
 }
 
 resource "aws_iam_role_policy_attachment" "cluster" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = "${aws_iam_role.eks.name}"
+  role       = aws_iam_role.eks.name
 }
 
 resource "aws_iam_role_policy_attachment" "service" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
-  role       = "${aws_iam_role.eks.name}"
+  role       = aws_iam_role.eks.name
 }
 
 resource "aws_iam_role_policy" "deny_elb" {
   name = "deny_elb"
-  role = "${aws_iam_role.eks.id}"
+  role = aws_iam_role.eks.id
 
   policy = <<POLICY
 {
@@ -47,4 +48,6 @@ resource "aws_iam_role_policy" "deny_elb" {
     ]
 }
 POLICY
+
 }
+
