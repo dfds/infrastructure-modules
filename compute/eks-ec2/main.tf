@@ -86,7 +86,7 @@ module "eks_workers" {
 
 module "eks_workers_route_table_assoc" {
   source         = "../../_sub/network/route-table-assoc"
-  count          = "${length(var.eks_cluster_zones)}"    # need to pass count explicitly, otherwise: value of 'count' cannot be computed
+  # count_assoc          = "${length(var.eks_cluster_zones)}"    # need to pass count explicitly, otherwise: value of 'count' cannot be computed
   subnet_ids     = "${module.eks_cluster.subnet_ids}"
   route_table_id = "${module.eks_route_table.id}"
 }
@@ -127,7 +127,7 @@ module "eks_nodegroup1_workers" {
 
 module "eks_nodegroup1_route_table_assoc" {
   source         = "../../_sub/network/route-table-assoc"
-  count          = "${length(var.eks_worker_subnets)}"       # need to pass count explicitly, otherwise: value of 'count' cannot be computed
+  # count          = "${length(var.eks_worker_subnets)}"       # need to pass count explicitly, otherwise: value of 'count' cannot be computed
   subnet_ids     = "${module.eks_workers_subnet.subnet_ids}"
   route_table_id = "${module.eks_route_table.id}"
 }
