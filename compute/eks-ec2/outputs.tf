@@ -3,7 +3,7 @@
 # # --------------------------------------------------
 
 # output "workload_dns_zone_name" {
-#     value = "${var.workload_dns_zone_name}"
+#     value = var.workload_dns_zone_name
 # }
 
 # output "workload_dns_zone_id" {

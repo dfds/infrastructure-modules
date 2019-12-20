@@ -40,7 +40,7 @@ resource "null_resource" "enable-workers-default" {
 }
 
 resource "null_resource" "enable-workers-from-s3" {
-  count = var.blaster_configmap_apply
+  count = var.blaster_configmap_apply ? 0 : 1
 
   # Terraform does not seem to re-run script, unless a trigger is defined
   triggers = {

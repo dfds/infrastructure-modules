@@ -40,7 +40,7 @@ module "eks_route_table" {
 
 module "eks_workers_subnet" {
   source       = "../../_sub/network/vpc-subnet-eks"
-  deploy       = signum(length(var.eks_worker_subnets))
+  deploy       = length(var.eks_worker_subnets) >= 1 ? true : false
   name         = "eks-${var.eks_cluster_name}"
   cluster_name = var.eks_cluster_name
   vpc_id       = module.eks_cluster.vpc_id
@@ -162,7 +162,7 @@ module "eks_addons" {
 
 module "eks_s3_public_kubeconfig" {
   source  = "../../_sub/storage/s3-bucket-object"
-  deploy  = signum(length(var.eks_public_s3_bucket))
+  deploy  = length(var.eks_public_s3_bucket) >= 1 ? true : false
   bucket  = var.eks_public_s3_bucket
   key     = "kubeconfig/${var.eks_cluster_name}-saml.config"
   content = module.eks_heptio.user_configfile

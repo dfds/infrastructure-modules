@@ -14,6 +14,7 @@ variable "aws_assume_role_arn" {
 }
 
 variable "blaster_configmap_apply" {
+  type    = bool
   default = false
 }
 
