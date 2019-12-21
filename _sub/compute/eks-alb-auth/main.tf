@@ -1,24 +1,24 @@
 resource "aws_lb" "traefik_auth" {
-  count              = "${var.deploy}"
+  count              = var.deploy
   name               = "${var.cluster_name}-traefik-alb-auth"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["${aws_security_group.traefik_auth.id}"]
-  subnets            = ["${var.subnet_ids}"]
+  security_groups    = [aws_security_group.traefik_auth[0].id]
+  subnets            = var.subnet_ids
 }
 
 resource "aws_autoscaling_attachment" "traefik_auth" {
-  count = "${var.deploy ? length(var.autoscaling_group_ids) : 0}"
-  autoscaling_group_name = "${var.autoscaling_group_ids[count.index]}"
-  alb_target_group_arn   = "${aws_lb_target_group.traefik_auth.arn}"
+  count                  = var.deploy ? length(var.autoscaling_group_ids) : 0
+  autoscaling_group_name = var.autoscaling_group_ids[count.index]
+  alb_target_group_arn   = aws_lb_target_group.traefik_auth[0].arn
 }
 
 resource "aws_lb_target_group" "traefik_auth" {
-  count       = "${var.deploy}"
-  name_prefix = "${substr(var.cluster_name, 0, min(6, length(var.cluster_name)))}"
+  count       = var.deploy
+  name_prefix = substr(var.cluster_name, 0, min(6, length(var.cluster_name)))
   port        = 30000
   protocol    = "HTTP"
-  vpc_id      = "${var.vpc_id}"
+  vpc_id      = var.vpc_id
 
   health_check {
     path     = "/dashboard/"
@@ -33,20 +33,20 @@ resource "aws_lb_target_group" "traefik_auth" {
 }
 
 resource "aws_lb_listener" "traefik_auth" {
-  count             = "${var.deploy}"
-  load_balancer_arn = "${aws_lb.traefik_auth.arn}"
+  count             = var.deploy
+  load_balancer_arn = aws_lb.traefik_auth[0].arn
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2015-05"
-  certificate_arn   = "${var.alb_certificate_arn}"
+  certificate_arn   = var.alb_certificate_arn
 
   default_action {
     type = "authenticate-oidc"
 
     authenticate_oidc {
       authorization_endpoint = "https://login.microsoftonline.com/${var.azure_tenant_id}/oauth2/v2.0/authorize"
-      client_id              = "${var.azure_client_id}"
-      client_secret          = "${var.azure_client_secret}"
+      client_id              = var.azure_client_id
+      client_secret          = var.azure_client_secret
       issuer                 = "https://login.microsoftonline.com/${var.azure_tenant_id}/v2.0"
       token_endpoint         = "https://login.microsoftonline.com/${var.azure_tenant_id}/oauth2/v2.0/token"
       user_info_endpoint     = "https://graph.microsoft.com/oidc/userinfo"
@@ -55,13 +55,13 @@ resource "aws_lb_listener" "traefik_auth" {
 
   default_action {
     type             = "forward"
-    target_group_arn = "${aws_lb_target_group.traefik_auth.arn}"
+    target_group_arn = aws_lb_target_group.traefik_auth[0].arn
   }
 }
 
 resource "aws_lb_listener" "http-to-https" {
-  count             = "${var.deploy}"
-  load_balancer_arn = "${aws_lb.traefik_auth.arn}"
+  count             = var.deploy
+  load_balancer_arn = aws_lb.traefik_auth[0].arn
   port              = "80"
   protocol          = "HTTP"
 
@@ -77,10 +77,10 @@ resource "aws_lb_listener" "http-to-https" {
 }
 
 resource "aws_security_group" "traefik_auth" {
-  count       = "${var.deploy}"
+  count       = var.deploy
   name        = "allow_traefik-${var.cluster_name}-auth"
   description = "Allow traefik connection for ${var.cluster_name} with authentication via oidc"
-  vpc_id      = "${var.vpc_id}"
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 80
@@ -117,18 +117,19 @@ resource "aws_security_group" "traefik_auth" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags {
+  tags = {
     Name = "${var.cluster_name}-traefik-auth-sg"
   }
 }
 
 resource "aws_security_group_rule" "allow_traefik_auth" {
-  count                    = "${var.deploy}"
+  count                    = var.deploy
   type                     = "ingress"
   from_port                = 30000
   to_port                  = 30001
   protocol                 = "tcp"
-  source_security_group_id = "${aws_security_group.traefik_auth.id}"
+  source_security_group_id = aws_security_group.traefik_auth[0].id
 
-  security_group_id = "${var.nodes_sg_id}"
+  security_group_id = var.nodes_sg_id
 }
+
