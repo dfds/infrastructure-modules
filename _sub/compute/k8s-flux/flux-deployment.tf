@@ -1,26 +1,26 @@
 resource "kubernetes_namespace" "flux_namespace" {
-  count = "${var.deploy}"
+  count = var.deploy
 
   metadata {
-    name = "${var.namespace}"
+    name = var.namespace
   }
 
-  provider = "kubernetes"
+  provider = kubernetes
 }
 
 resource "kubernetes_deployment" "flux" {
-  count = "${var.deploy}"
+  count = var.deploy
 
   metadata {
     name      = "flux"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
 
   spec {
     replicas = 1
 
     selector {
-      match_labels {
+      match_labels = {
         name = "flux"
       }
     }
@@ -31,24 +31,24 @@ resource "kubernetes_deployment" "flux" {
 
     template {
       metadata {
-        annotations {
+        annotations = {
           prometheus.io.port = "3031" # tell prometheus to scrape /metrics endpoint's port.
         }
 
-        labels {
+        labels = {
           name = "flux"
         }
       }
 
       spec {
-        service_account_name = "${kubernetes_service_account.flux.metadata.0.name}"
+        service_account_name = kubernetes_service_account.flux[0].metadata[0].name
 
         volume {
           name = "git-key"
 
           secret {
-            secret_name  = "${kubernetes_secret.flux-git-deploy.metadata.0.name}"
-            default_mode = 0400
+            secret_name  = kubernetes_secret.flux-git-deploy[0].metadata[0].name
+            default_mode = 256
           }
         }
 
@@ -65,10 +65,10 @@ resource "kubernetes_deployment" "flux" {
         # https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#use-the-default-service-account-to-access-the-api-server
         # Solution inspired by https://github.com/terraform-providers/terraform-provider-kubernetes/issues/38#issuecomment-318581203
         volume {
-          name = "${kubernetes_service_account.flux.default_secret_name}"
+          name = kubernetes_service_account.flux[0].default_secret_name
 
           secret {
-            secret_name = "${kubernetes_service_account.flux.default_secret_name}"
+            secret_name = kubernetes_service_account.flux[0].default_secret_name
           }
         }
 
@@ -76,8 +76,8 @@ resource "kubernetes_deployment" "flux" {
           name = "docker-creds"
 
           secret {
-            secret_name  = "${kubernetes_secret.docker-registry-creds.metadata.0.name}" # "docker-image-registry"
-            default_mode = 0400
+            secret_name  = kubernetes_secret.docker-registry-creds[0].metadata[0].name # "docker-image-registry"
+            default_mode = 256
           }
         }
 
@@ -110,7 +110,7 @@ resource "kubernetes_deployment" "flux" {
 
           volume_mount {
             mount_path = "/var/run/secrets/kubernetes.io/serviceaccount"
-            name       = "${kubernetes_service_account.flux.default_secret_name}"
+            name       = kubernetes_service_account.flux[0].default_secret_name
             read_only  = true
           }
 
@@ -134,6 +134,7 @@ resource "kubernetes_deployment" "flux" {
     }
   }
 
-  depends_on = ["kubernetes_namespace.flux_namespace"]
-  provider   = "kubernetes"
+  depends_on = [kubernetes_namespace.flux_namespace]
+  provider   = kubernetes
 }
+

@@ -1,21 +1,21 @@
 resource "kubernetes_service_account" "flux" {
-  count = "${var.deploy}"
+  count = var.deploy
 
   metadata {
     name      = "flux"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
 
-    labels {
+    labels = {
       name = "flux"
     }
   }
 
-  depends_on = ["kubernetes_namespace.flux_namespace"]
-  provider   = "kubernetes"
+  depends_on = [kubernetes_namespace.flux_namespace]
+  provider   = kubernetes
 }
 
 resource "kubernetes_cluster_role_binding" "flux" {
-  count = "${var.deploy}"
+  count = var.deploy
 
   metadata {
     name = "flux"
@@ -31,9 +31,10 @@ resource "kubernetes_cluster_role_binding" "flux" {
     api_group = ""
     kind      = "ServiceAccount"
     name      = "flux"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
 
-  depends_on = ["kubernetes_namespace.flux_namespace"]
-  provider   = "kubernetes"
+  depends_on = [kubernetes_namespace.flux_namespace]
+  provider   = kubernetes
 }
+

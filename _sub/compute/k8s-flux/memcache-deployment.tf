@@ -1,23 +1,23 @@
 resource "kubernetes_deployment" "flux-memcached" {
-  count = "${var.deploy}"
+  count = var.deploy
 
   metadata {
     name      = "memcached"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
 
   spec {
     replicas = 1
 
     selector {
-      match_labels {
+      match_labels = {
         name = "memcached"
       }
     }
 
     template {
       metadata {
-        labels {
+        labels = {
           name = "memcached"
         }
       }
@@ -41,6 +41,7 @@ resource "kubernetes_deployment" "flux-memcached" {
     }
   }
 
-  depends_on = ["kubernetes_namespace.flux_namespace"]
-  provider   = "kubernetes"
+  depends_on = [kubernetes_namespace.flux_namespace]
+  provider   = kubernetes
 }
+

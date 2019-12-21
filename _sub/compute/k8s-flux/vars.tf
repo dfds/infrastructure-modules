@@ -3,7 +3,7 @@ variable "deploy" {
 }
 
 variable "cluster_name" {
-  description = "Name of cluster"  
+  description = "Name of cluster"
 }
 
 variable "namespace" {
@@ -26,7 +26,6 @@ variable "git_key" {
   description = "Private key to access git repo."
 }
 
-
 variable "registry_endpoint" {
   description = "The FQDN of docker registry server. A valid enpoint could be yourdomain.com"
 }
@@ -42,3 +41,4 @@ variable "registry_password" {
 variable "registry_email" {
   description = "Email address for the user that enables Flux to read the docker registry information."
 }
+
