@@ -10,7 +10,7 @@ terraform {
 
 provider "aws" {
   region  = var.aws_region
-  version = "~> 2.31"
+  version = "~> 2.43"
 
   assume_role {
     role_arn = var.aws_assume_role_arn
