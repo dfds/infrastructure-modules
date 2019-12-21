@@ -1,5 +1,5 @@
 provider "aws" {
-  version = "~> 1.60.0"
+  version = "~> 2.43"
   region  = "${var.rsa_keypay_parameterstore_aws_region}"
 
   assume_role {
