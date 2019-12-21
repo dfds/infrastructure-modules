@@ -5,3 +5,4 @@ variable "deploy" {
 variable "special_character_enabled" {
   default = true
 }
+
