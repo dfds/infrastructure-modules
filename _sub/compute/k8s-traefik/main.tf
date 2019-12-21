@@ -1,37 +1,37 @@
 resource "kubernetes_service_account" "traefik" {
-  count = "${var.deploy}"
+  count = var.deploy
   metadata {
     name      = "${var.deploy_name}-ingress-controller"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
-  provider = "kubernetes"
+  provider = kubernetes
 }
 
 resource "kubernetes_deployment" "traefik" {
-  count = "${var.deploy}"
+  count = var.deploy
   metadata {
     name      = "${var.deploy_name}-ingress-controller"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
 
-    labels {
-      k8s-app = "${var.deploy_name}"
+    labels = {
+      k8s-app = var.deploy_name
     }
   }
 
   spec {
-    replicas = "${var.replicas}"
+    replicas = var.replicas
 
     selector {
-      match_labels {
-        k8s-app = "${var.deploy_name}"
+      match_labels = {
+        k8s-app = var.deploy_name
       }
     }
 
     template {
       metadata {
-        labels {
-          k8s-app = "${var.deploy_name}"
-          name    = "${var.deploy_name}"
+        labels = {
+          k8s-app = var.deploy_name
+          name    = var.deploy_name
         }
       }
 
@@ -39,19 +39,19 @@ resource "kubernetes_deployment" "traefik" {
         service_account_name             = "${var.deploy_name}-ingress-controller"
         termination_grace_period_seconds = 60
         volume {
-          name = "${kubernetes_service_account.traefik.default_secret_name}"
+          name = kubernetes_service_account.traefik[0].default_secret_name
           secret {
-            secret_name = "${kubernetes_service_account.traefik.default_secret_name}"
+            secret_name = kubernetes_service_account.traefik[0].default_secret_name
           }
         }
 
         container {
           image = "traefik:v${var.image_version}"
-          name  = "${var.deploy_name}"
+          name  = var.deploy_name
 
           volume_mount {
             mount_path = "/var/run/secrets/kubernetes.io/serviceaccount"
-            name       = "${kubernetes_service_account.traefik.default_secret_name}"
+            name       = kubernetes_service_account.traefik[0].default_secret_name
             read_only  = true
           }
 
@@ -70,26 +70,26 @@ resource "kubernetes_deployment" "traefik" {
       }
     }
   }
-  provider = "kubernetes"
+  provider = kubernetes
 }
 
 resource "kubernetes_service" "traefik" {
-  count = "${var.deploy}"
+  count = var.deploy
   metadata {
-    name      = "${var.deploy_name}"
-    namespace = "${var.namespace}"
-    annotations {
-      "prometheus.io/port" = "8080"
+    name      = var.deploy_name
+    namespace = var.namespace
+    annotations = {
+      "prometheus.io/port"   = "8080"
       "prometheus.io/scrape" = "true"
     }
-    labels {
+    labels = {
       scrape-service-metrics = "true"
     }
   }
 
   spec {
-    selector {
-      k8s-app = "${var.deploy_name}"
+    selector = {
+      k8s-app = var.deploy_name
     }
 
     port {
@@ -110,32 +110,32 @@ resource "kubernetes_service" "traefik" {
 
     type = "NodePort"
   }
-  provider = "kubernetes"
+  provider = kubernetes
 }
 
 resource "null_resource" "create_traefik_role" {
-  count = "${var.deploy}"
+  count = var.deploy
 
   provisioner "local-exec" {
-        command = "kubectl --kubeconfig ${var.kubeconfig_path} apply -f ${path.module}/ingress-clusterrole.yaml"
-    }
-  
+    command = "kubectl --kubeconfig ${var.kubeconfig_path} apply -f ${path.module}/ingress-clusterrole.yaml"
+  }
 }
 
 resource "kubernetes_cluster_role_binding" "example" {
-  count = "${var.deploy}"
-    metadata {
-        name = "${var.deploy_name}-ingress-controller"
-    }
-    role_ref {
-        api_group = "rbac.authorization.k8s.io"
-        kind = "ClusterRole"
-        name = "traefik-ingress-controller"
-    }
-    subject {
-        api_group = "" 
-        kind = "ServiceAccount"
-        name = "${var.deploy_name}-ingress-controller"
-        namespace = "${var.namespace}"
-    }
+  count = var.deploy
+  metadata {
+    name = "${var.deploy_name}-ingress-controller"
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "traefik-ingress-controller"
+  }
+  subject {
+    api_group = ""
+    kind      = "ServiceAccount"
+    name      = "${var.deploy_name}-ingress-controller"
+    namespace = var.namespace
+  }
 }
+
