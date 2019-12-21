@@ -4,12 +4,11 @@
 
 terraform {
   backend          "s3"             {}
-  required_version = "~> 0.11.7"
 }
 
 provider "aws" {
   region  = "${var.aws_region}"
-  version = "~> 1.60"
+  version = "~> 2.43"
 
   assume_role {
     role_arn = "${var.aws_assume_role_arn}"
