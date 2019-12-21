@@ -121,12 +121,9 @@ variable "eks_nodegroup1_instance_max_count" {
 # Blaster Configmap
 # --------------------------------------------------
 
-variable "blaster_configmap_deploy" {
-  type    = bool
-  default = false
-}
-
 variable "blaster_configmap_bucket" {
+  type    = string
+  default = ""
 }
 
 # --------------------------------------------------

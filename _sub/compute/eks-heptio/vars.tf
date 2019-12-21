@@ -27,4 +27,3 @@ variable "blaster_configmap_key" {
 variable "kubeconfig_path" {
   type = string
 }
-
