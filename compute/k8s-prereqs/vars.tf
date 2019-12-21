@@ -3,18 +3,18 @@
 # --------------------------------------------------
 
 variable "aws_region" {
-  type = "string"
+  type = string
 }
 
 variable "aws_assume_role_arn" {
-  type = "string"
+  type = string
 }
-
 
 # --------------------------------------------------
 # EKS
 # --------------------------------------------------
 
 variable "eks_cluster_name" {
-  type = "string"
+  type = string
 }
+
