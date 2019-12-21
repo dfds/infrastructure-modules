@@ -1,5 +1,5 @@
 resource "aws_iam_role" "servicebroker_role" {
-  count       = "${var.deploy}"
+  count       = var.deploy
   name        = "eks-${var.cluster_name}-servicebroker"
   description = "Role the ServiceBroker process assumes"
 
@@ -26,13 +26,13 @@ resource "aws_iam_role" "servicebroker_role" {
   ]
 }
 EOF
+
 }
 
-
 resource "aws_iam_role_policy" "allow_dynamodb_access" {
-  count = "${var.deploy}"
+  count = var.deploy
   name  = "grant_dynamodb_access"
-  role  = "${aws_iam_role.servicebroker_role.id}"
+  role  = aws_iam_role.servicebroker_role[0].id
 
   policy = <<POLICY
 {
@@ -72,12 +72,13 @@ resource "aws_iam_role_policy" "allow_dynamodb_access" {
   ]
 }
 POLICY
+
 }
 
 resource "aws_iam_role_policy" "allow_resource_provisioning" {
-  count = "${var.deploy}"
+  count = var.deploy
   name  = "allow_resource_provisioning"
-  role  = "${aws_iam_role.servicebroker_role.id}"
+  role  = aws_iam_role.servicebroker_role[0].id
 
   policy = <<POLICY
 {
@@ -136,4 +137,6 @@ resource "aws_iam_role_policy" "allow_resource_provisioning" {
    ]
 }
 POLICY
+
 }
+
