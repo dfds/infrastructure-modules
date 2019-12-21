@@ -48,11 +48,13 @@ module "traefik_deploy" {
 }
 
 module "traefik_alb_cert" {
-  source        = "../../_sub/network/acm-certificate-san"
-  deploy        = var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy ? 1 : 0
-  domain_name   = "*.${local.eks_fqdn}"
-  dns_zone_name = var.workload_dns_zone_name
-  core_alias    = var.traefik_alb_auth_core_alias
+  source              = "../../_sub/network/acm-certificate-san"
+  deploy              = var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy ? true : false
+  domain_name         = "*.${local.eks_fqdn}"
+  dns_zone_name       = var.workload_dns_zone_name
+  core_alias          = var.traefik_alb_auth_core_alias
+  aws_region          = var.aws_region          # Workaround to https://github.com/hashicorp/terraform/issues/21416
+  aws_assume_role_arn = var.aws_assume_role_arn # Workaround to https://github.com/hashicorp/terraform/issues/21416
 }
 
 module "traefik_alb_auth_appreg" {
@@ -61,7 +63,7 @@ module "traefik_alb_auth_appreg" {
   name              = "Kubernetes EKS ${local.eks_fqdn}"
   homepage          = "https://${local.eks_fqdn}"
   identifier_uris   = ["https://${local.eks_fqdn}"]
-  reply_urls        = [local.traefik_alb_auth_appreg_reply_urls]
+  reply_urls        = local.traefik_alb_auth_appreg_reply_urls
   appreg_key_bucket = var.terraform_state_s3_bucket
   appreg_key_key    = "keys/eks/${var.eks_cluster_name}/appreg_alb_key.json"
 }
@@ -71,8 +73,8 @@ module "traefik_alb_auth" {
   deploy                = var.traefik_alb_auth_deploy
   cluster_name          = var.eks_cluster_name
   vpc_id                = data.terraform_remote_state.cluster.outputs.eks_cluster_vpc_id
-  subnet_ids            = [data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids]
-  autoscaling_group_ids = [data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids]
+  subnet_ids            = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
+  autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
   alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
   nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
   azure_tenant_id       = module.traefik_alb_auth_appreg.tenant_id
@@ -92,7 +94,7 @@ module "traefik_alb_auth_dns" {
 
 module "traefik_alb_auth_dns_core_alias" {
   source       = "../../_sub/network/route53-record"
-  deploy       = var.traefik_alb_auth_deploy == 1 ? signum(length(var.traefik_alb_auth_core_alias)) : 0
+  deploy       = var.traefik_alb_auth_deploy ? length(var.traefik_alb_auth_core_alias) >= 1 : false
   zone_id      = local.core_dns_zone_id
   record_name  = var.traefik_alb_auth_core_alias
   record_type  = "CNAME"
@@ -109,8 +111,8 @@ module "traefik_alb_anon" {
   deploy                = var.traefik_alb_anon_deploy
   cluster_name          = var.eks_cluster_name
   vpc_id                = data.terraform_remote_state.cluster.outputs.eks_cluster_vpc_id
-  subnet_ids            = [data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids]
-  autoscaling_group_ids = [data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids]
+  subnet_ids            = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
+  autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
   alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
   nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
 }
@@ -126,16 +128,16 @@ module "traefik_alb_anon_dns" {
 }
 
 module "traefik_nlb" {
-  source                = "../../_sub/compute/eks-nlb"
-  deploy                = var.traefik_nlb_deploy && var.argocd_deploy ? 1 : 0
+  source = "../../_sub/compute/eks-nlb"
+  # deploy                = var.traefik_nlb_deploy && var.argocd_deploy ? true : false
   deploy                = var.traefik_nlb_deploy
   cluster_name          = var.eks_cluster_name
   vpc_id                = data.terraform_remote_state.cluster.outputs.eks_cluster_vpc_id
-  subnet_ids            = [data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids]
+  subnet_ids            = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
+  autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
   nlb_certificate_arn   = module.traefik_alb_cert.certificate_arn
   nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
   cidr_blocks           = var.traefik_nlb_cidr_blocks
-  autoscaling_group_ids = [data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids]
 }
 
 # --------------------------------------------------

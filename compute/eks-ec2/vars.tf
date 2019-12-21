@@ -35,10 +35,10 @@ variable "workload_dns_zone_name" {
   default = ""
 }
 
-variable "azure_tenant_id" {
-  type    = string
-  default = ""
-}
+# variable "azure_tenant_id" {
+#   type    = string
+#   default = ""
+# }
 
 variable "terraform_state_region" {
   type    = string

@@ -1,5 +1,5 @@
 resource "aws_lb" "traefik_auth" {
-  count              = var.deploy
+  count              = var.deploy ? 1 : 0
   name               = "${var.cluster_name}-traefik-alb-auth"
   internal           = false
   load_balancer_type = "application"
@@ -14,7 +14,7 @@ resource "aws_autoscaling_attachment" "traefik_auth" {
 }
 
 resource "aws_lb_target_group" "traefik_auth" {
-  count       = var.deploy
+  count       = var.deploy ? 1 : 0
   name_prefix = substr(var.cluster_name, 0, min(6, length(var.cluster_name)))
   port        = 30000
   protocol    = "HTTP"
@@ -33,7 +33,7 @@ resource "aws_lb_target_group" "traefik_auth" {
 }
 
 resource "aws_lb_listener" "traefik_auth" {
-  count             = var.deploy
+  count             = var.deploy ? 1 : 0
   load_balancer_arn = aws_lb.traefik_auth[0].arn
   port              = "443"
   protocol          = "HTTPS"
@@ -60,7 +60,7 @@ resource "aws_lb_listener" "traefik_auth" {
 }
 
 resource "aws_lb_listener" "http-to-https" {
-  count             = var.deploy
+  count             = var.deploy ? 1 : 0
   load_balancer_arn = aws_lb.traefik_auth[0].arn
   port              = "80"
   protocol          = "HTTP"
@@ -77,7 +77,7 @@ resource "aws_lb_listener" "http-to-https" {
 }
 
 resource "aws_security_group" "traefik_auth" {
-  count       = var.deploy
+  count       = var.deploy ? 1 : 0
   name        = "allow_traefik-${var.cluster_name}-auth"
   description = "Allow traefik connection for ${var.cluster_name} with authentication via oidc"
   vpc_id      = var.vpc_id
@@ -123,7 +123,7 @@ resource "aws_security_group" "traefik_auth" {
 }
 
 resource "aws_security_group_rule" "allow_traefik_auth" {
-  count                    = var.deploy
+  count                    = var.deploy ? 1 : 0
   type                     = "ingress"
   from_port                = 30000
   to_port                  = 30001

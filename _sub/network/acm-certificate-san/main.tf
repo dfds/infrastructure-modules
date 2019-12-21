@@ -1,10 +1,29 @@
 # --------------------------------------------------
+# Workarounds to https://github.com/hashicorp/terraform/issues/21416
+# --------------------------------------------------
+
+provider "aws" {
+  region  = var.aws_region
+  version = "~> 2.43"
+
+  assume_role {
+    role_arn = var.aws_assume_role_arn
+  }
+}
+
+provider "aws" {
+  region  = var.aws_region
+  version = "~> 2.43"
+  alias   = "core"
+}
+
+# --------------------------------------------------
 # Request certificate
 # --------------------------------------------------
 
 # Create the certificate request
 resource "aws_acm_certificate" "cert" {
-  count                     = var.deploy
+  count                     = var.deploy ? 1 : 0
   domain_name               = var.domain_name
   subject_alternative_names = var.core_alias
   validation_method         = "DNS"
@@ -46,7 +65,7 @@ resource "local_file" "validate_json" {
 
 # Read the JSON file back, one instance per element in the JSON array
 data "external" "validate_json_workload" {
-  count      = var.deploy
+  count      = var.deploy ? 1 : 0
   depends_on = [local_file.validate_json]
   program    = ["bash", "${path.module}/element_from_json_array.sh", pathexpand("./validate.json"), "==", var.domain_name, count.index]
 }
@@ -69,7 +88,7 @@ locals {
 
 # Create validation DNS record in the workload DNS zone
 resource "aws_route53_record" "workload" {
-  count   = var.deploy
+  count   = var.deploy ? 1 : 0
   name    = local.validate_json_workload[0]["resource_record_name"]
   type    = local.validate_json_workload[0]["resource_record_type"]
   zone_id = local.dns_zone_id
@@ -107,7 +126,7 @@ resource "aws_route53_record" "core" {
 
 # Validate the certificate using the DNS validation records created
 resource "aws_acm_certificate_validation" "cert" {
-  count           = var.deploy
+  count           = var.deploy ? 1 : 0
   certificate_arn = aws_acm_certificate.cert[0].arn
   validation_record_fqdns = concat(
     aws_route53_record.workload.*.fqdn,

@@ -1,5 +1,5 @@
 resource "aws_db_instance" "instance" {
-  count             = var.deploy
+  count             = var.deploy ? 1 : 0
   allocated_storage = var.db_storage_size
   storage_type      = "gp2"
   engine            = "postgres"

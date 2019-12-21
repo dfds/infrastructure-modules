@@ -10,9 +10,10 @@ variable "aws_assume_role_arn" {
 }
 
 variable "keypairname" {
-    description = "Name the Keypair will be saved as in AWS Parameter Store"
+  description = "Name the Keypair will be saved as in AWS Parameter Store"
 }
 
 variable "deploy" {
-    default = true  
+  type    = bool
+  default = true
 }

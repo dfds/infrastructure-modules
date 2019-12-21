@@ -1,5 +1,5 @@
 resource "kubernetes_deployment" "flux-memcached" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
 
   metadata {
     name      = "memcached"

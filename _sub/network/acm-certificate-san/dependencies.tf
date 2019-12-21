@@ -7,7 +7,7 @@ locals {
 
 # Read workload DNS zone
 data "aws_route53_zone" "workload" {
-  count        = var.deploy
+  count        = var.deploy ? 1 : 0
   name         = "${var.dns_zone_name}."
   private_zone = false
 }

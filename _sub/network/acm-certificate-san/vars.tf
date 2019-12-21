@@ -1,4 +1,5 @@
 variable "deploy" {
+  type    = bool
   default = true
 }
 
@@ -16,3 +17,15 @@ variable "core_alias" {
   default     = []
 }
 
+
+# --------------------------------------------------
+# Workarounds to https://github.com/hashicorp/terraform/issues/21416
+# --------------------------------------------------
+
+variable "aws_region" {
+  type = string
+}
+
+variable "aws_assume_role_arn" {
+  type = string
+}

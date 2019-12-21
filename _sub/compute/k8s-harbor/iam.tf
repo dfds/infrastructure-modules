@@ -1,5 +1,5 @@
 resource "aws_iam_role" "harbor" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
   name  = "eks-${var.cluster_name}-harbor-s3"
 
   assume_role_policy = <<POLICY
@@ -28,7 +28,7 @@ POLICY
 }
 
 resource "aws_iam_role_policy" "harbor" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
   name  = "HarborS3Access"
   role  = element(concat(aws_iam_role.harbor.*.name, [""]), 0)
 

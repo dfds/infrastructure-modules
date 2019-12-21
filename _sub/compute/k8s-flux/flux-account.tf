@@ -1,5 +1,5 @@
 resource "kubernetes_service_account" "flux" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
 
   metadata {
     name      = "flux"
@@ -15,7 +15,7 @@ resource "kubernetes_service_account" "flux" {
 }
 
 resource "kubernetes_cluster_role_binding" "flux" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
 
   metadata {
     name = "flux"

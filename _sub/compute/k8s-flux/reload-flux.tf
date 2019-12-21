@@ -1,10 +1,10 @@
 resource "null_resource" "restart-flux-pod" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
 
   triggers = {
     git_private_key_changed = sha512(kubernetes_secret.flux-git-deploy[0].data.identity)
     docker_secret_changed = sha512(
-      kubernetes_secret.docker-registry-creds[0].data[""].dockerconfigjson,
+      kubernetes_secret.docker-registry-creds[0].data[".dockerconfigjson"],
     )
   }
 

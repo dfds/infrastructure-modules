@@ -1,5 +1,5 @@
 resource "kubernetes_namespace" "harbor" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
   metadata {
     name = var.namespace
 
@@ -12,21 +12,21 @@ resource "kubernetes_namespace" "harbor" {
 }
 
 resource "kubernetes_config_map" "harbor-db-init" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
   metadata {
     name      = "harbor-db-init-config"
     namespace = kubernetes_namespace.harbor[0].metadata[0].name
   }
 
   data = {
-    run.sh = file("${path.module}/run.sh")
+    "run.sh" = file("${path.module}/run.sh")
   }
 
   provider = kubernetes
 }
 
 resource "kubernetes_deployment" "harbor-db-init" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
   metadata {
     name      = "harbor-db-init"
     namespace = kubernetes_namespace.harbor[0].metadata[0].name

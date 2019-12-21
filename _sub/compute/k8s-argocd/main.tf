@@ -10,7 +10,7 @@ provider "aws" {
 }
 
 resource "kubernetes_namespace" "argocd_namespace" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
 
   metadata {
     name = var.namespace
@@ -20,14 +20,14 @@ resource "kubernetes_namespace" "argocd_namespace" {
 }
 
 resource "random_string" "password" {
-  count            = var.deploy
+  count            = var.deploy ? 1 : 0
   special          = true
   override_special = "{}[]!"
   length           = 24
 }
 
 resource "aws_ssm_parameter" "putSecureString" {
-  count       = var.deploy
+  count       = var.deploy ? 1 : 0
   name        = "/eks/${var.cluster_name}/argocd_admin"
   description = "Default admin password for ArgoCD"
   type        = "SecureString"
@@ -51,13 +51,13 @@ locals {
 }
 
 resource "local_file" "privateKey" {
-  count             = var.deploy
+  count             = var.deploy ? 1 : 0
   sensitive_content = data.aws_ssm_parameter.privateKey.value
   filename          = local.id_rsa_filename
 }
 
 resource "helm_release" "argocd" {
-  count     = var.deploy
+  count     = var.deploy ? 1 : 0
   name      = "argocd"
   namespace = var.namespace
   chart     = "${path.module}/argocd-chart"
@@ -83,7 +83,7 @@ EOF
 }
 
 resource "null_resource" "set_password" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
 
   provisioner "local-exec" {
     command = "${path.module}/set-admin-password.sh ${pathexpand("~/.kube/config_${var.cluster_name}")} ${var.grpc_host_url} ${element(concat(random_string.password.*.result, [""]), 0)}"
@@ -97,7 +97,7 @@ resource "null_resource" "set_password" {
 }
 
 resource "null_resource" "create_project" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
 
   provisioner "local-exec" {
     command = "${path.module}/create-project.sh ${var.grpc_host_url} ${element(concat(random_string.password.*.result, [""]), 0)} selfservice"
@@ -110,7 +110,7 @@ resource "null_resource" "create_project" {
 }
 
 resource "null_resource" "create_repo" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
 
   provisioner "local-exec" {
     command = "${path.module}/create-repo.sh ${var.grpc_host_url} ${element(concat(random_string.password.*.result, [""]), 0)} ${var.default_repository} ${local.id_rsa_filename}"
@@ -124,7 +124,7 @@ resource "null_resource" "create_repo" {
 }
 
 resource "null_resource" "create_argocdjanitor" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
 
   provisioner "local-exec" {
     command = "${path.module}/create-application.sh ${var.grpc_host_url} ${element(concat(random_string.password.*.result, [""]), 0)} ${local.appname} ${local.namespace} ${local.project} ${local.k8sserver} ${var.default_repository} ${local.kustomize_path}"

@@ -1,5 +1,5 @@
 resource "kubernetes_secret" "docker-registry-creds" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
 
   metadata {
     name      = "flux-docker-registry-creds"

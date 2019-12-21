@@ -1,5 +1,5 @@
 resource "kubernetes_service_account" "traefik" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
   metadata {
     name      = "${var.deploy_name}-ingress-controller"
     namespace = var.namespace
@@ -8,7 +8,7 @@ resource "kubernetes_service_account" "traefik" {
 }
 
 resource "kubernetes_deployment" "traefik" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
   metadata {
     name      = "${var.deploy_name}-ingress-controller"
     namespace = var.namespace
@@ -74,7 +74,7 @@ resource "kubernetes_deployment" "traefik" {
 }
 
 resource "kubernetes_service" "traefik" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
   metadata {
     name      = var.deploy_name
     namespace = var.namespace
@@ -114,7 +114,7 @@ resource "kubernetes_service" "traefik" {
 }
 
 resource "null_resource" "create_traefik_role" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
 
   provisioner "local-exec" {
     command = "kubectl --kubeconfig ${var.kubeconfig_path} apply -f ${path.module}/ingress-clusterrole.yaml"
@@ -122,7 +122,7 @@ resource "null_resource" "create_traefik_role" {
 }
 
 resource "kubernetes_cluster_role_binding" "example" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
   metadata {
     name = "${var.deploy_name}-ingress-controller"
   }

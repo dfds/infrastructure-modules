@@ -1,5 +1,5 @@
 resource "aws_lb" "nlb" {
-  count              = var.deploy
+  count              = var.deploy ? 1 : 0
   name               = "${var.cluster_name}-nlb"
   internal           = false
   load_balancer_type = "network"
@@ -13,7 +13,7 @@ resource "aws_autoscaling_attachment" "nlb" {
 }
 
 resource "aws_lb_target_group" "nlb" {
-  count       = var.deploy
+  count       = var.deploy ? 1 : 0
   name_prefix = substr(var.cluster_name, 0, min(6, length(var.cluster_name)))
   port        = 30000
   protocol    = "TCP"
@@ -26,7 +26,7 @@ resource "aws_lb_target_group" "nlb" {
 
 #
 resource "aws_lb_listener" "nlb" {
-  count             = var.deploy
+  count             = var.deploy ? 1 : 0
   load_balancer_arn = aws_lb.nlb[0].arn
   port              = "443"
   protocol          = "TLS"
@@ -41,7 +41,7 @@ resource "aws_lb_listener" "nlb" {
 
 #
 resource "aws_security_group_rule" "allow_argo" {
-  count     = var.deploy
+  count     = var.deploy ? 1 : 0
   type      = "ingress"
   from_port = 30000
   to_port   = 30001

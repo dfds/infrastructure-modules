@@ -41,6 +41,7 @@ variable "eks_cluster_name" {
 # --------------------------------------------------
 
 variable "traefik_deploy" {
+  type    = bool
   default = false
 }
 
@@ -53,10 +54,12 @@ variable "traefik_deploy_name" {
 }
 
 variable "traefik_alb_anon_deploy" {
+  type    = bool
   default = false
 }
 
 variable "traefik_alb_auth_deploy" {
+  type    = bool
   default = false
 }
 
@@ -67,6 +70,7 @@ variable "traefik_alb_auth_core_alias" {
 }
 
 variable "traefik_nlb_deploy" {
+  type    = bool
   default = false
 }
 
@@ -76,6 +80,7 @@ variable "traefik_nlb_cidr_blocks" {
 }
 
 variable "blaster_configmap_deploy" {
+  type    = bool
   default = false
 }
 
@@ -191,4 +196,3 @@ variable "flux_registry_password" {
 variable "flux_registry_email" {
   description = "Email address for the user that enables Flux to read the docker registry information."
 }
-

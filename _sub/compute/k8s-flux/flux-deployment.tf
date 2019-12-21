@@ -1,5 +1,5 @@
 resource "kubernetes_namespace" "flux_namespace" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
 
   metadata {
     name = var.namespace
@@ -9,7 +9,7 @@ resource "kubernetes_namespace" "flux_namespace" {
 }
 
 resource "kubernetes_deployment" "flux" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
 
   metadata {
     name      = "flux"
@@ -32,7 +32,7 @@ resource "kubernetes_deployment" "flux" {
     template {
       metadata {
         annotations = {
-          prometheus.io.port = "3031" # tell prometheus to scrape /metrics endpoint's port.
+          "prometheus.io.port" = "3031" # tell prometheus to scrape /metrics endpoint's port.
         }
 
         labels = {

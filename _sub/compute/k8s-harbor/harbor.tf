@@ -1,5 +1,5 @@
 resource "helm_release" "harbor" {
-  count     = var.deploy
+  count     = var.deploy ? 1 : 0
   name      = "harbor-registry"
   namespace = var.namespace
   chart     = "${path.module}/harbor-chart"

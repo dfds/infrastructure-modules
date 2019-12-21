@@ -11,6 +11,6 @@ variable "key_value" {
 }
 
 variable "deploy" {
+  type    = bool
   default = true
 }
-

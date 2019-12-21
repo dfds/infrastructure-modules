@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 
 resource "aws_db_subnet_group" "harbor-db-sg" {
-  count       = var.deploy
+  count       = var.deploy ? 1 : 0
   name_prefix = var.ressource_name_prefix
   description = "Database subnet group for harbor"
   subnet_ids  = var.subnet_ids
@@ -21,7 +21,7 @@ resource "aws_db_subnet_group" "harbor-db-sg" {
 # CREATE THE SECURITY GROUP THAT CONTROLS WHAT TRAFFIC CAN CONNECT TO THE DB
 # ------------------------------------------------------------------------------
 resource "aws_security_group" "db" {
-  count       = var.deploy
+  count       = var.deploy ? 1 : 0
   name_prefix = var.ressource_name_prefix
   description = "Security group for Harbor Postgres Db"
   vpc_id      = var.vpc_id

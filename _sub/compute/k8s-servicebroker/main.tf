@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "service-broker-table" {
-  count          = var.deploy
+  count          = var.deploy ? 1 : 0
   name           = var.table_name
   billing_mode   = "PROVISIONED"
   read_capacity  = 5
@@ -34,7 +34,7 @@ resource "aws_dynamodb_table" "service-broker-table" {
 }
 
 resource "helm_release" "service-catalog" {
-  count      = var.deploy
+  count      = var.deploy ? 1 : 0
   name       = "catalog"
   repository = "servicecatalog"
   namespace  = "catalog"
@@ -43,7 +43,7 @@ resource "helm_release" "service-catalog" {
 }
 
 resource "null_resource" "wait_for_servicecatalog" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
 
   triggers = {
     build_number = timestamp()
@@ -76,7 +76,7 @@ EOT
 }
 
 resource "helm_release" "service-broker" {
-  count        = var.deploy
+  count        = var.deploy ? 1 : 0
   name         = var.deploy_name
   namespace    = var.namespace
   repository   = var.chart_repo
@@ -117,7 +117,7 @@ EOF
 }
 
 resource "null_resource" "annotate_namespace" {
-  count = var.deploy
+  count = var.deploy ? 1 : 0
 
   triggers = {
     build_number = timestamp()
