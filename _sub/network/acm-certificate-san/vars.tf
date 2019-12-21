@@ -12,6 +12,7 @@ variable "dns_zone_name" {
 
 variable "core_alias" {
   description = "A list of aliases/alternative names in the *parent* domain, the certficate should also be valid for. E.g. 'prettyurl.company.tld'"
-  type = "list"
-  default = []
+  type        = list(string)
+  default     = []
 }
+

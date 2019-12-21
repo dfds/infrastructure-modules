@@ -4,14 +4,14 @@
 
 # Create the certificate request
 resource "aws_acm_certificate" "cert" {
-  count                     = "${var.deploy}"
-  domain_name               = "${var.domain_name}"
-  subject_alternative_names = "${var.core_alias}"
+  count                     = var.deploy
+  domain_name               = var.domain_name
+  subject_alternative_names = var.core_alias
   validation_method         = "DNS"
 
   lifecycle {
     create_before_destroy = true
-    ignore_changes = ["subject_alternative_names"] # workaround to https://github.com/terraform-providers/terraform-provider-aws/issues/8531
+    ignore_changes        = [subject_alternative_names] # workaround to https://github.com/terraform-providers/terraform-provider-aws/issues/8531
   }
 }
 
@@ -32,8 +32,10 @@ Gotchas:
 
 # Output validation options in JSON format to file
 resource "local_file" "validate_json" {
-  content  = "${jsonencode(flatten(aws_acm_certificate.cert.*.domain_validation_options))}"
-  filename = "${pathexpand("./validate.json")}"
+  content = jsonencode(
+    flatten(aws_acm_certificate.cert.*.domain_validation_options),
+  )
+  filename = pathexpand("./validate.json")
 }
 
 /*
@@ -42,24 +44,23 @@ resource "local_file" "validate_json" {
 - Second: Return all elements, not matching cert CN
 */
 
-
 # Read the JSON file back, one instance per element in the JSON array
 data "external" "validate_json_workload" {
-  count      = "${var.deploy}"
-  depends_on = ["local_file.validate_json"]
-  program    = ["bash", "${path.module}/element_from_json_array.sh", "${pathexpand("./validate.json")}", "==", "${var.domain_name}", "${count.index}"]
+  count      = var.deploy
+  depends_on = [local_file.validate_json]
+  program    = ["bash", "${path.module}/element_from_json_array.sh", pathexpand("./validate.json"), "==", var.domain_name, count.index]
 }
 
 data "external" "validate_json_core" {
-  count      = "${var.deploy ? length(var.core_alias) : 0}"
-  depends_on = ["local_file.validate_json"]
-  program    = ["bash", "${path.module}/element_from_json_array.sh", "${pathexpand("./validate.json")}", "!=", "${var.domain_name}", "${count.index}"]
+  count      = var.deploy ? length(var.core_alias) : 0
+  depends_on = [local_file.validate_json]
+  program    = ["bash", "${path.module}/element_from_json_array.sh", pathexpand("./validate.json"), "!=", var.domain_name, count.index]
 }
 
 # Save the output in variable
 locals {
-  validate_json_workload = "${data.external.validate_json_workload.*.result}"
-  validate_json_core = "${data.external.validate_json_core.*.result}"
+  validate_json_workload = data.external.validate_json_workload.*.result
+  validate_json_core     = data.external.validate_json_core.*.result
 }
 
 # --------------------------------------------------
@@ -68,29 +69,49 @@ locals {
 
 # Create validation DNS record in the workload DNS zone
 resource "aws_route53_record" "workload" {
-  count   = "${var.deploy}"
-  name    = "${lookup(local.validate_json_workload[0], "resource_record_name")}"
-  type    = "${lookup(local.validate_json_workload[0], "resource_record_type")}"
-  zone_id = "${local.dns_zone_id}"
-  records = ["${lookup(local.validate_json_workload[0], "resource_record_value")}"]
+  count   = var.deploy
+  name    = local.validate_json_workload[0]["resource_record_name"]
+  type    = local.validate_json_workload[0]["resource_record_type"]
+  zone_id = local.dns_zone_id
+  # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
+  # force an interpolation expression to be interpreted as a list by wrapping it
+  # in an extra set of list brackets. That form was supported for compatibility in
+  # v0.11, but is no longer supported in Terraform v0.12.
+  #
+  # If the expression in the following list itself returns a list, remove the
+  # brackets to avoid interpretation as a list of lists. If the expression
+  # returns a single list item then leave it as-is and remove this TODO comment.
+  records = [local.validate_json_workload[0]["resource_record_value"]]
   ttl     = 60
 }
 
 # Create validation DNS record(s) in the core DNS zone (alternative names specified)
 resource "aws_route53_record" "core" {
-  count   = "${var.deploy ? length(var.core_alias) : 0}"
-  name    = "${lookup(local.validate_json_core[count.index], "resource_record_name")}"
-  type    = "${lookup(local.validate_json_core[count.index], "resource_record_type")}"
-  zone_id = "${local.core_dns_zone_id}"
-  records = ["${lookup(local.validate_json_core[count.index], "resource_record_value")}"]
+  count   = var.deploy ? length(var.core_alias) : 0
+  name    = local.validate_json_core[count.index]["resource_record_name"]
+  type    = local.validate_json_core[count.index]["resource_record_type"]
+  zone_id = local.core_dns_zone_id
+  # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
+  # force an interpolation expression to be interpreted as a list by wrapping it
+  # in an extra set of list brackets. That form was supported for compatibility in
+  # v0.11, but is no longer supported in Terraform v0.12.
+  #
+  # If the expression in the following list itself returns a list, remove the
+  # brackets to avoid interpretation as a list of lists. If the expression
+  # returns a single list item then leave it as-is and remove this TODO comment.
+  records = [local.validate_json_core[count.index]["resource_record_value"]]
   ttl     = 60
 
-  provider = "aws.core"
+  provider = aws.core
 }
 
 # Validate the certificate using the DNS validation records created
 resource "aws_acm_certificate_validation" "cert" {
-  count                   = "${var.deploy}"
-  certificate_arn         = "${aws_acm_certificate.cert.arn}"
-  validation_record_fqdns = ["${concat(aws_route53_record.workload.*.fqdn, aws_route53_record.core.*.fqdn)}"]
+  count           = var.deploy
+  certificate_arn = aws_acm_certificate.cert[0].arn
+  validation_record_fqdns = concat(
+    aws_route53_record.workload.*.fqdn,
+    aws_route53_record.core.*.fqdn,
+  )
 }
+
