@@ -30,7 +30,7 @@ resource "aws_acm_certificate" "cert" {
 
   lifecycle {
     create_before_destroy = true
-    ignore_changes        = [subject_alternative_names] # workaround to https://github.com/terraform-providers/terraform-provider-aws/issues/8531
+    # ignore_changes        = [subject_alternative_names] # workaround to https://github.com/terraform-providers/terraform-provider-aws/issues/8531
   }
 }
 
@@ -88,38 +88,24 @@ locals {
 
 # Create validation DNS record in the workload DNS zone
 resource "aws_route53_record" "workload" {
-  count   = var.deploy ? 1 : 0
-  name    = local.validate_json_workload[0]["resource_record_name"]
-  type    = local.validate_json_workload[0]["resource_record_type"]
-  zone_id = local.dns_zone_id
-  # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
-  # force an interpolation expression to be interpreted as a list by wrapping it
-  # in an extra set of list brackets. That form was supported for compatibility in
-  # v0.11, but is no longer supported in Terraform v0.12.
-  #
-  # If the expression in the following list itself returns a list, remove the
-  # brackets to avoid interpretation as a list of lists. If the expression
-  # returns a single list item then leave it as-is and remove this TODO comment.
-  records = [local.validate_json_workload[0]["resource_record_value"]]
-  ttl     = 60
+  count           = var.deploy ? 1 : 0
+  name            = local.validate_json_workload[0]["resource_record_name"]
+  type            = local.validate_json_workload[0]["resource_record_type"]
+  zone_id         = local.dns_zone_id
+  records         = [local.validate_json_workload[0]["resource_record_value"]]
+  ttl             = 60
+  allow_overwrite = true
 }
 
 # Create validation DNS record(s) in the core DNS zone (alternative names specified)
 resource "aws_route53_record" "core" {
-  count   = var.deploy ? length(var.core_alias) : 0
-  name    = local.validate_json_core[count.index]["resource_record_name"]
-  type    = local.validate_json_core[count.index]["resource_record_type"]
-  zone_id = local.core_dns_zone_id
-  # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
-  # force an interpolation expression to be interpreted as a list by wrapping it
-  # in an extra set of list brackets. That form was supported for compatibility in
-  # v0.11, but is no longer supported in Terraform v0.12.
-  #
-  # If the expression in the following list itself returns a list, remove the
-  # brackets to avoid interpretation as a list of lists. If the expression
-  # returns a single list item then leave it as-is and remove this TODO comment.
-  records = [local.validate_json_core[count.index]["resource_record_value"]]
-  ttl     = 60
+  count           = var.deploy ? length(var.core_alias) : 0
+  name            = local.validate_json_core[count.index]["resource_record_name"]
+  type            = local.validate_json_core[count.index]["resource_record_type"]
+  zone_id         = local.core_dns_zone_id
+  records         = [local.validate_json_core[count.index]["resource_record_value"]]
+  ttl             = 60
+  allow_overwrite = true
 
   provider = aws.core
 }
@@ -133,4 +119,3 @@ resource "aws_acm_certificate_validation" "cert" {
     aws_route53_record.core.*.fqdn,
   )
 }
-
