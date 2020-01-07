@@ -18,13 +18,6 @@ terragrunt {
 
 
 # --------------------------------------------------
-# AWS
-# --------------------------------------------------
-
-# aws_assume_role_arn = "arn:aws:iam::738063116313:role/Prime" # arn:aws:iam::738063116313:role/Prime = Prime role in Oxygen account
-
-
-# --------------------------------------------------
 # EKS
 # --------------------------------------------------
 
@@ -36,13 +29,14 @@ eks_cluster_name = "qa"
 # --------------------------------------------------
 
 traefik_deploy = true
+traefik_version = "1.7.19"
 traefik_deploy_name = "traefik"
 
 traefik_alb_auth_deploy = true # triggers Azure App registration
 traefik_alb_anon_deploy = true
 traefik_alb_auth_core_alias = ["qa-alias1.dfds.cloud", "qa-alias2.dfds.cloud"]
 
-traefik_nlb_deploy = true # needed a.o. for Argo CLI
+traefik_nlb_deploy = false # needed a.o. for Argo CLI
 traefik_nlb_cidr_blocks = ["0.0.0.0/0"]
 
 
