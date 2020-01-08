@@ -68,7 +68,7 @@ servicebroker_deploy = false
 # --------------------------------------------------
 
 argocd_deploy = false
-# argocd_default_repository = "git@github.com:dfds/infrastructure-manifests.git"
+argocd_default_repository = ""
 
 
 # --------------------------------------------------
