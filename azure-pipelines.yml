@@ -22,5 +22,5 @@ variables:
 - group: QA
 steps:
 - bash: 
-    ./src/qa-pipeline.sh
+    ./src/qa-eks-test.sh
   displayName: Integration test against QA
