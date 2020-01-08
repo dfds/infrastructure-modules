@@ -67,8 +67,8 @@ module "cloudtrail_local" {
   }
 }
 
-resource "null_resource" "apply_tax_settings" {
-  provisioner "local-exec" {
-    command = "python3 /src/taxregistrations.py ${module.org_account.org_role_arn} ${var.tax_settings_document}"
-  }
-}
+# resource "null_resource" "apply_tax_settings" {
+#   provisioner "local-exec" {
+#     command = "python3 /src/taxregistrations.py ${module.org_account.org_role_arn} ${var.tax_settings_document}"
+#   }
+# }
