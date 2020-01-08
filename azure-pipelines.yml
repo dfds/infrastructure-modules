@@ -13,7 +13,7 @@ pool:
 resources:
    containers:
      - container: pre_prime
-       image: dfdsdk/prime-pipeline:0.3.7
+       image: dfdsdk/prime-pipeline:0.3.12
        env:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
 
@@ -21,10 +21,6 @@ container: qa
 variables:
 - group: QA
 steps:
-- bash:
-      echo 'Checking for AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY...'
-      bash -c '[[ -z $AWS_ACCESS_KEY_ID || -z $AWS_SECRET_ACCESS_KEY ]] && exit 1 || true'
-  displayName: Testing environment variables
 - bash: 
-      echo terragrunt apply-all --terragrunt-working-dir ./test/integration --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
+    ./src/qa-pipeline.sh
   displayName: Integration test against QA
