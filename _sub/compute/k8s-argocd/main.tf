@@ -36,6 +36,7 @@ resource "aws_ssm_parameter" "putSecureString" {
 }
 
 data "aws_ssm_parameter" "privateKey" {
+  count           = "${var.deploy}"
   name            = "${var.rsa_keypair_key}"
   with_decryption = true
   provider        = "aws.parameterstore"
@@ -52,7 +53,7 @@ locals {
 
 resource "local_file" "privateKey" {
   count             = "${var.deploy}"
-  sensitive_content = "${data.aws_ssm_parameter.privateKey.value}"
+  sensitive_content = "${data.aws_ssm_parameter.privateKey.*.value[0]}"
   filename          = "${local.id_rsa_filename}"
 }
 
