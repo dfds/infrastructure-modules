@@ -34,7 +34,8 @@ traefik_deploy_name = "traefik"
 
 traefik_alb_auth_deploy = true # triggers Azure App registration
 traefik_alb_anon_deploy = true
-traefik_alb_auth_core_alias = ["qa-alias1.dfds.cloud", "qa-alias2.dfds.cloud"]
+# traefik_alb_auth_core_alias = ["qa-alias1.dfds.cloud", "qa-alias2.dfds.cloud"]
+traefik_alb_auth_core_alias = []
 
 traefik_nlb_deploy = false # needed a.o. for Argo CLI
 traefik_nlb_cidr_blocks = ["0.0.0.0/0"]
@@ -53,6 +54,7 @@ kiam_deploy = true
 # --------------------------------------------------
 
 blaster_deploy = true
+blaster_configmap_bucket = ""
 
 
 # --------------------------------------------------

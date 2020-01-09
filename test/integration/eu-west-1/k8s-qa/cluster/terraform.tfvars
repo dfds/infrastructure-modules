@@ -11,7 +11,7 @@ terragrunt {
   }
 
   dependencies {
-    paths = ["../../../_global/route53-sub-zone", "../../../_global/eks-public-s3-bucket"]
+    paths = ["../../../_global/eks-public-s3-bucket"]
   }
 
 }
