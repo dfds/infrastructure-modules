@@ -17,7 +17,7 @@ provider "helm" {
 resource "aws_iam_role_policy" "server_node" {
   count = "${var.deploy}"
   name  = "eks-${var.cluster_name}-node"
-  role  = "${var.worker_role_id}"        # get from eks-workers
+  role  = "${var.worker_role_id}" # get from eks-workers
 
   policy = <<EOF
 {
@@ -110,22 +110,23 @@ resource "null_resource" "repo_init_helm" {
     command = "helm --home ${pathexpand("~/.helm_${var.cluster_name}_kiam")} repo update"
   }
 
-  provisioner "local-exec" {
-    command = <<EOT
-        echo "Testing for Tiller"
-        count=0
-        while [ `kubectl --kubeconfig ${var.kubeconfig_path} -n kube-system get pod -l name=tiller -o go-template --template='{{range .items}}{{range .status.conditions}}{{ if eq .type "Ready" }}{{ .status }} {{end}}{{end}}{{end}}'` != 'True' ]
-        do
-            if [ $count -gt 15 ]; then
-                echo "Failed to get ready Tiller pod."
-                exit 1
-            fi
-            echo "."
-            count=$(( $count + 1 ))
-            sleep 4
-        done
-    EOT
-  }
+  # Not neeeded, since Tiller was moved to prereqs stage
+  # provisioner "local-exec" {
+  #   command = <<EOT
+  #       echo "Testing for Tiller"
+  #       count=0
+  #       while [ `kubectl --kubeconfig ${var.kubeconfig_path} -n kube-system get pod -l name=tiller -o go-template --template='{{range .items}}{{range .status.conditions}}{{ if eq .type "Ready" }}{{ .status }} {{end}}{{end}}{{end}}'` != 'True' ]
+  #       do
+  #           if [ $count -gt 15 ]; then
+  #               echo "Failed to get ready Tiller pod."
+  #               exit 1
+  #           fi
+  #           echo "."
+  #           count=$(( $count + 1 ))
+  #           sleep 4
+  #       done
+  #   EOT
+  # }
 }
 
 resource "helm_release" "kiam" {
