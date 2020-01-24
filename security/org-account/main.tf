@@ -1,11 +1,11 @@
 provider "aws" {
   version = "~> 2.21.0"
-  region = "${var.aws_region}"
+  region  = "${var.aws_region}"
 }
 
 provider "aws" {
   version = "~> 2.21.0"
-  region = "${var.aws_region}"
+  region  = "${var.aws_region}"
 
   # Assume the Organizational role in Workload account
   assume_role {
@@ -17,7 +17,7 @@ provider "aws" {
 
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
-  backend          "s3"             {}
+  backend "s3" {}
   required_version = "~> 0.11.7"
 }
 
@@ -59,6 +59,7 @@ module "cloudtrail_s3_local" {
 
 module "cloudtrail_local" {
   source     = "../../_sub/security/cloudtrail-config"
+  deploy     = "${var.cloudtrail_local_s3_bucket != "" ? 1 : 0}"
   s3_bucket  = "${module.cloudtrail_s3_local.bucket_name}"
   trail_name = "local-audit"
 
