@@ -28,7 +28,7 @@ variable "eks_cluster_name" {
 
 variable "aws_workload_account_id" {
   type = string
-  default = ""  
+  default = ""
 }
 
 variable "workload_dns_zone_name" {
@@ -47,6 +47,11 @@ variable "terraform_state_s3_bucket" {
 }
 
 variable "terraform_state_region" {
+  type    = string
+  default = ""
+}
+
+variable "eks_public_s3_bucket" {
   type    = string
   default = ""
 }
