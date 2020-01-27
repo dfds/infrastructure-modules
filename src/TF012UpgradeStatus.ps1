@@ -20,7 +20,7 @@ $ModuleStatus = ForEach ($Folder in $ModuleFolders) {
         [string]$TfVersion = gci -Path $ModulePath -Filter *.tf | cat | Select-String -Pattern $regex | % { $_.matches.groups[1].value }
     }
     else {
-        $TfVersion = "Not found"
+        $TfVersion = "Not found in '$Tf012Branch'"
     }
 
     [PSCustomObject]@{
