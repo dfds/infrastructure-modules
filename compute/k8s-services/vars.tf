@@ -196,3 +196,16 @@ variable "flux_registry_password" {
 variable "flux_registry_email" {
   description = "Email address for the user that enables Flux to read the docker registry information."
 }
+
+# --------------------------------------------------
+# Unused variables - to provent TF warning/error:
+# Using a variables file to set an undeclared variable is deprecated and will
+# become an error in a future release. If you wish to provide certain "global"
+# settings to all configurations in your organization, use TF_VAR_...
+# environment variables to set these instead.
+# --------------------------------------------------
+
+variable "eks_public_s3_bucket" {
+  type    = string
+  default = ""
+}
