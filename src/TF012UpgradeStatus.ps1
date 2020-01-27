@@ -17,18 +17,16 @@ $ModuleStatus = ForEach ($Folder in $ModuleFolders) {
     Remove-Variable TfVersion -ErrorAction SilentlyContinue
         
     If (Test-Path $ModulePath -PathType Container) {
-
         [string]$TfVersion = gci -Path $ModulePath -Filter *.tf | cat | Select-String -Pattern $regex | % { $_.matches.groups[1].value }
-
-        [PSCustomObject]@{
-            ModulePath = $Folder
-            TfVersion  = $TfVersion
-            Upgraded   = [bool]($TfVersion -like '*0.12*')
-        }
-
     }
     else {
         $TfVersion = "Not found"
+    }
+
+    [PSCustomObject]@{
+        ModulePath = $Folder
+        TfVersion  = $TfVersion
+        Upgraded   = [bool]($TfVersion -like '*0.12*')
     }
 
 }
