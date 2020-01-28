@@ -1,0 +1,40 @@
+name: $(Build.BuildId)
+
+# Triggers Pipeline only from schedule
+trigger: none
+
+# Run a daily test at midnight
+schedules:
+- cron: "0 0 * * *"
+  displayName: Daily midnight test
+  branches:
+    include:
+    - master
+
+# Define resources for container to use
+resources:
+   containers:
+     - container: prime
+       image: dfdsdk/prime-pipeline:0.3.12
+       env:
+        AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+
+# Define variable group to use
+variables:
+- group: QA
+
+stages:
+  # Continuous Integration steps
+  - stage: CI
+    displayName: 'Continuous Integration'
+
+    jobs:
+      - job: Build
+        container: prime
+        pool:
+          vmImage: 'ubuntu-latest'
+       
+        steps:
+        - bash: 
+            ./src/qa-test-eks.sh
+          displayName: 'Integration test against QA'
