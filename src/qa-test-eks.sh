@@ -25,7 +25,7 @@ fi
 
 
 if [ "$ACTION" = "test" ]; then
-    # Add tests here
+    echo "Add tests here"
 fi
 
 
