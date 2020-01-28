@@ -15,13 +15,14 @@ schedules:
 resources:
    containers:
      - container: prime
-       image: dfdsdk/prime-pipeline:0.3.12
+       image: dfdsdk/prime-pipeline:0.3.13
        env:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
 
 # Define variable group to use
 variables:
-- group: QA
+- group: 'Infrastructure-Modules QA'
 
 stages:
   # Continuous Integration steps
