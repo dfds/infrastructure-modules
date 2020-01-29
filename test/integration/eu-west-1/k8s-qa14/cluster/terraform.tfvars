@@ -44,7 +44,7 @@ eks_nodegroup1_instance_max_count = 3
 # --------------------------------------------------
 
 blaster_configmap_deploy = true
-blaster_configmap_bucket = "dfds-qa-k8s-configmap"
+blaster_configmap_bucket = "dfds-qa14-k8s-configmap"
 
 # --------------------------------------------------
 # Cloudwatch agent
