@@ -87,7 +87,7 @@ stages:
         dependsOn:
           - eks_1_13
           - eks_1_14
-        # condition: always()
+        condition: always()
         steps:
           - bash: ./src/qa-test-eks.sh destroy-all _global/eks-public-s3-bucket
             displayName: "Destroy public EKS S3 bucket"
