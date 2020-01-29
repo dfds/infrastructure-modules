@@ -13,8 +13,9 @@ fi
 
 if [ "$ACTION" = "plan" ]; then
     # Show the plan of what will be applied
-    terragrunt plan-all --terragrunt-working-dir ./test/integration --terragrunt-source-update --terragrunt-non-interactive -input=false
-
+    # Can't run plan all, because later stages depend on data from Terraform state (which is empty)
+    # terragrunt plan-all --terragrunt-working-dir ./test/integration --terragrunt-source-update --terragrunt-non-interactive -input=false
+    terragrunt plan --terragrunt-working-dir ./test/integration/eu-west-1/k8s-qa/cluster --terragrunt-source-update --terragrunt-non-interactive -input=false
 fi
 
 
