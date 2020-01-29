@@ -38,15 +38,16 @@ stages:
         steps:
           - bash: ./src/qa-test-eks.sh init
             displayName: "Init"
-            condition: succeeded()
+            # condition: succeeded()
           - bash: ./src/qa-test-eks.sh plan
             displayName: "Run Terraform Plan"
-            condition: succeeded()
+            # condition: succeeded()
           - bash: ./src/qa-test-eks.sh apply
             displayName: "Run Terraform Apply"
-            condition: succeeded()
+            # condition: succeeded()
           - bash: ./src/qa-test-eks.sh test
             displayName: "Run tests"
-            condition: succeeded()
+            # condition: succeeded()
           - bash: ./src/qa-test-eks.sh destroy
             displayName: "Run Terraform Destroy"
+            condition: always()
