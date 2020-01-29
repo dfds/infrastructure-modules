@@ -32,7 +32,7 @@ stages:
       vmImage: "ubuntu-latest"
 
     jobs:
-      - job: eks-1.13
+      - job: eks_1_13
         displayName: EKS 1.13
         container: prime
         steps:
