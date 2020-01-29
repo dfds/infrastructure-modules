@@ -3,8 +3,6 @@ set -eu -o pipefail
 
 BASEPATH=./test/integration
 ACTION=$1
-SUBPATH=$2
-WORKDIR="${BASEPATH}/${SUBPATH}"
 
 
 if [ "$ACTION" = "init" ]; then
@@ -16,6 +14,8 @@ fi
 
 
 if [ "$ACTION" = "plan" ]; then
+    SUBPATH=$2
+    WORKDIR="${BASEPATH}/${SUBPATH}"
     # Show the plan of what will be applied
     # Can't run plan all, because later stages depend on data from Terraform state (which is empty)
     # terragrunt plan-all --terragrunt-working-dir ./test/integration --terragrunt-source-update --terragrunt-non-interactive -input=false
@@ -24,6 +24,8 @@ fi
 
 
 if [ "$ACTION" = "apply-all" ]; then
+    SUBPATH=$2
+    WORKDIR="${BASEPATH}/${SUBPATH}"
     # Apply the configuration
     terragrunt apply-all --terragrunt-working-dir $WORKDIR --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
 fi
@@ -35,6 +37,8 @@ fi
 
 
 if [ "$ACTION" = "destroy-all" ]; then
+    SUBPATH=$2
+    WORKDIR="${BASEPATH}/${SUBPATH}"
     # Cleanup
     terragrunt destroy-all --terragrunt-working-dir $WORKDIR --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
 fi
