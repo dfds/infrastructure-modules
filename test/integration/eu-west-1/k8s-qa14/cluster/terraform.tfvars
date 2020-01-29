@@ -20,8 +20,8 @@ terragrunt {
 # EKS
 # --------------------------------------------------
 
-eks_cluster_name    = "qa"
-eks_cluster_version = "1.13"
+eks_cluster_name    = "qa14"
+eks_cluster_version = "1.14"
 eks_cluster_zones   = 2
 
 eks_worker_subnets          = ["10.0.16.0/21", "10.0.24.0/21", "10.0.32.0/21"]

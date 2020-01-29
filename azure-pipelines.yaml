@@ -32,22 +32,53 @@ stages:
       vmImage: "ubuntu-latest"
 
     jobs:
+      - job: init_shared
+        displayName: Init EKS shared resources
+        container: prime
+        steps:
+          - bash: ./src/qa-test-eks.sh apply-all _global/eks-public-s3-bucket
+            displayName: "Provision public EKS S3 bucket"
+
+    jobs:
       - job: eks_1_13
         displayName: EKS 1.13
         container: prime
+        dependsOn: init_shared
         steps:
           - bash: ./src/qa-test-eks.sh init
             displayName: "Init"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh plan
+          - bash: ./src/qa-test-eks.sh plan k8s-qa13/cluster
             displayName: "Run Terraform Plan"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh apply
+          - bash: ./src/qa-test-eks.sh apply-all k8s-qa13
             displayName: "Run Terraform Apply"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh test
+          - bash: ./src/qa-test-eks.sh test k8s-qa13
             displayName: "Run tests"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh destroy
+          - bash: ./src/qa-test-eks.sh destroy-all k8s-qa13
+            displayName: "Run Terraform Destroy"
+            condition: always()
+
+    jobs:
+      - job: eks_1_14
+        displayName: EKS 1.14
+        container: prime
+        dependsOn: init_shared
+        steps:
+          - bash: ./src/qa-test-eks.sh init
+            displayName: "Init"
+            # condition: succeeded()
+          - bash: ./src/qa-test-eks.sh plan k8s-qa14/cluster
+            displayName: "Run Terraform Plan"
+            # condition: succeeded()
+          - bash: ./src/qa-test-eks.sh apply-all k8s-qa14
+            displayName: "Run Terraform Apply"
+            # condition: succeeded()
+          - bash: ./src/qa-test-eks.sh test k8s-qa14
+            displayName: "Run tests"
+            # condition: succeeded()
+          - bash: ./src/qa-test-eks.sh destroy k8s-qa14
             displayName: "Run Terraform Destroy"
             condition: always()
