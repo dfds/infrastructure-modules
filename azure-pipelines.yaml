@@ -28,13 +28,13 @@ stages:
   # Continuous Integration steps
   - stage: CI
     displayName: "Continuous Integration"
-    container: prime
     pool:
       vmImage: "ubuntu-latest"
 
     jobs:
       - job: eks-1.13
         displayName: EKS 1.13
+        container: prime
         steps:
           - bash: ./src/qa-test-eks.sh init
             displayName: "Init"
