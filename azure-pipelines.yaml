@@ -28,13 +28,13 @@ stages:
   # Continuous Integration steps
   - stage: CI
     displayName: "Continuous Integration"
+    container: prime
+    pool:
+      vmImage: "ubuntu-latest"
 
     jobs:
-      - job: Build
-        container: prime
-        pool:
-          vmImage: "ubuntu-latest"
-
+      - job: eks-1.13
+        displayName: EKS 1.13
         steps:
           - bash: ./src/qa-test-eks.sh init
             displayName: "Init"
@@ -50,4 +50,3 @@ stages:
             condition: succeeded()
           - bash: ./src/qa-test-eks.sh destroy
             displayName: "Run Terraform Destroy"
-            condition: succeeded()
