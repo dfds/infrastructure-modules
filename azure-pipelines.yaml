@@ -47,17 +47,17 @@ stages:
           - bash: ./src/qa-test-eks.sh init
             displayName: "Init"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh plan k8s-qa13/cluster
-            displayName: "Run Terraform Plan"
+          - bash: ./src/qa-test-eks.sh plan eu-west-1/k8s-qa13/cluster
+            displayName: "Terraform Plan (cluster)"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh apply-all k8s-qa13
-            displayName: "Run Terraform Apply"
+          - bash: ./src/qa-test-eks.sh apply-all eu-west-1/k8s-qa13
+            displayName: "Terraform Apply"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh test k8s-qa13
+          - bash: ./src/qa-test-eks.sh test eu-west-1/k8s-qa13
             displayName: "Run tests"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh destroy-all k8s-qa13
-            displayName: "Run Terraform Destroy"
+          - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa13
+            displayName: "Terraform Destroy"
             condition: always()
 
       - job: eks_1_14
@@ -68,17 +68,17 @@ stages:
           - bash: ./src/qa-test-eks.sh init
             displayName: "Init"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh plan k8s-qa14/cluster
-            displayName: "Run Terraform Plan"
+          - bash: ./src/qa-test-eks.sh plan eu-west-1/k8s-qa14/cluster
+            displayName: "Terraform Plan (cluster)"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh apply-all k8s-qa14
-            displayName: "Run Terraform Apply"
+          - bash: ./src/qa-test-eks.sh apply-all eu-west-1/k8s-qa14
+            displayName: "Terraform Apply"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh test k8s-qa14
+          - bash: ./src/qa-test-eks.sh test eu-west-1/k8s-qa14
             displayName: "Run tests"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh destroy k8s-qa14
-            displayName: "Run Terraform Destroy"
+          - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa14
+            displayName: "Terraform Destroy"
             condition: always()
 
       - job: destroy_shared
