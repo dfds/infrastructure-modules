@@ -34,7 +34,7 @@ EOF
 
 resource "aws_iam_policy" "iamroleservice" {
   count       = var.deploy ? 1 : 0
-  name        = "iamroleservice"
+  name        = "eks-${var.cluster_name}-iamroleservice"
   description = "Permissions for the iam role service"
 
   policy = <<EOF
@@ -60,7 +60,7 @@ resource "aws_iam_role_policy_attachment" "iamroleservice" {
 
 resource "aws_iam_policy" "rolemapperservice" {
   count       = var.deploy ? 1 : 0
-  name        = "rolemapperservice"
+  name        = "eks-${var.cluster_name}-rolemapperservice"
   description = "Permissions for the role mapper service"
 
   policy = <<EOF
@@ -109,7 +109,7 @@ resource "aws_iam_role_policy_attachment" "rolemapperservice" {
 
 resource "aws_iam_policy" "param_store" {
   count       = var.deploy ? 1 : 0
-  name        = "param-store"
+  name        = "eks-${var.cluster_name}-param-store"
   description = "Permissions for kube configs in param-store"
 
   policy = <<EOF
@@ -142,7 +142,7 @@ resource "aws_iam_role_policy_attachment" "param-store" {
 
 resource "aws_iam_policy" "argocdjanitor" {
   count       = var.deploy ? 1 : 0
-  name        = "argocdjanitor"
+  name        = "eks-${var.cluster_name}-argocdjanitor"
   description = "Permissions for argocd password"
 
   policy = <<EOF
