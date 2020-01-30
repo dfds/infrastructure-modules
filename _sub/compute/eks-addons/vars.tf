@@ -3,7 +3,8 @@ variable "cluster_version" {
 }
 
 variable "kubeconfig_path" {
-  type = string
+  type    = string
+  default = null
 }
 
 variable "kubeproxy_version_override" {
@@ -20,4 +21,3 @@ variable "vpccni_version_override" {
   type    = string
   default = ""
 }
-

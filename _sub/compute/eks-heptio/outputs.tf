@@ -23,7 +23,9 @@ output "user_configfile" {
   value = local.kubeconfig_users
 }
 
+# Hack'ish workaround, until properly supported by Terraform
+# Based on https://discuss.hashicorp.com/t/tips-howto-implement-module-depends-on-emulation/2305
+# This output is articially calculated, to trick Terraform create an implicit dependency.
 output "kubeconfig_path" {
-  value = var.kubeconfig_path
+  value = length(data.local_file.kubeconfig.content) > 0 ? var.kubeconfig_path : ""
 }
-

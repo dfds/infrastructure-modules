@@ -15,6 +15,15 @@ resource "local_file" "kubeconfig" {
   }
 }
 
+# Hack'ish workaround, until properly supported by Terraform
+# Based on https://discuss.hashicorp.com/t/tips-howto-implement-module-depends-on-emulation/2305
+# But since no resources in this module has output attributes, nothing will be considered a dependency by Terraform.
+# Using the local file as a data source however, means Terraform have to wait for this step, when creating the dependency graph.
+data "local_file" "kubeconfig" {
+  filename   = var.kubeconfig_path
+  depends_on = [local_file.kubeconfig]
+}
+
 locals {
   path_default_configmap = pathexpand(
     "./.terraform/data/config-map-aws-auth_${var.cluster_name}.yaml",
