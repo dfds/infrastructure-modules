@@ -5,7 +5,7 @@ terraform {
 }
 
 # Include all settings from the root terraform.tfvars file
-include = {
+include {
   path = "${find_in_parent_folders()}"
 }
 
