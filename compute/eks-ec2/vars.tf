@@ -85,12 +85,6 @@ variable "eks_worker_inotify_max_user_watches" {
   default = 32768 # default t3.large is 8192 which is too low
 }
 
-variable "eks_public_s3_bucket" {
-  description = "The name of the public S3 bucket, where non-sensitive Kubeconfig will be copied to."
-  type        = string
-  default     = ""
-}
-
 variable "eks_worker_subnets" {
   type    = list(string)
   default = []
@@ -99,6 +93,29 @@ variable "eks_worker_subnets" {
 variable "eks_worker_ssh_ip_whitelist" {
   type = list(string)
 }
+
+
+variable "eks_addon_kubeproxy_version_override" {
+  type    = string
+  default = ""
+}
+
+variable "eks_addon_coredns_version_override" {
+  type    = string
+  default = ""
+}
+
+variable "eks_addon_vpccni_version_override" {
+  type    = string
+  default = ""
+}
+
+variable "eks_public_s3_bucket" {
+  description = "The name of the public S3 bucket, where non-sensitive Kubeconfig will be copied to."
+  type        = string
+  default     = ""
+}
+
 
 # --------------------------------------------------
 # EKS Nodegroup 1

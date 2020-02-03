@@ -155,9 +155,12 @@ module "eks_heptio" {
 }
 
 module "eks_addons" {
-  source          = "../../_sub/compute/eks-addons"
-  kubeconfig_path = module.eks_heptio.kubeconfig_path
-  cluster_version = var.eks_cluster_version
+  source                     = "../../_sub/compute/eks-addons"
+  kubeconfig_path            = module.eks_heptio.kubeconfig_path
+  cluster_version            = var.eks_cluster_version
+  kubeproxy_version_override = var.eks_addon_kubeproxy_version_override
+  coredns_version_override   = var.eks_addon_coredns_version_override
+  vpccni_version_override    = var.eks_addon_vpccni_version_override
 }
 
 module "eks_s3_public_kubeconfig" {
