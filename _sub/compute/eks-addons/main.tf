@@ -1,6 +1,6 @@
 resource "null_resource" "kubeproxy" {
   provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${var.kubeconfig_path} -n kube-system set image daemonset.apps/kube-proxy kube-proxy=602401143452.dkr.ecr.us-west-2.amazonaws.com/eks/kube-proxy:v${local.kubeproxy_version}"
+    command = "kubectl --kubeconfig ${var.kubeconfig_path} -n kube-system set image daemonset.apps/kube-proxy kube-proxy=602401143452.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/eks/kube-proxy:v${local.kubeproxy_version}"
   }
 
   triggers = {
@@ -10,7 +10,7 @@ resource "null_resource" "kubeproxy" {
 
 resource "null_resource" "coredns" {
   provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${var.kubeconfig_path} -n kube-system set image deployment.apps/coredns coredns=602401143452.dkr.ecr.us-west-2.amazonaws.com/eks/coredns:v${local.coredns_version}"
+    command = "kubectl --kubeconfig ${var.kubeconfig_path} -n kube-system set image deployment.apps/coredns coredns=602401143452.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/eks/coredns:v${local.coredns_version}"
   }
 
   triggers = {
@@ -31,4 +31,3 @@ resource "null_resource" "vpccni" {
 
   depends_on = [null_resource.coredns]
 }
-

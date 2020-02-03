@@ -26,3 +26,5 @@ locals {
   vpccni_minorversion = join(".", slice(split(".", local.vpccni_version), 0, 2))
 }
 
+# Get current AWS region
+data "aws_region" "current" {}
