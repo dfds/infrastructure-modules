@@ -1,7 +1,7 @@
 #Initializes the variables needed to generate a new account
 #The values vill be propagated via a tfvars file
 variable "aws_region" {
-  type = "string"
+  type = string
 }
 
 # variable "aws_assume_role_arn" {
@@ -10,79 +10,79 @@ variable "aws_region" {
 # }
 
 variable "master_account_id" {
-  type        = "string"
+  type        = string
   description = "The AWS account ID of the Organizations Master account"
 }
 
 variable "core_account_id" {
-  type        = "string"
+  type        = string
   description = "The AWS account ID of the Organizations Core account"
 }
 
 variable "access_key_master" {
-  type = "string"
+  type = string
 }
 
 variable "secret_key_master" {
-  type = "string"
+  type = string
 }
 
 variable "name" {
-  type = "string"
+  type = string
 }
 
 variable "org_role_name" {
-  type = "string"
+  type = string
 }
 
 variable "prime_role_name" {
-  type = "string"
+  type = string
 }
 
 variable "email" {
-  type = "string"
+  type = string
 }
 
 variable "adfs_fqdn" {
-  type        = "string"
+  type        = string
   description = "The fully-qualified domain name of the ADFS server, e.g. adfs.company.tld"
 }
 
 variable "context_id" {
-  type        = "string"
+  type        = string
   description = "The ID of the context, for which to create and AWS account"
 }
 
 variable "correlation_id" {
-  type = "string"
+  type = string
 }
 
 variable "capability_root_id" {
-  type = "string"
+  type = string
 }
 
 variable "capability_name" {
-  type = "string"
+  type = string
 }
 
 variable "capability_id" {
-  type = "string"
+  type = string
 }
 
 variable "context_name" {
-  type = "string"
+  type = string
 }
 
 variable "kafka_broker" {
-  type = "string"
+  type = string
 }
 
 variable "kafka_username" {
-  type = "string"
+  type = string
 }
 
 variable "kafka_password" {
-  type = "string"
+  type = string
 }
 
 variable "publish_message" {
@@ -90,13 +90,14 @@ variable "publish_message" {
 }
 
 variable "parent_id" {
-  type        = "string"
+  type        = string
   description = "The ID of the parent AWS Organization OU."
   default     = ""
 }
 
 variable "kiam_role_arn" {
-  type = "string"
+  type        = string
   description = "Optional: The KIAM role ARN that can assume roles"
-  default = ""
+  default     = ""
 }
+
