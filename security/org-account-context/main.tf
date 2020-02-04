@@ -179,4 +179,3 @@ module "kafka_produce_account_created" {
   username        = var.kafka_username
   password        = var.kafka_password
 }
-
