@@ -3,13 +3,14 @@
 #By default route53 generates 4 nameservers for a zone which is why there is 4 (zeroindexed) zone-ns variables
 
 variable "dns_child_zone_name" {
-  type = "string"
+  type = string
 }
 
 variable "dns_zone_id" {
-  type = "string"
+  type = string
 }
 
 variable "dns_zone_ns" {
-  type = "list"
+  type = list(string)
 }
+
