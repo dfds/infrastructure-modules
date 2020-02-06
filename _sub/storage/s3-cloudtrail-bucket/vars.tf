@@ -8,6 +8,7 @@ variable "retention_days" {
 }
 
 variable "create_s3_bucket" {
+  type    = bool
   default = false
 }
 

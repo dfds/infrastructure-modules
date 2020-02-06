@@ -68,7 +68,7 @@ module "iam_idp" {
 
 module "cloudtrail_s3_local" {
   source           = "../../_sub/storage/s3-cloudtrail-bucket"
-  create_s3_bucket = var.cloudtrail_local_s3_bucket != "" ? 1 : 0
+  create_s3_bucket = var.cloudtrail_local_s3_bucket != "" ? true : false
   s3_bucket        = var.cloudtrail_local_s3_bucket
 
   providers = {
@@ -78,6 +78,7 @@ module "cloudtrail_s3_local" {
 
 module "cloudtrail_local" {
   source     = "../../_sub/security/cloudtrail-config"
+  deploy     = var.cloudtrail_local_s3_bucket != "" ? true : false
   s3_bucket  = module.cloudtrail_s3_local.bucket_name
   trail_name = "local-audit"
 

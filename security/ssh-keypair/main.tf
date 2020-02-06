@@ -17,13 +17,13 @@ provider "aws" {
 }
 
 resource "tls_private_key" "keypair" {
-  count     = var.deploy
+  count     = var.deploy ? 1 : 0
   algorithm = "RSA"
   rsa_bits  = "2048"
 }
 
 resource "aws_ssm_parameter" "putPublicKey" {
-  count       = var.deploy
+  count       = var.deploy ? 1 : 0
   name        = "/eks/${var.keypairname}/rsa_public"
   description = "Public key of ${var.keypairname} ssh keypair"
   type        = "SecureString"
@@ -35,7 +35,7 @@ resource "aws_ssm_parameter" "putPublicKey" {
 }
 
 resource "aws_ssm_parameter" "putPrivateKey" {
-  count       = var.deploy
+  count       = var.deploy ? 1 : 0
   name        = "/eks/${var.keypairname}/rsa_private"
   description = "Private key of ${var.keypairname} ssh keypair"
   type        = "SecureString"
