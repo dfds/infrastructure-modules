@@ -1,7 +1,7 @@
 #Initializes the variables needed to generate a new account
 #The values vill be propagated via a tfvars file
 variable "aws_region" {
-  type = "string"
+  type = string
 }
 
 # variable "aws_assume_role_arn" {
@@ -10,44 +10,46 @@ variable "aws_region" {
 # }
 
 variable "master_account_id" {
-  type = "string"
+  type        = string
   description = "The AWS account ID of the Organizations Master account"
 }
 
 variable "access_key_master" {
-  type = "string"
+  type = string
 }
 
 variable "secret_key_master" {
-  type = "string"
+  type = string
 }
 
 variable "name" {
-  type = "string"
+  type = string
 }
 
 variable "org_role_name" {
-  type = "string"
+  type = string
 }
 
 variable "prime_role_name" {
-  type = "string"
+  type = string
 }
+
 variable "email" {
-  type = "string"
+  type = string
 }
 
 variable "tax_settings_document" {
-  type = "string"
+  type    = string
   default = "./taxsettings.json"
 }
 
 variable "cloudtrail_local_s3_bucket" {
-  type = "string"
+  type    = string
   default = ""
 }
 
 variable "adfs_fqdn" {
-    type = "string"
-    description = "The fully-qualified domain name of the ADFS server, e.g. adfs.company.tld"
-  }
+  type        = string
+  description = "The fully-qualified domain name of the ADFS server, e.g. adfs.company.tld"
+}
+

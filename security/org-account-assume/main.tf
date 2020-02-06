@@ -1,6 +1,6 @@
 provider "aws" {
-  version = "~> 2.21.0"
-  region = "${var.aws_region}"
+  version = "~> 2.43.0"
+  region  = var.aws_region
 
   # Assume role in Master account
   assume_role {
@@ -9,31 +9,30 @@ provider "aws" {
 }
 
 provider "aws" {
-  version = "~> 2.21.0"
-  region = "${var.aws_region}"
-  alias  = "core"
+  version = "~> 2.43.0"
+  region  = var.aws_region
+  alias   = "core"
 }
 
 provider "aws" {
-  version = "~> 2.21.0"
-  region = "${var.aws_region}"
+  version = "~> 2.43.0"
+  region  = var.aws_region
 
   # Need explicit credentials in Master, to be able to assume Organizational Role in Workload account 
-  access_key = "${var.access_key_master}"
-  secret_key = "${var.secret_key_master}"
+  access_key = var.access_key_master
+  secret_key = var.secret_key_master
 
   # Assume the Organizational role in Workload account
   assume_role {
-    role_arn = "${module.org_account.org_role_arn}"
+    role_arn = module.org_account.org_role_arn
   }
 
   alias = "workload"
 }
 
 terraform {
-  # The configuration for this backend will be filled in by Terragrunt
-  backend          "s3"             {}
-  required_version = "~> 0.11.7"
+  backend "s3" {
+  }
 }
 
 module "iam_policies" {
@@ -43,63 +42,63 @@ module "iam_policies" {
 
 module "org_account" {
   source        = "../../_sub/security/org-account"
-  name          = "${var.name}"
-  org_role_name = "${var.org_role_name}"
-  email         = "${var.email}"
+  name          = var.name
+  org_role_name = var.org_role_name
+  email         = var.email
 }
 
 module "iam_account_alias" {
   source        = "../../_sub/security/iam-account-alias"
-  account_alias = "${module.org_account.name}"
+  account_alias = module.org_account.name
 
   providers = {
-    aws = "aws.workload"
+    aws = aws.workload
   }
 }
 
 module "iam_idp" {
   source        = "../../_sub/security/iam-idp"
   provider_name = "ADFS"
-  adfs_fqdn     = "${var.adfs_fqdn}"
+  adfs_fqdn     = var.adfs_fqdn
 
   providers = {
-    aws = "aws.workload"
+    aws = aws.workload
   }
 }
 
 module "cloudtrail_s3_local" {
   source           = "../../_sub/storage/s3-cloudtrail-bucket"
-  create_s3_bucket = "${var.cloudtrail_local_s3_bucket != "" ? 1 : 0}"
-  s3_bucket        = "${var.cloudtrail_local_s3_bucket}"
+  create_s3_bucket = var.cloudtrail_local_s3_bucket != "" ? 1 : 0
+  s3_bucket        = var.cloudtrail_local_s3_bucket
 
   providers = {
-    aws = "aws.workload"
+    aws = aws.workload
   }
 }
 
 module "cloudtrail_local" {
   source     = "../../_sub/security/cloudtrail-config"
-  s3_bucket  = "${module.cloudtrail_s3_local.bucket_name}"
+  s3_bucket  = module.cloudtrail_s3_local.bucket_name
   trail_name = "local-audit"
 
   providers = {
-    aws = "aws.workload"
+    aws = aws.workload
   }
 }
 
 resource "aws_iam_role" "prime" {
-  name               = "${var.prime_role_name}"
+  name               = var.prime_role_name
   description        = "Admin role to be assumed by Prime"
-  assume_role_policy = "${module.iam_policies.trusted_account}"
-  provider           = "aws.workload"
+  assume_role_policy = module.iam_policies.trusted_account
+  provider           = aws.workload
 }
 
 # Create the a Prime Admin role in the Workload account
 resource "aws_iam_role_policy" "prime-admin" {
   name     = "Admin"
-  role     = "${aws_iam_role.prime.id}"
-  policy   = "${module.iam_policies.admin}"
-  provider = "aws.workload"
+  role     = aws_iam_role.prime.id
+  policy   = module.iam_policies.admin
+  provider = aws.workload
 }
 
 # resource "null_resource" "apply_tax_settings" {
@@ -107,8 +106,6 @@ resource "aws_iam_role_policy" "prime-admin" {
 #     command = "python3 /src/taxregistrations.py ${module.org_account.org_role_arn} ${var.tax_settings_document}"
 #   }
 # }
-
-
 /*
 Does not work, because default provider already assumes a role, and cannot assume from there?
 How to solve/align this provider hell between org-account and org-account assume?
@@ -132,4 +129,3 @@ boto.exception.BotoServerError: BotoServerError: 403 Forbidden
   <RequestId>6a698849-057e-11e9-9d94-512276d00469</RequestId>
 </ErrorResponse>
 */
-
