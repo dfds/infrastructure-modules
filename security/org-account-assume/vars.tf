@@ -67,7 +67,7 @@ variable "terraform_state_s3_bucket" {
   default = ""
 }
 
-variable "terraform_state_aws_region" {
+variable "terraform_state_region" {
   type    = string
   default = ""
 }
