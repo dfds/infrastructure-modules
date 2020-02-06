@@ -2,11 +2,11 @@
 # AWS
 # --------------------------------------------------
 variable "aws_region" {
-  type = "string"
+  type = string
 }
 
 variable "aws_assume_role_arn" {
-  type = "string"
+  type = string
 }
 
 variable "keypairname" {
@@ -14,6 +14,6 @@ variable "keypairname" {
 }
 
 variable "deploy" {
-  type    = bool
+  type = bool
   default = true
 }
