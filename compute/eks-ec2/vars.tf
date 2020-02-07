@@ -126,11 +126,38 @@ variable "eks_nodegroup1_instance_types" {
   default = []
 }
 
+variable "eks_nodegroup1_kubelet_extra_args" {
+  type    = string
+  default = ""
+}
+
 variable "eks_nodegroup1_instance_min_count" {
   default = 0
 }
 
 variable "eks_nodegroup1_instance_max_count" {
+  default = 0
+}
+
+# --------------------------------------------------
+# EKS Nodegroup 2
+# --------------------------------------------------
+
+variable "eks_nodegroup2_instance_types" {
+  type    = list(string)
+  default = []
+}
+
+variable "eks_nodegroup2_kubelet_extra_args" {
+  type    = string
+  default = ""
+}
+
+variable "eks_nodegroup2_instance_min_count" {
+  default = 0
+}
+
+variable "eks_nodegroup2_instance_max_count" {
   default = 0
 }
 

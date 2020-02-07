@@ -65,3 +65,7 @@ variable "cloudwatch_agent_enabled" {
 variable "worker_inotify_max_user_watches" {
 }
 
+variable "kubelet_extra_args" {
+  type    = string
+  default = ""
+}
