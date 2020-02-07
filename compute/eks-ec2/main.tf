@@ -237,4 +237,3 @@ module "cloudwatch_agent_config_bucket" {
   deploy    = var.eks_worker_cloudwatch_agent_config_deploy
   s3_bucket = "${var.eks_cluster_name}-cl-agent-config"
 }
-
