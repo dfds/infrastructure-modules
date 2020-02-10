@@ -1,27 +1,26 @@
 variable "aws_region" {
-    type = "string"
+  type = string
 }
 
-
 variable "application" {
-  type = "string"
+  type = string
 }
 
 variable "db_name" {
-  type = "string"
+  type = string
 }
 
 variable "db_master_username" {
-  type = "string"
+  type = string
 }
 
 variable "db_master_password" {
-  type = "string"
+  type = string
 }
 
 variable "environment" {
-    type = "string"
-    default = "prod"
+  type    = string
+  default = "prod"
 }
 
 variable "db_port" {
@@ -31,5 +30,6 @@ variable "db_port" {
 
 variable "skip_final_snapshot" {
   description = "Define if the default of creating a backup upon deletion should be skipped. Default is false"
-  default = false
+  default     = false
 }
+

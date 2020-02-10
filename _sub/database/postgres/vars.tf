@@ -41,7 +41,5 @@ variable "db_allocated_storage" {
 
 variable "skip_final_snapshot" {
   description = "Define if the default of creating a backup upon deletion should be skipped. Default is false"
-  default = false
+  default     = false
 }
-
-
