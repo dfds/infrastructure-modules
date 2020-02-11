@@ -22,7 +22,8 @@ locals {
                 "route53:*",
                 "support:*",
                 "waf:*",
-				"s3:List*"
+		"s3:List*",
+		"dynamoDB:DescribeTable"
             ],
             "Resource": "*",
             "Condition": {
