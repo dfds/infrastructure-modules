@@ -1,4 +1,5 @@
-data "aws_organizations_organization" "org" {}
+data "aws_organizations_organization" "org" {
+}
 
 locals {
   denynoneuregions_policy = <<POLICY
@@ -22,7 +23,8 @@ locals {
                 "route53:*",
                 "support:*",
                 "waf:*",
-				"s3:List*"
+				"s3:List*",
+				"dynamoDB:DescribeTable"
             ],
             "Resource": "*",
             "Condition": {
@@ -36,6 +38,7 @@ locals {
     ]
 }
 POLICY
+
 
   denyiam_policy = <<POLICY
 {
@@ -115,6 +118,7 @@ POLICY
 }
 POLICY
 
+
   denyexpensiveec2_policy = <<POLICY
 {
 	"Version": "2012-10-17",
@@ -146,6 +150,7 @@ POLICY
 }
 POLICY
 
+
   denyvpncreation_policy = <<POLICY
 {
 	"Version": "2012-10-17",
@@ -170,4 +175,6 @@ POLICY
 	]
 }
 POLICY
+
 }
+
