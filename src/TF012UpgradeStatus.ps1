@@ -1,5 +1,5 @@
-$ModulesPath = '/home/hemor/Code/infrastructure-modules'
-#$ModulesPath = 'C:\code\infrastructure-modules'
+$ModulesPath = 'C:\code\infrastructure-modules'
+#$ModulesPath = '/home/hemor/Code/infrastructure-modules'
 $Tf012Branch = 'tf0_12'
 $RegEx = '^\s*\{*\s*required_version\s*=\s*"(.+)"'
 
