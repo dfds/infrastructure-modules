@@ -1,29 +1,28 @@
 #Initializes the variables needed to generate a new account
 #The values vill be propagated via a tfvars file
 variable "aws_region" {
-  type = "string"
+  type = string
 }
 
 variable "name" {
-  type = "string"
+  type = string
 }
 
-
 variable "org_role_name" {
-  type = "string"
+  type = string
 }
 
 variable "email" {
-  type = "string"
+  type = string
 }
 
 variable "cloudtrail_local_s3_bucket" {
-  type = "string"
+  type    = string
   default = ""
 }
 
 variable "tax_settings_document" {
-  type = "string"
+  type    = string
   default = "./taxsettings.json"
 }
 
@@ -32,5 +31,6 @@ variable "create_cloudtrail_s3_bucket" {
 }
 
 variable "cloudtrail_central_s3_bucket" {
-  type = "string"
+  type = string
 }
+
