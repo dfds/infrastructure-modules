@@ -1,4 +1,4 @@
-$ModulesPath = '/home/hemor/Code/infrastructure-modules/'
+$ModulesPath = '/home/hemor/Code/infrastructure-modules'
 #$ModulesPath = 'C:\code\infrastructure-modules'
 $Tf012Branch = 'tf0_12'
 $RegEx = '^\s*\{*\s*required_version\s*=\s*"(.+)"'
@@ -18,7 +18,7 @@ $ModuleStatus = ForEach ($Folder in $ModuleFolders) {
     Remove-Variable TfVersion -ErrorAction SilentlyContinue
         
     If (Test-Path $ModulePath -PathType Container) {
-        [string]$TfVersion = Get-ChildItem -Path $ModulePath -Filter *.tf | cat | Select-String -Pattern $regex | ForEach-Object { $_.matches.groups[1].value }
+        [string]$TfVersion = Get-ChildItem -Path $ModulePath -Filter *.tf | cat | Select-String -Pattern $RegEx | ForEach-Object { $_.matches.groups[1].value }
     }
     else {
         $TfVersion = "Not found in '$Tf012Branch'"
@@ -33,7 +33,7 @@ $ModuleStatus = ForEach ($Folder in $ModuleFolders) {
 }
 
 $ModuleCount = $ModuleStatus.Count
-$ModuleUpgradeCount = ($ModuleStatus | ? Upgraded).Count
+$ModuleUpgradeCount = ($ModuleStatus | Where-Object Upgraded).Count
 $UpgradeRelative = ($ModuleUpgradeCount / $ModuleCount).ToString('P')
 
 $ModuleStatus | Out-Host
