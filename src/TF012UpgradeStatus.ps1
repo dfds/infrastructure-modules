@@ -1,4 +1,5 @@
-$ModulesPath = 'C:\code\infrastructure-modules'
+$ModulesPath = '/home/hemor/Code/infrastructure-modules/'
+#$ModulesPath = 'C:\code\infrastructure-modules'
 $Tf012Branch = 'tf0_12'
 $RegEx = '^\s*\{*\s*required_version\s*=\s*"(.+)"'
 
@@ -7,7 +8,7 @@ $CurrentBranch = & git rev-parse --abbrev-ref HEAD
 
 # Get current modules in master
 git checkout master | Out-Null
-$ModuleFolders = gci -Recurse -Filter *.tf | ? { $_.Directory -notlike '*\.*' } | select -Expand Directory -Unique | % { $_.ToString().Replace("$ModulesPath", "") }
+$ModuleFolders = Get-ChildItem -Recurse -Filter *.tf | Where-Object { $_.Directory -notlike '*\.*' } | Select-Object -Expand Directory -Unique | ForEach-Object { $_.ToString().Replace("$ModulesPath", "") }
 
 # Compare against TF 0.12 branch
 git checkout $Tf012Branch
@@ -17,7 +18,7 @@ $ModuleStatus = ForEach ($Folder in $ModuleFolders) {
     Remove-Variable TfVersion -ErrorAction SilentlyContinue
         
     If (Test-Path $ModulePath -PathType Container) {
-        [string]$TfVersion = gci -Path $ModulePath -Filter *.tf | cat | Select-String -Pattern $regex | % { $_.matches.groups[1].value }
+        [string]$TfVersion = Get-ChildItem -Path $ModulePath -Filter *.tf | cat | Select-String -Pattern $regex | ForEach-Object { $_.matches.groups[1].value }
     }
     else {
         $TfVersion = "Not found in '$Tf012Branch'"
