@@ -49,7 +49,7 @@ module "cloudtrail_s3_central" {
 
 module "cloudtrail_s3_local" {
   source           = "../../_sub/storage/s3-cloudtrail-bucket"
-  create_s3_bucket = var.cloudtrail_local_s3_bucket != "" ? 1 : 0
+  create_s3_bucket = var.cloudtrail_local_s3_bucket != "" ? true : false
   s3_bucket        = var.cloudtrail_local_s3_bucket
 
   providers = {
@@ -66,10 +66,3 @@ module "cloudtrail_local" {
     aws = aws.workload
   }
 }
-
-resource "null_resource" "apply_tax_settings" {
-  provisioner "local-exec" {
-    command = "python3 /src/taxregistrations.py ${module.org_account.org_role_arn} ${var.tax_settings_document}"
-  }
-}
-
