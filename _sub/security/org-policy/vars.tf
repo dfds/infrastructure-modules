@@ -1,17 +1,18 @@
 variable "name" {
-  type = "string"
+  type = string
 }
 
 variable "description" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "policy" {
-  type = "string"
+  type = string
 }
 
 variable "attach_target_id" {
-  type    = "string"
+  type    = string
   default = ""
 }
+
