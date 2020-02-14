@@ -1,5 +1,5 @@
-# Organisation account module 
-This module can be used to provision AWS accounts in an organisation.
+# Organization account module 
+This module can be used to provision AWS accounts in an organization.
 
 ## How do you use this module?
 
