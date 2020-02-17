@@ -3,7 +3,7 @@
 # --------------------------------------------------
 
 terraform {
-  backend          "s3"             {}
+  backend "s3" {}
 }
 
 provider "aws" {
@@ -17,7 +17,7 @@ provider "aws" {
 
 resource "aws_ecr_repository" "dfds" {
   for_each = var.list_of_repos
-  name = each.key
+  name     = each.key
 
   image_scanning_configuration {
     scan_on_push = var.scan_images
