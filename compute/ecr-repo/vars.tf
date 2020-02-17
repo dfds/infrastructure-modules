@@ -18,6 +18,6 @@ variable "accounts" {
 }
 
 variable "scan_images" {
-  type bool
+  type = bool
   default = true
 }
