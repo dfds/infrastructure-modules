@@ -47,4 +47,6 @@ resource "aws_ecr_repository_policy" "pol" {
     ]
 }
 EOF
+
+depends_on = [aws_ecr_repository.repo]
 }
