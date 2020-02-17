@@ -15,7 +15,7 @@ provider "aws" {
 # ECR repo and policy
 # --------------------------------------------------
 
-resource "aws_ecr_repository" "dfds" {
+resource "aws_ecr_repository" "repo" {
   for_each = var.list_of_repos
   name     = each.key
 
