@@ -4,6 +4,9 @@ variable "aws_region" {
 
 variable "list_of_repos" {
   type = set(string)
+  # default = [
+  #   "project/app-name",
+  # ]
 }
 
 variable "accounts" {
