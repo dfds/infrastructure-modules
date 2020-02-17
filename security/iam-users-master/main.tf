@@ -13,7 +13,7 @@ terraform {
 # Load IAM policy documents from module
 module "iam_policies" {
   source                 = "../../_sub/security/iam-policies"
-  core_account_role_arns = [var.core_account_role_arns]
+  core_account_role_arns = var.core_account_role_arns
 }
 
 # Create the user for the master account
