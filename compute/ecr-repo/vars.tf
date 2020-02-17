@@ -1,14 +1,20 @@
 variable "aws_region" {
-  type = "string"
+  type = string
 }
 
-variable "name" {
-  description = "The name of the ECR repo to create"
-  type        = "string"
+variable "list_of_repos" {
+  type = set(string)
 }
 
-variable "pull_principals" {
+variable "accounts" {
+  type = list(string)
   description = "A list of AWS IAM principals that should be allowed to pull images from this repo"
-  type    = "list"
-  default = []
+  default = [
+    "arn:aws:iam::738063116313:root", #dfds-oxygen
+  ]
+}
+
+variable "scan_images" {
+  type bool
+  default = true
 }

@@ -8,16 +8,21 @@ terraform {
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
-  version = "~> 2.21.0"
+  region  = var.aws_region
+  version = "~> 2.43"
 }
 
 # --------------------------------------------------
 # ECR repo and policy
 # --------------------------------------------------
 
-resource "aws_ecr_repository" "repo" {
-  name  = "${var.name}"
+resource "aws_ecr_repository" "dfds" {
+  for_each = var.list_of_repos
+  name = each.key
+
+  image_scanning_configuration {
+    scan_on_push = var.scan_images
+  }
 }
 
 resource "aws_ecr_repository_policy" "pol" {
@@ -31,7 +36,7 @@ resource "aws_ecr_repository_policy" "pol" {
             "Sid": "Allow pull from AWS IAM principals",
             "Effect": "Allow",
             "Principal": {
-                "AWS": ${jsonencode(var.pull_principals)}
+                "AWS": ${jsonencode(var.accounts)}
             },
             "Action": [
                 "ecr:GetDownloadUrlForLayer",
