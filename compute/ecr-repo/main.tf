@@ -25,7 +25,8 @@ resource "aws_ecr_repository" "repo" {
 }
 
 resource "aws_ecr_repository_policy" "pol" {
-  repository = "${aws_ecr_repository.repo.name}"
+  for_each    = var.list_of_repos
+  repository  = each.key
 
   policy = <<EOF
 {
