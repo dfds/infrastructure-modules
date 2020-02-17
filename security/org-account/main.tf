@@ -60,6 +60,7 @@ module "cloudtrail_s3_local" {
 module "cloudtrail_local" {
   source     = "../../_sub/security/cloudtrail-config"
   s3_bucket  = module.cloudtrail_s3_local.bucket_name
+  deploy     = var.cloudtrail_local_s3_bucket != "" ? true : false
   trail_name = "local-audit"
 
   providers = {
