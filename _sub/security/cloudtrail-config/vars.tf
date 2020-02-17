@@ -13,5 +13,4 @@ variable "is_organization_trail" {
 
 variable "deploy" {
   type = bool
-  default = true
 }
