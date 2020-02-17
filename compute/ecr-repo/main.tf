@@ -3,13 +3,12 @@
 # --------------------------------------------------
 
 terraform {
-  backend          "s3"             {}
-  required_version = "~> 0.11.7"
+  backend "s3" {}
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
-  version = "~> 2.21.0"
+  region  = var.aws_region
+  version = "~> 2.43"
 }
 
 # --------------------------------------------------
@@ -17,11 +16,17 @@ provider "aws" {
 # --------------------------------------------------
 
 resource "aws_ecr_repository" "repo" {
-  name  = "${var.name}"
+  for_each = var.list_of_repos
+  name     = each.key
+
+  image_scanning_configuration {
+    scan_on_push = var.scan_images
+  }
 }
 
 resource "aws_ecr_repository_policy" "pol" {
-  repository = "${aws_ecr_repository.repo.name}"
+  for_each    = var.list_of_repos
+  repository  = each.key
 
   policy = <<EOF
 {
@@ -31,7 +36,7 @@ resource "aws_ecr_repository_policy" "pol" {
             "Sid": "Allow pull from AWS IAM principals",
             "Effect": "Allow",
             "Principal": {
-                "AWS": ${jsonencode(var.pull_principals)}
+                "AWS": ${jsonencode(var.accounts)}
             },
             "Action": [
                 "ecr:GetDownloadUrlForLayer",
@@ -42,4 +47,6 @@ resource "aws_ecr_repository_policy" "pol" {
     ]
 }
 EOF
+
+depends_on = [aws_ecr_repository.repo]
 }
