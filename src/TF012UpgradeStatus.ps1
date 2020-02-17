@@ -27,7 +27,7 @@ $ModuleStatus = ForEach ($Folder in $ModuleFolders) {
     [PSCustomObject]@{
         ModulePath = $Folder
         TfVersion  = $TfVersion
-        Upgraded   = [bool]($TfVersion -like '*0.12*')
+        Upgraded   = [bool]($TfVersion -like '*0.12*' -or $TfVersion -like 'Not found*')
     }
 
 }
