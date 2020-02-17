@@ -14,5 +14,5 @@ module "cloudtrail_central" {
   s3_bucket             = var.cloudtrail_central_s3_bucket
   trail_name            = "org-audit"
   is_organization_trail = true
+  deploy                = var.deploy
 }
-

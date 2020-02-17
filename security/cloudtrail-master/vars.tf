@@ -8,6 +8,10 @@ variable "cloudtrail_central_s3_bucket" {
   type = string
 }
 
+variable "deploy" {
+  type = bool
+}
+
 # --------------------------------------------------
 # Unused variables - to provent TF warning/error:
 # Using a variables file to set an undeclared variable is deprecated and will
