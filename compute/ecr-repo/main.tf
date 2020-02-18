@@ -15,38 +15,10 @@ provider "aws" {
 # ECR repo and policy
 # --------------------------------------------------
 
-resource "aws_ecr_repository" "repo" {
-  for_each = var.list_of_repos
-  name     = each.key
-
-  image_scanning_configuration {
-    scan_on_push = var.scan_images
-  }
+module "ecr_repository" {
+  source = "../../_sub/compute/ecr-repo"
+  names = var.names
+  scan_on_push = var.scan_on_push
+  pull_principals = var.pull_principals
 }
 
-resource "aws_ecr_repository_policy" "pol" {
-  for_each    = var.list_of_repos
-  repository  = each.key
-
-  policy = <<EOF
-{
-    "Version": "2008-10-17",
-    "Statement": [
-        {
-            "Sid": "Allow pull from AWS IAM principals",
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": ${jsonencode(var.accounts)}
-            },
-            "Action": [
-                "ecr:GetDownloadUrlForLayer",
-                "ecr:BatchGetImage",
-                "ecr:BatchCheckLayerAvailability"
-            ]
-        }
-    ]
-}
-EOF
-
-depends_on = [aws_ecr_repository.repo]
-}
