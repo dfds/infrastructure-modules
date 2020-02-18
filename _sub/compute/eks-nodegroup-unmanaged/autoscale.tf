@@ -52,6 +52,7 @@ USERDATA
 }
 
 resource "aws_launch_configuration" "eks" {
+  count                       = signum(length(var.instance_types))
   associate_public_ip_address = true
   iam_instance_profile        = var.iam_instance_profile
   image_id                    = data.aws_ami.eks-worker.id
@@ -72,8 +73,9 @@ resource "aws_launch_configuration" "eks" {
 }
 
 resource "aws_autoscaling_group" "eks" {
+  count                = signum(length(var.instance_types))
   name                 = "eks-${var.cluster_name}-${var.nodegroup_name}"
-  launch_configuration = aws_launch_configuration.eks.id
+  launch_configuration = element(concat(aws_launch_configuration.eks.*.id, [""]), 0)
   min_size             = var.scaling_config_min_size
   max_size             = var.scaling_config_max_size
   desired_capacity     = var.scaling_config_min_size

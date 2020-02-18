@@ -23,9 +23,11 @@ variable "security_groups" {
 }
 
 variable "scaling_config_min_size" {
+  default = 0
 }
 
 variable "scaling_config_max_size" {
+  default = 0
 }
 
 variable "subnet_ids" {
@@ -36,7 +38,8 @@ variable "disk_size" {
 }
 
 variable "instance_types" {
-  type = list(string)
+  type    = list(string)
+  default = []
 }
 
 variable "ec2_ssh_key" {
