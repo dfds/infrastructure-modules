@@ -48,6 +48,9 @@ stages:
           - bash: ./src/qa-test-eks.sh init
             displayName: "Init"
             # condition: succeeded()
+          - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa13
+            displayName: "Terraform Destroy (pre)"
+            condition: always()
           - bash: ./src/qa-test-eks.sh plan eu-west-1/k8s-qa13/cluster
             displayName: "Terraform Plan (cluster)"
             # condition: succeeded()
@@ -58,7 +61,7 @@ stages:
             displayName: "Run tests"
             # condition: succeeded()
           - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa13
-            displayName: "Terraform Destroy"
+            displayName: "Terraform Destroy (post)"
             condition: always()
 
       - job: eks_1_14
@@ -69,6 +72,9 @@ stages:
           - bash: ./src/qa-test-eks.sh init
             displayName: "Init"
             # condition: succeeded()
+          - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa14
+            displayName: "Terraform Destroy (pre)"
+            condition: always()
           - bash: ./src/qa-test-eks.sh plan eu-west-1/k8s-qa14/cluster
             displayName: "Terraform Plan (cluster)"
             # condition: succeeded()
@@ -79,7 +85,7 @@ stages:
             displayName: "Run tests"
             # condition: succeeded()
           - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa14
-            displayName: "Terraform Destroy"
+            displayName: "Terraform Destroy (post)"
             condition: always()
 
       - job: destroy_shared
