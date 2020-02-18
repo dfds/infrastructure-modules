@@ -2,6 +2,7 @@ name: $(Build.BuildId)
 
 # Triggers Pipeline only from schedule
 trigger: none
+pr: none
 
 # Run a daily test at midnight
 schedules:
