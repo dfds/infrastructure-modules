@@ -2,7 +2,7 @@ variable "names" {
   type = set(string)
 }
 
-variable "scan_images" {
+variable "scan_on_push" {
   type = bool
 }
 

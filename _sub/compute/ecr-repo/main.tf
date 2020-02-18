@@ -3,7 +3,7 @@ resource "aws_ecr_repository" "repo" {
   name = each.key
 
   image_scanning_configuration {
-    scan_on_push = var.scan_images
+    scan_on_push = var.scan_on_push
   }
 }
 

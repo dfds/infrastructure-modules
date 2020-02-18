@@ -12,7 +12,7 @@ variable "pull_principals" {
   default = []
 }
 
-variable "scan_images" {
+variable "scan_on_push" {
   type = bool
   default = true
 }
