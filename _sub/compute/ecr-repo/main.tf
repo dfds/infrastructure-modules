@@ -1,0 +1,34 @@
+resource "aws_ecr_repository" "repo" {
+  name = var.name
+
+  image_scanning_configuration {
+    scan_on_push = var.scan_images
+  }
+}
+
+resource "aws_ecr_repository_policy" "policy" {
+  repository  = aws_ecr_repository.repo.name
+
+  policy = <<EOF
+{
+    "Version": "2008-10-17",
+    "Statement": [
+        {
+            "Sid": "Allow pull from AWS IAM principals",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": ${jsonencode(var.pull_principals)}
+            },
+            "Action": [
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "ecr:BatchCheckLayerAvailability"
+            ]
+        }
+    ]
+}
+EOF
+
+depends_on = [aws_ecr_repository.repo]
+
+}
