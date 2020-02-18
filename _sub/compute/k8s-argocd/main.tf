@@ -70,7 +70,7 @@ oidc:
   issuer: ${var.oidc_issuer}
   clientID: ${var.oidc_client_id}
   clientSecret: ${var.oidc_client_secret}
-  
+
 externalUrl: ${var.external_url}
 hostUrl: ${var.host_url}
 grpcHostUrl: ${var.grpc_host_url}

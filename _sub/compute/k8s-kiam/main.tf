@@ -126,7 +126,7 @@ resource "null_resource" "repo_init_helm" {
             count=$(( $count + 1 ))
             sleep 4
         done
-    
+
 EOT
 
   }

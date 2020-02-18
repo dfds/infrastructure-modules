@@ -6,9 +6,6 @@
 *.tfstate
 *.tfstate.*
 
-# .tfvars files
-*.tfvars
-
 #  acm-certificate
 validate.json
 
@@ -33,6 +30,11 @@ validate.json
 /vendor/
 /Godeps/
 
+# Certificates
+*.pem
+*.cer
+*.csr
+*.b64
 
 # End of https://www.gitignore.io/api/go
 

@@ -82,7 +82,7 @@ variable "eks_worker_ssh_public_key" {
 }
 
 variable "eks_worker_inotify_max_user_watches" {
-  default = 32768 # default t3.large is 8192 which is too low
+  default = 131072 # default t3.large is 8192 which is too low
 }
 
 variable "eks_worker_subnets" {

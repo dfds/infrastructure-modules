@@ -1,5 +1,5 @@
 # Apply specific versions of Kubernetes add-ons depending on EKS version
-# https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html 
+# https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html
 
 locals {
   kubeproxy_version_map = {

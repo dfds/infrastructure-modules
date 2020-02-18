@@ -1,3 +1,8 @@
+variable "deploy" {
+  description = "Configure Cloud Trail feature toggle."
+  default     = true
+}
+
 variable "s3_bucket" {
   description = "The name of the S3 Bucket where CloudTrail logs will be stored."
 }
