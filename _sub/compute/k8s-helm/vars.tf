@@ -1,5 +1,7 @@
-variable "cluster_name" {}
+variable "cluster_name" {
+}
 
 variable "kubeconfig_path" {
-  type = "string"
+  type = string
 }
+

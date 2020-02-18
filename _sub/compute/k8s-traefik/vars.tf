@@ -1,9 +1,13 @@
 variable "deploy" {
+  type    = bool
   default = true
 }
-variable "cluster_name" {}
 
-variable "deploy_name" {}
+variable "cluster_name" {
+}
+
+variable "deploy_name" {
+}
 
 variable "namespace" {
   default = "kube-system"
@@ -17,5 +21,6 @@ variable "replicas" {
 }
 
 variable "kubeconfig_path" {
-  type = "string"
+  type = string
 }
+

@@ -1,17 +1,17 @@
 resource "aws_iam_saml_provider" "adfs" {
-  name                   = "${var.provider_name}"
-  saml_metadata_document = "${data.http.federation_metadata.body}"
+  name                   = var.provider_name
+  saml_metadata_document = data.http.federation_metadata.body
 }
 
 // Asume role with SAML policy document
 data "aws_iam_policy_document" "adfs_assume" {
   statement {
-    sid     = "${var.provider_name}"
+    sid     = var.provider_name
     actions = ["sts:AssumeRoleWithSAML"]
 
     principals {
       type        = "Federated"
-      identifiers = ["${aws_iam_saml_provider.adfs.arn}"]
+      identifiers = [aws_iam_saml_provider.adfs.arn]
     }
 
     condition {
@@ -24,12 +24,12 @@ data "aws_iam_policy_document" "adfs_assume" {
 
 data "aws_iam_policy_document" "adfs_role_assume" {
   statement {
-    sid     = "${var.provider_name}"
+    sid     = var.provider_name
     actions = ["sts:AssumeRoleWithSAML"]
 
     principals {
       type        = "Federated"
-      identifiers = ["${aws_iam_saml_provider.adfs.arn}"]
+      identifiers = [aws_iam_saml_provider.adfs.arn]
     }
 
     condition {
@@ -45,9 +45,8 @@ data "aws_iam_policy_document" "adfs_role_assume" {
 
     principals {
       type        = "AWS"
-      identifiers = ["${var.assume_role_arns}"]
+      identifiers = var.assume_role_arns
     }
-    
   }
-
 }
+

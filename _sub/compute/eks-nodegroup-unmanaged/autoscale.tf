@@ -23,6 +23,7 @@ echo fs.inotify.max_user_watches=${var.worker_inotify_max_user_watches} | sudo t
 sudo sysctl -p
 USERDATA
 
+
   worker-node-userdata-cw-agent = <<USERDATA
 #!/bin/sh
 set -o xtrace
@@ -44,20 +45,18 @@ USERDATA
 
 resource "aws_launch_configuration" "eks" {
   associate_public_ip_address = true
-  iam_instance_profile        = "${var.iam_instance_profile}"
-  image_id                    = "${data.aws_ami.eks-worker.id}"
-  instance_type               = "${element(var.instance_types, 0)}"
+  iam_instance_profile        = var.iam_instance_profile
+  image_id                    = data.aws_ami.eks-worker.id
+  instance_type               = element(var.instance_types, 0)
   name_prefix                 = "eks-${var.cluster_name}-${var.nodegroup_name}-"
-  security_groups             = ["${var.security_groups}"]
-  user_data_base64            = "${var.cloudwatch_agent_enabled ? base64encode(local.worker-node-userdata-cw-agent) : base64encode(local.worker-node-userdata) }"
-  key_name                    = "${var.ec2_ssh_key}"
+  security_groups             = var.security_groups
+  user_data_base64            = var.cloudwatch_agent_enabled ? base64encode(local.worker-node-userdata-cw-agent) : base64encode(local.worker-node-userdata)
+  key_name                    = var.ec2_ssh_key
 
-  root_block_device = [
-    {
-      volume_size = "${var.disk_size}"
-      volume_type = "gp2"
-    },
-  ]
+  root_block_device {
+    volume_size = var.disk_size
+    volume_type = "gp2"
+  }
 
   lifecycle {
     create_before_destroy = true
@@ -66,11 +65,11 @@ resource "aws_launch_configuration" "eks" {
 
 resource "aws_autoscaling_group" "eks" {
   name                 = "eks-${var.cluster_name}-${var.nodegroup_name}"
-  launch_configuration = "${aws_launch_configuration.eks.id}"
-  min_size             = "${var.scaling_config_min_size}"
-  max_size             = "${var.scaling_config_max_size}"
-  desired_capacity     = "${var.scaling_config_min_size}"
-  vpc_zone_identifier  = ["${var.subnet_ids}"]
+  launch_configuration = aws_launch_configuration.eks.id
+  min_size             = var.scaling_config_min_size
+  max_size             = var.scaling_config_max_size
+  desired_capacity     = var.scaling_config_min_size
+  vpc_zone_identifier  = var.subnet_ids
 
   # The following can be set in case of the default health check are not sufficient
   #health_check_grace_period = 5
@@ -88,3 +87,4 @@ resource "aws_autoscaling_group" "eks" {
     propagate_at_launch = true
   }
 }
+

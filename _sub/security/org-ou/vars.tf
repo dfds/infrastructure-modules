@@ -1,7 +1,8 @@
 variable "name" {
-  type = "string"
+  type = string
 }
 
 variable "parent_id" {
-   type = "string"  
+  type = string
 }
+

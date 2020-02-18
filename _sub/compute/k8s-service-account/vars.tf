@@ -1,3 +1,6 @@
-variable "cluster_name" {}
+variable "cluster_name" {
+}
 
-variable "kubeconfig_path" {}
+variable "kubeconfig_path" {
+}
+

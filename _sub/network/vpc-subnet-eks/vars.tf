@@ -1,20 +1,22 @@
 variable "deploy" {
+  type    = bool
   default = true
 }
 
 variable "name" {
-  type = "string"
+  type = string
 }
 
 variable "vpc_id" {
-  type = "string"
+  type = string
 }
 
 variable "subnets" {
-  type    = "list"
+  type    = list(string)
   default = []
 }
 
 variable "cluster_name" {
-  type = "string"
+  type = string
 }
+

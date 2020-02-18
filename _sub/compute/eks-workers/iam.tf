@@ -15,31 +15,32 @@ resource "aws_iam_role" "eks" {
   ]
 }
 POLICY
+
 }
 
 resource "aws_iam_role_policy_attachment" "node" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = "${aws_iam_role.eks.name}"
+  role       = aws_iam_role.eks.name
 }
 
 resource "aws_iam_role_policy_attachment" "cni" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = "${aws_iam_role.eks.name}"
+  role       = aws_iam_role.eks.name
 }
 
 resource "aws_iam_role_policy_attachment" "AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = "${aws_iam_role.eks.name}"
+  role       = aws_iam_role.eks.name
 }
 
 resource "aws_iam_instance_profile" "eks" {
   name = "eks-${var.cluster_name}"
-  role = "${aws_iam_role.eks.name}"
+  role = aws_iam_role.eks.name
 }
 
 resource "aws_iam_role_policy" "cloudwatch-agent-config-bucket" {
   name = "eks-${var.cluster_name}-cl-agent-config-bucket"
-  role = "${aws_iam_role.eks.id}"
+  role = aws_iam_role.eks.id
 
   policy = <<EOF
 {
@@ -68,11 +69,12 @@ resource "aws_iam_role_policy" "cloudwatch-agent-config-bucket" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role_policy" "cloudwatch_agent_metrics" {
   name = "cloudwatch_agent_metrics"
-  role = "${aws_iam_role.eks.id}"
+  role = aws_iam_role.eks.id
 
   policy = <<EOF
 {
@@ -91,5 +93,6 @@ resource "aws_iam_role_policy" "cloudwatch_agent_metrics" {
   ]
 }
 EOF
+
 }
 

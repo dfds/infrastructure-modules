@@ -4,7 +4,7 @@ resource "kubernetes_service_account" "deploy-user" {
     namespace = "kube-system"
   }
 
-  provider = "kubernetes"
+  provider = kubernetes
 }
 
 resource "kubernetes_cluster_role_binding" "deploy-user" {
@@ -25,16 +25,16 @@ resource "kubernetes_cluster_role_binding" "deploy-user" {
     namespace = "kube-system"
   }
 
-  provider = "kubernetes"
+  provider = kubernetes
 }
 
 data "external" "get-token" {
   program = ["sh", "${path.module}/get-token.sh"]
 
   query = {
-    cluster_name        = "${var.cluster_name}"
-    default_secret_name = "${kubernetes_service_account.deploy-user.default_secret_name}"
-    kubeconfig_path     = "${var.kubeconfig_path}"
+    cluster_name        = var.cluster_name
+    default_secret_name = kubernetes_service_account.deploy-user.default_secret_name
+    kubeconfig_path     = var.kubeconfig_path
   }
 }
 
@@ -45,4 +45,3 @@ data "external" "get-token" {
 #   value       = "${data.external.get-token.result["kubeconfig_json"]}"
 #   overwrite   = true
 # }
-

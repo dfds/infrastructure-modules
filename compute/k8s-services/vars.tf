@@ -3,11 +3,11 @@
 # --------------------------------------------------
 
 variable "terraform_state_s3_bucket" {
-  type = "string"
+  type = string
 }
 
 variable "terraform_state_region" {
-  type = "string"
+  type = string
 }
 
 # --------------------------------------------------
@@ -15,23 +15,25 @@ variable "terraform_state_region" {
 # --------------------------------------------------
 
 variable "aws_region" {
-  type = "string"
+  type = string
 }
 
-variable "aws_workload_account_id" {}
+variable "aws_workload_account_id" {
+}
 
 variable "aws_assume_role_arn" {
-  type = "string"
+  type = string
 }
 
-variable "workload_dns_zone_name" {}
+variable "workload_dns_zone_name" {
+}
 
 # --------------------------------------------------
 # EKS
 # --------------------------------------------------
 
 variable "eks_cluster_name" {
-  type = "string"
+  type = string
 }
 
 # --------------------------------------------------
@@ -39,40 +41,46 @@ variable "eks_cluster_name" {
 # --------------------------------------------------
 
 variable "traefik_deploy" {
+  type    = bool
   default = false
 }
 
 variable "traefik_version" {
-  type = "string"
+  type    = string
   default = "1.7.19"
 }
 
-variable "traefik_deploy_name" {}
+variable "traefik_deploy_name" {
+}
 
 variable "traefik_alb_anon_deploy" {
+  type    = bool
   default = false
 }
 
 variable "traefik_alb_auth_deploy" {
+  type    = bool
   default = false
 }
 
 variable "traefik_alb_auth_core_alias" {
   description = "A list of aliases/alternative names in the *parent* domain, the certficate should also be valid for. E.g. 'prettyurl.company.tld'"
-  type    = "list"
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 variable "traefik_nlb_deploy" {
+  type    = bool
   default = false
 }
 
 variable "traefik_nlb_cidr_blocks" {
-  type = "list"
+  type    = list(string)
   default = []
 }
 
 variable "blaster_configmap_deploy" {
+  type    = bool
   default = false
 }
 
@@ -109,7 +117,7 @@ variable "argocd_deploy" {
 }
 
 variable "argocd_default_repository" {
-  type = "string"
+  type = string
 }
 
 # --------------------------------------------------
@@ -121,27 +129,27 @@ variable "harbor_deploy" {
 }
 
 variable "harbor_k8s_namespace" {
-  type = "string"
+  type = string
 }
 
 variable "harbor_db_instance_size" {
-  type = "string"
+  type = string
 }
 
 variable "harbor_postgresdb_engine_version" {
-  type = "string"
+  type = string
 }
 
 variable "harbor_db_storage_size" {
-  type = "string"
+  type = string
 }
 
 variable "harbor_db_server_username" {
-  type = "string"
+  type = string
 }
 
 variable "harbor_postgresdb_default_db_name" {
-  type = "string"
+  type    = string
   default = "postgres"
 }
 
@@ -187,4 +195,17 @@ variable "flux_registry_password" {
 
 variable "flux_registry_email" {
   description = "Email address for the user that enables Flux to read the docker registry information."
+}
+
+# --------------------------------------------------
+# Unused variables - to provent TF warning/error:
+# Using a variables file to set an undeclared variable is deprecated and will
+# become an error in a future release. If you wish to provide certain "global"
+# settings to all configurations in your organization, use TF_VAR_...
+# environment variables to set these instead.
+# --------------------------------------------------
+
+variable "eks_public_s3_bucket" {
+  type    = string
+  default = ""
 }

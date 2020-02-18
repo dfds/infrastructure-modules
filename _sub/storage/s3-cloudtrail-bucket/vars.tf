@@ -4,12 +4,11 @@ variable "s3_bucket" {
 
 variable "retention_days" {
   description = "The number of days to keep CloudTrail logs in s3 bucket."
-  default = 90
+  default     = 90
 }
 
 variable "create_s3_bucket" {
+  type    = bool
   default = false
 }
-
-
 

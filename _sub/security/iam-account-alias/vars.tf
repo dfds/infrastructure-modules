@@ -1,3 +1,4 @@
 variable "account_alias" {
-  type = "string"
+  type = string
 }
+

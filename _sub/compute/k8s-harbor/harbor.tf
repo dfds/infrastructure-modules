@@ -1,7 +1,7 @@
 resource "helm_release" "harbor" {
-  count     = "${var.deploy}"
+  count     = var.deploy ? 1 : 0
   name      = "harbor-registry"
-  namespace = "${var.namespace}"
+  namespace = var.namespace
   chart     = "${path.module}/harbor-chart"
   version   = "1.7.1"
 
@@ -14,17 +14,17 @@ resource "helm_release" "harbor" {
 
   set {
     name  = "expose.ingress.hosts.core"
-    value = "${var.registry_endpoint}"
+    value = var.registry_endpoint
   }
 
   set {
     name  = "expose.ingress.hosts.notary"
-    value = "${var.notary_endpoint}"
+    value = var.notary_endpoint
   }
 
   set {
     name  = "externalURL"
-    value = "${var.registry_endpoint_external_url}"
+    value = var.registry_endpoint_external_url
   }
 
   set {
@@ -44,13 +44,13 @@ resource "helm_release" "harbor" {
 
   set {
     name  = "persistence.imageChartStorage.s3.region"
-    value = "${var.s3_region}"
+    value = var.s3_region
   }
 
   # ------------------------------------------------------------------------- #
-	# Providing no values for AWS Accesskey and Secret is valid in case the user is authenticating
-	# with an IAM on an ec2 instance (in which case the instance credentials will
-	# be summoned when GetAuth is called)
+  # Providing no values for AWS Accesskey and Secret is valid in case the user is authenticating
+  # with an IAM on an ec2 instance (in which case the instance credentials will
+  # be summoned when GetAuth is called)
   # source: https://github.com/docker/distribution/blob/0d3efadf0154c2b8a4e7b6621fff9809655cc580/registry/storage/driver/s3-aws/s3.go
   # ------------------------------------------------------------------------- #
   set {
@@ -65,11 +65,11 @@ resource "helm_release" "harbor" {
 
   set {
     name  = "persistence.imageChartStorage.s3.bucket"
-    value = "${var.bucket_name}"
+    value = var.bucket_name
   }
   set {
     name  = "persistence.imageChartStorage.s3.regionendpoint"
-    value = "${var.s3_region_endpoint}"
+    value = var.s3_region_endpoint
   }
   set {
     name  = "persistence.imageChartStorage.s3.storageclass"
@@ -181,19 +181,19 @@ resource "helm_release" "harbor" {
   }
   set {
     name  = "database.external.host"
-    value = "${var.db_server_host}"
+    value = var.db_server_host
   }
   set {
     name  = "database.external.port"
-    value = "${var.db_server_port}"
+    value = var.db_server_port
   }
   set {
     name  = "database.external.username"
-    value = "${var.db_server_username}"
+    value = var.db_server_username
   }
   set {
     name  = "database.external.password"
-    value = "${var.db_server_password}"
+    value = var.db_server_password
   }
   set {
     name  = "database.external.coreDatabase"
@@ -229,21 +229,25 @@ resource "helm_release" "harbor" {
   }
   set {
     name  = "harborAdminPassword"
-    value = "${var.portal_admin_password}"
+    value = var.portal_admin_password
   }
+
   #--------------------------------------------------------------#
   # Note: A combinitation of set and raw yaml values override was needed to get this to work
   #--------------------------------------------------------------#
-  values = [<<EOF
+  values = [
+    <<EOF
     expose:
         annotations:
             kubernetes.io/ingress.class: traefik
     registry:
         podAnnotations:
-            iam.amazonaws.com/role: ${element(concat(aws_iam_role.harbor.*.name, list("")), 0)}
+            iam.amazonaws.com/role: ${element(concat(aws_iam_role.harbor.*.name, [""]), 0)}
     chartmuseum:
         podAnnotations:
-            iam.amazonaws.com/role: ${element(concat(aws_iam_role.harbor.*.name, list("")), 0)}
+            iam.amazonaws.com/role: ${element(concat(aws_iam_role.harbor.*.name, [""]), 0)}
 EOF
+    ,
   ]
 }
+

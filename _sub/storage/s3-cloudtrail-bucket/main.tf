@@ -1,13 +1,13 @@
 resource "aws_s3_bucket" "bucket" {
-  count = "${var.create_s3_bucket}"
-  bucket = "${var.s3_bucket}"
+  count  = var.create_s3_bucket ? 1 : 0
+  bucket = var.s3_bucket
   acl    = "private"
   tags = {
-      "Managed by" = "Terraform"
+    "Managed by" = "Terraform"
   }
 
   force_destroy = true
-  policy = <<POLICY
+  policy        = <<POLICY
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -38,17 +38,19 @@ resource "aws_s3_bucket" "bucket" {
 }
 POLICY
 
+
   lifecycle_rule {
-    enabled = true
-    id = "cloudtrail_logs_retention_policy"    
-    abort_incomplete_multipart_upload_days = "${var.retention_days}"
+    enabled                                = true
+    id                                     = "cloudtrail_logs_retention_policy"
+    abort_incomplete_multipart_upload_days = var.retention_days
 
     expiration {
-      days = "${var.retention_days}"
+      days = var.retention_days
     }
 
     noncurrent_version_expiration {
-      days = "${var.retention_days}"
+      days = var.retention_days
     }
   }
 }
+

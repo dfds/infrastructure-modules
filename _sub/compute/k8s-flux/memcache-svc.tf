@@ -1,10 +1,9 @@
 resource "kubernetes_service" "flux-memcached" {
-
-  count = "${var.deploy}"
+  count = var.deploy ? 1 : 0
 
   metadata {
     name      = "memcached"
-    namespace = "${var.namespace}"
+    namespace = var.namespace
   }
 
   spec {
@@ -16,11 +15,12 @@ resource "kubernetes_service" "flux-memcached" {
       port = 11211
     }
 
-    selector {
+    selector = {
       name = "memcached"
     }
   }
 
-  depends_on = ["kubernetes_namespace.flux_namespace"]
-  provider   = "kubernetes"
+  depends_on = [kubernetes_namespace.flux_namespace]
+  provider   = kubernetes
 }
+

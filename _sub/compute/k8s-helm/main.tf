@@ -5,7 +5,7 @@ resource "kubernetes_service_account" "tiller" {
     namespace = "kube-system"
   }
 
-  provider = "kubernetes"
+  provider = kubernetes
 }
 
 resource "kubernetes_cluster_role_binding" "tiller-binding" {
@@ -26,17 +26,18 @@ resource "kubernetes_cluster_role_binding" "tiller-binding" {
     namespace = "kube-system"
   }
 
-  depends_on = ["kubernetes_service_account.tiller"]
+  depends_on = [kubernetes_service_account.tiller]
 }
 
 resource "null_resource" "init_helm_and_wait" {
-  triggers {
-    build_number = "${timestamp()}"
+  triggers = {
+    build_number = timestamp()
   }
 
   provisioner "local-exec" {
     command = "helm init --kubeconfig ${var.kubeconfig_path} --skip-refresh --upgrade --service-account tiller"
   }
 
-  depends_on = ["kubernetes_cluster_role_binding.tiller-binding"]
+  depends_on = [kubernetes_cluster_role_binding.tiller-binding]
 }
+

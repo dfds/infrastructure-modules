@@ -1,7 +1,8 @@
 variable "aws_region" {
-  type = "string"
+  type = string
 }
 
 variable "user_name" {
-  type = "string"
+  type = string
 }
+

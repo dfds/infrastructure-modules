@@ -1,23 +1,26 @@
 variable "role_name" {
-  type = "string"
+  type = string
 }
 
 variable "max_session_duration" {
   description = "The maximum time a role session can last, before requiring re-authentication. Default is  1 hour. "
-  default = 3600
+  default     = 3600
 }
 
 variable "role_description" {
-  type = "string"
+  type    = string
   default = ""
 }
 
 variable "assume_role_policy" {
-  type = "string"
+  type = string
 }
+
 variable "role_policy_name" {
-  type = "string"
+  type = string
 }
+
 variable "role_policy_document" {
-  type = "string"
+  type = string
 }
+

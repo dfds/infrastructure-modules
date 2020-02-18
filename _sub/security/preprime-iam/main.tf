@@ -6,7 +6,7 @@
 module "iam_policy_create_s3_bucket" {
   source = "../iam-policies"
 
-  aws_account_id                       = "${var.aws_account_id}"
+  aws_account_id = var.aws_account_id
   # allow_access_from_other_account_arns = ["${var.allow_read_only_access_from_other_account_arns}"]
 
   # Only enable the MFA requirement for the trust policy, which will require MFA to assume the IAM Role, but not the
@@ -16,23 +16,18 @@ module "iam_policy_create_s3_bucket" {
   # iam_policy_should_require_mfa   = false
 }
 
-
 # ----------------------------------------------------------------------------------------------------------------------
 # CREATE PRIME IAM USER
 # ----------------------------------------------------------------------------------------------------------------------
-
 # resource "aws_iam_role" "allow_billing_access_from_other_accounts" {
 #   count                = "${signum(length(var.allow_billing_access_from_other_account_arns))}"
 #   name                 = "${var.billing_access_iam_role_name}"
 #   assume_role_policy   = "${module.iam_policies_billing.allow_access_from_other_accounts}"
 #   max_session_duration = "${var.max_session_duration_human_users}"
 # }
-
 # resource "aws_iam_role_policy" "allow_billing_access_from_other_accounts" {
 #   count  = "${signum(length(var.allow_billing_access_from_other_account_arns))}"
 #   name   = "allow-billing-access-from-other-accounts-permissions"
 #   role   = "${element(aws_iam_role.allow_billing_access_from_other_accounts.*.id, count.index)}"
 #   policy = "${module.iam_policies_billing.billing}"
 # }
-
-

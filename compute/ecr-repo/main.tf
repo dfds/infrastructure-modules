@@ -3,43 +3,22 @@
 # --------------------------------------------------
 
 terraform {
-  backend          "s3"             {}
-  required_version = "~> 0.11.7"
+  backend "s3" {}
 }
 
 provider "aws" {
-  region  = "${var.aws_region}"
-  version = "~> 2.21.0"
+  region  = var.aws_region
+  version = "~> 2.43"
 }
 
 # --------------------------------------------------
 # ECR repo and policy
 # --------------------------------------------------
 
-resource "aws_ecr_repository" "repo" {
-  name  = "${var.name}"
+module "ecr_repository" {
+  source = "../../_sub/compute/ecr-repo"
+  names = var.names
+  scan_on_push = var.scan_on_push
+  pull_principals = var.pull_principals
 }
 
-resource "aws_ecr_repository_policy" "pol" {
-  repository = "${aws_ecr_repository.repo.name}"
-
-  policy = <<EOF
-{
-    "Version": "2008-10-17",
-    "Statement": [
-        {
-            "Sid": "Allow pull from AWS IAM principals",
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": ${jsonencode(var.pull_principals)}
-            },
-            "Action": [
-                "ecr:GetDownloadUrlForLayer",
-                "ecr:BatchGetImage",
-                "ecr:BatchCheckLayerAvailability"
-            ]
-        }
-    ]
-}
-EOF
-}

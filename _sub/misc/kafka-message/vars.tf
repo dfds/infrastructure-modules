@@ -1,39 +1,44 @@
 variable "message_version" {
-  type        = "string"
+  type = string
 }
 
 variable "event_name" {
-  type        = "string"
+  type = string
 }
+
 variable "correlation_id" {
-  type        = "string"
+  type = string
 }
+
 variable "sender" {
-  type        = "string"
+  type = string
 }
 
 variable "payload" {
-  type        = "string"
+  type = string
 }
 
 variable "key" {
-  type        = "string"
+  type = string
 }
+
 variable "broker" {
-  type        = "string"
+  type = string
 }
+
 variable "topic" {
-  type        = "string"
+  type = string
 }
 
 variable "username" {
-  type        = "string"
+  type = string
 }
 
 variable "password" {
-  type        = "string"
+  type = string
 }
 
 variable "publish" {
   default = true
 }
+

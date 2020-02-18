@@ -37,3 +37,9 @@ validate.json
 *.b64
 
 # End of https://www.gitignore.io/api/go
+
+# Certificates
+*.pem
+*.cer
+*.csr
+*.b64

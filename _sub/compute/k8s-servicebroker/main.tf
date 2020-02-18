@@ -1,6 +1,6 @@
 resource "aws_dynamodb_table" "service-broker-table" {
-  count          = "${var.deploy}"
-  name           = "${var.table_name}"
+  count          = var.deploy ? 1 : 0
+  name           = var.table_name
   billing_mode   = "PROVISIONED"
   read_capacity  = 5
   write_capacity = 5
@@ -34,20 +34,19 @@ resource "aws_dynamodb_table" "service-broker-table" {
 }
 
 resource "helm_release" "service-catalog" {
-  count      = "${var.deploy}"
+  count      = var.deploy ? 1 : 0
   name       = "catalog"
   repository = "servicecatalog"
   namespace  = "catalog"
   chart      = "catalog"
-
   # depends_on = ["helm_repository.servicecatalog"]
 }
 
 resource "null_resource" "wait_for_servicecatalog" {
-  count = "${var.deploy}"
+  count = var.deploy ? 1 : 0
 
-  triggers {
-    build_number = "${timestamp()}"
+  triggers = {
+    build_number = timestamp()
   }
 
   provisioner "local-exec" {
@@ -68,29 +67,31 @@ resource "null_resource" "wait_for_servicecatalog" {
           fi
           sleep 10
         done  
-    EOT
+    
+EOT
+
   }
 
-  depends_on = ["helm_release.service-catalog"]
+  depends_on = [helm_release.service-catalog]
 }
 
 resource "helm_release" "service-broker" {
-  count        = "${var.deploy}"
-  name         = "${var.deploy_name}"
-  namespace    = "${var.namespace}"
-  repository   = "${var.chart_repo}"
-  chart        = "${var.chart_name}"
-  version      = "${var.chart_version}"
+  count        = var.deploy ? 1 : 0
+  name         = var.deploy_name
+  namespace    = var.namespace
+  repository   = var.chart_repo
+  chart        = var.chart_name
+  version      = var.chart_version
   force_update = "true"
 
   set {
     name  = "aws.region"
-    value = "${var.aws_region}"
+    value = var.aws_region
   }
 
   set {
     name  = "aws.tablename"
-    value = "${var.table_name}"
+    value = var.table_name
   }
 
   set {
@@ -102,31 +103,30 @@ resource "helm_release" "service-broker" {
     <<EOF
   annotations:
     iam.amazonaws.com/role: "eks-${var.cluster_name}-servicebroker"
-  EOF
+  
+EOF
     ,
   ]
 
   set_string {
     name  = "aws.targetaccountid"
-    value = "${var.aws_workload_account_id}"
+    value = var.aws_workload_account_id
   }
 
-  depends_on = [
-    # "helm_repository.aws-sb",
-    "null_resource.wait_for_servicecatalog",
-  ]
+  depends_on = [null_resource.wait_for_servicecatalog]
 }
 
 resource "null_resource" "annotate_namespace" {
-  count = "${var.deploy}"
+  count = var.deploy ? 1 : 0
 
-  triggers {
-    build_number = "${timestamp()}"
+  triggers = {
+    build_number = timestamp()
   }
 
   provisioner "local-exec" {
     command = "kubectl --kubeconfig ${pathexpand("~/.kube/config_${var.cluster_name}")} annotate --overwrite ns aws-sb iam.amazonaws.com/permitted='eks-${var.cluster_name}-servicebroker'"
   }
 
-  depends_on = ["helm_release.service-broker"]
+  depends_on = [helm_release.service-broker]
 }
+

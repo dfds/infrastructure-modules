@@ -1,39 +1,40 @@
 variable "deploy" {
+  type    = bool
   default = true
 }
 
 variable "postgresdb_engine_version" {
-  type = "string"
+  type    = string
   default = "10.6"
 }
 
 variable "db_instance_size" {
-  type = "string"
+  type = string
 }
 
-variable "db_storage_size" {}
+variable "db_storage_size" {
+}
 
 variable "ressource_name_prefix" {
-  type = "string"
+  type        = string
   description = "String for prefixing the name of the generated resource"
 }
 
-
 variable "db_name" {
-  type = "string"
+  type = string
 }
 
-variable "db_username" {  
-  type = "string"
+variable "db_username" {
+  type = string
 }
 
 variable "db_password" {
-  type = "string"
+  type = string
 }
 
 variable "allow_connections_from_security_groups" {
   description = "Specifies a list of Security Groups to allow connections from."
-  type        = "list"
+  type        = list(string)
   default     = []
 }
 
@@ -46,6 +47,6 @@ variable "port" {
 }
 
 variable "subnet_ids" {
-  type = "list"
+  type = list(string)
 }
 

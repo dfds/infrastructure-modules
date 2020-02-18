@@ -1,9 +1,9 @@
 resource "kubernetes_namespace" "self_service" {
-  count = "${var.deploy}"
+  count = var.deploy ? 1 : 0
 
   metadata {
-    annotations {
-      "iam.amazonaws.com/permitted" = "${element(concat(aws_iam_role.self_service.*.name, list("")), 0)}"
+    annotations = {
+      "iam.amazonaws.com/permitted" = element(concat(aws_iam_role.self_service.*.name, [""]), 0)
     }
 
     name = "selfservice"
@@ -11,7 +11,7 @@ resource "kubernetes_namespace" "self_service" {
 }
 
 resource "aws_iam_role" "self_service" {
-  count = "${var.deploy}"
+  count = var.deploy ? 1 : 0
   name  = "eks-${var.cluster_name}-self-service"
 
   assume_role_policy = <<EOF
@@ -29,11 +29,12 @@ resource "aws_iam_role" "self_service" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_policy" "iamroleservice" {
-  count       = "${var.deploy}"
-  name        = "iamroleservice"
+  count       = var.deploy ? 1 : 0
+  name        = "eks-${var.cluster_name}-iamroleservice"
   description = "Permissions for the iam role service"
 
   policy = <<EOF
@@ -48,18 +49,18 @@ resource "aws_iam_policy" "iamroleservice" {
     ]
 }
 EOF
+
 }
 
 resource "aws_iam_role_policy_attachment" "iamroleservice" {
-  count      = "${var.deploy}"
-  role       = "${element(concat(aws_iam_role.self_service.*.name, list("")), 0)}"
-  policy_arn = "${element(concat(aws_iam_policy.iamroleservice.*.arn, list("")), 0)}"
+  count      = var.deploy ? 1 : 0
+  role       = element(concat(aws_iam_role.self_service.*.name, [""]), 0)
+  policy_arn = element(concat(aws_iam_policy.iamroleservice.*.arn, [""]), 0)
 }
 
-
 resource "aws_iam_policy" "rolemapperservice" {
-  count       = "${var.deploy}"
-  name        = "rolemapperservice"
+  count       = var.deploy ? 1 : 0
+  name        = "eks-${var.cluster_name}-rolemapperservice"
   description = "Permissions for the role mapper service"
 
   policy = <<EOF
@@ -97,18 +98,18 @@ resource "aws_iam_policy" "rolemapperservice" {
     ]
 }
 EOF
+
 }
 
 resource "aws_iam_role_policy_attachment" "rolemapperservice" {
-  count      = "${var.deploy}"
-  role       = "${element(concat(aws_iam_role.self_service.*.name, list("")), 0)}"
-  policy_arn = "${element(concat(aws_iam_policy.rolemapperservice.*.arn, list("")), 0)}"
+  count      = var.deploy ? 1 : 0
+  role       = element(concat(aws_iam_role.self_service.*.name, [""]), 0)
+  policy_arn = element(concat(aws_iam_policy.rolemapperservice.*.arn, [""]), 0)
 }
 
-
 resource "aws_iam_policy" "param_store" {
-  count       = "${var.deploy}"
-  name        = "param-store"
+  count       = var.deploy ? 1 : 0
+  name        = "eks-${var.cluster_name}-param-store"
   description = "Permissions for kube configs in param-store"
 
   policy = <<EOF
@@ -130,17 +131,18 @@ resource "aws_iam_policy" "param_store" {
     ]
 }
 EOF
+
 }
 
 resource "aws_iam_role_policy_attachment" "param-store" {
-  count      = "${var.deploy}"
-  role       = "${element(concat(aws_iam_role.self_service.*.name, list("")), 0)}"
-  policy_arn = "${element(concat(aws_iam_policy.param_store.*.arn, list("")), 0)}"
+  count      = var.deploy ? 1 : 0
+  role       = element(concat(aws_iam_role.self_service.*.name, [""]), 0)
+  policy_arn = element(concat(aws_iam_policy.param_store.*.arn, [""]), 0)
 }
 
 resource "aws_iam_policy" "argocdjanitor" {
-  count       = "${var.deploy}"
-  name        = "argocdjanitor"
+  count       = var.deploy ? 1 : 0
+  name        = "eks-${var.cluster_name}-argocdjanitor"
   description = "Permissions for argocd password"
 
   policy = <<EOF
@@ -158,10 +160,12 @@ resource "aws_iam_policy" "argocdjanitor" {
     ]
 }
 EOF
+
 }
 
 resource "aws_iam_role_policy_attachment" "argocdjanitor" {
-  count      = "${var.deploy}"
-  role       = "${element(concat(aws_iam_role.self_service.*.name, list("")), 0)}"
-  policy_arn = "${element(concat(aws_iam_policy.argocdjanitor.*.arn, list("")), 0)}"
+  count      = var.deploy ? 1 : 0
+  role       = element(concat(aws_iam_role.self_service.*.name, [""]), 0)
+  policy_arn = element(concat(aws_iam_policy.argocdjanitor.*.arn, [""]), 0)
 }
+
