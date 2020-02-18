@@ -17,7 +17,7 @@ provider "aws" {
 
 module "ecr_repository" {
   source = "../../_sub/compute/ecr-repo"
-  name = var.name
+  names = var.names
   scan_images = var.scan_images
   pull_principals = var.pull_principals
 }

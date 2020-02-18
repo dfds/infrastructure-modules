@@ -2,8 +2,8 @@ variable "aws_region" {
   type = string
 }
 
-variable "name" {
-  type = string
+variable "names" {
+  type = set(string)
 }
 
 variable "pull_principals" {

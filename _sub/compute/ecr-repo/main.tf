@@ -1,5 +1,6 @@
 resource "aws_ecr_repository" "repo" {
-  name = var.name
+  for_each = var.names
+  name = each.key
 
   image_scanning_configuration {
     scan_on_push = var.scan_images
@@ -7,7 +8,8 @@ resource "aws_ecr_repository" "repo" {
 }
 
 resource "aws_ecr_repository_policy" "policy" {
-  repository  = aws_ecr_repository.repo.name
+  for_each = var.names
+  repository = each.key
 
   policy = <<EOF
 {

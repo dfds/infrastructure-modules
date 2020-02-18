@@ -1,5 +1,5 @@
-variable "name" {
-  type = string
+variable "names" {
+  type = set(string)
 }
 
 variable "scan_images" {
