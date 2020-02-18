@@ -66,11 +66,13 @@ variable "eks_worker_instance_type" {
 }
 
 variable "eks_worker_instance_min_count" {
-  type = string
+  type    = string
+  default = 0
 }
 
 variable "eks_worker_instance_max_count" {
-  type = string
+  type    = string
+  default = 0
 }
 
 variable "eks_worker_instance_storage_size" {
@@ -93,7 +95,6 @@ variable "eks_worker_subnets" {
 variable "eks_worker_ssh_ip_whitelist" {
   type = list(string)
 }
-
 
 variable "eks_addon_kubeproxy_version_override" {
   type    = string
