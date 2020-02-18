@@ -8,6 +8,14 @@ data "aws_ami" "eks-worker" {
   owners      = ["602401143452"] # Amazon Account ID
 }
 
+/*
+https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/#example-use-cases
+https://aws.amazon.com/blogs/opensource/improvements-eks-worker-node-provisioning/
+*/
+locals {
+  bootstrap_extra_args = length(var.kubelet_extra_args) >= 1 ? "--kubelet-extra-args '${var.kubelet_extra_args}'" : ""
+}
+
 # EKS currently documents this required userdata for EKS worker nodes to
 # properly configure Kubernetes applications on the EC2 instance.
 # We utilize a Terraform local here to simplify Base64 encoding this
@@ -17,7 +25,7 @@ locals {
   worker-node-userdata = <<USERDATA
 #!/bin/sh
 set -o xtrace
-/etc/eks/bootstrap.sh --apiserver-endpoint '${var.eks_endpoint}' --b64-cluster-ca '${var.eks_certificate_authority}' '${var.cluster_name}'
+/etc/eks/bootstrap.sh --apiserver-endpoint '${var.eks_endpoint}' --b64-cluster-ca '${var.eks_certificate_authority}' ${local.bootstrap_extra_args} '${var.cluster_name}'
 
 echo fs.inotify.max_user_watches=${var.worker_inotify_max_user_watches} | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
@@ -27,7 +35,7 @@ USERDATA
   worker-node-userdata-cw-agent = <<USERDATA
 #!/bin/sh
 set -o xtrace
-/etc/eks/bootstrap.sh --apiserver-endpoint '${var.eks_endpoint}' --b64-cluster-ca '${var.eks_certificate_authority}' '${var.cluster_name}'
+/etc/eks/bootstrap.sh --apiserver-endpoint '${var.eks_endpoint}' --b64-cluster-ca '${var.eks_certificate_authority}' ${local.bootstrap_extra_args} '${var.cluster_name}'
 
 echo fs.inotify.max_user_watches=${var.worker_inotify_max_user_watches} | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
@@ -44,6 +52,7 @@ USERDATA
 }
 
 resource "aws_launch_configuration" "eks" {
+  count                       = signum(length(var.instance_types))
   associate_public_ip_address = true
   iam_instance_profile        = var.iam_instance_profile
   image_id                    = data.aws_ami.eks-worker.id
@@ -64,8 +73,9 @@ resource "aws_launch_configuration" "eks" {
 }
 
 resource "aws_autoscaling_group" "eks" {
+  count                = signum(length(var.instance_types))
   name                 = "eks-${var.cluster_name}-${var.nodegroup_name}"
-  launch_configuration = aws_launch_configuration.eks.id
+  launch_configuration = element(concat(aws_launch_configuration.eks.*.id, [""]), 0)
   min_size             = var.scaling_config_min_size
   max_size             = var.scaling_config_max_size
   desired_capacity     = var.scaling_config_min_size

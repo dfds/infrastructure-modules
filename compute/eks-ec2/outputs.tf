@@ -30,6 +30,7 @@ output "eks_worker_autoscaling_group_ids" {
   value = [
     module.eks_workers.autoscaling_group_id,
     module.eks_nodegroup1_workers.autoscaling_group_id,
+    module.eks_nodegroup2_workers.autoscaling_group_id,
   ]
 }
 
