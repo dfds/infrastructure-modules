@@ -10,9 +10,11 @@ variable "worker_instance_type" {
 }
 
 variable "worker_instance_min_count" {
+  default = 0
 }
 
 variable "worker_instance_max_count" {
+  default = 0
 }
 
 variable "autoscale_security_group" {

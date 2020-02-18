@@ -28,16 +28,19 @@ inputs = {
   eks_worker_ssh_ip_whitelist = ["193.9.230.100/32"]
   eks_worker_ssh_public_key   = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDS85QojLMO8eI5ArwburDpVthEZmW3IVs4/nmv7YnDMgs+ucJmW/etm7MlkRDvWphH4X/6mSGGmylJq7vUIn5rHMG0KTFxg06G2ZJ0zS6ryQ89tDLA9LXhD3q//TzXDFJ4ztjcSyxL1fSW44Lpmt7l7wWHdgrMaP3db2TRYOKY2/0iC22TwQKjTSGku59sFmv3XkLVBehO3fFOXcbLChZ4+maPMmgJDUyYMVSVZNJ2YsjFHHeaYClaN0az0Agcab2HIZMZh0Vv08ro0Se5ZBUjyfoPuDe3WjutkivePajG710k10vSOx6X5CHO3bZvQEBA8klCY58Xp2XrzSChNZhP eks-deploy-hellman"
 
-  eks_worker_instance_type         = "t3.small"
-  eks_worker_instance_storage_size = 128
-  eks_worker_instance_min_count    = 0
-  eks_worker_instance_max_count    = 0
+  # Only needed until old "workers" modules has been fully replaced by nodegroup module
+  eks_worker_instance_type = "t3.small"
 
   eks_nodegroup1_instance_types     = ["t3.small"]
   eks_nodegroup1_disk_size          = 128
   eks_nodegroup1_instance_min_count = 3
   eks_nodegroup1_instance_max_count = 3
 
+  eks_nodegroup2_instance_types     = ["g4dn.xlarge"]
+  eks_nodegroup2_kubelet_extra_args = "--register-with-taints=gpu=true:NoSchedule --node-labels=gpu=true"
+  eks_nodegroup2_disk_size          = 128
+  eks_nodegroup2_instance_min_count = 3
+  eks_nodegroup2_instance_max_count = 3
 
   # --------------------------------------------------
   # Restore Blaster Configmap
