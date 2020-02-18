@@ -1,7 +1,7 @@
 # Terragrunt will copy the Terraform configurations specified by the source parameter, along with any files in the
 # working directory, into a temporary folder, and execute your Terraform commands in that folder.
 terraform {
-  source = "git::https://github.com/dfds/infrastructure-modules.git//compute/k8s-services?ref=tf0_12"
+  source = "git::https://github.com/dfds/infrastructure-modules.git//compute/k8s-services"
 }
 
 # Include all settings from the root terraform.tfvars file
