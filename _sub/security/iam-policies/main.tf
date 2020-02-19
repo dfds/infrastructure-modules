@@ -99,6 +99,60 @@ data "aws_iam_policy_document" "assume_noncore_accounts" {
   }
 }
 
+data "aws_iam_policy_document" "access_cloudwatchlogs_capability" {
+  statement {
+    sid       = "GetLogStreamEvents"
+    effect    = "Allow"
+    actions   = ["logs:GetLogEvents"]
+    resources = ["arn:aws:logs:*:*:log-group:/k8s/*/*:log-stream:*"]
+  }
+
+  statement {
+    sid    = "ReadLogGroups"
+    effect = "Allow"
+    actions = [
+      "logs:List*",
+      "logs:Describe*",
+      "logs:StartQuery",
+      "logs:FilterLogEvents",
+      "logs:Get*"
+    ]
+    resources = ["arn:aws:logs:*:*:log-group:/k8s/*/*"]
+  }
+
+  statement {
+    sid     = "DenySensitiveLogGroups"
+    effect  = "Deny"
+    actions = ["logs:*"]
+    resources = [
+      "arn:aws:logs:*:*:log-group:/k8s/*/kube-system:log-stream:*",
+      "arn:aws:logs:*:*:log-group:/k8s/*/kube-system"
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "access_cloudwatchlogs_devops" {
+  statement {
+    sid       = "GetLogStreamEvents"
+    effect    = "Allow"
+    actions   = ["logs:GetLogEvents"]
+    resources = ["arn:aws:logs:*:*:log-group:/k8s/*/*:log-stream:*"]
+  }
+
+  statement {
+    sid    = "ReadLogGroups"
+    effect = "Allow"
+    actions = [
+      "logs:List*",
+      "logs:Describe*",
+      "logs:StartQuery",
+      "logs:FilterLogEvents",
+      "logs:Get*"
+    ]
+    resources = ["arn:aws:logs:*:*:log-group:/k8s/*/*"]
+  }
+}
+
 # ------------------------------------------------------------------------------
 # Trusted Account
 # ------------------------------------------------------------------------------
@@ -123,4 +177,3 @@ data "aws_iam_policy_document" "trusted_account" {
     }
   }
 }
-
