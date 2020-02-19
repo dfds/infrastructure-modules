@@ -37,7 +37,7 @@ inputs = {
   eks_nodegroup1_instance_max_count = 3
 
   eks_nodegroup2_instance_types     = ["g4dn.xlarge"]
-  eks_nodegroup2_kubelet_extra_args = "--register-with-taints=gpu=true:NoSchedule --node-labels=gpu=true"
+  eks_nodegroup2_kubelet_extra_args = "--register-with-taints=node.k8s.dfds.cloud/gpu=true:NoSchedule --node-labels=node.k8s.dfds.cloud/gpu=true"
   eks_nodegroup2_disk_size          = 128
   eks_nodegroup2_instance_min_count = 3
   eks_nodegroup2_instance_max_count = 3
