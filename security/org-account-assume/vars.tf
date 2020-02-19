@@ -38,11 +38,6 @@ variable "email" {
   type = string
 }
 
-variable "tax_settings_document" {
-  type    = string
-  default = "./taxsettings.json"
-}
-
 variable "cloudtrail_local_s3_bucket" {
   type    = string
   default = ""

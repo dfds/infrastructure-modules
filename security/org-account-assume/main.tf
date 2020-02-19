@@ -101,32 +101,3 @@ resource "aws_iam_role_policy" "prime-admin" {
   policy   = module.iam_policies.admin
   provider = aws.workload
 }
-
-# resource "null_resource" "apply_tax_settings" {
-#   provisioner "local-exec" {
-#     command = "python3 /src/taxregistrations.py ${module.org_account.org_role_arn} ${var.tax_settings_document}"
-#   }
-# }
-/*
-Does not work, because default provider already assumes a role, and cannot assume from there?
-How to solve/align this provider hell between org-account and org-account assume?
-
-* null_resource.apply_tax_settings: Error running command 'python3 /src/taxregistrations.py arn:aws:iam::738063116313:role/OrgRole ./taxsettings.json': exit status 1. Output: Traceback (most recent call last):
-  File "/src/taxregistrations.py", line 62, in <module>
-    update_tax_registration(sys.argv[1], json_data )
-  File "/src/taxregistrations.py", line 26, in update_tax_registration
-    role_session_name="AssumeRoleSession")
-  File "/usr/lib/python3.6/site-packages/boto/sts/connection.py", line 384, in assume_role
-    return self.get_object('AssumeRole', params, AssumedRole, verb='POST')
-  File "/usr/lib/python3.6/site-packages/boto/connection.py", line 1208, in get_object
-    raise self.ResponseError(response.status, response.reason, body)
-boto.exception.BotoServerError: BotoServerError: 403 Forbidden
-<ErrorResponse xmlns="https://sts.amazonaws.com/doc/2011-06-15/">
-  <Error>
-    <Type>Sender</Type>
-    <Code>AccessDenied</Code>
-    <Message>Access denied</Message>
-  </Error>
-  <RequestId>6a698849-057e-11e9-9d94-512276d00469</RequestId>
-</ErrorResponse>
-*/

@@ -21,11 +21,6 @@ variable "cloudtrail_local_s3_bucket" {
   default = ""
 }
 
-variable "tax_settings_document" {
-  type    = string
-  default = "./taxsettings.json"
-}
-
 variable "create_cloudtrail_s3_bucket" {
   default = false
 }
