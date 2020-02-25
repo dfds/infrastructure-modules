@@ -13,9 +13,9 @@ variable "record_name" {
 variable "record_type" {
 }
 
-variable "record_ttl" {
-}
-
 variable "record_value" {
 }
 
+variable "record_ttl" {
+  default = 900
+}
