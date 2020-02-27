@@ -11,6 +11,14 @@ output "public_dns" {
   value = aws_instance.instance.public_dns
 }
 
+output "iam_role_name" {
+  value = aws_iam_role.role.name
+}
+
+output "iam_role_arn" {
+  value = aws_iam_role.role.arn
+}
+
 output "password_data" {
   value     = aws_instance.instance.password_data
   sensitive = true
