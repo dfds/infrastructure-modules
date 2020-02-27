@@ -18,6 +18,7 @@ provider "aws" {
   #   }
 }
 
+
 # --------------------------------------------------
 # Local variables
 # --------------------------------------------------
@@ -25,6 +26,7 @@ provider "aws" {
 locals {
   default_resource_name = "adsync-qa"
 }
+
 
 # --------------------------------------------------
 # Network infrastructure
@@ -42,6 +44,7 @@ module "subnets" {
   vpc_id      = module.vpc.id
   cidr_blocks = var.subnet_cidr_blocks
 }
+
 
 # --------------------------------------------------
 # Network security
@@ -73,6 +76,7 @@ module "securitygrouprule_rdp_udp" {
   from_port         = 3389
   to_port           = 3389
 }
+
 
 # --------------------------------------------------
 # Internet access
@@ -113,10 +117,6 @@ module "activedirectory" {
 resource "aws_vpc_dhcp_options" "ad" {
   domain_name         = var.ad_name
   domain_name_servers = module.activedirectory.dns_ip_addresses
-
-  # tags {
-  #   Name = local.default_resource_name
-  # }
 }
 
 resource "aws_vpc_dhcp_options_association" "ad" {
@@ -188,11 +188,9 @@ resource "aws_ssm_document" "doc" {
   name          = "Join_${var.ad_name}_domain"
   document_type = "Command"
   content       = local.ssm_document_json
-  depends_on    = [module.activedirectory] # remove
 }
 
 resource "aws_ssm_association" "assoc" {
   name        = aws_ssm_document.doc.name
   instance_id = module.ec2_instance.id
-  depends_on  = [aws_ssm_document.doc] # remove
 }
