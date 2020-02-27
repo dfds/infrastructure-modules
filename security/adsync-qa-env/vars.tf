@@ -46,7 +46,8 @@ variable "ec2_windows_server_version" {
 }
 
 variable "ado_access_token" {
-  type = string
+  type        = string
+  description = "An Azure Personal Access Token with 'Read & manage' permission to Agent Pools"
 }
 
 variable "workload_dns_zone_name" {
