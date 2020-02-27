@@ -45,6 +45,10 @@ variable "ec2_windows_server_version" {
   default = 2016
 }
 
+variable "ado_access_token" {
+  type = string
+}
+
 variable "workload_dns_zone_name" {
   type = string
 }

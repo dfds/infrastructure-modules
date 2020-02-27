@@ -9,9 +9,7 @@ terraform {
 
 provider "aws" {
   region  = var.aws_region
-  version = "~> 2.43" # Dir: "WaitForState" timeout
-  # version 2.7 -> 2.11: requires state cleanup
-  # version 2.12 -> 2.50: "WaitForState" timeout
+  version = "~> 2.43"
 
   # profile = "qa-orgrole"
 
@@ -111,6 +109,22 @@ module "activedirectory" {
   subnet_ids = slice(module.subnets.ids, 0, 2) # exactly two subnets, in different AZs, are required
 }
 
+
+resource "aws_vpc_dhcp_options" "ad" {
+  domain_name         = var.ad_name
+  domain_name_servers = module.activedirectory.dns_ip_addresses
+
+  # tags {
+  #   Name = local.default_resource_name
+  # }
+}
+
+resource "aws_vpc_dhcp_options_association" "ad" {
+  vpc_id          = module.vpc.id
+  dhcp_options_id = aws_vpc_dhcp_options.ad.id
+}
+
+
 # --------------------------------------------------
 # Server
 # --------------------------------------------------
@@ -121,11 +135,19 @@ module "ec2_keypair" {
   public_key = var.ec2_public_key
 }
 
+data "template_file" "user_data" {
+  template = file("${path.module}/ec2_user_data")
+  vars = {
+    ado_access_token = var.ado_access_token
+  }
+}
+
 module "ec2_instance" {
   source                      = "../../_sub/compute/ec2-instance"
   instance_type               = var.ec2_instance_type
   key_name                    = module.ec2_keypair.key_name
   name                        = "adsync"
+  user_data                   = data.template_file.user_data.rendered
   ami_platform_filters        = ["windows"]
   ami_name_filters            = ["*Server-${var.ec2_windows_server_version}-English-Full-Base*"]
   ami_owners                  = ["amazon"]
@@ -133,13 +155,8 @@ module "ec2_instance" {
   subnet_id                   = element(module.subnets.ids, 2)
   associate_public_ip_address = true
   get_password_data           = true
-  private_key_path            = var.ec2_private_key_path
+  aws_managed_policy          = "AmazonEC2RoleforSSM"
 }
-
-# module "elastic_ip" {
-#   source   = "../../_sub/network/elastic-ip"
-#   instance = module.ec2_instance.id
-# }
 
 module "ec2_dns_record" {
   source       = "../../_sub/network/route53-record"
@@ -148,4 +165,34 @@ module "ec2_dns_record" {
   record_type  = "CNAME"
   record_value = module.ec2_instance.public_dns
   record_ttl   = 60
+}
+
+locals {
+  ssm_document_map = {
+    "schemaVersion" = "1.0"
+    "description"   = "Join an instance to a the ${var.ad_name} domain"
+    "runtimeConfig" = {
+      "aws:domainJoin" = {
+        "properties" = {
+          "directoryId"    = module.activedirectory.id
+          "directoryName"  = var.ad_name
+          "dnsIpAddresses" = module.activedirectory.dns_ip_addresses
+        }
+      }
+    }
+  }
+  ssm_document_json = jsonencode(local.ssm_document_map)
+}
+
+resource "aws_ssm_document" "doc" {
+  name          = "Join_${var.ad_name}_domain"
+  document_type = "Command"
+  content       = local.ssm_document_json
+  depends_on    = [module.activedirectory] # remove
+}
+
+resource "aws_ssm_association" "assoc" {
+  name        = aws_ssm_document.doc.name
+  instance_id = module.ec2_instance.id
+  depends_on  = [aws_ssm_document.doc] # remove
 }

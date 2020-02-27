@@ -1,0 +1,18 @@
+<powershell>
+$ErrorActionPreference = 'Stop'
+Get-WindowsFeature | ? { $_.Name -eq 'RSAT-AD-Tools' } | Add-WindowsFeature
+$DownloadUrl = "https://vstsagentpackage.azureedge.net/agent/2.165.0/vsts-agent-win-x64-2.165.0.zip"
+$AgentDir = "C:\agent"
+$AgentZipPath = "$AgentDir\vsts-agent.zip"
+$AgentPool = "ADSync-Test"
+$AgentName = "Agent1"
+$AccessToken = "${ado_access_token}"
+mkdir $AgentDir
+cd $AgentDir
+Invoke-WebRequest $DownloadUrl -OutFile $AgentZipPath
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::ExtractToDirectory($AgentZipPath, "$PWD")
+rm $AgentZipPath
+.\config.cmd --url https://dev.azure.com/dfds --unattended --auth pat --token $AccessToken --pool $AgentPool --agent $AgentName --acceptTeeEula --runAsService --windowsLogonAccount "NT AUTHORITY\SYSTEM" --replace 
+</powershell>
+<runAsLocalSystem>true</runAsLocalSystem> 
