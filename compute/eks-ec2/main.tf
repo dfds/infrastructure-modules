@@ -32,10 +32,17 @@ module "eks_cluster" {
   cluster_zones   = var.eks_cluster_zones
 }
 
+module "eks_internet_gateway" {
+  source = "../../_sub/network/internet-gateway"
+  name   = "eks-${var.eks_cluster_name}"
+  vpc_id = module.eks_cluster.vpc_id
+}
+
 module "eks_route_table" {
-  source       = "../../_sub/network/route-table"
-  cluster_name = var.eks_cluster_name
-  vpc_id       = module.eks_cluster.vpc_id
+  source     = "../../_sub/network/route-table"
+  name       = "eks-${var.eks_cluster_name}"
+  vpc_id     = module.eks_cluster.vpc_id
+  gateway_id = module.eks_internet_gateway.id
 }
 
 module "eks_workers_subnet" {

@@ -24,7 +24,8 @@ locals {
                 "support:*",
                 "waf:*",
 				"s3:List*",
-				"dynamoDB:DescribeTable"
+				"dynamoDB:DescribeTable",
+				"aws-portal:View*"
             ],
             "Resource": "*",
             "Condition": {
