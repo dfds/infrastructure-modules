@@ -45,9 +45,24 @@ variable "ec2_windows_server_version" {
   default = 2016
 }
 
+variable "ado_org_name" {
+  type        = string
+  description = "The name of the Azure DevOps organisation"
+}
+
+variable "ado_project_name" {
+  type        = string
+  description = "The name of the Azure DevOps project, to deploy the agent into"
+}
+
+variable "ado_deployment_group" {
+  type        = string
+  description = "The name of the Azure DevOps deployment group, in the project, to deploy the agent into"
+}
+
 variable "ado_access_token" {
   type        = string
-  description = "An Azure Personal Access Token with 'Read & manage' permission to Agent Pools"
+  description = "An Azure Personal Access Token with 'Read & manage' permission to Deployment Groups"
 }
 
 variable "workload_dns_zone_name" {

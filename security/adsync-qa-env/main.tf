@@ -101,6 +101,7 @@ module "route_table_assoc" {
   route_table_id = module.vpc_route_table.id
 }
 
+
 # --------------------------------------------------
 # Active Directory
 # --------------------------------------------------
@@ -138,7 +139,10 @@ module "ec2_keypair" {
 data "template_file" "user_data" {
   template = file("${path.module}/ec2_user_data")
   vars = {
-    ado_access_token = var.ado_access_token
+    ado_access_token     = var.ado_access_token
+    ado_org_name         = var.ado_org_name
+    ado_project_name     = var.ado_project_name
+    ado_deployment_group = var.ado_deployment_group
   }
 }
 

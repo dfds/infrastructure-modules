@@ -1,18 +1,15 @@
 <powershell>
 $ErrorActionPreference = 'Stop'
 Get-WindowsFeature | ? { $_.Name -eq 'RSAT-AD-Tools' } | Add-WindowsFeature
-$DownloadUrl = "https://vstsagentpackage.azureedge.net/agent/2.165.0/vsts-agent-win-x64-2.165.0.zip"
-$AgentDir = "C:\agent"
-$AgentZipPath = "$AgentDir\vsts-agent.zip"
-$AgentPool = "ADSync-Test"
-$AgentName = "Agent1"
-$AccessToken = "${ado_access_token}"
+$AgentDir = "$($env:SystemDrive)\azagent\A1"
 mkdir $AgentDir
 cd $AgentDir
-Invoke-WebRequest $DownloadUrl -OutFile $AgentZipPath
+$agentZip = "$PWD\agent.zip"
+$Uri = 'https://vstsagentpackage.azureedge.net/agent/2.165.0/vsts-agent-win-x64-2.165.0.zip'
+Invoke-WebRequest $Uri -OutFile $agentZip
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-[System.IO.Compression.ZipFile]::ExtractToDirectory($AgentZipPath, "$PWD")
-rm $AgentZipPath
-.\config.cmd --url https://dev.azure.com/dfds --unattended --auth pat --token $AccessToken --pool $AgentPool --agent $AgentName --acceptTeeEula --runAsService --windowsLogonAccount "NT AUTHORITY\SYSTEM" --replace 
+[System.IO.Compression.ZipFile]::ExtractToDirectory( $agentZip, "$PWD")
+.\config.cmd --url "https://dev.azure.com/${ado_org_name}/" --auth PAT --token ${ado_access_token} --deploymentgroup --deploymentgroupname "${ado_deployment_group}" --agent "Agent1" --runasservice --windowsLogonAccount "NT AUTHORITY\SYSTEM" --work '_work' --projectname "${ado_project_name}" --replace --unattended --acceptTeeEula
+Remove-Item $agentZip
 </powershell>
-<runAsLocalSystem>true</runAsLocalSystem> 
+<runAsLocalSystem>true</runAsLocalSystem>
