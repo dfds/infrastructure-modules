@@ -25,7 +25,8 @@ locals {
                 "waf:*",
 				"s3:List*",
 				"dynamoDB:DescribeTable",
-				"aws-portal:View*"
+				"aws-portal:View*",
+                "cloudwatch:ListMetrics"
             ],
             "Resource": "*",
             "Condition": {
