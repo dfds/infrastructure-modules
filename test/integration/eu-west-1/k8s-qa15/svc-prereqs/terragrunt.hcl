@@ -20,6 +20,6 @@ inputs = {
   # EKS
   # --------------------------------------------------
 
-  eks_cluster_name = "qa13"
+  eks_cluster_name = "qa15"
 
 }

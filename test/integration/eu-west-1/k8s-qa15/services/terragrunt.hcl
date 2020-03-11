@@ -20,7 +20,7 @@ inputs = {
   # EKS
   # --------------------------------------------------
 
-  eks_cluster_name = "qa13"
+  eks_cluster_name = "qa15"
 
 
   # --------------------------------------------------
@@ -28,7 +28,7 @@ inputs = {
   # --------------------------------------------------
 
   traefik_deploy      = true
-  traefik_version     = "1.7.19"
+  traefik_version     = "1.7"
   traefik_deploy_name = "traefik"
 
   traefik_alb_auth_deploy = true # triggers Azure App registration
