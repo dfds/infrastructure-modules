@@ -6,6 +6,9 @@ resource "null_resource" "kubeproxy" {
   triggers = {
     kubeproxy_version = local.kubeproxy_version
   }
+
+  depends_on = [local.kubeproxy_version]
+
 }
 
 resource "null_resource" "coredns" {
@@ -17,7 +20,7 @@ resource "null_resource" "coredns" {
     coredns_version = local.coredns_version
   }
 
-  depends_on = [null_resource.kubeproxy]
+  depends_on = [null_resource.kubeproxy, local.coredns_version]
 }
 
 resource "null_resource" "vpccni" {
@@ -29,5 +32,5 @@ resource "null_resource" "vpccni" {
     vpccni_version = local.vpccni_version
   }
 
-  depends_on = [null_resource.coredns]
+  depends_on = [null_resource.coredns, local.vpccni_version]
 }
