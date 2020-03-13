@@ -40,27 +40,27 @@ stages:
           - bash: ./src/qa-test-eks.sh apply-all _global/eks-public-s3-bucket
             displayName: "Provision public EKS S3 bucket"
 
-      - job: eks_1_13
-        displayName: EKS 1.13
+      - job: eks_1_15
+        displayName: EKS 1.15
         container: prime
         dependsOn: init_shared
         steps:
           - bash: ./src/qa-test-eks.sh init
             displayName: "Init"
             # condition: succeeded()
-          # - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa13
+          # - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa15
           #   displayName: "Terraform Destroy (pre)"
           #   condition: always()
-          - bash: ./src/qa-test-eks.sh plan eu-west-1/k8s-qa13/cluster
+          - bash: ./src/qa-test-eks.sh plan eu-west-1/k8s-qa15/cluster
             displayName: "Terraform Plan (cluster)"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh apply-all eu-west-1/k8s-qa13
+          - bash: ./src/qa-test-eks.sh apply-all eu-west-1/k8s-qa15
             displayName: "Terraform Apply"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh test eu-west-1/k8s-qa13
+          - bash: ./src/qa-test-eks.sh test eu-west-1/k8s-qa15
             displayName: "Run tests"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa13
+          - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa15
             displayName: "Terraform Destroy (post)"
             condition: always()
 
@@ -92,7 +92,7 @@ stages:
         displayName: Destroy EKS shared resources
         container: prime
         dependsOn:
-          - eks_1_13
+          - eks_1_15
           - eks_1_14
         condition: always()
         steps:
