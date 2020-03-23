@@ -22,9 +22,9 @@ output "assume_noncore_accounts" {
 }
 
 output "access_cloudwatchlogs_capability" {
-  value = data.aws_iam_policy_document.access_cloudwatch_capability.json
+  value = data.aws_iam_policy_document.access_cloudwatchlogs_capability.json
 }
 
 output "access_cloudwatchlogs_devops" {
-  value = data.aws_iam_policy_document.access_cloudwatch_devops.json
+  value = data.aws_iam_policy_document.access_cloudwatchlogs_devops.json
 }
