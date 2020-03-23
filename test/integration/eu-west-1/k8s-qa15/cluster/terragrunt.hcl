@@ -47,7 +47,7 @@ inputs = {
   # --------------------------------------------------
 
   blaster_configmap_deploy = true
-  blaster_configmap_bucket = "dfds-qa13-k8s-configmap"
+  blaster_configmap_bucket = "dfds-qa15-k8s-configmap"
 
   # --------------------------------------------------
   # Cloudwatch agent
