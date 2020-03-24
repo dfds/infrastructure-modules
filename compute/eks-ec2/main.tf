@@ -209,6 +209,7 @@ module "eks_heptio" {
 
 module "eks_addons" {
   source                     = "../../_sub/compute/eks-addons"
+  module_depends_on          = [module.eks_heptio.kubeconfig_path] # https://discuss.hashicorp.com/t/tips-howto-implement-module-depends-on-emulation/2305/2
   kubeconfig_path            = module.eks_heptio.kubeconfig_path
   cluster_version            = var.eks_cluster_version
   kubeproxy_version_override = var.eks_addon_kubeproxy_version_override

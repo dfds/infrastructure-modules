@@ -7,7 +7,7 @@ resource "null_resource" "kubeproxy" {
     kubeproxy_version = local.kubeproxy_version
   }
 
-  depends_on = [local.kubeproxy_version]
+  depends_on = [var.module_depends_on, local.kubeproxy_version]
 
 }
 
