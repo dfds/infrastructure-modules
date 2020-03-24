@@ -127,6 +127,11 @@ variable "eks_nodegroup1_instance_types" {
   default = []
 }
 
+variable "eks_nodegroup1_gpu_ami" {
+  type    = bool
+  default = false
+}
+
 variable "eks_nodegroup1_kubelet_extra_args" {
   type    = string
   default = ""
@@ -147,6 +152,11 @@ variable "eks_nodegroup1_instance_max_count" {
 variable "eks_nodegroup2_instance_types" {
   type    = list(string)
   default = []
+}
+
+variable "eks_nodegroup2_gpu_ami" {
+  type    = bool
+  default = false
 }
 
 variable "eks_nodegroup2_kubelet_extra_args" {

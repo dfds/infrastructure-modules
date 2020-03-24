@@ -42,6 +42,11 @@ variable "instance_types" {
   default = []
 }
 
+variable "gpu_ami" {
+  type    = bool
+  default = false
+}
+
 variable "ec2_ssh_key" {
   type = string
 }

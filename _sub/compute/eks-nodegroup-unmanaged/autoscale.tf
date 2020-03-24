@@ -1,4 +1,4 @@
-data "aws_ami" "eks-worker" {
+data "aws_ami" "eks-node" {
   filter {
     name   = "name"
     values = ["amazon-eks-node-${var.cluster_version}-*"]
@@ -8,20 +8,39 @@ data "aws_ami" "eks-worker" {
   owners      = ["602401143452"] # Amazon Account ID
 }
 
-/*
-https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/#example-use-cases
-https://aws.amazon.com/blogs/opensource/improvements-eks-worker-node-provisioning/
-*/
+data "aws_ami" "eks-gpu-node" {
+  filter {
+    name   = "name"
+    values = ["amazon-eks-gpu-node-${var.cluster_version}-*"]
+  }
+
+  most_recent = true
+  owners      = ["602401143452"] # Amazon Account ID
+}
+
 locals {
+  # Use GPU AMI if 'gpu_ami' is true
+  node_ami = var.gpu_ami ? data.aws_ami.eks-gpu-node.id : data.aws_ami.eks-node.id
+}
+
+
+locals {
+  /*
+  https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/#example-use-cases
+  https://aws.amazon.com/blogs/opensource/improvements-eks-worker-node-provisioning/
+  */
   bootstrap_extra_args = length(var.kubelet_extra_args) >= 1 ? "--kubelet-extra-args '${var.kubelet_extra_args}'" : ""
 }
 
-# EKS currently documents this required userdata for EKS worker nodes to
-# properly configure Kubernetes applications on the EC2 instance.
-# We utilize a Terraform local here to simplify Base64 encoding this
-# information into the AutoScaling Launch Configuration.
-# More information: https://docs.aws.amazon.com/eks/latest/userguide/launch-workers.html
 locals {
+  /*
+  EKS currently documents this required userdata for EKS worker nodes to
+  properly configure Kubernetes applications on the EC2 instance.
+  We utilize a Terraform local here to simplify Base64 encoding this
+  information into the AutoScaling Launch Configuration.
+  More information: https://docs.aws.amazon.com/eks/latest/userguide/launch-workers.html
+  */
+
   worker-node-userdata = <<USERDATA
 #!/bin/sh
 set -o xtrace
@@ -30,7 +49,6 @@ set -o xtrace
 echo fs.inotify.max_user_watches=${var.worker_inotify_max_user_watches} | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
 USERDATA
-
 
   worker-node-userdata-cw-agent = <<USERDATA
 #!/bin/sh
@@ -55,7 +73,7 @@ resource "aws_launch_configuration" "eks" {
   count                       = signum(length(var.instance_types))
   associate_public_ip_address = true
   iam_instance_profile        = var.iam_instance_profile
-  image_id                    = data.aws_ami.eks-worker.id
+  image_id                    = local.node_ami
   instance_type               = element(var.instance_types, 0)
   name_prefix                 = "eks-${var.cluster_name}-${var.nodegroup_name}-"
   security_groups             = var.security_groups
