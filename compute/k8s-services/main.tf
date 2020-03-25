@@ -163,6 +163,7 @@ module "blaster_namespace" {
   cluster_name             = var.eks_cluster_name
   blaster_configmap_bucket = data.terraform_remote_state.cluster.outputs.blaster_configmap_bucket
   kiam_server_role_arn     = module.kiam_deploy.server_role_arn
+  extra_permitted_roles    = var.blaster_namespace_extra_permitted_roles
 }
 
 # --------------------------------------------------
