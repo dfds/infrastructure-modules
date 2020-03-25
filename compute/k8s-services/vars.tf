@@ -101,8 +101,8 @@ variable "blaster_deploy" {
 }
 
 variable "blaster_namespace_extra_permitted_roles" {
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
   description = "Additional role names or ARNs that can be assumed from this namespace through KIAM"
 }
 

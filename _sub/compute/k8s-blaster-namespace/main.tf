@@ -1,7 +1,7 @@
 locals {
-  self_service_role = element(concat(aws_iam_role.self_service.*.name, [""]), 0)
-  permitted_roles = concat(local.self_service_role, var.extra_permitted_roles)
-  permitted_roles_regex = join("|", var.permitted_roles)
+  self_service_role     = [element(concat(aws_iam_role.self_service.*.name, [""]), 0)]
+  permitted_roles       = concat(local.self_service_role, var.extra_permitted_roles)
+  permitted_roles_regex = join("|", local.permitted_roles)
 }
 
 resource "kubernetes_namespace" "self_service" {
