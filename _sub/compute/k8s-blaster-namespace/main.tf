@@ -1,9 +1,15 @@
+locals {
+  self_service_role     = [element(concat(aws_iam_role.self_service.*.name, [""]), 0)]
+  permitted_roles       = concat(local.self_service_role, var.extra_permitted_roles)
+  permitted_roles_regex = join("|", local.permitted_roles)
+}
+
 resource "kubernetes_namespace" "self_service" {
   count = var.deploy ? 1 : 0
 
   metadata {
     annotations = {
-      "iam.amazonaws.com/permitted" = element(concat(aws_iam_role.self_service.*.name, [""]), 0)
+      "iam.amazonaws.com/permitted" = local.permitted_roles_regex
     }
 
     name = "selfservice"
