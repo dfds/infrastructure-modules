@@ -140,6 +140,20 @@ module "traefik_nlb" {
   cidr_blocks           = var.traefik_nlb_cidr_blocks
 }
 
+  # --------------------------------------------------
+  # Cloudwatch ALB 500 errors alerts to slack
+  # --------------------------------------------------
+
+  module "traefik_cw_lb500_alerts" {
+  source          = "../../_sub/monitoring/cw_lb500_alerts"
+  deploy          = var.cw_alb_alerts_deploy
+  albs            = module.traefik_alb_anon.alb_arn_suffix  # ALBs as a list from traefik outputs
+  function_name   = var.traefik_alb_lambda_name             # Unique name for Lambda since terraform is missing a name prefix
+  sns_name        = var.traefik_alb_sns_name                # Tried to lambda function so also need a unique name
+  slack_hook      = var.traefik_alb_slack_hook              # A slack webhook that can accept messages
+  slack_channel   = var.traefik_alb_slack_channel           # The channel to post messages to
+}
+
 # --------------------------------------------------
 # KIAM
 # --------------------------------------------------
