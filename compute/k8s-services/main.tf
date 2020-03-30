@@ -147,7 +147,7 @@ module "traefik_nlb" {
   module "traefik_cw_lb500_alerts" {
   source          = "../../_sub/monitoring/cw_lb500_alerts"
   deploy          = var.cw_alb_alerts_deploy
-  albs            = concat(vtraefik_alb_anon_deploy ? module.traefik_alb_anon.alb_arn_suffix : [], traefik_alb_auth_deploy ? module.traefik_alb_auth.alb_arn_suffix : []) # ALBs as a list from traefik outputs
+  albs            = concat((var.traefik_alb_anon_deploy ? module.traefik_alb_anon.alb_arn_suffix : []), (var.traefik_alb_auth_deploy ? module.traefik_alb_auth.alb_arn_suffix : [])) # ALBs as a list from traefik outputs
   function_name   = var.traefik_alb_lambda_name             # Unique name for Lambda since terraform is missing a name prefix
   sns_name        = var.traefik_alb_sns_name                # Tried to lambda function so also need a unique name
   slack_hook      = var.traefik_alb_slack_hook              # A slack webhook that can accept messages
