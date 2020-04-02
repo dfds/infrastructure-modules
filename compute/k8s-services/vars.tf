@@ -85,6 +85,26 @@ variable "blaster_configmap_deploy" {
 }
 
 # --------------------------------------------------
+# Cloudwatch ALB 500 errors alerts to slack
+# --------------------------------------------------
+
+variable "cwalarms_alb_500_deploy" {
+  type    = bool
+  default = false
+}
+
+variable "cwalarms_alb_500_slack_hook" {
+  type    = string
+  default = ""
+}
+
+variable "cwalarms_alb_500_slack_channel" {
+  type    = string
+  default = ""
+}
+
+
+# --------------------------------------------------
 # KIAM
 # --------------------------------------------------
 

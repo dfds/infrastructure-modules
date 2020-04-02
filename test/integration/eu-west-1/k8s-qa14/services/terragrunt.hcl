@@ -39,6 +39,16 @@ inputs = {
   traefik_nlb_deploy      = false # needed a.o. for Argo CLI
   traefik_nlb_cidr_blocks = ["0.0.0.0/0"]
 
+  # --------------------------------------------------
+  # Cloudwatch ALB 500 errors alerts to slack
+  # --------------------------------------------------
+
+  cw_alb_alerts_deploy = true
+  traefik_alb_slack_hook = "https://dummy.dum/dummy"
+  traefik_alb_slack_channel = "dummy"
+  traefik_alb_lambda_name = "cw_to_slack_qa14"
+  traefik_alb_sns_name = "alb_500_errors_qa14"
+
 
   # --------------------------------------------------
   # KIAM

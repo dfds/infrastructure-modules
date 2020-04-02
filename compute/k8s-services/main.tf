@@ -141,6 +141,20 @@ module "traefik_nlb" {
 }
 
 # --------------------------------------------------
+# Cloudwatch ALB 500 errors alerts to slack
+# --------------------------------------------------
+
+module "traefik_cw_lb500_alerts" {
+  source           = "../../_sub/monitoring/cw_lb500_alerts"
+  deploy           = var.cwalarms_alb_500_deploy
+  alb_arn_suffixes = concat(module.traefik_alb_anon.alb_arn_suffix, module.traefik_alb_auth.alb_arn_suffix)
+  slack_hook       = var.cwalarms_alb_500_slack_hook              # A slack webhook that can accept messages
+  slack_channel    = var.cwalarms_alb_500_slack_channel           # The channel to post messages to
+  function_name    = "cw_to_slack_eks_${var.eks_cluster_name}"    # Unique name for Lambda since terraform is missing a name prefix
+  sns_name         = "eks_alb_500_errors_${var.eks_cluster_name}" # Tried to lambda function so also need a unique name
+}
+
+# --------------------------------------------------
 # KIAM
 # --------------------------------------------------
 
