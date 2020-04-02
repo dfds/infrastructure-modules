@@ -3,9 +3,5 @@ output "alb_fqdn" {
 }
 
 output "alb_arn_suffix" {
-  value = "${aws_lb.traefik.*.arn_suffix}"
+  value = var.deploy ? aws_lb.traefik.*.arn_suffix : [] # output must be a list (even if empty), otherwise concat in k8s-services fails
 }
-
-# output "dbg_subnet_ids" {
-#   value = "${data.terraform_remote_state.cluster.eks_cluster_subnet_ids}"
-# }

@@ -5,7 +5,6 @@ variable "deploy" {
 
 variable "function_name" {
   type = string
-  #default = "cloudwatch_alb_500_to_slack"
 }
 
 variable "slack_channel" {
@@ -40,9 +39,8 @@ variable "sns_name" {
   type = string
 }
 
-variable "albs" {
+variable "alb_arn_suffixes" {
   type = list(string)
-   #default = ["app/coke-traefik-alb/3ec7dd954526d14e", "net/coke-istio-nlb/69a21b60d0f8c176"]
 }
 
 

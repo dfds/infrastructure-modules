@@ -3,6 +3,5 @@ output "alb_fqdn" {
 }
 
 output "alb_arn_suffix" {
-  value = "${aws_lb.traefik_auth.*.arn_suffix}"
+  value = var.deploy ? aws_lb.traefik_auth.*.arn_suffix : [] # output must be a list (even if empty), otherwise concat in k8s-services fails
 }
-

@@ -140,18 +140,18 @@ module "traefik_nlb" {
   cidr_blocks           = var.traefik_nlb_cidr_blocks
 }
 
-  # --------------------------------------------------
-  # Cloudwatch ALB 500 errors alerts to slack
-  # --------------------------------------------------
+# --------------------------------------------------
+# Cloudwatch ALB 500 errors alerts to slack
+# --------------------------------------------------
 
-  module "traefik_cw_lb500_alerts" {
-  source          = "../../_sub/monitoring/cw_lb500_alerts"
-  deploy          = var.cw_alb_alerts_deploy
-  albs            = concat((var.traefik_alb_anon_deploy ? module.traefik_alb_anon.alb_arn_suffix : []), (var.traefik_alb_auth_deploy ? module.traefik_alb_auth.alb_arn_suffix : [])) # ALBs as a list from traefik outputs
-  function_name   = var.traefik_alb_lambda_name             # Unique name for Lambda since terraform is missing a name prefix
-  sns_name        = var.traefik_alb_sns_name                # Tried to lambda function so also need a unique name
-  slack_hook      = var.traefik_alb_slack_hook              # A slack webhook that can accept messages
-  slack_channel   = var.traefik_alb_slack_channel           # The channel to post messages to
+module "traefik_cw_lb500_alerts" {
+  source           = "../../_sub/monitoring/cw_lb500_alerts"
+  deploy           = var.cwalarms_alb_500_deploy
+  alb_arn_suffixes = concat(module.traefik_alb_anon.alb_arn_suffix, module.traefik_alb_auth.alb_arn_suffix)
+  slack_hook       = var.cwalarms_alb_500_slack_hook              # A slack webhook that can accept messages
+  slack_channel    = var.cwalarms_alb_500_slack_channel           # The channel to post messages to
+  function_name    = "cw_to_slack_eks_${var.eks_cluster_name}"    # Unique name for Lambda since terraform is missing a name prefix
+  sns_name         = "eks_alb_500_errors_${var.eks_cluster_name}" # Tried to lambda function so also need a unique name
 }
 
 # --------------------------------------------------
