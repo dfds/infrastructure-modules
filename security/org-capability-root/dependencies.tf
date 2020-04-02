@@ -23,11 +23,11 @@ locals {
                 "route53:*",
                 "support:*",
                 "waf:*",
-				"s3:List*",
-				"dynamoDB:DescribeTable",
-				"aws-portal:View*",
+                "s3:List*",
+                "dynamoDB:DescribeTable",
+                "aws-portal:View*",
                 "cloudwatch:List*",
-				"cloudwatch:Get*"
+                "cloudwatch:Get*"
             ],
             "Resource": "*",
             "Condition": {
