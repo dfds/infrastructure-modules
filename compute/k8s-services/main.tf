@@ -26,13 +26,53 @@ provider "kubernetes" {
   config_path = local.kubeconfig_path
 }
 
+# provider "azuread" {}
+
+# --------------------------------------------------
+# Helm/Tiller
+# --------------------------------------------------
+
+resource "kubernetes_service_account" "tiller" {
+  metadata {
+    name      = "tiller-sa"
+    namespace = "kube-system"
+  }
+
+  automount_service_account_token = true
+}
+
+resource "kubernetes_cluster_role_binding" "tiller" {
+  metadata {
+    name = "tiller-crb"
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "cluster-admin"
+  }
+
+  subject {
+    api_group = ""
+    kind      = "ServiceAccount"
+    name      = kubernetes_service_account.tiller.metadata[0].name
+    namespace = kubernetes_service_account.tiller.metadata[0].namespace
+  }
+
+  depends_on = [kubernetes_service_account.tiller]
+}
+
 provider "helm" {
-  version = "~> 0.8"
+  version         = "~> 0.10.4"
+  install_tiller  = true
+  namespace       = kubernetes_cluster_role_binding.tiller.subject[0].namespace
+  service_account = kubernetes_cluster_role_binding.tiller.subject[0].name
 
   kubernetes {
     config_path = local.kubeconfig_path
   }
 }
+
 
 # --------------------------------------------------
 # Traefik
@@ -154,15 +194,15 @@ module "kiam_deploy" {
   worker_role_id          = data.terraform_remote_state.cluster.outputs.eks_worker_role_id
 }
 
-# --------------------------------------------------
-# Blaster - depends on KIAM
-# --------------------------------------------------
+# # --------------------------------------------------
+# # Blaster - depends on KIAM
+# # --------------------------------------------------
 
-module "blaster_namespace" {
-  source                   = "../../_sub/compute/k8s-blaster-namespace"
-  deploy                   = var.blaster_deploy
-  cluster_name             = var.eks_cluster_name
-  blaster_configmap_bucket = data.terraform_remote_state.cluster.outputs.blaster_configmap_bucket
-  kiam_server_role_arn     = module.kiam_deploy.server_role_arn
-  extra_permitted_roles    = var.blaster_namespace_extra_permitted_roles
-}
+# module "blaster_namespace" {
+#   source                   = "../../_sub/compute/k8s-blaster-namespace"
+#   deploy                   = var.blaster_deploy
+#   cluster_name             = var.eks_cluster_name
+#   blaster_configmap_bucket = data.terraform_remote_state.cluster.outputs.blaster_configmap_bucket
+#   kiam_server_role_arn     = module.kiam_deploy.server_role_arn
+#   extra_permitted_roles    = var.blaster_namespace_extra_permitted_roles
+# }

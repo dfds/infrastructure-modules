@@ -1,16 +1,4 @@
 # --------------------------------------------------
-# Init
-# --------------------------------------------------
-
-provider "helm" {
-  kubernetes {
-    config_path = var.kubeconfig_path
-  }
-
-  home = pathexpand("~/.helm_${var.cluster_name}_kiam")
-}
-
-# --------------------------------------------------
 # AWS
 # --------------------------------------------------
 
@@ -35,11 +23,6 @@ resource "aws_iam_role_policy" "server_node" {
 EOF
 
 }
-
-# resource "aws_iam_instance_profile" "server_node" {
-#   name = "eks-${var.cluster_name}-worker"
-#   role = "${aws_iam_role.server_node.name}"
-# }
 
 resource "aws_iam_role" "server_role" {
   count       = var.deploy ? 1 : 0
@@ -97,59 +80,58 @@ resource "aws_iam_policy_attachment" "server_policy_attach" {
 # Helm
 # --------------------------------------------------
 
-resource "null_resource" "repo_init_helm" {
-  count = var.deploy ? 1 : 0
-
-  triggers = {
-    build_number = timestamp()
-  }
-
-  provisioner "local-exec" {
-    command = "helm init --client-only --home ${pathexpand("~/.helm_${var.cluster_name}_kiam")}"
-  }
-
-  provisioner "local-exec" {
-    command = "helm --home ${pathexpand("~/.helm_${var.cluster_name}_kiam")} repo update"
-  }
-
-  provisioner "local-exec" {
-    command = <<EOT
-        echo "Testing for Tiller"
-        count=0
-        while [ `kubectl --kubeconfig ${var.kubeconfig_path} -n kube-system get pod -l name=tiller -o go-template --template='{{range .items}}{{range .status.conditions}}{{ if eq .type "Ready" }}{{ .status }} {{end}}{{end}}{{end}}'` != 'True' ]
-        do
-            if [ $count -gt 15 ]; then
-                echo "Failed to get ready Tiller pod."
-                exit 1
-            fi
-            echo "."
-            count=$(( $count + 1 ))
-            sleep 4
-        done
-
-EOT
-
-  }
+data "helm_repository" "uswitch" {
+  name = "uswitch"
+  url  = "https://uswitch.github.io/kiam-helm-charts/charts"
 }
 
 resource "helm_release" "kiam" {
-  count     = var.deploy ? 1 : 0
-  name      = "kiam"
-  namespace = "kube-system"
-  chart     = "stable/kiam"
-  version   = "2.0.1-rc4"
+  count      = var.deploy ? 1 : 0
+  name       = "kiam"
+  repository = data.helm_repository.uswitch.metadata[0].name
+  namespace  = "kube-system"
+  chart      = "kiam"
 
-  # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
-  # force an interpolation expression to be interpreted as a list by wrapping it
-  # in an extra set of list brackets. That form was supported for compatibility in
-  # v0.11, but is no longer supported in Terraform v0.12.
-  #
-  # If the expression in the following list itself returns a list, remove the
-  # brackets to avoid interpretation as a list of lists. If the expression
-  # returns a single list item then leave it as-is and remove this TODO comment.
+  # See: https://github.com/uswitch/kiam/tree/master/helm/kiam
+
   values = [
-    file("kiam_values.yaml"),
+    file("kiam_tls.yaml"),
   ]
+
+  set {
+    name  = "agent.image.tag"
+    value = "v3.5"
+  }
+
+  set {
+    name  = "agent.whiteListRouteRegexp"
+    value = "(^/latest/meta-data/iam/info$)"
+  }
+
+  set {
+    name  = "agent.host.iptables"
+    value = "true"
+  }
+
+  set {
+    name  = "agent.host.interface"
+    value = "eni+"
+  }
+
+  # set {
+  #   name = "agent.podLabels.\"slack\""
+  #   value = "dev-excellence"
+  # }
+
+  set {
+    name  = "server.image.tag"
+    value = "v3.5"
+  }
+
+  set {
+    name  = "server.sslCertHostPath"
+    value = "/etc/pki/ca-trust/extracted/pem"
+  }
 
   set {
     name  = "server.roleBaseArn"
@@ -161,6 +143,9 @@ resource "helm_release" "kiam" {
     value = "arn:aws:iam::${var.aws_workload_account_id}:role/eks-${var.cluster_name}-kiam-server"
   }
 
-  depends_on = [null_resource.repo_init_helm]
-}
+  set {
+    name  = "server.useHostNetwork"
+    value = "true"
+  }
 
+}
