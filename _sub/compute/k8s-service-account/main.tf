@@ -5,6 +5,8 @@ resource "kubernetes_service_account" "deploy-user" {
   }
 
   provider = kubernetes
+
+  depends_on = [var.module_depends_on]
 }
 
 resource "kubernetes_cluster_role_binding" "deploy-user" {
@@ -26,6 +28,8 @@ resource "kubernetes_cluster_role_binding" "deploy-user" {
   }
 
   provider = kubernetes
+
+  depends_on = [var.module_depends_on]
 }
 
 data "external" "get-token" {
@@ -36,12 +40,5 @@ data "external" "get-token" {
     default_secret_name = kubernetes_service_account.deploy-user.default_secret_name
     kubeconfig_path     = var.kubeconfig_path
   }
-}
 
-# resource "aws_ssm_parameter" "kubeconfig" {
-#   name        = "/eks/${var.cluster_name}/deploy_user"
-#   description = "A config file for eks ${var.cluster_name} to use for deployments across the cluster"
-#   type        = "SecureString"
-#   value       = "${data.external.get-token.result["kubeconfig_json"]}"
-#   overwrite   = true
-# }
+}
