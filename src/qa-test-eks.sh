@@ -6,9 +6,6 @@ ACTION=$1
 
 
 if [ "$ACTION" = "init" ]; then
-    helm init --client-only
-    helm repo add servicecatalog "https://svc-catalog-charts.storage.googleapis.com"
-    helm repo add aws-sb "https://awsservicebroker.s3.amazonaws.com/charts"
     az login --service-principal --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
 fi
 
