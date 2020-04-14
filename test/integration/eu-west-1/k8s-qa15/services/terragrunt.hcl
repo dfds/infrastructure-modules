@@ -10,7 +10,7 @@ include {
 }
 
 dependencies {
-  paths = ["../cluster", "../svc-prereqs"]
+  paths = ["../cluster"]
 }
 
 
