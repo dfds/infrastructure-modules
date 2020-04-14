@@ -20,5 +20,10 @@ resource "aws_eks_cluster" "eks" {
     aws_iam_role_policy_attachment.cluster,
     aws_iam_role_policy_attachment.service,
   ]
+
+  provisioner "local-exec" {
+    command = "sleep ${var.sleep_after}"
+  }
+
 }
 

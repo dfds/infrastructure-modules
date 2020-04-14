@@ -24,6 +24,7 @@ provider "aws" {
 
 provider "kubernetes" {
   config_path = local.kubeconfig_path
+  version     = "~> 1.11.1"
 }
 
 # provider "azuread" {}
