@@ -247,7 +247,8 @@ module "param_store_default_kube_config" {
 # What is this even needed for?
 module "k8s_service_account" {
   source            = "../../_sub/compute/k8s-service-account"
-  module_depends_on = [module.eks_heptio.kubeconfig_path] # https://discuss.hashicorp.com/t/tips-howto-implement-module-depends-on-emulation/2305/2  cluster_name    = var.eks_cluster_name
+  module_depends_on = [module.eks_heptio.kubeconfig_path] # https://discuss.hashicorp.com/t/tips-howto-implement-module-depends-on-emulation/2305/2  
+  cluster_name      = var.eks_cluster_name
   kubeconfig_path   = local.kubeconfig_path
 }
 
