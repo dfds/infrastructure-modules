@@ -24,7 +24,7 @@ provider "aws" {
 
 provider "kubernetes" {
   config_path = local.kubeconfig_path
-  version     = "~> 1.11.1"
+  version     = "~> 1.10" # locked to 1.10 due to https://github.com/terraform-providers/terraform-provider-kubernetes/issues/759
 }
 
 # provider "azuread" {}

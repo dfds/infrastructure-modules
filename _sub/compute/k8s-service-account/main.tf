@@ -41,4 +41,6 @@ data "external" "get-token" {
     kubeconfig_path     = var.kubeconfig_path
   }
 
+  depends_on = [var.module_depends_on]
+
 }

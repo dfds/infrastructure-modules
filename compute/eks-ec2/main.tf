@@ -5,7 +5,6 @@
 terraform {
   backend "s3" {
   }
-  # required_version = "~> 0.11.7"
 }
 
 provider "aws" {
@@ -18,8 +17,8 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  config_path = local.kubeconfig_path
-  version     = "~> 1.11.1"
+  config_path      = local.kubeconfig_path
+  version          = "~> 1.10" # locked to 1.10 due to https://github.com/terraform-providers/terraform-provider-kubernetes/issues/759
 }
 
 
@@ -239,6 +238,7 @@ module "param_store_admin_kube_config" {
   key_value       = module.eks_heptio.admin_configfile
 }
 
+# Stored in public S3 bucket - not needed in parameter store?
 module "param_store_default_kube_config" {
   source          = "../../_sub/security/ssm-parameter-store"
   key_name        = "/eks/${var.eks_cluster_name}/default_user"
