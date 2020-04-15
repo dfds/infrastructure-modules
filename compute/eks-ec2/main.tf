@@ -17,8 +17,24 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  config_path      = local.kubeconfig_path
-  version          = "~> 1.10.0" # locked to 1.10 due to https://github.com/terraform-providers/terraform-provider-kubernetes/issues/759
+  load_config_file       = false
+  host                   = module.eks_cluster.eks_endpoint
+  cluster_ca_certificate = base64decode(module.eks_cluster.eks_certificate_authority)
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1alpha1"
+    command     = "aws-iam-authenticator"
+    args = [
+      "token",
+      "-i",
+      var.eks_cluster_name,
+      "-r",
+      var.aws_assume_role_arn,
+    ]
+  }
+  # config_path      = local.kubeconfig_path
+  # version          = "~> 1.10.0" # locked to 1.10 due to https://github.com/terraform-providers/terraform-provider-kubernetes/issues/759
+  version = "~> 1.11.1"
 }
 
 
