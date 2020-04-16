@@ -197,15 +197,15 @@ module "kiam_deploy" {
   worker_role_id          = data.terraform_remote_state.cluster.outputs.eks_worker_role_id
 }
 
-# # --------------------------------------------------
-# # Blaster - depends on KIAM
-# # --------------------------------------------------
+# --------------------------------------------------
+# Blaster - depends on KIAM
+# --------------------------------------------------
 
-# module "blaster_namespace" {
-#   source                   = "../../_sub/compute/k8s-blaster-namespace"
-#   deploy                   = var.blaster_deploy
-#   cluster_name             = var.eks_cluster_name
-#   blaster_configmap_bucket = data.terraform_remote_state.cluster.outputs.blaster_configmap_bucket
-#   kiam_server_role_arn     = module.kiam_deploy.server_role_arn
-#   extra_permitted_roles    = var.blaster_namespace_extra_permitted_roles
-# }
+module "blaster_namespace" {
+  source                   = "../../_sub/compute/k8s-blaster-namespace"
+  deploy                   = var.blaster_deploy
+  cluster_name             = var.eks_cluster_name
+  blaster_configmap_bucket = data.terraform_remote_state.cluster.outputs.blaster_configmap_bucket
+  kiam_server_role_arn     = module.kiam_deploy.server_role_arn
+  extra_permitted_roles    = var.blaster_namespace_extra_permitted_roles
+}
