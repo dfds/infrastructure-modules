@@ -19,6 +19,17 @@ variable "core_account_id" {
   description = "The AWS account ID of the Organizations Core account"
 }
 
+variable "shared_account_id" {
+  type        = string
+  description = "The AWS account ID of the Organizations Shared account (e.g. Oxygen)"
+}
+
+variable "shared_role_path" {
+  type        = string
+  description = "The path in which to put the IAM role for access to resources in shared account"
+  default = "/"  
+}
+
 variable "access_key_master" {
   type = string
 }

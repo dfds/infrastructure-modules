@@ -13,3 +13,22 @@ data "aws_iam_policy_document" "assume_role_policy_self" {
   }
 }
 
+data "aws_iam_policy_document" "assume_role_adfs_shared" {
+  statement {
+    actions = ["sts:AssumeRoleWithSAML"]
+
+    principals {
+      type        = "Federated"
+      identifiers = [
+        "arn:aws:iam::${var.shared_account_id}:saml-provider/ADFS"
+      ]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "SAML:aud"
+      values   = ["https://signin.aws.amazon.com/saml"]
+    }
+  }
+
+}

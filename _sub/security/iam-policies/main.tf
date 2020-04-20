@@ -153,6 +153,33 @@ data "aws_iam_policy_document" "access_cloudwatchlogs_devops" {
   }
 }
 
+data "aws_iam_policy_document" "capability_access_shared" {
+  statement {
+    sid    = "GetParameters"
+    effect = "Allow"
+    actions = [
+      "ssm:GetParametersByPath",
+      "ssm:GetParameters",
+      "ssm:GetParameter"
+    ]
+    resources = [
+      "arn:aws:ssm:*:*:parameter/capabilities/${var.replace_token}/*"
+    ]
+  }
+
+  statement {
+    sid    = "DescribeParameters"
+    effect = "Allow"
+    actions = [
+      "ssm:DescribeParameters"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+}
+
+
 # ------------------------------------------------------------------------------
 # Trusted Account
 # ------------------------------------------------------------------------------

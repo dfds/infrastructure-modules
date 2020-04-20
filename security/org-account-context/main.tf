@@ -15,12 +15,24 @@ provider "aws" {
 provider "aws" {
   version = "~> 2.43"
   region  = var.aws_region
-  alias   = "core"
+  alias   = "core" # this provider does not seem to be used?
 }
 
 provider "aws" {
   version = "~> 2.43"
   region  = var.aws_region
+  alias   = "shared"
+
+  # Assume role in Shared account
+  assume_role {
+    role_arn = "arn:aws:iam::${var.shared_account_id}:role/${var.prime_role_name}"
+  }
+}
+
+provider "aws" {
+  version = "~> 2.43"
+  region  = var.aws_region
+  alias   = "workload"
 
   # Need explicit credentials in Master, to be able to assume Organizational Role in Workload account
   access_key = var.access_key_master
@@ -30,12 +42,9 @@ provider "aws" {
   assume_role {
     role_arn = module.org_account.org_role_arn
   }
-
-  alias = "workload"
 }
 
 terraform {
-  # The configuration for this backend will be filled in by Terragrunt
   # The configuration for this backend will be filled in by Terragrunt
   backend "s3" {
   }
@@ -43,8 +52,14 @@ terraform {
 
 module "iam_policies" {
   source                            = "../../_sub/security/iam-policies"
-  iam_role_trusted_account_root_arn = ["arn:aws:iam::${var.core_account_id}:root"] # Account ID from variable instead of data.aws_caller_identity - seemd to get rate-throttled
+  iam_role_trusted_account_root_arn = ["arn:aws:iam::${var.core_account_id}:root"] # Account ID from variable instead of data.aws_caller_identity - seems to get rate-throttled
 }
+
+module "iam_policies_shared" {
+  source        = "../../_sub/security/iam-policies"
+  replace_token = var.capability_root_id
+}
+
 
 # --------------------------------------------------
 # Create account
@@ -81,8 +96,29 @@ module "iam_idp" {
   }
 }
 
+
 # --------------------------------------------------
-# IAM roles
+# IAM roles - Shared
+# --------------------------------------------------
+
+module "iam_role_shared" {
+  source               = "../../_sub/security/iam-role"
+  role_name            = var.capability_root_id
+  role_path            = var.shared_role_path
+  role_description     = "Namespaced access to resources in shared account, e.g. Parameter Store, CloudWatch Logs etc."
+  max_session_duration = 28800 # 8 hours
+  assume_role_policy   = data.aws_iam_policy_document.assume_role_adfs_shared.json
+  role_policy_name     = "NamespacedAccessInSharedAccount"
+  role_policy_document = module.iam_policies_shared.capability_access_shared
+
+  providers = {
+    aws = aws.shared
+  }
+}
+
+
+# --------------------------------------------------
+# IAM roles - Workload (capability context)
 # --------------------------------------------------
 
 module "iam_role_capability" {
