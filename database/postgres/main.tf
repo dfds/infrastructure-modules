@@ -22,6 +22,7 @@ provider "aws" {
 module "postgres" {
   source              = "../../_sub/database/postgres"
   application         = var.application
+  environment         = var.environment
   db_name             = var.db_name
   db_master_username  = var.db_master_username
   db_master_password  = var.db_master_password
