@@ -1,17 +1,22 @@
 resource "aws_security_group" "pgsg" {
-  name        = "${var.application}-postgres10-sg-${var.environment}"
+  name_prefix = "${var.application}-postgres10-sg-${var.environment}"
   description = "Allow all inbound traffic on port ${var.db_port}"
 
   ingress {
-    from_port   = 1433
-    to_port     = 1433
+    from_port   = var.db_port
+    to_port     = var.db_port
     protocol    = "TCP"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 
   tags = {
     environment = var.environment
   }
+
 }
 
 #Enable SSL on the database by default
