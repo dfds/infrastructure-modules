@@ -34,7 +34,7 @@ module "param_store_pghost" {
   source          = "../../_sub/security/ssm-parameter-store"
   key_name        = "/${var.application}/postgres/${var.environment}/pghost"
   key_description = "PG host for postgres database ${var.application}-${var.environment}"
-  key_value       = module.postgres.pghost
+  key_value       = module.postgres.host
 }
 
 module "param_store_pguser" {
@@ -62,13 +62,13 @@ module "param_store_pgport" {
   source          = "../../_sub/security/ssm-parameter-store"
   key_name        = "/${var.application}/postgres/${var.environment}/pgport"
   key_description = "PG port for postgres database ${var.application}-${var.environment}"
-  key_value       = var.db_port
+  key_value       = module.postgres.port
 }
 
 module "param_store_pgconnection_string" {
   source          = "../../_sub/security/ssm-parameter-store"
   key_name        = "/${var.application}/postgres/${var.environment}/pgconnection_string"
   key_description = "PG connection string for postgres database ${var.application}-${var.environment}"
-  key_value       = module.postgres.pgconnection_string
+  key_value       = module.postgres.connection_string
 }
 
