@@ -24,7 +24,7 @@ variable "environment" {
 }
 
 variable "db_port" {
-  default     = 1433
+  default     = 5432
   description = "The port to use for the database"
 }
 
