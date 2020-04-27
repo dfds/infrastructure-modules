@@ -52,6 +52,24 @@ locals {
 
   # Get the domain validation options for the core ("alias") DNS zone - i.e. all other elements than local.workload_index
   validate_core     = [for i in range(0, length(local.flat_validation_options)) : local.flat_validation_options[i] if i != local.workload_index]
+
+  /*
+  Workaround to the following error, during state refresh, when adding element to traefik_alb_auth_core_alias
+  Error: Invalid index
+  count.index is 2
+  local.validate_core is tuple with 2 elements
+  The given key does not identify an element in this collection value.
+  See https://github.com/terraform-providers/terraform-provider-azurerm/issues/5675 for similar issue
+  */
+  empty_map = {
+    "domain_name"           = ""
+    "resource_record_name"  = ""
+    "resource_record_type"  = "CNAME"
+    "resource_record_value" = ""
+  }
+  pad_map = [for i in range(10) : local.empty_map]
+  validate_core_padded = concat(local.validate_core, local.pad_map)
+  /* End of workaround */
 }
 
 # Create validation DNS record in the workload DNS zone
@@ -68,10 +86,10 @@ resource "aws_route53_record" "workload" {
 # Create validation DNS record(s) in the core DNS zone (alternative names specified)
 resource "aws_route53_record" "core" {
   count           = var.deploy ? length(var.core_alias) : 0
-  name            = local.validate_core[count.index]["resource_record_name"]
-  type            = local.validate_core[count.index]["resource_record_type"]
+  name            = local.validate_core_padded[count.index]["resource_record_name"]
+  type            = local.validate_core_padded[count.index]["resource_record_type"]
   zone_id         = local.core_dns_zone_id
-  records         = [local.validate_core[count.index]["resource_record_value"]]
+  records         = [local.validate_core_padded[count.index]["resource_record_value"]]
   ttl             = 60
   allow_overwrite = true
 

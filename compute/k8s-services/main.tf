@@ -95,7 +95,7 @@ module "traefik_alb_cert" {
   deploy              = var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy ? true : false
   domain_name         = "*.${local.eks_fqdn}"
   dns_zone_name       = var.workload_dns_zone_name
-  core_alias          = var.traefik_alb_auth_core_alias
+  core_alias          = concat(var.traefik_alb_auth_core_alias, var.traefik_alb_anon_core_alias)
   aws_region          = var.aws_region          # Workaround to https://github.com/hashicorp/terraform/issues/21416
   aws_assume_role_arn = var.aws_assume_role_arn # Workaround to https://github.com/hashicorp/terraform/issues/21416
 }
@@ -169,6 +169,21 @@ module "traefik_alb_anon_dns" {
   record_ttl   = "900"
   record_value = module.traefik_alb_anon.alb_fqdn
 }
+
+module "traefik_alb_anon_dns_core_alias" {
+  source       = "../../_sub/network/route53-record"
+  deploy       = var.traefik_alb_anon_deploy ? length(var.traefik_alb_anon_core_alias) >= 1 : false
+  zone_id      = local.core_dns_zone_id
+  record_name  = var.traefik_alb_anon_core_alias
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = module.traefik_alb_anon.alb_fqdn
+
+  providers = {
+    aws = aws.core
+  }
+}
+
 
 # --------------------------------------------------
 # Cloudwatch ALB 500 errors alerts to slack
