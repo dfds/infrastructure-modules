@@ -117,7 +117,7 @@ module "traefik_alb_auth" {
   source                = "../../_sub/compute/eks-alb-auth"
   deploy                = var.traefik_alb_auth_deploy
   cluster_name          = var.eks_cluster_name
-  vpc_id                = data.terraform_remote_state.cluster.outputs.eks_cluster_vpc_id
+  vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
   subnet_ids            = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
   autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
   alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
@@ -155,7 +155,7 @@ module "traefik_alb_anon" {
   source                = "../../_sub/compute/eks-alb"
   deploy                = var.traefik_alb_anon_deploy
   cluster_name          = var.eks_cluster_name
-  vpc_id                = data.terraform_remote_state.cluster.outputs.eks_cluster_vpc_id
+  vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
   subnet_ids            = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
   autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
   alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
@@ -208,7 +208,6 @@ module "traefik_cw_lb500_alerts" {
 module "kiam_deploy" {
   source = "../../_sub/compute/k8s-kiam"
   deploy = var.kiam_deploy
-  # kubeconfig_path         = local.kubeconfig_path
   cluster_name            = var.eks_cluster_name
   aws_workload_account_id = var.aws_workload_account_id
   worker_role_id          = data.terraform_remote_state.cluster.outputs.eks_worker_role_id
