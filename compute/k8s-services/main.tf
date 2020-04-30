@@ -88,7 +88,7 @@ module "traefik_deploy" {
   source        = "../../_sub/compute/k8s-traefik"
   deploy        = var.traefik_deploy
   image_version = var.traefik_version
-  deploy_name   = var.traefik_deploy_name
+  deploy_name   = "traefik"
   cluster_name  = var.eks_cluster_name
 }
 
