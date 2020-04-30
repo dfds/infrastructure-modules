@@ -12,6 +12,20 @@ data "terraform_remote_state" "cluster" {
   }
 }
 
+
+# --------------------------------------------------
+# Cluster metadata and authenticate
+# --------------------------------------------------
+
+data "aws_eks_cluster" "eks" {
+  name = var.eks_cluster_name  
+}
+
+data "aws_eks_cluster_auth" "eks" {
+  name = var.eks_cluster_name
+}
+
+
 # --------------------------------------------------
 # Path to kubeconfig file
 # --------------------------------------------------
@@ -20,14 +34,20 @@ locals {
   kubeconfig_path = pathexpand("~/.kube/${var.eks_cluster_name}.config")
 }
 
+
+# --------------------------------------------------
+# Generate EKS fully-qualified domain name
 # --------------------------------------------------
 
-# Generate EKS fully-qualified domain name
 locals {
   eks_fqdn = "${var.eks_cluster_name}.${var.workload_dns_zone_name}"
 }
 
+
+# --------------------------------------------------
 # Determine parent DNS zone name
+# --------------------------------------------------
+
 locals {
   workload_dns_zone_list = split(".", var.workload_dns_zone_name)
   core_dns_zone_list = slice(
@@ -37,6 +57,11 @@ locals {
   )
   core_dns_zone_name = join(".", local.core_dns_zone_list)
 }
+
+
+# --------------------------------------------------
+# Get Route 53 zones and ids
+# --------------------------------------------------
 
 data "aws_route53_zone" "workload" {
   name         = "${var.workload_dns_zone_name}."
@@ -56,7 +81,11 @@ locals {
   core_dns_zone_id     = element(concat(data.aws_route53_zone.core.*.zone_id, [""]), 0)
 }
 
+
+# --------------------------------------------------
 # Generate Traefik authenticated ALB app registration reply URLs
+# --------------------------------------------------
+
 locals {
   traefik_alb_auth_endpoints = concat(
     ["internal.${local.eks_fqdn}"],
@@ -71,4 +100,3 @@ locals {
   )
   traefik_alb_auth_appreg_reply_urls = split(",", local.traefik_alb_auth_appreg_reply_replace_end)
 }
-

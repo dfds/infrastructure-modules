@@ -8,8 +8,8 @@ terraform {
 }
 
 provider "aws" {
-  region  = var.aws_region
   version = "~> 2.43"
+  region  = var.aws_region
 
   assume_role {
     role_arn = var.aws_assume_role_arn
@@ -17,16 +17,17 @@ provider "aws" {
 }
 
 provider "aws" {
-  region  = var.aws_region
   version = "~> 2.43"
+  region  = var.aws_region
   alias   = "core"
 }
 
 provider "kubernetes" {
-  config_path      = local.kubeconfig_path
-  # load_config_file = false
-  version          = "~> 1.11"
-  # version     = "~> 1.10.0" # locked to 1.10 due to https://github.com/terraform-providers/terraform-provider-kubernetes/issues/759
+  version                = "~> 1.11.1"
+  host                   = data.aws_eks_cluster.eks.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.eks.token
+  load_config_file       = false
 }
 
 # provider "azuread" {}
@@ -72,7 +73,9 @@ provider "helm" {
   service_account = kubernetes_cluster_role_binding.tiller.subject[0].name
 
   kubernetes {
-    config_path = local.kubeconfig_path
+    host                   = data.aws_eks_cluster.eks.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+    token                  = data.aws_eks_cluster_auth.eks.token
   }
 }
 
@@ -206,7 +209,7 @@ module "traefik_cw_lb500_alerts" {
 module "kiam_deploy" {
   source                  = "../../_sub/compute/k8s-kiam"
   deploy                  = var.kiam_deploy
-  kubeconfig_path         = local.kubeconfig_path
+  # kubeconfig_path         = local.kubeconfig_path
   cluster_name            = var.eks_cluster_name
   aws_workload_account_id = var.aws_workload_account_id
   worker_role_id          = data.terraform_remote_state.cluster.outputs.eks_worker_role_id
