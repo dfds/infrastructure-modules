@@ -85,12 +85,11 @@ provider "helm" {
 # --------------------------------------------------
 
 module "traefik_deploy" {
-  source          = "../../_sub/compute/k8s-traefik"
-  deploy          = var.traefik_deploy
-  kubeconfig_path = local.kubeconfig_path
-  image_version   = var.traefik_version
-  deploy_name     = var.traefik_deploy_name
-  cluster_name    = var.eks_cluster_name
+  source        = "../../_sub/compute/k8s-traefik"
+  deploy        = var.traefik_deploy
+  image_version = var.traefik_version
+  deploy_name   = var.traefik_deploy_name
+  cluster_name  = var.eks_cluster_name
 }
 
 module "traefik_alb_cert" {
@@ -207,8 +206,8 @@ module "traefik_cw_lb500_alerts" {
 # --------------------------------------------------
 
 module "kiam_deploy" {
-  source                  = "../../_sub/compute/k8s-kiam"
-  deploy                  = var.kiam_deploy
+  source = "../../_sub/compute/k8s-kiam"
+  deploy = var.kiam_deploy
   # kubeconfig_path         = local.kubeconfig_path
   cluster_name            = var.eks_cluster_name
   aws_workload_account_id = var.aws_workload_account_id

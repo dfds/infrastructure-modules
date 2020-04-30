@@ -27,15 +27,6 @@ data "aws_eks_cluster_auth" "eks" {
 
 
 # --------------------------------------------------
-# Path to kubeconfig file
-# --------------------------------------------------
-
-locals {
-  kubeconfig_path = pathexpand("~/.kube/${var.eks_cluster_name}.config")
-}
-
-
-# --------------------------------------------------
 # Generate EKS fully-qualified domain name
 # --------------------------------------------------
 
