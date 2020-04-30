@@ -113,11 +113,26 @@ resource "kubernetes_service" "traefik" {
   provider = kubernetes
 }
 
-resource "null_resource" "create_traefik_role" {
-  count = var.deploy ? 1 : 0
 
-  provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${var.kubeconfig_path} apply -f ${path.module}/ingress-clusterrole.yaml"
+resource "kubernetes_cluster_role" "traefik" {
+  count = var.deploy ? 1 : 0
+  metadata {
+    name = "${var.deploy_name}-cr"
+  }
+  rule {
+    api_groups = [""]
+    resources  = ["services", "endpoints", "secrets"]
+    verbs      = ["get", "list", "watch"]
+  }
+  rule {
+    api_groups = ["extensions"]
+    resources  = ["ingresses"]
+    verbs      = ["get", "list", "watch"]
+  }
+  rule {
+    api_groups = ["extensions"]
+    resources  = ["ingresses/status"]
+    verbs      = ["update"]
   }
 }
 
@@ -134,7 +149,7 @@ resource "kubernetes_cluster_role_binding" "example" {
   subject {
     api_group = ""
     kind      = "ServiceAccount"
-    name      = "${var.deploy_name}-ingress-controller"
+    name      = "${var.deploy_name}-cr"
     namespace = var.namespace
   }
 }
