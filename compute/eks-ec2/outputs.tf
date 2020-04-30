@@ -2,20 +2,9 @@
 # Cluster
 # --------------------------------------------------
 
+# Legacy, to be decommisioned 
 output "eks_cluster_vpc_id" {
   value = module.eks_cluster.vpc_id
-}
-
-# To be removed!
-output "eks_cluster_endpoint" {
-  value = module.eks_cluster.eks_endpoint
-}
-
-# To be removed!
-output "eks_cluster_ca" {
-  value       = base64decode(module.eks_cluster.eks_certificate_authority)
-  sensitive   = true
-  description = "Not actually sensitive, just noisy"
 }
 
 # Legacy, to be decommisioned
