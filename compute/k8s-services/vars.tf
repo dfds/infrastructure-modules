@@ -50,9 +50,6 @@ variable "traefik_version" {
   default = "1.7.19"
 }
 
-variable "traefik_deploy_name" {
-}
-
 variable "traefik_alb_anon_deploy" {
   type    = bool
   default = false
