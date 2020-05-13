@@ -149,8 +149,8 @@ module "eks_nodegroup1_workers" {
   iam_instance_profile = module.eks_workers.iam_instance_profile_name
   security_groups      = [module.eks_workers_security_group.id]
   desired_capacity     = var.eks_nodegroup1_desired_capacity
-  min_size         = var.eks_nodegroup1_desired_capacity
-  max_size         = var.eks_nodegroup1_desired_capacity > 0 ? var.eks_nodegroup1_max_size : 0
+  min_size             = var.eks_nodegroup1_desired_capacity
+  max_size             = var.eks_nodegroup1_desired_capacity > 0 ? var.eks_nodegroup1_max_size : 0
   subnet_ids           = module.eks_workers_subnet.subnet_ids
   disk_size            = var.eks_worker_instance_storage_size
   instance_types       = var.eks_nodegroup1_instance_types
@@ -185,8 +185,8 @@ module "eks_nodegroup2_workers" {
   iam_instance_profile = module.eks_workers.iam_instance_profile_name
   security_groups      = [module.eks_workers_security_group.id]
   desired_capacity     = var.eks_nodegroup2_desired_capacity
-  min_size         = var.eks_nodegroup2_desired_capacity
-  max_size         = var.eks_nodegroup2_desired_capacity > 0 ? var.eks_nodegroup2_max_size : 0
+  min_size             = var.eks_nodegroup2_desired_capacity
+  max_size             = var.eks_nodegroup2_desired_capacity > 0 ? var.eks_nodegroup2_max_size : 0
   subnet_ids           = module.eks_workers_subnet.subnet_ids
   disk_size            = var.eks_worker_instance_storage_size
   instance_types       = var.eks_nodegroup2_instance_types
