@@ -149,12 +149,14 @@ variable "eks_nodegroup1_kubelet_extra_args" {
   default = ""
 }
 
-variable "eks_nodegroup1_instance_min_count" {
+variable "eks_nodegroup1_desired_capacity" {
+  type    = number
   default = 0
 }
 
-variable "eks_nodegroup1_instance_max_count" {
-  default = 0
+variable "eks_nodegroup1_max_size" {
+  type    = number
+  default = 10
 }
 
 # --------------------------------------------------
@@ -176,12 +178,14 @@ variable "eks_nodegroup2_kubelet_extra_args" {
   default = ""
 }
 
-variable "eks_nodegroup2_instance_min_count" {
+variable "eks_nodegroup2_desired_capacity" {
+  type    = number
   default = 0
 }
 
-variable "eks_nodegroup2_instance_max_count" {
-  default = 0
+variable "eks_nodegroup2_max_size" {
+  type    = number
+  default = 10
 }
 
 # --------------------------------------------------

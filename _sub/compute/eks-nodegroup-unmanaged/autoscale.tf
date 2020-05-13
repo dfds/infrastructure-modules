@@ -94,9 +94,12 @@ resource "aws_autoscaling_group" "eks" {
   count                = signum(length(var.instance_types))
   name                 = "eks-${var.cluster_name}-${var.nodegroup_name}"
   launch_configuration = element(concat(aws_launch_configuration.eks.*.id, [""]), 0)
-  min_size             = var.scaling_config_min_size
-  max_size             = var.scaling_config_max_size
-  desired_capacity     = var.scaling_config_min_size
+  min_size             = var.min_size
+  max_size             = var.max_size
+  desired_capacity     = var.desired_capacity
+  suspended_processes = [
+    "AZRebalance"
+  ]
   vpc_zone_identifier  = var.subnet_ids
 
   # The following can be set in case of the default health check are not sufficient

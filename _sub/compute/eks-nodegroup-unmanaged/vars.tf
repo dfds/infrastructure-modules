@@ -22,11 +22,18 @@ variable "security_groups" {
   type = list(string)
 }
 
-variable "scaling_config_min_size" {
+variable "desired_capacity" {
+  type = number
   default = 0
 }
 
-variable "scaling_config_max_size" {
+variable "min_size" {
+  type = number
+  default = 0
+}
+
+variable "max_size" {
+  type = number
   default = 0
 }
 
