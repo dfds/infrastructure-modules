@@ -238,6 +238,11 @@ module "eks_addons" {
   vpccni_version_override    = var.eks_addon_vpccni_version_override
 }
 
+module "k8s_priority_class" {
+  source         = "../../_sub/compute/k8s-priority-class"
+  priority_class = local.priority_class
+}
+
 module "eks_s3_public_kubeconfig" {
   source  = "../../_sub/storage/s3-bucket-object"
   deploy  = length(var.eks_public_s3_bucket) >= 1 ? true : false

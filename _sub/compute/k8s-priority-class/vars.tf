@@ -1,9 +1,6 @@
-locals {
-  kubeconfig_path = pathexpand("~/.kube/${var.eks_cluster_name}.config")
-}
-
-locals {
-  priority_class = [
+variable "priority_class" {
+  type = list
+  default = [
     {
       "name"        = "service-critical"
       "description" = "Used for service critical pods, e.g. ingress controllers."
