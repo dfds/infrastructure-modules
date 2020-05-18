@@ -19,3 +19,8 @@ variable "image_version" {
 variable "replicas" {
   default = 2
 }
+
+variable "priority_class" {
+  description = "Name of the Kubernetes priority class pods should use"
+  type = string  
+}

@@ -85,11 +85,12 @@ provider "helm" {
 # --------------------------------------------------
 
 module "traefik_deploy" {
-  source        = "../../_sub/compute/k8s-traefik"
-  deploy        = var.traefik_deploy
-  image_version = var.traefik_version
-  deploy_name   = "traefik"
-  cluster_name  = var.eks_cluster_name
+  source         = "../../_sub/compute/k8s-traefik"
+  deploy         = var.traefik_deploy
+  image_version  = var.traefik_version
+  priority_class = "service-critical"
+  deploy_name    = "traefik"
+  cluster_name   = var.eks_cluster_name
 }
 
 module "traefik_alb_cert" {
@@ -206,9 +207,10 @@ module "traefik_cw_lb500_alerts" {
 # --------------------------------------------------
 
 module "kiam_deploy" {
-  source = "../../_sub/compute/k8s-kiam"
-  deploy = var.kiam_deploy
+  source                  = "../../_sub/compute/k8s-kiam"
+  deploy                  = var.kiam_deploy
   cluster_name            = var.eks_cluster_name
+  priority_class          = "service-critical"
   aws_workload_account_id = var.aws_workload_account_id
   worker_role_id          = data.terraform_remote_state.cluster.outputs.eks_worker_role_id
 }
