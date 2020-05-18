@@ -206,9 +206,10 @@ module "traefik_cw_lb500_alerts" {
 # --------------------------------------------------
 
 module "kiam_deploy" {
-  source = "../../_sub/compute/k8s-kiam"
-  deploy = var.kiam_deploy
+  source                  = "../../_sub/compute/k8s-kiam"
+  deploy                  = var.kiam_deploy
   cluster_name            = var.eks_cluster_name
+  priority_class          = "service-critical"
   aws_workload_account_id = var.aws_workload_account_id
   worker_role_id          = data.terraform_remote_state.cluster.outputs.eks_worker_role_id
 }

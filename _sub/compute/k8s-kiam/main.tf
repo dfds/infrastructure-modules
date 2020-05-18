@@ -104,6 +104,11 @@ resource "helm_release" "kiam" {
   }
 
   set {
+    name = "agent.priorityClassName"
+    value = var.priority_class
+  }
+
+  set {
     name  = "agent.whiteListRouteRegexp"
     value = "(^/latest/meta-data/iam/info$)"
   }
@@ -126,6 +131,11 @@ resource "helm_release" "kiam" {
   set {
     name  = "server.image.tag"
     value = "v3.5"
+  }
+
+  set {
+    name = "server.priorityClassName"
+    value = var.priority_class
   }
 
   set {

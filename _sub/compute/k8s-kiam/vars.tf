@@ -7,7 +7,12 @@ variable "aws_workload_account_id" {
 }
 
 variable "cluster_name" {
+  type = string  
 }
 
 variable "worker_role_id" {
+}
+
+variable "priority_class" {
+  type = string  
 }
