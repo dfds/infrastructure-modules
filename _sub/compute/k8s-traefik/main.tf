@@ -78,8 +78,10 @@ resource "kubernetes_deployment" "traefik" {
       }
 
       spec {
+        priority_class_name              = var.priority_class
         service_account_name             = kubernetes_service_account.traefik[0].metadata[0].name
         termination_grace_period_seconds = 60
+
         volume {
           name = kubernetes_service_account.traefik[0].default_secret_name
           secret {
