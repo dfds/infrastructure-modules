@@ -18,19 +18,14 @@ variable "priority_class" {
     },
     {
       "name"        = "high"
-      "description" = "Used for particularly critical workloads."
+      "description" = "Used for production-grade workloads."
       "priority"    = 1000
-    },
-    {
-      "name"        = "medium"
-      "description" = "The default, production-grade, priority class for workloads."
-      "priority"    = 100
-      "default"     = true
     },
     {
       "name"        = "low"
       "description" = "Used for pods that are less important, e.g. dev and test pods."
       "priority"    = 10
+      "default"     = true
     },
   ]
 }
