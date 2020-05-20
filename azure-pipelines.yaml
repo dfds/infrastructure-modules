@@ -11,6 +11,7 @@ schedules:
     branches:
       include:
         - master
+    always: true
 
 # Define resources for container to use
 resources:
