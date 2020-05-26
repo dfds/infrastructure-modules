@@ -21,6 +21,10 @@ output "eks_worker_subnet_ids" {
   value = module.eks_workers_subnet.subnet_ids
 }
 
+output "eks_workers_security_group_id" {
+  value = module.eks_workers_security_group.id
+}
+
 output "eks_worker_role_id" {
   value = module.eks_workers.worker_role_id
 }
