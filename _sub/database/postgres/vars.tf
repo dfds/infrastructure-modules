@@ -1,10 +1,10 @@
 variable "environment" {
+  description = "The environment"
   default     = "prod"
-  description = "the environment"
 }
 
 variable "application" {
-  description = "the application"
+  description = "The application"
 }
 
 variable "db_name" {
