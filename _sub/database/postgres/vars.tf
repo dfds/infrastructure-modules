@@ -54,6 +54,11 @@ variable "db_auto_minor_version_upgrade" {
   default     = false
 }
 
+variable "db_deletion_protection" {
+  description = "Should the db be protected against deletion"
+  default     = false
+}
+
 variable "skip_final_snapshot" {
   description = "Define if the default of creating a backup upon deletion should be skipped. Default is false"
   default     = false

@@ -58,6 +58,7 @@ resource "aws_db_instance" "postgres" {
   username                    = var.db_master_username
   password                    = var.db_master_password
   auto_minor_version_upgrade  = var.db_auto_minor_version_upgrade
+  deletion_protection         = var.db_deletion_protection
   skip_final_snapshot         = var.skip_final_snapshot
 
   timeouts {
