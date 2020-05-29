@@ -21,9 +21,9 @@ resource "aws_security_group" "pgsg" {
 
 #Enable SSL on the database by default
 resource "aws_db_parameter_group" "dbparams" {
-  name        = "${var.application}-postgres10-force-ssl-${var.environment}"
-  description = "Force SSL encryption for postgres10"
-  family      = "postgres10"
+  name        = "${var.application}-postgres${var.db_engine_major_version}-force-ssl-${var.environment}"
+  description = "Force SSL encryption for postgres${var.db_engine_major_version}"
+  family      = "postgres${var.db_engine_major_version}"
 
   parameter {
     name  = "rds.force_ssl"
@@ -38,7 +38,6 @@ resource "aws_db_parameter_group" "dbparams" {
 #Restore the postgres database with the pre-configured settings
 resource "aws_db_instance" "postgres" {
   engine                  = "postgres"
-  engine_version          = "10.9"
   publicly_accessible     = "true"
   backup_retention_period = 10
   apply_immediately       = true
@@ -53,6 +52,7 @@ resource "aws_db_instance" "postgres" {
   storage_type        = var.db_storage_type
   instance_class      = var.db_instance_class
   allocated_storage   = var.db_allocated_storage
+  engine_version      = "${var.db_engine_major_version}.${var.db_engine_minor_version}"
   port                = var.db_port
   name                = var.db_name
   username            = var.db_master_username

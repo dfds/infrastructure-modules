@@ -34,6 +34,16 @@ variable "db_instance_class" {
   default     = "db.t2.micro"
 }
 
+variable "db_engine_major_version" {
+  description = "The database engine major version"
+  default     = "10"
+}
+
+variable "db_engine_minor_version" {
+  description = "The database engine minor version"
+  default     = "9"
+}
+
 variable "db_allocated_storage" {
   description = "The amount of space, in GB, to allocate for the database"
   default     = 20
