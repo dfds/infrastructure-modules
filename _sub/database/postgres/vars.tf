@@ -20,8 +20,8 @@ variable "db_master_password" {
 }
 
 variable "db_port" {
-  default     = 5432
   description = "The port to use for the database"
+  default     = 5432
 }
 
 variable "db_storage_type" {
