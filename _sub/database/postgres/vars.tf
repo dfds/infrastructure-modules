@@ -49,6 +49,11 @@ variable "db_allocated_storage" {
   default     = 20
 }
 
+variable "db_auto_minor_version_upgrade" {
+  description = "Should the db auto update minor versions during maintenance windows"
+  default     = false
+}
+
 variable "skip_final_snapshot" {
   description = "Define if the default of creating a backup upon deletion should be skipped. Default is false"
   default     = false

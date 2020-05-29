@@ -49,15 +49,16 @@ resource "aws_db_instance" "postgres" {
   final_snapshot_identifier = "${var.application}-postgres-final-${var.environment}"
 
   # configurable
-  storage_type        = var.db_storage_type
-  instance_class      = var.db_instance_class
-  allocated_storage   = var.db_allocated_storage
-  engine_version      = "${var.db_engine_major_version}.${var.db_engine_minor_version}"
-  port                = var.db_port
-  name                = var.db_name
-  username            = var.db_master_username
-  password            = var.db_master_password
-  skip_final_snapshot = var.skip_final_snapshot
+  storage_type                = var.db_storage_type
+  instance_class              = var.db_instance_class
+  allocated_storage           = var.db_allocated_storage
+  engine_version              = "${var.db_engine_major_version}.${var.db_engine_minor_version}"
+  port                        = var.db_port
+  name                        = var.db_name
+  username                    = var.db_master_username
+  password                    = var.db_master_password
+  auto_minor_version_upgrade  = var.db_auto_minor_version_upgrade
+  skip_final_snapshot         = var.skip_final_snapshot
 
   timeouts {
     create = "2h"
