@@ -8,7 +8,6 @@ variable "application" {
 
 variable "environment" {
   type    = string
-  default = "prod"
 }
 
 variable "db_storage_type" {
@@ -16,6 +15,10 @@ variable "db_storage_type" {
 }
 
 variable "db_instance_class" {
+  type = string
+}
+
+variable "db_allocated_storage" {
   type = string
 }
 
@@ -40,16 +43,15 @@ variable "db_master_password" {
 }
 
 variable "db_port" {
-  description = "The port to use for the database"
-  default     = 5432
+  type = number
 }
 
 variable "db_deletion_protection" {
+  type = bool
   default = true
 }
 
 variable "skip_final_snapshot" {
-  description = "Define if the default of creating a backup upon deletion should be skipped. Default is false"
-  default     = false
+  type = bool
 }
 

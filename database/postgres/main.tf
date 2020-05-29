@@ -25,6 +25,7 @@ module "postgres" {
   environment                   = var.environment
   db_storage_type               = var.db_storage_type
   db_instance_class             = var.db_instance_class
+  db_allocated_storage          = var.db_allocated_storage
   db_engine_major_version       = var.db_engine_major_version
   db_engine_minor_version       = var.db_engine_minor_version
   db_name                       = var.db_name
