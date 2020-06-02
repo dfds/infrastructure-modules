@@ -71,17 +71,15 @@ resource "aws_placement_group" "cluster" {
 }
 
 resource "aws_autoscaling_group" "eks" {
+  # Generate local map (subnet_id = az), instead of typing out several clunky lookups into same source
+  # Since we're using for_each subnet, instead of count, in main module, only pass subnets if instance type specified
   count                = length(var.instance_types) > 0 ? length(var.subnet_ids) : 0
-  name                 = "eks_${var.cluster_name}_${var.nodegroup_name}_${data.aws_subnet.subnet[count.index].availability_zone}"
-  launch_configuration = element(concat(aws_launch_configuration.eks.*.id, [""]), 0)
-  # launch_configuration = try(aws_launch_configuration.eks[0].id, [""])
-  availability_zones = toset([data.aws_subnet.subnet[count.index].availability_zone])
-  min_size           = var.min_size_per_subnet
-  max_size           = var.max_size_per_subnet
-  desired_capacity   = var.desired_size_per_subnet
-  # suspended_processes = [
-  #   "AZRebalance"
-  # ]
+  name                 = "eks-${var.cluster_name}-${var.nodegroup_name}_${data.aws_subnet.subnet[count.index].availability_zone}"
+  launch_configuration = try(aws_launch_configuration.eks[0].id, ["NA"])
+  availability_zones   = toset([data.aws_subnet.subnet[count.index].availability_zone])
+  min_size             = var.min_size_per_subnet
+  max_size             = var.max_size_per_subnet
+  desired_capacity     = var.desired_size_per_subnet
   vpc_zone_identifier = toset([data.aws_subnet.subnet[count.index].id])
 
   # The following can be set in case of the default health check are not sufficient
@@ -90,7 +88,7 @@ resource "aws_autoscaling_group" "eks" {
 
   tag {
     key                 = "Name"
-    value               = "eks_${var.cluster_name}_${var.nodegroup_name}_${data.aws_subnet.subnet[count.index].availability_zone}"
+    value               = "eks-${var.cluster_name}-${var.nodegroup_name}_${data.aws_subnet.subnet[count.index].availability_zone}"
     propagate_at_launch = true
   }
 
@@ -99,5 +97,6 @@ resource "aws_autoscaling_group" "eks" {
     value               = "owned"
     propagate_at_launch = true
   }
+
 }
 
