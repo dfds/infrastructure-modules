@@ -149,12 +149,12 @@ variable "eks_nodegroup1_kubelet_extra_args" {
   default = ""
 }
 
-variable "eks_nodegroup1_desired_capacity" {
+variable "eks_nodegroup1_desired_size_per_subnet" {
   type    = number
   default = 0
 }
 
-variable "eks_nodegroup1_max_size" {
+variable "eks_nodegroup1_max_size_per_subnet" {
   type    = number
   default = 10
 }
@@ -178,12 +178,12 @@ variable "eks_nodegroup2_kubelet_extra_args" {
   default = ""
 }
 
-variable "eks_nodegroup2_desired_capacity" {
+variable "eks_nodegroup2_desired_size_per_subnet" {
   type    = number
   default = 0
 }
 
-variable "eks_nodegroup2_max_size" {
+variable "eks_nodegroup2_max_size_per_subnet" {
   type    = number
   default = 10
 }

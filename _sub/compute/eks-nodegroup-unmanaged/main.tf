@@ -1,29 +1,3 @@
-data "aws_ami" "eks-node" {
-  filter {
-    name   = "name"
-    values = ["amazon-eks-node-${var.cluster_version}-*"]
-  }
-
-  most_recent = true
-  owners      = ["602401143452"] # Amazon Account ID
-}
-
-data "aws_ami" "eks-gpu-node" {
-  filter {
-    name   = "name"
-    values = ["amazon-eks-gpu-node-${var.cluster_version}-*"]
-  }
-
-  most_recent = true
-  owners      = ["602401143452"] # Amazon Account ID
-}
-
-locals {
-  # Use GPU AMI if 'gpu_ami' is true
-  node_ami = var.gpu_ami ? data.aws_ami.eks-gpu-node.id : data.aws_ami.eks-node.id
-}
-
-
 locals {
   /*
   https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/#example-use-cases
@@ -90,17 +64,25 @@ resource "aws_launch_configuration" "eks" {
   }
 }
 
+# https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html
+resource "aws_placement_group" "cluster" {
+  name     = "eks_${var.cluster_name}_${var.nodegroup_name}"
+  strategy = "cluster"
+}
+
 resource "aws_autoscaling_group" "eks" {
-  count                = signum(length(var.instance_types))
-  name                 = "eks-${var.cluster_name}-${var.nodegroup_name}"
+  count                = length(var.instance_types) > 0 ? length(var.subnet_ids) : 0
+  name                 = "eks_${var.cluster_name}_${var.nodegroup_name}_${data.aws_subnet.subnet[count.index].availability_zone}"
   launch_configuration = element(concat(aws_launch_configuration.eks.*.id, [""]), 0)
-  min_size             = var.min_size
-  max_size             = var.max_size
-  desired_capacity     = var.desired_capacity
-  suspended_processes = [
-    "AZRebalance"
-  ]
-  vpc_zone_identifier  = var.subnet_ids
+  # launch_configuration = try(aws_launch_configuration.eks[0].id, [""])
+  availability_zones = toset([data.aws_subnet.subnet[count.index].availability_zone])
+  min_size           = var.min_size_per_subnet
+  max_size           = var.max_size_per_subnet
+  desired_capacity   = var.desired_size_per_subnet
+  # suspended_processes = [
+  #   "AZRebalance"
+  # ]
+  vpc_zone_identifier = toset([data.aws_subnet.subnet[count.index].id])
 
   # The following can be set in case of the default health check are not sufficient
   #health_check_grace_period = 5
@@ -108,7 +90,7 @@ resource "aws_autoscaling_group" "eks" {
 
   tag {
     key                 = "Name"
-    value               = "eks-${var.cluster_name}-${var.nodegroup_name}"
+    value               = "eks_${var.cluster_name}_${var.nodegroup_name}_${data.aws_subnet.subnet[count.index].availability_zone}"
     propagate_at_launch = true
   }
 
