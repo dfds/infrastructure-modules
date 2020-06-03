@@ -71,8 +71,6 @@ resource "aws_placement_group" "cluster" {
 }
 
 resource "aws_autoscaling_group" "eks" {
-  # Generate local map (subnet_id = az), instead of typing out several clunky lookups into same source
-  # Since we're using for_each subnet, instead of count, in main module, only pass subnets if instance type specified
   count                = length(var.instance_types) > 0 ? length(var.subnet_ids) : 0
   name                 = "eks-${var.cluster_name}-${var.nodegroup_name}_${data.aws_subnet.subnet[count.index].availability_zone}"
   launch_configuration = try(aws_launch_configuration.eks[0].id, ["NA"])
