@@ -20,7 +20,7 @@ inputs = {
   # EKS
   # --------------------------------------------------
 
-  eks_cluster_name = "qa14"
+  eks_cluster_name = "qa16"
 
 
   # --------------------------------------------------
@@ -46,8 +46,8 @@ inputs = {
   cw_alb_alerts_deploy = true
   traefik_alb_slack_hook = "https://dummy.dum/dummy"
   traefik_alb_slack_channel = "dummy"
-  traefik_alb_lambda_name = "cw_to_slack_qa14"
-  traefik_alb_sns_name = "alb_500_errors_qa14"
+  traefik_alb_lambda_name = "cw_to_slack_qa16"
+  traefik_alb_sns_name = "alb_500_errors_qa16"
 
 
   # --------------------------------------------------

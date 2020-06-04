@@ -20,8 +20,8 @@ inputs = {
   # EKS
   # --------------------------------------------------
 
-  eks_cluster_name    = "qa14"
-  eks_cluster_version = "1.14"
+  eks_cluster_name    = "qa16"
+  eks_cluster_version = "1.16"
   eks_cluster_zones   = 2
 
   eks_worker_subnets          = ["10.0.16.0/21", "10.0.24.0/21", "10.0.32.0/21"]
@@ -42,12 +42,12 @@ inputs = {
   eks_nodegroup2_desired_capacity   = 3
 
 
-  # --------------------------------------------------
+-----------------------
   # Restore Blaster Configmap
   # --------------------------------------------------
 
   blaster_configmap_deploy = true
-  blaster_configmap_bucket = "dfds-qa14-k8s-configmap"
+  blaster_configmap_bucket = "dfds-qa16-k8s-configmap"
 
   # --------------------------------------------------
   # Cloudwatch agent
