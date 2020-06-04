@@ -31,15 +31,15 @@ inputs = {
   # Only needed until old "workers" modules has been fully replaced by nodegroup module
   eks_worker_instance_type = "t3.small"
 
-  eks_nodegroup1_instance_types   = ["t3.small"]
-  eks_nodegroup1_disk_size        = 128
-  eks_nodegroup1_desired_capacity = 3
-  eks_nodegroup1_max_size         = 50
+  eks_nodegroup1_instance_types          = ["t3.small"]
+  eks_nodegroup1_disk_size               = 128
+  eks_nodegroup1_desired_size_per_subnet = 1
+  eks_nodegroup1_max_size_per_subnet     = 20
 
-  eks_nodegroup2_instance_types     = ["g4dn.xlarge"]
-  eks_nodegroup2_kubelet_extra_args = "--register-with-taints=node.k8s.dfds.cloud/gpu=true:NoSchedule --node-labels=node.k8s.dfds.cloud/gpu=true"
-  eks_nodegroup2_disk_size          = 128
-  eks_nodegroup2_desired_capacity   = 3
+  eks_nodegroup2_instance_types          = ["g4dn.xlarge"]
+  eks_nodegroup2_kubelet_extra_args      = "--register-with-taints=node.k8s.dfds.cloud/gpu=true:NoSchedule --node-labels=node.k8s.dfds.cloud/gpu=true"
+  eks_nodegroup2_disk_size               = 128
+  eks_nodegroup2_desired_size_per_subnet = 1
 
   # --------------------------------------------------
   # Restore Blaster Configmap
