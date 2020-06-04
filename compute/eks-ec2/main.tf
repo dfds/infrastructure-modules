@@ -140,22 +140,21 @@ Feature toggle nodegroups
 module "eks_nodegroup1_workers" {
   source = "../../_sub/compute/eks-nodegroup-unmanaged"
 
-  # deploy                          = "${signum(length(var.eks_nodegroup1_subnets))}"
   cluster_name    = var.eks_cluster_name
   cluster_version = var.eks_cluster_version
   nodegroup_name  = "ng1"
 
   # node_role_arn           = "${module.eks_workers_iam_role.arn}"
-  iam_instance_profile = module.eks_workers.iam_instance_profile_name
-  security_groups      = [module.eks_workers_security_group.id]
-  desired_capacity     = var.eks_nodegroup1_desired_capacity
-  min_size             = var.eks_nodegroup1_desired_capacity
-  max_size             = var.eks_nodegroup1_desired_capacity > 0 ? var.eks_nodegroup1_max_size : 0
-  subnet_ids           = module.eks_workers_subnet.subnet_ids
-  disk_size            = var.eks_worker_instance_storage_size
-  instance_types       = var.eks_nodegroup1_instance_types
-  gpu_ami              = var.eks_nodegroup1_gpu_ami
-  ec2_ssh_key          = module.eks_workers_keypair.key_name
+  iam_instance_profile    = module.eks_workers.iam_instance_profile_name
+  security_groups         = [module.eks_workers_security_group.id]
+  desired_size_per_subnet = var.eks_nodegroup1_desired_size_per_subnet
+  min_size_per_subnet     = var.eks_nodegroup1_desired_size_per_subnet
+  max_size_per_subnet     = var.eks_nodegroup1_desired_size_per_subnet > 0 ? var.eks_nodegroup1_max_size_per_subnet : 0
+  subnet_ids              = module.eks_workers_subnet.subnet_ids
+  disk_size               = var.eks_worker_instance_storage_size
+  instance_types          = var.eks_nodegroup1_instance_types
+  gpu_ami                 = var.eks_nodegroup1_gpu_ami
+  ec2_ssh_key             = module.eks_workers_keypair.key_name
 
   kubelet_extra_args = var.eks_nodegroup1_kubelet_extra_args
 
@@ -176,22 +175,21 @@ module "eks_nodegroup1_workers" {
 module "eks_nodegroup2_workers" {
   source = "../../_sub/compute/eks-nodegroup-unmanaged"
 
-  # deploy                          = "${signum(length(var.eks_nodegroup1_subnets))}"
   cluster_name    = var.eks_cluster_name
   cluster_version = var.eks_cluster_version
   nodegroup_name  = "ng2"
 
   # node_role_arn           = "${module.eks_workers_iam_role.arn}"
-  iam_instance_profile = module.eks_workers.iam_instance_profile_name
-  security_groups      = [module.eks_workers_security_group.id]
-  desired_capacity     = var.eks_nodegroup2_desired_capacity
-  min_size             = var.eks_nodegroup2_desired_capacity
-  max_size             = var.eks_nodegroup2_desired_capacity > 0 ? var.eks_nodegroup2_max_size : 0
-  subnet_ids           = module.eks_workers_subnet.subnet_ids
-  disk_size            = var.eks_worker_instance_storage_size
-  instance_types       = var.eks_nodegroup2_instance_types
-  gpu_ami              = var.eks_nodegroup2_gpu_ami
-  ec2_ssh_key          = module.eks_workers_keypair.key_name
+  iam_instance_profile    = module.eks_workers.iam_instance_profile_name
+  security_groups         = [module.eks_workers_security_group.id]
+  desired_size_per_subnet = var.eks_nodegroup2_desired_size_per_subnet
+  min_size_per_subnet     = var.eks_nodegroup2_desired_size_per_subnet
+  max_size_per_subnet     = var.eks_nodegroup2_desired_size_per_subnet > 0 ? var.eks_nodegroup2_max_size_per_subnet : 0
+  subnet_ids              = module.eks_workers_subnet.subnet_ids
+  disk_size               = var.eks_worker_instance_storage_size
+  instance_types          = var.eks_nodegroup2_instance_types
+  gpu_ami                 = var.eks_nodegroup2_gpu_ami
+  ec2_ssh_key             = module.eks_workers_keypair.key_name
 
   kubelet_extra_args = var.eks_nodegroup2_kubelet_extra_args
 

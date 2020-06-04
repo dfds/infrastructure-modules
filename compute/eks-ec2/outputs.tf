@@ -30,11 +30,11 @@ output "eks_worker_role_id" {
 }
 
 output "eks_worker_autoscaling_group_ids" {
-  value = [
+  value = flatten([
     module.eks_workers.autoscaling_group_id,
     module.eks_nodegroup1_workers.autoscaling_group_id,
     module.eks_nodegroup2_workers.autoscaling_group_id,
-  ]
+  ])
 }
 
 output "eks_cluster_nodes_sg_id" {

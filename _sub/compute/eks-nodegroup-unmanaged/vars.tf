@@ -22,18 +22,18 @@ variable "security_groups" {
   type = list(string)
 }
 
-variable "desired_capacity" {
-  type = number
+variable "desired_size_per_subnet" {
+  type    = number
   default = 0
 }
 
-variable "min_size" {
-  type = number
+variable "min_size_per_subnet" {
+  type    = number
   default = 0
 }
 
-variable "max_size" {
-  type = number
+variable "max_size_per_subnet" {
+  type    = number
   default = 0
 }
 
