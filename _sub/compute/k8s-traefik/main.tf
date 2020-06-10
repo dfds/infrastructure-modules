@@ -52,7 +52,7 @@ resource "kubernetes_cluster_role_binding" "traefik" {
 resource "kubernetes_deployment" "traefik" {
   count = var.deploy ? 1 : 0
   metadata {
-    name      = "${var.deploy_name}-ingress-controller"
+    name      = var.deploy_name
     namespace = var.namespace
 
     labels = {
@@ -86,6 +86,21 @@ resource "kubernetes_deployment" "traefik" {
           name = kubernetes_service_account.traefik[0].default_secret_name
           secret {
             secret_name = kubernetes_service_account.traefik[0].default_secret_name
+          }
+        }
+
+        affinity {
+          pod_anti_affinity {
+            required_during_scheduling_ignored_during_execution {
+              label_selector {
+                match_expressions {
+                  key = "k8s-app"
+                  operator = "In"
+                  values = [local.label_k8s-app]
+                }
+              }
+              topology_key = "failure-domain.beta.kubernetes.io/zone"
+            }
           }
         }
 
