@@ -91,6 +91,7 @@ module "traefik_deploy" {
   priority_class = "service-critical"
   deploy_name    = "traefik"
   cluster_name   = var.eks_cluster_name
+  replicas       = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
 }
 
 module "traefik_alb_cert" {
