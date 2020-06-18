@@ -4,3 +4,6 @@ build:
 
 	# Create deployment packasge for Lambda
 	zip slack-alarm-notifier.zip main
+
+test:
+	go test ./...
