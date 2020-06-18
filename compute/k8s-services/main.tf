@@ -188,21 +188,6 @@ module "traefik_alb_anon_dns_core_alias" {
   }
 }
 
-
-# --------------------------------------------------
-# Cloudwatch ALB 500 errors alerts to slack
-# --------------------------------------------------
-
-module "traefik_cw_lb500_alerts" {
-  source           = "../../_sub/monitoring/cw_lb500_alerts"
-  deploy           = var.cwalarms_alb_500_deploy
-  alb_arn_suffixes = concat(module.traefik_alb_anon.alb_arn_suffix, module.traefik_alb_auth.alb_arn_suffix)
-  slack_hook       = var.cwalarms_alb_500_slack_hook              # A slack webhook that can accept messages
-  slack_channel    = var.cwalarms_alb_500_slack_channel           # The channel to post messages to
-  function_name    = "cw_to_slack_eks_${var.eks_cluster_name}"    # Unique name for Lambda since terraform is missing a name prefix
-  sns_name         = "eks_alb_500_errors_${var.eks_cluster_name}" # Tried to lambda function so also need a unique name
-}
-
 # --------------------------------------------------
 # KIAM
 # --------------------------------------------------
@@ -227,4 +212,29 @@ module "blaster_namespace" {
   blaster_configmap_bucket = data.terraform_remote_state.cluster.outputs.blaster_configmap_bucket
   kiam_server_role_arn     = module.kiam_deploy.server_role_arn
   extra_permitted_roles    = var.blaster_namespace_extra_permitted_roles
+}
+
+# --------------------------------------------------
+# Cloudwatch alarms and alarm notifier (Slack)
+# --------------------------------------------------
+
+module "alarm_notifier" {
+  source = "../../_sub/monitoring/alarm-notifier/"
+  deploy = var.alarm_notifier_deploy
+  slack_webhook_url = var.slack_webhook_url
+}
+
+module "cloudwatch_alarm_alb_5XX" {
+  source = "../../_sub/monitoring/cloudwatch-alarms/alb-5XX/"
+  deploy = var.cloudwatch_alarm_alb_5XX_deploy
+  sns_topic_arn = module.alarm_notifier.sns_arn
+  alb_arn_suffixes = concat(module.traefik_alb_anon.alb_arn_suffix, module.traefik_alb_auth.alb_arn_suffix)
+}
+
+module "cloudwatch_alarm_alb_targets_health" {
+  source = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
+  deploy = var.cloudwatch_alarm_alb_targets_health_deploy
+  sns_topic_arn = module.alarm_notifier.sns_arn
+  alb_target_group_arn_suffixes = concat(module.traefik_alb_anon.alb_target_group_arn_suffix, module.traefik_alb_auth.alb_target_group_arn_suffix)
+  alb_arn_suffixes = concat(module.traefik_alb_anon.alb_arn_suffix, module.traefik_alb_auth.alb_arn_suffix)
 }
