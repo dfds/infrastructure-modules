@@ -43,3 +43,8 @@ validate.json
 *.cer
 *.csr
 *.b64
+
+# Golang
+*.sum
+*.mod
+_sub/monitoring/slack-notifier/lambda/main

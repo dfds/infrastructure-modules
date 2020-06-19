@@ -88,26 +88,6 @@ variable "blaster_configmap_deploy" {
 }
 
 # --------------------------------------------------
-# Cloudwatch ALB 500 errors alerts to slack
-# --------------------------------------------------
-
-variable "cwalarms_alb_500_deploy" {
-  type    = bool
-  default = false
-}
-
-variable "cwalarms_alb_500_slack_hook" {
-  type    = string
-  default = ""
-}
-
-variable "cwalarms_alb_500_slack_channel" {
-  type    = string
-  default = ""
-}
-
-
-# --------------------------------------------------
 # KIAM
 # --------------------------------------------------
 
@@ -140,4 +120,24 @@ variable "blaster_namespace_extra_permitted_roles" {
 variable "eks_public_s3_bucket" {
   type    = string
   default = ""
+}
+
+# --------------------------------------------------
+# Cloudwatch alarms and alarm notifier (Slack)
+# --------------------------------------------------
+
+variable "alarm_notifier_deploy" {
+  type = bool
+}
+
+variable "slack_webhook_url" {
+  type = string
+}
+
+variable "cloudwatch_alarm_alb_targets_health_deploy" {
+  type = bool
+}
+
+variable "cloudwatch_alarm_alb_5XX_deploy" {
+  type = bool
 }
