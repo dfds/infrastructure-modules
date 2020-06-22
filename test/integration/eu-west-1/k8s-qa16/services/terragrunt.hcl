@@ -40,17 +40,6 @@ inputs = {
   traefik_nlb_cidr_blocks = ["0.0.0.0/0"]
 
   # --------------------------------------------------
-  # Cloudwatch ALB 500 errors alerts to slack
-  # --------------------------------------------------
-
-  cw_alb_alerts_deploy = true
-  traefik_alb_slack_hook = "https://dummy.dum/dummy"
-  traefik_alb_slack_channel = "dummy"
-  traefik_alb_lambda_name = "cw_to_slack_qa16"
-  traefik_alb_sns_name = "alb_500_errors_qa16"
-
-
-  # --------------------------------------------------
   # KIAM
   # --------------------------------------------------
 
@@ -65,4 +54,12 @@ inputs = {
   blaster_deploy           = true
   blaster_configmap_bucket = ""
 
+  # --------------------------------------------------
+  # Cloudwatch alarms and alarm notifier (Slack)
+  # --------------------------------------------------
+
+  alarm_notifier_deploy = true
+  slack_webhook_url = "https://dummy.slack.webhook"
+  cloudwatch_alarm_alb_targets_health_deploy = true
+  cloudwatch_alarm_alb_5XX_deploy = true
 }
