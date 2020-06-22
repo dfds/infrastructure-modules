@@ -47,4 +47,4 @@ validate.json
 # Golang
 *.sum
 *.mod
-_sub/monitoring/slack-notifier/lambda/main
+_sub/monitoring/alarm-notifier/lambda/main
