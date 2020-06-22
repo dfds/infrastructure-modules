@@ -32,6 +32,12 @@ if [ "$ACTION" = "test" ]; then
     echo "Add tests here"
 fi
 
+if [ "$ACTION" = "destroy-cluster" ]; then
+    SUBPATH=$2
+    WORKDIR="${BASEPATH}/${SUBPATH}"
+    # Cleanup
+    terragrunt destroy --terragrunt-working-dir $WORKDIR --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve -target module.eks_cluster.aws_eks_cluster.eks
+fi
 
 if [ "$ACTION" = "destroy-all" ]; then
     SUBPATH=$2

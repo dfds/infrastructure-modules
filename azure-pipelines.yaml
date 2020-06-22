@@ -61,7 +61,7 @@ stages:
           - bash: ./src/qa-test-eks.sh test eu-west-1/k8s-qa15
             displayName: "Run tests"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh destroy eu-west-1/k8s-qa15/cluster
+          - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1/k8s-qa15/cluster
             displayName: "Terraform Destroy (cluster)"
             condition: always()
           - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa15
@@ -88,7 +88,7 @@ stages:
           - bash: ./src/qa-test-eks.sh test eu-west-1/k8s-qa16
             displayName: "Run tests"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh destroy eu-west-1/k8s-qa16/cluster
+          - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1/k8s-qa16/cluster
             displayName: "Terraform Destroy (cluster)"
             condition: always()
           - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa16
