@@ -12,7 +12,7 @@ resource "aws_sns_topic_subscription" "cloudwatch_alarms" {
 
 resource "aws_iam_role" "iam_for_lambda" {
   count = var.deploy ? 1 : 0
-  name = "slack-alarm-notifier"
+  name_prefix = var.function_name
 
   assume_role_policy = <<EOF
 {
