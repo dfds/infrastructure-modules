@@ -11,3 +11,7 @@ variable "sns_name" {
 variable "slack_webhook_url" {
   type = string
 }
+
+variable "function_name" {
+	type = string
+}
