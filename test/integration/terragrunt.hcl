@@ -20,10 +20,10 @@ terraform {
     commands = "${get_terraform_commands_that_need_vars()}"
 
     optional_var_files = [
-      "${get_terragrunt_dir()}/${find_in_parent_folders("account.tfvars", "skip-account-if-does-not-exist")}",
-      "${get_terragrunt_dir()}/${find_in_parent_folders("region.tfvars", "skip-region-if-does-not-exist")}",
-      "${get_terragrunt_dir()}/${find_in_parent_folders("env.tfvars", "skip-env-if-does-not-exist")}",
-      "${get_terragrunt_dir()}/terraform.tfvars"
+      "${find_in_parent_folders("account.tfvars", "skip-account-if-does-not-exist")}",
+      "${find_in_parent_folders("region.tfvars", "skip-region-if-does-not-exist")}",
+      "${find_in_parent_folders("env.tfvars", "skip-env-if-does-not-exist")}",
+      "terraform.tfvars"
     ]
   }
 }
