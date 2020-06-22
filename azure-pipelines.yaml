@@ -17,7 +17,7 @@ schedules:
 resources:
   containers:
     - container: prime
-      image: dfdsdk/prime-pipeline:0.4.0
+      image: dfdsdk/prime-pipeline:0.5.0
       env:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
@@ -61,8 +61,8 @@ stages:
           - bash: ./src/qa-test-eks.sh test eu-west-1/k8s-qa15
             displayName: "Run tests"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1/k8s-qa15/cluster
-            displayName: "Terraform Destroy (cluster)"
+          - bash: ./src/qa-test-eks.sh disable-cluster-logging eu-west-1 k8s-qa15
+            displayName: "Disable cluster logging"
             condition: always()
           - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa15
             displayName: "Terraform Destroy (post)"
@@ -88,8 +88,8 @@ stages:
           - bash: ./src/qa-test-eks.sh test eu-west-1/k8s-qa16
             displayName: "Run tests"
             # condition: succeeded()
-          - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1/k8s-qa16/cluster
-            displayName: "Terraform Destroy (cluster)"
+          - bash: ./src/qa-test-eks.sh disable-cluster-logging eu-west-1 k8s-qa15
+            displayName: "Disable cluster logging"
             condition: always()
           - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa16
             displayName: "Terraform Destroy (post)"

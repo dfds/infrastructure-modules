@@ -32,11 +32,10 @@ if [ "$ACTION" = "test" ]; then
     echo "Add tests here"
 fi
 
-if [ "$ACTION" = "destroy-cluster" ]; then
-    SUBPATH=$2
-    WORKDIR="${BASEPATH}/${SUBPATH}"
-    # Cleanup
-    terragrunt destroy --terragrunt-working-dir $WORKDIR --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve -target module.eks_cluster.aws_eks_cluster.eks
+if [ "$ACTION" = "disable-cluster-logging" ]; then
+    REGION=$1
+    CLUSTERNAME=$2
+    aws --region $REGION eks update-cluster-config --name $CLUSTERNAME --logging '{"clusterLogging":[{"types":["api","audit","authenticator","controllerManager","scheduler"],"enabled":false}]}'
 fi
 
 if [ "$ACTION" = "destroy-all" ]; then
