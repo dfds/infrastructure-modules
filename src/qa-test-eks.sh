@@ -33,8 +33,8 @@ if [ "$ACTION" = "test" ]; then
 fi
 
 if [ "$ACTION" = "disable-cluster-logging" ]; then
-    REGION=$1
-    CLUSTERNAME=$2
+    REGION=$2
+    CLUSTERNAME=$3
     aws --region $REGION eks update-cluster-config --name $CLUSTERNAME --logging '{"clusterLogging":[{"types":["api","audit","authenticator","controllerManager","scheduler"],"enabled":false}]}'
 fi
 
