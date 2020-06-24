@@ -67,9 +67,6 @@ stages:
           - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa15
             displayName: "Terraform Destroy (post)"
             condition: always()
-          - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa15
-            displayName: "Terraform Destroy (post)"
-            condition: always()
 
       - job: eks_1_16
         displayName: EKS 1.16
@@ -93,9 +90,6 @@ stages:
             # condition: succeeded()
           - bash: ./src/qa-test-eks.sh disable-cluster-logging eu-west-1 qa16
             displayName: "Disable cluster logging"
-            condition: always()
-          - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa16
-            displayName: "Terraform Destroy (post)"
             condition: always()
           - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa16
             displayName: "Terraform Destroy (post)"
