@@ -44,6 +44,18 @@ network
  └ ...
 ```
 
+## Release process
+
+Branch protection is not enabled on this repo. Instead we rely on release tags to ensure we do not commit straight to production.
+
+When creating a new release, it's important to ensure only the intended changes are included, not changes others may have committed to *master* without also creating a release.
+
+Before creating the release, you should compare the commit you want to release against the latest release, and ensure only intended changes are included.
+
+In this example, I am comparing the lastest release (**0.1.35**) against the commit I plan to release (**75bec8f**).
+
+https://github.com/dfds/infrastructure-modules/compare/0.1.35..75bec8f
+
 ### Credits
 
 The general structure of these modules, file layout etc. are largely based on Gruntwork's recommendations. More specifically the blog posts:
