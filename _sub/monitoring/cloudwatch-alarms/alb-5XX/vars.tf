@@ -9,7 +9,7 @@ variable "check_period" {
 
 variable "check_threshold" {
   type = string
-  default = "5"
+  default = "20"
 }
 
 variable "alb_arn_suffixes" {
