@@ -23,3 +23,13 @@ variable "priority_class" {
   description = "Name of the Kubernetes priority class pods should use"
   type = string
 }
+
+variable "http_nodeport" {
+  description = "Nodeport used by ALB's to connect to the Traefik instance"
+  type = number
+}
+
+variable "admin_nodeport" {
+  description = "Nodeport used by ALB's to connect to the Traefik instance admin page"
+  type = number
+}

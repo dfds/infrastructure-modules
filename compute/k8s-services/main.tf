@@ -92,14 +92,16 @@ module "traefik_deploy" {
   deploy_name    = "traefik"
   cluster_name   = var.eks_cluster_name
   replicas       = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
+  http_nodeport  = var.traefik_http_nodeport
+  admin_nodeport = var.traefik_admin_nodeport
 }
 
 module "traefik_alb_cert" {
   source              = "../../_sub/network/acm-certificate-san"
-  deploy              = var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy ? true : false
+  deploy              = var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy  || var.traefik_okta_deploy ? true : false
   domain_name         = "*.${local.eks_fqdn}"
   dns_zone_name       = var.workload_dns_zone_name
-  core_alias          = concat(var.traefik_alb_auth_core_alias, var.traefik_alb_anon_core_alias)
+  core_alias          = concat(var.traefik_alb_auth_core_alias, var.traefik_alb_anon_core_alias, var.traefik_alb_okta_core_alias)
   aws_region          = var.aws_region          # Workaround to https://github.com/hashicorp/terraform/issues/21416
   aws_assume_role_arn = var.aws_assume_role_arn # Workaround to https://github.com/hashicorp/terraform/issues/21416
 }
@@ -118,6 +120,7 @@ module "traefik_alb_auth_appreg" {
 module "traefik_alb_auth" {
   source                = "../../_sub/compute/eks-alb-auth"
   deploy                = var.traefik_alb_auth_deploy
+  name                  = "${var.eks_cluster_name}-traefik-alb-auth"
   cluster_name          = var.eks_cluster_name
   vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
   subnet_ids            = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
@@ -127,6 +130,9 @@ module "traefik_alb_auth" {
   azure_tenant_id       = module.traefik_alb_auth_appreg.tenant_id
   azure_client_id       = module.traefik_alb_auth_appreg.application_id
   azure_client_secret   = module.traefik_alb_auth_appreg.application_key
+  target_http_port      = var.traefik_http_nodeport
+  target_admin_port     = var.traefik_admin_nodeport
+  health_check_path     = var.traefik_health_check_path
 }
 
 module "traefik_alb_auth_dns" {
@@ -156,12 +162,16 @@ module "traefik_alb_auth_dns_core_alias" {
 module "traefik_alb_anon" {
   source                = "../../_sub/compute/eks-alb"
   deploy                = var.traefik_alb_anon_deploy
+  name                  = "${var.eks_cluster_name}-traefik-alb"
   cluster_name          = var.eks_cluster_name
   vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
   subnet_ids            = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
   autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
   alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
   nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
+  target_http_port      = var.traefik_http_nodeport
+  target_admin_port     = var.traefik_admin_nodeport
+  health_check_path     = var.traefik_health_check_path
 }
 
 module "traefik_alb_anon_dns" {
@@ -187,6 +197,70 @@ module "traefik_alb_anon_dns_core_alias" {
     aws = aws.core
   }
 }
+
+
+# --------------------------------------------------
+# Traefik Okta
+# --------------------------------------------------
+
+# Traefik 2.x requires a number of Kubernets Custom Resource Definitions:
+# https://docs.traefik.io/reference/dynamic-configuration/kubernetes-crd/
+# These cannot currently be installed using the native Kubernetes provider.
+# However, changes are coming: https://www.hashicorp.com/blog/deploy-any-resource-with-the-new-kubernetes-provider-for-hashicorp-terraform/.
+# Alternatively, apply them using kubectl (which depends on kubeconfig file)
+# For now - they need to be applied manually.
+
+module "traefik_deploy_okta" {
+  source         = "../../_sub/compute/k8s-traefik-v2"
+  deploy         = var.traefik_okta_deploy
+  image_version  = var.traefik_okta_version
+  priority_class = "service-critical"
+  deploy_name    = "traefik-okta"
+  cluster_name   = var.eks_cluster_name
+  replicas       = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
+  http_nodeport  = var.traefik_okta_http_nodeport
+  admin_nodeport = var.traefik_okta_admin_nodeport
+}
+
+module "traefik_alb_okta" {
+  source                = "../../_sub/compute/eks-alb"
+  deploy                = var.traefik_alb_okta_deploy
+  name                  = "${var.eks_cluster_name}-traefik-okta"
+  cluster_name          = var.eks_cluster_name
+  vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
+  subnet_ids            = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
+  autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
+  alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
+  nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
+  target_http_port      = var.traefik_okta_http_nodeport
+  target_admin_port     = var.traefik_okta_admin_nodeport
+  health_check_path     = var.traefik_okta_health_check_path
+}
+
+module "traefik_alb_okta_dns" {
+  source       = "../../_sub/network/route53-record"
+  deploy       = var.traefik_alb_okta_deploy
+  zone_id      = local.workload_dns_zone_id
+  record_name  = ["okta.${var.eks_cluster_name}"]
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = "${module.traefik_alb_okta.alb_fqdn}."
+}
+
+module "traefik_alb_okta_dns_core_alias" {
+  source       = "../../_sub/network/route53-record"
+  deploy       = var.traefik_alb_okta_deploy ? length(var.traefik_alb_okta_core_alias) >= 1 : false
+  zone_id      = local.core_dns_zone_id
+  record_name  = var.traefik_alb_okta_core_alias
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = "${element(concat(module.traefik_alb_okta_dns.record_name, [""]), 0)}.${var.workload_dns_zone_name}."
+
+  providers = {
+    aws = aws.core
+  }
+}
+
 
 # --------------------------------------------------
 # KIAM

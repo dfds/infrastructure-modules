@@ -26,7 +26,7 @@ provider "aws" {
 resource "aws_acm_certificate" "cert" {
   count                     = var.deploy ? 1 : 0
   domain_name               = var.domain_name
-  subject_alternative_names = var.core_alias
+  subject_alternative_names = sort(var.core_alias)
   validation_method         = "DNS"
 
   lifecycle {

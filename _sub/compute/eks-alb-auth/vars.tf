@@ -3,6 +3,10 @@ variable "deploy" {
   default = true
 }
 
+variable "name" {
+  type = string
+}
+
 variable "cluster_name" {
 }
 
@@ -34,3 +38,14 @@ variable "azure_client_id" {
 variable "azure_client_secret" {
 }
 
+variable "target_http_port" {
+  type = number
+}
+
+variable "target_admin_port" {
+  type = number
+}
+
+variable "health_check_path" {
+ type = string
+}

@@ -1,3 +1,10 @@
+# Traefik 2.x requires a number of Kubernets Custom Resource Definitions:
+# https://docs.traefik.io/reference/dynamic-configuration/kubernetes-crd/
+# These cannot currently be installed using the native Kubernetes provider.
+# However, changes are coming: https://www.hashicorp.com/blog/deploy-any-resource-with-the-new-kubernetes-provider-for-hashicorp-terraform/.
+# Alternatively, apply them using kubectl (which depends on kubeconfig file)
+# For now - they need to be applied manually.
+
 resource "kubernetes_cluster_role" "traefik" {
   count = var.deploy ? 1 : 0
   metadata {

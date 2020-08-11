@@ -27,11 +27,9 @@ variable "priority_class" {
 variable "http_nodeport" {
   description = "Nodeport used by ALB's to connect to the Traefik instance"
   type = number
-  default = 31080
 }
 
 variable "admin_nodeport" {
   description = "Nodeport used by ALB's to connect to the Traefik instance admin page"
   type = number
-  default = 31081
 }

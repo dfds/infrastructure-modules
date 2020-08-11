@@ -161,7 +161,7 @@ resource "kubernetes_service" "traefik" {
     port {
       protocol    = "TCP"
       port        = local.http_port
-      node_port   = local.http_nodeport
+      node_port   = var.http_nodeport
       target_port = local.http_port
       name        = "web"
     }
@@ -169,7 +169,7 @@ resource "kubernetes_service" "traefik" {
     port {
       protocol    = "TCP"
       port        = local.admin_port
-      node_port   = local.admin_nodeport
+      node_port   = var.admin_nodeport
       target_port = local.admin_port
       name        = local.admin_name
     }

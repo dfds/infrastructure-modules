@@ -50,6 +50,16 @@ variable "traefik_version" {
   default = "1.7.19"
 }
 
+variable "traefik_http_nodeport" {
+  type    = number
+  default = 30000
+}
+
+variable "traefik_admin_nodeport" {
+  type    = number
+  default = 30001
+}
+
 variable "traefik_alb_anon_deploy" {
   type    = bool
   default = false
@@ -86,6 +96,52 @@ variable "blaster_configmap_deploy" {
   type    = bool
   default = false
 }
+
+variable "traefik_health_check_path" {
+  type = string
+  default = "/dashboard/"
+}
+
+
+# --------------------------------------------------
+# Traefik Okta
+# --------------------------------------------------
+
+variable "traefik_okta_deploy" {
+  type    = bool
+  default = false
+}
+
+variable "traefik_okta_version" {
+  type    = string
+}
+
+variable "traefik_alb_okta_deploy" {
+  type    = bool
+  default = false
+}
+
+variable "traefik_alb_okta_core_alias" {
+  description = "A list of aliases/alternative names in the *parent* domain, the certficate should also be valid for. E.g. 'prettyurl.company.tld'"
+  type        = list(string)
+  default     = []
+}
+
+variable "traefik_okta_http_nodeport" {
+  type    = number
+  default = 31000
+}
+
+variable "traefik_okta_admin_nodeport" {
+  type    = number
+  default = 31001
+}
+
+variable "traefik_okta_health_check_path" {
+  type = string
+  default = "/ping/"
+}
+
 
 # --------------------------------------------------
 # KIAM

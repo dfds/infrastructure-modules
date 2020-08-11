@@ -1,6 +1,6 @@
 resource "aws_lb" "traefik" {
   count              = var.deploy ? 1 : 0
-  name               = "${var.cluster_name}-traefik-alb"
+  name               = var.name
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.traefik[0].id]
@@ -16,13 +16,13 @@ resource "aws_autoscaling_attachment" "traefik" {
 resource "aws_lb_target_group" "traefik" {
   count       = var.deploy ? 1 : 0
   name_prefix = substr(var.cluster_name, 0, min(6, length(var.cluster_name)))
-  port        = 30000
+  port        = var.target_http_port
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
 
   health_check {
-    path     = "/dashboard/"
-    port     = 30001
+    path     = var.health_check_path
+    port     = var.target_admin_port
     protocol = "HTTP"
     matcher  = 200
   }
@@ -65,7 +65,7 @@ resource "aws_lb_listener" "http-to-https" {
 
 resource "aws_security_group" "traefik" {
   count       = var.deploy ? 1 : 0
-  name        = "allow_traefik-${var.cluster_name}"
+  name_prefix = "allow_traefik-${var.cluster_name}"
   description = "Allow traefik connection for ${var.cluster_name}"
   vpc_id      = var.vpc_id
 
@@ -84,15 +84,15 @@ resource "aws_security_group" "traefik" {
   }
 
   ingress {
-    from_port = 30001
-    to_port   = 30001
+    from_port = var.target_admin_port
+    to_port   = var.target_admin_port
     protocol  = "TCP"
     self      = true
   }
 
   egress {
-    from_port   = 30000
-    to_port     = 30001
+    from_port   = var.target_http_port
+    to_port     = var.target_admin_port
     protocol    = "TCP"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -100,13 +100,18 @@ resource "aws_security_group" "traefik" {
   tags = {
     Name = "${var.cluster_name}-traefik-sg"
   }
+
+ lifecycle {
+    create_before_destroy = true
+  }
+
 }
 
 resource "aws_security_group_rule" "allow_traefik" {
   count                    = var.deploy ? 1 : 0
   type                     = "ingress"
-  from_port                = 30000
-  to_port                  = 30001
+  from_port                = var.target_http_port
+  to_port                  = var.target_admin_port
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.traefik[0].id
 
