@@ -114,6 +114,7 @@ variable "traefik_okta_deploy" {
 
 variable "traefik_okta_version" {
   type    = string
+  default = ""
 }
 
 variable "traefik_alb_okta_deploy" {
