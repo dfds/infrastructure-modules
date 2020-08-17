@@ -113,14 +113,3 @@ data "external" "no_aad_access_appreg_key" {
     key_path_s3 = "s3://${var.appreg_key_bucket}/${var.appreg_key_key}"
   }
 }
-
-# resource "null_resource" "grant_aad_access" {
-#     count = "${var.deploy && var.grant_aad_access >= 1 ? 1 : 0}"
-#     # Terraform does not seem to re-run script, unless a trigger is defined
-#     triggers  {
-#         timestamp = "${timestamp()}"
-#     }
-#     provisioner "local-exec" {
-#          command = "${path.module}/grant_aad_access.sh ${azuread_application.app.application_id}"
-#     }
-# }
