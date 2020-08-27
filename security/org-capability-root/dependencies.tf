@@ -23,6 +23,7 @@ locals {
                 "route53:*",
                 "support:*",
                 "waf:*",
+				"shield:*",
                 "s3:List*",
                 "dynamoDB:DescribeTable",
                 "aws-portal:View*",
