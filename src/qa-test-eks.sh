@@ -49,4 +49,5 @@ if [ "$ACTION" = "destroy-all" ]; then
     
     # Remove specific resources that sometimes get left behind
     aws iam delete-role --role-name eks-${CLUSTERNAME}-cluster || true
+    aws iam delete-role --role-name eks-${CLUSTERNAME}-node || true
 fi
