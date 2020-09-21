@@ -35,7 +35,7 @@ fi
 if [ "$ACTION" = "disable-cluster-logging" ]; then
     REGION=$2
     CLUSTERNAME=$3
-    aws --region $REGION eks update-cluster-config --name $CLUSTERNAME --logging '{"clusterLogging":[{"types":["api","audit","authenticator","controllerManager","scheduler"],"enabled":false}]}'
+    aws --region $REGION eks update-cluster-config --name $CLUSTERNAME --logging '{"clusterLogging":[{"types":["api","audit","authenticator","controllerManager","scheduler"],"enabled":false}]}' || true
     sleep 60
 fi
 
@@ -45,7 +45,7 @@ if [ "$ACTION" = "destroy-all" ]; then
     WORKDIR="${BASEPATH}/${SUBPATH}"
     
     # Cleanup
-    terragrunt destroy-all --terragrunt-working-dir $WORKDIR --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
+    terragrunt destroy-all --terragrunt-working-dir $WORKDIR --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve || true
     
     # Remove specific resources that sometimes get left behind
     aws iam delete-role --role-name eks-${CLUSTERNAME}-cluster || true
