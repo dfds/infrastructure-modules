@@ -41,7 +41,12 @@ fi
 
 if [ "$ACTION" = "destroy-all" ]; then
     SUBPATH=$2
+    CLUSTERNAME=$3
     WORKDIR="${BASEPATH}/${SUBPATH}"
+    
     # Cleanup
     terragrunt destroy-all --terragrunt-working-dir $WORKDIR --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
+    
+    # Remove specific resources that sometimes get left behind
+    aws iam delete-role --role-name eks-${CLUSTERNAME}-cluster || true
 fi
