@@ -48,23 +48,16 @@ stages:
         steps:
           - bash: ./src/qa-test-eks.sh init
             displayName: "Init"
-            # condition: succeeded()
-          # - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa15
-          #   displayName: "Terraform Destroy (pre)"
-          #   condition: always()
           - bash: ./src/qa-test-eks.sh plan eu-west-1/k8s-qa15/cluster
             displayName: "Terraform Plan (cluster)"
-            # condition: succeeded()
           - bash: ./src/qa-test-eks.sh apply-all eu-west-1/k8s-qa15
             displayName: "Terraform Apply"
-            # condition: succeeded()
           - bash: ./src/qa-test-eks.sh test eu-west-1/k8s-qa15
             displayName: "Run tests"
-            # condition: succeeded()
           - bash: ./src/qa-test-eks.sh disable-cluster-logging eu-west-1 qa15
             displayName: "Disable cluster logging"
             condition: always()
-          - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa15 qa15
+          - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1/k8s-qa15 qa15
             displayName: "Terraform Destroy (post)"
             condition: always()
 
@@ -75,52 +68,18 @@ stages:
         steps:
           - bash: ./src/qa-test-eks.sh init
             displayName: "Init"
-            # condition: succeeded()
-          # - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa16
-          #   displayName: "Terraform Destroy (pre)"
-          #   condition: always()
           - bash: ./src/qa-test-eks.sh plan eu-west-1/k8s-qa16/cluster
             displayName: "Terraform Plan (cluster)"
-            # condition: succeeded()
           - bash: ./src/qa-test-eks.sh apply-all eu-west-1/k8s-qa16
             displayName: "Terraform Apply"
-            # condition: succeeded()
           - bash: ./src/qa-test-eks.sh test eu-west-1/k8s-qa16
             displayName: "Run tests"
-            # condition: succeeded()
           - bash: ./src/qa-test-eks.sh disable-cluster-logging eu-west-1 qa16
             displayName: "Disable cluster logging"
             condition: always()
-          - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa16 qa16
+          - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1/k8s-qa16 qa16
             displayName: "Terraform Destroy (post)"
             condition: always()
-
-      # - job: eks_1_17
-      #   displayName: EKS 1.17
-      #   container: prime
-      #   dependsOn: init_shared
-      #   steps:
-      #     - bash: ./src/qa-test-eks.sh init
-      #       displayName: "Init"
-      #       # condition: succeeded()
-      #     # - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa16
-      #     #   displayName: "Terraform Destroy (pre)"
-      #     #   condition: always()
-      #     - bash: ./src/qa-test-eks.sh plan eu-west-1/k8s-qa17/cluster
-      #       displayName: "Terraform Plan (cluster)"
-      #       # condition: succeeded()
-      #     - bash: ./src/qa-test-eks.sh apply-all eu-west-1/k8s-qa17
-      #       displayName: "Terraform Apply"
-      #       # condition: succeeded()
-      #     - bash: ./src/qa-test-eks.sh test eu-west-1/k8s-qa17
-      #       displayName: "Run tests"
-      #       # condition: succeeded()
-      #     - bash: ./src/qa-test-eks.sh disable-cluster-logging eu-west-1 qa17
-      #       displayName: "Disable cluster logging"
-      #       condition: always()
-      #     - bash: ./src/qa-test-eks.sh destroy-all eu-west-1/k8s-qa17
-      #       displayName: "Terraform Destroy (post)"
-      #       condition: always()
 
       - job: destroy_shared
         displayName: Destroy EKS shared resources
@@ -130,5 +89,5 @@ stages:
           - eks_1_16
         condition: always()
         steps:
-          - bash: ./src/qa-test-eks.sh destroy-all _global/eks-public-s3-bucket
+          - bash: ./src/qa-test-eks.sh destroy-shared _global/eks-public-s3-bucket
             displayName: "Destroy public EKS S3 bucket"
