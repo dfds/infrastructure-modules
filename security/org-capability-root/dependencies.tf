@@ -16,6 +16,7 @@ locals {
                 "cloudfront:*",
                 "globalaccelerator:*",
                 "iam:*",
+				"sts:*",
                 "importexport:*",
                 "kms:*",
                 "lambda:*",
