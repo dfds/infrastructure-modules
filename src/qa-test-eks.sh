@@ -39,7 +39,7 @@ if [ "$ACTION" = "disable-cluster-logging" ]; then
     sleep 60
 fi
 
-if [ "$ACTION" = "destroy-all" ]; then
+if [ "$ACTION" = "destroy-cluster" ]; then
     SUBPATH=$2
     CLUSTERNAME=$3
     WORKDIR="${BASEPATH}/${SUBPATH}"
@@ -50,4 +50,12 @@ if [ "$ACTION" = "destroy-all" ]; then
     # Remove specific resources that sometimes get left behind
     aws iam delete-role --role-name eks-${CLUSTERNAME}-cluster || true
     aws iam delete-role --role-name eks-${CLUSTERNAME}-node || true
+fi
+
+if [ "$ACTION" = "destroy-shared" ]; then
+    SUBPATH=$2
+    WORKDIR="${BASEPATH}/${SUBPATH}"
+    
+    # Cleanup
+    terragrunt destroy-all --terragrunt-working-dir $WORKDIR --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve || true
 fi
