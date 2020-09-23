@@ -16,7 +16,7 @@ locals {
                 "cloudfront:*",
                 "globalaccelerator:*",
                 "iam:*",
-				"sts:*",
+                "sts:*",
                 "importexport:*",
                 "kms:*",
                 "lambda:*",
@@ -24,12 +24,16 @@ locals {
                 "route53:*",
                 "support:*",
                 "waf:*",
-				"shield:*",
+                "shield:*",
                 "s3:List*",
                 "dynamoDB:DescribeTable",
                 "aws-portal:View*",
                 "cloudwatch:List*",
-                "cloudwatch:Get*"
+                "cloudwatch:Get*",
+                "ecr:Get*",
+                "ecr:List*",
+                "ecr:Describe*",
+                "ecr:BatchGetImage"
             ],
             "Resource": "*",
             "Condition": {
