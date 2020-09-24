@@ -1,4 +1,4 @@
-resource "kubernetes_cluster_role" "cloud_engineer" {
+resource "kubernetes_cluster_role" "role" {
   metadata {
     name = var.name
   }

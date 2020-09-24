@@ -48,6 +48,36 @@ variable "adfs_fqdn" {
   description = "The fully-qualified domain name of the ADFS server, e.g. adfs.company.tld"
 }
 
+variable "cloudengineer_iam_role_name" {
+  description = "Name of IAM role"
+  type        = string
+}
+
+variable "cloudengineer_iam_role_description" {
+  description = "Description for IAM role"
+  type        = string
+}
+
+variable "cloudengineer_iam_policy_name" {
+  description = ""
+  type        = string
+}
+
+variable "cloudadmin_iam_role_name" {
+  description = "Name of IAM role"
+  type        = string
+}
+
+variable "cloudadmin_iam_role_description" {
+  description = "Description for IAM role"
+  type        = string
+}
+
+variable "cloudadmin_iam_policy_name" {
+  description = ""
+  type        = string
+}
+
 
 # --------------------------------------------------
 # Unused variables - to provent TF warning/error:

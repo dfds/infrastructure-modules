@@ -268,7 +268,7 @@ module "param_store_default_kube_config" {
 # What is this even needed for?
 module "k8s_service_account" {
   source            = "../../_sub/compute/k8s-service-account"
-  module_depends_on = [module.eks_heptio.kubeconfig_path] # https://discuss.hashicorp.com/t/tips-howto-implement-module-depends-on-emulation/2305/2  
+  module_depends_on = [module.eks_heptio.kubeconfig_path] # https://discuss.hashicorp.com/t/tips-howto-implement-module-depends-on-emulation/2305/2
   cluster_name      = var.eks_cluster_name
   kubeconfig_path   = module.eks_heptio.kubeconfig_path
 }
@@ -284,4 +284,25 @@ module "cloudwatch_agent_config_bucket" {
   source    = "../../_sub/storage/s3-bucket"
   deploy    = var.eks_worker_cloudwatch_agent_config_deploy
   s3_bucket = "${var.eks_cluster_name}-cl-agent-config"
+}
+
+# --------------------------------------------------
+# Cluster access
+# --------------------------------------------------
+
+module "k8s-cloudengineer-clusterrole" {
+  source = "../../sub/compute/k8s-clusterrole"
+  name = "cloud-engineer"
+  rule = [
+    {
+      api_groups = [""]
+      resources  = ["namespaces"]
+      verbs      = ["get", "list", "watch"]
+    },
+    {
+      api_groups = [""]
+      resources  = ["pod"]
+      verbs      = ["get", "list", "watch"]
+    }
+  ]
 }
