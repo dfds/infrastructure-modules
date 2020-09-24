@@ -115,7 +115,27 @@ data "aws_iam_policy_document" "access_cloudwatchlogs_capability" {
       "logs:Describe*",
       "logs:StartQuery",
       "logs:FilterLogEvents",
+      data "aws_iam_policy_document" "access_cloudwatchlogs_devops" {
+  statement {
+    sid       = "GetLogStreamEvents"
+    effect    = "Allow"
+    actions   = ["logs:GetLogEvents"]
+    resources = ["arn:aws:logs:*:*:log-group:/k8s/*/*:log-stream:*"]
+  }
+
+  statement {
+    sid    = "ReadLogGroups"
+    effect = "Allow"
+    actions = [
+      "logs:List*",
+      "logs:Describe*",
+      "logs:StartQuery",
+      "logs:FilterLogEvents",
       "logs:Get*"
+    ]
+    resources = ["arn:aws:logs:*:*:log-group:/k8s/*/*"]
+  }
+}"logs:Get*"
     ]
     resources = ["arn:aws:logs:*:*:log-group:/k8s/*/*"]
   }
@@ -179,6 +199,15 @@ data "aws_iam_policy_document" "capability_access_shared" {
   }
 }
 
+# Admin
+data "aws_iam_policy_document" "cloudengineer" {
+  statement {
+    sid       = "CloudEngineer"
+    actions   = [""]
+    resources = [""]
+    effect    = ""
+  }
+}
 
 # ------------------------------------------------------------------------------
 # Trusted Account

@@ -32,3 +32,7 @@ output "access_cloudwatchlogs_devops" {
 output "capability_access_shared" {
   value = data.aws_iam_policy_document.capability_access_shared.json
 }
+
+output "cloudengineer" {
+  value = data.aws_iam_policy_document.cloudengineer.json
+}

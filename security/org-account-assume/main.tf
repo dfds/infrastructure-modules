@@ -18,7 +18,7 @@ provider "aws" {
   version = "~> 2.43.0"
   region  = var.aws_region
 
-  # Need explicit credentials in Master, to be able to assume Organizational Role in Workload account 
+  # Need explicit credentials in Master, to be able to assume Organizational Role in Workload account
   access_key = var.access_key_master
   secret_key = var.secret_key_master
 
@@ -99,5 +99,41 @@ resource "aws_iam_role_policy" "prime-admin" {
   name     = "Admin"
   role     = aws_iam_role.prime.id
   policy   = module.iam_policies.admin
+  provider = aws.workload
+}
+
+# Create cloud-engineer role for the workload account
+resource "aws_iam_role" "cloudengineer_role" {
+  name               = var.cloudengineer_iam_role_name
+  description        = "Cloud-engineer role"
+  assume_role_policy = module.iam_idp.adfs_assume_policy
+
+  provider = aws.workload
+}
+
+# Attach policy to cloud-engineer role
+resource "aws_iam_role_policy" "cloudengineer_role_policy" {
+  name   = var.cloudengineer_iam_policy_name
+  role   = aws_iam_role.cloudengineer_role.id
+  policy = module.iam_policies.cloudengineer
+
+  provider = aws.workload
+}
+
+# Create cloud-admin role for the workload account
+resource "aws_iam_role" "cloudadmin_role" {
+  name               = var.cloudadmin_iam_role_name
+  description        = "Cloud-admin role"
+  assume_role_policy = module.iam_idp.adfs_assume_policy
+
+  provider = aws.workload
+}
+
+# Attach policy to cloud-admin role
+resource "aws_iam_role_policy" "cloudadmin_role_policy" {
+  name   = var.cloudadmin_iam_policy_name
+  role   = aws_iam_role.cloudadmin_role.id
+  policy = module.iam_policies.admin
+
   provider = aws.workload
 }
