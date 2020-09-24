@@ -293,7 +293,7 @@ module "cloudwatch_agent_config_bucket" {
 module "k8s_cloudengineer_clusterrole" {
   source = "../../_sub/compute/k8s-clusterrole"
   name = "cloud-engineer"
-  rule = [
+  rules = [
     {
       api_groups = [""]
       resources  = ["namespaces"]
