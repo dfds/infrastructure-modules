@@ -290,7 +290,7 @@ module "cloudwatch_agent_config_bucket" {
 # Cluster access
 # --------------------------------------------------
 
-module "k8s_cloudengineer_clusterrole" {
+module "k8s_cloudengineer_clusterrole_and_binding" {
   source = "../../_sub/compute/k8s-clusterrole"
   name = "cloud-engineer"
   rules = [

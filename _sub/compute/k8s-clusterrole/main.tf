@@ -17,3 +17,19 @@ resource "kubernetes_cluster_role" "role" {
     }
   }
 }
+
+resource "kubernetes_cluster_role_binding" "binding" {
+  metadata {
+    name = var.name
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind = "ClusterRole"
+    name = kubernetes_cluster_role.role.metadata.name
+  }
+  subject {
+    api_group = "rbac.authorization.k8s.io"
+    name = var.name
+    kind = "Group"
+  }
+}
