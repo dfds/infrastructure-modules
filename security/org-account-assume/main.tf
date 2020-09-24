@@ -113,7 +113,7 @@ resource "aws_iam_role" "cloudengineer_role" {
 
 # Attach policy to cloud-engineer role
 resource "aws_iam_role_policy" "cloudengineer_role_policy" {
-  name   = var.cloudengineer_iam_policy_name
+  name   = "CloudEngineer"
   role   = aws_iam_role.cloudengineer_role.id
   policy = module.iam_policies.cloudengineer
 
@@ -131,7 +131,7 @@ resource "aws_iam_role" "cloudadmin_role" {
 
 # Attach policy to cloud-admin role
 resource "aws_iam_role_policy" "cloudadmin_role_policy" {
-  name   = var.cloudadmin_iam_policy_name
+  name   = "CloudAdmin"
   role   = aws_iam_role.cloudadmin_role.id
   policy = module.iam_policies.admin
 
