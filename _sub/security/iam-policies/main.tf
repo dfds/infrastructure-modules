@@ -181,12 +181,6 @@ data "aws_iam_policy_document" "capability_access_shared" {
 
 # Admin
 data "aws_iam_policy_document" "cloudengineer" {
-  statement {
-    sid       = "CloudEngineer"
-    actions   = [""]
-    resources = [""]
-    effect    = ""
-  }
 }
 
 # ------------------------------------------------------------------------------
