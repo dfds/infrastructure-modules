@@ -107,6 +107,7 @@ resource "aws_iam_role" "cloudengineer_role" {
   name               = var.cloudengineer_iam_role_name
   description        = "Cloud-engineer role"
   assume_role_policy = module.iam_idp.adfs_assume_policy
+  max_session_duration = 28800
 
   provider = aws.workload
 }
@@ -125,6 +126,7 @@ resource "aws_iam_role" "cloudadmin_role" {
   name               = var.cloudadmin_iam_role_name
   description        = "Cloud-admin role"
   assume_role_policy = module.iam_idp.adfs_assume_policy
+  max_session_duration = 28800
 
   provider = aws.workload
 }
