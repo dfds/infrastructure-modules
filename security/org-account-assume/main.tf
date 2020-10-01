@@ -112,14 +112,31 @@ resource "aws_iam_role" "cloudengineer_role" {
   provider = aws.workload
 }
 
-# Attach policy to cloud-engineer role
-resource "aws_iam_role_policy" "cloudengineer_role_policy" {
+# Policy inline to cloud-engineer role
+resource "aws_iam_role_policy" "cloudengineer" {
   name   = "CloudEngineer"
   role   = aws_iam_role.cloudengineer_role.id
   policy = module.iam_policies.cloudengineer
 
   provider = aws.workload
 }
+
+# Policy attachment for cloud-engineer roles
+
+resource "aws_iam_policy_attachment" "cloudengineer_viewonlyaccess" {
+  name   = "ViewOnlyAccess"
+  policy_arn = "arn:aws:iam::aws:policy/job-function/ViewOnlyAccess"
+
+  provider = aws.workload
+}
+
+resource "aws_iam_policy_attachment" "cloudengineer_supportuser" {
+  name   = "SupportUser"
+  policy_arn = "arn:aws:iam::aws:policy/job-function/SupportUser"
+
+  provider = aws.workload
+}
+
 
 # Create cloud-admin role for the workload account
 resource "aws_iam_role" "cloudadmin_role" {
@@ -131,7 +148,7 @@ resource "aws_iam_role" "cloudadmin_role" {
   provider = aws.workload
 }
 
-# Attach policy to cloud-admin role
+# Policy inline to cloud-admin role
 resource "aws_iam_role_policy" "cloudadmin_role_policy" {
   name   = "CloudAdmin"
   role   = aws_iam_role.cloudadmin_role.id
