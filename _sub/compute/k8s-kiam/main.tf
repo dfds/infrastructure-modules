@@ -100,7 +100,17 @@ resource "helm_release" "kiam" {
 
   set {
     name  = "agent.image.tag"
-    value = "v3.5"
+    value = var.image_tag
+  }
+
+  set {
+    name  = "agent.deepLivenessProbe"
+    value = var.agent_deep_liveness
+  }
+
+  set {
+    name  = "agent.livenessProbe.timeoutSeconds"
+    value = var.agent_liveness_timeout
   }
 
   set {
@@ -130,7 +140,17 @@ resource "helm_release" "kiam" {
 
   set {
     name  = "server.image.tag"
-    value = "v3.5"
+    value = var.image_tag
+  }
+
+  set {
+    name  = "server.livenessProbe.timeoutSeconds"
+    value = var.server_liveness_timeout
+  }
+
+  set {
+    name  = "server.readinessProbe.timeoutSeconds"
+    value = var.server_readiness_timeout
   }
 
   set {
