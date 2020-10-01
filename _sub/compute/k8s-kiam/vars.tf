@@ -22,7 +22,7 @@ variable "image_tag" {
 variable "agent_deep_liveness" {
   type        = bool
   description = "Fail agent liveness probe if the server is not accessible"
-  default     = true
+  default     = false
 }
 
 variable "agent_liveness_timeout" {
