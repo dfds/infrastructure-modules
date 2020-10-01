@@ -273,6 +273,8 @@ module "kiam_deploy" {
   priority_class          = "service-critical"
   aws_workload_account_id = var.aws_workload_account_id
   worker_role_id          = data.terraform_remote_state.cluster.outputs.eks_worker_role_id
+  agent_deep_liveness     = true
+  agent_liveness_timeout  = 5
 }
 
 # --------------------------------------------------
