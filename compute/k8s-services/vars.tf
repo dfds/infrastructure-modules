@@ -98,7 +98,7 @@ variable "blaster_configmap_deploy" {
 }
 
 variable "traefik_health_check_path" {
-  type = string
+  type    = string
   default = "/dashboard/"
 }
 
@@ -139,7 +139,7 @@ variable "traefik_okta_admin_nodeport" {
 }
 
 variable "traefik_okta_health_check_path" {
-  type = string
+  type    = string
   default = "/ping/"
 }
 
@@ -183,18 +183,22 @@ variable "eks_public_s3_bucket" {
 # Cloudwatch alarms and alarm notifier (Slack)
 # --------------------------------------------------
 
-variable "alarm_notifier_deploy" {
-  type = bool
+variable "slack_webhook_url" {
+  type    = string
+  default = ""
 }
 
-variable "slack_webhook_url" {
-  type = string
+variable "alarm_notifier_deploy" {
+  type     = bool
+  default = false
 }
 
 variable "cloudwatch_alarm_alb_targets_health_deploy" {
-  type = bool
+  type     = bool
+  default = false
 }
 
 variable "cloudwatch_alarm_alb_5XX_deploy" {
-  type = bool
+  type     = bool
+  default = false
 }
