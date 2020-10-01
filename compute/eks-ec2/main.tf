@@ -295,14 +295,19 @@ module "k8s_cloudengineer_clusterrole_and_binding" {
   name = "cloud-engineer"
   rules = [
     {
-      api_groups = [""]
-      resources  = ["namespaces"]
-      verbs      = ["get", "list", "watch"]
+      api_groups = ["*"]
+      resources  = ["*"]
+      verbs      = ["create", "get", "list", "watch"]
     },
     {
       api_groups = [""]
-      resources  = ["pod"]
-      verbs      = ["get", "list", "watch"]
+      resources  = ["pods", "pods/attach", "pods/exec", "pods/portforward", "pods/proxy"]
+      verbs      = ["*"]
+    },
+    {
+      api_groups = [""]
+      resources  = ["nodes"]
+      verbs      = ["patch"]
     }
   ]
 }

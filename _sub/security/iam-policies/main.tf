@@ -181,6 +181,16 @@ data "aws_iam_policy_document" "capability_access_shared" {
 
 # Admin
 data "aws_iam_policy_document" "cloudengineer" {
+  statement {
+    sid    = "CloudEngineerPlaceholder"
+    effect = "Allow"
+    actions = [
+      "s3:ListBucket"
+    ]
+    resources = [
+      "arn:aws:s3:::/test/*"
+    ]
+  }
 }
 
 # ------------------------------------------------------------------------------
