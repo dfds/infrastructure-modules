@@ -122,16 +122,15 @@ resource "aws_iam_role_policy" "cloudengineer" {
 }
 
 # Policy attachment for cloud-engineer roles
-
 resource "aws_iam_policy_attachment" "cloudengineer_viewonlyaccess" {
-  name   = "ViewOnlyAccess"
+  role = aws_iam_role.role.name
   policy_arn = "arn:aws:iam::aws:policy/job-function/ViewOnlyAccess"
 
   provider = aws.workload
 }
 
 resource "aws_iam_policy_attachment" "cloudengineer_supportuser" {
-  name   = "SupportUser"
+  role = aws_iam_role.role.name
   policy_arn = "arn:aws:iam::aws:policy/job-function/SupportUser"
 
   provider = aws.workload
