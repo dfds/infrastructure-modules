@@ -98,7 +98,7 @@ module "traefik_deploy" {
 
 module "traefik_alb_cert" {
   source              = "../../_sub/network/acm-certificate-san"
-  deploy              = var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy  || var.traefik_okta_deploy ? true : false
+  deploy              = var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy || var.traefik_okta_deploy ? true : false
   domain_name         = "*.${local.eks_fqdn}"
   dns_zone_name       = var.workload_dns_zone_name
   core_alias          = concat(var.traefik_alb_auth_core_alias, var.traefik_alb_anon_core_alias, var.traefik_alb_okta_core_alias)
@@ -269,7 +269,7 @@ module "traefik_alb_okta_dns_core_alias" {
 module "kiam_deploy" {
   source                  = "../../_sub/compute/k8s-kiam"
   deploy                  = var.kiam_deploy
-  kiam_image_tag          = var.kiam_image_tag
+  image_tag               = var.kiam_image_tag
   cluster_name            = var.eks_cluster_name
   priority_class          = "service-critical"
   aws_workload_account_id = var.aws_workload_account_id
@@ -296,23 +296,23 @@ module "blaster_namespace" {
 # --------------------------------------------------
 
 module "alarm_notifier" {
-  source = "../../_sub/monitoring/alarm-notifier/"
-  deploy = var.alarm_notifier_deploy
+  source            = "../../_sub/monitoring/alarm-notifier/"
+  deploy            = var.alarm_notifier_deploy
   slack_webhook_url = var.slack_webhook_url
-  function_name = var.eks_cluster_name
+  function_name     = var.eks_cluster_name
 }
 
 module "cloudwatch_alarm_alb_5XX" {
-  source = "../../_sub/monitoring/cloudwatch-alarms/alb-5XX/"
-  deploy = var.cloudwatch_alarm_alb_5XX_deploy
-  sns_topic_arn = module.alarm_notifier.sns_arn
+  source           = "../../_sub/monitoring/cloudwatch-alarms/alb-5XX/"
+  deploy           = var.cloudwatch_alarm_alb_5XX_deploy
+  sns_topic_arn    = module.alarm_notifier.sns_arn
   alb_arn_suffixes = concat(module.traefik_alb_anon.alb_arn_suffix, module.traefik_alb_auth.alb_arn_suffix)
 }
 
 module "cloudwatch_alarm_alb_targets_health" {
-  source = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
-  deploy = var.cloudwatch_alarm_alb_targets_health_deploy
-  sns_topic_arn = module.alarm_notifier.sns_arn
+  source                        = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
+  deploy                        = var.cloudwatch_alarm_alb_targets_health_deploy
+  sns_topic_arn                 = module.alarm_notifier.sns_arn
   alb_target_group_arn_suffixes = concat(module.traefik_alb_anon.alb_target_group_arn_suffix, module.traefik_alb_auth.alb_target_group_arn_suffix)
-  alb_arn_suffixes = concat(module.traefik_alb_anon.alb_arn_suffix, module.traefik_alb_auth.alb_arn_suffix)
+  alb_arn_suffixes              = concat(module.traefik_alb_anon.alb_arn_suffix, module.traefik_alb_auth.alb_arn_suffix)
 }
