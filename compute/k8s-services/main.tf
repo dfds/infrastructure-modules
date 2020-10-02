@@ -269,6 +269,7 @@ module "traefik_alb_okta_dns_core_alias" {
 module "kiam_deploy" {
   source                  = "../../_sub/compute/k8s-kiam"
   deploy                  = var.kiam_deploy
+  kiam_image_tag          = var.kiam_image_tag
   cluster_name            = var.eks_cluster_name
   priority_class          = "service-critical"
   aws_workload_account_id = var.aws_workload_account_id
