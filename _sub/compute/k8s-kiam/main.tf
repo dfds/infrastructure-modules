@@ -109,6 +109,11 @@ resource "helm_release" "kiam" {
   }
 
   set {
+    name  = "agent.gatewayTimeoutCreation"
+    value = var.agent_gateway_timeout
+  }
+
+  set {
     name  = "agent.livenessProbe.timeoutSeconds"
     value = var.agent_liveness_timeout
   }
@@ -141,6 +146,11 @@ resource "helm_release" "kiam" {
   set {
     name  = "server.image.tag"
     value = var.image_tag
+  }
+
+  set {
+    name  = "server.gatewayTimeoutCreation"
+    value = var.server_gateway_timeout
   }
 
   set {
