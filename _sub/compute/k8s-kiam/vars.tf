@@ -16,7 +16,6 @@ variable "worker_role_id" {
 variable "image_tag" {
   type        = string
   description = "Image tag of KIAM to deploy"
-  default     = "v3.5"
 }
 
 variable "agent_deep_liveness" {
