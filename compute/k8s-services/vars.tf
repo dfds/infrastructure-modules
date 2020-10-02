@@ -152,6 +152,13 @@ variable "kiam_deploy" {
   default = false
 }
 
+variable "kiam_image_tag" {
+  type        = string
+  description = "Image tag of KIAM to deploy"
+  default     = "v3.5"
+  
+}
+
 # --------------------------------------------------
 # Blaster
 # --------------------------------------------------
