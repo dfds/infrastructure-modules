@@ -24,10 +24,22 @@ variable "agent_deep_liveness" {
   default     = false
 }
 
+variable "agent_gateway_timeout" {
+  type        = string
+  description = "Agent's timeout when creating the kiam gateway"
+  default     = "1s"
+}
+
 variable "agent_liveness_timeout" {
   type        = number
   description = "When the agent's liveness probe times out"
   default     = 1
+}
+
+variable "server_gateway_timeout" {
+  type        = string
+  description = "Server's timeout when creating the kiam gateway"
+  default     = "1s"
 }
 
 variable "server_liveness_timeout" {

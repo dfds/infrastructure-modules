@@ -276,6 +276,7 @@ module "kiam_deploy" {
   worker_role_id          = data.terraform_remote_state.cluster.outputs.eks_worker_role_id
   agent_deep_liveness     = true
   agent_liveness_timeout  = 5
+  server_gateway_timeout  = "5s"
 }
 
 # --------------------------------------------------
