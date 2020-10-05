@@ -18,6 +18,18 @@ variable "image_tag" {
   description = "Image tag of KIAM to deploy"
 }
 
+variable "force_update" {
+  type        = bool
+  description = "(optional) Force resource update through delete/recreate if needed."
+  default     = true
+}
+
+variable "recreate_pods" {
+  type        = bool
+  description = "(optional) Perform pods restart during upgrade/rollback."
+  default     = true
+}
+
 variable "agent_deep_liveness" {
   type        = bool
   description = "Fail agent liveness probe if the server is not accessible"

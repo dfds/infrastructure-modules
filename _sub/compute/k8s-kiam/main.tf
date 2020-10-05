@@ -86,11 +86,13 @@ data "helm_repository" "uswitch" {
 }
 
 resource "helm_release" "kiam" {
-  count      = var.deploy ? 1 : 0
-  name       = "kiam"
-  repository = data.helm_repository.uswitch.metadata[0].name
-  namespace  = "kube-system"
-  chart      = "kiam"
+  count         = var.deploy ? 1 : 0
+  name          = "kiam"
+  repository    = data.helm_repository.uswitch.metadata[0].name
+  namespace     = "kube-system"
+  chart         = "kiam"
+  recreate_pods = var.recreate_pods
+  force_update  = var.force_update
 
   # See: https://github.com/uswitch/kiam/tree/master/helm/kiam
 
@@ -119,7 +121,7 @@ resource "helm_release" "kiam" {
   }
 
   set {
-    name = "agent.priorityClassName"
+    name  = "agent.priorityClassName"
     value = var.priority_class
   }
 
@@ -164,7 +166,7 @@ resource "helm_release" "kiam" {
   }
 
   set {
-    name = "server.priorityClassName"
+    name  = "server.priorityClassName"
     value = var.priority_class
   }
 
