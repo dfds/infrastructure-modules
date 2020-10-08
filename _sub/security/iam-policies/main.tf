@@ -163,7 +163,8 @@ data "aws_iam_policy_document" "capability_access_shared" {
       "ssm:GetParameter"
     ]
     resources = [
-      "arn:aws:ssm:*:*:parameter/capabilities/${var.replace_token}/*"
+      "arn:aws:ssm:*:*:parameter/capabilities/${var.replace_token}/*",
+      "arn:aws:ssm:*:*:parameter/shared/*"
     ]
   }
 
