@@ -1,6 +1,6 @@
-locals {
-  temp_kubeconfig_path = "./kube_${var.cluster_name}.config"
-}
+# --------------------------------------------------
+# Kubeconfig
+# --------------------------------------------------
 
 resource "local_file" "kubeconfig_admin" {
   content  = data.template_file.kubeconfig_admin.rendered
@@ -24,45 +24,18 @@ data "local_file" "kubeconfig_admin" {
   depends_on = [local_file.kubeconfig_admin]
 }
 
-locals {
-  path_default_configmap = pathexpand(
-    "./.terraform/data/config-map-aws-auth_${var.cluster_name}.yaml",
-  )
-}
 
-resource "local_file" "default-configmap" {
-  content  = data.template_file.default_auth_configmap.rendered
-  filename = local.path_default_configmap
-}
+# --------------------------------------------------
+# AWS auth configmap - default or from Blaster S3 bucket
+# --------------------------------------------------
 
-resource "null_resource" "enable-workers-default" {
-  count = var.blaster_configmap_apply ? 0 : 1
-
-  provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${var.kubeconfig_path} apply -f ${local.path_default_configmap}"
+resource "kubernetes_config_map" "aws-auth" {
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
   }
 
-  depends_on = [
-    local_file.kubeconfig_admin,
-    local_file.default-configmap,
-  ]
-}
-
-resource "null_resource" "enable-workers-from-s3" {
-  count = var.blaster_configmap_apply ? 1 : 0
-
-  # Terraform does not seem to re-run script, unless a trigger is defined
-  triggers = {
-    timestamp = timestamp()
+  data = {
+    mapRoles = local.auth_cm_maproles
   }
-
-  provisioner "local-exec" {
-    command = "bash ${path.module}/apply_blaster_configmap.sh ${var.kubeconfig_path} ${var.blaster_configmap_s3_bucket} ${var.blaster_configmap_key} ${local.path_default_configmap} ${var.aws_assume_role_arn}"
-  }
-
-  depends_on = [
-    local_file.kubeconfig_admin,
-    local_file.default-configmap,
-  ]
 }
-
