@@ -68,4 +68,3 @@ resource "null_resource" "enable-workers-from-s3" {
     local_file.default-configmap,
   ]
 }
-

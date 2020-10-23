@@ -279,13 +279,11 @@ module "k8s_service_account_store_secret" {
   key_value       = module.k8s_service_account.deploy_user_config
 }
 
-
 module "cloudwatch_agent_config_bucket" {
   source    = "../../_sub/storage/s3-bucket"
   deploy    = var.eks_worker_cloudwatch_agent_config_deploy
   s3_bucket = "${var.eks_cluster_name}-cl-agent-config"
 }
-
 
 
 # --------------------------------------------------

@@ -27,7 +27,7 @@ data "template_file" "kubeconfig_saml" {
 
 
 # --------------------------------------------------
-# AWS auth configmap - default or from Blaster S3 bucket
+# AWS auth configmap
 # --------------------------------------------------
 
 data "template_file" "default_auth_cm" {
@@ -36,39 +36,3 @@ data "template_file" "default_auth_cm" {
     role_arn = var.eks_role_arn
   }
 }
-
-# locals {
-#   path_default_configmap = "${path.cwd}/default-auth-cm.yaml"
-# }
-
-# resource "null_resource" "generate_auth_cm" {
-#   # Terraform does not seem to re-run script, unless a trigger is defined
-#   triggers = {
-#     timestamp = timestamp()
-#   }
-
-#   provisioner "local-exec" {
-#     command = "bash ${path.module}/generate_auth_cm.sh ${var.blaster_configmap_s3_bucket} ${var.blaster_configmap_key} ${local.path_default_configmap} ${var.aws_assume_role_arn}"
-#   }
-# }
-
-# data "local_file" "auth_cm" {
-
-#   filename = "${path.cwd}/${var.blaster_configmap_key}"
-
-#   depends_on = [
-#     null_resource.generate_auth_cm
-#   ]
-# }
-
-
-# locals {
-#   # Deserialise auth configmap data, either from Blaster (from S3) or default (local file)
-#   auth_cm = yamldecode(data.local_file.auth_cm.content)
-
-#   # Lookup the 'data' attribute of the configmap
-#   auth_cm_data = lookup(local.auth_cm, "data", {})
-
-#   # Lookup the 'mapRoles' attribute in 'data'
-#   auth_cm_maproles = lookup(local.auth_cm_data, "mapRoles", {})
-# }
