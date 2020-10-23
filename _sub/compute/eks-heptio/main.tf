@@ -29,13 +29,42 @@ data "local_file" "kubeconfig_admin" {
 # AWS auth configmap - default or from Blaster S3 bucket
 # --------------------------------------------------
 
-resource "kubernetes_config_map" "aws-auth" {
-  metadata {
-    name      = "aws-auth"
-    namespace = "kube-system"
+locals {
+  path_default_configmap = "${path.cwd}/default-auth-cm.yaml"
+}
+
+resource "local_file" "default-configmap" {
+  content  = data.template_file.default_auth_cm.rendered
+  filename = local.path_default_configmap
+}
+
+resource "null_resource" "enable-workers-default" {
+  count = var.blaster_configmap_apply ? 0 : 1
+
+  provisioner "local-exec" {
+    command = "kubectl --kubeconfig ${var.kubeconfig_path} apply -f ${local.path_default_configmap}"
   }
 
-  data = {
-    mapRoles = local.auth_cm_maproles
+  depends_on = [
+    local_file.kubeconfig_admin,
+    local_file.default-configmap,
+  ]
+}
+
+resource "null_resource" "enable-workers-from-s3" {
+  count = var.blaster_configmap_apply ? 1 : 0
+
+  # Terraform does not seem to re-run script, unless a trigger is defined
+  triggers = {
+    timestamp = timestamp()
   }
+
+  provisioner "local-exec" {
+    command = "bash ${path.module}/apply_blaster_configmap.sh ${var.kubeconfig_path} ${var.blaster_configmap_s3_bucket} ${var.blaster_configmap_key} ${local.path_default_configmap} ${var.aws_assume_role_arn}"
+  }
+
+  depends_on = [
+    local_file.kubeconfig_admin,
+    local_file.default-configmap,
+  ]
 }

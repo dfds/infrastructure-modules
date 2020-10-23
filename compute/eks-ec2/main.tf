@@ -20,7 +20,7 @@ provider "kubernetes" {
   version                = "~> 1.11.1"
   host                   = module.eks_cluster.eks_endpoint
   cluster_ca_certificate = base64decode(module.eks_cluster.eks_certificate_authority)
-  load_config_file       = true
+  load_config_file       = false
 
   exec {
     api_version = "client.authentication.k8s.io/v1alpha1"
@@ -264,12 +264,26 @@ module "eks_s3_public_kubeconfig" {
   acl     = "public-read"
 }
 
+# What is this even needed for?
+module "k8s_service_account" {
+  source            = "../../_sub/compute/k8s-service-account"
+  module_depends_on = [module.eks_heptio.kubeconfig_path] # https://discuss.hashicorp.com/t/tips-howto-implement-module-depends-on-emulation/2305/2
+  cluster_name      = var.eks_cluster_name
+  kubeconfig_path   = module.eks_heptio.kubeconfig_path
+}
+
+module "k8s_service_account_store_secret" {
+  source          = "../../_sub/security/ssm-parameter-store"
+  key_name        = "/eks/${var.eks_cluster_name}/deploy_user"
+  key_description = "Kube config file for general deployment user"
+  key_value       = module.k8s_service_account.deploy_user_config
+}
+
 module "cloudwatch_agent_config_bucket" {
   source    = "../../_sub/storage/s3-bucket"
   deploy    = var.eks_worker_cloudwatch_agent_config_deploy
   s3_bucket = "${var.eks_cluster_name}-cl-agent-config"
 }
-
 
 
 # --------------------------------------------------
@@ -278,7 +292,7 @@ module "cloudwatch_agent_config_bucket" {
 
 module "k8s_cloudengineer_clusterrole_and_binding" {
   source = "../../_sub/compute/k8s-clusterrole"
-  name = "cloud-engineer"
+  name   = "cloud-engineer"
   rules = [
     {
       api_groups = ["*"]

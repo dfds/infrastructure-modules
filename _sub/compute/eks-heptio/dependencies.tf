@@ -27,7 +27,7 @@ data "template_file" "kubeconfig_saml" {
 
 
 # --------------------------------------------------
-# AWS auth configmap - default or from Blaster S3 bucket
+# AWS auth configmap
 # --------------------------------------------------
 
 data "template_file" "default_auth_cm" {
@@ -35,31 +35,4 @@ data "template_file" "default_auth_cm" {
   vars = {
     role_arn = var.eks_role_arn
   }
-}
-
-data "aws_s3_bucket_objects" "auth" {
-  count = var.blaster_configmap_apply ? 1 : 0
-  bucket = var.blaster_configmap_s3_bucket
-  prefix = var.blaster_configmap_key
-}
-
-data "aws_s3_bucket_object" "auth" {
-  count = try(contains(data.aws_s3_bucket_objects.auth[0].keys, var.blaster_configmap_key), false) ? 1 : 0
-
-  bucket = var.blaster_configmap_s3_bucket
-  key    = var.blaster_configmap_key
-}
-
-locals {
-  # Apply auth configmap from bucket, if feature-toggled on AND configmap file was found in S3
-  use_bucket_cm = var.blaster_configmap_apply ? contains(data.aws_s3_bucket_objects.auth[0].keys, var.blaster_configmap_key) : false
-
-  # Deserialise auth configmap data, either from Blaster (from S3) or default (local file)
-  auth_cm = local.use_bucket_cm ? yamldecode(data.aws_s3_bucket_object.auth[0].body) : yamldecode(data.template_file.default_auth_cm.rendered)
-
-  # Lookup the 'data' attribute of the configmap
-  auth_cm_data = lookup(local.auth_cm, "data", {})
-
-  # Lookup the 'mapRoles' attribute in 'data'
-  auth_cm_maproles = lookup(local.auth_cm_data, "mapRoles", {})
 }
