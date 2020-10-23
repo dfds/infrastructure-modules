@@ -241,28 +241,27 @@ module "k8s_priority_class" {
   priority_class = local.priority_class
 }
 
+module "param_kubeconfig_admin" {
+  source          = "../../_sub/security/ssm-parameter-store"
+  key_name        = "/eks/${var.eks_cluster_name}/kubeconfig-admin"
+  key_description = "Kube config file for initial admin"
+  key_value       = module.eks_heptio.kubeconfig_admin
+}
+
+module "param_kubeconfig_saml" {
+  source          = "../../_sub/security/ssm-parameter-store"
+  key_name        = "/eks/${var.eks_cluster_name}/kubeconfig-saml"
+  key_description = "Kube config file for SAML"
+  key_value       = module.eks_heptio.kubeconfig_saml
+}
+
 module "eks_s3_public_kubeconfig" {
   source  = "../../_sub/storage/s3-bucket-object"
   deploy  = length(var.eks_public_s3_bucket) >= 1 ? true : false
   bucket  = var.eks_public_s3_bucket
   key     = "kubeconfig/${var.eks_cluster_name}-saml.config"
-  content = module.eks_heptio.user_configfile
+  content = module.eks_heptio.kubeconfig_saml
   acl     = "public-read"
-}
-
-module "param_store_admin_kube_config" {
-  source          = "../../_sub/security/ssm-parameter-store"
-  key_name        = "/eks/${var.eks_cluster_name}/admin"
-  key_description = "Kube config file for intial admin"
-  key_value       = module.eks_heptio.admin_configfile
-}
-
-# Stored in public S3 bucket - not needed in parameter store?
-module "param_store_default_kube_config" {
-  source          = "../../_sub/security/ssm-parameter-store"
-  key_name        = "/eks/${var.eks_cluster_name}/default_user"
-  key_description = "Kube config file for general users"
-  key_value       = module.eks_heptio.user_configfile
 }
 
 # What is this even needed for?
@@ -280,11 +279,14 @@ module "k8s_service_account_store_secret" {
   key_value       = module.k8s_service_account.deploy_user_config
 }
 
+
 module "cloudwatch_agent_config_bucket" {
   source    = "../../_sub/storage/s3-bucket"
   deploy    = var.eks_worker_cloudwatch_agent_config_deploy
   s3_bucket = "${var.eks_cluster_name}-cl-agent-config"
 }
+
+
 
 # --------------------------------------------------
 # Cluster access
@@ -292,7 +294,7 @@ module "cloudwatch_agent_config_bucket" {
 
 module "k8s_cloudengineer_clusterrole_and_binding" {
   source = "../../_sub/compute/k8s-clusterrole"
-  name = "cloud-engineer"
+  name   = "cloud-engineer"
   rules = [
     {
       api_groups = ["*"]

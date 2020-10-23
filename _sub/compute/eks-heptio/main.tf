@@ -1,9 +1,9 @@
-locals {
-  temp_kubeconfig_path = "./kube_${var.cluster_name}.config"
-}
+# --------------------------------------------------
+# Kubeconfig
+# --------------------------------------------------
 
-resource "local_file" "kubeconfig" {
-  content  = local.kubeconfig
+resource "local_file" "kubeconfig_admin" {
+  content  = data.template_file.kubeconfig_admin.rendered
   filename = local.temp_kubeconfig_path
 
   # The path ${var.kubeconfig_path} is OS and user context-depdendent. This causes problems e.g. when executed locally.
@@ -19,19 +19,22 @@ resource "local_file" "kubeconfig" {
 # Based on https://discuss.hashicorp.com/t/tips-howto-implement-module-depends-on-emulation/2305
 # But since no resources in this module has output attributes, nothing will be considered a dependency by Terraform.
 # Using the local file as a data source however, means Terraform have to wait for this step, when creating the dependency graph.
-data "local_file" "kubeconfig" {
+data "local_file" "kubeconfig_admin" {
   filename   = var.kubeconfig_path
-  depends_on = [local_file.kubeconfig]
+  depends_on = [local_file.kubeconfig_admin]
 }
 
+
+# --------------------------------------------------
+# AWS auth configmap - default or from Blaster S3 bucket
+# --------------------------------------------------
+
 locals {
-  path_default_configmap = pathexpand(
-    "./.terraform/data/config-map-aws-auth_${var.cluster_name}.yaml",
-  )
+  path_default_configmap = "${path.cwd}/default-auth-cm.yaml"
 }
 
 resource "local_file" "default-configmap" {
-  content  = local.config-map-aws-auth
+  content  = data.template_file.default_auth_cm.rendered
   filename = local.path_default_configmap
 }
 
@@ -43,7 +46,7 @@ resource "null_resource" "enable-workers-default" {
   }
 
   depends_on = [
-    local_file.kubeconfig,
+    local_file.kubeconfig_admin,
     local_file.default-configmap,
   ]
 }
@@ -61,7 +64,7 @@ resource "null_resource" "enable-workers-from-s3" {
   }
 
   depends_on = [
-    local_file.kubeconfig,
+    local_file.kubeconfig_admin,
     local_file.default-configmap,
   ]
 }
