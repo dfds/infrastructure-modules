@@ -156,7 +156,7 @@ variable "kiam_image_tag" {
   type        = string
   description = "Image tag of KIAM to deploy"
   default     = "v3.5"
-  
+
 }
 
 # --------------------------------------------------
@@ -208,4 +208,18 @@ variable "cloudwatch_alarm_alb_targets_health_deploy" {
 variable "cloudwatch_alarm_alb_5XX_deploy" {
   type     = bool
   default = false
+}
+
+# --------------------------------------------------
+# Goldpinger
+# --------------------------------------------------
+
+variable "goldpinger_deploy" {
+  type = bool
+  description = "Deploy goldpinger helm chart switch"
+}
+
+variable "goldpinger_version" {
+  type = string
+  description = "Goldpinger helm chart version"
 }

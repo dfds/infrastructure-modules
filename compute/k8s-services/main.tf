@@ -79,6 +79,20 @@ provider "helm" {
   }
 }
 
+# --------------------------------------------------
+# Helm v3 (no tiller)
+# --------------------------------------------------
+
+provider "helm" {
+  version = "~> 1.0.0"
+  alias = "3"
+
+  kubernetes {
+    host                   = data.aws_eks_cluster.eks.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+    token                  = data.aws_eks_cluster_auth.eks.token
+  }
+}
 
 # --------------------------------------------------
 # Traefik
@@ -316,4 +330,17 @@ module "cloudwatch_alarm_alb_targets_health" {
   sns_topic_arn                 = module.alarm_notifier.sns_arn
   alb_target_group_arn_suffixes = concat(module.traefik_alb_anon.alb_target_group_arn_suffix, module.traefik_alb_auth.alb_target_group_arn_suffix)
   alb_arn_suffixes              = concat(module.traefik_alb_anon.alb_arn_suffix, module.traefik_alb_auth.alb_arn_suffix)
+}
+
+# --------------------------------------------------
+# Goldpinger
+# --------------------------------------------------
+
+module "goldpinger" {
+  source = "../../_sub/compute/helm-goldpinger"
+  deploy = var.goldpinger_deploy
+  chart_version = var.goldpinger_version
+  providers = {
+    helm = "helm.3"
+  }
 }
