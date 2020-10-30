@@ -1,11 +1,11 @@
 output "goldpinger_chart_name" {
-  value = goldpinger.name
+  value = helm_release.goldpinger.name
 }
 
 output "goldpinger_chart_version" {
-  value = goldpinger.chart_version
+  value = helm_release.goldpinger.chart_version
 }
 
 output "goldpinger_chart_namespace" {
-  value = goldpinger.namespace
+  value = helm_release.goldpinger.namespace
 }
