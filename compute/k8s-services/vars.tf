@@ -220,8 +220,14 @@ variable "goldpinger_deploy" {
   default = false
 }
 
-variable "goldpinger_version" {
+variable "goldpinger_chart_version" {
   type = string
   description = "Goldpinger helm chart version"
   default = null
+}
+
+variable "goldpinger_priority_class" {
+  type = string
+  description = "Goldpinger daemonset priority class name"
+  default = "cluster-monitoring"
 }
