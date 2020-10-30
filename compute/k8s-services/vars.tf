@@ -217,9 +217,11 @@ variable "cloudwatch_alarm_alb_5XX_deploy" {
 variable "goldpinger_deploy" {
   type = bool
   description = "Deploy goldpinger helm chart switch"
+  default = false
 }
 
 variable "goldpinger_version" {
   type = string
   description = "Goldpinger helm chart version"
+  default = null
 }

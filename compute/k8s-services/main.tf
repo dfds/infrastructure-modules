@@ -67,25 +67,10 @@ resource "kubernetes_cluster_role_binding" "tiller" {
 }
 
 provider "helm" {
-  version         = "~> 0.10.4"
+  version         = "0.10.4"
   install_tiller  = true
   namespace       = kubernetes_cluster_role_binding.tiller.subject[0].namespace
   service_account = kubernetes_cluster_role_binding.tiller.subject[0].name
-
-  kubernetes {
-    host                   = data.aws_eks_cluster.eks.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
-    token                  = data.aws_eks_cluster_auth.eks.token
-  }
-}
-
-# --------------------------------------------------
-# Helm v3 (no tiller)
-# --------------------------------------------------
-
-provider "helm" {
-  version = "~> 1.0.0"
-  alias = "3"
 
   kubernetes {
     host                   = data.aws_eks_cluster.eks.endpoint
@@ -341,6 +326,6 @@ module "goldpinger" {
   deploy = var.goldpinger_deploy
   chart_version = var.goldpinger_version
   providers = {
-    helm = "helm.3"
+    helm = helm
   }
 }

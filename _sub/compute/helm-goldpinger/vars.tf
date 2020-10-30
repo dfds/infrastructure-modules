@@ -1,6 +1,7 @@
 variable "chart_version" {
   type = string
   description = "Goldpinger helm chart version"
+  default = null
 }
 
 variable "namespace" {

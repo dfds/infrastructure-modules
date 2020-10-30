@@ -3,7 +3,7 @@ resource "helm_release" "goldpinger" {
   name = "goldpinger"
   chart = "stable/goldpinger"
   repository = "https://kubernetes-charts.storage.googleapis.com"
-  version = var.chart_version
+  version = var.chart_version ? var.chart_version : null
   namespace = var.namespace
 
   set {
