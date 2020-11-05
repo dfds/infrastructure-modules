@@ -3,15 +3,10 @@ variable "deploy" {
   default = true
 }
 
-variable "sns_name" {
+variable "name" {
   type = string
-  default = "cloudwatch-alarms"
 }
 
 variable "slack_webhook_url" {
   type = string
-}
-
-variable "function_name" {
-	type = string
 }
