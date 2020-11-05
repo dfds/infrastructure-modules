@@ -20,8 +20,8 @@ inputs = {
   # EKS
   # --------------------------------------------------
 
-  eks_cluster_name    = "qa15"
-  eks_cluster_version = "1.15"
+  eks_cluster_name    = "qa18"
+  eks_cluster_version = "1.18"
   eks_cluster_zones   = 2
 
   eks_worker_subnets          = ["10.0.16.0/21", "10.0.24.0/21", "10.0.32.0/21"]
@@ -46,7 +46,7 @@ inputs = {
   # --------------------------------------------------
 
   blaster_configmap_deploy = true
-  blaster_configmap_bucket = "dfds-qa15-k8s-configmap"
+  blaster_configmap_bucket = "dfds-qa18-k8s-configmap"
 
   # --------------------------------------------------
   # Cloudwatch agent
