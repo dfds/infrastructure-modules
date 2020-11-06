@@ -33,17 +33,8 @@ provider "kubernetes" {
 # provider "azuread" {}
 
 # --------------------------------------------------
-# Helm/Tiller
+# Helm
 # --------------------------------------------------
-
-resource "kubernetes_service_account" "tiller" {
-  metadata {
-    name      = "tiller-sa"
-    namespace = "kube-system"
-  }
-
-  automount_service_account_token = true
-}
 
 provider "helm" {
   version         = "1.3.2"

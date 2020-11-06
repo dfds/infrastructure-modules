@@ -14,14 +14,14 @@ resource "helm_release" "goldpinger" {
     value = var.priority_class
   }
 
-  set {
-    name = "serviceMonitor.enabled"
-    value = "true"
-  }
+  # set {
+  #   name = "serviceMonitor.enabled"
+  #   value = "true"
+  # }
 
-  set {
-    name  = "serviceMonitor.selector.release"
-    value = "monitoring"
-  }
+  # set {
+  #   name  = "serviceMonitor.selector.release"
+  #   value = "monitoring"
+  # }
 
 }
