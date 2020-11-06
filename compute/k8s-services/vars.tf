@@ -231,3 +231,9 @@ variable "goldpinger_priority_class" {
   description = "Goldpinger daemonset priority class name"
   default = "cluster-monitoring"
 }
+
+variable "goldpinger_namespace" {
+  type = string
+  description = "Namespace that Goldpinger should be deployed in"
+  default = "monitoring"
+}

@@ -33,11 +33,44 @@ provider "kubernetes" {
 # provider "azuread" {}
 
 # --------------------------------------------------
-# Helm
+# Helm/Tiller
 # --------------------------------------------------
 
+resource "kubernetes_service_account" "tiller" {
+  metadata {
+    name      = "tiller-sa"
+    namespace = "kube-system"
+  }
+
+  automount_service_account_token = true
+}
+
+resource "kubernetes_cluster_role_binding" "tiller" {
+  metadata {
+    name = "tiller-crb"
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "cluster-admin"
+  }
+
+  subject {
+    api_group = ""
+    kind      = "ServiceAccount"
+    name      = kubernetes_service_account.tiller.metadata[0].name
+    namespace = kubernetes_service_account.tiller.metadata[0].namespace
+  }
+
+  depends_on = [kubernetes_service_account.tiller]
+}
+
 provider "helm" {
-  version         = "1.3.2"
+  version         = "~> 0.10.4"
+  install_tiller  = true
+  namespace       = kubernetes_cluster_role_binding.tiller.subject[0].namespace
+  service_account = kubernetes_cluster_role_binding.tiller.subject[0].name
 
   kubernetes {
     host                   = data.aws_eks_cluster.eks.endpoint
@@ -293,4 +326,5 @@ module "goldpinger" {
   deploy = var.goldpinger_deploy
   chart_version = var.goldpinger_chart_version
   priority_class = var.goldpinger_priority_class
+  namespace = var.goldpinger_namespace
 }

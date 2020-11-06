@@ -6,7 +6,6 @@ resource "helm_release" "goldpinger" {
   version = var.chart_version != null ? var.chart_version : null
   namespace = var.namespace
   recreate_pods = true
-  create_namespace = true
   force_update = true
 
   set {
@@ -14,14 +13,14 @@ resource "helm_release" "goldpinger" {
     value = var.priority_class
   }
 
-  # set {
-  #   name = "serviceMonitor.enabled"
-  #   value = "true"
-  # }
+  set {
+    name = "service.type"
+    value = "ClusterIP"
+  }
 
-  # set {
-  #   name  = "serviceMonitor.selector.release"
-  #   value = "monitoring"
-  # }
+  set {
+    name = "serviceMonitor.enabled"
+    value = "true"
+  }
 
 }
