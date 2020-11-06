@@ -1,6 +1,6 @@
 resource "aws_sns_topic" "cloudwatch_alarms" {
   count = var.deploy ? 1 : 0
-  name = var.sns_name
+  name = var.name
 }
 
 resource "aws_sns_topic_subscription" "cloudwatch_alarms" {
@@ -12,7 +12,7 @@ resource "aws_sns_topic_subscription" "cloudwatch_alarms" {
 
 resource "aws_iam_role" "iam_for_lambda" {
   count = var.deploy ? 1 : 0
-  name_prefix = var.function_name
+  name_prefix = var.name
 
   assume_role_policy = <<EOF
 {

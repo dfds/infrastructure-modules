@@ -265,8 +265,8 @@ module "blaster_namespace" {
 module "alarm_notifier" {
   source            = "../../_sub/monitoring/alarm-notifier/"
   deploy            = var.alarm_notifier_deploy
+  name              = "eks-${var.eks_cluster_name}-cloudwatch-alarms"
   slack_webhook_url = var.slack_webhook_url
-  function_name     = var.eks_cluster_name
 }
 
 module "cloudwatch_alarm_alb_5XX" {
