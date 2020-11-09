@@ -33,44 +33,11 @@ provider "kubernetes" {
 # provider "azuread" {}
 
 # --------------------------------------------------
-# Helm/Tiller
+# Helm
 # --------------------------------------------------
 
-resource "kubernetes_service_account" "tiller" {
-  metadata {
-    name      = "tiller-sa"
-    namespace = "kube-system"
-  }
-
-  automount_service_account_token = true
-}
-
-resource "kubernetes_cluster_role_binding" "tiller" {
-  metadata {
-    name = "tiller-crb"
-  }
-
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "ClusterRole"
-    name      = "cluster-admin"
-  }
-
-  subject {
-    api_group = ""
-    kind      = "ServiceAccount"
-    name      = kubernetes_service_account.tiller.metadata[0].name
-    namespace = kubernetes_service_account.tiller.metadata[0].namespace
-  }
-
-  depends_on = [kubernetes_service_account.tiller]
-}
-
 provider "helm" {
-  version         = "~> 0.10.4"
-  install_tiller  = true
-  namespace       = kubernetes_cluster_role_binding.tiller.subject[0].namespace
-  service_account = kubernetes_cluster_role_binding.tiller.subject[0].name
+  version         = "~> 1.3.2"
 
   kubernetes {
     host                   = data.aws_eks_cluster.eks.endpoint
