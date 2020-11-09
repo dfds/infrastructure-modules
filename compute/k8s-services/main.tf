@@ -37,12 +37,13 @@ provider "kubernetes" {
 # --------------------------------------------------
 
 provider "helm" {
-  version         = "~> 1.3.2"
+  version = "~> 1.3.2"
 
   kubernetes {
     host                   = data.aws_eks_cluster.eks.endpoint
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
     token                  = data.aws_eks_cluster_auth.eks.token
+    load_config_file       = false
   }
 }
 
@@ -289,9 +290,9 @@ module "cloudwatch_alarm_alb_targets_health" {
 # --------------------------------------------------
 
 module "goldpinger" {
-  source = "../../_sub/compute/helm-goldpinger"
-  deploy = var.monitoring_goldpinger_deploy
-  chart_version = var.monitoring_goldpinger_chart_version
+  source         = "../../_sub/compute/helm-goldpinger"
+  deploy         = var.monitoring_goldpinger_deploy
+  chart_version  = var.monitoring_goldpinger_chart_version
   priority_class = var.monitoring_goldpinger_priority_class
-  namespace = var.monitoring_namespace
+  namespace      = var.monitoring_namespace
 }
