@@ -79,7 +79,6 @@ provider "helm" {
   }
 }
 
-
 # --------------------------------------------------
 # Traefik
 # --------------------------------------------------
@@ -316,4 +315,16 @@ module "cloudwatch_alarm_alb_targets_health" {
   sns_topic_arn                 = module.alarm_notifier.sns_arn
   alb_target_group_arn_suffixes = concat(module.traefik_alb_anon.alb_target_group_arn_suffix, module.traefik_alb_auth.alb_target_group_arn_suffix)
   alb_arn_suffixes              = concat(module.traefik_alb_anon.alb_arn_suffix, module.traefik_alb_auth.alb_arn_suffix)
+}
+
+# --------------------------------------------------
+# Goldpinger
+# --------------------------------------------------
+
+module "goldpinger" {
+  source = "../../_sub/compute/helm-goldpinger"
+  deploy = var.monitoring_goldpinger_deploy
+  chart_version = var.monitoring_goldpinger_chart_version
+  priority_class = var.monitoring_goldpinger_priority_class
+  namespace = var.monitoring_namespace
 }

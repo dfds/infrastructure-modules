@@ -156,7 +156,7 @@ variable "kiam_image_tag" {
   type        = string
   description = "Image tag of KIAM to deploy"
   default     = "v3.5"
-  
+
 }
 
 # --------------------------------------------------
@@ -208,4 +208,32 @@ variable "cloudwatch_alarm_alb_targets_health_deploy" {
 variable "cloudwatch_alarm_alb_5XX_deploy" {
   type     = bool
   default = false
+}
+
+# --------------------------------------------------
+# Goldpinger
+# --------------------------------------------------
+
+variable "monitoring_goldpinger_deploy" {
+  type = bool
+  description = "Deploy goldpinger helm chart switch"
+  default = false
+}
+
+variable "monitoring_goldpinger_chart_version" {
+  type = string
+  description = "Goldpinger helm chart version"
+  default = null
+}
+
+variable "monitoring_goldpinger_priority_class" {
+  type = string
+  description = "Goldpinger daemonset priority class name"
+  default = "cluster-monitoring"
+}
+
+variable "monitoring_namespace" {
+  type = string
+  description = "Namespace that Goldpinger should be deployed in"
+  default = "monitoring"
 }
