@@ -323,8 +323,8 @@ module "cloudwatch_alarm_alb_targets_health" {
 
 module "goldpinger" {
   source = "../../_sub/compute/helm-goldpinger"
-  deploy = var.goldpinger_deploy
-  chart_version = var.goldpinger_chart_version
-  priority_class = var.goldpinger_priority_class
-  namespace = var.goldpinger_namespace
+  deploy = var.monitoring_goldpinger_deploy
+  chart_version = var.monitoring_goldpinger_chart_version
+  priority_class = var.monitoring_goldpinger_priority_class
+  namespace = var.monitoring_namespace
 }
