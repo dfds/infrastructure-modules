@@ -80,15 +80,10 @@ resource "aws_iam_policy_attachment" "server_policy_attach" {
 # Helm
 # --------------------------------------------------
 
-data "helm_repository" "uswitch" {
-  name = "uswitch"
-  url  = "https://uswitch.github.io/kiam-helm-charts/charts"
-}
-
 resource "helm_release" "kiam" {
   count         = var.deploy ? 1 : 0
   name          = "kiam"
-  repository    = data.helm_repository.uswitch.metadata[0].name
+  repository    = "https://uswitch.github.io/kiam-helm-charts/charts"
   namespace     = "kube-system"
   chart         = "kiam"
   recreate_pods = var.recreate_pods
