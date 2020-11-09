@@ -5,8 +5,6 @@ resource "kubernetes_service_account" "deploy-user" {
   }
 
   provider = kubernetes
-
-  depends_on = [var.module_depends_on]
 }
 
 resource "kubernetes_cluster_role_binding" "deploy-user" {
@@ -28,19 +26,21 @@ resource "kubernetes_cluster_role_binding" "deploy-user" {
   }
 
   provider = kubernetes
-
-  depends_on = [var.module_depends_on]
 }
 
-data "external" "get-token" {
-  program = ["sh", "${path.module}/get-token.sh"]
-
-  query = {
-    cluster_name        = var.cluster_name
-    default_secret_name = kubernetes_service_account.deploy-user.default_secret_name
-    kubeconfig_path     = var.kubeconfig_path
+data "kubernetes_secret" "deploy-token" {
+  metadata {
+    name      = kubernetes_service_account.deploy-user.default_secret_name
+    namespace = kubernetes_service_account.deploy-user.metadata[0].namespace
   }
+}
 
-  depends_on = [var.module_depends_on]
-
+data "template_file" "kubeconfig_token" {
+  template = file("${path.module}/kubeconfig-token.yaml")
+  vars = {
+    cluster_name = var.cluster_name
+    endpoint     = var.eks_endpoint
+    ca           = var.eks_certificate_authority
+    token        = data.kubernetes_secret.deploy-token.data.token
+  }
 }
