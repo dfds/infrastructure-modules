@@ -228,8 +228,8 @@ module "eks_heptio" {
 
 module "eks_addons" {
   source                     = "../../_sub/compute/eks-addons"
-  module_depends_on          = [module.eks_heptio.kubeconfig_path] # https://discuss.hashicorp.com/t/tips-howto-implement-module-depends-on-emulation/2305/2
-  kubeconfig_path            = module.eks_heptio.kubeconfig_path
+  depends_on                 = [module.eks_heptio]
+  kubeconfig_path            = local.kubeconfig_path
   cluster_version            = var.eks_cluster_version
   kubeproxy_version_override = var.eks_addon_kubeproxy_version_override
   coredns_version_override   = var.eks_addon_coredns_version_override
@@ -266,10 +266,11 @@ module "eks_s3_public_kubeconfig" {
 
 # What is this even needed for?
 module "k8s_service_account" {
-  source            = "../../_sub/compute/k8s-service-account"
-  module_depends_on = [module.eks_heptio.kubeconfig_path] # https://discuss.hashicorp.com/t/tips-howto-implement-module-depends-on-emulation/2305/2
-  cluster_name      = var.eks_cluster_name
-  kubeconfig_path   = module.eks_heptio.kubeconfig_path
+  source                    = "../../_sub/compute/k8s-service-account"
+  cluster_name              = var.eks_cluster_name
+  eks_endpoint              = module.eks_cluster.eks_endpoint
+  eks_certificate_authority = module.eks_cluster.eks_certificate_authority
+  # eks_certificate_authority = base64decode(module.eks_cluster.eks_certificate_authority)
 }
 
 module "k8s_service_account_store_secret" {
