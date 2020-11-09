@@ -33,3 +33,15 @@ variable "admin_nodeport" {
   description = "Nodeport used by ALB's to connect to the Traefik instance admin page"
   type = number
 }
+
+variable "request_cpu" {
+  type = string
+  description = "(optional) Describes the minimum amount of CPU required"
+  default = "100m"
+}
+
+variable "request_memory" {
+  type = string
+  description = "(optional) Describes the minimum amount of memory required"
+  default = "128Mi"
+}
