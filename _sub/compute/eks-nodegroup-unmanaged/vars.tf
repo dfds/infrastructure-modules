@@ -27,16 +27,6 @@ variable "desired_size_per_subnet" {
   default = 0
 }
 
-variable "min_size_per_subnet" {
-  type    = number
-  default = 0
-}
-
-variable "max_size_per_subnet" {
-  type    = number
-  default = 0
-}
-
 variable "subnet_ids" {
   type = list(string)
 }
@@ -83,4 +73,15 @@ variable "worker_inotify_max_user_watches" {
 variable "kubelet_extra_args" {
   type    = string
   default = ""
+}
+
+variable "is_sandbox" {
+  type        = bool
+  description = "Indicates a sandbox cluster, causing ASG to scale to zero every night"
+  default     = false
+}
+
+variable "scale_to_zero_cron" {
+  type        = string
+  description = "The time when the ASG will be scaled to zero, specified in Unix cron syntax"
 }

@@ -57,38 +57,26 @@ variable "eks_cluster_version" {
   type = string
 }
 
+variable "eks_is_sandbox" {
+  type        = bool
+  description = "Specifies this is a sandbox cluster, which currently just scales ASG to zero every night"
+  default     = false
+}
+
 variable "eks_cluster_zones" {
   default = 2 # Set to the number of AZs Hellman currently uses, to reduce risk of destroying/recreating cluster, until a better solution is in place
 }
 
 variable "eks_cluster_log_types" {
-  type = list(string)
+  type        = list(string)
   description = "A list of the desired control plane logging to enable: api, audit, authenticator, controllerManager, scheduler. See also https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html."
-  default = ["api", "audit", "authenticator"]
+  default     = ["api", "audit", "authenticator"]
 }
 
 variable "eks_cluster_log_retention_days" {
-  type = number
+  type        = number
   description = "Specifies the number of days you want to retain log events in the specified log group. Possible values are: 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653."
-  default = 90 
-}
-
-variable "eks_worker_instance_type" {
-  type = string
-}
-
-variable "eks_worker_instance_min_count" {
-  type    = string
-  default = 0
-}
-
-variable "eks_worker_instance_max_count" {
-  type    = string
-  default = 0
-}
-
-variable "eks_worker_instance_storage_size" {
-  default = 20
+  default     = 90
 }
 
 variable "eks_worker_ssh_public_key" {
@@ -106,6 +94,12 @@ variable "eks_worker_subnets" {
 
 variable "eks_worker_ssh_ip_whitelist" {
   type = list(string)
+}
+
+variable "eks_worker_scale_to_zero_cron" {
+  type        = string
+  description = "The time when the ASG will be scaled to zero, specified in Unix cron syntax"
+  default     = "0 18 * * *"
 }
 
 variable "eks_addon_kubeproxy_version_override" {
@@ -139,6 +133,11 @@ variable "eks_nodegroup1_instance_types" {
   default = []
 }
 
+variable "eks_nodegroup1_disk_size" {
+  type    = number
+  default = 128
+}
+
 variable "eks_nodegroup1_gpu_ami" {
   type    = bool
   default = false
@@ -154,10 +153,6 @@ variable "eks_nodegroup1_desired_size_per_subnet" {
   default = 0
 }
 
-variable "eks_nodegroup1_max_size_per_subnet" {
-  type    = number
-  default = 10
-}
 
 # --------------------------------------------------
 # EKS Nodegroup 2
@@ -166,6 +161,11 @@ variable "eks_nodegroup1_max_size_per_subnet" {
 variable "eks_nodegroup2_instance_types" {
   type    = list(string)
   default = []
+}
+
+variable "eks_nodegroup2_disk_size" {
+  type    = number
+  default = 128
 }
 
 variable "eks_nodegroup2_gpu_ami" {
@@ -183,10 +183,6 @@ variable "eks_nodegroup2_desired_size_per_subnet" {
   default = 0
 }
 
-variable "eks_nodegroup2_max_size_per_subnet" {
-  type    = number
-  default = 10
-}
 
 # --------------------------------------------------
 # Blaster Configmap
