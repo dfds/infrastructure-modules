@@ -23,29 +23,6 @@ variable "aws_workload_account_id" {
 
 
 # --------------------------------------------------
-# Unused variables - to provent TF warning/error:
-# Using a variables file to set an undeclared variable is deprecated and will
-# become an error in a future release. If you wish to provide certain "global"
-# settings to all configurations in your organization, use TF_VAR_...
-# environment variables to set these instead.
-# --------------------------------------------------
-
-variable "workload_dns_zone_name" {
-  type    = string
-  default = ""
-}
-
-# variable "azure_tenant_id" {
-#   type    = string
-#   default = ""
-# }
-
-variable "terraform_state_region" {
-  type    = string
-  default = ""
-}
-
-# --------------------------------------------------
 # EKS
 # --------------------------------------------------
 
@@ -207,3 +184,21 @@ variable "eks_worker_cloudwatch_agent_config_file" {
   default = "aws-cloudwatch-agent-conf.json"
 }
 
+
+# --------------------------------------------------
+# Unused variables - to provent TF warning/error:
+# Using a variables file to set an undeclared variable is deprecated and will
+# become an error in a future release. If you wish to provide certain "global"
+# settings to all configurations in your organization, use TF_VAR_...
+# environment variables to set these instead.
+# --------------------------------------------------
+
+variable "workload_dns_zone_name" {
+  type    = string
+  default = ""
+}
+
+variable "terraform_state_region" {
+  type    = string
+  default = ""
+}
