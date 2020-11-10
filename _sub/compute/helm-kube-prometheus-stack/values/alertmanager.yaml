@@ -1,0 +1,26 @@
+alertmanager:
+  alertmanagerSpec:
+    priorityClassName: ${alertmanager_priorityclass}
+    logFormat: logfmt
+  config:
+    global:
+      resolve_timeout: 5m
+    route:
+      group_by: ['alertname']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: 'general'
+      routes:
+      - match:
+          alertname: Watchdog
+        receiver: 'null'
+    receivers:
+    - name: 'general'
+      slack_configs:
+      - channel: ${alertmanager_slack_channel}
+        send_resolved: true
+        api_url: ${alertmanager_slack_webhook}
+        title: '{{ if eq .CommonLabels.severity "critical" }}<!channel>{{ else }}<!here>{{ end }} {{ .Alerts | len }} alerts - {{ .GroupLabels.alertname }}'
+        text: "{{ range .Alerts }}\n*{{ .Annotations.description }}*\n{{ .Annotations.runbook_url }}\n{{ end }}"
+    - name: 'null'

@@ -285,14 +285,53 @@ module "cloudwatch_alarm_alb_targets_health" {
   alb_arn_suffixes              = concat(module.traefik_alb_anon.alb_arn_suffix, module.traefik_alb_auth.alb_arn_suffix)
 }
 
+
+# --------------------------------------------------
+# Monitoring namespace
+# --------------------------------------------------
+
+resource "kubernetes_namespace" "monitoring" {
+
+  metadata {
+    annotations = {
+    }
+
+    name = "monitoring"
+  }
+}
+
 # --------------------------------------------------
 # Goldpinger
 # --------------------------------------------------
 
-module "goldpinger" {
+module "monitoring_goldpinger" {
   source         = "../../_sub/compute/helm-goldpinger"
   deploy         = var.monitoring_goldpinger_deploy
   chart_version  = var.monitoring_goldpinger_chart_version
   priority_class = var.monitoring_goldpinger_priority_class
-  namespace      = var.monitoring_namespace
+  namespace      = kubernetes_namespace.monitoring.metadata[0].name
+  depends_on = [module.monitoring_kube_prometheus_stack]
 }
+
+# --------------------------------------------------
+# Kube-prometheus-stack
+# --------------------------------------------------
+
+module "monitoring_kube_prometheus_stack" {
+  source = "../../_sub/compute/helm-kube-prometheus-stack"
+  deploy = var.monitoring_kube_prometheus_stack_deploy
+  chart_version = var.monitoring_kube_prometheus_stack_chart_version
+  namespace = kubernetes_namespace.monitoring.metadata[0].name
+  priority_class = var.monitoring_kube_prometheus_stack_priority_class
+  grafana_admin_password = var.monitoring_kube_prometheus_stack_grafana_admin_password
+  grafana_ingress_path = var.monitoring_kube_prometheus_stack_grafana_ingress_path
+  grafana_host = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
+  grafana_notifier_name = var.monitoring_kube_prometheus_stack_grafana_notifier_name
+  slack_webhook = var.monitoring_kube_prometheus_stack_slack_webhook
+  prometheus_storageclass = var.monitoring_kube_prometheus_stack_prometheus_storageclass
+  prometheus_storage_size = var.monitoring_kube_prometheus_stack_prometheus_storage_size
+  prometheus_retention = var.monitoring_kube_prometheus_stack_prometheus_retention
+  slack_channel = var.monitoring_kube_prometheus_stack_slack_channel
+  target_namespaces = var.monitoring_kube_prometheus_stack_target_namespaces
+  }
+
