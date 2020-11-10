@@ -89,20 +89,11 @@ module "eks_workers_security_group" {
   ssh_ip_whitelist         = var.eks_worker_ssh_ip_whitelist
 }
 
+# Is actually only IAM at this point
 module "eks_workers" {
   source                          = "../../_sub/compute/eks-workers"
   cluster_name                    = var.eks_cluster_name
-  cluster_version                 = var.eks_cluster_version
-  eks_endpoint                    = module.eks_cluster.eks_endpoint
-  eks_certificate_authority       = module.eks_cluster.eks_certificate_authority
-  worker_inotify_max_user_watches = var.eks_worker_inotify_max_user_watches
-  autoscale_security_group        = module.eks_cluster.autoscale_security_group
-  subnet_ids                      = module.eks_cluster.subnet_ids
-  security_groups                 = [module.eks_workers_security_group.id]
-  ec2_ssh_key                     = module.eks_workers_keypair.key_name
   cloudwatch_agent_config_bucket  = var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"
-  cloudwatch_agent_config_file    = var.eks_worker_cloudwatch_agent_config_file
-  cloudwatch_agent_enabled        = var.eks_worker_cloudwatch_agent_config_deploy
 }
 
 module "eks_workers_route_table_assoc" {
