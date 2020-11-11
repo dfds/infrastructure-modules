@@ -93,6 +93,7 @@ resource "helm_release" "kiam" {
 
   values = [
     file("kiam_tls.yaml"),
+    file("${path.module}/tolerations.yaml")
   ]
 
   set {
@@ -118,6 +119,16 @@ resource "helm_release" "kiam" {
   set {
     name  = "agent.priorityClassName"
     value = var.priority_class
+  }
+
+  set {
+    name  = "agent.resources.requests.cpu"
+    value = var.agent_request_cpu
+  }
+
+  set {
+    name  = "agent.resources.requests.memory"
+    value = var.agent_request_memory
   }
 
   set {
@@ -163,6 +174,16 @@ resource "helm_release" "kiam" {
   set {
     name  = "server.priorityClassName"
     value = var.priority_class
+  }
+
+  set {
+    name  = "server.resources.requests.cpu"
+    value = var.server_request_cpu
+  }
+
+  set {
+    name  = "server.resources.requests.memory"
+    value = var.server_request_memory
   }
 
   set {
