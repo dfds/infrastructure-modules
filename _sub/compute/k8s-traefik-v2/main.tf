@@ -120,6 +120,13 @@ resource "kubernetes_deployment" "traefik" {
           image = "traefik:v${var.image_version}"
           name  = "traefik"
 
+          resources {
+            requests {
+              cpu    = var.request_cpu
+              memory = var.request_memory
+            }
+          }
+
           volume_mount {
             mount_path = "/var/run/secrets/kubernetes.io/serviceaccount"
             name       = kubernetes_service_account.traefik[0].default_secret_name
