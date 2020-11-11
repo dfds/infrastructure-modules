@@ -70,3 +70,27 @@ variable "priority_class" {
   description = "Name of the Kubernetes priority class pods should use"
   type        = string
 }
+
+variable "agent_request_cpu" {
+  type        = string
+  description = "The minimum of CPU required to run the Agent pod"
+  default     = "10m"
+}
+
+variable "agent_request_memory" {
+  type        = string
+  description = "The minimum of memory required to run the Agent pod"
+  default     = "32Mi"
+}
+
+variable "server_request_cpu" {
+  type        = string
+  description = "The minimum of CPU required to run the Server pod"
+  default     = "20m"
+}
+
+variable "server_request_memory" {
+  type        = string
+  description = "The minimum of memory required to run the Server pod"
+  default     = "128Mi"
+}

@@ -121,6 +121,16 @@ resource "helm_release" "kiam" {
   }
 
   set {
+    name  = "agent.resources.requests.cpu"
+    value = var.agent_request_cpu
+  }
+
+  set {
+    name  = "agent.resources.requests.memory"
+    value = var.agent_request_memory
+  }
+
+  set {
     name  = "agent.whiteListRouteRegexp"
     value = "(^/latest/meta-data/iam/info$)"
   }
@@ -163,6 +173,16 @@ resource "helm_release" "kiam" {
   set {
     name  = "server.priorityClassName"
     value = var.priority_class
+  }
+
+  set {
+    name  = "server.resources.requests.cpu"
+    value = var.server_request_cpu
+  }
+
+  set {
+    name  = "server.resources.requests.memory"
+    value = var.server_request_memory
   }
 
   set {
