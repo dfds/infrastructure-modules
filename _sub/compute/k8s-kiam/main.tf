@@ -93,6 +93,7 @@ resource "helm_release" "kiam" {
 
   values = [
     file("kiam_tls.yaml"),
+    file("${path.module}/tolerations.yaml")
   ]
 
   set {

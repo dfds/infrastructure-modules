@@ -1,0 +1,13 @@
+agent:
+  tolerations:
+    - effect: NoExecute
+      operator: Exists
+    - effect: NoSchedule
+      operator: Exists
+
+server:
+  tolerations:
+    - effect: NoExecute
+      operator: Exists
+    - effect: NoSchedule
+      operator: Exists
