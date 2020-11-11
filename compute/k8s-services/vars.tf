@@ -173,18 +173,6 @@ variable "blaster_namespace_extra_permitted_roles" {
   description = "Additional role names or ARNs that can be assumed from this namespace through KIAM"
 }
 
-# --------------------------------------------------
-# Unused variables - to provent TF warning/error:
-# Using a variables file to set an undeclared variable is deprecated and will
-# become an error in a future release. If you wish to provide certain "global"
-# settings to all configurations in your organization, use TF_VAR_...
-# environment variables to set these instead.
-# --------------------------------------------------
-
-variable "eks_public_s3_bucket" {
-  type    = string
-  default = ""
-}
 
 # --------------------------------------------------
 # Cloudwatch alarms and alarm notifier (Slack)
@@ -236,4 +224,23 @@ variable "monitoring_namespace" {
   type = string
   description = "Namespace that Goldpinger should be deployed in"
   default = "monitoring"
+}
+
+
+# --------------------------------------------------
+# Unused variables - to provent TF warning/error:
+# Using a variables file to set an undeclared variable is deprecated and will
+# become an error in a future release. If you wish to provide certain "global"
+# settings to all configurations in your organization, use TF_VAR_...
+# environment variables to set these instead.
+# --------------------------------------------------
+
+variable "eks_public_s3_bucket" {
+  type    = string
+  default = ""
+}
+
+variable "eks_is_sandbox" {
+  type        = bool
+  default     = false
 }
