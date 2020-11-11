@@ -69,6 +69,12 @@ resource "kubernetes_deployment" "traefik" {
       }
     }
 
+    strategy {
+      rolling_update {
+        max_unavailable = 1 # Default is 25%. With 3 replicas, due to anti-affinity, this means the pods cannot be scheduled, when the deployment is updated
+      }
+    }
+
     template {
       metadata {
         labels = {
