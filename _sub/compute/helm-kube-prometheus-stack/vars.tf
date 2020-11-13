@@ -64,3 +64,8 @@ variable "target_namespaces" {
   type        = string
   description = "Filter on namespaces"
 }
+
+variable "alertmanager_silence_namespaces" {
+  type = string
+  description = "Silence namespaces"
+}
