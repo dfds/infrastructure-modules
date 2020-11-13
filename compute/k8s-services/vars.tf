@@ -297,7 +297,7 @@ variable "monitoring_kube_prometheus_stack_prometheus_storage_size" {
 variable "monitoring_kube_prometheus_stack_prometheus_retention" {
   type        = string
   description = "Promehteus retention"
-  default     = "7d"
+  default     = "30d"
 }
 
 variable "monitoring_kube_prometheus_stack_slack_channel" {

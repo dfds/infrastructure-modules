@@ -28,7 +28,7 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.eks.token
   load_config_file = false
-  # config_path      = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allow when importing into state
+  # config_path      = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allowed when importing into state (remember to flip above bool to load config)
 }
 
 # provider "azuread" {}
@@ -45,7 +45,7 @@ provider "helm" {
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
     token                  = data.aws_eks_cluster_auth.eks.token
     load_config_file       = false
-    # config_path      = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allow when importing into state
+    # config_path      = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allowed when importing into state (remember to flip above bool to load config)
   }
 }
 
