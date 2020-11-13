@@ -16,7 +16,7 @@ alertmanager:
           alertname: Watchdog
         receiver: 'null'
       - match_re:
-        namespace: ${alertmanager_silence_namespaces}
+          namespace: ${alertmanager_silence_namespaces}
         receiver: 'null'
       - match:
           alertname: AggregatedAPIDown
