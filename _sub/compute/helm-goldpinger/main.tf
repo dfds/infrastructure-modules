@@ -5,6 +5,7 @@ resource "helm_release" "goldpinger" {
   version       = var.chart_version != null ? var.chart_version : null
   namespace     = var.namespace
   recreate_pods = true
+  force_update  = true
 
   set {
     name  = "priorityClassName"
