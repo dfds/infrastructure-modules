@@ -1,0 +1,5 @@
+defaultRules:
+  rules:
+    etcd: false
+    kubeScheduler: false
+  appNamespacesTarget: ${target_namespaces}

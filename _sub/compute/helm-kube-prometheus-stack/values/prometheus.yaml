@@ -1,0 +1,28 @@
+prometheus:
+  additionalServiceMonitors:
+    - name: "monitoring-metrics"
+      additionalLabels:
+        release: monitoring
+      selector:
+        matchLabels:
+          scrape-service-metrics: "true"
+      namespaceSelector:
+        any: true
+      endpoints:
+      - path: /metrics
+        port: metrics
+      - path: /metrics
+        port: admin
+      - path: /metrics
+        port: http
+  prometheusSpec:
+    priorityClassName: ${prometheus_priorityclass}
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: ${prometheus_storageclass}
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: ${prometheus_storage_size}
+    retention: ${prometheus_retention}
