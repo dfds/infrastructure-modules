@@ -36,4 +36,8 @@ resource "helm_release" "goldpinger" {
     name  = "resources.requests.memory"
     value = "50Mi"
   }
+
+  values = [
+    file("${path.module}/tolerations.yaml")
+  ]
 }
