@@ -5,6 +5,7 @@ resource "helm_release" "kube_prometheus_stack" {
   version       = var.chart_version != null ? var.chart_version : null
   namespace     = var.namespace
   recreate_pods = true
+  force_update  = true
 
   values = [
     templatefile("${path.module}/values/components.yaml", {
