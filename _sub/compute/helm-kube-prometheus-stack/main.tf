@@ -30,6 +30,7 @@ resource "helm_release" "kube_prometheus_stack" {
       alertmanager_priorityclass = var.priority_class
       alertmanager_slack_channel = var.slack_channel
       alertmanager_slack_webhook = var.slack_webhook
+      alertmanager_silence_namespaces = var.alertmanager_silence_namespaces
     }),
     templatefile("${path.module}/values/rules.yaml", {
       target_namespaces = var.target_namespaces

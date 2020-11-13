@@ -312,6 +312,12 @@ variable "monitoring_kube_prometheus_stack_target_namespaces" {
   default     = ".*"
 }
 
+variable "monitoring_alertmanager_silence_namespaces" {
+  type = string
+  description = "Silence noisy namespaces via alertmanager"
+  default = ""
+}
+
 # --------------------------------------------------
 # Unused variables - to provent TF warning/error:
 # Using a variables file to set an undeclared variable is deprecated and will
