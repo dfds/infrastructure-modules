@@ -81,6 +81,12 @@ resource "kubernetes_deployment" "traefik" {
       }
     }
 
+    strategy {
+      rolling_update {
+        max_unavailable = 1 # Default is 25%. With 3 replicas, due to anti-affinity, this means the pods cannot be scheduled, when the deployment is updated
+      }
+    }
+
     template {
       metadata {
         labels = {
@@ -119,6 +125,13 @@ resource "kubernetes_deployment" "traefik" {
         container {
           image = "traefik:v${var.image_version}"
           name  = "traefik"
+
+          resources {
+            requests {
+              cpu    = var.request_cpu
+              memory = var.request_memory
+            }
+          }
 
           volume_mount {
             mount_path = "/var/run/secrets/kubernetes.io/serviceaccount"

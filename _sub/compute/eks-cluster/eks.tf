@@ -21,6 +21,9 @@ resource "aws_eks_cluster" "eks" {
     aws_iam_role_policy_attachment.service,
   ]
 
+  # The AWS API will return OK before the Kubernetes cluster is actually available
+  # Wait an arbitrary amount of time for cluster to become ready
+  # Workaround for https://github.com/aws/containers-roadmap/issues/654"
   provisioner "local-exec" {
     command = "sleep ${var.sleep_after}"
   }

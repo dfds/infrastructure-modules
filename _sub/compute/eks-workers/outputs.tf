@@ -13,8 +13,3 @@ output "worker_role_arn" {
 output "iam_instance_profile_name" {
   value = aws_iam_instance_profile.eks.name
 }
-
-output "autoscaling_group_id" {
-  value = aws_autoscaling_group.eks.id
-}
-
