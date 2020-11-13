@@ -1,0 +1,6 @@
+prometheus-node-exporter:
+  resources:
+    requests:
+      cpu: 20m
+      memory: 50Mi
+  priorityClassName: ${prometheus_node_exporter_priorityclass}

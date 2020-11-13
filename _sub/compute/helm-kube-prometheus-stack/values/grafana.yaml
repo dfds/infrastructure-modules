@@ -1,4 +1,8 @@
 grafana:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 200Mi
   adminPassword: ${grafana_admin_password}
   priorityClassName: ${grafana_priorityclass}
   ingress:

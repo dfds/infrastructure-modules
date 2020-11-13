@@ -22,5 +22,5 @@ alertmanager:
         send_resolved: true
         api_url: ${alertmanager_slack_webhook}
         title: '{{ if eq .CommonLabels.severity "critical" }}<!channel>{{ else }}<!here>{{ end }} {{ .Alerts | len }} alerts - {{ .GroupLabels.alertname }}'
-        text: "{{ range .Alerts }}\n*{{ .Annotations.description }}*\n{{ .Annotations.runbook_url }}\n{{ end }}"
+        text: "{{ range .Alerts }}\n*{{ .Annotations.description }}*\n*{{ .Annotations.message }}*\n*{{ .Labels.severity }}*\n{{ .Annotations.runbook_url }}\n{{ end }}"
     - name: 'null'

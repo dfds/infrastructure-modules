@@ -1,0 +1,6 @@
+kube-state-metrics:
+  resources:
+    requests:
+      cpu: 20m
+      memory: 100Mi
+  priorityClassName: ${kube_state_metrics_priorityclass}

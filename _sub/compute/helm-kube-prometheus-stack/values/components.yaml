@@ -9,9 +9,3 @@ kubeControllerManager:
 
 kubeProxy:
   enabled: false
-
-prometheus-node-exporter:
-  priorityClassName: ${prometheus_node_exporter_priorityclass}
-
-kube-state-metrics:
-  priorityClassName: ${kube_state_metrics_priorityclass}

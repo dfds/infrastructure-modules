@@ -196,18 +196,34 @@ variable "slack_webhook_url" {
 }
 
 variable "alarm_notifier_deploy" {
-  type     = bool
+  type    = bool
   default = false
 }
 
 variable "cloudwatch_alarm_alb_targets_health_deploy" {
-  type     = bool
+  type    = bool
   default = false
 }
 
 variable "cloudwatch_alarm_alb_5XX_deploy" {
-  type     = bool
+  type    = bool
   default = false
+}
+
+# --------------------------------------------------
+# Monitoring namespace
+# --------------------------------------------------
+
+variable "monitoring_namespace_deploy" {
+  type        = bool
+  description = "Deploy monitoring namespace"
+  default     = false
+}
+
+variable "monitoring_namespace_iam_roles" {
+  type        = string
+  description = "IAM roles allowed to assume"
+  default     = ""
 }
 
 # --------------------------------------------------
@@ -215,21 +231,21 @@ variable "cloudwatch_alarm_alb_5XX_deploy" {
 # --------------------------------------------------
 
 variable "monitoring_goldpinger_deploy" {
-  type = bool
+  type        = bool
   description = "Deploy goldpinger helm chart switch"
-  default = false
+  default     = false
 }
 
 variable "monitoring_goldpinger_chart_version" {
-  type = string
+  type        = string
   description = "Goldpinger helm chart version"
-  default = null
+  default     = null
 }
 
 variable "monitoring_goldpinger_priority_class" {
-  type = string
+  type        = string
   description = "Goldpinger daemonset priority class name"
-  default = "cluster-monitoring"
+  default     = "cluster-monitoring"
 }
 
 # --------------------------------------------------
@@ -237,79 +253,73 @@ variable "monitoring_goldpinger_priority_class" {
 # --------------------------------------------------
 
 variable "monitoring_kube_prometheus_stack_deploy" {
-  type = bool
+  type        = bool
   description = "Deploy kube-prometheus-stack helm chart switch"
-  default = false
+  default     = false
 }
 
 variable "monitoring_kube_prometheus_stack_chart_version" {
-  type = string
+  type        = string
   description = "Kube-prometheus-stack helm chart version"
-  default = null
+  default     = null
 }
 
 variable "monitoring_kube_prometheus_stack_priority_class" {
-  type = string
+  type        = string
   description = "Kube-prometheus-stack components priority class name"
-  default = "cluster-monitoring"
+  default     = "cluster-monitoring"
 }
 
 variable "monitoring_kube_prometheus_stack_grafana_admin_password" {
-  type = string
+  type        = string
   description = "Grafana admin password"
-  default = "HelloWorld"
+  default     = "HelloWorld"
 }
 
 variable "monitoring_kube_prometheus_stack_grafana_ingress_path" {
-  type = string
+  type        = string
   description = "Grafana ingress path"
-  default = "/infrastructure"
+  default     = "/infrastructure"
 }
 
-# variable "monitoring_kube_prometheus_stack_grafana_host" {
-#   type = string
-#   description = "Grafana ingress host"
-#   default = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
-# }
-
 variable "monitoring_kube_prometheus_stack_grafana_notifier_name" {
-  type = string
+  type        = string
   description = "Grafana alert notifier name"
-  default = ""
+  default     = "notifier1"
 }
 
 variable "monitoring_kube_prometheus_stack_slack_webhook" {
-  type = string
+  type        = string
   description = "Kube-prometheus-stack alert slack webhook"
-  default = ""
+  default     = ""
 }
 
 variable "monitoring_kube_prometheus_stack_prometheus_storageclass" {
-  type = string
+  type        = string
   description = "Prometheus storage class"
-  default = "gp2"
+  default     = "gp2"
 }
 
 variable "monitoring_kube_prometheus_stack_prometheus_storage_size" {
-  type = string
+  type        = string
   description = "Promehteus storage size"
-  default = "200Gi"
+  default     = "50Gi"
 }
 
 variable "monitoring_kube_prometheus_stack_prometheus_retention" {
-  type = string
+  type        = string
   description = "Promehteus retention"
-  default = "30d"
+  default     = "7d"
 }
 
 variable "monitoring_kube_prometheus_stack_slack_channel" {
-  type = string
+  type        = string
   description = "Kube-prometheus-stack alert slack channel"
-  default = ""
+  default     = ""
 }
 
 variable "monitoring_kube_prometheus_stack_target_namespaces" {
-  type = string
+  type        = string
   description = "Alert target namespaces filter"
-  default = ".*"
+  default     = ".*"
 }
