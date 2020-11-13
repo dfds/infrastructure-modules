@@ -5,7 +5,7 @@ resource "helm_release" "kube_prometheus_stack" {
   version       = var.chart_version != null ? var.chart_version : null
   namespace     = var.namespace
   recreate_pods = true
-  force_update  = true
+  force_update  = false
 
   values = [
     templatefile("${path.module}/values/components.yaml", {
@@ -25,7 +25,6 @@ resource "helm_release" "kube_prometheus_stack" {
       prometheus_storageclass  = var.prometheus_storageclass
       prometheus_storage_size  = var.prometheus_storage_size
       prometheus_retention     = var.prometheus_retention
-
     }),
     templatefile("${path.module}/values/alertmanager.yaml", {
       alertmanager_priorityclass = var.priority_class
