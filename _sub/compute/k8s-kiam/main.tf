@@ -86,20 +86,16 @@ resource "helm_release" "kiam" {
   repository    = "https://uswitch.github.io/kiam-helm-charts/charts"
   namespace     = "kube-system"
   chart         = "kiam"
+  version       = var.chart_version
   recreate_pods = var.recreate_pods
   force_update  = var.force_update
-
+ 
   # See: https://github.com/uswitch/kiam/tree/master/helm/kiam
 
   values = [
     file("kiam_tls.yaml"),
     file("${path.module}/tolerations.yaml")
   ]
-
-  set {
-    name  = "agent.image.tag"
-    value = var.image_tag
-  }
 
   set {
     name  = "agent.deepLivenessProbe"
@@ -150,11 +146,6 @@ resource "helm_release" "kiam" {
   #   name = "agent.podLabels.\"slack\""
   #   value = "dev-excellence"
   # }
-
-  set {
-    name  = "server.image.tag"
-    value = var.image_tag
-  }
 
   set {
     name  = "server.gatewayTimeoutCreation"

@@ -13,11 +13,6 @@ variable "cluster_name" {
 variable "worker_role_id" {
 }
 
-variable "image_tag" {
-  type        = string
-  description = "Image tag of KIAM to deploy"
-}
-
 variable "force_update" {
   type        = bool
   description = "(optional) Force resource update through delete/recreate if needed."
@@ -93,4 +88,10 @@ variable "server_request_memory" {
   type        = string
   description = "The minimum of memory required to run the Server pod"
   default     = "128Mi"
+}
+
+variable "chart_version" {
+  type        = string
+  description = "KIAM helm chart version"
+  default     = null
 }
