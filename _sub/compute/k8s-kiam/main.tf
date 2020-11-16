@@ -86,7 +86,7 @@ resource "helm_release" "kiam" {
   repository    = "https://uswitch.github.io/kiam-helm-charts/charts"
   namespace     = "kube-system"
   chart         = "kiam"
-  version       = var.chart_version != null ? var.chart_version : null
+  version       = var.chart_version
   recreate_pods = var.recreate_pods
   force_update  = var.force_update
  
