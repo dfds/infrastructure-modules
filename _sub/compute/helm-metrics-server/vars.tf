@@ -6,6 +6,6 @@ variable "chart_version" {
 
 variable "namespace" {
   type        = string
-  description = "Namespace to apply Kube-prometheus-stack in"
+  description = "Namespace to apply metrics-server in"
   default     = "monitoring"
 }
