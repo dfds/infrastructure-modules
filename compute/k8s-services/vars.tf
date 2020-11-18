@@ -323,7 +323,7 @@ variable "monitoring_alertmanager_silence_namespaces" {
 
 variable "monitoring_metrics_server_deploy" {
   type        = bool
-  description = "Deploy metrics-server helm chart switch"
+  description = "Deploy metrics-server helm chart switch. If setting to true, monitoring_namespace_deploy must also be set to true"
   default     = false
 }
 
