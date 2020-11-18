@@ -62,8 +62,8 @@ resource "aws_autoscaling_group" "eks" {
 
 
 resource "aws_autoscaling_schedule" "eks" {
-  count                  = var.is_sandbox && length(var.instance_types) > 0 ? 1 : 0
-  autoscaling_group_name = aws_autoscaling_group.eks[0].name
+  count                  = var.is_sandbox && length(var.instance_types) > 0 ? length(var.subnet_ids) : 0
+  autoscaling_group_name = aws_autoscaling_group.eks[count.index].name
   scheduled_action_name  = "Scale to zero"
   recurrence             = var.scale_to_zero_cron
   min_size               = local.asg_min_size

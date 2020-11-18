@@ -53,54 +53,71 @@ POLICY
 {
 	"Version": "2012-10-17",
 	"Statement": [
-		{
+        {
+            "Sid": "DenyIAMUpdatesManagedUsers",
+            "Effect": "Deny",
+            "Action": [
+                "iam:AttachUserPolicy",
+                "iam:CreateAccessKey", 
+                "iam:DeleteAccessKey",
+                "iam:DeleteUserPolicy",
+                "iam:DetachUserPolicy",
+                "iam:PutUserPolicy",
+                "iam:TagUser",
+                "iam:UntagUser",
+                "iam:UpdateAccessKey"
+            ],
+            "Resource": [
+                "arn:aws:iam::*:user/Deploy",
+                "arn:aws:iam::*:user/managed/*"
+            ],
+            "Condition": {
+                "StringNotLike": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/OrgRole"
+                    ]
+                }
+            }
+        },		{
 			"Sid": "DenyIAM",
 			"Effect": "Deny",
 			"Action": [
+				"iam:AddClientIDToOpenIDConnectProvider",
+				"iam:AddUserToGroup",
+				"iam:AttachGroupPolicy",
+				"iam:ChangePassword",
+				"iam:CreateAccountAlias",
+				"iam:CreateGroup",
+				"iam:CreateLoginProfile",
+				"iam:CreateOpenIDConnectProvider",
 				"iam:CreateSAMLProvider",
 				"iam:CreateUser",
-				"iam:CreateGroup",
-				"iam:CreateAccountAlias",
-				"iam:UpdateUser",
-				"iam:UpdateGroup",
-				"iam:UpdateSAMLProvider",
+				"iam:CreateVirtualMFADevice",
+				"iam:DeactivateMFADevice",
 				"iam:DeleteAccountAlias",
 				"iam:DeleteAccountPasswordPolicy",
 				"iam:DeleteGroup",
-				"iam:DeleteSAMLProvider",
-				"iam:DeleteUser",
-				"iam:UpdateAccountPasswordPolicy",
-				"iam:RemoveUserFromGroup",
-				"iam:AttachGroupPolicy",
-				"iam:AddUserToGroup",
 				"iam:DeleteGroupPolicy",
-				"iam:DetachGroupPolicy",
-				"iam:DetachUserPolicy",
-				"iam:DeleteUserPolicy",
-				"iam:DeleteUserPermissionsBoundary",
-				"iam:TagUser",
-				"iam:UntagUser",
-				"iam:UpdateAccessKey",
-				"iam:UpdateLoginProfile",
-				"iam:UpdateOpenIDConnectProviderThumbprint",
-				"iam:AddClientIDToOpenIDConnectProvider",
-				"iam:CreateAccessKey",
-				"iam:ChangePassword",
-				"iam:AttachUserPolicy",
-				"iam:CreateLoginProfile",
-				"iam:CreateOpenIDConnectProvider",
-				"iam:CreateVirtualMFADevice",
-				"iam:DeactivateMFADevice",
-				"iam:DeleteAccessKey",
 				"iam:DeleteLoginProfile",
 				"iam:DeleteOpenIDConnectProvider",
+				"iam:DeleteSAMLProvider",
+				"iam:DeleteUser",
+				"iam:DeleteUserPermissionsBoundary",
+				"iam:DeleteUserPolicy",
 				"iam:DeleteVirtualMFADevice",
+				"iam:DetachGroupPolicy",
 				"iam:EnableMFADevice",
-				"iam:PutUserPermissionsBoundary",
 				"iam:PutGroupPolicy",
-				"iam:PutUserPolicy",
+				"iam:PutUserPermissionsBoundary",
 				"iam:RemoveClientIDFromOpenIDConnectProvider",
-				"iam:ResyncMFADevice"
+				"iam:RemoveUserFromGroup",
+				"iam:ResyncMFADevice",
+				"iam:UpdateAccountPasswordPolicy",
+				"iam:UpdateGroup",
+				"iam:UpdateLoginProfile",
+				"iam:UpdateOpenIDConnectProviderThumbprint",
+				"iam:UpdateSAMLProvider",
+				"iam:UpdateUser"
 			],
 			"Resource": [
 				"*"

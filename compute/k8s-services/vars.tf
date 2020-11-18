@@ -152,11 +152,10 @@ variable "kiam_deploy" {
   default = false
 }
 
-variable "kiam_image_tag" {
+variable "kiam_chart_version" {
   type        = string
-  description = "Image tag of KIAM to deploy"
-  default     = "v3.5"
-
+  description = "KIAM helm chart version"
+  default     = null
 }
 
 # --------------------------------------------------
