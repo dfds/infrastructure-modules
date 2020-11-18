@@ -319,6 +319,28 @@ variable "monitoring_alertmanager_silence_namespaces" {
 }
 
 # --------------------------------------------------
+# Metrics-Server
+# --------------------------------------------------
+
+variable "monitoring_metrics_server_deploy" {
+  type        = bool
+  description = "Deploy kube-prometheus-stack helm chart switch"
+  default     = false
+}
+
+variable "monitoring_metrics_server_chart_version" {
+  type        = string
+  description = "metrics-server helm chart version"
+  default     = null
+}
+
+variable "monitoring_metrics_server_chart_namespace" {
+  type        = string
+  description = "Namespace to apply Kube-prometheus-stack in"
+  default     = "monitoring"
+}
+
+# --------------------------------------------------
 # Unused variables - to provent TF warning/error:
 # Using a variables file to set an undeclared variable is deprecated and will
 # become an error in a future release. If you wish to provide certain "global"
