@@ -323,7 +323,7 @@ variable "monitoring_alertmanager_silence_namespaces" {
 
 variable "monitoring_metrics_server_deploy" {
   type        = bool
-  description = "Deploy kube-prometheus-stack helm chart switch"
+  description = "Deploy metrics-server helm chart switch"
   default     = false
 }
 
@@ -335,7 +335,7 @@ variable "monitoring_metrics_server_chart_version" {
 
 variable "monitoring_metrics_server_chart_namespace" {
   type        = string
-  description = "Namespace to apply Kube-prometheus-stack in"
+  description = "Namespace to apply metrics-server in"
   default     = "monitoring"
 }
 
