@@ -1,0 +1,1 @@
+args: ["--kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname"]
