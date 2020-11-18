@@ -1,7 +1,7 @@
 resource "helm_release" "goldpinger" {
   name          = "goldpinger"
   chart         = "goldpinger"
-  repository    = "https://kubernetes-charts.storage.googleapis.com"
+  repository    = "https://charts.helm.sh/stable"
   version       = var.chart_version != null ? var.chart_version : null
   namespace     = var.namespace
   recreate_pods = true
