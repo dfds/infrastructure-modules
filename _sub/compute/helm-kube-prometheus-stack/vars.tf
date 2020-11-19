@@ -38,6 +38,7 @@ variable "grafana_notifier_name" {
 variable "slack_webhook" {
   type        = string
   description = "Alert Slack webhook"
+  default     = ""
 }
 
 variable "prometheus_storageclass" {
@@ -58,6 +59,7 @@ variable "prometheus_retention" {
 variable "slack_channel" {
   type        = string
   description = "Alert Slack channel"
+  default     = ""
 }
 
 variable "target_namespaces" {
@@ -66,6 +68,6 @@ variable "target_namespaces" {
 }
 
 variable "alertmanager_silence_namespaces" {
-  type = string
+  type        = string
   description = "Silence namespaces"
 }
