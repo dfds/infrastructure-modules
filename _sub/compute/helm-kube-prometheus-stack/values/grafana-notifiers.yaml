@@ -1,0 +1,19 @@
+grafana:
+  notifiers:
+    notifiers.yaml:
+      notifiers:
+        - name: ${grafana_notifier_name}
+          type: slack
+          uid: notifier1
+          org_id: 1
+          is_default: true
+          send_reminder: true
+          frequency: 24h
+          disable_resolve_message: false
+          # See  section for settings supporter for each
+          # alert notification type.
+          settings:
+            recipient: ${grafana_slack_notifier_channel}
+            uploadImage: true
+            url: ${grafana_slack_webhook}
+            username: alertbot
