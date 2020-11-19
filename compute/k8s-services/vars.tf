@@ -318,6 +318,28 @@ variable "monitoring_alertmanager_silence_namespaces" {
 }
 
 # --------------------------------------------------
+# Metrics-Server
+# --------------------------------------------------
+
+variable "monitoring_metrics_server_deploy" {
+  type        = bool
+  description = "Deploy metrics-server helm chart switch. If setting to true, monitoring_namespace_deploy must also be set to true"
+  default     = false
+}
+
+variable "monitoring_metrics_server_chart_version" {
+  type        = string
+  description = "metrics-server helm chart version"
+  default     = null
+}
+
+variable "monitoring_metrics_server_chart_namespace" {
+  type        = string
+  description = "Namespace to apply metrics-server in"
+  default     = "monitoring"
+}
+
+# --------------------------------------------------
 # Unused variables - to provent TF warning/error:
 # Using a variables file to set an undeclared variable is deprecated and will
 # become an error in a future release. If you wish to provide certain "global"

@@ -335,3 +335,13 @@ module "monitoring_kube_prometheus_stack" {
   alertmanager_silence_namespaces = var.monitoring_alertmanager_silence_namespaces
 }
 
+# --------------------------------------------------
+# Metrics-Server
+# --------------------------------------------------
+
+module "monitoring_metrics_server" {
+  source         = "../../_sub/compute/helm-metrics-server"
+  count          = var.monitoring_metrics_server_deploy && var.monitoring_namespace_deploy ? 1 : 0
+  chart_version  = var.monitoring_metrics_server_chart_version
+  namespace      = module.monitoring_namespace[0].name
+}
