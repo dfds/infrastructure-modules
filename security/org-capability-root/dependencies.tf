@@ -15,6 +15,8 @@ locals {
                 "aws-portal:View*",
                 "budgets:*",
 				"ce:Describe*",
+				"ce:Get*",
+				"ce:List*",
                 "cloudfront:*",
                 "cloudwatch:Get*",
                 "cloudwatch:List*",
