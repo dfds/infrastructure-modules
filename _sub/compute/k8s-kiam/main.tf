@@ -98,6 +98,11 @@ resource "helm_release" "kiam" {
   ]
 
   set {
+    name  = "agent.allowRouteRegexp"
+    value = "(^/latest/meta-data/iam/info$)"
+  }
+
+  set {
     name  = "agent.deepLivenessProbe"
     value = var.agent_deep_liveness
   }
@@ -105,6 +110,16 @@ resource "helm_release" "kiam" {
   set {
     name  = "agent.gatewayTimeoutCreation"
     value = var.agent_gateway_timeout
+  }
+
+  set {
+    name  = "agent.host.interface"
+    value = "eni+"
+  }
+
+  set {
+    name  = "agent.host.iptables"
+    value = "true"
   }
 
   set {
@@ -127,25 +142,15 @@ resource "helm_release" "kiam" {
     value = var.agent_request_memory
   }
 
-  set {
-    name  = "agent.whiteListRouteRegexp"
-    value = "(^/latest/meta-data/iam/info$)"
-  }
-
-  set {
-    name  = "agent.host.iptables"
-    value = "true"
-  }
-
-  set {
-    name  = "agent.host.interface"
-    value = "eni+"
-  }
-
   # set {
   #   name = "agent.podLabels.\"slack\""
   #   value = "dev-excellence"
   # }
+
+  set {
+    name  = "server.assumeRoleArn"
+    value = "arn:aws:iam::${var.aws_workload_account_id}:role/eks-${var.cluster_name}-kiam-server"
+  }
 
   set {
     name  = "server.gatewayTimeoutCreation"
@@ -158,13 +163,13 @@ resource "helm_release" "kiam" {
   }
 
   set {
-    name  = "server.readinessProbe.timeoutSeconds"
-    value = var.server_readiness_timeout
+    name  = "server.priorityClassName"
+    value = var.priority_class
   }
 
   set {
-    name  = "server.priorityClassName"
-    value = var.priority_class
+    name  = "server.readinessProbe.timeoutSeconds"
+    value = var.server_readiness_timeout
   }
 
   set {
@@ -178,18 +183,13 @@ resource "helm_release" "kiam" {
   }
 
   set {
-    name  = "server.sslCertHostPath"
-    value = "/etc/pki/ca-trust/extracted/pem"
-  }
-
-  set {
     name  = "server.roleBaseArn"
     value = "arn:aws:iam::${var.aws_workload_account_id}:role/"
   }
 
   set {
-    name  = "server.assumeRoleArn"
-    value = "arn:aws:iam::${var.aws_workload_account_id}:role/eks-${var.cluster_name}-kiam-server"
+    name  = "server.sslCertHostPath"
+    value = "/etc/pki/ca-trust/extracted/pem"
   }
 
   set {
