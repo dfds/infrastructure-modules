@@ -27,8 +27,8 @@ provider "kubernetes" {
   host                   = data.aws_eks_cluster.eks.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.eks.token
-  load_config_file = false
-  # config_path      = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allowed when importing into state (remember to flip above bool to load config)
+  #load_config_file = false
+  #config_path      = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allowed when importing into state (remember to flip above bool to load config)
 }
 
 # provider "azuread" {}
@@ -44,8 +44,8 @@ provider "helm" {
     host                   = data.aws_eks_cluster.eks.endpoint
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
     token                  = data.aws_eks_cluster_auth.eks.token
-    load_config_file       = false
-    # config_path      = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allowed when importing into state (remember to flip above bool to load config)
+    #load_config_file       = false
+    #config_path      = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allowed when importing into state (remember to flip above bool to load config)
   }
 }
 
@@ -311,6 +311,20 @@ module "monitoring_goldpinger" {
   namespace      = module.monitoring_namespace[0].name
   depends_on     = [module.monitoring_kube_prometheus_stack]
 }
+
+# --------------------------------------------------
+# aws-ebs-csi-driver
+# --------------------------------------------------
+
+module "aws-ebs-csi-driver" {
+  source         = "../../_sub/compute/helm-aws-ebs-csi-driver"
+  count          = var.aws_ebs_csi_driver_deploy ? 1 : 0
+  chart_version  = var.aws_ebs_csi_driver_chart_version
+  rolename       = "eks-alderan-node" # To do: We need to create this role and ensure it's referenced here
+  cluster_name   = var.eks_cluster_name
+  aws_workload_account_id = var.aws_workload_account_id
+}
+
 
 # --------------------------------------------------
 # Kube-prometheus-stacktw

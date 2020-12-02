@@ -340,6 +340,22 @@ variable "monitoring_metrics_server_chart_namespace" {
 }
 
 # --------------------------------------------------
+# AWS EBS CSI Driver
+# --------------------------------------------------
+
+variable "aws_ebs_csi_driver_deploy" {
+  type        = bool
+  description = "Deploy aws-ebs-csi-driver helm chart switch"
+  default     = false
+}
+
+variable "aws_ebs_csi_driver_chart_version" {
+  type        = string
+  description = "aws-ebs-csi-driver helm chart version"
+  default     = null
+}
+
+# --------------------------------------------------
 # Unused variables - to provent TF warning/error:
 # Using a variables file to set an undeclared variable is deprecated and will
 # become an error in a future release. If you wish to provide certain "global"
