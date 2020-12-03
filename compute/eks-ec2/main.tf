@@ -91,9 +91,9 @@ module "eks_workers_security_group" {
 
 # Is actually only IAM at this point
 module "eks_workers" {
-  source                          = "../../_sub/compute/eks-workers"
-  cluster_name                    = var.eks_cluster_name
-  cloudwatch_agent_config_bucket  = var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"
+  source                         = "../../_sub/compute/eks-workers"
+  cluster_name                   = var.eks_cluster_name
+  cloudwatch_agent_config_bucket = var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"
 }
 
 module "eks_workers_route_table_assoc" {
@@ -298,4 +298,16 @@ module "k8s_cloudengineer_clusterrole_and_binding" {
       verbs      = ["patch"]
     }
   ]
+}
+
+# Annotate the kube-system namespace so that KIAM allows the traffic needed by the EBS CSI Driver
+# This annotation is always applied.  The decision to allow this was taken on the basis that the annotation
+# is a lightweight element with little cost.  If we wished to have it defined based on a feature toggle
+# then it would create additional complexity and require that the toggle variable exist in two places,
+# thus leading to confusion  
+module "kube_system_namespace" {
+  source          = "../../_sub/compute/k8s-annotate-namespace"
+  namespace       = "kube-system"
+  kubeconfig_path = local.kubeconfig_path
+  annotations     = { "iam.amazonaws.com/permitted" = "eks-${var.eks_cluster_name}-csi" }
 }

@@ -1,5 +1,5 @@
+# define IAM policy for the CSI Driver to utilise
 resource "aws_iam_policy" "csi_driver_policy" {
-  #count       = var.deploy ? 1 : 0
   name        = "Amazon_EBS_CSI_Driver_${var.cluster_name}"
   description = "Policy for the EKS CSI Driver process"
 
@@ -34,8 +34,8 @@ EOF
 
 }
 
+# define IAM role for the CSI Driver to utilise, including a trust relationship for the KAIM Server role
 resource "aws_iam_role" "csi_driver_role" {
-  #count       = var.deploy ? 1 : 0
   name        = "eks-${var.cluster_name}-csi"
   description = "Role the EKS CSI Driver process assumes"
 
@@ -47,29 +47,23 @@ resource "aws_iam_role" "csi_driver_role" {
       "Sid": "",
       "Effect": "Allow",
       "Principal": {
-        "AWS": "arn:aws:iam::${var.aws_workload_account_id}:role/eks-${var.cluster_name}-kiam-server"
+        "AWS": "${var.kiam_server_role_arn}"
       },
       "Action": "sts:AssumeRole"
     }
   ]
 }
 EOF
-
+    
 }
 
-# Link the CSI Driver Policy to the newly defined CSI Driver Role
+# link the CSI Driver Policy to the newly defined CSI Driver Role
 resource "aws_iam_role_policy_attachment" "test-attach" {
   role       = aws_iam_role.csi_driver_role.name
   policy_arn = aws_iam_policy.csi_driver_policy.arn
 }
 
-# module "kube_system_namespace" {
-#   source    = "../k8s-namespace"
-#   count     = 1 #var.monitoring_namespace_deploy ? 1 : 0
-#   name      = "kube-system"
-#   iam_roles = aws_iam_role.csi_driver_role.name
-# }
-
+# helm chart deployment for the CSI driver
 resource "helm_release" "aws-ebs-csi-driver" {
   name          = "aws-ebs-csi-driver"
   chart         = "https://github.com/kubernetes-sigs/aws-ebs-csi-driver/releases/download/v${var.chart_version}/helm-chart.tgz"

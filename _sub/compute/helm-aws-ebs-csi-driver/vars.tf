@@ -4,14 +4,12 @@ variable "chart_version" {
   default     = null
 }
 
-variable "rolename" {
-  type        = string
-  description = "Role name to be used when for the AWS EKS CSI driver"
-}
-
 variable "cluster_name" {
   type = string
+  description = "aws-ebs-csi-driver helm chart version"
 }
 
-variable "aws_workload_account_id" {
+variable "kiam_server_role_arn" {
+  type        = string
+  description = "The role or entity to provide trust for when creating roles to use with annotations in kubernetes"
 }
