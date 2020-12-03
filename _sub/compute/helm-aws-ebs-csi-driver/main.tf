@@ -54,11 +54,11 @@ resource "aws_iam_role" "csi_driver_role" {
   ]
 }
 EOF
-    
+
 }
 
 # link the CSI Driver Policy to the newly defined CSI Driver Role
-resource "aws_iam_role_policy_attachment" "test-attach" {
+resource "aws_iam_role_policy_attachment" "csi-policy-attach" {
   role       = aws_iam_role.csi_driver_role.name
   policy_arn = aws_iam_policy.csi_driver_policy.arn
 }

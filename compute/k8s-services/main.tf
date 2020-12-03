@@ -313,7 +313,7 @@ module "monitoring_goldpinger" {
 }
 
 # --------------------------------------------------
-# aws-ebs-csi-driver
+# AWS EBS CSI Driver (Helm Chart Installation)
 # --------------------------------------------------
 
 module "aws-ebs-csi-driver" {

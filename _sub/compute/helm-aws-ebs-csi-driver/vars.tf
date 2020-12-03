@@ -1,7 +1,6 @@
 variable "chart_version" {
   type        = string
   description = "aws-ebs-csi-driver helm chart version"
-  default     = null
 }
 
 variable "cluster_name" {

@@ -300,6 +300,10 @@ module "k8s_cloudengineer_clusterrole_and_binding" {
   ]
 }
 
+# --------------------------------------------------
+# AWS EBS CSI Driver (Helm Chart Installation)
+# --------------------------------------------------
+
 # Annotate the kube-system namespace so that KIAM allows the traffic needed by the EBS CSI Driver
 # This annotation is always applied.  The decision to allow this was taken on the basis that the annotation
 # is a lightweight element with little cost.  If we wished to have it defined based on a feature toggle
