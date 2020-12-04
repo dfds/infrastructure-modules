@@ -322,6 +322,7 @@ module "aws-ebs-csi-driver" {
   chart_version        = var.aws_ebs_csi_driver_chart_version
   cluster_name         = var.eks_cluster_name
   kiam_server_role_arn = module.kiam_deploy.server_role_arn
+  kubeconfig_path      = local.kubeconfig_path
 }
 
 # --------------------------------------------------

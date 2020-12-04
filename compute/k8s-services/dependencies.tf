@@ -91,3 +91,7 @@ locals {
   )
   traefik_alb_auth_appreg_reply_urls = split(",", local.traefik_alb_auth_appreg_reply_replace_end)
 }
+
+locals {
+  kubeconfig_path = pathexpand("~/.kube/${var.eks_cluster_name}.config")
+}

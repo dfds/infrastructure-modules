@@ -1,10 +1,16 @@
+variable "kubeconfig_path" {
+  type        = string
+  description = "The path to the kubeconfig file."
+  default     = null
+}
+
 variable "chart_version" {
   type        = string
   description = "aws-ebs-csi-driver helm chart version."
 }
 
 variable "cluster_name" {
-  type = string
+  type        = string
   description = "The cluster name."
 }
 
