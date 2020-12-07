@@ -95,3 +95,9 @@ variable "chart_version" {
   description = "KIAM helm chart version"
   default     = null
 }
+
+variable "servicemonitor_enabled" {
+  type = bool
+  description = "Deploy af Prometheus servicemonitor crd to enable metrics scraping"
+  default = false
+}

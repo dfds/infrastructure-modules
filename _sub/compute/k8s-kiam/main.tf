@@ -197,4 +197,8 @@ resource "helm_release" "kiam" {
     value = "true"
   }
 
+  set {
+    name = "prometheus.servicemonitor.enabled"
+    value = var.servicemonitor_enabled
+  }
 }

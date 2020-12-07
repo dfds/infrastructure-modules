@@ -22,8 +22,7 @@ variable "aws_workload_account_id" {
 }
 
 variable "aws_assume_role_arn" {
-  type = string
-}
+  type = string }
 
 variable "workload_dns_zone_name" {
 }

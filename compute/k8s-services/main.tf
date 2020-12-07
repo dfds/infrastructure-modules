@@ -246,6 +246,7 @@ module "kiam_deploy" {
   agent_deep_liveness     = true
   agent_liveness_timeout  = 5
   server_gateway_timeout  = "5s"
+  servicemonitor_enabled  = var.monitoring_kube_prometheus_stack_deploy
 }
 
 # --------------------------------------------------
