@@ -89,7 +89,7 @@ resource "helm_release" "kiam" {
   version       = var.chart_version
   recreate_pods = var.recreate_pods
   force_update  = var.force_update
- 
+
   # See: https://github.com/uswitch/kiam/tree/master/helm/kiam
 
   values = [
@@ -197,4 +197,23 @@ resource "helm_release" "kiam" {
     value = "true"
   }
 
+  set {
+    name = "agent.prometheus.servicemonitor.enabled"
+    value = var.servicemonitor_enabled
+  }
+
+  set {
+    name = "agent.prometheus.servicemonitor.labels.release"
+    value = "monitoring"
+  }
+
+  set {
+    name = "server.prometheus.servicemonitor.enabled"
+    value = var.servicemonitor_enabled
+  }
+
+  set {
+    name = "server.prometheus.servicemonitor.labels.release"
+    value = "monitoring"
+  }
 }
