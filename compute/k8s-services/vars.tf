@@ -356,3 +356,19 @@ variable "eks_is_sandbox" {
   type        = bool
   default     = false
 }
+
+# --------------------------------------------------
+# AWS EBS CSI Driver
+# --------------------------------------------------
+
+variable "ebs_csi_driver_deploy" {
+  type        = bool
+  description = "Deploy AWS EBS CSI driver Helm chart"
+  default     = false
+}
+
+variable "ebs_csi_driver_chart_version" {
+  type        = string
+  description = "The version of the AWS EBS CSI driver Helm chart to deploy (defaults to latest)"
+  default     = null
+}

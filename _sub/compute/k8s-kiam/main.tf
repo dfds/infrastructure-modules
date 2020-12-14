@@ -103,6 +103,11 @@ resource "helm_release" "kiam" {
   }
 
   set {
+    name  = "agent.whiteListRouteRegexp"
+    value = "(^/latest/meta-data/iam/info$|^/latest/meta-data/instance-id$|^/latest/dynamic/instance-identity/document$|^/latest/meta-data/outpost-arn$)"
+  }
+
+  set {
     name  = "agent.deepLivenessProbe"
     value = var.agent_deep_liveness
   }

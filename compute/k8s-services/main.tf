@@ -23,12 +23,12 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  version = "~> 1.11.1"
+  version                = "~> 1.11.1"
   host                   = data.aws_eks_cluster.eks.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.eks.token
-  load_config_file = false
-  # config_path      = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allowed when importing into state (remember to flip above bool to load config)
+  load_config_file       = false
+  # config_path            = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allowed when importing into state (remember to flip above bool to load config)
 }
 
 # provider "azuread" {}
@@ -45,7 +45,7 @@ provider "helm" {
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
     token                  = data.aws_eks_cluster_auth.eks.token
     load_config_file       = false
-    # config_path      = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allowed when importing into state (remember to flip above bool to load config)
+    # config_path            = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allowed when importing into state (remember to flip above bool to load config)
   }
 }
 
@@ -314,25 +314,38 @@ module "monitoring_goldpinger" {
 }
 
 # --------------------------------------------------
+# AWS EBS CSI Driver (Helm Chart Installation)
+# --------------------------------------------------
+
+module "ebs_csi_driver" {
+  source               = "../../_sub/compute/helm-ebs-csi-driver"
+  count                = var.ebs_csi_driver_deploy ? 1 : 0
+  chart_version        = var.ebs_csi_driver_chart_version
+  cluster_name         = var.eks_cluster_name
+  kiam_server_role_arn = module.kiam_deploy.server_role_arn
+  kubeconfig_path      = local.kubeconfig_path
+}
+
+# --------------------------------------------------
 # Kube-prometheus-stacktw
 # --------------------------------------------------
 
 module "monitoring_kube_prometheus_stack" {
-  source                  = "../../_sub/compute/helm-kube-prometheus-stack"
-  count                   = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
-  chart_version           = var.monitoring_kube_prometheus_stack_chart_version
-  namespace               = module.monitoring_namespace[0].name
-  priority_class          = var.monitoring_kube_prometheus_stack_priority_class
-  grafana_admin_password  = var.monitoring_kube_prometheus_stack_grafana_admin_password
-  grafana_ingress_path    = var.monitoring_kube_prometheus_stack_grafana_ingress_path
-  grafana_host            = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
-  grafana_notifier_name   = "${var.eks_cluster_name}-alerting"
-  slack_webhook           = var.monitoring_kube_prometheus_stack_slack_webhook
-  prometheus_storageclass = var.monitoring_kube_prometheus_stack_prometheus_storageclass
-  prometheus_storage_size = var.monitoring_kube_prometheus_stack_prometheus_storage_size
-  prometheus_retention    = var.monitoring_kube_prometheus_stack_prometheus_retention
-  slack_channel           = var.monitoring_kube_prometheus_stack_slack_channel
-  target_namespaces       = var.monitoring_kube_prometheus_stack_target_namespaces
+  source                          = "../../_sub/compute/helm-kube-prometheus-stack"
+  count                           = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
+  chart_version                   = var.monitoring_kube_prometheus_stack_chart_version
+  namespace                       = module.monitoring_namespace[0].name
+  priority_class                  = var.monitoring_kube_prometheus_stack_priority_class
+  grafana_admin_password          = var.monitoring_kube_prometheus_stack_grafana_admin_password
+  grafana_ingress_path            = var.monitoring_kube_prometheus_stack_grafana_ingress_path
+  grafana_host                    = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
+  grafana_notifier_name           = "${var.eks_cluster_name}-alerting"
+  slack_webhook                   = var.monitoring_kube_prometheus_stack_slack_webhook
+  prometheus_storageclass         = var.monitoring_kube_prometheus_stack_prometheus_storageclass
+  prometheus_storage_size         = var.monitoring_kube_prometheus_stack_prometheus_storage_size
+  prometheus_retention            = var.monitoring_kube_prometheus_stack_prometheus_retention
+  slack_channel                   = var.monitoring_kube_prometheus_stack_slack_channel
+  target_namespaces               = var.monitoring_kube_prometheus_stack_target_namespaces
   alertmanager_silence_namespaces = var.monitoring_alertmanager_silence_namespaces
 }
 
