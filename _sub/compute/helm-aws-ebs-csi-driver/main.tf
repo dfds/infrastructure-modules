@@ -66,7 +66,9 @@ resource "aws_iam_role_policy_attachment" "csi-policy-attach" {
 # helm chart deployment for the CSI driver
 resource "helm_release" "aws-ebs-csi-driver" {
   name          = "aws-ebs-csi-driver"
-  chart         = "https://github.com/kubernetes-sigs/aws-ebs-csi-driver/releases/download/v${var.chart_version}/helm-chart.tgz"
+  repository    = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
+  chart         = "aws-ebs-csi-driver"
+  version       = var.chart_version
   namespace     = "kube-system"
   recreate_pods = true
   force_update  = false
