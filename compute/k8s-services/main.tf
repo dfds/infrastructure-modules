@@ -316,10 +316,10 @@ module "monitoring_goldpinger" {
 # AWS EBS CSI Driver (Helm Chart Installation)
 # --------------------------------------------------
 
-module "aws-ebs-csi-driver" {
-  source               = "../../_sub/compute/helm-aws-ebs-csi-driver"
-  count                = var.aws_ebs_csi_driver_deploy ? 1 : 0
-  chart_version        = var.aws_ebs_csi_driver_chart_version
+module "ebs_csi_driver" {
+  source               = "../../_sub/compute/helm-ebs-csi-driver"
+  count                = var.ebs_csi_driver_deploy ? 1 : 0
+  chart_version        = var.ebs_csi_driver_chart_version
   cluster_name         = var.eks_cluster_name
   kiam_server_role_arn = module.kiam_deploy.server_role_arn
   kubeconfig_path      = local.kubeconfig_path
