@@ -41,46 +41,6 @@ stages:
           - bash: ./src/qa-test-eks.sh apply-all _global/eks-public-s3-bucket
             displayName: "Provision public EKS S3 bucket"
 
-      - job: eks_1_16
-        displayName: EKS 1.16
-        container: prime
-        dependsOn: init_shared
-        steps:
-          - bash: ./src/qa-test-eks.sh init
-            displayName: "Init"
-          - bash: ./src/qa-test-eks.sh plan eu-west-1/k8s-qa16/cluster
-            displayName: "Terraform Plan (cluster)"
-          - bash: ./src/qa-test-eks.sh apply-all eu-west-1/k8s-qa16
-            displayName: "Terraform Apply"
-          - bash: ./src/qa-test-eks.sh test eu-west-1/k8s-qa16
-            displayName: "Run tests"
-          - bash: ./src/qa-test-eks.sh disable-cluster-logging eu-west-1 qa16
-            displayName: "Disable cluster logging"
-            condition: always()
-          - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1/k8s-qa16 qa16
-            displayName: "Terraform Destroy (post)"
-            condition: always()
-
-      - job: eks_1_17
-        displayName: EKS 1.17
-        container: prime
-        dependsOn: init_shared
-        steps:
-          - bash: ./src/qa-test-eks.sh init
-            displayName: "Init"
-          - bash: ./src/qa-test-eks.sh plan eu-west-1/k8s-qa17/cluster
-            displayName: "Terraform Plan (cluster)"
-          - bash: ./src/qa-test-eks.sh apply-all eu-west-1/k8s-qa17
-            displayName: "Terraform Apply"
-          - bash: ./src/qa-test-eks.sh test eu-west-1/k8s-qa17
-            displayName: "Run tests"
-          - bash: ./src/qa-test-eks.sh disable-cluster-logging eu-west-1 qa17
-            displayName: "Disable cluster logging"
-            condition: always()
-          - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1/k8s-qa17 qa17
-            displayName: "Terraform Destroy (post)"
-            condition: always()
-
       - job: eks_1_18
         displayName: EKS 1.18
         container: prime
@@ -101,12 +61,52 @@ stages:
             displayName: "Terraform Destroy (post)"
             condition: always()
 
+      - job: eks_1_19
+        displayName: EKS 1.19
+        container: prime
+        dependsOn: init_shared
+        steps:
+          - bash: ./src/qa-test-eks.sh init
+            displayName: "Init"
+          - bash: ./src/qa-test-eks.sh plan eu-west-1/k8s-qa19/cluster
+            displayName: "Terraform Plan (cluster)"
+          - bash: ./src/qa-test-eks.sh apply-all eu-west-1/k8s-qa19
+            displayName: "Terraform Apply"
+          - bash: ./src/qa-test-eks.sh test eu-west-1/k8s-qa19
+            displayName: "Run tests"
+          - bash: ./src/qa-test-eks.sh disable-cluster-logging eu-west-1 qa19
+            displayName: "Disable cluster logging"
+            condition: always()
+          - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1/k8s-qa19 qa19
+            displayName: "Terraform Destroy (post)"
+            condition: always()
+
+      # - job: eks_1_20
+      #   displayName: EKS 1.20
+      #   container: prime
+      #   dependsOn: init_shared
+      #   steps:
+      #     - bash: ./src/qa-test-eks.sh init
+      #       displayName: "Init"
+      #     - bash: ./src/qa-test-eks.sh plan eu-west-1/k8s-qa20/cluster
+      #       displayName: "Terraform Plan (cluster)"
+      #     - bash: ./src/qa-test-eks.sh apply-all eu-west-1/k8s-qa20
+      #       displayName: "Terraform Apply"
+      #     - bash: ./src/qa-test-eks.sh test eu-west-1/k8s-qa20
+      #       displayName: "Run tests"
+      #     - bash: ./src/qa-test-eks.sh disable-cluster-logging eu-west-1 qa20
+      #       displayName: "Disable cluster logging"
+      #       condition: always()
+      #     - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1/k8s-qa20 qa20
+      #       displayName: "Terraform Destroy (post)"
+      #       condition: always()
+
       - job: destroy_shared
         displayName: Destroy EKS shared resources
         container: prime
         dependsOn:
-          - eks_1_16
-          - eks_1_17
+          - eks_1_19
+          # - eks_1_20
           - eks_1_18
         condition: always()
         steps:

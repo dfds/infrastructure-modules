@@ -20,8 +20,8 @@ inputs = {
   # EKS
   # --------------------------------------------------
 
-  eks_cluster_name    = "qa17"
-  eks_cluster_version = "1.17"
+  eks_cluster_name    = "qa20"
+  eks_cluster_version = "1.20"
   eks_cluster_zones   = 2
 
   eks_worker_subnets          = ["10.0.16.0/21", "10.0.24.0/21", "10.0.32.0/21"]
@@ -36,10 +36,10 @@ inputs = {
   eks_nodegroup1_desired_size_per_subnet = 1
   eks_nodegroup1_max_size_per_subnet     = 20
 
-  eks_nodegroup2_instance_types          = ["g4dn.xlarge"]
-  eks_nodegroup2_kubelet_extra_args      = "--register-with-taints=node.k8s.dfds.cloud/gpu=true:NoSchedule --node-labels=node.k8s.dfds.cloud/gpu=true"
+  eks_nodegroup2_instance_types          = ["m5a.xlarge"]
   eks_nodegroup2_disk_size               = 128
   eks_nodegroup2_desired_size_per_subnet = 1
+  eks_nodegroup2_kubelet_extra_args      = "--node-labels=nodegroup=ng2"
 
 
   # --------------------------------------------------
@@ -47,7 +47,7 @@ inputs = {
   # --------------------------------------------------
 
   blaster_configmap_deploy = true
-  blaster_configmap_bucket = "dfds-qa17-k8s-configmap"
+  blaster_configmap_bucket = "dfds-qa20-k8s-configmap"
 
   # --------------------------------------------------
   # Cloudwatch agent
