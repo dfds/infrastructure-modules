@@ -34,6 +34,11 @@ variable "prime_role_name" {
   type = string
 }
 
+variable "prime_role_max_session_duration" {
+  type    = string
+  default = 7200 # 2 hours
+}
+
 variable "email" {
   type = string
 }

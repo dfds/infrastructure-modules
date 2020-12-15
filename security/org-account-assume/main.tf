@@ -88,10 +88,11 @@ module "cloudtrail_local" {
 }
 
 resource "aws_iam_role" "prime" {
-  name               = var.prime_role_name
-  description        = "Admin role to be assumed by Prime"
-  assume_role_policy = module.iam_policies.trusted_account
-  provider           = aws.workload
+  name                 = var.prime_role_name
+  description          = "Admin role to be assumed by Prime"
+  assume_role_policy   = module.iam_policies.trusted_account
+  max_session_duration = var.prime_role_max_session_duration
+  provider             = aws.workload
 }
 
 # Create the a Prime Admin role in the Workload account
