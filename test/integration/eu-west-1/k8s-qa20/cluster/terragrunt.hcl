@@ -36,10 +36,10 @@ inputs = {
   eks_nodegroup1_desired_size_per_subnet = 1
   eks_nodegroup1_max_size_per_subnet     = 20
 
-  eks_nodegroup2_instance_types          = ["g4dn.xlarge"]
-  eks_nodegroup2_kubelet_extra_args      = "--register-with-taints=node.k8s.dfds.cloud/gpu=true:NoSchedule --node-labels=node.k8s.dfds.cloud/gpu=true"
+  eks_nodegroup2_instance_types          = ["m5a.xlarge"]
   eks_nodegroup2_disk_size               = 128
   eks_nodegroup2_desired_size_per_subnet = 1
+  eks_nodegroup2_kubelet_extra_args      = "--node-labels=nodegroup=ng2"
 
 
   # --------------------------------------------------
