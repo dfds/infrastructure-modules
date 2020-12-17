@@ -28,6 +28,7 @@ module "postgres" {
   db_master_password  = var.db_master_password
   db_port             = var.db_port
   skip_final_snapshot = var.skip_final_snapshot
+  engine_version      = var.engine_version
 }
 
 module "param_store_pghost" {
