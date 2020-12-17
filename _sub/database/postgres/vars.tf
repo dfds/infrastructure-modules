@@ -43,3 +43,9 @@ variable "skip_final_snapshot" {
   description = "Define if the default of creating a backup upon deletion should be skipped. Default is false"
   default     = false
 }
+
+variable "engine_version" {
+  type        = string
+  description = "RDS engine version"
+  default     = null
+}
