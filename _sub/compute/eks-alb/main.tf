@@ -14,11 +14,12 @@ resource "aws_autoscaling_attachment" "traefik" {
 }
 
 resource "aws_lb_target_group" "traefik" {
-  count       = var.deploy ? 1 : 0
-  name_prefix = substr(var.cluster_name, 0, min(6, length(var.cluster_name)))
-  port        = var.target_http_port
-  protocol    = "HTTP"
-  vpc_id      = var.vpc_id
+  count                = var.deploy ? 1 : 0
+  name_prefix          = substr(var.cluster_name, 0, min(6, length(var.cluster_name)))
+  port                 = var.target_http_port
+  protocol             = "HTTP"
+  vpc_id               = var.vpc_id
+  deregistration_delay = 0
 
   health_check {
     path     = var.health_check_path
@@ -101,7 +102,7 @@ resource "aws_security_group" "traefik" {
     Name = "${var.cluster_name}-traefik-sg"
   }
 
- lifecycle {
+  lifecycle {
     create_before_destroy = true
   }
 
