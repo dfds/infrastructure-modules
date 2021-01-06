@@ -95,7 +95,7 @@ variable "eks_addon_vpccni_version_override" {
 }
 
 variable "eks_public_s3_bucket" {
-  description = "The name of the public S3 bucket, where non-sensitive Kubeconfig will be copied to."
+  description = "The name of the public S3 bucket, where non-sensitive Kubeconfig will be copied to"
   type        = string
   default     = ""
 }
@@ -182,6 +182,17 @@ variable "eks_worker_cloudwatch_agent_config_deploy" {
 variable "eks_worker_cloudwatch_agent_config_file" {
   type    = string
   default = "aws-cloudwatch-agent-conf.json"
+}
+
+
+# --------------------------------------------------
+# Namespaces
+# --------------------------------------------------
+
+variable "kubesystem_permitted_extra_roles" {
+  type        = list(string)
+  default     = []
+  description = "Defines additional roles that can be assumed from the kube-system namespace"
 }
 
 
