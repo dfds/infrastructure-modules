@@ -288,7 +288,7 @@ module "kube_system_namespace" {
   depends_on      = [module.eks_heptio]
   namespace       = "kube-system"
   kubeconfig_path = local.kubeconfig_path
-  annotations     = { "iam.amazonaws.com/permitted" = "eks-${var.eks_cluster_name}-csi" }
+  annotations     = { "iam.amazonaws.com/permitted" = "eks-${var.eks_cluster_name}-csi|arn:aws:iam::736359295931:role/FluentdCloudwatch" }
 }
 
 
