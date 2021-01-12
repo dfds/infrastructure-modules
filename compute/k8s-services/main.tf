@@ -23,13 +23,19 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  version                = "~> 1.11.1"
+  version                = "~> 1.13.3"
   host                   = data.aws_eks_cluster.eks.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.eks.token
   load_config_file       = false
   # config_path            = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allowed when importing into state (remember to flip above bool to load config)
 }
+
+# Currently moved to submodule - necessary for all non "hashicorp/" modules it seems
+# provider "github" {
+#   owner = var.platform_fluxcd_github_owner
+#   token = var.platform_fluxcd_github_token
+# }
 
 # provider "azuread" {}
 
@@ -354,8 +360,33 @@ module "monitoring_kube_prometheus_stack" {
 # --------------------------------------------------
 
 module "monitoring_metrics_server" {
-  source         = "../../_sub/compute/helm-metrics-server"
-  count          = var.monitoring_metrics_server_deploy && var.monitoring_namespace_deploy ? 1 : 0
-  chart_version  = var.monitoring_metrics_server_chart_version
-  namespace      = module.monitoring_namespace[0].name
+  source        = "../../_sub/compute/helm-metrics-server"
+  count         = var.monitoring_metrics_server_deploy && var.monitoring_namespace_deploy ? 1 : 0
+  chart_version = var.monitoring_metrics_server_chart_version
+  namespace     = module.monitoring_namespace[0].name
+}
+
+
+# --------------------------------------------------
+# Flux CD
+# --------------------------------------------------
+
+/*
+Module "platform_fluxcd" cannot be used with count because it contains a
+nested provider configuration for "github", at
+../../_sub/compute/k8s-fluxcd/main.tf:1,10-18.
+
+This module can be made compatible with count by changing it to receive all of
+its provider configurations from the calling module, by using the "providers"
+argument in the calling module block.
+*/
+
+module "platform_fluxcd" {
+  source       = "../../_sub/compute/k8s-fluxcd"
+  # count        = var.platform_fluxcd_deploy ? 1 : 0
+  namespace    = var.platform_fluxcd_namespace
+  repo_name    = var.platform_fluxcd_repo_name
+  repo_path    = var.platform_fluxcd_repo_path
+  github_owner = var.platform_fluxcd_github_owner
+  github_token = var.platform_fluxcd_github_token
 }

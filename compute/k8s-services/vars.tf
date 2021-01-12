@@ -372,3 +372,44 @@ variable "ebs_csi_driver_chart_version" {
   description = "The version of the AWS EBS CSI driver Helm chart to deploy (defaults to latest)"
   default     = null
 }
+
+
+# --------------------------------------------------
+# Platform Flux CD
+# --------------------------------------------------
+
+variable "platform_fluxcd_deploy" {
+  type = bool
+  default = false
+  description = ""
+}
+
+variable "platform_fluxcd_namespace" {
+  type = string
+  default = "platform-flux"
+  description = ""
+}
+
+variable "platform_fluxcd_repo_name" {
+  type = string
+  default = ""
+  description = ""
+}
+
+variable "platform_fluxcd_repo_path" {
+  type = string
+  default = ""
+  description = ""
+}
+
+variable "platform_fluxcd_github_owner" {
+  type = string
+  default = ""
+  description = ""
+}
+
+variable "platform_fluxcd_github_token" {
+  type = string
+  default = ""
+  description = ""
+}
