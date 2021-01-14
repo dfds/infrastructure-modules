@@ -400,6 +400,7 @@ variable "github_owner" {
 
 variable "github_username" {
     description = "Github username of the account that will post Atlantis comments on PR's"
+    default = null
 }
 
 variable "github_repositories" {
@@ -410,6 +411,7 @@ variable "github_repositories" {
 
 variable "webhook_secret" {
     description = "Secret used by the Webhook to speak to Atlantis"
+    default = null
 }
 
 variable "webhook_content_type" {
@@ -435,11 +437,13 @@ variable "namespace" {
 variable "chart_version" {
   type = string
   description = ""
+  default = null
 }
 
 variable "atlantis_ingress" {
   type = string
   description = ""
+  default = null
 }
 
 variable "atlantis_image" {
@@ -457,37 +461,45 @@ variable "atlantis_image_tag" {
 variable "arm_tenant_id" {
   type = string
   description = ""
+  default = null
 }
 
 variable "arm_subscription_id" {
   type = string
   description = ""
+  default = null
 }
 
 variable "arm_client_id" {
   type = string
   description = ""
+  default = null
 }
 
 variable "arm_client_secret" {
   type = string
   description = ""
+  default = null
 }
 
 variable "aws_access_key" {
     description = "AWS Access Key"
+    default = null
 }
 
 variable "aws_secret" {
     description = "AWS Secret"
+    default = null
 }
 
 variable "tf_var_access_key_master" {
   type = string
   description = "Access Key for Core account"
+  default = null
 }
 
 variable "tf_var_secret_key_master" {
   type = string
   description = "Secret for Core account"
+  default = null
 }
