@@ -1,0 +1,68 @@
+
+image:
+  repository: ${atlantis_image}
+  tag: ${atlantis_image_tag}
+  pullPolicy: IfNotPresent
+
+orgWhitelist: ${github_repos}
+logLevel: "info"
+
+github:
+  user: ${github_username}
+  token:  ${github_token}
+  secret: ${github_secret}
+
+environmentSecrets:
+  - name: AWS_ACCESS_KEY_ID
+    secretKeyRef:
+      name: aws-credentials
+      key: aws_access_key
+  - name: AWS_SECRET_ACCESS_KEY
+    secretKeyRef:
+      name: aws-credentials
+      key: aws_secret
+  - name: TF_VAR_access_key_master
+    secretKeyRef:
+      name: aws-credentials
+      key: tf_var_access_key_master
+  - name: TF_VAR_secret_key_master
+    secretKeyRef:
+      name: aws-credentials
+      key: tf_var_secret_key_master
+
+ingress:
+  host: ${atlantis_ingress}
+
+repoConfig: |
+  ---
+  repos:
+  - id: "/.*/"
+    workflow: terragrunt
+    allowed_overrides: [workflow]
+  workflows:
+    terragrunt:
+      plan:
+        steps:
+        - run: terragrunt plan-all -no-color --terragrunt-non-interactive -input=false
+      apply:
+        steps:
+        - run: exit 1
+    eks-pipeline:
+      plan:
+        steps:
+        - env:
+            name: ARM_TENANT_ID
+            value: ${arm_tenant_id}
+        - env:
+            name: ARM_SUBSCRIPTION_ID
+            value: ${arm_subscription_id}
+        - env:
+            name: ARM_CLIENT_ID
+            value: ${arm_client_id}
+        - env:
+            name: ARM_CLIENT_SECRET
+            value: ${arm_client_secret}
+        - run: terragrunt plan-all -no-color --terragrunt-non-interactive -input=false
+      apply:
+        steps:
+        - run: exit 1
