@@ -1,4 +1,3 @@
-
 image:
   repository: ${atlantis_image}
   tag: ${atlantis_image_tag}
@@ -7,9 +6,12 @@ image:
 orgWhitelist: ${github_repos}
 logLevel: "info"
 
+disableApply: true
+disableApplyAll: true
+
 github:
   user: ${github_username}
-  token:  ${github_token}
+  token: ${github_token}
   secret: ${github_secret}
 
 environmentSecrets:
