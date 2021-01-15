@@ -6,14 +6,14 @@ locals {
       "github.com/${repo}"
   ]
 }
-  
+
 resource "helm_release" "atlantis" {
   name          = "atlantis"
   chart         = "atlantis"
   repository    = "https://runatlantis.github.io/helm-charts"
   version       = var.chart_version != null ? var.chart_version : null
   namespace     = var.namespace
-  create_namespace = true
+  create_namespace = false
   recreate_pods = true
   force_update  = false
 
@@ -31,6 +31,8 @@ resource "helm_release" "atlantis" {
       arm_client_id = var.arm_client_id,
       arm_client_secret = var.arm_client_secret
   })]
+
+  depends_on = [ kubernetes_secret.aws ]
 }
 
 ## Github ##
@@ -72,4 +74,11 @@ resource "kubernetes_secret" "aws" {
         access_key_master = var.access_key_master
         secret_key_master = var.secret_key_master
     }
+    depends_on = [ kubernetes_namespace.namespace ]
+}
+
+resource "kubernetes_namespace" "namespace" {
+  metadata {
+    name = var.namespace
+  }
 }
