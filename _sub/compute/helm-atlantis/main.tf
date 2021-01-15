@@ -69,7 +69,7 @@ resource "kubernetes_secret" "aws" {
     data = {
         aws_access_key = var.aws_access_key
         aws_secret = var.aws_secret
-        tf_var_access_key_master = var.tf_var_access_key_master
-        tf_var_secret_key_master = var.tf_var_secret_key_master
+        access_key_master = var.access_key_master
+        secret_key_master = var.secret_key_master
     }
 }

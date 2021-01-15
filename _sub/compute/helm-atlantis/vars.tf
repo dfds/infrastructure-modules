@@ -109,12 +109,12 @@ variable "aws_secret" {
     description = "AWS Secret"
 }
 
-variable "tf_var_access_key_master" {
+variable "access_key_master" {
   type = string
   description = "Access Key for Core account"
 }
 
-variable "tf_var_secret_key_master" {
+variable "secret_key_master" {
   type = string
   description = "Secret for Core account"
 }

@@ -21,14 +21,14 @@ environmentSecrets:
     secretKeyRef:
       name: aws-credentials
       key: aws_secret
-  - name: TF_VAR_access_key_master
+  - name: access_key_master
     secretKeyRef:
       name: aws-credentials
-      key: tf_var_access_key_master
-  - name: TF_VAR_secret_key_master
+      key: access_key_master
+  - name: secret_key_master
     secretKeyRef:
       name: aws-credentials
-      key: tf_var_secret_key_master
+      key: secret_key_master
 
 ingress:
   host: ${atlantis_ingress}

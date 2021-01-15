@@ -371,7 +371,7 @@ module "monitoring_metrics_server" {
 # --------------------------------------------------
 
 module "atlantis" {
-  source = "../../_sub/misc/helm-atlantis"
+  source = "../../_sub/compute/helm-atlantis"
   count = var.atlantis_deploy ? 1 : 0
   namespace = var.namespace
   chart_version = var.chart_version
@@ -387,8 +387,8 @@ module "atlantis" {
   webhook_events = var.webhook_events
   aws_access_key = var.aws_access_key
   aws_secret = var.aws_secret
-  tf_var_access_key_master = var.tf_var_access_key_master
-  tf_var_secret_key_master = var.tf_var_secret_key_master
+  access_key_master = var.access_key_master
+  secret_key_master = var.secret_key_master
   arm_tenant_id = var.arm_tenant_id
   arm_subscription_id = var.arm_subscription_id
   arm_client_id = var.arm_client_id
