@@ -11,8 +11,6 @@ disableApplyAll: true
 
 github:
   user: ${github_username}
-  token: ${github_token}
-  secret: ${github_secret}
 
 environmentSecrets:
   - name: AWS_ACCESS_KEY_ID
@@ -31,6 +29,45 @@ environmentSecrets:
     secretKeyRef:
       name: aws-credentials
       key: secret_key_master
+
+  - name: TF_VAR_arm_tenant_id
+    secretKeyRef:
+      name: az-credentials
+      key: arm_tenant_id
+  - name: ARM_TENANT_ID
+    secretKeyRef:
+      name: az-credentials
+      key: arm_tenant_id
+  - name: TF_VAR_arm_subscription_id
+    secretKeyRef:
+      name: az-credentials
+      key: arm_subscription_id
+  - name: ARM_SUBSCRIPTION_ID
+    secretKeyRef:
+      name: az-credentials
+      key: arm_subscription_id
+  - name: TF_VAR_arm_client_id
+    secretKeyRef:
+      name: az-credentials
+      key: arm_client_id
+  - name: ARM_CLIENT_ID
+    secretKeyRef:
+      name: az-credentials
+      key: arm_client_id
+  - name: TF_VAR_arm_client_secret
+    secretKeyRef:
+      name: az-credentials
+      key: arm_client_secret
+  - name: ARM_CLIENT_SECRET
+    secretKeyRef:
+      name: az-credentials
+      key: arm_client_secret
+
+  - name: TF_VAR_github_token
+    secretKeyRef:
+      name: gh-credentials
+      key: github_token
+
 
 ingress:
   host: ${atlantis_ingress}
@@ -52,22 +89,8 @@ repoConfig: |
     eks-pipeline:
       plan:
         steps:
-        - env:
-            name: TF_VAR_arm_tenant_id
-            value: ${arm_tenant_id}
-        - env:
-            name: TF_VAR_arm_subscription_id
-            value: ${arm_subscription_id}
-        - env:
-            name: TF_VAR_arm_client_id
-            value: ${arm_client_id}
-        - env:
-            name: TF_VAR_arm_client_secret
-            value: ${arm_client_secret}
-        - env:
-            name: TF_VAR_github_token
-            value: ${github_token}
         - run: terragrunt plan-all -no-color --terragrunt-non-interactive -input=false
       apply:
         steps:
         - run: exit 1
+
