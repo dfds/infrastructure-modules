@@ -7,8 +7,12 @@ terraform {
   }
 }
 
+
+# --------------------------------------------------
+# Provider configuration
+# --------------------------------------------------
+
 provider "aws" {
-  version = "~> 2.43"
   region  = var.aws_region
 
   assume_role {
@@ -17,13 +21,11 @@ provider "aws" {
 }
 
 provider "aws" {
-  version = "~> 2.43"
   region  = var.aws_region
   alias   = "core"
 }
 
 provider "kubernetes" {
-  version                = "~> 1.13.3"
   host                   = data.aws_eks_cluster.eks.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.eks.token
@@ -31,21 +33,14 @@ provider "kubernetes" {
   # config_path            = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allowed when importing into state (remember to flip above bool to load config)
 }
 
-# Currently moved to submodule - necessary for all non "hashicorp/" modules it seems
-# provider "github" {
-#   owner = var.platform_fluxcd_github_owner
-#   token = var.platform_fluxcd_github_token
-# }
-
-# provider "azuread" {}
-
-# --------------------------------------------------
-# Helm
-# --------------------------------------------------
+provider "kubectl" {
+  host                   = data.aws_eks_cluster.eks.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.eks.token
+  load_config_file       = false
+}
 
 provider "helm" {
-  version = "~> 1.3.2"
-
   kubernetes {
     host                   = data.aws_eks_cluster.eks.endpoint
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
@@ -54,6 +49,14 @@ provider "helm" {
     # config_path            = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allowed when importing into state (remember to flip above bool to load config)
   }
 }
+
+provider "github" {
+  owner = var.platform_fluxcd_github_owner
+  token = var.platform_fluxcd_github_token
+}
+
+# provider "azuread" {}
+
 
 # --------------------------------------------------
 # Traefik
@@ -389,9 +392,4 @@ module "platform_fluxcd" {
   repo_path    = var.platform_fluxcd_repo_path
   github_owner = var.platform_fluxcd_github_owner
   github_token = var.platform_fluxcd_github_token
-
-  kubectl_provider_host                   = data.aws_eks_cluster.eks.endpoint
-  kubectl_provider_cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
-  kubectl_provider_token                  = data.aws_eks_cluster_auth.eks.token
-
 }

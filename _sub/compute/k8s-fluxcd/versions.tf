@@ -2,23 +2,26 @@
 terraform {
   required_version = ">= 0.13"
 
+  /*
+  Hashicorp-managed providers can be loaded implicitly
+  Need to explicitly specific 3rd party Providers
+  Version can still be controlled via main module
+  */
+
   required_providers {
-    github = {
-      source  = "integrations/github"
-      version = ">= 4.1.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 1.13.3"
-    }
+
     kubectl = {
       source  = "gavinbunney/kubectl"
-      version = ">= 1.9.1"
     }
+
+    github = {
+      source  = "integrations/github"
+    }
+
     flux = {
       source  = "fluxcd/flux"
-      version = ">= 0.0.1"
     }
+
   }
 
 }

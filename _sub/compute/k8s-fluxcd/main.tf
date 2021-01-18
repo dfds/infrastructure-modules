@@ -1,16 +1,3 @@
-provider "github" {
-  owner = var.github_owner
-  token = var.github_token
-}
-
-provider "kubectl" {
-  host                   = var.kubectl_provider_host
-  cluster_ca_certificate = var.kubectl_provider_cluster_ca_certificate
-  token                  = var.kubectl_provider_token
-  load_config_file       = false
-}
-
-
 # SSH
 resource "tls_private_key" "main" {
   algorithm = "RSA"

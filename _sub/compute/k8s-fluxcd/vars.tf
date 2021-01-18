@@ -33,21 +33,3 @@ variable "github_token" {
   type        = string
   description = ""
 }
-
-
-# Provider crap - really want to inherit provider config from main module!
-
-variable "kubectl_provider_host" {
-  type        = string
-  description = ""
-}
-
-variable "kubectl_provider_cluster_ca_certificate" {
-  type        = string
-  description = ""
-}
-
-variable "kubectl_provider_token" {
-  type        = string
-  description = ""
-}
