@@ -56,13 +56,25 @@ repoConfig: |
             name: TF_VAR_arm_tenant_id
             value: ${arm_tenant_id}
         - env:
+            name: ARM_TENANT_ID
+            value: ${arm_tenant_id}
+        - env:
             name: TF_VAR_arm_subscription_id
+            value: ${arm_subscription_id}
+        - env:
+            name: ARM_SUBSCRIPTION_ID
             value: ${arm_subscription_id}
         - env:
             name: TF_VAR_arm_client_id
             value: ${arm_client_id}
         - env:
+            name: ARM_CLIENT_ID
+            value: ${arm_client_id}
+        - env:
             name: TF_VAR_arm_client_secret
+            value: ${arm_client_secret}
+        - env:
+            name: ARM_CLIENT_SECRET
             value: ${arm_client_secret}
         - env:
             name: TF_VAR_github_token
@@ -71,3 +83,4 @@ repoConfig: |
       apply:
         steps:
         - run: exit 1
+
