@@ -1,18 +1,13 @@
-/*
-Gotchas:
-
-- Providers versions and paramters - how to keep in main module?
-- Namespace hard-coded to 'flux-system' somewhere
-  -  Roles and rolebindings in flux-system/gotk-components.yaml in generated repo
-- Can you *only* deploy using Kustomize?
-- Understand flux namespaces and repos - separate for flux and workloads?
-
-*/
-
-
 provider "github" {
   owner = var.github_owner
   token = var.github_token
+}
+
+provider "kubectl" {
+  host                   = var.kubectl_provider_host
+  cluster_ca_certificate = var.kubectl_provider_cluster_ca_certificate
+  token                  = var.kubectl_provider_token
+  load_config_file       = false
 }
 
 

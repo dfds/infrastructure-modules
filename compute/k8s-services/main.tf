@@ -389,4 +389,9 @@ module "platform_fluxcd" {
   repo_path    = var.platform_fluxcd_repo_path
   github_owner = var.platform_fluxcd_github_owner
   github_token = var.platform_fluxcd_github_token
+
+  kubectl_provider_host                   = data.aws_eks_cluster.eks.endpoint
+  kubectl_provider_cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+  kubectl_provider_token                  = data.aws_eks_cluster_auth.eks.token
+
 }
