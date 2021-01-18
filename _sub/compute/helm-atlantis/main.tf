@@ -17,19 +17,23 @@ resource "helm_release" "atlantis" {
   recreate_pods = true
   force_update  = false
 
+  set_sensitive {
+    name = "github.token"
+    value = var.github_token
+  }
+
+  set_sensitive {
+    name = "github.secret"
+    value = var.webhook_secret
+  }
+
   values = [
     templatefile("${path.module}/values/values.yaml", {
       atlantis_ingress = var.atlantis_ingress,
       atlantis_image = var.atlantis_image,
       atlantis_image_tag = var.atlantis_image_tag,
       github_username = var.github_username,
-      github_token = var.github_token,
-      github_secret = var.webhook_secret,
       github_repos = join(",", local.full_github_repo_names)
-      arm_tenant_id = var.arm_tenant_id,
-      arm_subscription_id = var.arm_subscription_id,
-      arm_client_id = var.arm_client_id,
-      arm_client_secret = var.arm_client_secret
   })]
 
   depends_on = [ kubernetes_secret.aws ]
@@ -73,6 +77,33 @@ resource "kubernetes_secret" "aws" {
         aws_secret = var.aws_secret
         access_key_master = var.access_key_master
         secret_key_master = var.secret_key_master
+    }
+    depends_on = [ kubernetes_namespace.namespace ]
+}
+
+resource "kubernetes_secret" "az" {
+    metadata {
+        name = "az-credentials"
+        namespace = var.namespace
+    }
+
+    data = {
+        arm_tenant_id = var.arm_tenant_id
+        arm_subscription_id = var.arm_subscription_id
+        arm_client_id = var.arm_client_id
+        arm_client_secret = var.arm_client_secret
+    }
+    depends_on = [ kubernetes_namespace.namespace ]
+}
+
+resource "kubernetes_secret" "gh" {
+    metadata {
+        name = "gh-credentials"
+        namespace = var.namespace
+    }
+
+    data = {
+        github_token = var.github_token
     }
     depends_on = [ kubernetes_namespace.namespace ]
 }
