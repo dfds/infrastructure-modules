@@ -374,19 +374,9 @@ module "monitoring_metrics_server" {
 # Flux CD
 # --------------------------------------------------
 
-/*
-Module "platform_fluxcd" cannot be used with count because it contains a
-nested provider configuration for "github", at
-../../_sub/compute/k8s-fluxcd/main.tf:1,10-18.
-
-This module can be made compatible with count by changing it to receive all of
-its provider configurations from the calling module, by using the "providers"
-argument in the calling module block.
-*/
-
 module "platform_fluxcd" {
   source       = "../../_sub/compute/k8s-fluxcd"
-  # count        = var.platform_fluxcd_deploy ? 1 : 0
+  count        = var.platform_fluxcd_deploy ? 1 : 0
   repo_name    = var.platform_fluxcd_repo_name
   repo_path    = "./clusters/${var.eks_cluster_name}"
   github_owner = var.platform_fluxcd_github_owner
