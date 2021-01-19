@@ -1,3 +1,7 @@
+locals {
+  namespace = "flux-system"
+}
+
 # SSH
 resource "tls_private_key" "main" {
   algorithm = "RSA"
@@ -13,13 +17,13 @@ data "flux_sync" "main" {
   target_path = var.repo_path
   url         = "ssh://git@github.com/${var.github_owner}/${var.repo_name}.git"
   branch      = var.repo_branch
-  namespace   = var.namespace
+  namespace   = local.namespace
 }
 
 # Kubernetes
 resource "kubernetes_namespace" "flux_system" {
   metadata {
-    name = var.namespace
+    name = local.namespace
   }
 
   lifecycle {

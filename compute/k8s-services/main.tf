@@ -387,9 +387,8 @@ argument in the calling module block.
 module "platform_fluxcd" {
   source       = "../../_sub/compute/k8s-fluxcd"
   # count        = var.platform_fluxcd_deploy ? 1 : 0
-  namespace    = var.platform_fluxcd_namespace
   repo_name    = var.platform_fluxcd_repo_name
-  repo_path    = var.platform_fluxcd_repo_path
+  repo_path    = "./clusters/${var.eks_cluster_name}"
   github_owner = var.platform_fluxcd_github_owner
   github_token = var.platform_fluxcd_github_token
 }

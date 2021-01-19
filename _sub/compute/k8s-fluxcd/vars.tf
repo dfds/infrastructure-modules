@@ -1,8 +1,3 @@
-variable "namespace" {
-  type        = string
-  description = ""
-}
-
 variable "repo_name" {
   type        = string
   description = ""
