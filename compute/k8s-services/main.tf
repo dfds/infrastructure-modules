@@ -13,7 +13,7 @@ terraform {
 # --------------------------------------------------
 
 provider "aws" {
-  region  = var.aws_region
+  region = var.aws_region
 
   assume_role {
     role_arn = var.aws_assume_role_arn
@@ -21,8 +21,22 @@ provider "aws" {
 }
 
 provider "aws" {
-  region  = var.aws_region
-  alias   = "core"
+  region = var.aws_region
+  alias  = "core"
+}
+
+locals {
+  aws_assume_logs_role_arn = length(var.aws_assume_logs_role_arn) > 0 ? var.aws_assume_logs_role_arn : var.aws_assume_role_arn
+}
+
+provider "aws" {
+  region = var.aws_region
+
+  assume_role {
+    role_arn = local.aws_assume_logs_role_arn
+  }
+
+  alias = "logs"
 }
 
 provider "kubernetes" {
@@ -56,6 +70,20 @@ provider "github" {
 }
 
 # provider "azuread" {}
+
+
+# --------------------------------------------------
+# AWS EBS CSI Driver (Helm Chart Installation)
+# --------------------------------------------------
+
+module "ebs_csi_driver" {
+  source               = "../../_sub/compute/helm-ebs-csi-driver"
+  count                = var.ebs_csi_driver_deploy ? 1 : 0
+  chart_version        = var.ebs_csi_driver_chart_version
+  cluster_name         = var.eks_cluster_name
+  kiam_server_role_arn = module.kiam_deploy.server_role_arn
+  kubeconfig_path      = local.kubeconfig_path
+}
 
 
 # --------------------------------------------------
@@ -260,6 +288,48 @@ module "kiam_deploy" {
 
 
 # --------------------------------------------------
+# AWS IAM roles
+# --------------------------------------------------
+
+module "aws_cloudwatchlogs_iam_role" {
+  source               = "../../_sub/security/iam-role"
+  count                = var.cloudwatchlogs_iam_role_deploy ? 1 : 0
+  role_name            = "eks-${var.eks_cluster_name}-cloudwatchlogs"
+  role_description     = "Role for FluentD to assume in order to ship logs to CloudWatch Logs"
+  role_policy_name     = "CloudWatchLogs"
+  role_policy_document = jsonencode(local.cloudwatchlogs_policy)
+  assume_role_policy   = jsonencode(local.cloudwatchlogs_assume_role_policy)
+}
+
+
+# --------------------------------------------------
+# Namespaces
+# --------------------------------------------------
+
+# Annotate the kube-system namespace so that KIAM allows the traffic needed by the EBS CSI Driver
+# This annotation is always applied.  The decision to allow this was taken on the basis that the annotation
+# is a lightweight element with little cost.  If we wished to have it defined based on a feature toggle
+# then it would create additional complexity and require that the toggle variable exist in two places,
+# thus leading to confusion  
+locals {
+  kubesystem_permitted_base_role = flatten([
+    try(module.ebs_csi_driver[0].iam_role_name, []),
+    try(module.aws_cloudwatchlogs_iam_role[0].arn, [])
+  ])
+  kubesystem_permitted_role_list        = concat(local.kubesystem_permitted_base_role, var.kubesystem_permitted_extra_roles)
+  kubesystem_permitted_role_list_sorted = sort(local.kubesystem_permitted_role_list)
+  kubesystem_permitted_role_string      = join("|", local.kubesystem_permitted_role_list_sorted)
+}
+
+module "kube_system_namespace" {
+  source          = "../../_sub/compute/k8s-annotate-namespace"
+  namespace       = "kube-system"
+  kubeconfig_path = local.kubeconfig_path
+  annotations     = { "iam.amazonaws.com/permitted" = local.kubesystem_permitted_role_string }
+}
+
+
+# --------------------------------------------------
 # Blaster - depends on KIAM
 # --------------------------------------------------
 
@@ -323,20 +393,6 @@ module "monitoring_goldpinger" {
   priority_class = var.monitoring_goldpinger_priority_class
   namespace      = module.monitoring_namespace[0].name
   depends_on     = [module.monitoring_kube_prometheus_stack]
-}
-
-
-# --------------------------------------------------
-# AWS EBS CSI Driver (Helm Chart Installation)
-# --------------------------------------------------
-
-module "ebs_csi_driver" {
-  source               = "../../_sub/compute/helm-ebs-csi-driver"
-  count                = var.ebs_csi_driver_deploy ? 1 : 0
-  chart_version        = var.ebs_csi_driver_chart_version
-  cluster_name         = var.eks_cluster_name
-  kiam_server_role_arn = module.kiam_deploy.server_role_arn
-  kubeconfig_path      = local.kubeconfig_path
 }
 
 

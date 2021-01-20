@@ -95,3 +95,56 @@ locals {
 locals {
   kubeconfig_path = pathexpand("~/.kube/${var.eks_cluster_name}.config")
 }
+
+
+# --------------------------------------------------
+# CloudWatch Logs IAM role
+# --------------------------------------------------
+
+data "aws_caller_identity" "logs" {
+  provider = aws.logs
+}
+
+locals {
+  cloudwatchlogs_assume_role_policy = {
+    "Version" = "2012-10-17"
+    "Statement" = [
+      {
+        "Sid"    = ""
+        "Effect" = "Allow"
+        "Principal" = {
+          "AWS" = module.kiam_deploy.server_role_arn
+        }
+        "Action" = "sts:AssumeRole"
+      }
+    ]
+  }
+
+  cloudwatchlogs_policy = {
+    "Version" = "2012-10-17"
+    "Statement" = [
+      {
+        "Sid"    = "ReadLogs"
+        "Effect" = "Allow"
+        "Action" = [
+          "logs:Describe*",
+          "logs:Get*",
+          "logs:List*"
+        ]
+        "Resource" = "*"
+      },
+      {
+        "Sid"      = "LogStream"
+        "Effect"   = "Allow"
+        "Action"   = "logs:*"
+        "Resource" = "arn:aws:logs:*:${data.aws_caller_identity.logs.account_id}:log-group:/k8s/${var.eks_cluster_name}/*:log-stream:*"
+      },
+      {
+        "Sid"      = "LogGroup"
+        "Effect"   = "Allow"
+        "Action"   = "logs:*"
+        "Resource" = "arn:aws:logs:*:${data.aws_caller_identity.logs.account_id}:log-group:/k8s/${var.eks_cluster_name}/*"
+      }
+    ]
+  }
+}
