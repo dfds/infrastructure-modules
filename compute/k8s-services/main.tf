@@ -258,6 +258,7 @@ module "kiam_deploy" {
   servicemonitor_enabled  = var.monitoring_kube_prometheus_stack_deploy
 }
 
+
 # --------------------------------------------------
 # Blaster - depends on KIAM
 # --------------------------------------------------
@@ -270,6 +271,7 @@ module "blaster_namespace" {
   kiam_server_role_arn     = module.kiam_deploy.server_role_arn
   extra_permitted_roles    = var.blaster_namespace_extra_permitted_roles
 }
+
 
 # --------------------------------------------------
 # Cloudwatch alarms and alarm notifier (Slack)
@@ -309,6 +311,7 @@ module "monitoring_namespace" {
   iam_roles = var.monitoring_namespace_iam_roles
 }
 
+
 # --------------------------------------------------
 # Goldpinger
 # --------------------------------------------------
@@ -322,6 +325,7 @@ module "monitoring_goldpinger" {
   depends_on     = [module.monitoring_kube_prometheus_stack]
 }
 
+
 # --------------------------------------------------
 # AWS EBS CSI Driver (Helm Chart Installation)
 # --------------------------------------------------
@@ -334,6 +338,7 @@ module "ebs_csi_driver" {
   kiam_server_role_arn = module.kiam_deploy.server_role_arn
   kubeconfig_path      = local.kubeconfig_path
 }
+
 
 # --------------------------------------------------
 # Kube-prometheus-stacktw
@@ -357,6 +362,7 @@ module "monitoring_kube_prometheus_stack" {
   target_namespaces               = var.monitoring_kube_prometheus_stack_target_namespaces
   alertmanager_silence_namespaces = var.monitoring_alertmanager_silence_namespaces
 }
+
 
 # --------------------------------------------------
 # Metrics-Server
