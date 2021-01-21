@@ -26,11 +26,22 @@ resource "kubernetes_namespace" "flux_system" {
     name = local.namespace
   }
 
+  # provisioner "local-exec" {
+  #   when    = destroy
+  #   command = "delete ns"
+  # }
+
+  # provisioner "local-exec" {
+  #   when    = destroy
+  #   command = "un-finalize crds?"
+  # }
+
   lifecycle {
     ignore_changes = [
       metadata[0].labels,
     ]
   }
+
 }
 
 data "kubectl_file_documents" "install" {
@@ -103,6 +114,7 @@ resource "github_repository_file" "sync" {
   file       = data.flux_sync.main.path
   content    = data.flux_sync.main.content
   branch     = data.github_repository.main.default_branch
+  depends_on = [ github_repository_file.install ]
 
   lifecycle {
     ignore_changes = [
@@ -116,6 +128,7 @@ resource "github_repository_file" "kustomize" {
   file       = data.flux_sync.main.kustomize_path
   content    = data.flux_sync.main.kustomize_content
   branch     = data.github_repository.main.default_branch
+  depends_on = [ github_repository_file.sync ]
 
   lifecycle {
     ignore_changes = [
