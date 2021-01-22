@@ -21,51 +21,53 @@ data "flux_sync" "main" {
 }
 
 # Kubernetes
-resource "kubernetes_namespace" "flux_system" {
-  metadata {
-    name = local.namespace
-  }
-
-  lifecycle {
-    ignore_changes = [
-      metadata[0].labels,
-    ]
-  }
-
-}
-
-# resource "null_resource" "flux_namespace" {
-
-#   triggers = {
-#     namespace = local.namespace
+# resource "kubernetes_namespace" "flux_system" {
+#   metadata {
+#     name = local.namespace
 #   }
 
-#   provisioner "local-exec" {
-#     command = "kubectl create namespace $NAMESPACE"
-#     environment = {
-#       KUBECONFIG = var.kubeconfig_path
-#       NAMESPACE = local.namespace
-#     }
-#   }
-
-#   provisioner "local-exec" {
-#     when    = destroy
-#     command = "kubectl delete namespace $NAMESPACE"
-#     environment = {
-#       KUBECONFIG = var.kubeconfig_path
-#       NAMESPACE = local.namespace
-#     }
-#   }
-
-#   provisioner "local-exec" {
-#     when    = destroy
-#     command = "kubectl patch customresourcedefinition helmcharts.source.toolkit.fluxcd.io helmreleases.helm.toolkit.fluxcd.io helmrepositories.source.toolkit.fluxcd.io kustomizations.kustomize.toolkit.fluxcd.io -p '{\"metadata\":{\"finalizers\":null}}'"
-#     environment = {
-#       KUBECONFIG = var.kubeconfig_path
-#     }
+#   lifecycle {
+#     ignore_changes = [
+#       metadata[0].labels,
+#     ]
 #   }
 
 # }
+
+resource "null_resource" "flux_namespace" {
+  triggers = {
+    kubeconfig = var.kubeconfig_path
+    namespace = local.namespace
+  }
+
+  provisioner "local-exec" {
+    command = "kubectl --kubeconfig $KUBECONFIG create namespace $NAMESPACE"
+    environment = {
+      KUBECONFIG = self.triggers.kubeconfig
+      NAMESPACE = self.triggers.namespace
+    }
+  }
+
+  provisioner "local-exec" {
+    when       = destroy
+    # command    = "kubectl --kubeconfig $KUBECONFIG delete namespace $NAMESPACE --cascade=true --wait=false"
+    command    = "kubectl --kubeconfig $KUBECONFIG delete namespace $NAMESPACE --cascade=true --timeout=120s"
+    on_failure = continue
+    environment = {
+      KUBECONFIG = self.triggers.kubeconfig
+      NAMESPACE = self.triggers.namespace
+    }
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = "kubectl --kubeconfig $KUBECONFIG patch customresourcedefinition helmcharts.source.toolkit.fluxcd.io helmreleases.helm.toolkit.fluxcd.io helmrepositories.source.toolkit.fluxcd.io kustomizations.kustomize.toolkit.fluxcd.io -p '{\"metadata\":{\"finalizers\":null}}'"
+    on_failure = continue
+    environment = {
+      KUBECONFIG = self.triggers.kubeconfig
+    }
+  }
+}
 
 data "kubectl_file_documents" "install" {
   content = data.flux_install.main.content
@@ -73,8 +75,8 @@ data "kubectl_file_documents" "install" {
 
 resource "kubectl_manifest" "install" {
   for_each = { for v in data.kubectl_file_documents.install.documents : sha1(v) => v }
-  depends_on = [kubernetes_namespace.flux_system]
-  # depends_on = [null_resource.flux_namespace]
+  # depends_on = [kubernetes_namespace.flux_system]
+  depends_on = [null_resource.flux_namespace]
 
   yaml_body = each.value
 }
@@ -84,8 +86,9 @@ data "kubectl_file_documents" "sync" {
 }
 
 resource "kubectl_manifest" "sync" {
-  for_each   = { for v in data.kubectl_file_documents.sync.documents : sha1(v) => v }
-  depends_on = [kubectl_manifest.install, kubernetes_namespace.flux_system]
+  for_each = { for v in data.kubectl_file_documents.sync.documents : sha1(v) => v }
+  # depends_on = [kubectl_manifest.install, kubernetes_namespace.flux_system]
+  depends_on = [kubectl_manifest.install, null_resource.flux_namespace]
 
   yaml_body = each.value
 }
@@ -125,6 +128,10 @@ resource "github_repository_file" "install" {
   file       = data.flux_install.main.path
   content    = data.flux_install.main.content
   branch     = data.github_repository.main.default_branch
+
+  provisioner "local-exec" {
+    command = "sleep 60"
+  }
 
   lifecycle {
     ignore_changes = [
