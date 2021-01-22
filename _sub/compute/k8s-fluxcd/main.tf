@@ -20,7 +20,7 @@ data "flux_sync" "main" {
   namespace   = local.namespace
 }
 
-Kubernetes
+# Kubernetes
 resource "kubernetes_namespace" "flux_system" {
   metadata {
     name = local.namespace
