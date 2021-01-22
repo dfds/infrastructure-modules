@@ -7,7 +7,7 @@ locals {
 # --------------------------------------------------
 resource "azuread_application" "aad_access" {
   count           = var.deploy && var.grant_aad_access ? 1 : 0
-  name            = var.name
+  display_name    = var.name
   homepage        = var.homepage
   identifier_uris = var.identifier_uris
   reply_urls      = var.reply_urls
