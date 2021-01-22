@@ -28,3 +28,8 @@ variable "github_token" {
   type        = string
   description = ""
 }
+
+variable "kubeconfig_path" {
+  type    = string
+  default = null
+}

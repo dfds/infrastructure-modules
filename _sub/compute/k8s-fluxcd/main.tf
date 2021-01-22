@@ -21,25 +21,44 @@ data "flux_sync" "main" {
 }
 
 # Kubernetes
-resource "kubernetes_namespace" "flux_system" {
-  metadata {
-    name = local.namespace
+# resource "kubernetes_namespace" "flux_system" {
+#   metadata {
+#     name = local.namespace
+#   }
+
+#   lifecycle {
+#     ignore_changes = [
+#       metadata[0].labels,
+#     ]
+#   }
+
+# }
+
+resource "null_resource" "flux_namespace" {
+
+  triggers = {
+    namespace = local.namespace
   }
 
-  # provisioner "local-exec" {
-  #   when    = destroy
-  #   command = "delete ns"
-  # }
+  provisioner "local-exec" {
+    command = "kubectl --kubeconfig ${var.kubeconfig_path} create namespace ${local.namespace}"
+  }
 
-  # provisioner "local-exec" {
-  #   when    = destroy
-  #   command = "un-finalize crds?"
-  # }
+  provisioner "local-exec" {
+    when    = destroy
+    command = "kubectl --kubeconfig ${var.kubeconfig_path} delete namespace ${local.namespace}"
+  }
 
-  lifecycle {
-    ignore_changes = [
-      metadata[0].labels,
-    ]
+  provisioner "local-exec" {
+
+    /*
+    Destroy-time provisioners and their connection configurations may only
+reference attributes of the related resource, via 'self', 'count.index', or
+'each.key'.
+    */
+
+    when    = destroy
+    command = "kubectl --kubeconfig ${var.kubeconfig_path} patch customresourcedefinition helmcharts.source.toolkit.fluxcd.io helmreleases.helm.toolkit.fluxcd.io helmrepositories.source.toolkit.fluxcd.io kustomizations.kustomize.toolkit.fluxcd.io -p '{\"metadata\":{\"finalizers\":null}}'"
   }
 
 }
@@ -49,8 +68,9 @@ data "kubectl_file_documents" "install" {
 }
 
 resource "kubectl_manifest" "install" {
-  for_each   = { for v in data.kubectl_file_documents.install.documents : sha1(v) => v }
-  depends_on = [kubernetes_namespace.flux_system]
+  for_each = { for v in data.kubectl_file_documents.install.documents : sha1(v) => v }
+  # depends_on = [kubernetes_namespace.flux_system]
+  depends_on = [null_resource.flux_namespace]
 
   yaml_body = each.value
 }
@@ -61,7 +81,7 @@ data "kubectl_file_documents" "sync" {
 
 resource "kubectl_manifest" "sync" {
   for_each   = { for v in data.kubectl_file_documents.sync.documents : sha1(v) => v }
-  depends_on = [kubectl_manifest.install, kubernetes_namespace.flux_system]
+  depends_on = [kubectl_manifest.install, null_resource.flux_namespace]
 
   yaml_body = each.value
 }
@@ -114,7 +134,7 @@ resource "github_repository_file" "sync" {
   file       = data.flux_sync.main.path
   content    = data.flux_sync.main.content
   branch     = data.github_repository.main.default_branch
-  depends_on = [ github_repository_file.install ]
+  depends_on = [github_repository_file.install]
 
   lifecycle {
     ignore_changes = [
@@ -128,7 +148,7 @@ resource "github_repository_file" "kustomize" {
   file       = data.flux_sync.main.kustomize_path
   content    = data.flux_sync.main.kustomize_content
   branch     = data.github_repository.main.default_branch
-  depends_on = [ github_repository_file.sync ]
+  depends_on = [github_repository_file.sync]
 
   lifecycle {
     ignore_changes = [
