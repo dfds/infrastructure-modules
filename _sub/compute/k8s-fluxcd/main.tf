@@ -1,100 +1,62 @@
-locals {
-  namespace = "flux-system"
-}
-
-# SSH
-resource "tls_private_key" "main" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-# Flux
-data "flux_install" "main" {
-  target_path = var.repo_path
-}
-
-data "flux_sync" "main" {
-  target_path = var.repo_path
-  url         = "ssh://git@github.com/${var.github_owner}/${var.repo_name}.git"
-  branch      = var.repo_branch
-  namespace   = local.namespace
-}
-
-# Kubernetes
-# resource "kubernetes_namespace" "flux_system" {
-#   metadata {
-#     name = local.namespace
-#   }
-
-#   lifecycle {
-#     ignore_changes = [
-#       metadata[0].labels,
-#     ]
-#   }
-
-# }
+# --------------------------------------------------
+# Namespace
+# --------------------------------------------------
 
 resource "null_resource" "flux_namespace" {
   triggers = {
-    kubeconfig = var.kubeconfig_path
-    namespace = local.namespace
+    namespace  = local.namespace
+    kubeconfig = var.kubeconfig_path # Variables cannot be accessed by destroy-phase provisioners, only the 'self' object (including triggers)
   }
 
   provisioner "local-exec" {
-    command = "kubectl --kubeconfig $KUBECONFIG create namespace $NAMESPACE"
-    environment = {
-      KUBECONFIG = self.triggers.kubeconfig
-      NAMESPACE = self.triggers.namespace
-    }
+    command = "kubectl --kubeconfig ${self.triggers.kubeconfig} create namespace ${self.triggers.namespace}"
+  }
+
+  /*
+  Marking the flux-system namespace for deletion, will cause finalizers to be applied for any Flux CRDs in use.
+  The finalize controllers however have been deleted, causing namespace and CRDs to be stuck 'terminating'.
+  */
+
+  provisioner "local-exec" {
+    when       = destroy
+    # Mark the namespace for deletion and wait an abitrary amount of time for cascade delete to remove workloads managed by Flux.
+    command    = "kubectl --kubeconfig ${self.triggers.kubeconfig} delete namespace ${self.triggers.namespace} --cascade=true --wait=false && sleep 120"
   }
 
   provisioner "local-exec" {
     when       = destroy
-    # command    = "kubectl --kubeconfig $KUBECONFIG delete namespace $NAMESPACE --cascade=true --wait=false"
-    command    = "kubectl --kubeconfig $KUBECONFIG delete namespace $NAMESPACE --cascade=true --timeout=120s"
+    # Remove any finalizers from Flux CRDs, allowing these and the namespace to transition from 'terminating' and actually be deleted.
+    command    = "kubectl --kubeconfig ${self.triggers.kubeconfig} patch customresourcedefinition helmcharts.source.toolkit.fluxcd.io helmreleases.helm.toolkit.fluxcd.io helmrepositories.source.toolkit.fluxcd.io kustomizations.kustomize.toolkit.fluxcd.io -p '{\"metadata\":{\"finalizers\":null}}'"
     on_failure = continue
-    environment = {
-      KUBECONFIG = self.triggers.kubeconfig
-      NAMESPACE = self.triggers.namespace
-    }
-  }
-
-  provisioner "local-exec" {
-    when    = destroy
-    command = "kubectl --kubeconfig $KUBECONFIG patch customresourcedefinition helmcharts.source.toolkit.fluxcd.io helmreleases.helm.toolkit.fluxcd.io helmrepositories.source.toolkit.fluxcd.io kustomizations.kustomize.toolkit.fluxcd.io -p '{\"metadata\":{\"finalizers\":null}}'"
-    on_failure = continue
-    environment = {
-      KUBECONFIG = self.triggers.kubeconfig
-    }
   }
 }
 
-data "kubectl_file_documents" "install" {
-  content = data.flux_install.main.content
-}
+
+# --------------------------------------------------
+# Bootstrap Kubernetes manifests
+# --------------------------------------------------
 
 resource "kubectl_manifest" "install" {
-  for_each = { for v in data.kubectl_file_documents.install.documents : sha1(v) => v }
-  # depends_on = [kubernetes_namespace.flux_system]
+  for_each   = { for v in data.kubectl_file_documents.install.documents : sha1(v) => v }
   depends_on = [null_resource.flux_namespace]
 
   yaml_body = each.value
 }
-
-data "kubectl_file_documents" "sync" {
-  content = data.flux_sync.main.content
-}
-
 resource "kubectl_manifest" "sync" {
-  for_each = { for v in data.kubectl_file_documents.sync.documents : sha1(v) => v }
-  # depends_on = [kubectl_manifest.install, kubernetes_namespace.flux_system]
+  for_each   = { for v in data.kubectl_file_documents.sync.documents : sha1(v) => v }
   depends_on = [kubectl_manifest.install, null_resource.flux_namespace]
 
   yaml_body = each.value
 }
 
-locals {
-  known_hosts = "github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=="
+
+# --------------------------------------------------
+# Github
+# --------------------------------------------------
+
+resource "tls_private_key" "main" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
 }
 
 resource "kubernetes_secret" "main" {
@@ -112,10 +74,6 @@ resource "kubernetes_secret" "main" {
   }
 }
 
-data "github_repository" "main" {
-  name = var.repo_name
-}
-
 resource "github_repository_deploy_key" "main" {
   title      = "flux-readonly"
   repository = data.github_repository.main.name
@@ -129,6 +87,10 @@ resource "github_repository_file" "install" {
   content    = data.flux_install.main.content
   branch     = data.github_repository.main.default_branch
 
+  /*
+  Add arbitrary pause after installing CRDs, to prevent error like this, because CRD doesn't exist when sync'ing:
+  Error: flux-system/flux-system failed to run apply: error when creating "/tmp/875186376kubectl_manifest.yaml": the server could not find the requested resource (post kustomizations.kustomize.toolkit.fluxcd.io)
+  */
   provisioner "local-exec" {
     command = "sleep 60"
   }
