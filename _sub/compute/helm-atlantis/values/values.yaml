@@ -1,0 +1,96 @@
+image:
+  repository: ${atlantis_image}
+  tag: ${atlantis_image_tag}
+  pullPolicy: IfNotPresent
+
+orgWhitelist: ${github_repos}
+logLevel: "info"
+
+disableApply: true
+disableApplyAll: true
+
+github:
+  user: ${github_username}
+
+environmentSecrets:
+  - name: AWS_ACCESS_KEY_ID
+    secretKeyRef:
+      name: aws-credentials
+      key: aws_access_key
+  - name: AWS_SECRET_ACCESS_KEY
+    secretKeyRef:
+      name: aws-credentials
+      key: aws_secret
+  - name: access_key_master
+    secretKeyRef:
+      name: aws-credentials
+      key: access_key_master
+  - name: secret_key_master
+    secretKeyRef:
+      name: aws-credentials
+      key: secret_key_master
+
+  - name: TF_VAR_arm_tenant_id
+    secretKeyRef:
+      name: az-credentials
+      key: arm_tenant_id
+  - name: ARM_TENANT_ID
+    secretKeyRef:
+      name: az-credentials
+      key: arm_tenant_id
+  - name: TF_VAR_arm_subscription_id
+    secretKeyRef:
+      name: az-credentials
+      key: arm_subscription_id
+  - name: ARM_SUBSCRIPTION_ID
+    secretKeyRef:
+      name: az-credentials
+      key: arm_subscription_id
+  - name: TF_VAR_arm_client_id
+    secretKeyRef:
+      name: az-credentials
+      key: arm_client_id
+  - name: ARM_CLIENT_ID
+    secretKeyRef:
+      name: az-credentials
+      key: arm_client_id
+  - name: TF_VAR_arm_client_secret
+    secretKeyRef:
+      name: az-credentials
+      key: arm_client_secret
+  - name: ARM_CLIENT_SECRET
+    secretKeyRef:
+      name: az-credentials
+      key: arm_client_secret
+
+  - name: TF_VAR_github_token
+    secretKeyRef:
+      name: gh-credentials
+      key: github_token
+
+
+ingress:
+  host: ${atlantis_ingress}
+
+repoConfig: |
+  ---
+  repos:
+  - id: "/.*/"
+    workflow: terragrunt
+    allowed_overrides: [workflow]
+  workflows:
+    terragrunt:
+      plan:
+        steps:
+        - run: terragrunt plan-all -no-color --terragrunt-non-interactive -input=false
+      apply:
+        steps:
+        - run: exit 1
+    eks-pipeline:
+      plan:
+        steps:
+        - run: terragrunt plan-all -no-color --terragrunt-non-interactive -input=false
+      apply:
+        steps:
+        - run: exit 1
+

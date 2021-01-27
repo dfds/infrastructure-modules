@@ -65,8 +65,16 @@ provider "helm" {
 }
 
 provider "github" {
+  token = var.github_token !=null ? var.github_token : null
+  organization = var.github_organization != null ? var.github_organization : null
+  owner = var.github_owner != null ? var.github_owner : null
+  alias = "atlantis"
+}
+
+provider "github" {
   owner = var.platform_fluxcd_github_owner
   token = var.platform_fluxcd_github_token
+  alias = "fluxcd"
 }
 
 # provider "azuread" {}
@@ -444,4 +452,41 @@ module "platform_fluxcd" {
   github_owner    = var.platform_fluxcd_github_owner
   github_token    = var.platform_fluxcd_github_token
   kubeconfig_path = local.kubeconfig_path
+  
+  providers = {
+    github = github.fluxcd
+  }
+}
+
+# --------------------------------------------------
+# Atlantis
+# --------------------------------------------------
+
+module "atlantis" {
+  source              = "../../_sub/compute/helm-atlantis"
+  count               = var.atlantis_deploy ? 1 : 0
+  namespace           = var.namespace
+  chart_version       = var.chart_version
+  atlantis_image      = var.atlantis_image
+  atlantis_image_tag  = var.atlantis_image_tag
+  atlantis_ingress    = var.atlantis_ingress
+  github_token        = var.github_token
+  github_organization = var.github_organization
+  github_username     = var.github_username
+  github_repositories = var.github_repositories
+  webhook_secret      = var.webhook_secret
+  webhook_url         = var.atlantis_ingress
+  webhook_events      = var.webhook_events
+  aws_access_key      = var.aws_access_key
+  aws_secret          = var.aws_secret
+  access_key_master   = var.access_key_master
+  secret_key_master   = var.secret_key_master
+  arm_tenant_id       = var.arm_tenant_id
+  arm_subscription_id = var.arm_subscription_id
+  arm_client_id       = var.arm_client_id
+  arm_client_secret   = var.arm_client_secret
+  
+  providers = {
+    github = github.atlantis
+  }
 }
