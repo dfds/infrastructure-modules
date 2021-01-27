@@ -57,14 +57,14 @@ variable "kiam_chart_version" {
 # --------------------------------------------------
 
 variable "aws_assume_logs_role_arn" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "cloudwatchlogs_iam_role_deploy" {
-  type = bool
-  default = false
-  description = "Deploy an AWS IAM role for FluentD to assume, to enabling shipping logs to CloudWatch Logs"  
+  type        = bool
+  default     = false
+  description = "Deploy an AWS IAM role for FluentD to assume, to enabling shipping logs to CloudWatch Logs"
 }
 
 
@@ -330,9 +330,9 @@ variable "monitoring_kube_prometheus_stack_target_namespaces" {
 }
 
 variable "monitoring_alertmanager_silence_namespaces" {
-  type = string
+  type        = string
   description = "Silence noisy namespaces via alertmanager"
-  default = ""
+  default     = ""
 }
 
 # --------------------------------------------------
@@ -371,8 +371,8 @@ variable "eks_public_s3_bucket" {
 }
 
 variable "eks_is_sandbox" {
-  type        = bool
-  default     = false
+  type    = bool
+  default = false
 }
 
 # --------------------------------------------------
@@ -441,6 +441,7 @@ variable "kubesystem_permitted_extra_roles" {
   type        = list(string)
   default     = []
   description = "Defines additional roles that can be assumed from the kube-system namespace"
+}
 
 
 # --------------------------------------------------
@@ -454,122 +455,122 @@ variable "atlantis_deploy" {
 }
 
 variable "github_token" {
-    description = "Github token that the provider uses to perform Github operations. Leaving unset will fall back to GITHUB_TOKEN environment variable"
-    default = null
+  description = "Github token that the provider uses to perform Github operations. Leaving unset will fall back to GITHUB_TOKEN environment variable"
+  default     = null
 }
 
 variable "github_organization" {
-    description = "Github organization name. Conflicts with github_owner. Leaving unset will use GITHUB_ORGANIZATION environment variable if exists"
-    default = null
+  description = "Github organization name. Conflicts with github_owner. Leaving unset will use GITHUB_ORGANIZATION environment variable if exists"
+  default     = null
 }
 
 variable "github_owner" {
-    description = "Github owner(username). Conflicts with github_organization. Leaving unset will use GITHUB_OWNER environment variable if exists"
-    default = null
+  description = "Github owner(username). Conflicts with github_organization. Leaving unset will use GITHUB_OWNER environment variable if exists"
+  default     = null
 }
 
 variable "github_username" {
-    description = "Github username of the account that will post Atlantis comments on PR's"
-    default = null
+  description = "Github username of the account that will post Atlantis comments on PR's"
+  default     = null
 }
 
 variable "github_repositories" {
-    description = "List of repositories to whitelist for Atlantis"
-    type = list(string)
-    default = []
+  description = "List of repositories to whitelist for Atlantis"
+  type        = list(string)
+  default     = []
 }
 
 variable "webhook_secret" {
-    description = "Secret used by the Webhook to speak to Atlantis"
-    default = null
+  description = "Secret used by the Webhook to speak to Atlantis"
+  default     = null
 }
 
 variable "webhook_content_type" {
-    default = "application/json"
+  default = "application/json"
 }
 
 variable "webhook_insecure_ssl" {
-    default = false
+  default = false
 }
 
 variable "webhook_events" {
-    description = "A list of events that should trigger the webhook"
-    default = []
-    type = list(string)
+  description = "A list of events that should trigger the webhook"
+  default     = []
+  type        = list(string)
 }
 
 variable "namespace" {
-  type = string
+  type        = string
   description = ""
-  default = "atlantis"
+  default     = "atlantis"
 }
 
 variable "chart_version" {
-  type = string
+  type        = string
   description = ""
-  default = null
+  default     = null
 }
 
 variable "atlantis_ingress" {
-  type = string
+  type        = string
   description = ""
-  default = null
+  default     = null
 }
 
 variable "atlantis_image" {
-  type = string
+  type        = string
   description = ""
-  default = "dfdsdk/atlantis-prime-pipeline"
+  default     = "dfdsdk/atlantis-prime-pipeline"
 }
 
 variable "atlantis_image_tag" {
-  type = string
+  type        = string
   description = "Tag of the Atlantis image to use"
-  default = "latest"
+  default     = "latest"
 }
 
 variable "arm_tenant_id" {
-  type = string
+  type        = string
   description = ""
-  default = null
+  default     = null
 }
 
 variable "arm_subscription_id" {
-  type = string
+  type        = string
   description = ""
-  default = null
+  default     = null
 }
 
 variable "arm_client_id" {
-  type = string
+  type        = string
   description = ""
-  default = null
+  default     = null
 }
 
 variable "arm_client_secret" {
-  type = string
+  type        = string
   description = ""
-  default = null
+  default     = null
 }
 
 variable "aws_access_key" {
-    description = "AWS Access Key"
-    default = null
+  description = "AWS Access Key"
+  default     = null
 }
 
 variable "aws_secret" {
-    description = "AWS Secret"
-    default = null
+  description = "AWS Secret"
+  default     = null
 }
 
 variable "access_key_master" {
-  type = string
+  type        = string
   description = "Access Key for Core account"
-  default = null
+  default     = null
 }
 
 variable "secret_key_master" {
-  type = string
+  type        = string
   description = "Secret for Core account"
-  default = null
+  default     = null
 }
