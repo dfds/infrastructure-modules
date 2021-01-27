@@ -186,17 +186,6 @@ variable "eks_worker_cloudwatch_agent_config_file" {
 
 
 # --------------------------------------------------
-# Namespaces
-# --------------------------------------------------
-
-variable "kubesystem_permitted_extra_roles" {
-  type        = list(string)
-  default     = []
-  description = "Defines additional roles that can be assumed from the kube-system namespace"
-}
-
-
-# --------------------------------------------------
 # Unused variables - to provent TF warning/error:
 # Using a variables file to set an undeclared variable is deprecated and will
 # become an error in a future release. If you wish to provide certain "global"

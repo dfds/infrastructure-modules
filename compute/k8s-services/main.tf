@@ -7,9 +7,13 @@ terraform {
   }
 }
 
+
+# --------------------------------------------------
+# Provider configuration
+# --------------------------------------------------
+
 provider "aws" {
-  version = "~> 2.43"
-  region  = var.aws_region
+  region = var.aws_region
 
   assume_role {
     role_arn = var.aws_assume_role_arn
@@ -17,13 +21,25 @@ provider "aws" {
 }
 
 provider "aws" {
-  version = "~> 2.43"
-  region  = var.aws_region
-  alias   = "core"
+  region = var.aws_region
+  alias  = "core"
+}
+
+locals {
+  aws_assume_logs_role_arn = length(var.aws_assume_logs_role_arn) > 0 ? var.aws_assume_logs_role_arn : var.aws_assume_role_arn
+}
+
+provider "aws" {
+  region = var.aws_region
+
+  assume_role {
+    role_arn = local.aws_assume_logs_role_arn
+  }
+
+  alias = "logs"
 }
 
 provider "kubernetes" {
-  version                = "~> 1.11.1"
   host                   = data.aws_eks_cluster.eks.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.eks.token
@@ -31,21 +47,14 @@ provider "kubernetes" {
   # config_path            = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allowed when importing into state (remember to flip above bool to load config)
 }
 
-provider "github" {
-    token = var.github_token !=null ? var.github_token : null
-    organization = var.github_organization != null ? var.github_organization : null
-    owner = var.github_owner != null ? var.github_owner : null
+provider "kubectl" {
+  host                   = data.aws_eks_cluster.eks.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.eks.token
+  load_config_file       = false
 }
 
-# provider "azuread" {}
-
-# --------------------------------------------------
-# Helm
-# --------------------------------------------------
-
 provider "helm" {
-  version = "~> 1.3.2"
-
   kubernetes {
     host                   = data.aws_eks_cluster.eks.endpoint
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
@@ -54,6 +63,36 @@ provider "helm" {
     # config_path            = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allowed when importing into state (remember to flip above bool to load config)
   }
 }
+
+provider "github" {
+  token = var.github_token !=null ? var.github_token : null
+  organization = var.github_organization != null ? var.github_organization : null
+  owner = var.github_owner != null ? var.github_owner : null
+  alias = "atlantis"
+}
+
+provider "github" {
+  owner = var.platform_fluxcd_github_owner
+  token = var.platform_fluxcd_github_token
+  alias = "fluxcd"
+}
+
+# provider "azuread" {}
+
+
+# --------------------------------------------------
+# AWS EBS CSI Driver (Helm Chart Installation)
+# --------------------------------------------------
+
+module "ebs_csi_driver" {
+  source               = "../../_sub/compute/helm-ebs-csi-driver"
+  count                = var.ebs_csi_driver_deploy ? 1 : 0
+  chart_version        = var.ebs_csi_driver_chart_version
+  cluster_name         = var.eks_cluster_name
+  kiam_server_role_arn = module.kiam_deploy.server_role_arn
+  kubeconfig_path      = local.kubeconfig_path
+}
+
 
 # --------------------------------------------------
 # Traefik
@@ -255,6 +294,49 @@ module "kiam_deploy" {
   servicemonitor_enabled  = var.monitoring_kube_prometheus_stack_deploy
 }
 
+
+# --------------------------------------------------
+# AWS IAM roles
+# --------------------------------------------------
+
+module "aws_cloudwatchlogs_iam_role" {
+  source               = "../../_sub/security/iam-role"
+  count                = var.cloudwatchlogs_iam_role_deploy ? 1 : 0
+  role_name            = "eks-${var.eks_cluster_name}-cloudwatchlogs"
+  role_description     = "Role for FluentD to assume in order to ship logs to CloudWatch Logs"
+  role_policy_name     = "CloudWatchLogs"
+  role_policy_document = jsonencode(local.cloudwatchlogs_policy)
+  assume_role_policy   = jsonencode(local.cloudwatchlogs_assume_role_policy)
+}
+
+
+# --------------------------------------------------
+# Namespaces
+# --------------------------------------------------
+
+# Annotate the kube-system namespace so that KIAM allows the traffic needed by the EBS CSI Driver
+# This annotation is always applied.  The decision to allow this was taken on the basis that the annotation
+# is a lightweight element with little cost.  If we wished to have it defined based on a feature toggle
+# then it would create additional complexity and require that the toggle variable exist in two places,
+# thus leading to confusion  
+locals {
+  kubesystem_permitted_base_role = flatten([
+    try(module.ebs_csi_driver[0].iam_role_name, []),
+    try(module.aws_cloudwatchlogs_iam_role[0].arn, [])
+  ])
+  kubesystem_permitted_role_list        = concat(local.kubesystem_permitted_base_role, var.kubesystem_permitted_extra_roles)
+  kubesystem_permitted_role_list_sorted = sort(local.kubesystem_permitted_role_list)
+  kubesystem_permitted_role_string      = join("|", local.kubesystem_permitted_role_list_sorted)
+}
+
+module "kube_system_namespace" {
+  source          = "../../_sub/compute/k8s-annotate-namespace"
+  namespace       = "kube-system"
+  kubeconfig_path = local.kubeconfig_path
+  annotations     = { "iam.amazonaws.com/permitted" = local.kubesystem_permitted_role_string }
+}
+
+
 # --------------------------------------------------
 # Blaster - depends on KIAM
 # --------------------------------------------------
@@ -267,6 +349,7 @@ module "blaster_namespace" {
   kiam_server_role_arn     = module.kiam_deploy.server_role_arn
   extra_permitted_roles    = var.blaster_namespace_extra_permitted_roles
 }
+
 
 # --------------------------------------------------
 # Cloudwatch alarms and alarm notifier (Slack)
@@ -306,6 +389,7 @@ module "monitoring_namespace" {
   iam_roles = var.monitoring_namespace_iam_roles
 }
 
+
 # --------------------------------------------------
 # Goldpinger
 # --------------------------------------------------
@@ -319,18 +403,6 @@ module "monitoring_goldpinger" {
   depends_on     = [module.monitoring_kube_prometheus_stack]
 }
 
-# --------------------------------------------------
-# AWS EBS CSI Driver (Helm Chart Installation)
-# --------------------------------------------------
-
-module "ebs_csi_driver" {
-  source               = "../../_sub/compute/helm-ebs-csi-driver"
-  count                = var.ebs_csi_driver_deploy ? 1 : 0
-  chart_version        = var.ebs_csi_driver_chart_version
-  cluster_name         = var.eks_cluster_name
-  kiam_server_role_arn = module.kiam_deploy.server_role_arn
-  kubeconfig_path      = local.kubeconfig_path
-}
 
 # --------------------------------------------------
 # Kube-prometheus-stacktw
@@ -355,15 +427,35 @@ module "monitoring_kube_prometheus_stack" {
   alertmanager_silence_namespaces = var.monitoring_alertmanager_silence_namespaces
 }
 
+
 # --------------------------------------------------
 # Metrics-Server
 # --------------------------------------------------
 
 module "monitoring_metrics_server" {
-  source         = "../../_sub/compute/helm-metrics-server"
-  count          = var.monitoring_metrics_server_deploy && var.monitoring_namespace_deploy ? 1 : 0
-  chart_version  = var.monitoring_metrics_server_chart_version
-  namespace      = module.monitoring_namespace[0].name
+  source        = "../../_sub/compute/helm-metrics-server"
+  count         = var.monitoring_metrics_server_deploy && var.monitoring_namespace_deploy ? 1 : 0
+  chart_version = var.monitoring_metrics_server_chart_version
+  namespace     = module.monitoring_namespace[0].name
+}
+
+
+# --------------------------------------------------
+# Flux CD
+# --------------------------------------------------
+
+module "platform_fluxcd" {
+  source          = "../../_sub/compute/k8s-fluxcd"
+  count           = var.platform_fluxcd_deploy ? 1 : 0
+  repo_name       = var.platform_fluxcd_repo_name
+  repo_path       = "./clusters/${var.eks_cluster_name}"
+  github_owner    = var.platform_fluxcd_github_owner
+  github_token    = var.platform_fluxcd_github_token
+  kubeconfig_path = local.kubeconfig_path
+  
+  providers = {
+    github = github.fluxcd
+  }
 }
 
 # --------------------------------------------------
@@ -371,26 +463,30 @@ module "monitoring_metrics_server" {
 # --------------------------------------------------
 
 module "atlantis" {
-  source = "../../_sub/compute/helm-atlantis"
-  count = var.atlantis_deploy ? 1 : 0
-  namespace = var.namespace
-  chart_version = var.chart_version
-  atlantis_image = var.atlantis_image
-  atlantis_image_tag = var.atlantis_image_tag
-  atlantis_ingress = var.atlantis_ingress
-  github_token = var.github_token
+  source              = "../../_sub/compute/helm-atlantis"
+  count               = var.atlantis_deploy ? 1 : 0
+  namespace           = var.namespace
+  chart_version       = var.chart_version
+  atlantis_image      = var.atlantis_image
+  atlantis_image_tag  = var.atlantis_image_tag
+  atlantis_ingress    = var.atlantis_ingress
+  github_token        = var.github_token
   github_organization = var.github_organization
-  github_username = var.github_username
+  github_username     = var.github_username
   github_repositories = var.github_repositories
-  webhook_secret = var.webhook_secret
-  webhook_url = var.atlantis_ingress
-  webhook_events = var.webhook_events
-  aws_access_key = var.aws_access_key
-  aws_secret = var.aws_secret
-  access_key_master = var.access_key_master
-  secret_key_master = var.secret_key_master
-  arm_tenant_id = var.arm_tenant_id
+  webhook_secret      = var.webhook_secret
+  webhook_url         = var.atlantis_ingress
+  webhook_events      = var.webhook_events
+  aws_access_key      = var.aws_access_key
+  aws_secret          = var.aws_secret
+  access_key_master   = var.access_key_master
+  secret_key_master   = var.secret_key_master
+  arm_tenant_id       = var.arm_tenant_id
   arm_subscription_id = var.arm_subscription_id
-  arm_client_id = var.arm_client_id
-  arm_client_secret = var.arm_client_secret
+  arm_client_id       = var.arm_client_id
+  arm_client_secret   = var.arm_client_secret
+  
+  providers = {
+    github = github.atlantis
+  }
 }

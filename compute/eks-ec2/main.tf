@@ -275,31 +275,6 @@ module "cloudwatch_agent_config_bucket" {
 
 
 # --------------------------------------------------
-# Namespaces
-# --------------------------------------------------
-
-# Annotate the kube-system namespace so that KIAM allows the traffic needed by the EBS CSI Driver
-# This annotation is always applied.  The decision to allow this was taken on the basis that the annotation
-# is a lightweight element with little cost.  If we wished to have it defined based on a feature toggle
-# then it would create additional complexity and require that the toggle variable exist in two places,
-# thus leading to confusion  
-locals {
-  kubesystem_permitted_base_role        = ["eks-${var.eks_cluster_name}-csi"]
-  kubesystem_permitted_role_list        = concat(local.kubesystem_permitted_base_role, var.kubesystem_permitted_extra_roles)
-  kubesystem_permitted_role_list_sorted = sort(local.kubesystem_permitted_role_list)
-  kubesystem_permitted_role_string      = join("|", local.kubesystem_permitted_role_list_sorted)
-}
-
-module "kube_system_namespace" {
-  source          = "../../_sub/compute/k8s-annotate-namespace"
-  depends_on      = [module.eks_heptio]
-  namespace       = "kube-system"
-  kubeconfig_path = local.kubeconfig_path
-  annotations     = { "iam.amazonaws.com/permitted" = local.kubesystem_permitted_role_string }
-}
-
-
-# --------------------------------------------------
 # Cluster access
 # --------------------------------------------------
 

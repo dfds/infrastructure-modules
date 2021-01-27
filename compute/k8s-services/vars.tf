@@ -36,6 +36,38 @@ variable "eks_cluster_name" {
   type = string
 }
 
+
+# --------------------------------------------------
+# KIAM
+# --------------------------------------------------
+
+variable "kiam_deploy" {
+  default = false
+}
+
+variable "kiam_chart_version" {
+  type        = string
+  description = "KIAM helm chart version"
+  default     = null
+}
+
+
+# --------------------------------------------------
+# FluentD CloudWatch Logs
+# --------------------------------------------------
+
+variable "aws_assume_logs_role_arn" {
+  type = string
+  default = ""
+}
+
+variable "cloudwatchlogs_iam_role_deploy" {
+  type = bool
+  default = false
+  description = "Deploy an AWS IAM role for FluentD to assume, to enabling shipping logs to CloudWatch Logs"  
+}
+
+
 # --------------------------------------------------
 # Traefik
 # --------------------------------------------------
@@ -143,20 +175,6 @@ variable "traefik_okta_health_check_path" {
   default = "/ping/"
 }
 
-
-# --------------------------------------------------
-# KIAM
-# --------------------------------------------------
-
-variable "kiam_deploy" {
-  default = false
-}
-
-variable "kiam_chart_version" {
-  type        = string
-  description = "KIAM helm chart version"
-  default     = null
-}
 
 # --------------------------------------------------
 # Blaster
@@ -372,6 +390,58 @@ variable "ebs_csi_driver_chart_version" {
   description = "The version of the AWS EBS CSI driver Helm chart to deploy (defaults to latest)"
   default     = null
 }
+
+
+# --------------------------------------------------
+# Platform Flux CD
+# --------------------------------------------------
+
+variable "platform_fluxcd_deploy" {
+  type        = bool
+  default     = false
+  description = ""
+}
+
+variable "platform_fluxcd_namespace" {
+  type        = string
+  default     = "platform-flux"
+  description = ""
+}
+
+variable "platform_fluxcd_repo_name" {
+  type        = string
+  default     = ""
+  description = ""
+}
+
+variable "platform_fluxcd_repo_path" {
+  type        = string
+  default     = ""
+  description = ""
+}
+
+variable "platform_fluxcd_github_owner" {
+  type        = string
+  default     = ""
+  description = ""
+}
+
+variable "platform_fluxcd_github_token" {
+  type        = string
+  default     = ""
+  description = ""
+}
+
+
+# --------------------------------------------------
+# Namespaces
+# --------------------------------------------------
+
+variable "kubesystem_permitted_extra_roles" {
+  type        = list(string)
+  default     = []
+  description = "Defines additional roles that can be assumed from the kube-system namespace"
+
 
 # --------------------------------------------------
 # Atlantis
