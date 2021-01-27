@@ -1,3 +1,6 @@
+locals {
+  packages_list = replace(yamlencode({provider:{packages:var.crossplane_providers}}), "\"", "")
+}
 resource "helm_release" "crossplane" {
     name = var.release_name
     chart = "crossplane"
@@ -9,6 +12,7 @@ resource "helm_release" "crossplane" {
 
     values = [
     templatefile("${path.module}/values/values.yaml", {
+      crossplane_providers = local.packages_list
   })]
 }
 

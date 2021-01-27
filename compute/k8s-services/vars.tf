@@ -543,3 +543,9 @@ variable "crossplane_force_update" {
     description = "Force resource updates through replacement"
     default = false
 }
+
+variable "crossplane_providers" {
+  type = list(string)
+  description = "List of Crossplane providers to install"
+  default = []
+}
