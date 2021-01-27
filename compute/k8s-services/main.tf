@@ -65,15 +65,17 @@ provider "helm" {
 }
 
 provider "github" {
-  token = var.github_token !=null ? var.github_token : null
+  token        = var.github_token != null ? var.github_token : null
   organization = var.github_organization != null ? var.github_organization : null
-  owner = var.github_owner != null ? var.github_owner : null
+  owner        = var.github_owner != null ? var.github_owner : null
+
   alias = "atlantis"
 }
 
 provider "github" {
   owner = var.platform_fluxcd_github_owner
   token = var.platform_fluxcd_github_token
+
   alias = "fluxcd"
 }
 
@@ -452,7 +454,7 @@ module "platform_fluxcd" {
   github_owner    = var.platform_fluxcd_github_owner
   github_token    = var.platform_fluxcd_github_token
   kubeconfig_path = local.kubeconfig_path
-  
+
   providers = {
     github = github.fluxcd
   }
@@ -485,7 +487,7 @@ module "atlantis" {
   arm_subscription_id = var.arm_subscription_id
   arm_client_id       = var.arm_client_id
   arm_client_secret   = var.arm_client_secret
-  
+
   providers = {
     github = github.atlantis
   }
