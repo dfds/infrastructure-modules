@@ -40,5 +40,5 @@ locals {
 }
 
 data "github_repository" "main" {
-  full_name = "${var.repo_owner}/${var.repo_name}"
+  full_name = "${var.github_owner}/${var.repo_name}"
 }
