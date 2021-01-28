@@ -65,9 +65,9 @@ provider "helm" {
 }
 
 provider "github" {
-  token        = var.github_token != null ? var.github_token : null
-  organization = var.github_organization != null ? var.github_organization : null
-  owner        = var.github_owner != null ? var.github_owner : null
+  token        = var.atlantis_github_token != null ? var.atlantis_github_token : null
+  organization = var.atlantis_github_organization != null ? var.atlantis_github_organization : null
+  owner        = var.atlantis_github_owner != null ? var.atlantis_github_owner : null
 
   alias = "atlantis"
 }
@@ -467,26 +467,26 @@ module "platform_fluxcd" {
 module "atlantis" {
   source              = "../../_sub/compute/helm-atlantis"
   count               = var.atlantis_deploy ? 1 : 0
-  namespace           = var.namespace
-  chart_version       = var.chart_version
+  namespace           = var.atlantis_namespace
+  chart_version       = var.atlantis_chart_version
   atlantis_image      = var.atlantis_image
   atlantis_image_tag  = var.atlantis_image_tag
   atlantis_ingress    = var.atlantis_ingress
-  github_token        = var.github_token
-  github_organization = var.github_organization
-  github_username     = var.github_username
-  github_repositories = var.github_repositories
-  webhook_secret      = var.webhook_secret
+  github_token        = var.atlantis_github_token
+  github_organization = var.atlantis_github_organization
+  github_username     = var.atlantis_github_username
+  github_repositories = var.atlantis_github_repositories
+  webhook_secret      = var.atlantis_webhook_secret
   webhook_url         = var.atlantis_ingress
-  webhook_events      = var.webhook_events
-  aws_access_key      = var.aws_access_key
-  aws_secret          = var.aws_secret
-  access_key_master   = var.access_key_master
-  secret_key_master   = var.secret_key_master
-  arm_tenant_id       = var.arm_tenant_id
-  arm_subscription_id = var.arm_subscription_id
-  arm_client_id       = var.arm_client_id
-  arm_client_secret   = var.arm_client_secret
+  webhook_events      = var.atlantis_webhook_events
+  aws_access_key      = var.atlantis_aws_access_key
+  aws_secret          = var.atlantis_aws_secret
+  access_key_master   = var.atlantis_access_key_master
+  secret_key_master   = var.atlantis_secret_key_master
+  arm_tenant_id       = var.atlantis_arm_tenant_id
+  arm_subscription_id = var.atlantis_arm_subscription_id
+  arm_client_id       = var.atlantis_arm_client_id
+  arm_client_secret   = var.atlantis_arm_client_secret
 
   providers = {
     github = github.atlantis
