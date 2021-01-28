@@ -62,4 +62,13 @@ inputs = {
   slack_webhook_url = "https://dummy.slack.webhook"
   cloudwatch_alarm_alb_targets_health_deploy = true
   cloudwatch_alarm_alb_5XX_deploy = true
+
+  # --------------------------------------------------
+  # Platform Flux CD
+  # --------------------------------------------------
+
+  platform_fluxcd_deploy       = true
+  platform_fluxcd_repo_name    = "platform-manifests-qa"
+  platform_fluxcd_github_owner = "dfds"
+  
 }

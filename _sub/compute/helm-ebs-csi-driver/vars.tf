@@ -9,6 +9,7 @@ variable "chart_version" {
   description = "The Helm chart version to deploy"
 }
 
+# Currently only needed for IAM policy. Convert this to inline policy, ditch cluster name from policy name and remove this variable?
 variable "cluster_name" {
   type        = string
   description = "The cluster name"
