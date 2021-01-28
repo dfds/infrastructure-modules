@@ -5,7 +5,7 @@ resource "helm_release" "crossplane" {
     name = var.release_name
     chart = "crossplane"
     repository    = "https://charts.crossplane.io/stable"
-    version       = var.chart_version != null ? var.chart_version : null
+    version       = var.chart_version
     namespace     = var.namespace
     recreate_pods = var.recreate_pods
     force_update  = var.force_update
