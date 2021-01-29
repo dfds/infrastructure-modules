@@ -17,6 +17,15 @@ resource "null_resource" "flux_namespace" {
   The finalize controllers however have been deleted, causing namespace and CRDs to be stuck 'terminating'.
   */
 
+  /*
+  If kubeconfig path changes, this will cause this resource to be re-created - this is a problem by itself.
+  But, the triggers are not updated at the time the Terraform plan runs, so the kubectl commands will fail.
+  Workaround for now is to not attempt to delete the namespace all, or the resources in here.
+  However we don't expect to toggle Flux on and off repeatedly. The main concern is automated build and destroy of QA.
+  In a QA scenario, we don't care if Flux is left behind, as we'll destroy the entire cluster aftwards.
+  */
+
+  /*
   provisioner "local-exec" {
     when       = destroy
     # Mark the namespace for deletion and wait an abitrary amount of time for cascade delete to remove workloads managed by Flux.
@@ -29,6 +38,8 @@ resource "null_resource" "flux_namespace" {
     command    = "kubectl --kubeconfig ${self.triggers.kubeconfig} patch customresourcedefinition helmcharts.source.toolkit.fluxcd.io helmreleases.helm.toolkit.fluxcd.io helmrepositories.source.toolkit.fluxcd.io kustomizations.kustomize.toolkit.fluxcd.io -p '{\"metadata\":{\"finalizers\":null}}'"
     on_failure = continue
   }
+  */
+
 }
 
 
