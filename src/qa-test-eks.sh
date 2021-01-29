@@ -35,13 +35,16 @@ if [ "$ACTION" = "test" ]; then
 
     SUBPATH=$2
     WORKDIR="${BASEPATH}/${SUBPATH}/cluster"
-    KUBECONFIG=$(terragrunt output kubeconfig_path --terragrunt-working-dir $WORKDIR)
+    export KUBECONFIG=$(terragrunt output kubeconfig_path --terragrunt-working-dir $WORKDIR)
 
     # Sleep before test?
 
     # --------------------------------------------------
     # Simply output certain resources for manual inspection
     # --------------------------------------------------
+
+    # Flux
+    kubectl -n flux-system get deploy || true
 
     # FluentD
     kubectl -n fluentd get ds fluentd-cloudwatch || true
