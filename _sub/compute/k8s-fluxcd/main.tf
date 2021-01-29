@@ -5,7 +5,7 @@
 resource "null_resource" "flux_namespace" {
   triggers = {
     namespace  = local.namespace
-    kubeconfig = var.kubeconfig_path # Variables cannot be accessed by destroy-phase provisioners, only the 'self' object (including triggers)
+    # kubeconfig = var.kubeconfig_path # Variables cannot be accessed by destroy-phase provisioners, only the 'self' object (including triggers)
   }
 
   provisioner "local-exec" {
