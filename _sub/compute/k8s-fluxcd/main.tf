@@ -9,7 +9,7 @@ resource "null_resource" "flux_namespace" {
   }
 
   provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${self.triggers.kubeconfig} create namespace ${self.triggers.namespace}"
+    command = "kubectl --kubeconfig ${var.kubeconfig_path} create namespace ${self.triggers.namespace}"
   }
 
   /*
