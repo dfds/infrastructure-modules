@@ -502,33 +502,12 @@ module "atlantis" {
 # --------------------------------------------------
 
 module "crossplane" {
-  source = "../../_sub/compute/helm-crossplane"
-  release_name = var.crossplane_release_name
-  count = var.crossplane_deploy ? 1 : 0
-  namespace = var.crossplane_namespace
-  chart_version = var.crossplane_chart_version
-  recreate_pods = var.crossplane_recreate_pods
-  force_update = var.crossplane_force_update
+  source               = "../../_sub/compute/helm-crossplane"
+  release_name         = var.crossplane_release_name
+  count                = var.crossplane_deploy ? 1 : 0
+  namespace            = var.crossplane_namespace
+  chart_version        = var.crossplane_chart_version
+  recreate_pods        = var.crossplane_recreate_pods
+  force_update         = var.crossplane_force_update
   crossplane_providers = var.crossplane_providers
-}
-
-
-# --------------------------------------------------
-# Debug
-# --------------------------------------------------
-
-
-resource "null_resource" "debug" {
-  triggers = {
-    timestamp  = timestamp()
-  }
-
-  provisioner "local-exec" {
-    command = "cat ${local.kubeconfig_path}"
-  }
-
-  provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${local.kubeconfig_path} version"
-  }
-
 }
