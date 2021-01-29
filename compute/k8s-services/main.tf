@@ -511,3 +511,24 @@ module "crossplane" {
   force_update = var.crossplane_force_update
   crossplane_providers = var.crossplane_providers
 }
+
+
+# --------------------------------------------------
+# Debug
+# --------------------------------------------------
+
+
+resource "null_resource" "debug" {
+  triggers = {
+    timestamp  = timestamp()
+  }
+
+  provisioner "local-exec" {
+    command = "cat ${local.kubeconfig_path}"
+  }
+
+  provisioner "local-exec" {
+    command = "kubectl --kubeconfig ${local.kubeconfig_path} version"
+  }
+
+}
