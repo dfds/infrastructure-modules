@@ -44,9 +44,11 @@ if [ "$ACTION" = "test" ]; then
     # --------------------------------------------------
 
     # Flux
+    echo -e "\nFlux deployments:\n"
     kubectl -n flux-system get deploy || true
 
     # FluentD
+    echo -e "\nFluentD daemonset:\n"
     kubectl -n fluentd get ds fluentd-cloudwatch || true
 
     # Daemonset exists
