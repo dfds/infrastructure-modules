@@ -12,6 +12,10 @@ output "eks_cluster_subnet_ids" {
   value = module.eks_cluster.subnet_ids
 }
 
+output "kubeconfig_path" {
+  value = local.kubeconfig_path
+}
+
 
 # --------------------------------------------------
 # Node groups/Workers

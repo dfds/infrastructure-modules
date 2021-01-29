@@ -29,8 +29,33 @@ fi
 
 
 if [ "$ACTION" = "test" ]; then
-    echo "Add tests here"
+    # --------------------------------------------------
+    # Get kubeconfig path
+    # --------------------------------------------------
+
+    SUBPATH=$2
+    WORKDIR="${BASEPATH}/${SUBPATH}/cluster"
+    KUBECONFIG=$(terragrunt output kubeconfig_path --terragrunt-working-dir $WORKDIR)
+
+    # Sleep before test?
+
+    # --------------------------------------------------
+    # Simply output certain resources for manual inspection
+    # --------------------------------------------------
+
+    # FluentD
+    kubectl -n fluentd get ds fluentd-cloudwatch || true
+
+    # Daemonset exists
+    # kubectl --kubeconfig $KUBECONFIG -n fluentd get ds -o name | grep fluentd-cloudwatch
+    # if [ $? -ne 0 ]; then
+    #     echo "Daemonset 'fluentd-cloudwatch' not found"
+    # fi
+
+    # Verify number of available pods?
+
 fi
+
 
 if [ "$ACTION" = "disable-cluster-logging" ]; then
     REGION=$2
@@ -38,6 +63,7 @@ if [ "$ACTION" = "disable-cluster-logging" ]; then
     aws --region $REGION eks update-cluster-config --name $CLUSTERNAME --logging '{"clusterLogging":[{"types":["api","audit","authenticator","controllerManager","scheduler"],"enabled":false}]}' || true
     sleep 60
 fi
+
 
 if [ "$ACTION" = "destroy-cluster" ]; then
     RETURN=0
@@ -57,6 +83,7 @@ if [ "$ACTION" = "destroy-cluster" ]; then
         false
     fi
 fi
+
 
 if [ "$ACTION" = "destroy-shared" ]; then
     SUBPATH=$2
