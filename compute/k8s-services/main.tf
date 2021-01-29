@@ -26,7 +26,7 @@ provider "aws" {
 }
 
 locals {
-  aws_assume_logs_role_arn = length(var.aws_assume_logs_role_arn) > 0 ? var.aws_assume_logs_role_arn : var.aws_assume_role_arn
+  aws_assume_logs_role_arn = var.aws_assume_logs_role_arn != null ? var.aws_assume_logs_role_arn : var.aws_assume_role_arn
 }
 
 provider "aws" {
@@ -309,6 +309,10 @@ module "aws_cloudwatchlogs_iam_role" {
   role_policy_name     = "CloudWatchLogs"
   role_policy_document = jsonencode(local.cloudwatchlogs_policy)
   assume_role_policy   = jsonencode(local.cloudwatchlogs_assume_role_policy)
+
+  providers = {
+    aws = aws.logs
+  }
 }
 
 

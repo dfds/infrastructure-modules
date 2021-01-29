@@ -58,7 +58,7 @@ variable "kiam_chart_version" {
 
 variable "aws_assume_logs_role_arn" {
   type    = string
-  default = ""
+  default = null
 }
 
 variable "cloudwatchlogs_iam_role_deploy" {
