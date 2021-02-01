@@ -68,14 +68,12 @@ provider "github" {
   token        = var.atlantis_github_token != null ? var.atlantis_github_token : null
   organization = var.atlantis_github_organization != null ? var.atlantis_github_organization : null
   owner        = var.atlantis_github_owner != null ? var.atlantis_github_owner : null
-
   alias = "atlantis"
 }
 
 provider "github" {
-  owner = var.platform_fluxcd_github_owner
   token = var.platform_fluxcd_github_token
-
+  owner = var.platform_fluxcd_github_owner
   alias = "fluxcd"
 }
 
@@ -491,6 +489,7 @@ module "atlantis" {
   arm_subscription_id = var.atlantis_arm_subscription_id
   arm_client_id       = var.atlantis_arm_client_id
   arm_client_secret   = var.atlantis_arm_client_secret
+  platform_fluxcd_github_token = var.atlantis_platform_fluxcd_github_token
 
   providers = {
     github = github.atlantis

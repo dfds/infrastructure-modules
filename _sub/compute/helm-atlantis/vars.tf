@@ -59,7 +59,10 @@ variable "arm_client_secret" {
 #
 variable "github_token" {
     description = "Github token that the provider uses to perform Github operations. Leaving unset will fall back to GITHUB_TOKEN environment variable"
-    default = null
+}
+
+variable "platform_fluxcd_github_token" {
+    description = "Github token that the provider uses to perform Github operations for Flux."
 }
 
 variable "github_organization" {

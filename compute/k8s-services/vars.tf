@@ -459,6 +459,11 @@ variable "atlantis_github_token" {
   default     = null
 }
 
+variable "atlantis_platform_fluxcd_github_token" {
+  description = "Github token that the provider uses to perform Github operations for Flux."
+  default     = ""
+}
+
 variable "atlantis_github_organization" {
   description = "Github organization name. Conflicts with github_owner. Leaving unset will use GITHUB_ORGANIZATION environment variable if exists"
   default     = null
@@ -501,25 +506,25 @@ variable "atlantis_webhook_events" {
 
 variable "atlantis_namespace" {
   type        = string
-  description = ""
+  description = "Namespace for Atlantis deployment"
   default     = "atlantis"
 }
 
 variable "atlantis_chart_version" {
   type        = string
-  description = ""
+  description = "Version of the helm chart to deploy"
   default     = null
 }
 
 variable "atlantis_ingress" {
   type        = string
-  description = ""
+  description = "URL for Atlantis Ingress"
   default     = null
 }
 
 variable "atlantis_image" {
   type        = string
-  description = ""
+  description = "Name of the image to use for Atlantis"
   default     = "dfdsdk/atlantis-prime-pipeline"
 }
 
@@ -531,48 +536,48 @@ variable "atlantis_image_tag" {
 
 variable "atlantis_arm_tenant_id" {
   type        = string
-  description = ""
-  default     = null
+  description = "Used to set environment variable for ARM tenant ID"
+  default     = ""
 }
 
 variable "atlantis_arm_subscription_id" {
   type        = string
-  description = ""
-  default     = null
+  description = "Used to set environment variable for ARM subscription ID"
+  default     = ""
 }
 
 variable "atlantis_arm_client_id" {
   type        = string
-  description = ""
-  default     = null
+  description = "Used to set environment variable for ARM client ID"
+  default     = ""
 }
 
 variable "atlantis_arm_client_secret" {
   type        = string
-  description = ""
-  default     = null
+  description = "Used to set environment variable for ARM client secret"
+  default     = ""
 }
 
 variable "atlantis_aws_access_key" {
   description = "AWS Access Key"
-  default     = null
+  default     = ""
 }
 
 variable "atlantis_aws_secret" {
   description = "AWS Secret"
-  default     = null
+  default     = ""
 }
 
 variable "atlantis_access_key_master" {
   type        = string
   description = "Access Key for Core account"
-  default     = null
+  default     = ""
 }
 
 variable "atlantis_secret_key_master" {
   type        = string
   description = "Secret for Core account"
-  default     = null
+  default     = ""
 }
 
 # --------------------------------------------------
