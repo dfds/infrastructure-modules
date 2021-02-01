@@ -459,6 +459,11 @@ variable "atlantis_github_token" {
   default     = null
 }
 
+variable "atlantis_platform_fluxcd_github_token" {
+  description = "Github token that the provider uses to perform Github operations for Flux."
+  default     = null
+}
+
 variable "atlantis_github_organization" {
   description = "Github organization name. Conflicts with github_owner. Leaving unset will use GITHUB_ORGANIZATION environment variable if exists"
   default     = null
