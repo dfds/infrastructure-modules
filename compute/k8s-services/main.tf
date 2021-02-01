@@ -475,7 +475,6 @@ module "atlantis" {
   atlantis_image_tag  = var.atlantis_image_tag
   atlantis_ingress    = var.atlantis_ingress
   github_token        = var.atlantis_github_token
-  github_token_flux   = var.atlantis_github_token_flux
   github_organization = var.atlantis_github_organization
   github_username     = var.atlantis_github_username
   github_repositories = var.atlantis_github_repositories
