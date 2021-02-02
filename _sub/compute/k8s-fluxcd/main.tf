@@ -86,7 +86,7 @@ resource "kubernetes_secret" "main" {
 }
 
 resource "github_repository_deploy_key" "main" {
-  title      = "flux-readonly"
+  title      = "flux-${var.cluster_name}-readonly"
   repository = data.github_repository.main.name
   key        = tls_private_key.main.public_key_openssh
   read_only  = true
