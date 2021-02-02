@@ -29,41 +29,65 @@ environmentSecrets:
     secretKeyRef:
       name: aws-credentials
       key: secret_key_master
-
-  - name: TF_VAR_arm_tenant_id
-    secretKeyRef:
-      name: az-credentials
-      key: arm_tenant_id
   - name: ARM_TENANT_ID
     secretKeyRef:
       name: az-credentials
       key: arm_tenant_id
-  - name: TF_VAR_arm_subscription_id
-    secretKeyRef:
-      name: az-credentials
-      key: arm_subscription_id
   - name: ARM_SUBSCRIPTION_ID
     secretKeyRef:
       name: az-credentials
       key: arm_subscription_id
-  - name: TF_VAR_arm_client_id
-    secretKeyRef:
-      name: az-credentials
-      key: arm_client_id
   - name: ARM_CLIENT_ID
     secretKeyRef:
       name: az-credentials
       key: arm_client_id
-  - name: TF_VAR_arm_client_secret
-    secretKeyRef:
-      name: az-credentials
-      key: arm_client_secret
   - name: ARM_CLIENT_SECRET
     secretKeyRef:
       name: az-credentials
       key: arm_client_secret
+  - name: TF_VAR_platform_fluxcd_github_token
+    secretKeyRef:
+      name: gh-credentials
+      key: github_token_flux
 
-  - name: TF_VAR_github_token
+  - name: TF_VAR_atlantis_aws_access_key
+    secretKeyRef:
+      name: aws-credentials
+      key: aws_access_key
+  - name: TF_VAR_atlantis_aws_secret
+    secretKeyRef:
+      name: aws-credentials
+      key: aws_secret
+  - name: TF_VAR_atlantis_access_key_master
+    secretKeyRef:
+      name: aws-credentials
+      key: access_key_master
+  - name: TF_VAR_atlantis_secret_key_master
+    secretKeyRef:
+      name: aws-credentials
+      key: secret_key_master
+  - name: TF_VAR_atlantis_arm_tenant_id
+    secretKeyRef:
+      name: az-credentials
+      key: arm_tenant_id
+  - name: TF_VAR_atlantis_arm_subscription_id
+    secretKeyRef:
+      name: az-credentials
+      key: arm_subscription_id
+  - name: TF_VAR_atlantis_arm_client_id
+    secretKeyRef:
+      name: az-credentials
+      key: arm_client_id
+  - name: TF_VAR_atlantis_arm_client_secret
+    secretKeyRef:
+      name: az-credentials
+      key: arm_client_secret
+  - name: TF_VAR_atlantis_platform_fluxcd_github_token
+    secretKeyRef:
+      name: gh-credentials
+      key: github_token_flux
+   
+  - name: TF_VAR_atlantis_github_token
     secretKeyRef:
       name: gh-credentials
       key: github_token

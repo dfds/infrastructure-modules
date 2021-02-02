@@ -58,7 +58,7 @@ variable "kiam_chart_version" {
 
 variable "aws_assume_logs_role_arn" {
   type    = string
-  default = ""
+  default = null
 }
 
 variable "cloudwatchlogs_iam_role_deploy" {
@@ -454,72 +454,77 @@ variable "atlantis_deploy" {
   default     = false
 }
 
-variable "github_token" {
+variable "atlantis_github_token" {
   description = "Github token that the provider uses to perform Github operations. Leaving unset will fall back to GITHUB_TOKEN environment variable"
   default     = null
 }
 
-variable "github_organization" {
+variable "atlantis_platform_fluxcd_github_token" {
+  description = "Github token that the provider uses to perform Github operations for Flux."
+  default     = ""
+}
+
+variable "atlantis_github_organization" {
   description = "Github organization name. Conflicts with github_owner. Leaving unset will use GITHUB_ORGANIZATION environment variable if exists"
   default     = null
 }
 
-variable "github_owner" {
+variable "atlantis_github_owner" {
   description = "Github owner(username). Conflicts with github_organization. Leaving unset will use GITHUB_OWNER environment variable if exists"
   default     = null
 }
 
-variable "github_username" {
+variable "atlantis_github_username" {
   description = "Github username of the account that will post Atlantis comments on PR's"
   default     = null
 }
 
-variable "github_repositories" {
+variable "atlantis_github_repositories" {
   description = "List of repositories to whitelist for Atlantis"
   type        = list(string)
   default     = []
 }
 
-variable "webhook_secret" {
+variable "atlantis_webhook_secret" {
   description = "Secret used by the Webhook to speak to Atlantis"
   default     = null
 }
 
-variable "webhook_content_type" {
+variable "atlantis_webhook_content_type" {
   default = "application/json"
 }
 
-variable "webhook_insecure_ssl" {
+variable "atlantis_webhook_insecure_ssl" {
   default = false
 }
 
-variable "webhook_events" {
+variable "atlantis_webhook_events" {
   description = "A list of events that should trigger the webhook"
   default     = []
   type        = list(string)
 }
 
-variable "namespace" {
+variable "atlantis_namespace" {
   type        = string
-  description = ""
+  description = "Namespace for Atlantis deployment"
   default     = "atlantis"
 }
 
-variable "chart_version" {
+variable "atlantis_chart_version" {
   type        = string
-  description = ""
+  description = "Version of the helm chart to deploy"
   default     = null
 }
 
 variable "atlantis_ingress" {
   type        = string
-  description = ""
+  description = "URL for Atlantis Ingress"
   default     = null
 }
 
 variable "atlantis_image" {
   type        = string
-  description = ""
+  description = "Name of the image to use for Atlantis"
   default     = "dfdsdk/atlantis-prime-pipeline"
 }
 
@@ -529,48 +534,94 @@ variable "atlantis_image_tag" {
   default     = "latest"
 }
 
-variable "arm_tenant_id" {
+variable "atlantis_arm_tenant_id" {
   type        = string
-  description = ""
-  default     = null
+  description = "Used to set environment variable for ARM tenant ID"
+  default     = ""
 }
 
-variable "arm_subscription_id" {
+variable "atlantis_arm_subscription_id" {
   type        = string
-  description = ""
-  default     = null
+  description = "Used to set environment variable for ARM subscription ID"
+  default     = ""
 }
 
-variable "arm_client_id" {
+variable "atlantis_arm_client_id" {
   type        = string
-  description = ""
-  default     = null
+  description = "Used to set environment variable for ARM client ID"
+  default     = ""
 }
 
-variable "arm_client_secret" {
+variable "atlantis_arm_client_secret" {
   type        = string
-  description = ""
-  default     = null
+  description = "Used to set environment variable for ARM client secret"
+  default     = ""
 }
 
-variable "aws_access_key" {
+variable "atlantis_aws_access_key" {
   description = "AWS Access Key"
-  default     = null
+  default     = ""
 }
 
-variable "aws_secret" {
+variable "atlantis_aws_secret" {
   description = "AWS Secret"
-  default     = null
+  default     = ""
 }
 
-variable "access_key_master" {
+variable "atlantis_access_key_master" {
   type        = string
   description = "Access Key for Core account"
-  default     = null
+  default     = ""
 }
 
-variable "secret_key_master" {
+variable "atlantis_secret_key_master" {
   type        = string
   description = "Secret for Core account"
-  default     = null
+  default     = ""
+}
+
+# --------------------------------------------------
+# Crossplane
+# --------------------------------------------------
+
+variable "crossplane_deploy" {
+  type = bool
+  description = "Deploy Crossplane"
+  default = false
+}
+
+variable "crossplane_namespace" {
+  type = string
+  description = "Namespace in which to install Crossplane"
+  default = "crossplane-system"
+}
+
+variable "crossplane_release_name" {
+  type = string
+  description = "Name of the chart release"
+  default = "crossplane"
+}
+
+variable "crossplane_chart_version" {
+  type = string
+  description = "Specify a version of the Helm chart"
+  default = null
+}
+
+variable "crossplane_recreate_pods" {
+    type = bool
+    description = "Recreate pods on deployment"
+    default = true
+}
+
+variable "crossplane_force_update" {
+    type = bool
+    description = "Force resource updates through replacement"
+    default = false
+}
+
+variable "crossplane_providers" {
+  type = list(string)
+  description = "List of Crossplane providers to install"
+  default = []
 }

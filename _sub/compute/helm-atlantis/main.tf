@@ -104,6 +104,7 @@ resource "kubernetes_secret" "gh" {
 
     data = {
         github_token = var.github_token
+        github_token_flux = var.platform_fluxcd_github_token
     }
     depends_on = [ kubernetes_namespace.namespace ]
 }
