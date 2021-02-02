@@ -70,4 +70,12 @@ inputs = {
   platform_fluxcd_deploy       = true
   platform_fluxcd_repo_name    = "platform-manifests-qa"
   platform_fluxcd_github_owner = "dfds"
+
+  # --------------------------------------------------
+  # AWS EBS CSI Driver
+  # --------------------------------------------------
+
+  ebs_csi_driver_deploy = true
+  ebs_csi_driver_chart_version = "0.7.1"
+
 }
