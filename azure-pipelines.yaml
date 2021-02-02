@@ -55,6 +55,7 @@ stages:
             displayName: "Terraform Apply"
           - bash: ./src/qa-test-eks.sh test eu-west-1/k8s-qa18
             displayName: "Run tests"
+            condition: always()
           - bash: ./src/qa-test-eks.sh disable-cluster-logging eu-west-1 qa18
             displayName: "Disable cluster logging"
             condition: always()

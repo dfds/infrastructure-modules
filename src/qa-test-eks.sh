@@ -43,6 +43,14 @@ if [ "$ACTION" = "test" ]; then
     # Simply output certain resources for manual inspection
     # --------------------------------------------------
 
+    # AWS EBS CSI driver
+    echo -e "\nAWS EBS CSI snapshot controller statefulset:\n"
+    kubectl -n kube-system get statefulset -l app.kubernetes.io/name=aws-ebs-csi-driver -o wide || true
+    echo -e "\nAWS EBS CSI controller deloyment:\n"
+    kubectl -n kube-system get deployment -l app.kubernetes.io/name=aws-ebs-csi-driver -o wide || true
+    echo -e "\nAWS EBS CSI node daemonset:\n"
+    kubectl -n kube-system get ds -l app.kubernetes.io/name=aws-ebs-csi-driver || true
+
     # Flux
     echo -e "\nFlux deployments:\n"
     kubectl -n flux-system get deploy || true
