@@ -1,8 +1,3 @@
-variable "deploy" {
-  type    = bool
-  default = true
-}
-
 variable "aws_workload_account_id" {
 }
 

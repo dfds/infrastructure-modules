@@ -282,7 +282,6 @@ module "traefik_alb_okta_dns_core_alias" {
 
 module "kiam_deploy" {
   source                  = "../../_sub/compute/k8s-kiam"
-  deploy                  = var.kiam_deploy
   chart_version           = var.kiam_chart_version
   cluster_name            = var.eks_cluster_name
   priority_class          = "service-critical"

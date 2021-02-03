@@ -1,7 +1,7 @@
 # Terragrunt will copy the Terraform configurations specified by the source parameter, along with any files in the
 # working directory, into a temporary folder, and execute your Terraform commands in that folder.
 terraform {
-  source = "git::https://github.com/dfds/infrastructure-modules.git//compute/eks-ec2"
+  source = "../../../../..//compute/eks-ec2"
 }
 
 # Include all settings from the root terraform.tfvars file
