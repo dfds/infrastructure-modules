@@ -3,7 +3,6 @@
 # --------------------------------------------------
 
 resource "aws_iam_role_policy" "server_node" {
-  count = var.deploy ? 1 : 0
   name  = "eks-${var.cluster_name}-node"
   role  = var.worker_role_id # get from eks-workers
 
@@ -25,7 +24,6 @@ EOF
 }
 
 resource "aws_iam_role" "server_role" {
-  count       = var.deploy ? 1 : 0
   name        = "eks-${var.cluster_name}-kiam-server"
   description = "Role the Kiam Server process assumes"
 
@@ -48,7 +46,6 @@ EOF
 }
 
 resource "aws_iam_policy" "server_policy" {
-  count       = var.deploy ? 1 : 0
   name        = "kiam_server_policy_${var.cluster_name}"
   description = "Policy for the Kiam Server process"
 
@@ -70,10 +67,9 @@ EOF
 }
 
 resource "aws_iam_policy_attachment" "server_policy_attach" {
-  count      = var.deploy ? 1 : 0
   name       = "kiam-server-attachment_${var.cluster_name}"
-  roles      = [aws_iam_role.server_role[0].name]
-  policy_arn = aws_iam_policy.server_policy[0].arn
+  roles      = [aws_iam_role.server_role.name]
+  policy_arn = aws_iam_policy.server_policy.arn
 }
 
 # --------------------------------------------------
@@ -81,7 +77,6 @@ resource "aws_iam_policy_attachment" "server_policy_attach" {
 # --------------------------------------------------
 
 resource "helm_release" "kiam" {
-  count         = var.deploy ? 1 : 0
   name          = "kiam"
   repository    = "https://uswitch.github.io/kiam-helm-charts/charts"
   namespace     = "kube-system"

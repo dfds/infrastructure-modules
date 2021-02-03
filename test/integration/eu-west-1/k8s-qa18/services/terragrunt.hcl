@@ -1,7 +1,7 @@
 # Terragrunt will copy the Terraform configurations specified by the source parameter, along with any files in the
 # working directory, into a temporary folder, and execute your Terraform commands in that folder.
 terraform {
-  source = "git::https://github.com/dfds/infrastructure-modules.git//compute/k8s-services"
+  source = "../../../../..//compute/k8s-services"
 }
 
 # Include all settings from the root terraform.tfvars file
@@ -37,12 +37,6 @@ inputs = {
   traefik_alb_auth_core_alias = []
 
   # --------------------------------------------------
-  # KIAM
-  # --------------------------------------------------
-
-  kiam_deploy = true
-
-  # --------------------------------------------------
   # Blaster
   # Requires: KIAM
   # --------------------------------------------------
@@ -73,5 +67,11 @@ inputs = {
 
   ebs_csi_driver_deploy        = true
   ebs_csi_driver_chart_version = "0.7.1"
+
+  # --------------------------------------------------
+  # KIAM
+  # --------------------------------------------------
+
+  kiam_chart_version = "5.9.0" # 5.10.0 includes https://github.com/uswitch/kiam/pull/427, but image does not - breaks WhitelistRouteRegexp/AllowRouteRegexp
 
 }
