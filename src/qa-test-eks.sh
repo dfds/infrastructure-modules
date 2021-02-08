@@ -94,6 +94,7 @@ if [ "$ACTION" = "destroy-cluster" ]; then
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
     aws iam delete-role --role-name eks-${CLUSTERNAME}-cluster || true
     aws iam delete-role --role-name eks-${CLUSTERNAME}-node || true
+    aws --region eu-west-1 ec2 delete-network-interface --network-interface-id "$(aws --region eu-west-1 ec2 describe-network-interfaces --filters "Name=group-name,Values=eks-${CLUSTERNAME}-node" --query "NetworkInterfaces[].NetworkInterfaceId" --output text)" || true
 
     # Return false, if any *eseential* commands failed
     if [ $RETURN -ne 0 ]; then
