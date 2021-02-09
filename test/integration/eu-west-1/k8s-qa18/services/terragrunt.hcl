@@ -22,7 +22,6 @@ inputs = {
 
   eks_cluster_name = "qa18"
 
-
   # --------------------------------------------------
   # Traefik
   # --------------------------------------------------
@@ -74,4 +73,21 @@ inputs = {
 
   kiam_chart_version = "5.9.0" # 5.10.0 includes https://github.com/uswitch/kiam/pull/427, but image does not - breaks WhitelistRouteRegexp/AllowRouteRegexp
 
+  # --------------------------------------------------
+  # Monitoring namespace
+  # --------------------------------------------------
+
+  monitoring_namespace_deploy = true
+
+  # --------------------------------------------------
+  # Metrics server
+  # --------------------------------------------------
+
+  monitoring_metrics_server = true
+
+  # --------------------------------------------------
+  # Goldpinger
+  # --------------------------------------------------
+
+  monitoring_goldpinger_deploy = true
 }
