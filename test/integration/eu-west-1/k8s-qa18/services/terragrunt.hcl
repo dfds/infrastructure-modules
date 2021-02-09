@@ -84,10 +84,12 @@ inputs = {
   # --------------------------------------------------
 
   monitoring_metrics_server = true
+  monitoring_metrics_server_chart_version = "2.11.4"
 
   # --------------------------------------------------
   # Goldpinger
   # --------------------------------------------------
 
   monitoring_goldpinger_deploy = true
+
 }
