@@ -63,6 +63,10 @@ if [ "$ACTION" = "test" ]; then
     echo -e "\nFluentD daemonset:\n"
     kubectl -n fluentd get ds fluentd-cloudwatch || true
 
+    # Crossplane
+    echo -e "\nCrossplane Providers:\n"
+    kubectl get provider.pkg || true
+
     # Daemonset exists
     # kubectl --kubeconfig $KUBECONFIG -n fluentd get ds -o name | grep fluentd-cloudwatch
     # if [ $? -ne 0 ]; then
