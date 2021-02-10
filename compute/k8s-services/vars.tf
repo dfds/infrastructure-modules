@@ -302,7 +302,7 @@ variable "monitoring_kube_prometheus_stack_slack_webhook" {
 variable "monitoring_kube_prometheus_stack_prometheus_storageclass" {
   type        = string
   description = "Prometheus storage class"
-  default     = "gp2"
+  default     = "csi-gp2"
 }
 
 variable "monitoring_kube_prometheus_stack_prometheus_storage_size" {
