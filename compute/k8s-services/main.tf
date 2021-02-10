@@ -77,6 +77,9 @@ provider "github" {
   alias = "fluxcd"
 }
 
+provider "random" {
+}
+
 # provider "azuread" {}
 
 

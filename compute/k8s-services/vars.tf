@@ -278,7 +278,7 @@ variable "monitoring_kube_prometheus_stack_priority_class" {
 variable "monitoring_kube_prometheus_stack_grafana_admin_password" {
   type        = string
   description = "Grafana admin password"
-  default     = "HelloWorld"
+  default     = ""
 }
 
 variable "monitoring_kube_prometheus_stack_grafana_ingress_path" {
