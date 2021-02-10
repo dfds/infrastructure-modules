@@ -67,6 +67,10 @@ if [ "$ACTION" = "test" ]; then
     echo -e "\nCrossplane Providers:\n"
     kubectl get provider.pkg || true
 
+    # Traefik Okta
+    echo -e "\nTraefik Okta:\n"
+    kubectl rollout status -n kube-system deployment traefik-okta || true
+    
     # Daemonset exists
     # kubectl --kubeconfig $KUBECONFIG -n fluentd get ds -o name | grep fluentd-cloudwatch
     # if [ $? -ne 0 ]; then

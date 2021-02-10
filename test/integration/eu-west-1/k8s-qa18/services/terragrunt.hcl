@@ -68,6 +68,16 @@ inputs = {
   ebs_csi_driver_chart_version = "0.7.1"
 
   # --------------------------------------------------
+  # Traefik Okta
+  # --------------------------------------------------
+
+  traefik_okta_deploy         = true
+  traefik_okta_version        = "2.2"
+  traefik_deploy_name         = "traefik-okta"
+  traefik_alb_okta_deploy     = true
+  traefik_alb_okta_core_alias = []
+
+  # --------------------------------------------------
   # KIAM
   # --------------------------------------------------
 
