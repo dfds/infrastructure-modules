@@ -92,4 +92,12 @@ inputs = {
 
   monitoring_goldpinger_deploy = true
 
+  # --------------------------------------------------
+  # Crossplane
+  # --------------------------------------------------
+
+  crossplane_deploy = true
+  crossplane_chart_version = "1.0.0"
+  crossplane_providers = ["crossplane/provider-aws:v0.16.0"]
+
 }
