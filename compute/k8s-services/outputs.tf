@@ -1,4 +1,11 @@
 # --------------------------------------------------
+# Prometheus Stack
+# --------------------------------------------------
+output "prometheus_grafana_admin_password" {
+  value = module.monitoring_kube_prometheus_stack.grafana_admin_password
+}
+
+# --------------------------------------------------
 # Traefik
 # --------------------------------------------------
 
