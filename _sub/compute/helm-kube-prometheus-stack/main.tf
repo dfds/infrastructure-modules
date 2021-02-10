@@ -1,3 +1,8 @@
+resource "random_password" "grafana_password" {
+  length = 16
+  special = true
+}
+
 resource "helm_release" "kube_prometheus_stack" {
   name          = "monitoring"
   chart         = "kube-prometheus-stack"
@@ -12,7 +17,7 @@ resource "helm_release" "kube_prometheus_stack" {
     }),
 
     templatefile("${path.module}/values/grafana.yaml", {
-      grafana_admin_password = var.grafana_admin_password
+      grafana_admin_password = var.grafana_admin_password != "" ? var.grafana_admin_password : random_password.grafana_password.result
       grafana_priorityclass  = var.priority_class
       grafana_ingress_path   = var.grafana_ingress_path
       grafana_host           = var.grafana_host

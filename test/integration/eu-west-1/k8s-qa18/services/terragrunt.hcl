@@ -90,6 +90,18 @@ inputs = {
   monitoring_namespace_deploy = true
 
   # --------------------------------------------------
+  # Kube-prometheus-stack
+  # --------------------------------------------------
+
+  monitoring_kube_prometheus_stack_deploy                  = true
+  monitoring_kube_prometheus_stack_chart_version           = "10.1.0"
+  monitoring_kube_prometheus_stack_target_namespaces       = "kube-system|selfservice.*|monitoring"
+  monitoring_kube_prometheus_stack_prometheus_storage_size = "5Gi"
+  monitoring_kube_prometheus_stack_prometheus_retention    = "1d"
+  monitoring_kube_prometheus_stack_slack_webhook           = "https://dummy.slack.webhook"
+  monitoring_kube_prometheus_stack_slack_channel           = "#hellman-alerting"
+
+  # --------------------------------------------------
   # Metrics server
   # --------------------------------------------------
 

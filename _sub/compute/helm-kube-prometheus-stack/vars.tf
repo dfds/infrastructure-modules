@@ -18,6 +18,7 @@ variable "priority_class" {
 variable "grafana_admin_password" {
   type        = string
   description = "Grafana admin password"
+  default     = ""
 }
 
 variable "grafana_ingress_path" {

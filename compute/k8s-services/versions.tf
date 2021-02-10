@@ -37,6 +37,11 @@ terraform {
       source  = "fluxcd/flux"
       version = ">= 0.0.1"
     }
+
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.0.0"
+    }
   }
 
 }
