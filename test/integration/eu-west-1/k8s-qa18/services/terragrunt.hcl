@@ -87,39 +87,39 @@ inputs = {
   # Monitoring namespace
   # --------------------------------------------------
 
-  monitoring_namespace_deploy = true
+  // monitoring_namespace_deploy = true
 
   # --------------------------------------------------
   # Kube-prometheus-stack
   # --------------------------------------------------
 
-  monitoring_kube_prometheus_stack_deploy                  = true
-  monitoring_kube_prometheus_stack_chart_version           = "10.1.0"
-  monitoring_kube_prometheus_stack_target_namespaces       = "kube-system|selfservice.*|monitoring"
-  monitoring_kube_prometheus_stack_prometheus_storage_size = "5Gi"
-  monitoring_kube_prometheus_stack_prometheus_retention    = "1d"
-  monitoring_kube_prometheus_stack_slack_webhook           = "https://dummy.slack.webhook"
-  monitoring_kube_prometheus_stack_slack_channel           = "#hellman-alerting"
+  // monitoring_kube_prometheus_stack_deploy                  = true
+  // monitoring_kube_prometheus_stack_chart_version           = "10.1.0"
+  // monitoring_kube_prometheus_stack_target_namespaces       = "kube-system|selfservice.*|monitoring"
+  // monitoring_kube_prometheus_stack_prometheus_storage_size = "5Gi"
+  // monitoring_kube_prometheus_stack_prometheus_retention    = "1d"
+  // monitoring_kube_prometheus_stack_slack_webhook           = "https://dummy.slack.webhook"
+  // monitoring_kube_prometheus_stack_slack_channel           = "#hellman-alerting"
 
   # --------------------------------------------------
   # Metrics server
   # --------------------------------------------------
 
-  monitoring_metrics_server = true
-  monitoring_metrics_server_chart_version = "2.11.4"
+  // monitoring_metrics_server = true
+  // monitoring_metrics_server_chart_version = "2.11.4"
 
   # --------------------------------------------------
   # Goldpinger
   # --------------------------------------------------
 
-  monitoring_goldpinger_deploy = true
+  // monitoring_goldpinger_deploy = true
 
   # --------------------------------------------------
   # Crossplane
   # --------------------------------------------------
 
-  crossplane_deploy = true
-  crossplane_chart_version = "1.0.0"
-  crossplane_providers = ["crossplane/provider-aws:v0.16.0"]
+  // crossplane_deploy = true
+  // crossplane_chart_version = "1.0.0"
+  // crossplane_providers = ["crossplane/provider-aws:v0.16.0"]
 
 }
