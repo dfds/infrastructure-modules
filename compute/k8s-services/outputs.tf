@@ -3,7 +3,7 @@
 # --------------------------------------------------
 
 output "prometheus_grafana_admin_password" {
-  value = module.monitoring_kube_prometheus_stack[0].grafana_admin_password
+  value = try(module.monitoring_kube_prometheus_stack[0].grafana_admin_password, "")
 }
 
 # --------------------------------------------------
