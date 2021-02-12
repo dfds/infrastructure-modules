@@ -18,6 +18,9 @@ alertmanager:
       - match_re:
           namespace: ${alertmanager_silence_namespaces}
         receiver: 'null'
+      - match_re:
+          alertname: CPUThrottlingHigh
+        receiver: 'null'
     receivers:
     - name: 'general'
       slack_configs:
