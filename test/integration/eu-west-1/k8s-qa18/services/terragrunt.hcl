@@ -87,7 +87,7 @@ inputs = {
   # Monitoring namespace
   # --------------------------------------------------
 
-  // monitoring_namespace_deploy = true
+  monitoring_namespace_deploy = true
 
   # --------------------------------------------------
   # Kube-prometheus-stack
