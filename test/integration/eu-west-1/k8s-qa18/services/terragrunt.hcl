@@ -106,8 +106,8 @@ inputs = {
   # Metrics server
   # --------------------------------------------------
 
-  // monitoring_metrics_server = true
-  // monitoring_metrics_server_chart_version = "2.11.4"
+  monitoring_metrics_server = true
+  monitoring_metrics_server_chart_version = "2.11.4"
 
   # --------------------------------------------------
   # Goldpinger
