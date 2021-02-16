@@ -113,7 +113,7 @@ inputs = {
   # Goldpinger
   # --------------------------------------------------
 
-  // monitoring_goldpinger_deploy = true
+  monitoring_goldpinger_deploy = true
 
   # --------------------------------------------------
   # Crossplane
