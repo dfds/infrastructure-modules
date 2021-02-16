@@ -486,7 +486,6 @@ module "atlantis" {
   github_organization          = var.atlantis_github_organization
   github_username              = var.atlantis_github_username
   github_repositories          = var.atlantis_github_repositories
-  webhook_secret               = var.atlantis_webhook_secret
   webhook_url                  = var.atlantis_ingress
   webhook_events               = var.atlantis_webhook_events
   aws_access_key               = var.atlantis_aws_access_key

@@ -485,11 +485,6 @@ variable "atlantis_github_repositories" {
   default     = []
 }
 
-variable "atlantis_webhook_secret" {
-  description = "Secret used by the Webhook to speak to Atlantis"
-  default     = null
-}
-
 variable "atlantis_webhook_content_type" {
   default = "application/json"
 }
