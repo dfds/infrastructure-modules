@@ -14,3 +14,9 @@ variable "priority_class" {
   type        = string
   description = "Name of priority class to apply"
 }
+
+variable "servicemonitor_enabled" {
+  type = bool
+  description = "Deploy servicemonitor to enable metrics scraping"
+  default = false
+}
