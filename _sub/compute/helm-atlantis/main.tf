@@ -7,6 +7,11 @@ locals {
   ]
 }
 
+resource "random_password" "webhook_password" {
+  length = 16
+  special = true
+}
+
 resource "helm_release" "atlantis" {
   name          = "atlantis"
   chart         = "atlantis"
@@ -24,7 +29,7 @@ resource "helm_release" "atlantis" {
 
   set_sensitive {
     name = "github.secret"
-    value = var.webhook_secret
+    value = random_password.webhook_password.result
   }
 
   values = [
@@ -57,7 +62,7 @@ resource "github_repository_webhook" "hook" {
     configuration {
         url = "https://${var.webhook_url}/events"
         content_type = var.webhook_content_type
-        secret = var.webhook_secret
+        secret = random_password.webhook_password.result
         insecure_ssl = false
     }
 

@@ -84,10 +84,6 @@ variable "webhook_url" {
     description = "URL for the deployed Atlantis endpoint listener"
 }
 
-variable "webhook_secret" {
-    description = "Secret used by the Webhook to speak to Atlantis"
-}
-
 variable "webhook_content_type" {
     default = "application/json"
 }
