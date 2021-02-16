@@ -19,7 +19,7 @@ resource "helm_release" "goldpinger" {
 
   set {
     name  = "serviceMonitor.enabled"
-    value = "true"
+    value = var.servicemonitor_enabled
   }
 
   set {
