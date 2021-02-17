@@ -501,6 +501,8 @@ module "atlantis" {
   providers = {
     github = github.atlantis
   }
+
+  depends_on                   = [module.ebs_csi_driver]
 }
 
 # --------------------------------------------------
