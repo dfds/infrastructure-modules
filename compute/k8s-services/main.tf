@@ -497,12 +497,12 @@ module "atlantis" {
   arm_client_id                = var.atlantis_arm_client_id
   arm_client_secret            = var.atlantis_arm_client_secret
   platform_fluxcd_github_token = var.atlantis_platform_fluxcd_github_token
+  storage_class                = var.atlantis_storage_class
 
   providers = {
     github = github.atlantis
   }
 
-  depends_on                   = [module.ebs_csi_driver]
 }
 
 # --------------------------------------------------

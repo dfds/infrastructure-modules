@@ -54,6 +54,11 @@ variable "arm_client_secret" {
   description = ""
 }
 
+variable "storage_class" {
+  type = string
+  description = "Storage class to use for the persistent volume"
+}
+
 ## Github ##
 
 #

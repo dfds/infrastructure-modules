@@ -575,6 +575,12 @@ variable "atlantis_secret_key_master" {
   default     = ""
 }
 
+variable "atlantis_storage_class" {
+  type = string
+  description = "Storage class to use for persistent volume"
+  default = "csi-gp2"
+}
+
 # --------------------------------------------------
 # Crossplane
 # --------------------------------------------------

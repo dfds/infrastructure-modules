@@ -39,6 +39,7 @@ resource "helm_release" "atlantis" {
       atlantis_image_tag = var.atlantis_image_tag,
       github_username = var.github_username,
       github_repos = join(",", local.full_github_repo_names)
+      storage_class = var.storage_class
   })]
 
   depends_on = [ kubernetes_secret.aws ]
