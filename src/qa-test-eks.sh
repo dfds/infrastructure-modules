@@ -70,6 +70,10 @@ if [ "$ACTION" = "test" ]; then
     # Traefik Okta
     echo -e "\nTraefik Okta:\n"
     kubectl rollout status -n kube-system deployment traefik-okta || true
+
+    # Atlantis
+    echo -e "\nAtlantis:\n"
+    kubectl -n atlantis get all || true
     
     # Daemonset exists
     # kubectl --kubeconfig $KUBECONFIG -n fluentd get ds -o name | grep fluentd-cloudwatch
