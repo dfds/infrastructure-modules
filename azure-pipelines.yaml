@@ -22,6 +22,7 @@ resources:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
         TF_VAR_platform_fluxcd_github_token: $(TF_VAR_platform_fluxcd_github_token)
+        TF_VAR_atlantis_github_token: $(TF_VAR_atlantis_github_token)
 
 # Define variable group to use
 variables:
