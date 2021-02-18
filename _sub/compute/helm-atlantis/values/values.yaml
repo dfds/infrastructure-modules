@@ -9,6 +9,8 @@ logLevel: "info"
 disableApply: true
 disableApplyAll: true
 
+storageClassName: ${storage_class}
+
 github:
   user: ${github_username}
 
