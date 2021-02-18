@@ -1,0 +1,16 @@
+{
+    "CN": "Kiam Agent",
+    "key": {
+        "algo": "rsa",
+        "size": 4096
+    },
+    "names": [
+        {
+            "C": "Denmark",
+            "L": "Copenhagen",
+            "O": "DFDS A/S",
+            "OU": "DevEx",
+            "ST": "Copenhagen"
+        }
+    ]
+}
