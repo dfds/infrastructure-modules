@@ -123,4 +123,18 @@ inputs = {
   crossplane_chart_version = "1.0.0"
   crossplane_providers = ["crossplane/provider-aws:v0.16.0"]
 
+  # --------------------------------------------------
+  # Atlantis
+  # --------------------------------------------------
+
+  atlantis_deploy        = true
+  atlantis_ingress       = "atlantis.qa18-alias1.dfds.cloud"
+  atlantis_image_tag     = "0.0.2"
+  atlantis_storage_class = "gp2"
+
+  atlantis_github_username     = "devex-sa"
+  atlantis_github_repositories = ["dfds/qa-dummy-atlantis"]
+  atlantis_github_organization = "dfds"
+  atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
+  atlantis_chart_version       = "3.12.10"
 }
