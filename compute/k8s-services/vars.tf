@@ -402,6 +402,12 @@ variable "platform_fluxcd_deploy" {
   description = ""
 }
 
+variable "platform_fluxcd_release_tag" {
+  type        = string
+  default     = null
+  description = "The release tag of Flux CD to use."
+}
+
 variable "platform_fluxcd_namespace" {
   type        = string
   default     = "platform-flux"
@@ -576,9 +582,9 @@ variable "atlantis_secret_key_master" {
 }
 
 variable "atlantis_storage_class" {
-  type = string
+  type        = string
   description = "Storage class to use for persistent volume"
-  default = "csi-gp2"
+  default     = "csi-gp2"
 }
 
 # --------------------------------------------------
@@ -586,43 +592,43 @@ variable "atlantis_storage_class" {
 # --------------------------------------------------
 
 variable "crossplane_deploy" {
-  type = bool
+  type        = bool
   description = "Deploy Crossplane"
-  default = false
+  default     = false
 }
 
 variable "crossplane_namespace" {
-  type = string
+  type        = string
   description = "Namespace in which to install Crossplane"
-  default = "crossplane-system"
+  default     = "crossplane-system"
 }
 
 variable "crossplane_release_name" {
-  type = string
+  type        = string
   description = "Name of the chart release"
-  default = "crossplane"
+  default     = "crossplane"
 }
 
 variable "crossplane_chart_version" {
-  type = string
+  type        = string
   description = "Specify a version of the Helm chart"
-  default = null
+  default     = null
 }
 
 variable "crossplane_recreate_pods" {
-    type = bool
-    description = "Recreate pods on deployment"
-    default = true
+  type        = bool
+  description = "Recreate pods on deployment"
+  default     = true
 }
 
 variable "crossplane_force_update" {
-    type = bool
-    description = "Force resource updates through replacement"
-    default = false
+  type        = bool
+  description = "Force resource updates through replacement"
+  default     = false
 }
 
 variable "crossplane_providers" {
-  type = list(string)
+  type        = list(string)
   description = "List of Crossplane providers to install"
-  default = []
+  default     = []
 }

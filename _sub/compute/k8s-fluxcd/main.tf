@@ -48,7 +48,7 @@ resource "null_resource" "flux_namespace" {
 # --------------------------------------------------
 
 resource "kubectl_manifest" "install" {
-  for_each   = { for v in data.kubectl_file_documents.install.documents : sha1(v) => v }
+  for_each   = { for v in data.kubectl_file_documents.install.documents : "${yamldecode(v).kind}/${yamldecode(v).metadata.name}" => v }
   depends_on = [null_resource.flux_namespace]
 
   yaml_body = each.value

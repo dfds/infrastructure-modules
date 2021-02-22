@@ -13,6 +13,7 @@ locals {
 
 data "flux_install" "main" {
   target_path = var.repo_path
+  version     = var.release_tag
 }
 
 data "kubectl_file_documents" "install" {
