@@ -7,6 +7,10 @@ cat state.json \
 | jq -r '.resources[] | select(.module == "module.platform_fluxcd[0]") | select(.type == "kubectl_manifest") | select(.name == "install") | .instances[] | "\(.index_key) \(.attributes.api_version) \(.attributes.kind) \(.attributes.namespace) \(.attributes.name)"' | sed -e 's/\(.*\)/\L\1/' \
 | xargs -n5 sh -c 'echo $0 $1/$2/$3/$4' | sed 's/null\///g' | xargs -n2 sh -c 'echo terragrunt state mv module.platform_fluxcd[0].kubectl_manifest.install[\"$0\"] module.platform_fluxcd[0].kubectl_manifest.install[\"$1\"]'
 
+# Actually do the state migration
+terragrunt state pull \
+| jq -r '.resources[] | select(.module == "module.platform_fluxcd[0]") | select(.type == "kubectl_manifest") | select(.name == "install") | .instances[] | "\(.index_key) \(.attributes.api_version) \(.attributes.kind) \(.attributes.namespace) \(.attributes.name)"' | sed -e 's/\(.*\)/\L\1/' \
+| xargs -n5 sh -c 'echo $0 $1/$2/$3/$4' | sed 's/null\///g' | xargs -n2 sh -c 'terragrunt state mv module.platform_fluxcd[0].kubectl_manifest.install[\"$0\"] module.platform_fluxcd[0].kubectl_manifest.install[\"$1\"]'
 
 # Copy-paste from terminal:
 
