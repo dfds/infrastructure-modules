@@ -22,23 +22,23 @@ cat state.json \
 
 # Output by migration command:
 
-# apiextensions.k8s.io/v1/customresourcedefinition/gitrepositories.source.toolkit.fluxcd.io
-# rbac.authorization.k8s.io/v1/clusterrolebinding/cluster-reconciler-flux-system
-# v1/service/flux-system/notification-controller
-# v1/serviceaccount/flux-system/kustomize-controller
-# v1/service/flux-system/source-controller
-# v1/serviceaccount/flux-system/helm-controller
-# v1/service/flux-system/webhook-receiver
-# apiextensions.k8s.io/v1/customresourcedefinition/helmrepositories.source.toolkit.fluxcd.io
-# rbac.authorization.k8s.io/v1/clusterrole/crd-controller-flux-system
-# networking.k8s.io/v1/networkpolicy/flux-system/deny-ingress
-# apiextensions.k8s.io/v1/customresourcedefinition/receivers.notification.toolkit.fluxcd.io
-# networking.k8s.io/v1/networkpolicy/flux-system/allow-webhooks
-# v1/namespace/flux-system
-# v1/serviceaccount/flux-system/source-controller
-# rbac.authorization.k8s.io/v1/clusterrolebinding/crd-controller-flux-system
-# v1/serviceaccount/flux-system/notification-controller
-# networking.k8s.io/v1/networkpolicy/flux-system/allow-scraping
 # apiextensions.k8s.io/v1/customresourcedefinition/buckets.source.toolkit.fluxcd.io
+# apiextensions.k8s.io/v1/customresourcedefinition/gitrepositories.source.toolkit.fluxcd.io
 # apiextensions.k8s.io/v1/customresourcedefinition/helmcharts.source.toolkit.fluxcd.io
+# apiextensions.k8s.io/v1/customresourcedefinition/helmrepositories.source.toolkit.fluxcd.io
 # apiextensions.k8s.io/v1/customresourcedefinition/providers.notification.toolkit.fluxcd.io
+# apiextensions.k8s.io/v1/customresourcedefinition/receivers.notification.toolkit.fluxcd.io
+# networking.k8s.io/v1/networkpolicy/flux-system/allow-scraping
+# networking.k8s.io/v1/networkpolicy/flux-system/allow-webhooks
+# networking.k8s.io/v1/networkpolicy/flux-system/deny-ingress
+# rbac.authorization.k8s.io/v1/clusterrole/crd-controller-flux-system
+# rbac.authorization.k8s.io/v1/clusterrolebinding/cluster-reconciler-flux-system
+# rbac.authorization.k8s.io/v1/clusterrolebinding/crd-controller-flux-system
+# v1/namespace/flux-system
+# v1/service/flux-system/notification-controller
+# v1/service/flux-system/source-controller
+# v1/service/flux-system/webhook-receiver
+# v1/serviceaccount/flux-system/helm-controller
+# v1/serviceaccount/flux-system/kustomize-controller
+# v1/serviceaccount/flux-system/notification-controller
+# v1/serviceaccount/flux-system/source-controller
