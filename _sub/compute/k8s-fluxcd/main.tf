@@ -2,18 +2,6 @@
 # Namespace
 # --------------------------------------------------
 
-# resource "kubernetes_namespace" "flux_system" {
-#   metadata {
-#     name = "flux-system"
-#   }
-
-#   lifecycle {
-#     ignore_changes = [
-#       metadata[0].labels,
-#     ]
-#   }
-# }
-
 resource "null_resource" "flux_namespace" {
   triggers = {
     namespace  = local.namespace
@@ -83,19 +71,6 @@ resource "kubectl_manifest" "sync" {
   depends_on = [null_resource.flux_namespace]
   yaml_body = each.value
 }
-# resource "kubectl_manifest" "install" {
-#   for_each   = { for v in data.kubectl_file_documents.install.documents : "${yamldecode(v).kind}/${yamldecode(v).metadata.name}" => v }
-#   depends_on = [null_resource.flux_namespace]
-
-#   yaml_body = each.value
-# }
-
-# resource "kubectl_manifest" "sync" {
-#   for_each   = { for v in data.kubectl_file_documents.sync.documents : sha1(v) => v }
-#   depends_on = [kubectl_manifest.install, null_resource.flux_namespace]
-
-#   yaml_body = each.value
-# }
 
 
 # --------------------------------------------------
