@@ -47,16 +47,28 @@ resource "null_resource" "flux_namespace" {
 # Bootstrap Kubernetes manifests
 # --------------------------------------------------
 
-resource "kubectl_manifest" "install" {
-  for_each   = { for v in data.kubectl_file_documents.install.documents : sha1(v) => v }
-  depends_on = [null_resource.flux_namespace]
+locals {
+  install = [ for v in data.kubectl_file_documents.install.documents : {
+      data: yamldecode(v)
+      content: v
+    }
+  ]
+  sync = [ for v in data.kubectl_file_documents.sync.documents : {
+      data: yamldecode(v)
+      content: v
+    }
+  ]
+}
 
+resource "kubectl_manifest" "install" {
+  for_each   = { for v in local.install : lower(join("/", compact([v.data.apiVersion, v.data.kind, lookup(v.data.metadata, "namespace", ""), v.data.metadata.name]))) => v.content }
+  depends_on = [null_resource.flux_namespace]
   yaml_body = each.value
 }
-resource "kubectl_manifest" "sync" {
-  for_each   = { for v in data.kubectl_file_documents.sync.documents : sha1(v) => v }
-  depends_on = [kubectl_manifest.install, null_resource.flux_namespace]
 
+resource "kubectl_manifest" "sync" {
+  for_each   = { for v in local.sync : lower(join("/", compact([v.data.apiVersion, v.data.kind, lookup(v.data.metadata, "namespace", ""), v.data.metadata.name]))) => v.content }
+  depends_on = [null_resource.flux_namespace]
   yaml_body = each.value
 }
 

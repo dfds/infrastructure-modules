@@ -37,3 +37,8 @@ variable "kubeconfig_path" {
   type    = string
   default = null
 }
+
+variable "release_tag" {
+  type    = string
+  default = "latest"
+}
