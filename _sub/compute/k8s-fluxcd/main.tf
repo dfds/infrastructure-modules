@@ -4,7 +4,7 @@
 
 resource "null_resource" "flux_namespace" {
   triggers = {
-    namespace  = local.namespace
+    namespace = local.namespace
     # kubeconfig = var.kubeconfig_path # Variables cannot be accessed by destroy-phase provisioners, only the 'self' object (including triggers)
   }
 
@@ -48,14 +48,14 @@ resource "null_resource" "flux_namespace" {
 # --------------------------------------------------
 
 locals {
-  install = [ for v in data.kubectl_file_documents.install.documents : {
-      data: yamldecode(v)
-      content: v
+  install = [for v in data.kubectl_file_documents.install.documents : {
+    data : yamldecode(v)
+    content : v
     }
   ]
-  sync = [ for v in data.kubectl_file_documents.sync.documents : {
-      data: yamldecode(v)
-      content: v
+  sync = [for v in data.kubectl_file_documents.sync.documents : {
+    data : yamldecode(v)
+    content : v
     }
   ]
 }
@@ -63,7 +63,7 @@ locals {
 resource "kubectl_manifest" "install" {
   for_each   = { for v in local.install : lower(join("/", compact([v.data.apiVersion, v.data.kind, lookup(v.data.metadata, "namespace", ""), v.data.metadata.name]))) => v.content }
   depends_on = [null_resource.flux_namespace]
-  yaml_body = each.value
+  yaml_body  = each.value
 
   /*
   Ensure that the CRD's are there before continuing.  This prevents the following error from occurring:
@@ -72,13 +72,18 @@ resource "kubectl_manifest" "install" {
   provisioner "local-exec" {
     command = "until kubectl --kubeconfig ${var.kubeconfig_path} get crd kustomizations.kustomize.toolkit.fluxcd.io gitrepositories.source.toolkit.fluxcd.io; do sleep 10; done"
   }
+
+  timeouts {
+    create = "5m"
+    delete = "5m"
+  }
 }
 
 resource "kubectl_manifest" "sync" {
-  for_each   = { for v in local.sync : lower(join("/", compact([v.data.apiVersion, v.data.kind, lookup(v.data.metadata, "namespace", ""), v.data.metadata.name]))) => v.content }
+  for_each = { for v in local.sync : lower(join("/", compact([v.data.apiVersion, v.data.kind, lookup(v.data.metadata, "namespace", ""), v.data.metadata.name]))) => v.content }
   #depends_on = [null_resource.flux_namespace]
   depends_on = [kubectl_manifest.install]
-  yaml_body = each.value
+  yaml_body  = each.value
 }
 
 
