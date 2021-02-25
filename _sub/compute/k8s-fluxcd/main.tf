@@ -115,7 +115,7 @@ resource "github_repository_file" "install" {
   Error: flux-system/flux-system failed to run apply: error when creating "/tmp/875186376kubectl_manifest.yaml": the server could not find the requested resource (post kustomizations.kustomize.toolkit.fluxcd.io)
   */
   provisioner "local-exec" {
-    command = "sleep 60"
+    command = "until kubectl --kubeconfig ${var.kubeconfig_path} get crd kustomizations.kustomize.toolkit.fluxcd.io gitrepositories.source.toolkit.fluxcd.io; do sleep 10; done"
   }
 
   lifecycle {

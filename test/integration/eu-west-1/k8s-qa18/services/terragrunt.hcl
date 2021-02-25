@@ -57,7 +57,6 @@ inputs = {
   # --------------------------------------------------
 
   platform_fluxcd_deploy       = true
-  platform_fluxcd_release_tag  = "v0.8.2"
   platform_fluxcd_repo_name    = "platform-manifests-qa"
   platform_fluxcd_github_owner = "dfds"
 
