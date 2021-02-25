@@ -64,24 +64,30 @@ resource "kubectl_manifest" "install" {
   for_each   = { for v in local.install : lower(join("/", compact([v.data.apiVersion, v.data.kind, lookup(v.data.metadata, "namespace", ""), v.data.metadata.name]))) => v.content }
   depends_on = [null_resource.flux_namespace]
   yaml_body  = each.value
-
-  /*
-  Ensure that the CRD's are there before continuing.  This prevents the following error from occurring:
-  Error: flux-system/flux-system failed to run apply: error when creating "/tmp/875186376kubectl_manifest.yaml": the server could not find the requested resource (post kustomizations.kustomize.toolkit.fluxcd.io)
-  */
-  provisioner "local-exec" {
-    command = "until kubectl --kubeconfig ${var.kubeconfig_path} get crd kustomizations.kustomize.toolkit.fluxcd.io gitrepositories.source.toolkit.fluxcd.io; do sleep 10; done"
-  }
-
-  timeouts {
-    create = "5m"
-    delete = "5m"
-  }
 }
+
+# resource "null_resource" "wait_crds" {
+
+#   depends_on = [kubectl_manifest.install]
+
+#   timeouts {
+#     create = "5m"
+#     delete = "5m"
+#   }
+
+#   /*
+#   Ensure that the CRD's are there before continuing.  This prevents the following error from occurring:
+#   Error: flux-system/flux-system failed to run apply: error when creating "/tmp/875186376kubectl_manifest.yaml": the server could not find the requested resource (post kustomizations.kustomize.toolkit.fluxcd.io)
+#   */
+#   provisioner "local-exec" {
+#     command = "until kubectl --kubeconfig ${var.kubeconfig_path} get crd kustomizations.kustomize.toolkit.fluxcd.io gitrepositories.source.toolkit.fluxcd.io; do sleep 10; done"
+#   }
+
+# }
 
 resource "kubectl_manifest" "sync" {
   for_each = { for v in local.sync : lower(join("/", compact([v.data.apiVersion, v.data.kind, lookup(v.data.metadata, "namespace", ""), v.data.metadata.name]))) => v.content }
-  #depends_on = [null_resource.flux_namespace]
+  # depends_on = [null_resource.wait_crds]
   depends_on = [kubectl_manifest.install]
   yaml_body  = each.value
 }
