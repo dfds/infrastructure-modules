@@ -74,7 +74,7 @@ variable "cloudwatchlogs_iam_role_deploy" {
 
 variable "traefik_deploy" {
   type    = bool
-  default = false
+  default = true
 }
 
 variable "traefik_version" {
