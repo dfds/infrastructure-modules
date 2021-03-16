@@ -36,6 +36,8 @@ locals {
                 "shield:*",
                 "sts:*",
                 "support:*",
+				"waf-regional:*",
+				"wafv2:*",
                 "waf:*"
             ],
             "Resource": "*",
@@ -61,7 +63,7 @@ POLICY
             "Effect": "Deny",
             "Action": [
                 "iam:AttachUserPolicy",
-                "iam:CreateAccessKey", 
+                "iam:CreateAccessKey",
                 "iam:DeleteAccessKey",
                 "iam:DeleteUserPolicy",
                 "iam:DetachUserPolicy",
