@@ -36,9 +36,9 @@ locals {
                 "shield:*",
                 "sts:*",
                 "support:*",
-		"elasticloadbalancing:*",
-		"apigateway:*",
-		"appsync:*",
+                "elasticloadbalancing:*",
+                "apigateway:*",
+                "appsync:*",
                 "waf-regional:*",
                 "wafv2:*",
                 "waf:*"
