@@ -36,8 +36,8 @@ locals {
                 "shield:*",
                 "sts:*",
                 "support:*",
-				"waf-regional:*",
-				"wafv2:*",
+		"waf-regional:*",
+		"wafv2:*",
                 "waf:*"
             ],
             "Resource": "*",
