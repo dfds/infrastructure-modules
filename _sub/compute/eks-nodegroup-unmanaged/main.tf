@@ -1,5 +1,5 @@
 resource "aws_launch_configuration" "eks" {
-  count                       = signum(length(var.instance_types))
+  count                       = signum(var.desired_size_per_subnet)
   associate_public_ip_address = true
   iam_instance_profile        = var.iam_instance_profile
   image_id                    = local.node_ami
@@ -33,7 +33,7 @@ locals {
 
 
 resource "aws_autoscaling_group" "eks" {
-  count                = length(var.instance_types) > 0 ? length(var.subnet_ids) : 0
+  count                = var.desired_size_per_subnet > 0 ? length(var.subnet_ids) : 0
   name                 = "eks-${var.cluster_name}-${var.nodegroup_name}_${data.aws_subnet.subnet[count.index].availability_zone}"
   launch_configuration = try(aws_launch_configuration.eks[0].id, ["NA"])
   availability_zones   = toset([data.aws_subnet.subnet[count.index].availability_zone])
@@ -62,7 +62,7 @@ resource "aws_autoscaling_group" "eks" {
 
 
 resource "aws_autoscaling_schedule" "eks" {
-  count                  = var.is_sandbox && length(var.instance_types) > 0 ? length(var.subnet_ids) : 0
+  count                  = var.is_sandbox && var.desired_size_per_subnet > 0 ? length(var.subnet_ids) : 0
   autoscaling_group_name = aws_autoscaling_group.eks[count.index].name
   scheduled_action_name  = "Scale to zero"
   recurrence             = var.scale_to_zero_cron
