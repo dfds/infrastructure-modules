@@ -41,10 +41,6 @@ variable "eks_cluster_name" {
 # KIAM
 # --------------------------------------------------
 
-variable "kiam_deploy" {
-  default = false
-}
-
 variable "kiam_chart_version" {
   type        = string
   description = "KIAM helm chart version"
@@ -79,7 +75,7 @@ variable "traefik_deploy" {
 
 variable "traefik_version" {
   type    = string
-  default = "1.7.19"
+  default = "1.7"
 }
 
 variable "traefik_http_nodeport" {
@@ -222,7 +218,7 @@ variable "cloudwatch_alarm_alb_5XX_deploy" {
 variable "monitoring_namespace_deploy" {
   type        = bool
   description = "Deploy monitoring namespace"
-  default     = false
+  default     = true
 }
 
 variable "monitoring_namespace_iam_roles" {
@@ -342,7 +338,7 @@ variable "monitoring_alertmanager_silence_namespaces" {
 variable "monitoring_metrics_server_deploy" {
   type        = bool
   description = "Deploy metrics-server helm chart switch. If setting to true, monitoring_namespace_deploy must also be set to true"
-  default     = false
+  default     = true
 }
 
 variable "monitoring_metrics_server_chart_version" {
@@ -382,7 +378,7 @@ variable "eks_is_sandbox" {
 variable "ebs_csi_driver_deploy" {
   type        = bool
   description = "Deploy AWS EBS CSI driver Helm chart"
-  default     = false
+  default     = true
 }
 
 variable "ebs_csi_driver_chart_version" {

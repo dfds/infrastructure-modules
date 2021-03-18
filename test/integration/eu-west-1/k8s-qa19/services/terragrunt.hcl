@@ -26,10 +26,6 @@ inputs = {
   # Traefik
   # --------------------------------------------------
 
-  traefik_deploy      = true
-  traefik_version     = "1.7"
-  traefik_deploy_name = "traefik"
-
   traefik_alb_auth_deploy = true # triggers Azure App registration
   traefik_alb_anon_deploy = true
   # traefik_alb_auth_core_alias = ["qa-alias1.dfds.cloud", "qa-alias2.dfds.cloud"]
@@ -59,12 +55,11 @@ inputs = {
   platform_fluxcd_deploy       = true
   platform_fluxcd_repo_name    = "platform-manifests-qa"
   platform_fluxcd_github_owner = "dfds"
-  
+
   # --------------------------------------------------
   # AWS EBS CSI Driver
   # --------------------------------------------------
 
-  ebs_csi_driver_deploy        = true
   ebs_csi_driver_chart_version = "0.7.1"
 
   # --------------------------------------------------
@@ -73,7 +68,6 @@ inputs = {
 
   traefik_okta_deploy         = true
   traefik_okta_version        = "2.2"
-  traefik_deploy_name         = "traefik-okta"
   traefik_alb_okta_deploy     = true
   traefik_alb_okta_core_alias = []
 
@@ -83,11 +77,6 @@ inputs = {
 
   kiam_chart_version = "5.9.0" # 5.10.0 includes https://github.com/uswitch/kiam/pull/427, but image does not - breaks WhitelistRouteRegexp/AllowRouteRegexp
 
-  # --------------------------------------------------
-  # Monitoring namespace
-  # --------------------------------------------------
-
-  monitoring_namespace_deploy = true
 
   # --------------------------------------------------
   # Kube-prometheus-stack
@@ -102,12 +91,6 @@ inputs = {
   monitoring_kube_prometheus_stack_slack_webhook           = "https://dummy.slack.webhook"
   monitoring_kube_prometheus_stack_slack_channel           = "#hellman-alerting"
 
-  # --------------------------------------------------
-  # Metrics server
-  # --------------------------------------------------
-
-  monitoring_metrics_server = true
-  monitoring_metrics_server_chart_version = "2.11.4"
 
   # --------------------------------------------------
   # Goldpinger
@@ -119,9 +102,9 @@ inputs = {
   # Crossplane
   # --------------------------------------------------
 
-  crossplane_deploy = true
+  crossplane_deploy        = true
   crossplane_chart_version = "1.0.0"
-  crossplane_providers = ["crossplane/provider-aws:v0.16.0"]
+  crossplane_providers     = ["crossplane/provider-aws:v0.16.0"]
 
   # --------------------------------------------------
   # Atlantis
