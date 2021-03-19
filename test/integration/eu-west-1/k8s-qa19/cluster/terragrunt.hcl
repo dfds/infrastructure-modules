@@ -38,7 +38,6 @@ inputs = {
   # Restore Blaster Configmap
   # --------------------------------------------------
 
-  blaster_configmap_deploy = true
   blaster_configmap_bucket = "dfds-qa19-k8s-configmap"
 
 }
