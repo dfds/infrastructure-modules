@@ -41,7 +41,7 @@ variable "eks_is_sandbox" {
 }
 
 variable "eks_cluster_zones" {
-  default = 2 # Set to the number of AZs Hellman currently uses, to reduce risk of destroying/recreating cluster, until a better solution is in place
+  default = 3
 }
 
 variable "eks_cluster_log_types" {
@@ -107,7 +107,7 @@ variable "eks_public_s3_bucket" {
 
 variable "eks_nodegroup1_instance_types" {
   type    = list(string)
-  default = []
+  default = ["t3.small"]
 }
 
 variable "eks_nodegroup1_disk_size" {
@@ -137,7 +137,7 @@ variable "eks_nodegroup1_desired_size_per_subnet" {
 
 variable "eks_nodegroup2_instance_types" {
   type    = list(string)
-  default = []
+  default = ["t3.small"]
 }
 
 variable "eks_nodegroup2_disk_size" {
@@ -176,7 +176,7 @@ variable "blaster_configmap_bucket" {
 
 variable "eks_worker_cloudwatch_agent_config_deploy" {
   type    = bool
-  default = false
+  default = true
 }
 
 variable "eks_worker_cloudwatch_agent_config_file" {
