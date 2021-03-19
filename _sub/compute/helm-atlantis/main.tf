@@ -10,6 +10,7 @@ locals {
 resource "random_password" "webhook_password" {
   length = 16
   special = true
+  override_special = "!@#$%&*-_=+:?"
 }
 
 resource "helm_release" "atlantis" {
