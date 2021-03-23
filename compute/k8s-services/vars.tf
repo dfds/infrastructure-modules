@@ -434,6 +434,11 @@ variable "platform_fluxcd_github_token" {
   description = ""
 }
 
+variable "platform_fluxcd_repo_branch" {
+  type        = string
+  default     = "main"
+  description = ""
+}
 
 # --------------------------------------------------
 # Namespaces
