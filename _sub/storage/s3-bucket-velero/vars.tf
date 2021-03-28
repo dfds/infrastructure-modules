@@ -15,3 +15,15 @@ variable versioning {
   default     = false
   description = ""
 }
+
+variable "velero_iam_role_name" {
+  type = string
+  default = "VeleroBackupRole"
+  description = ""
+}
+
+variable force_bucket_destroy {
+  type        = bool
+  default     = true
+  description = "Destroy bucket without error"
+}

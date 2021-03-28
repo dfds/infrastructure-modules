@@ -1,6 +1,7 @@
 resource "aws_s3_bucket" "velero_storage" {
   bucket = var.bucket_name
   acl = "private"
+  force_destroy = var.force_bucket_destroy
 
   versioning {
     enabled = var.versioning
@@ -55,7 +56,7 @@ EOF
 }
 
 resource "aws_iam_role" "velero_role" {
-  name        = "VeleroBackupRole"
+  name        = var.velero_iam_role_name
   description = ""
 
   assume_role_policy = <<EOF
