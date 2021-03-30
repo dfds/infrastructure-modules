@@ -27,3 +27,27 @@ variable "crossplane_providers" {
   type        = list(string)
   description = "List of Crossplane providers to install"
 }
+
+variable "crossplane_admin_service_accounts" {
+  type = list(object({
+    serviceaccount = string
+    namespace = string
+  }))
+  description = "List of service account objects that should have crossplane-admin access"
+}
+
+variable "crossplane_edit_service_accounts" {
+  type = list(object({
+    serviceaccount = string
+    namespace = string
+  }))
+  description = "List of service account objects that should have crossplane-edit access"
+}
+
+variable "crossplane_view_service_accounts" {
+  type = list(object({
+    serviceaccount = string
+    namespace = string
+  }))
+  description = "List of service account objects that should have crossplane-view access"
+}
