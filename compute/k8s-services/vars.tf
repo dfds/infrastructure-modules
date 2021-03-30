@@ -632,19 +632,3 @@ variable "crossplane_providers" {
   description = "List of Crossplane providers to install"
   default     = []
 }
-
-# --------------------------------------------------
-# Velero
-# --------------------------------------------------
-
-variable "velero_storage_deploy" {
-  type = bool
-  default = true
-  description = "Should Velero storage s3 bucket and IAM role be deployed"
-}
-
-variable "velero_storage_versioning" {
-  type = bool
-  default = false
-  description = "Versioning enabled for Velero storage s3 bucket"
-}

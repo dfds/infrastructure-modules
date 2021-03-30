@@ -521,15 +521,3 @@ module "crossplane" {
   force_update         = var.crossplane_force_update
   crossplane_providers = var.crossplane_providers
 }
-
-# --------------------------------------------------
-# Velero
-# --------------------------------------------------
-
-module "velero_storage" {
-  source               = "../../_sub/storage/s3-bucket-velero"
-  count = var.velero_storage_deploy ? 1 : 0
-  bucket_name          = "velero-storage"
-  kiam_server_role_arn = module.kiam_deploy.server_role_arn
-  versioning           = var.velero_storage_versioning
-}

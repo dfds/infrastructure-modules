@@ -1,3 +1,17 @@
+terraform {
+  backend "s3" {
+  }
+}
+
+provider "aws" {
+  region  = var.aws_region
+  version = "~> 2.43"
+  
+  assume_role {
+    role_arn = var.aws_assume_role_arn
+  }
+}
+
 resource "aws_s3_bucket" "velero_storage" {
   bucket = var.bucket_name
   acl = "private"
@@ -6,6 +20,15 @@ resource "aws_s3_bucket" "velero_storage" {
   versioning {
     enabled = var.versioning
   }
+}
+
+resource "aws_s3_bucket_public_access_block" "veloro_storage_block_public_access" {
+  bucket = aws_s3_bucket.velero_storage.id
+
+  block_public_acls   = true
+  block_public_policy = true
+  ignore_public_acls = true
+  restrict_public_buckets = true
 }
 
 resource "aws_iam_policy" "velero_policy" {
@@ -66,8 +89,10 @@ resource "aws_iam_role" "velero_role" {
     {
       "Sid": "",
       "Effect": "Allow",
-      "Principal": {
-        "AWS": "${var.kiam_server_role_arn}"
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalArn": "${var.kiam_server_role_arn}"
+        }
       },
       "Action": "sts:AssumeRole"
     }
