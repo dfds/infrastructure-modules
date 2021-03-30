@@ -105,6 +105,12 @@ inputs = {
   crossplane_deploy        = true
   crossplane_chart_version = "1.0.0"
   crossplane_providers     = ["crossplane/provider-aws:v0.16.0"]
+  crossplane_admin_service_accounts = [
+    {
+      serviceaccount = "default"
+      namespace = "kube-system"
+    }
+  ]
 
   # --------------------------------------------------
   # Atlantis
