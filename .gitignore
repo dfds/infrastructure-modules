@@ -48,3 +48,6 @@ validate.json
 *.sum
 *.mod
 _sub/monitoring/alarm-notifier/lambda/main
+
+#Intellij
+.idea
