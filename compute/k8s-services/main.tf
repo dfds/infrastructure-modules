@@ -520,4 +520,7 @@ module "crossplane" {
   recreate_pods        = var.crossplane_recreate_pods
   force_update         = var.crossplane_force_update
   crossplane_providers = var.crossplane_providers
+  crossplane_admin_service_accounts = var.crossplane_admin_service_accounts
+  crossplane_edit_service_accounts = var.crossplane_edit_service_accounts
+  crossplane_view_service_accounts = var.crossplane_view_service_accounts
 }

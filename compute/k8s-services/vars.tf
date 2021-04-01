@@ -632,3 +632,30 @@ variable "crossplane_providers" {
   description = "List of Crossplane providers to install"
   default     = []
 }
+
+variable "crossplane_admin_service_accounts" {
+  type = list(object({
+    serviceaccount = string
+    namespace = string
+  }))
+  description = "List of service account objects that should have crossplane-admin access"
+  default = []
+}
+
+variable "crossplane_edit_service_accounts" {
+  type = list(object({
+    serviceaccount = string
+    namespace = string
+  }))
+  description = "List of service account objects that should have crossplane-edit access"
+  default = []
+}
+
+variable "crossplane_view_service_accounts" {
+  type = list(object({
+    serviceaccount = string
+    namespace = string
+  }))
+  description = "List of service account objects that should have crossplane-view access"
+  default = []
+}
