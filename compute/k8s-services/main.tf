@@ -296,7 +296,7 @@ module "kiam_deploy" {
   servicemonitor_enabled  = var.monitoring_kube_prometheus_stack_deploy
 
   // Depends_on for servicemonitor is ignored if prometheus stack is not deployed but required otherwise
-  depends_on              = [module.monitoring_kube_prometheus_stack] 
+  depends_on = [module.monitoring_kube_prometheus_stack]
 }
 
 
@@ -327,7 +327,7 @@ module "aws_cloudwatchlogs_iam_role" {
 # This annotation is always applied.  The decision to allow this was taken on the basis that the annotation
 # is a lightweight element with little cost.  If we wished to have it defined based on a feature toggle
 # then it would create additional complexity and require that the toggle variable exist in two places,
-# thus leading to confusion  
+# thus leading to confusion
 locals {
   kubesystem_permitted_base_role = flatten([
     try(module.ebs_csi_driver[0].iam_role_name, []),
@@ -404,14 +404,14 @@ module "monitoring_namespace" {
 # --------------------------------------------------
 
 module "monitoring_goldpinger" {
-  source                  = "../../_sub/compute/helm-goldpinger"
-  count                   = var.monitoring_goldpinger_deploy ? 1 : 0
-  chart_version           = var.monitoring_goldpinger_chart_version
-  priority_class          = var.monitoring_goldpinger_priority_class
-  namespace               = module.monitoring_namespace[0].name
-  servicemonitor_enabled  = var.monitoring_kube_prometheus_stack_deploy
+  source                 = "../../_sub/compute/helm-goldpinger"
+  count                  = var.monitoring_goldpinger_deploy ? 1 : 0
+  chart_version          = var.monitoring_goldpinger_chart_version
+  priority_class         = var.monitoring_goldpinger_priority_class
+  namespace              = module.monitoring_namespace[0].name
+  servicemonitor_enabled = var.monitoring_kube_prometheus_stack_deploy
 
-  depends_on              = [module.monitoring_kube_prometheus_stack]
+  depends_on = [module.monitoring_kube_prometheus_stack]
 }
 
 
@@ -465,6 +465,7 @@ module "platform_fluxcd" {
   github_owner    = var.platform_fluxcd_github_owner
   github_token    = var.platform_fluxcd_github_token
   kubeconfig_path = local.kubeconfig_path
+  repo_branch     = var.platform_fluxcd_repo_branch
 
   providers = {
     github = github.fluxcd
