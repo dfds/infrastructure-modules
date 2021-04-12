@@ -13,6 +13,7 @@ resource "helm_release" "crossplane" {
   values = [
     templatefile("${path.module}/values/values.yaml", {
       crossplane_providers = local.packages_list
+      crossplane_metrics_enabled = var.crossplane_metrics_enabled
   })]
 }
 
