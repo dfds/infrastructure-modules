@@ -659,3 +659,9 @@ variable "crossplane_view_service_accounts" {
   description = "List of service account objects that should have crossplane-view access"
   default = []
 }
+
+variable "crossplane_metrics_enabled" {
+  type        = bool
+  description = "Enable crossplane metrics"
+  default = true
+}

@@ -523,4 +523,5 @@ module "crossplane" {
   crossplane_admin_service_accounts = var.crossplane_admin_service_accounts
   crossplane_edit_service_accounts = var.crossplane_edit_service_accounts
   crossplane_view_service_accounts = var.crossplane_view_service_accounts
+  crossplane_metrics_enabled = var.crossplane_metrics_enabled
 }
