@@ -3,16 +3,17 @@
 # --------------------------------------------------
 
 terraform {
-  backend "s3" {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 2.43"
+    }
   }
+  required_version = ">= 0.14"
 }
 
 provider "aws" {
   region  = var.aws_region
-  version = "~> 2.43"
-  #   assume_role {
-  #     role_arn = "${var.aws_assume_role_arn}"
-  #   }
 }
 
 # --------------------------------------------------
