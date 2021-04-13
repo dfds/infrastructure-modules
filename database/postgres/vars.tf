@@ -38,3 +38,8 @@ variable "engine_version" {
   description = "RDS engine version"
   default     = null
 }
+variable "db_instance_class" {
+  type        = string
+  description = "RDS database instance class"
+  default     = "db.t2.micro"
+}
