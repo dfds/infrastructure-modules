@@ -46,10 +46,6 @@ variable "skip_final_snapshot" {
 
 variable "engine_version" {
   type        = string
-  description = "RDS engine version"
-  default     = 10
-  validation {
-    condition     = can(regex("^[0-9]+$", var.engine_version))
-    error_message = "Must choose digits-only version (major version), fx 13 in stead of 13.1."
-  }
+  description = "RDS engine version (expects major version)"
+  default     = null
 }

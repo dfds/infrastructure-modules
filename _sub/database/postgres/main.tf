@@ -1,8 +1,8 @@
 locals {
-  engine_family = "${aws_db_instance.postgres.engine}${var.engine_version}"
+  engine_family = var.engine_version == null ? "postgres13" : "postgres${var.engine_version}"
 }
 resource "aws_security_group" "pgsg" {
-  name_prefix = "${var.application}-postgres10-sg-${var.environment}"
+  name_prefix = "${var.application}-postgres-sg-${var.environment}"
   description = "Allow all inbound traffic on port ${var.db_port}"
 
   ingress {
@@ -41,7 +41,7 @@ resource "aws_db_parameter_group" "dbparams" {
 #Restore the postgres database with the pre-configured settings
 resource "aws_db_instance" "postgres" {
   engine                  = "postgres"
-  engine_version          = var.engine_version != null ? var.engine_version : null
+  engine_version          = var.engine_version
   publicly_accessible     = "true"
   backup_retention_period = 10
   apply_immediately       = true
