@@ -1,5 +1,5 @@
 locals {
-  engine_family = "${var.engine}${var.engine_version}"
+  engine_family = "${aws_db_instance.postgres.engine}${var.engine_version}"
 }
 resource "aws_security_group" "pgsg" {
   name_prefix = "${var.application}-postgres10-sg-${var.environment}"
