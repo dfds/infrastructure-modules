@@ -1,3 +1,6 @@
+locals {
+  engine_family = "${var.engine}${var.engine_version}"
+}
 resource "aws_security_group" "pgsg" {
   name_prefix = "${var.application}-postgres10-sg-${var.environment}"
   description = "Allow all inbound traffic on port ${var.db_port}"
@@ -21,9 +24,9 @@ resource "aws_security_group" "pgsg" {
 
 #Enable SSL on the database by default
 resource "aws_db_parameter_group" "dbparams" {
-  name        = "${var.application}-postgres10-force-ssl-${var.environment}"
-  description = "Force SSL encryption for postgres10"
-  family      = "postgres10"
+  name        = "${var.application}-${var.engine_family}-force-ssl-${var.environment}"
+  description = "Force SSL encryption for ${var.engine_family}"
+  family      = var.engine_family
 
   parameter {
     name  = "rds.force_ssl"
