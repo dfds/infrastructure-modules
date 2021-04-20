@@ -41,7 +41,7 @@ stages:
         container: prime
         steps:
           - bash: ./src/qa-test-eks.sh apply-all _global/eks-public-s3-bucket
-            displayName: "Provision public EKS S3 bucket"
+            displayName: "Provision _global resources"
 
       - job: eks_1_18
         displayName: EKS 1.18
@@ -57,12 +57,6 @@ stages:
           - bash: ./src/qa-test-eks.sh test eu-west-1/k8s-qa18
             displayName: "Run tests"
             condition: always()
-          - bash: ./src/qa-test-eks.sh disable-cluster-logging eu-west-1 qa18
-            displayName: "Disable cluster logging"
-            condition: always()
-          - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1/k8s-qa18 qa18
-            displayName: "Terraform Destroy (post)"
-            condition: ne(variables['NO_DESTROY'], 'true')
 
       - job: eks_1_19
         displayName: EKS 1.19
@@ -78,6 +72,36 @@ stages:
           - bash: ./src/qa-test-eks.sh test eu-west-1/k8s-qa19
             displayName: "Run tests"
             condition: always()
+
+      - job: init_shared_velero
+        displayName: Init EKS shared velero
+        container: prime
+        dependsOn:
+          - eks_1_18
+          - eks_1_19
+        steps:
+          - bash: ./src/qa-test-eks.sh apply-all _global/s3-velero-backup
+            displayName: "Provision _global velero resources"
+
+      - job: destroy_eks_1_18
+        displayName: Destroy EKS 1.18
+        container: prime
+        dependsOn:
+          - init_shared_velero
+        steps:
+          - bash: ./src/qa-test-eks.sh disable-cluster-logging eu-west-1 qa18
+            displayName: "Disable cluster logging"
+            condition: always()
+          - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1/k8s-qa18 qa18
+            displayName: "Terraform Destroy (post)"
+            condition: ne(variables['NO_DESTROY'], 'true')
+
+      - job: destroy_eks_1_19
+        displayName: Destroy EKS 1.19
+        container: prime
+        dependsOn:
+          - init_shared_velero
+        steps:
           - bash: ./src/qa-test-eks.sh disable-cluster-logging eu-west-1 qa19
             displayName: "Disable cluster logging"
             condition: always()
@@ -89,8 +113,9 @@ stages:
         displayName: Destroy EKS shared resources
         container: prime
         dependsOn:
-          - eks_1_18
+          - destroy_eks_1_18
+          - destroy_eks_1_19
         condition: ne(variables['NO_DESTROY'], 'true')
         steps:
-          - bash: ./src/qa-test-eks.sh destroy-shared _global/eks-public-s3-bucket
-            displayName: "Destroy public EKS S3 bucket"
+          - bash: ./src/qa-test-eks.sh destroy-shared _global
+            displayName: "Destroy public EKS S3 bucket and velero"
