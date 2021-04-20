@@ -8,7 +8,7 @@ include {
 }
 
 dependencies {
-  paths = ["../../eu-west-1/k8s-qa18", "../../eu-west-1/k8s-qa19"]
+  paths = ["../../eu-west-1/k8s-qa18/services", "../../eu-west-1/k8s-qa19/services"]
 }
 
 inputs = {
