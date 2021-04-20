@@ -29,7 +29,6 @@ module "postgres" {
   db_port             = var.db_port
   skip_final_snapshot = var.skip_final_snapshot
   engine_version      = var.engine_version
-  db_instance_class   = var.db_instance_class
 }
 
 module "param_store_pghost" {

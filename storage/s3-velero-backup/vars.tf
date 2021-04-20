@@ -8,25 +8,25 @@ variable "aws_assume_role_arn" {
 
 variable "bucket_name" {
   type        = string
-  description = ""
+  description = "Velero storage bucket name"
 }
 
 variable "kiam_server_role_arn" {
   type        = list(string)
   default     = [""]
-  description = ""
+  description = "Role to allow for trust relationship to KIAM "
 }
 
 variable "versioning" {
   type        = bool
   default     = true
-  description = ""
+  description = "Enable S3 bucket versioning"
 }
 
 variable "velero_iam_role_name" {
   type = string
   default = "VeleroBackup"
-  description = ""
+  description = "Velero role for S3 actions"
 }
 
 variable "force_bucket_destroy" {
