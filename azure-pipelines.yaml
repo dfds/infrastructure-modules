@@ -80,7 +80,7 @@ stages:
           - eks_1_18
           - eks_1_19
         steps:
-          - bash: ./src/qa-test-eks.sh apply-all _global/s3-velero-backup
+          - bash: ./src/qa-test-eks.sh apply-all _global/s3-bucket-velero
             displayName: "Provision _global velero resources"
 
       - job: destroy_eks_1_18
