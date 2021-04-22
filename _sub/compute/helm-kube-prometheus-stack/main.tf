@@ -83,7 +83,7 @@ data "aws_iam_policy_document" "cloudwatch_metrics" {
 
 
 resource "aws_iam_policy" "cloudwatch_metrics" {
-  name = "${var.cluster_name}-monitoring-grafana-cloudwatch"
+  name = var.grafana_iam_role_name
   policy = data.aws_iam_policy_document.cloudwatch_metrics.json
 }
 
@@ -93,7 +93,7 @@ resource "aws_iam_role_policy_attachment" "cloudwatch_metrics" {
 }
 
 resource "aws_iam_role" "cloudwatch_metrics" {
-  name               = "${var.cluster_name}-monitoring-grafana-cloudwatch"
+  name               = var.grafana_iam_role_name
   assume_role_policy = data.aws_iam_policy_document.cloudwatch_metrics_trust.json
 }
 

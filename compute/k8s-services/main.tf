@@ -395,7 +395,7 @@ module "monitoring_namespace" {
   source    = "../../_sub/compute/k8s-namespace"
   count     = var.monitoring_namespace_deploy ? 1 : 0
   name      = "monitoring"
-  iam_roles = var.monitoring_namespace_iam_roles
+  iam_roles = local.monitoring_namespace_iam_roles
 }
 
 
@@ -431,6 +431,7 @@ module "monitoring_kube_prometheus_stack" {
   grafana_ingress_path            = var.monitoring_kube_prometheus_stack_grafana_ingress_path
   grafana_host                    = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
   grafana_notifier_name           = "${var.eks_cluster_name}-alerting"
+  grafana_iam_role_name           = local.grafana_iam_role_name
   slack_webhook                   = var.monitoring_kube_prometheus_stack_slack_webhook
   prometheus_storageclass         = var.monitoring_kube_prometheus_stack_prometheus_storageclass
   prometheus_storage_size         = var.monitoring_kube_prometheus_stack_prometheus_storage_size
