@@ -44,6 +44,11 @@ variable "grafana_notifier_name" {
   description = "Grafana notifier name"
 }
 
+variable "grafana_iam_role_name" {
+  type        = string
+  description = "Name to be given to the Grafana IAM role"
+}
+
 variable "slack_webhook" {
   type        = string
   description = "Alert Slack webhook"
