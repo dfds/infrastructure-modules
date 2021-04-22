@@ -1,8 +1,11 @@
 variable "aws_workload_account_id" {
+  type        = string
+  description = "Used to set the trust relationship with the correct account"
 }
 
 variable "cluster_name" {
-  type = string
+  type        = string
+  description = "Used to set the trust relationship with the correct cluster's kiam-server role"
 }
 
 
