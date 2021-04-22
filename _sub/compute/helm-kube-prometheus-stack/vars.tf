@@ -1,3 +1,11 @@
+variable "aws_workload_account_id" {
+}
+
+variable "cluster_name" {
+  type = string
+}
+
+
 variable "chart_version" {
   type        = string
   description = "Kube-prometheus-stack helm chart version"

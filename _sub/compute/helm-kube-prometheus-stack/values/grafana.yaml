@@ -22,3 +22,5 @@ grafana:
       root_url: ${grafana_root_url}
   plugins:
   - grafana-polystat-panel
+  podAnnotations:
+    iam.amazonaws.com/role: ${grafana_cloudwatch_role}

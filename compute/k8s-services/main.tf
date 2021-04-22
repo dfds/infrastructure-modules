@@ -422,6 +422,8 @@ module "monitoring_goldpinger" {
 module "monitoring_kube_prometheus_stack" {
   source                          = "../../_sub/compute/helm-kube-prometheus-stack"
   count                           = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
+  aws_workload_account_id         = var.aws_workload_account_id
+  cluster_name                    = var.eks_cluster_name
   chart_version                   = var.monitoring_kube_prometheus_stack_chart_version
   namespace                       = module.monitoring_namespace[0].name
   priority_class                  = var.monitoring_kube_prometheus_stack_priority_class

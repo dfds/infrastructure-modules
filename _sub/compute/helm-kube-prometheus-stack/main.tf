@@ -17,11 +17,12 @@ resource "helm_release" "kube_prometheus_stack" {
     }),
 
     templatefile("${path.module}/values/grafana.yaml", {
-      grafana_admin_password = var.grafana_admin_password != "" ? var.grafana_admin_password : random_password.grafana_password.result
-      grafana_priorityclass  = var.priority_class
-      grafana_ingress_path   = var.grafana_ingress_path
-      grafana_host           = var.grafana_host
-      grafana_root_url       = "https://%(domain)s${var.grafana_ingress_path}"
+      grafana_admin_password  = var.grafana_admin_password != "" ? var.grafana_admin_password : random_password.grafana_password.result
+      grafana_priorityclass   = var.priority_class
+      grafana_ingress_path    = var.grafana_ingress_path
+      grafana_host            = var.grafana_host
+      grafana_root_url        = "https://%(domain)s${var.grafana_ingress_path}"
+      grafana_cloudwatch_role = aws_iam_role.cloudwatch_metrics.arn
     }),
 
     length(var.slack_webhook) > 0 ? templatefile("${path.module}/values/grafana-notifiers.yaml", {
@@ -59,4 +60,55 @@ resource "helm_release" "kube_prometheus_stack" {
       kube_state_metrics_priorityclass = var.priority_class
     })
   ]
+}
+
+data "aws_iam_policy_document" "cloudwatch_metrics" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+                "tag:GetResources",
+                "ec2:DescribeTags",
+                "ec2:DescribeRegions",
+                "ec2:DescribeInstances",
+                "cloudwatch:ListMetrics",
+                "cloudwatch:GetMetricStatistics",
+                "cloudwatch:GetMetricData",
+                "cloudwatch:DescribeAlarmsForMetric"
+                ]
+
+    resources = ["*"]
+  }
+}
+
+
+resource "aws_iam_policy" "cloudwatch_metrics" {
+  name = "${var.cluster_name}-monitoring-grafana-cloudwatch"
+  policy = data.aws_iam_policy_document.cloudwatch_metrics.json
+}
+
+resource "aws_iam_role_policy_attachment" "cloudwatch_metrics" {
+  role = aws_iam_role.cloudwatch_metrics.id
+  policy_arn = aws_iam_policy.cloudwatch_metrics.id
+}
+
+resource "aws_iam_role" "cloudwatch_metrics" {
+  name               = "${var.cluster_name}-monitoring-grafana-cloudwatch"
+  assume_role_policy = data.aws_iam_policy_document.cloudwatch_metrics_trust.json
+}
+
+data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type = "AWS"
+
+      identifiers = [
+        local.kiam_server_role_arn,
+      ]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
 }
