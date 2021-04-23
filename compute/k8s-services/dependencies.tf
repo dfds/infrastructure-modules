@@ -148,3 +148,12 @@ locals {
     ]
   }
 }
+
+# --------------------------------------------------
+# Monitoring namespace iam role annotations
+# --------------------------------------------------
+
+locals {
+  grafana_iam_role_name = "${var.eks_cluster_name}-monitoring-grafana-cloudwatch"
+  monitoring_namespace_iam_roles = var.monitoring_kube_prometheus_stack_deploy ? join("|", [var.monitoring_namespace_iam_roles, local.grafana_iam_role_name]) : var.monitoring_namespace_iam_roles
+}

@@ -1,3 +1,14 @@
+variable "aws_workload_account_id" {
+  type        = string
+  description = "Used to set the trust relationship with the correct account"
+}
+
+variable "cluster_name" {
+  type        = string
+  description = "Used to set the trust relationship with the correct cluster's kiam-server role"
+}
+
+
 variable "chart_version" {
   type        = string
   description = "Kube-prometheus-stack helm chart version"
@@ -34,6 +45,11 @@ variable "grafana_host" {
 variable "grafana_notifier_name" {
   type        = string
   description = "Grafana notifier name"
+}
+
+variable "grafana_iam_role_name" {
+  type        = string
+  description = "Name to be given to the Grafana IAM role"
 }
 
 variable "slack_webhook" {
