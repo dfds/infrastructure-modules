@@ -22,7 +22,7 @@ resource "helm_release" "kube_prometheus_stack" {
       grafana_ingress_path    = var.grafana_ingress_path
       grafana_host            = var.grafana_host
       grafana_root_url        = "https://%(domain)s${var.grafana_ingress_path}"
-      grafana_cloudwatch_role = aws_iam_role.cloudwatch_metrics.arn
+      grafana_cloudwatch_role = var.grafana_iam_role_arn
     }),
 
     length(var.slack_webhook) > 0 ? templatefile("${path.module}/values/grafana-notifiers.yaml", {
@@ -62,53 +62,3 @@ resource "helm_release" "kube_prometheus_stack" {
   ]
 }
 
-data "aws_iam_policy_document" "cloudwatch_metrics" {
-  statement {
-    effect = "Allow"
-
-    actions = [
-                "tag:GetResources",
-                "ec2:DescribeTags",
-                "ec2:DescribeRegions",
-                "ec2:DescribeInstances",
-                "cloudwatch:ListMetrics",
-                "cloudwatch:GetMetricStatistics",
-                "cloudwatch:GetMetricData",
-                "cloudwatch:DescribeAlarmsForMetric"
-                ]
-
-    resources = ["*"]
-  }
-}
-
-
-resource "aws_iam_policy" "cloudwatch_metrics" {
-  name = var.grafana_iam_role_name
-  policy = data.aws_iam_policy_document.cloudwatch_metrics.json
-}
-
-resource "aws_iam_role_policy_attachment" "cloudwatch_metrics" {
-  role = aws_iam_role.cloudwatch_metrics.id
-  policy_arn = aws_iam_policy.cloudwatch_metrics.id
-}
-
-resource "aws_iam_role" "cloudwatch_metrics" {
-  name               = var.grafana_iam_role_name
-  assume_role_policy = data.aws_iam_policy_document.cloudwatch_metrics_trust.json
-}
-
-data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
-  statement {
-    effect = "Allow"
-
-    principals {
-      type = "AWS"
-
-      identifiers = [
-        local.kiam_server_role_arn,
-      ]
-    }
-
-    actions = ["sts:AssumeRole"]
-  }
-}

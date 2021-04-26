@@ -1,13 +1,7 @@
-variable "aws_workload_account_id" {
-  type        = string
-  description = "Used to set the trust relationship with the correct account"
-}
-
 variable "cluster_name" {
   type        = string
   description = "Used to set the trust relationship with the correct cluster's kiam-server role"
 }
-
 
 variable "chart_version" {
   type        = string
@@ -47,10 +41,11 @@ variable "grafana_notifier_name" {
   description = "Grafana notifier name"
 }
 
-variable "grafana_iam_role_name" {
+variable "grafana_iam_role_arn" {
   type        = string
-  description = "Name to be given to the Grafana IAM role"
+  description = "Grafana IAM role ARN to add as pod annotation"
 }
+
 
 variable "slack_webhook" {
   type        = string
