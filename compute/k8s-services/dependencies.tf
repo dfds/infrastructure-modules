@@ -157,3 +157,42 @@ locals {
   grafana_iam_role_name = "${var.eks_cluster_name}-monitoring-grafana-cloudwatch"
   monitoring_namespace_iam_roles = var.monitoring_kube_prometheus_stack_deploy ? join("|", [var.monitoring_namespace_iam_roles, local.grafana_iam_role_name]) : var.monitoring_namespace_iam_roles
 }
+
+# --------------------------------------------------
+# Grafana Cloudwatch IAM role
+# --------------------------------------------------
+
+data "aws_iam_policy_document" "cloudwatch_metrics" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+                "tag:GetResources",
+                "ec2:DescribeTags",
+                "ec2:DescribeRegions",
+                "ec2:DescribeInstances",
+                "cloudwatch:ListMetrics",
+                "cloudwatch:GetMetricStatistics",
+                "cloudwatch:GetMetricData",
+                "cloudwatch:DescribeAlarmsForMetric"
+                ]
+
+    resources = ["*"]
+  }
+}
+
+data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type = "AWS"
+
+      identifiers = [
+        module.kiam_deploy.server_role_arn,
+      ]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}

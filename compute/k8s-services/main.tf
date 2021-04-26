@@ -318,6 +318,15 @@ module "aws_cloudwatchlogs_iam_role" {
   }
 }
 
+module "aws_cloudwatch_grafana_reader_iam_role" {
+  source               = "../../_sub/security/iam-role"
+  count                = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
+  role_name            = local.grafana_iam_role_name
+  role_description     = "Role for Grafana to read Cloudwatch metric"
+  role_policy_name     = local.grafana_iam_role_name
+  role_policy_document = data.aws_iam_policy_document.cloudwatch_metrics.json
+  assume_role_policy   = data.aws_iam_policy_document.cloudwatch_metrics_trust.json
+}
 
 # --------------------------------------------------
 # Namespaces
@@ -422,7 +431,6 @@ module "monitoring_goldpinger" {
 module "monitoring_kube_prometheus_stack" {
   source                          = "../../_sub/compute/helm-kube-prometheus-stack"
   count                           = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
-  aws_workload_account_id         = var.aws_workload_account_id
   cluster_name                    = var.eks_cluster_name
   chart_version                   = var.monitoring_kube_prometheus_stack_chart_version
   namespace                       = module.monitoring_namespace[0].name
@@ -431,7 +439,7 @@ module "monitoring_kube_prometheus_stack" {
   grafana_ingress_path            = var.monitoring_kube_prometheus_stack_grafana_ingress_path
   grafana_host                    = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
   grafana_notifier_name           = "${var.eks_cluster_name}-alerting"
-  grafana_iam_role_name           = local.grafana_iam_role_name
+  grafana_iam_role_arn           = "arn:aws:iam::${var.aws_workload_account_id}:role/${local.grafana_iam_role_name}"
   slack_webhook                   = var.monitoring_kube_prometheus_stack_slack_webhook
   prometheus_storageclass         = var.monitoring_kube_prometheus_stack_prometheus_storageclass
   prometheus_storage_size         = var.monitoring_kube_prometheus_stack_prometheus_storage_size
