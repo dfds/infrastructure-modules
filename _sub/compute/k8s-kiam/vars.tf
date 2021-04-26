@@ -91,7 +91,7 @@ variable "chart_version" {
   default     = null
 
   validation {
-    condition     = tonumber(substr(var.chart_version, 0, 1)) >= 6
+    condition     = tonumber(split(".", var.chart_version)[0]) >= 6
     error_message = "The KIAM Helm chart_version must be greater than 6.0.0."
   }
 }
