@@ -89,6 +89,11 @@ variable "chart_version" {
   type        = string
   description = "KIAM helm chart version"
   default     = null
+
+  validation {
+    condition     = tonumber(element(split(".", var.chart_version), 0)) >= 6
+    error_message = "The KIAM Helm chart_version must be greater than 6.0.0."
+  }
 }
 
 variable "servicemonitor_enabled" {
