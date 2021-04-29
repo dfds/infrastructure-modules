@@ -77,3 +77,29 @@ resource "kubernetes_cluster_role_binding" "crossplane-view" {
     namespace = var.crossplane_view_service_accounts[count.index].namespace
   }
 }
+
+resource "kubernetes_service" "crossplane" {
+  metadata {
+    name = var.release_name
+    namespace = var.namespace
+
+    labels = {
+      scrape-service-metrics = "true"
+    }
+
+  }
+  spec {
+    selector = {
+      app = var.release_name
+      release = var.release_name
+    }
+    port {
+      name = "metrics"
+      port        = 8080
+      target_port = 8080
+      protocol = "TCP"
+    }
+
+    type = "ClusterIP"
+  }
+}
