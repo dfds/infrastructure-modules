@@ -88,26 +88,24 @@ stages:
         container: prime
         dependsOn:
           - init_shared_velero
+        condition: ne(variables['NO_DESTROY'], 'true')
         steps:
           - bash: ./src/qa-test-eks.sh disable-cluster-logging eu-west-1 qa18
             displayName: "Disable cluster logging"
-            condition: always()
           - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1/k8s-qa18 qa18
             displayName: "Terraform Destroy (post)"
-            condition: ne(variables['NO_DESTROY'], 'true')
 
       - job: destroy_eks_1_19
         displayName: Destroy EKS 1.19
         container: prime
         dependsOn:
           - init_shared_velero
+        condition: ne(variables['NO_DESTROY'], 'true')
         steps:
           - bash: ./src/qa-test-eks.sh disable-cluster-logging eu-west-1 qa19
             displayName: "Disable cluster logging"
-            condition: always()
           - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1/k8s-qa19 qa19
             displayName: "Terraform Destroy (post)"
-            condition: ne(variables['NO_DESTROY'], 'true')
 
       - job: destroy_shared
         displayName: Destroy EKS shared resources
