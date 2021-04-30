@@ -80,8 +80,8 @@ resource "kubernetes_cluster_role_binding" "crossplane-view" {
 
 resource "kubernetes_service" "crossplane" {
   metadata {
-    name = var.release_name
-    namespace = var.namespace
+    name = helm_release.crossplane.name
+    namespace = helm_release.crossplane.namespace
 
     labels = {
       scrape-service-metrics = "true"
@@ -90,8 +90,34 @@ resource "kubernetes_service" "crossplane" {
   }
   spec {
     selector = {
-      app = var.release_name
-      release = var.release_name
+      app = helm_release.crossplane.name
+      release = helm_release.crossplane.name
+    }
+    port {
+      name = "metrics"
+      port        = 8080
+      target_port = 8080
+      protocol = "TCP"
+    }
+
+    type = "ClusterIP"
+  }
+}
+
+resource "kubernetes_service" "crossplane-rbac" {
+  metadata {
+    name = "${helm_release.crossplane.name}-rbac-manager"
+    namespace = helm_release.crossplane.namespace
+
+    labels = {
+      scrape-service-metrics = "true"
+    }
+
+  }
+  spec {
+    selector = {
+      app = "${helm_release.crossplane.name}-rbac-manager"
+      release = helm_release.crossplane.name
     }
     port {
       name = "metrics"
