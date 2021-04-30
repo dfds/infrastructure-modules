@@ -94,11 +94,6 @@ resource "helm_release" "kiam" {
 
   set {
     name  = "agent.allowRouteRegexp"
-    value = "(^/latest/meta-data/iam/info$)"
-  }
-
-  set {
-    name  = "agent.whiteListRouteRegexp"
     value = "(^/latest/meta-data/iam/info$|^/latest/meta-data/instance-id$|^/latest/dynamic/instance-identity/document$|^/latest/meta-data/outpost-arn$)"
   }
 

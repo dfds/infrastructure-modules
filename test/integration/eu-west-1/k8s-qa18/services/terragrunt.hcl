@@ -75,8 +75,6 @@ inputs = {
   # KIAM
   # --------------------------------------------------
 
-  kiam_chart_version = "5.9.0" # 5.10.0 includes https://github.com/uswitch/kiam/pull/427, but image does not - breaks WhitelistRouteRegexp/AllowRouteRegexp
-
 
   # --------------------------------------------------
   # Kube-prometheus-stack
