@@ -52,6 +52,9 @@ stages:
             displayName: "Init"
           - bash: ./src/qa-test-eks.sh plan-cluster eu-west-1 qa19
             displayName: "Terraform Plan (cluster)"
+          - bash: ./src/qa-test-eks.sh cleanup qa19
+            displayName: "Pre-apply cleanup"
+            condition: variables['PRE_CLEANUP'], 'true'
           - bash: ./src/qa-test-eks.sh apply-cluster eu-west-1 qa19
             displayName: "Terraform Apply"
           - bash: ./src/qa-test-eks.sh test eu-west-1 qa19

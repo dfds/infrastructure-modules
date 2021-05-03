@@ -6,13 +6,13 @@ ACTION=$1
 # $AWS_DEFAULT_REGION
 
 extra_cleanup () {
-    CLUSTERNAME=$1
+    REGION=$1
+    CLUSTERNAME=$2
 
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
-    
     aws iam list-roles --output json | jq -r --arg ROLEPREFIX "eks-${CLUSTERNAME}-" '.Roles[] | select( .RoleName | contains($ROLEPREFIX) ) | .RoleName' | xargs -L1 aws iam delete-role --role-name || true
-    # aws --region eu-west-1 ec2 delete-network-interface --network-interface-id "$(aws --region eu-west-1 ec2 describe-network-interfaces --filters "Name=group-name,Values=eks-${CLUSTERNAME}-node" --query "NetworkInterfaces[].NetworkInterfaceId" --output text)" || true
-    aws --region eu-west-1 ec2 describe-network-interfaces --filters "Name=group-name,Values=eks-${CLUSTERNAME}-node" --query "NetworkInterfaces[].NetworkInterfaceId" --output text | xargs -L1 aws --region eu-west-1 ec2 delete-network-interface --network-interface-id || true
+    # aws --region "$REGION" ec2 delete-network-interface --network-interface-id "$(aws --region eu-west-1 ec2 describe-network-interfaces --filters "Name=group-name,Values=eks-${CLUSTERNAME}-node" --query "NetworkInterfaces[].NetworkInterfaceId" --output text)" || true
+    aws --region "$REGION" ec2 describe-network-interfaces --filters "Name=group-name,Values=eks-${CLUSTERNAME}-node" --query "NetworkInterfaces[].NetworkInterfaceId" --output text | xargs -L1 aws --region eu-west-1 ec2 delete-network-interface --network-interface-id || true
 }
 
 
@@ -32,6 +32,14 @@ if [ "$ACTION" = "plan-cluster" ]; then
 fi
 
 
+if [ "$ACTION" = "cleanup" ]; then
+    REGION=$2
+    CLUSTERNAME=$3
+
+    extra_cleanup "$REGION" "$CLUSTERNAME"
+fi
+
+
 if [ "$ACTION" = "apply-shared" ]; then
     SUBPATH=$2
     WORKDIR="${BASEPATH}/${SUBPATH}"
@@ -47,7 +55,7 @@ if [ "$ACTION" = "apply-cluster" ]; then
     WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}"
     
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
-    extra_cleanup "$CLUSTERNAME"
+    extra_cleanup "$REGION" "$CLUSTERNAME"
     
     # Apply the configuration
     terragrunt apply-all --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
@@ -128,7 +136,7 @@ if [ "$ACTION" = "destroy-cluster" ]; then
     terragrunt destroy-all --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve || RETURN=1
     
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
-    extra_cleanup "$CLUSTERNAME"
+    extra_cleanup "$REGION" "$CLUSTERNAME"
 
     # Return false, if any *eseential* commands failed
     if [ $RETURN -ne 0 ]; then
