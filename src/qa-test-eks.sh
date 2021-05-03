@@ -36,6 +36,7 @@ if [ "$ACTION" = "cleanup" ]; then
     REGION=$2
     CLUSTERNAME=$3
 
+    # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
     extra_cleanup "$REGION" "$CLUSTERNAME"
 fi
 
@@ -53,10 +54,7 @@ if [ "$ACTION" = "apply-cluster" ]; then
     REGION=$2
     CLUSTERNAME=$3
     WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}"
-    
-    # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
-    extra_cleanup "$REGION" "$CLUSTERNAME"
-    
+        
     # Apply the configuration
     terragrunt apply-all --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
 fi
