@@ -1,2 +1,2 @@
 podAnnotations:
-  iam.amazonaws.com/role: "${rolename}"
+  iam.amazonaws.com/role: "${role_arn}"

@@ -90,7 +90,7 @@ resource "helm_release" "aws-ebs-csi-driver" {
 
   values = [
     templatefile("${path.module}/values/annotations.yaml", {
-      rolename = aws_iam_role.csi_driver_role.name
+    role_arn = aws_iam_role.csi_driver_role.arn
   })]
 
 }
