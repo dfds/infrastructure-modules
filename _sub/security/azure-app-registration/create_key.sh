@@ -17,7 +17,7 @@ KEY_PATH_S3=$3
 # Determine if app key already exist in App Reg
 NUM_KEYS_AZ=$(az ad sp credential list --id $APPLICATION_ID | jq length) || NUM_KEYS_AZ=0
 # NUM_KEYS_AZ=1 # debug
-if [ $NUM_KEYS_AZ -eq 0 ]; then
+if [[ $NUM_KEYS_AZ -eq 0 ]]; then
     CREATE_KEY=1
 fi
 
@@ -31,7 +31,7 @@ aws --region "$REGION" s3 ls $KEY_PATH_S3 >/dev/null || CREATE_KEY=1
 
 
 # Create new key
-if [ $CREATE_KEY -eq 1 ]; then
+if [[ $CREATE_KEY -eq 1 ]]; then
 
     echo "No key found for app in Azure AD or key file not found in S3. Generating new."
 
