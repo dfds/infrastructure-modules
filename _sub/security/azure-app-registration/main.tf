@@ -108,9 +108,10 @@ resource "null_resource" "no_aad_access_appreg_key" {
 data "external" "no_aad_access_appreg_key" {
   count      = var.deploy && false == var.grant_aad_access ? 1 : 0
   depends_on = [null_resource.no_aad_access_appreg_key]
-  program    = ["sh", "${path.module}/read_key.sh"]
+  program    = ["sh", "-c", "bash", "${path.module}/read_key.sh"]
 
   query = {
     key_path_s3 = "s3://${var.appreg_key_bucket}/${var.appreg_key_key}"
+    s3_region = data.aws_region.current.name
   }
 }
