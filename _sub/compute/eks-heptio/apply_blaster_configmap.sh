@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Exit if any of the intermediate steps fail
 set -e
 
@@ -37,7 +39,7 @@ function SplitAssumedCreds()
 # Generate AWS CLI config files, if 
 if [ -n "$4" ]; then
     AWS_ASSUME_ARN=$6
-    AWS_ASSUMED_CREDS=($(aws sts assume-role \
+    AWS_ASSUMED_CREDS=($(aws --region "$REGION" sts assume-role \
         --role-arn "$AWS_ASSUME_ARN" \
         --role-session-name "ApplyBlasterConfigmap" \
         --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' \
@@ -51,9 +53,9 @@ if [ -n "$AWS_ASSUMED_CREDS" ]; then
     AWS_ACCESS_KEY_ID=${AWS_ASSUMED_ACCESS_KEY_ID} \
     AWS_SECRET_ACCESS_KEY=${AWS_ASSUMED_SECRET_ACCESS_KEY} \
     AWS_SESSION_TOKEN=${AWS_ASSUMED_SESSION_TOKEN} \
-    aws --region $REGION s3 ls $CONFIGMAP_PATH_S3 >/dev/null && APPLY_S3_CONFIGMAP=1
+    aws --region "$REGION" s3 ls "$CONFIGMAP_PATH_S3" >/dev/null && APPLY_S3_CONFIGMAP=1
 else
-    aws --region $REGION s3 ls $CONFIGMAP_PATH_S3 >/dev/null && APPLY_S3_CONFIGMAP=1
+    aws --region "$REGION" s3 ls "$CONFIGMAP_PATH_S3" >/dev/null && APPLY_S3_CONFIGMAP=1
 fi
 
 
@@ -71,17 +73,17 @@ if [ $APPLY_S3_CONFIGMAP -eq 1 ]; then
         AWS_ACCESS_KEY_ID=${AWS_ASSUMED_ACCESS_KEY_ID} \
         AWS_SECRET_ACCESS_KEY=${AWS_ASSUMED_SECRET_ACCESS_KEY} \
         AWS_SESSION_TOKEN=${AWS_ASSUMED_SESSION_TOKEN} \
-        aws --region $REGION s3 cp $CONFIGMAP_PATH_S3 /tmp/${CONFIGMAP_KEY}
+        aws --region "$REGION" s3 cp "$CONFIGMAP_PATH_S3" "/tmp/${CONFIGMAP_KEY}"
     else
-        aws --region $REGION s3 cp $CONFIGMAP_PATH_S3 /tmp/${CONFIGMAP_KEY}
+        aws --region "$REGION" s3 cp "$CONFIGMAP_PATH_S3" "/tmp/${CONFIGMAP_KEY}"
     fi
 
     # cat /tmp/${CONFIGMAP_KEY}
-    kubectl --kubeconfig $KUBE_CONFIG_PATH apply -f /tmp/${CONFIGMAP_KEY}
+    kubectl --kubeconfig "$KUBE_CONFIG_PATH" apply -f "/tmp/${CONFIGMAP_KEY}"
 
 else
 
-    echo "No configmap found at $CONFIGMAP_PATH_S3 or permission denied. Applying default configmap."
-    kubectl --kubeconfig $KUBE_CONFIG_PATH apply -f $DEFAULT_CONFIGMAP_PATH
+    echo "No configmap found at \"$CONFIGMAP_PATH_S3\" or permission denied. Applying default configmap."
+    kubectl --kubeconfig "$KUBE_CONFIG_PATH" apply -f "$DEFAULT_CONFIGMAP_PATH"
 
 fi
