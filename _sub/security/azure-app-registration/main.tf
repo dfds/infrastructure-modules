@@ -42,7 +42,7 @@ resource "null_resource" "aad_access_appreg_key" {
   }
 
   provisioner "local-exec" {
-    command = "${path.module}/create_key.sh ${element(
+    command = "${path.module}/create_key.sh ${data.aws_region.current.name} ${element(
       concat(
         azuread_application.aad_access.*.application_id,
         ["00000000-1337-0000-0000-000000000000"],
@@ -94,7 +94,7 @@ resource "null_resource" "no_aad_access_appreg_key" {
   }
 
   provisioner "local-exec" {
-    command = "${path.module}/create_key.sh ${element(
+    command = "${path.module}/create_key.sh ${data.aws_region.current.name} ${element(
       concat(
         azuread_application.no_aad_access.*.application_id,
         ["00000000-0000-1337-0000-000000000000"],

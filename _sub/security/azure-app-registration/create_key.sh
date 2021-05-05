@@ -1,11 +1,17 @@
+#!/bin/bash
+
 # Exit if any of the intermediate steps fail
 set -e
+
+# Prints commands if debug mode is enabled
+[ "$DEBUG" == 'true' ] && set -x
 
 
 # Define varibales
 CREATE_KEY=0
-APPLICATION_ID=$1
-KEY_PATH_S3=$2
+REGION=$1
+APPLICATION_ID=$2
+KEY_PATH_S3=$3
 
 
 # Determine if app key already exist in App Reg
@@ -21,7 +27,7 @@ fi
 
 
 # Determine if key file exists in S3
-aws s3 ls $KEY_PATH_S3 >/dev/null || CREATE_KEY=1
+aws --region "$REGION" s3 ls $KEY_PATH_S3 >/dev/null || CREATE_KEY=1
 
 
 # Create new key
@@ -35,9 +41,9 @@ if [ $CREATE_KEY -eq 1 ]; then
 #     \"password\": \"$(date)\",
 # }"
     
-    az ad sp credential reset -n $APPLICATION_ID --years 100 | aws s3 cp - $KEY_PATH_S3 --content-type "application/json"
+    az ad sp credential reset -n $APPLICATION_ID --years 100 | aws --region "$REGION" s3 cp - $KEY_PATH_S3 --content-type "application/json"
 
-    # echo $OUTPUT | aws s3 cp - $KEY_PATH_S3 --content-type "application/json"
+    # echo $OUTPUT | aws --region "$REGION" s3 cp - $KEY_PATH_S3 --content-type "application/json"
 
 else
 
