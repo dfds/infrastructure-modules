@@ -61,11 +61,6 @@ data "external" "aad_access_appreg_key" {
     key_path_s3 = "s3://${var.appreg_key_bucket}/${var.appreg_key_key}"
     s3_region = data.aws_region.current.name
   }
-
-  triggers = {
-    timestamp = timestamp()
-  }
-
 }
 
 # --------------------------------------------------
@@ -117,9 +112,5 @@ data "external" "no_aad_access_appreg_key" {
   query = {
     key_path_s3 = "s3://${var.appreg_key_bucket}/${var.appreg_key_key}"
     s3_region = data.aws_region.current.name
-  }
-
-  triggers = {
-    timestamp = timestamp()
   }
 }
