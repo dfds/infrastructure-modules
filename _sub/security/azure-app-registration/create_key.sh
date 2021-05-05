@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Exit if any of the intermediate steps fail
-set -e
+set -ex
 
 # Prints commands if debug mode is enabled
-[ "$DEBUG" == 'true' ] && set -x
+# [ "$DEBUG" == 'true' ] && set -x
 
 
 # Define varibales

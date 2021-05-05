@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Exit if any of the intermediate steps fail
-set -e
+set -ex
 
 # Prints commands if debug mode is enabled
-[ "$DEBUG" == 'true' ] && set -x
+# [ "$DEBUG" == 'true' ] && set -x
 
 # Parse JSON arguments - for calling via Terraform data/program
 # https://www.terraform.io/docs/providers/external/data_source.html
