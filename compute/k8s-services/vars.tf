@@ -225,7 +225,9 @@ variable "monitoring_namespace_iam_roles" {
   description = "IAM roles allowed to assume"
   default     = ""
   validation {
-    condition     = can(regex("^arn:aws:iam::", var.monitoring_namespace_iam_roles))
+    condition     = var.monitoring_namespace_iam_roles == "" ? true : (
+      can(regex("^arn:aws:iam::", var.monitoring_namespace_iam_roles))
+    )
     error_message = "The value must contain full role ARNs."
   }
 }

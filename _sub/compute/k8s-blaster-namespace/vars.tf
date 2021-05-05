@@ -14,7 +14,9 @@ variable "extra_permitted_roles" {
   default = []
   description = "Additional role ARNs that can be assumed from this namespace through KIAM"
   validation {
-    condition = can([for role in var.extra_permitted_roles : regex("^arn:aws:iam::", role)])
+    condition = var.extra_permitted_roles == [] ? true : (
+      can([for role in var.extra_permitted_roles : regex("^arn:aws:iam::", role)])
+    )
     error_message = "The list values (if defined) must contain full roles ARNs."
   }
 }
