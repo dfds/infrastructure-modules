@@ -1,6 +1,9 @@
 # Exit if any of the intermediate steps fail
 set -e
 
+# Prints commands if debug mode is enabled
+[ "$DEBUG" == 'true' ] && set -x
+
 
 # Ensure at least two arguments were passed
 if [ -z "$2" ]; then
