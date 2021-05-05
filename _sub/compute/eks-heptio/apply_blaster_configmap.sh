@@ -11,11 +11,12 @@ fi
 
 # Define varibales
 APPLY_S3_CONFIGMAP=0
-KUBE_CONFIG_PATH=$1
-CONFIGMAP_BUCKET=$2
-CONFIGMAP_KEY=$3
+REGION=$1
+KUBE_CONFIG_PATH=$2
+CONFIGMAP_BUCKET=$3
+CONFIGMAP_KEY=$4
 CONFIGMAP_PATH_S3=s3://${CONFIGMAP_BUCKET}/${CONFIGMAP_KEY}
-DEFAULT_CONFIGMAP_PATH=$4
+DEFAULT_CONFIGMAP_PATH=$5
 
 
 # Use function to delay expansion of variable containing assumed creds
@@ -31,8 +32,8 @@ function SplitAssumedCreds()
 
 
 # Generate AWS CLI config files, if 
-if [ -n "$3" ]; then
-    AWS_ASSUME_ARN=$5
+if [ -n "$4" ]; then
+    AWS_ASSUME_ARN=$6
     AWS_ASSUMED_CREDS=($(aws sts assume-role \
         --role-arn "$AWS_ASSUME_ARN" \
         --role-session-name "ApplyBlasterConfigmap" \
@@ -47,9 +48,9 @@ if [ -n "$AWS_ASSUMED_CREDS" ]; then
     AWS_ACCESS_KEY_ID=${AWS_ASSUMED_ACCESS_KEY_ID} \
     AWS_SECRET_ACCESS_KEY=${AWS_ASSUMED_SECRET_ACCESS_KEY} \
     AWS_SESSION_TOKEN=${AWS_ASSUMED_SESSION_TOKEN} \
-    aws s3 ls $CONFIGMAP_PATH_S3 >/dev/null && APPLY_S3_CONFIGMAP=1
+    aws --region $REGION s3 ls $CONFIGMAP_PATH_S3 >/dev/null && APPLY_S3_CONFIGMAP=1
 else
-    aws s3 ls $CONFIGMAP_PATH_S3 >/dev/null && APPLY_S3_CONFIGMAP=1
+    aws --region $REGION s3 ls $CONFIGMAP_PATH_S3 >/dev/null && APPLY_S3_CONFIGMAP=1
 fi
 
 
@@ -67,9 +68,9 @@ if [ $APPLY_S3_CONFIGMAP -eq 1 ]; then
         AWS_ACCESS_KEY_ID=${AWS_ASSUMED_ACCESS_KEY_ID} \
         AWS_SECRET_ACCESS_KEY=${AWS_ASSUMED_SECRET_ACCESS_KEY} \
         AWS_SESSION_TOKEN=${AWS_ASSUMED_SESSION_TOKEN} \
-        aws s3 cp $CONFIGMAP_PATH_S3 /tmp/${CONFIGMAP_KEY}
+        aws --region $REGION s3 cp $CONFIGMAP_PATH_S3 /tmp/${CONFIGMAP_KEY}
     else
-        aws s3 cp $CONFIGMAP_PATH_S3 /tmp/${CONFIGMAP_KEY}
+        aws --region $REGION s3 cp $CONFIGMAP_PATH_S3 /tmp/${CONFIGMAP_KEY}
     fi
 
     # cat /tmp/${CONFIGMAP_KEY}

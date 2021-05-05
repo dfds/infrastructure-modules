@@ -51,7 +51,7 @@ resource "null_resource" "enable-workers-from-s3" {
   }
 
   provisioner "local-exec" {
-    command = "bash ${path.module}/apply_blaster_configmap.sh ${var.kubeconfig_path} ${var.blaster_configmap_s3_bucket} ${var.blaster_configmap_key} ${local.path_default_configmap} ${var.aws_assume_role_arn}"
+    command = "bash ${path.module}/apply_blaster_configmap.sh ${data.aws_region.current} ${var.kubeconfig_path} ${var.blaster_configmap_s3_bucket} ${var.blaster_configmap_key} ${local.path_default_configmap} ${var.aws_assume_role_arn}"
   }
 
   depends_on = [
