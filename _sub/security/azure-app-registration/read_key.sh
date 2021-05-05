@@ -8,8 +8,9 @@ set -ex
 
 # Parse JSON arguments - for calling via Terraform data/program
 # https://www.terraform.io/docs/providers/external/data_source.html
-eval "$(jq -r '@sh "KEY_PATH_S3=\(.key_path_s3)"')"
-eval "$(jq -r '@sh "REGION=\(.s3_region)"')"
+# eval "$(jq -r '@sh "KEY_PATH_S3=\(.key_path_s3)"')"
+# eval "$(jq -r '@sh "REGION=\(.s3_region)"')"
+eval "$(jq -r '@sh "KEY_PATH_S3=\(.key_path_s3) REGION=\(.s3_region)"')"
 
 # Read key file from S3
 aws --region "$REGION" s3 cp $KEY_PATH_S3 -
