@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eu -o pipefail
+set -eux -o pipefail
 
 BASEPATH=./test/integration
 ACTION=$1
@@ -7,11 +7,11 @@ ACTION=$1
 
 extra_cleanup () {
     REGION=$1
-    CLUSTERNAME=$2
+    export CLUSTERNAME=$2
 
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
-    aws iam list-roles --output json | jq -r --arg ROLEPREFIX "eks-${CLUSTERNAME}-" '.Roles[] | select( .RoleName | contains($ROLEPREFIX) ) | .RoleName' | xargs -L1 aws iam delete-role --role-name || true
-    aws --region "$REGION" ec2 describe-network-interfaces --filters "Name=group-name,Values=eks-${CLUSTERNAME}-node" --query "NetworkInterfaces[].NetworkInterfaceId" --output text | xargs -L1 aws --region eu-west-1 ec2 delete-network-interface --network-interface-id || true
+    aws --region "$REGION" iam list-roles --output json | jq -r --arg ROLEPREFIX "eks-${CLUSTERNAME}-" '.Roles[] | select( .RoleName | contains($ROLEPREFIX) ) | .RoleName' | xargs -r -L1 aws --region "$REGION" iam delete-role --role-name || true
+    aws --region "$REGION" ec2 describe-network-interfaces --filters "Name=group-name,Values=eks-${CLUSTERNAME}-node" --query "NetworkInterfaces[].NetworkInterfaceId" --output text | xargs -r -L1 aws --region "$REGION" ec2 delete-network-interface --network-interface-id || true
 }
 
 
