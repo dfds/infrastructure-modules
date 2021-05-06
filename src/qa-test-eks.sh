@@ -15,11 +15,6 @@ extra_cleanup () {
 }
 
 
-if [ "$ACTION" = "init" ]; then
-    az login --service-principal --username "$ARM_CLIENT_ID" --password "$ARM_CLIENT_SECRET" --tenant "$ARM_TENANT_ID"
-fi
-
-
 if [ "$ACTION" = "plan-cluster" ]; then
     REGION=$2
     CLUSTERNAME=$3
