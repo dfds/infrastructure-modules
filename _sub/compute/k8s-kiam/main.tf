@@ -211,4 +211,9 @@ resource "helm_release" "kiam" {
     name = "server.prometheus.servicemonitor.labels.release"
     value = "monitoring"
   }
+
+  set {
+    name = "server.extraArgs.disable-strict-namespace-regexp"
+    value = "" # Hardcoding for now. Waiting for upstream PR to get approved.
+  }
 }

@@ -671,3 +671,8 @@ variable "crossplane_metrics_enabled" {
   description = "Enable crossplane metrics"
   default = true
 }
+variable "kiam_strict_mode_disabled" {
+  type = bool
+  description = "Disable default strict namespace regexp when matching roles"
+  default = false
+}
