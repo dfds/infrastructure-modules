@@ -294,6 +294,7 @@ module "kiam_deploy" {
   agent_liveness_timeout  = 5
   server_gateway_timeout  = "5s"
   servicemonitor_enabled  = var.monitoring_kube_prometheus_stack_deploy
+  strict_mode_disabled    = var.kiam_strict_mode_disabled
 
   // Depends_on for servicemonitor is ignored if prometheus stack is not deployed but required otherwise
   depends_on = [module.monitoring_kube_prometheus_stack]
@@ -439,7 +440,7 @@ module "monitoring_kube_prometheus_stack" {
   grafana_ingress_path            = var.monitoring_kube_prometheus_stack_grafana_ingress_path
   grafana_host                    = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
   grafana_notifier_name           = "${var.eks_cluster_name}-alerting"
-  grafana_iam_role_arn           = "arn:aws:iam::${var.aws_workload_account_id}:role/${local.grafana_iam_role_name}"
+  grafana_iam_role_arn            = local.grafana_iam_role_arn # Coming from locals to avoid circular dependency between KIAM and Prometheus
   slack_webhook                   = var.monitoring_kube_prometheus_stack_slack_webhook
   prometheus_storageclass         = var.monitoring_kube_prometheus_stack_prometheus_storageclass
   prometheus_storage_size         = var.monitoring_kube_prometheus_stack_prometheus_storage_size
