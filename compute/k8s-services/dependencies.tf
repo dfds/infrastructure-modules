@@ -163,7 +163,8 @@ locals {
 
 locals {
   grafana_iam_role_name = "${var.eks_cluster_name}-monitoring-grafana-cloudwatch"
-  monitoring_namespace_iam_roles = var.monitoring_kube_prometheus_stack_deploy ? join("|", [var.monitoring_namespace_iam_roles, local.grafana_iam_role_name]) : var.monitoring_namespace_iam_roles
+  grafana_iam_role_arn = "arn:aws:iam::${var.aws_workload_account_id}:role/${local.grafana_iam_role_name}"
+  monitoring_namespace_iam_roles = var.monitoring_kube_prometheus_stack_deploy ? join("|", compact([var.monitoring_namespace_iam_roles, local.grafana_iam_role_arn])) : var.monitoring_namespace_iam_roles
 }
 
 # --------------------------------------------------

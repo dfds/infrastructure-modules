@@ -224,6 +224,12 @@ variable "monitoring_namespace_iam_roles" {
   type        = string
   description = "IAM roles allowed to assume"
   default     = ""
+  validation {
+    condition     = var.monitoring_namespace_iam_roles == "" ? true : (
+      can(regex("^arn:aws:iam::", var.monitoring_namespace_iam_roles))
+    )
+    error_message = "The value must contain full role ARNs."
+  }
 }
 
 # --------------------------------------------------
@@ -664,4 +670,9 @@ variable "crossplane_metrics_enabled" {
   type        = bool
   description = "Enable crossplane metrics"
   default = true
+}
+variable "kiam_strict_mode_disabled" {
+  type = bool
+  description = "Disable default strict namespace regexp when matching roles"
+  default = false
 }

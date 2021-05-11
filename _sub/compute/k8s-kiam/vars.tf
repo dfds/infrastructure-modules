@@ -103,3 +103,9 @@ variable "servicemonitor_enabled" {
   description = "Deploy af Prometheus servicemonitor crd to enable metrics scraping"
   default = false
 }
+
+variable "strict_mode_disabled" {
+  type = bool
+  description = "Disable default strict namespace regexp when matching roles"
+  default = false
+}
