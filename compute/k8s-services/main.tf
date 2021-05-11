@@ -145,8 +145,8 @@ module "traefik_alb_auth" {
   alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
   nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
   azure_tenant_id       = data.azuread_client_config.current.tenant_id
-  azure_client_id       = module.traefik_alb_auth_appreg[0].application_id
-  azure_client_secret   = module.traefik_alb_auth_appreg[0].application_key
+  azure_client_id       = try(module.traefik_alb_auth_appreg[0].application_id, "")
+  azure_client_secret   = try(module.traefik_alb_auth_appreg[0].application_key, "")
   target_http_port      = var.traefik_http_nodeport
   target_admin_port     = var.traefik_admin_nodeport
   health_check_path     = var.traefik_health_check_path
