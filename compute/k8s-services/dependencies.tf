@@ -36,14 +36,6 @@ locals {
 
 
 # --------------------------------------------------
-# Azure AD context
-# --------------------------------------------------
-
-
-data "azuread_client_config" "current" {} # temporarily used for compatability with v1 module
-
-
-# --------------------------------------------------
 # Determine parent DNS zone name
 # --------------------------------------------------
 
