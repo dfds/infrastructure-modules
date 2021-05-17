@@ -6,8 +6,8 @@ ACTION=$1
 # $AWS_DEFAULT_REGION
 
 extra_cleanup () {
-    REGION=$1
-    export CLUSTERNAME=$2
+    REGION=$2
+    CLUSTERNAME=$3
 
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
     aws --region "$REGION" iam list-roles --output json | jq -r --arg ROLEPREFIX "eks-${CLUSTERNAME}-" '.Roles[] | select( .RoleName | contains($ROLEPREFIX, "Velero") ) | .RoleName' | xargs -r -L1 aws --region "$REGION" iam delete-role --role-name || true
