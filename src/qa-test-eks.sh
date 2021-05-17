@@ -10,7 +10,7 @@ extra_cleanup () {
     export CLUSTERNAME=$2
 
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
-    aws --region "$REGION" iam list-roles --output json | jq -r --arg ROLEPREFIX "eks-${CLUSTERNAME}-" '.Roles[] | select( .RoleName | contains($ROLEPREFIX) ) | .RoleName' | xargs -r -L1 aws --region "$REGION" iam delete-role --role-name || true
+    aws --region "$REGION" iam list-roles --output json | jq -r --arg ROLEPREFIX "eks-${CLUSTERNAME}-" '.Roles[] | select( .RoleName | contains($ROLEPREFIX, "Velero") ) | .RoleName' | xargs -r -L1 aws --region "$REGION" iam delete-role --role-name || true
     aws --region "$REGION" ec2 describe-network-interfaces --filters "Name=group-name,Values=eks-${CLUSTERNAME}-node" --query "NetworkInterfaces[].NetworkInterfaceId" --output text | xargs -r -L1 aws --region "$REGION" ec2 delete-network-interface --network-interface-id || true
 }
 
