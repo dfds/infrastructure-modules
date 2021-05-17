@@ -5,9 +5,7 @@ BASEPATH=./test/integration
 ACTION=$1
 # $AWS_DEFAULT_REGION
 
-extra_cleanup () {
-    REGION=$2
-    CLUSTERNAME=$3
+function extra_cleanup {
 
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
     aws --region "$REGION" iam list-roles --output json | jq -r --arg ROLEPREFIX "eks-${CLUSTERNAME}-" '.Roles[] | select( .RoleName | contains($ROLEPREFIX, "Velero") ) | .RoleName' | xargs -r -L1 aws --region "$REGION" iam delete-role --role-name || true
@@ -36,7 +34,7 @@ if [ "$ACTION" = "cleanup" ]; then
     CLUSTERNAME=$3
 
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
-    extra_cleanup "$REGION" "$CLUSTERNAME"
+    extra_cleanup
 fi
 
 
@@ -133,7 +131,7 @@ if [ "$ACTION" = "destroy-cluster" ]; then
     terragrunt destroy-all --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve || RETURN=1
     
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
-    extra_cleanup "$REGION" "$CLUSTERNAME"
+    extra_cleanup
 
     # Return false, if any *eseential* commands failed
     if [ $RETURN -ne 0 ]; then
