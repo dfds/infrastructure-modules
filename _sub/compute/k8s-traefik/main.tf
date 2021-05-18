@@ -190,3 +190,71 @@ resource "kubernetes_service" "traefik" {
     type = "NodePort"
   }
 }
+
+# --------------------------------------------------
+# Generate random password and create a hash for it
+# --------------------------------------------------
+
+resource "random_password" "password" {
+  length = 32
+  special = true
+  override_special = "!@#$%&*-_=+:?"
+}
+
+resource "htpasswd_password" "hash" {
+  password = random_password.password.result
+  salt     = substr(sha512(random_password.password.result), 0, 8)
+}
+
+# --------------------------------------------------
+# Save username and hashed password in a k8s secret
+# --------------------------------------------------
+resource "kubernetes_secret" "secret" {
+  metadata {
+    name = var.dashboard_secret_name
+    namespace = var.namespace
+  }
+
+  data = {
+    auth = "${var.dashboard_username}:${htpasswd_password.hash.apr1}"
+  }
+}
+
+# --------------------------------------------------
+# Save password in AWS Parameter Store
+# --------------------------------------------------
+resource "aws_ssm_parameter" "param_traefik_dashboard" {
+  name        = "/eks/${var.cluster_name}/traefik-dashboard"
+  description = "Password for accessing the Traefik dashboard"
+  type        = "SecureString"
+  value       = random_password.password.result
+  overwrite   = true
+}
+
+# --------------------------------------------------
+# Ingress to Traefik. Secured by Basic Auth
+# --------------------------------------------------
+resource "kubernetes_ingress" "ingress" {
+
+  metadata {
+    name        = var.dashboard_ingress_name
+    namespace   = var.namespace
+    annotations = local.dashboard_ingress_annotations
+    labels      = var.dashboard_ingress_labels
+  }
+
+  spec {
+    rule {
+        host = var.dashboard_ingress_rule_host
+        http {
+          path {
+            path = var.dashboard_ingress_backend_path
+            backend {
+              service_name = var.deploy_name
+              service_port = local.admin_port
+            }
+          }
+      }
+    }
+  }
+}

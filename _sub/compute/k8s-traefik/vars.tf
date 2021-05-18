@@ -45,3 +45,41 @@ variable "request_memory" {
   description = "(optional) Describes the minimum amount of memory required"
   default = "128Mi"
 }
+
+variable "dashboard_username" {
+  type        = string
+  description = "Username used for basic authentication."
+  default     = "cloudengineer"
+}
+
+variable "dashboard_secret_name" {
+  type        = string
+  description = "Name of the k8s secret to store the credentials for basic authentication."
+  default     = "traefik-basic-auth"
+}
+
+variable "dashboard_ingress_name" {
+  type        = string
+  description = "Name of the ingress, must be unique."
+  default     = "traefik-dashboard"
+}
+
+variable "dashboard_ingress_labels" {
+  type        = map(string)
+  description = "Map of string keys and values that can be used to organize and categorize the ingress."
+  default     = {
+    "name" = "traefik-dashboard"
+  }
+}
+
+variable "dashboard_ingress_backend_path" {
+  type        = string
+  description = "The path for the service entry point."
+  default     = "/"
+}
+
+variable "dashboard_ingress_rule_host" {
+  type        = string
+  description = "The hostname to access the Traefik dashboard on."
+  default     = null
+}
