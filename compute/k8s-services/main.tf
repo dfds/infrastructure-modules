@@ -111,6 +111,7 @@ module "traefik_deploy" {
   replicas          = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
   http_nodeport     = var.traefik_http_nodeport
   admin_nodeport    = var.traefik_admin_nodeport
+  dns_zone_name     = var.eks_is_sandbox ? "${var.eks_cluster_name}.${var.workload_dns_zone_name}" : local.core_dns_zone_name
   dashboard_deploy  = var.traefik_dashboard_deploy
 }
 

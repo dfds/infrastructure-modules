@@ -84,8 +84,7 @@ variable "dashboard_ingress_backend_path" {
   default     = "/"
 }
 
-variable "dashboard_ingress_rule_host" {
+variable "dns_zone_name" {
   type        = string
-  description = "The hostname to access the Traefik dashboard on."
-  default     = null
+  description = "The dns_zone_name. For sandbox this is including the identity name."
 }
