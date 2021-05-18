@@ -7,6 +7,6 @@ locals {
     dashboard_ingress_annotations   = {
         "kubernetes.io/ingress.class" = "traefik"
         "traefik.ingress.kubernetes.io/auth-type" = "basic"
-        "traefik.ingress.kubernetes.io/auth-secret" = kubernetes_secret.secret.metadata[0].name
+        "traefik.ingress.kubernetes.io/auth-secret" = var.dashboard_secret_name
     }
 }

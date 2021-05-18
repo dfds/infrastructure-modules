@@ -46,6 +46,12 @@ variable "request_memory" {
   default = "128Mi"
 }
 
+variable "dashboard_deploy" {
+  type        = bool
+  description = "Deploy ingress for secure access to Traefik dashboard."
+  default     = false
+}
+
 variable "dashboard_username" {
   type        = string
   description = "Username used for basic authentication."

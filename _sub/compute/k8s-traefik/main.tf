@@ -196,27 +196,30 @@ resource "kubernetes_service" "traefik" {
 # --------------------------------------------------
 
 resource "random_password" "password" {
-  length = 32
-  special = true
-  override_special = "!@#$%&*-_=+:?"
+  count             = var.dashboard_deploy ? 1 : 0
+  length            = 32
+  special           = true
+  override_special  = "!@#$%&*-_=+:?"
 }
 
 resource "htpasswd_password" "hash" {
-  password = random_password.password.result
-  salt     = substr(sha512(random_password.password.result), 0, 8)
+  count     = var.dashboard_deploy ? 1 : 0
+  password  = random_password.password[0].result
+  salt      = substr(sha512(random_password.password[0].result), 0, 8)
 }
 
 # --------------------------------------------------
 # Save username and hashed password in a k8s secret
 # --------------------------------------------------
 resource "kubernetes_secret" "secret" {
+  count = var.dashboard_deploy ? 1 : 0
   metadata {
     name = var.dashboard_secret_name
     namespace = var.namespace
   }
 
   data = {
-    auth = "${var.dashboard_username}:${htpasswd_password.hash.apr1}"
+    auth = "${var.dashboard_username}:${htpasswd_password.hash[0].apr1}"
   }
 }
 
@@ -224,10 +227,11 @@ resource "kubernetes_secret" "secret" {
 # Save password in AWS Parameter Store
 # --------------------------------------------------
 resource "aws_ssm_parameter" "param_traefik_dashboard" {
+  count       = var.dashboard_deploy ? 1 : 0
   name        = "/eks/${var.cluster_name}/traefik-dashboard"
   description = "Password for accessing the Traefik dashboard"
   type        = "SecureString"
-  value       = random_password.password.result
+  value       = random_password.password[0].result
   overwrite   = true
 }
 
@@ -235,6 +239,7 @@ resource "aws_ssm_parameter" "param_traefik_dashboard" {
 # Ingress to Traefik. Secured by Basic Auth
 # --------------------------------------------------
 resource "kubernetes_ingress" "ingress" {
+  count = var.dashboard_deploy ? 1 : 0
 
   metadata {
     name        = var.dashboard_ingress_name

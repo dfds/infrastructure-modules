@@ -102,15 +102,16 @@ module "ebs_csi_driver" {
 # --------------------------------------------------
 
 module "traefik_deploy" {
-  source         = "../../_sub/compute/k8s-traefik"
-  deploy         = var.traefik_deploy
-  image_version  = var.traefik_version
-  priority_class = "service-critical"
-  deploy_name    = "traefik"
-  cluster_name   = var.eks_cluster_name
-  replicas       = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
-  http_nodeport  = var.traefik_http_nodeport
-  admin_nodeport = var.traefik_admin_nodeport
+  source            = "../../_sub/compute/k8s-traefik"
+  deploy            = var.traefik_deploy
+  image_version     = var.traefik_version
+  priority_class    = "service-critical"
+  deploy_name       = "traefik"
+  cluster_name      = var.eks_cluster_name
+  replicas          = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
+  http_nodeport     = var.traefik_http_nodeport
+  admin_nodeport    = var.traefik_admin_nodeport
+  dashboard_deploy  = var.traefik_dashboard_deploy
 }
 
 module "traefik_alb_cert" {
