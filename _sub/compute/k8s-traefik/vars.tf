@@ -84,7 +84,7 @@ variable "dashboard_ingress_backend_path" {
   default     = "/"
 }
 
-variable "dns_zone_name" {
+variable "dashboard_ingress_host" {
   type        = string
-  description = "The dns_zone_name. For sandbox this is including the identity name."
+  description = "The alb auth dns name for accessing Traefik."
 }

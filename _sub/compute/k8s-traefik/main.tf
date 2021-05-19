@@ -250,7 +250,7 @@ resource "kubernetes_ingress" "ingress" {
 
   spec {
     rule {
-        host = local.dashboard_ingress_host
+        host = var.dashboard_ingress_host
         http {
           path {
             path = var.dashboard_ingress_backend_path

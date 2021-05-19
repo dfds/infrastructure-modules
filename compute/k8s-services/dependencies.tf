@@ -197,3 +197,17 @@ data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
     actions = ["sts:AssumeRole"]
   }
 }
+
+# --------------------------------------------------
+# Traefik dashboard secure access
+# --------------------------------------------------
+
+locals {
+  traefik_dashboard_ingress_host = var.workload_dns_zone_name != "oxygen.dfds.cloud" ? "${element(
+    concat(
+      module.traefik_alb_auth_dns.record_name,
+      [""]
+    ),
+    0
+  )}.${var.workload_dns_zone_name}" : local.core_dns_zone_name
+}

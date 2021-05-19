@@ -9,5 +9,4 @@ locals {
         "traefik.ingress.kubernetes.io/auth-type" = "basic"
         "traefik.ingress.kubernetes.io/auth-secret" = var.dashboard_secret_name
     }
-    dashboard_ingress_host = "${var.deploy_name}.${var.dns_zone_name}"
 }
