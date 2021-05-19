@@ -137,7 +137,7 @@ variable "traefik_health_check_path" {
 variable "traefik_dashboard_deploy" {
   type        = bool
   description = "Deploy ingress for secure access to Traefik dashboard."
-  default     = false
+  default     = true
 }
 
 

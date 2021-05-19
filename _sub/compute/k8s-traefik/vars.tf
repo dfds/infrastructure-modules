@@ -49,7 +49,7 @@ variable "request_memory" {
 variable "dashboard_deploy" {
   type        = bool
   description = "Deploy ingress for secure access to Traefik dashboard."
-  default     = false
+  default     = true
 }
 
 variable "dashboard_username" {

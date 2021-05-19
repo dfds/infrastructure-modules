@@ -30,7 +30,6 @@ inputs = {
   traefik_alb_anon_deploy = true
   # traefik_alb_auth_core_alias = ["qa-alias1.dfds.cloud", "qa-alias2.dfds.cloud"]
   traefik_alb_auth_core_alias = []
-  traefik_dashboard_deploy = true
 
   # --------------------------------------------------
   # Blaster
