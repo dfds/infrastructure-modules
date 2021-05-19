@@ -50,7 +50,7 @@ stages:
         steps:
           - bash: ./src/qa-test-eks.sh init
             displayName: "Init"
-          - bash: ./src/qa-test-eks.sh cleanup qa19
+          - bash: ./src/qa-test-eks.sh cleanup eu-west-1 qa19
             displayName: "Pre-apply cleanup"
             condition: eq(variables['PRE_CLEANUP'], 'true')
           - bash: ./src/qa-test-eks.sh plan-cluster eu-west-1 qa19
