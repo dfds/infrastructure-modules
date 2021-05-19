@@ -58,26 +58,6 @@ variable "dashboard_username" {
   default     = "cloudengineer"
 }
 
-variable "dashboard_secret_name" {
-  type        = string
-  description = "Name of the k8s secret to store the credentials for basic authentication."
-  default     = "traefik-basic-auth"
-}
-
-variable "dashboard_ingress_name" {
-  type        = string
-  description = "Name of the ingress, must be unique."
-  default     = "traefik-dashboard"
-}
-
-variable "dashboard_ingress_labels" {
-  type        = map(string)
-  description = "Map of string keys and values that can be used to organize and categorize the ingress."
-  default     = {
-    "name" = "traefik-dashboard"
-  }
-}
-
 variable "dashboard_ingress_backend_path" {
   type        = string
   description = "The path for the service entry point."

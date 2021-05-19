@@ -214,7 +214,7 @@ resource "htpasswd_password" "hash" {
 resource "kubernetes_secret" "secret" {
   count = var.dashboard_deploy ? 1 : 0
   metadata {
-    name = var.dashboard_secret_name
+    name = local.dashboard_secret_name
     namespace = var.namespace
   }
 
@@ -242,10 +242,10 @@ resource "kubernetes_ingress" "ingress" {
   count = var.dashboard_deploy ? 1 : 0
 
   metadata {
-    name        = var.dashboard_ingress_name
+    name        = local.dashboard_ingress_name
     namespace   = var.namespace
     annotations = local.dashboard_ingress_annotations
-    labels      = var.dashboard_ingress_labels
+    labels      = local.dashboard_ingress_labels
   }
 
   spec {
