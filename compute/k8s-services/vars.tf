@@ -67,6 +67,11 @@ variable "cloudwatchlogs_iam_role_deploy" {
 # Traefik
 # --------------------------------------------------
 
+variable "traefik_svc_name" {
+  type    = string
+  default = "traefik"
+}
+
 variable "traefik_deploy" {
   type    = bool
   default = true

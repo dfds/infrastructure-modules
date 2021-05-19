@@ -203,11 +203,14 @@ data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
 # --------------------------------------------------
 
 locals {
-  traefik_dashboard_ingress_host = var.workload_dns_zone_name != "oxygen.dfds.cloud" ? "${element(
+  traefik_dashboard_ingress_host = contains(
+    var.traefik_alb_auth_core_alias,
+    "${var.traefik_svc_name}.${local.core_dns_zone_name}"
+  ) ? "${var.traefik_svc_name}.${local.core_dns_zone_name}" : "${element(
     concat(
       module.traefik_alb_auth_dns.record_name,
       [""]
     ),
     0
-  )}.${var.workload_dns_zone_name}" : local.core_dns_zone_name
+  )}.${var.workload_dns_zone_name}"
 }

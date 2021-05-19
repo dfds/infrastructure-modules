@@ -106,7 +106,7 @@ module "traefik_deploy" {
   deploy                  = var.traefik_deploy
   image_version           = var.traefik_version
   priority_class          = "service-critical"
-  deploy_name             = "traefik"
+  deploy_name             = var.traefik_svc_name
   cluster_name            = var.eks_cluster_name
   replicas                = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
   http_nodeport           = var.traefik_http_nodeport
