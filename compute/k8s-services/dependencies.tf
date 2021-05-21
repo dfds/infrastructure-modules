@@ -198,19 +198,28 @@ data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
   }
 }
 
-# --------------------------------------------------
+# ---------------------------------------------------------------------
 # Traefik dashboard secure access
-# --------------------------------------------------
+#
+# Caution:
+# Each instance of the traefik sub module needs its
+# own locals to calculate the ingress host to use for
+# that instance of Traefik. That is to avoid sending
+# too many irrelevant variables into the sub module.
+#
+# Logic explained:
+# IF traefik_alb_auth_core_alias in services/terragrunt.hcl contains
+#   traefik.dfds.cloud
+# THEN use traefik.dfds.cloud as Traefik dashboard ingress host
+# ELSE use internal.<cluster-name>.<capability-name>.dfds.cloud
+#
+# ---------------------------------------------------------------------
 
 locals {
+  traefik_dashboard_ingress_prod_host = "traefik.${local.core_dns_zone_name}"
+  traefik_alb_auth_dns_name = try(module.traefik_alb_auth_dns.record_name["0"], null)
   traefik_dashboard_ingress_host = contains(
     var.traefik_alb_auth_core_alias,
-    "${var.traefik_svc_name}.${local.core_dns_zone_name}"
-  ) ? "${var.traefik_svc_name}.${local.core_dns_zone_name}" : "${element(
-    concat(
-      module.traefik_alb_auth_dns.record_name,
-      [""]
-    ),
-    0
-  )}.${var.workload_dns_zone_name}"
+    local.traefik_dashboard_ingress_prod_host
+  ) ? local.traefik_dashboard_ingress_prod_host : "${local.traefik_alb_auth_dns_name}.${var.workload_dns_zone_name}"
 }
