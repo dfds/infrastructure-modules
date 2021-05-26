@@ -19,5 +19,5 @@ output "traefik_alb_auth_dns_name" {
 }
 
 output "traefik_dashboard_secure_url" {
-  value = "https://${module.traefik_deploy.dashboard_ingress_host}/dashboard/"
+  value = try("https://${module.traefik_deploy.dashboard_ingress_host}/dashboard/", "Not enabled in service configuration.")
 }

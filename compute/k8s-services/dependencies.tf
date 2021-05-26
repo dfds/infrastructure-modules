@@ -221,5 +221,5 @@ locals {
   traefik_dashboard_ingress_host = contains(
     var.traefik_alb_auth_core_alias,
     local.traefik_dashboard_ingress_prod_host
-  ) ? local.traefik_dashboard_ingress_prod_host : "${local.traefik_alb_auth_dns_name}.${var.workload_dns_zone_name}"
+  ) ? local.traefik_dashboard_ingress_prod_host : try("${local.traefik_alb_auth_dns_name}.${var.workload_dns_zone_name}", null)
 }
