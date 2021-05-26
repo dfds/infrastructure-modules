@@ -1,6 +1,7 @@
-locals {
-  packages_list = replace(yamlencode({ provider : { packages : var.crossplane_providers } }), "\"", "")
-}
+// locals {
+//   packages_list = replace(yamlencode({ provider : { packages : var.crossplane_providers } }), "\"", "")
+// }
+
 resource "helm_release" "crossplane" {
   name          = var.release_name
   chart         = "crossplane"
@@ -12,7 +13,6 @@ resource "helm_release" "crossplane" {
 
   values = [
     templatefile("${path.module}/values/values.yaml", {
-      crossplane_providers = local.packages_list
       crossplane_metrics_enabled = var.crossplane_metrics_enabled
   })]
 }
@@ -128,4 +128,21 @@ resource "kubernetes_service" "crossplane-rbac" {
 
     type = "ClusterIP"
   }
+}
+
+resource "kubectl_manifest" "aws_provider" {
+
+  count = length(var.crossplane_providers)
+
+  yaml_body = <<YAML
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: "${replace(split(":", var.crossplane_providers[count.index])[0], "/", "-")}"
+spec:
+  package: "${var.crossplane_providers[count.index]}"
+YAML
+
+  depends_on = [helm_release.crossplane]
+
 }
