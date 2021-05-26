@@ -190,3 +190,76 @@ resource "kubernetes_service" "traefik" {
     type = "NodePort"
   }
 }
+
+# --------------------------------------------------
+# Generate random password and create a hash for it
+# --------------------------------------------------
+
+resource "random_password" "password" {
+  count             = var.dashboard_deploy ? 1 : 0
+  length            = 32
+  special           = true
+  override_special  = "!@#$%&*-_=+:?"
+}
+
+resource "htpasswd_password" "hash" {
+  count     = var.dashboard_deploy ? 1 : 0
+  password  = random_password.password[0].result
+  salt      = substr(sha512(random_password.password[0].result), 0, 8)
+}
+
+# --------------------------------------------------
+# Save username and hashed password in a k8s secret
+# --------------------------------------------------
+resource "kubernetes_secret" "secret" {
+  count = var.dashboard_deploy ? 1 : 0
+  metadata {
+    name = local.dashboard_secret_name
+    namespace = var.namespace
+  }
+
+  data = {
+    auth = "${var.dashboard_username}:${htpasswd_password.hash[0].apr1}"
+  }
+}
+
+# --------------------------------------------------
+# Save password in AWS Parameter Store
+# --------------------------------------------------
+resource "aws_ssm_parameter" "param_traefik_dashboard" {
+  count       = var.dashboard_deploy ? 1 : 0
+  name        = "/eks/${var.cluster_name}/traefik-dashboard"
+  description = "Password for accessing the Traefik dashboard"
+  type        = "SecureString"
+  value       = random_password.password[0].result
+  overwrite   = true
+}
+
+# --------------------------------------------------
+# Ingress to Traefik. Secured by Basic Auth
+# --------------------------------------------------
+resource "kubernetes_ingress" "ingress" {
+  count = var.dashboard_deploy ? 1 : 0
+
+  metadata {
+    name        = local.dashboard_ingress_name
+    namespace   = var.namespace
+    annotations = local.dashboard_ingress_annotations
+    labels      = local.dashboard_ingress_labels
+  }
+
+  spec {
+    rule {
+        host = var.dashboard_ingress_host
+        http {
+          path {
+            path = var.dashboard_ingress_backend_path
+            backend {
+              service_name = var.deploy_name
+              service_port = local.admin_port
+            }
+          }
+      }
+    }
+  }
+}
