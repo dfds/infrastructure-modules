@@ -1,7 +1,3 @@
-// locals {
-//   packages_list = replace(yamlencode({ provider : { packages : var.crossplane_providers } }), "\"", "")
-// }
-
 resource "helm_release" "crossplane" {
   name          = var.release_name
   chart         = "crossplane"
