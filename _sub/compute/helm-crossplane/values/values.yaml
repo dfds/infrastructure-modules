@@ -1,4 +1,2 @@
-${crossplane_providers}
-
 metrics:
   enabled: ${crossplane_metrics_enabled}
