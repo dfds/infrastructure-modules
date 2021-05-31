@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eux -o pipefail
+set -eux #-o pipefail
 
 BASEPATH=./test/integration
 ACTION=$1
