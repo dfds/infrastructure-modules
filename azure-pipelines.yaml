@@ -50,7 +50,7 @@ stages:
         steps:
           - bash: ./src/qa-test-eks.sh init
             displayName: "Init"
-          - bash: ./src/qa-test-eks.sh cleanup eu-west-1 qa19
+          - bash: ./src/qa-test-eks.sh cleanup-cluster eu-west-1 qa19
             displayName: "Pre-apply cleanup"
             condition: eq(variables['PRE_CLEANUP'], 'true')
           - bash: ./src/qa-test-eks.sh plan-cluster eu-west-1 qa19
@@ -67,6 +67,9 @@ stages:
         dependsOn:
           - eks_1_19
         steps:
+          - bash: ./src/qa-test-eks.sh cleanup-shared eu-west-1
+            displayName: "Pre-apply cleanup"
+            condition: eq(variables['PRE_CLEANUP'], 'true')
           - bash: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
             displayName: "Provision Velero S3 bucket"
 

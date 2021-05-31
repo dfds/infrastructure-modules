@@ -5,7 +5,7 @@ BASEPATH=./test/integration
 ACTION=$1
 # $AWS_DEFAULT_REGION
 
-function extra_cleanup {
+function cleanup_cluster {
 
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
 
@@ -13,11 +13,19 @@ function extra_cleanup {
     aws --region "$REGION" iam list-attached-role-policies --role-name "eks-${CLUSTERNAME}-node" --output json | jq '.AttachedPolicies[].PolicyArn' | xargs -tr -L1 aws --no-cli-pager iam detach-role-policy --role-name "eks-${CLUSTERNAME}-node" --policy-arn || true
 
     # Delete EKS IAM roles
-    aws --no-cli-pager --region "$REGION" iam list-roles --output json | jq -r --arg ROLEPREFIX "eks-${CLUSTERNAME}-" '.Roles[] | select( .RoleName | contains($ROLEPREFIX, "Velero") ) | .RoleName' | xargs -tr -L1 aws --no-cli-pager --region "$REGION" iam delete-role --role-name || true
+    aws --no-cli-pager --region "$REGION" iam list-roles --output json | jq -r --arg ROLEPREFIX "eks-${CLUSTERNAME}-" '.Roles[] | select( .RoleName | contains($ROLEPREFIX) ) | .RoleName' | xargs -tr -L1 aws --no-cli-pager --region "$REGION" iam delete-role --role-name || true
 
     # Delete network interfaces
     aws --no-cli-pager --region "$REGION" ec2 describe-network-interfaces --filters "Name=group-name,Values=eks-${CLUSTERNAME}-node" --query "NetworkInterfaces[].NetworkInterfaceId" --output text | xargs -tr -L1 aws --no-cli-pager --region "$REGION" ec2 delete-network-interface --network-interface-id || true
 
+}
+
+function cleanup_shared {
+
+    # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
+
+    # Velero IAM roles
+    aws --no-cli-pager --region "$REGION" iam list-roles --output json | jq -r '.Roles[] | select( .RoleName | contains("Velero") ) | .RoleName' | xargs -tr -L1 aws --no-cli-pager --region "$REGION" iam delete-role --role-name || true
 }
 
 
@@ -37,12 +45,21 @@ if [ "$ACTION" = "plan-cluster" ]; then
 fi
 
 
-if [ "$ACTION" = "cleanup" ]; then
+if [ "$ACTION" = "cleanup-cluster" ]; then
     REGION=$2
     CLUSTERNAME=$3
 
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
-    extra_cleanup
+    cleanup_cluster
+fi
+
+
+if [ "$ACTION" = "cleanup-shared" ]; then
+    REGION=$2
+    CLUSTERNAME=$3
+
+    # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
+    cleanup_shared
 fi
 
 
@@ -139,7 +156,7 @@ if [ "$ACTION" = "destroy-cluster" ]; then
     terragrunt destroy-all --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve || RETURN=1
     
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
-    extra_cleanup
+    cleanup_cluster
 
     # Return false, if any *eseential* commands failed
     if [ $RETURN -ne 0 ]; then
@@ -154,4 +171,7 @@ if [ "$ACTION" = "destroy-shared" ]; then
     
     # Cleanup
     terragrunt destroy-all --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve || true
+
+    # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
+    cleanup_shared
 fi
