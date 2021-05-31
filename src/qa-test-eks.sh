@@ -56,7 +56,6 @@ fi
 
 if [ "$ACTION" = "cleanup-shared" ]; then
     REGION=$2
-    CLUSTERNAME=$3
 
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
     cleanup_shared
