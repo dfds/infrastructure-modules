@@ -165,12 +165,18 @@ fi
 
 
 if [ "$ACTION" = "destroy-shared" ]; then
+    RETURN=0
     SUBPATH=$2
     WORKDIR="${BASEPATH}/${SUBPATH}"
     
     # Cleanup
-    terragrunt destroy-all --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve || true
+    terragrunt destroy-all --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve || RETURN=1
 
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
     cleanup_shared
+
+    # Return false, if any *eseential* commands failed
+    if [ $RETURN -ne 0 ]; then
+        false
+    fi
 fi
