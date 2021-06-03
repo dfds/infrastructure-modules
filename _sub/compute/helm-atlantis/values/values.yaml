@@ -98,6 +98,9 @@ environmentSecrets:
 ingress:
   host: ${atlantis_ingress}
 
+service:
+  type: ClusterIP
+
 repoConfig: |
   ---
   repos:
