@@ -99,8 +99,18 @@ resource "kubernetes_deployment" "traefik" {
         # https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
         topology_spread_constraint {
           topology_key       = "topology.kubernetes.io/zone"
+          when_unsatisfiable = "ScheduleAnyway"
+          label_selector {
+            match_labels = {
+              k8s-app = local.label_k8s-app
+            }
+          }
+        }
+
+        topology_spread_constraint {
+          topology_key       = "kubernetes.io/hostname"
           when_unsatisfiable = "DoNotSchedule"
-          max_skew           = 2 # allows 1 AZ to be unvailable, while allowing an additional pod can be spun, when deployment is updated
+          max_skew           = 1 # allow rolling updates on minimal clusters
 
           label_selector {
             match_labels = {
