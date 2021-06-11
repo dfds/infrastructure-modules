@@ -127,7 +127,7 @@ resource "kubernetes_deployment" "traefik" {
           name  = "traefik"
 
           resources {
-            requests {
+            requests = {
               cpu    = var.request_cpu
               memory = var.request_memory
             }
