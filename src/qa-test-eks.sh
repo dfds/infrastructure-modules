@@ -54,6 +54,7 @@ if [ "$ACTION" = "cleanup-cluster" ]; then
 
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
     cleanup_roles "eks-${CLUSTERNAME}-"
+    cleanup_roles "${CLUSTERNAME}-"
     cleanup_eni
 fi
 
