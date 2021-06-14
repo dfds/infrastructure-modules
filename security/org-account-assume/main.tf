@@ -1,5 +1,4 @@
 provider "aws" {
-  version = "~> 2.43.0"
   region  = var.aws_region
 
   # Assume role in Master account
@@ -9,13 +8,11 @@ provider "aws" {
 }
 
 provider "aws" {
-  version = "~> 2.43.0"
   region  = var.aws_region
   alias   = "core"
 }
 
 provider "aws" {
-  version = "~> 2.43.0"
   region  = var.aws_region
 
   # Need explicit credentials in Master, to be able to assume Organizational Role in Workload account

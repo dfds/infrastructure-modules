@@ -1,11 +1,9 @@
 provider "aws" {
   region  = var.aws_region
-  version = "~> 2.43"
 }
 
 provider "aws" {
   region  = var.aws_region
-  version = "~> 2.43"
   alias   = "workload"
 
   assume_role {
