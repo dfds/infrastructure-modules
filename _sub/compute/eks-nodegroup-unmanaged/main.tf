@@ -36,7 +36,6 @@ resource "aws_autoscaling_group" "eks" {
   count                = var.desired_size_per_subnet > 0 ? length(var.subnet_ids) : 0
   name                 = "eks-${var.cluster_name}-${var.nodegroup_name}_${data.aws_subnet.subnet[count.index].availability_zone}"
   launch_configuration = try(aws_launch_configuration.eks[0].id, ["NA"])
-  availability_zones   = toset([data.aws_subnet.subnet[count.index].availability_zone])
   min_size             = local.asg_min_size
   max_size             = local.asg_max_size
   desired_capacity     = var.desired_size_per_subnet
