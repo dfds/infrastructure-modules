@@ -23,6 +23,18 @@ resource "null_resource" "coredns" {
   depends_on = [null_resource.kubeproxy, local.coredns_version]
 }
 
+resource "null_resource" "coredns_clusterrole" {
+  provisioner "local-exec" {
+    command = "kubectl --kubeconfig ${var.kubeconfig_path} apply -f ${path.module}/clusterrole.yaml"
+  }
+
+  triggers = {
+    coredns_version = local.coredns_version
+  }
+
+  depends_on = [local.coredns_version]
+}
+
 resource "null_resource" "vpccni" {
   provisioner "local-exec" {
     command = "kubectl --kubeconfig ${var.kubeconfig_path} apply -f https://raw.githubusercontent.com/aws/amazon-vpc-cni-k8s/v${local.vpccni_version}/config/v${local.vpccni_minorversion}/aws-k8s-cni.yaml"
