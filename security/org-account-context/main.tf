@@ -3,6 +3,7 @@
 # --------------------------------------------------
 
 provider "aws" {
+  version = "~> 2.43"
   region  = var.aws_region
 
   # Assume role in Master account
@@ -12,11 +13,13 @@ provider "aws" {
 }
 
 provider "aws" {
+  version = "~> 2.43"
   region  = var.aws_region
   alias   = "core" # this provider does not seem to be used?
 }
 
 provider "aws" {
+  version = "~> 2.43"
   region  = var.aws_region
   alias   = "shared"
 
@@ -27,6 +30,7 @@ provider "aws" {
 }
 
 provider "aws" {
+  version = "~> 2.43"
   region  = var.aws_region
   alias   = "workload"
 
