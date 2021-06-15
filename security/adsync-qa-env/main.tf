@@ -10,7 +10,6 @@ terraform {
 provider "aws" {
   region  = var.aws_region
   version = "~> 2.43"
-
   # profile = "qa-orgrole"
 
   #   assume_role {
