@@ -23,9 +23,11 @@ resource "null_resource" "coredns" {
   depends_on = [null_resource.kubeproxy, local.coredns_version]
 }
 
+# For future EKS upgrades, check the upgrade guide for changes to system:coredns clusterrole,
+# and reflect those changes in the YAML file below.
 resource "null_resource" "coredns_clusterrole" {
   provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${var.kubeconfig_path} apply -f ${path.module}/clusterrole.yaml"
+    command = "kubectl --kubeconfig ${var.kubeconfig_path} apply -f ${path.module}/coredns-clusterrole.yaml"
   }
 
   triggers = {
