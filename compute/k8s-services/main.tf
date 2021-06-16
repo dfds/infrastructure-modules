@@ -43,7 +43,6 @@ provider "kubernetes" {
   host                   = data.aws_eks_cluster.eks.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.eks.token
-  load_config_file       = false
   # config_path            = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allowed when importing into state (remember to flip above bool to load config)
 }
 
@@ -59,7 +58,6 @@ provider "helm" {
     host                   = data.aws_eks_cluster.eks.endpoint
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
     token                  = data.aws_eks_cluster_auth.eks.token
-    load_config_file       = false
     # config_path            = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allowed when importing into state (remember to flip above bool to load config)
   }
 }
@@ -102,17 +100,17 @@ module "ebs_csi_driver" {
 # --------------------------------------------------
 
 module "traefik_deploy" {
-  source                  = "../../_sub/compute/k8s-traefik"
-  deploy                  = var.traefik_deploy
-  image_version           = var.traefik_version
-  priority_class          = "service-critical"
-  deploy_name             = "traefik"
-  cluster_name            = var.eks_cluster_name
-  replicas                = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
-  http_nodeport           = var.traefik_http_nodeport
-  admin_nodeport          = var.traefik_admin_nodeport
-  dashboard_ingress_host  = local.traefik_dashboard_ingress_host
-  dashboard_deploy        = var.traefik_dashboard_deploy
+  source                 = "../../_sub/compute/k8s-traefik"
+  deploy                 = var.traefik_deploy
+  image_version          = var.traefik_version
+  priority_class         = "service-critical"
+  deploy_name            = "traefik"
+  cluster_name           = var.eks_cluster_name
+  replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
+  http_nodeport          = var.traefik_http_nodeport
+  admin_nodeport         = var.traefik_admin_nodeport
+  dashboard_ingress_host = local.traefik_dashboard_ingress_host
+  dashboard_deploy       = var.traefik_dashboard_deploy
 }
 
 module "traefik_alb_cert" {
@@ -526,16 +524,16 @@ module "atlantis" {
 # --------------------------------------------------
 
 module "crossplane" {
-  source               = "../../_sub/compute/helm-crossplane"
-  release_name         = var.crossplane_release_name
-  count                = var.crossplane_deploy ? 1 : 0
-  namespace            = var.crossplane_namespace
-  chart_version        = var.crossplane_chart_version
-  recreate_pods        = var.crossplane_recreate_pods
-  force_update         = var.crossplane_force_update
-  crossplane_providers = var.crossplane_providers
+  source                            = "../../_sub/compute/helm-crossplane"
+  release_name                      = var.crossplane_release_name
+  count                             = var.crossplane_deploy ? 1 : 0
+  namespace                         = var.crossplane_namespace
+  chart_version                     = var.crossplane_chart_version
+  recreate_pods                     = var.crossplane_recreate_pods
+  force_update                      = var.crossplane_force_update
+  crossplane_providers              = var.crossplane_providers
   crossplane_admin_service_accounts = var.crossplane_admin_service_accounts
-  crossplane_edit_service_accounts = var.crossplane_edit_service_accounts
-  crossplane_view_service_accounts = var.crossplane_view_service_accounts
-  crossplane_metrics_enabled = var.crossplane_metrics_enabled
+  crossplane_edit_service_accounts  = var.crossplane_edit_service_accounts
+  crossplane_view_service_accounts  = var.crossplane_view_service_accounts
+  crossplane_metrics_enabled        = var.crossplane_metrics_enabled
 }

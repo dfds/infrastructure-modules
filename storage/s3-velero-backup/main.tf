@@ -2,19 +2,19 @@ terraform {
   backend "s3" {
   }
 }
-  
+
 provider "aws" {
   region  = var.aws_region
   version = "~> 2.43"
-  
+
   assume_role {
     role_arn = var.aws_assume_role_arn
   }
 }
 
 resource "aws_s3_bucket" "velero_storage" {
-  bucket = var.bucket_name
-  acl = "private"
+  bucket        = var.bucket_name
+  acl           = "private"
   force_destroy = var.force_bucket_destroy
   versioning {
     enabled = var.versioning
@@ -24,16 +24,16 @@ resource "aws_s3_bucket" "velero_storage" {
 resource "aws_s3_bucket_public_access_block" "veloro_storage_block_public_access" {
   bucket = aws_s3_bucket.velero_storage.id
 
-  block_public_acls   = true
-  block_public_policy = true
-  ignore_public_acls = true
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
   restrict_public_buckets = true
 }
 
 resource "aws_iam_policy" "velero_policy" {
   name        = "VeleroPolicy"
   description = "Policy for Velero backups"
-  policy = <<EOF
+  policy      = <<EOF
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -78,19 +78,19 @@ EOF
 
 data "aws_iam_policy_document" "assume_role" {
   statement {
-    sid = ""
-    effect = "Allow"
+    sid     = ""
+    effect  = "Allow"
     actions = ["sts:AssumeRole"]
     principals {
-      type = "AWS"
+      type        = "AWS"
       identifiers = var.kiam_server_role_arn
     }
   }
 }
 
 resource "aws_iam_role" "velero_role" {
-  name        = var.velero_iam_role_name
-  description = ""
+  name               = var.velero_iam_role_name
+  description        = ""
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 

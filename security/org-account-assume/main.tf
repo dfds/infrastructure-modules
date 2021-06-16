@@ -105,9 +105,9 @@ resource "aws_iam_role_policy" "prime-admin" {
 
 # Create cloud-engineer role for the workload account
 resource "aws_iam_role" "cloudengineer_role" {
-  name               = var.cloudengineer_iam_role_name
-  description        = "Cloud-engineer role"
-  assume_role_policy = module.iam_idp.adfs_assume_policy
+  name                 = var.cloudengineer_iam_role_name
+  description          = "Cloud-engineer role"
+  assume_role_policy   = module.iam_idp.adfs_assume_policy
   max_session_duration = 28800
 
   provider = aws.workload
@@ -124,14 +124,14 @@ resource "aws_iam_role_policy" "cloudengineer" {
 
 # Policy attachment for cloud-engineer roles
 resource "aws_iam_role_policy_attachment" "cloudengineer_viewonlyaccess" {
-  role = aws_iam_role.cloudengineer_role.name
+  role       = aws_iam_role.cloudengineer_role.name
   policy_arn = "arn:aws:iam::aws:policy/job-function/ViewOnlyAccess"
 
   provider = aws.workload
 }
 
 resource "aws_iam_role_policy_attachment" "cloudengineer_supportuser" {
-  role = aws_iam_role.cloudengineer_role.name
+  role       = aws_iam_role.cloudengineer_role.name
   policy_arn = "arn:aws:iam::aws:policy/job-function/SupportUser"
 
   provider = aws.workload
@@ -140,9 +140,9 @@ resource "aws_iam_role_policy_attachment" "cloudengineer_supportuser" {
 
 # Create cloud-admin role for the workload account
 resource "aws_iam_role" "cloudadmin_role" {
-  name               = var.cloudadmin_iam_role_name
-  description        = "Cloud-admin role"
-  assume_role_policy = module.iam_idp.adfs_assume_policy
+  name                 = var.cloudadmin_iam_role_name
+  description          = "Cloud-admin role"
+  assume_role_policy   = module.iam_idp.adfs_assume_policy
   max_session_duration = 28800
 
   provider = aws.workload

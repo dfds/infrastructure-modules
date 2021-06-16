@@ -95,17 +95,26 @@ resource "kubernetes_deployment" "traefik" {
           }
         }
 
-        affinity {
-          pod_anti_affinity {
-            required_during_scheduling_ignored_during_execution {
-              label_selector {
-                match_expressions {
-                  key = "k8s-app"
-                  operator = "In"
-                  values = [local.label_k8s-app]
-                }
-              }
-              topology_key = "failure-domain.beta.kubernetes.io/zone"
+        # Attempt to spread pods over different availability zones, but still schedule all pods if a zone is unavailable
+        # https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+        topology_spread_constraint {
+          topology_key       = "topology.kubernetes.io/zone"
+          when_unsatisfiable = "ScheduleAnyway"
+          label_selector {
+            match_labels = {
+              k8s-app = local.label_k8s-app
+            }
+          }
+        }
+
+        topology_spread_constraint {
+          topology_key       = "kubernetes.io/hostname"
+          when_unsatisfiable = "DoNotSchedule"
+          max_skew           = 1 # allow rolling updates on minimal clusters
+
+          label_selector {
+            match_labels = {
+              k8s-app = local.label_k8s-app
             }
           }
         }
@@ -115,7 +124,7 @@ resource "kubernetes_deployment" "traefik" {
           name  = "traefik"
 
           resources {
-            requests {
+            requests = {
               cpu    = var.request_cpu
               memory = var.request_memory
             }
@@ -196,16 +205,16 @@ resource "kubernetes_service" "traefik" {
 # --------------------------------------------------
 
 resource "random_password" "password" {
-  count             = var.dashboard_deploy ? 1 : 0
-  length            = 32
-  special           = true
-  override_special  = "!@#$%&*-_=+:?"
+  count            = var.dashboard_deploy ? 1 : 0
+  length           = 32
+  special          = true
+  override_special = "!@#$%&*-_=+:?"
 }
 
 resource "htpasswd_password" "hash" {
-  count     = var.dashboard_deploy ? 1 : 0
-  password  = random_password.password[0].result
-  salt      = substr(sha512(random_password.password[0].result), 0, 8)
+  count    = var.dashboard_deploy ? 1 : 0
+  password = random_password.password[0].result
+  salt     = substr(sha512(random_password.password[0].result), 0, 8)
 }
 
 # --------------------------------------------------
@@ -214,7 +223,7 @@ resource "htpasswd_password" "hash" {
 resource "kubernetes_secret" "secret" {
   count = var.dashboard_deploy ? 1 : 0
   metadata {
-    name = local.dashboard_secret_name
+    name      = local.dashboard_secret_name
     namespace = var.namespace
   }
 
@@ -250,15 +259,15 @@ resource "kubernetes_ingress" "ingress" {
 
   spec {
     rule {
-        host = var.dashboard_ingress_host
-        http {
-          path {
-            path = var.dashboard_ingress_backend_path
-            backend {
-              service_name = var.deploy_name
-              service_port = local.admin_port
-            }
+      host = var.dashboard_ingress_host
+      http {
+        path {
+          path = var.dashboard_ingress_backend_path
+          backend {
+            service_name = var.deploy_name
+            service_port = local.admin_port
           }
+        }
       }
     }
   }

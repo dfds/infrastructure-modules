@@ -3,6 +3,11 @@ image:
   tag: ${atlantis_image_tag}
   pullPolicy: IfNotPresent
 
+resources:
+  limits:
+    memory: 2Gi
+    cpu: 1
+
 orgWhitelist: ${github_repos}
 logLevel: "info"
 
