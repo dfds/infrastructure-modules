@@ -1,5 +1,8 @@
 # Apply specific versions of Kubernetes add-ons depending on EKS version
-# https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html
+# Cluster:    https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html
+# CNI:        https://docs.aws.amazon.com/eks/latest/userguide/managing-vpc-cni.html
+# CoreDNS:    https://docs.aws.amazon.com/eks/latest/userguide/managing-coredns.html
+# Kube-proxy: https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html
 
 locals {
   vpccni_version_map = {
