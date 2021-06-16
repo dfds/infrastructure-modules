@@ -26,6 +26,7 @@ resource "null_resource" "coredns" {
 # For future EKS upgrades, check the upgrade guide for changes to system:coredns clusterrole,
 # and reflect those changes in the YAML file below.
 resource "null_resource" "coredns_clusterrole" {
+  count = local.coredns_version == "1.8.3" ? 1 : 0
   provisioner "local-exec" {
     command = "kubectl --kubeconfig ${var.kubeconfig_path} apply -f ${path.module}/coredns-clusterrole.yaml"
   }
