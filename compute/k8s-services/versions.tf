@@ -25,7 +25,7 @@ terraform {
 
     azuread = {
       source  = "hashicorp/azuread"
-      version = "~> 1.2.2"
+      version = "~> 1.5.1"
     }
 
     github = {
@@ -40,7 +40,7 @@ terraform {
 
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.0.0"
+      version = "~> 3.1.0"
     }
   }
 
