@@ -48,8 +48,6 @@ stages:
         container: prime
         dependsOn: init_shared
         steps:
-          - bash: ./src/qa-test-eks.sh init
-            displayName: "Init"
           - bash: ./src/qa-test-eks.sh cleanup-cluster eu-west-1 qa19
             displayName: "Pre-apply cleanup"
             condition: eq(variables['PRE_CLEANUP'], 'true')

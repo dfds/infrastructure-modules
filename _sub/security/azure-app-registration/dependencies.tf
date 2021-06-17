@@ -1,1 +1,1 @@
-data "aws_region" "current" {}
+data "azuread_client_config" "current" {}

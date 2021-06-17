@@ -78,7 +78,9 @@ provider "github" {
 provider "random" {
 }
 
-# provider "azuread" {}
+provider "azuread" {
+
+}
 
 
 # --------------------------------------------------
@@ -124,14 +126,12 @@ module "traefik_alb_cert" {
 }
 
 module "traefik_alb_auth_appreg" {
-  source            = "../../_sub/security/azure-app-registration"
-  deploy            = var.traefik_alb_auth_deploy
-  name              = "Kubernetes EKS ${local.eks_fqdn}"
-  homepage          = "https://${local.eks_fqdn}"
-  identifier_uris   = ["https://${local.eks_fqdn}"]
-  reply_urls        = local.traefik_alb_auth_appreg_reply_urls
-  appreg_key_bucket = var.terraform_state_s3_bucket
-  appreg_key_key    = "keys/eks/${var.eks_cluster_name}/appreg_alb_key.json"
+  source          = "../../_sub/security/azure-app-registration"
+  count           = var.traefik_alb_auth_deploy ? 1 : 0
+  name            = "Kubernetes EKS ${local.eks_fqdn} cluster"
+  homepage        = "https://${local.eks_fqdn}"
+  identifier_uris = ["https://${local.eks_fqdn}"]
+  reply_urls      = local.traefik_alb_auth_appreg_reply_urls
 }
 
 module "traefik_alb_auth" {
@@ -144,9 +144,9 @@ module "traefik_alb_auth" {
   autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
   alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
   nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
-  azure_tenant_id       = module.traefik_alb_auth_appreg.tenant_id
-  azure_client_id       = module.traefik_alb_auth_appreg.application_id
-  azure_client_secret   = module.traefik_alb_auth_appreg.application_key
+  azure_tenant_id       = try(module.traefik_alb_auth_appreg[0].tenant_id, "")
+  azure_client_id       = try(module.traefik_alb_auth_appreg[0].application_id, "")
+  azure_client_secret   = try(module.traefik_alb_auth_appreg[0].application_key, "")
   target_http_port      = var.traefik_http_nodeport
   target_admin_port     = var.traefik_admin_nodeport
   health_check_path     = var.traefik_health_check_path
