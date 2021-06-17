@@ -1,6 +1,6 @@
 resource "azuread_application" "app" {
   display_name    = var.name
-  homepage_url    = var.homepage
+  homepage        = var.homepage
   identifier_uris = var.identifier_uris
   reply_urls      = var.reply_urls
 }
