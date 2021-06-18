@@ -1,10 +1,9 @@
-variable "cluster_version" {
+variable "cluster_name" {
   type = string
 }
 
-variable "kubeconfig_path" {
-  type    = string
-  default = null
+variable "cluster_version" {
+  type = string
 }
 
 variable "kubeproxy_version_override" {
