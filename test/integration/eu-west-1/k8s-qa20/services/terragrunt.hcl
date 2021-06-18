@@ -115,7 +115,7 @@ inputs = {
   # --------------------------------------------------
 
   atlantis_deploy        = true
-  atlantis_ingress       = "atlantis.q20-alias1.dfds.cloud"
+  atlantis_ingress       = "atlantis.qa20-alias1.dfds.cloud"
   atlantis_image_tag     = "0.0.3"
   atlantis_storage_class = "gp2"
 
