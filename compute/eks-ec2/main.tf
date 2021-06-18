@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = var.aws_region
+  region = var.aws_region
 
   assume_role {
     role_arn = var.aws_assume_role_arn
@@ -214,12 +214,12 @@ module "eks_heptio" {
 
 module "eks_addons" {
   source                     = "../../_sub/compute/eks-addons"
-  depends_on                 = [module.eks_heptio]
-  kubeconfig_path            = local.kubeconfig_path
-  cluster_version            = var.eks_cluster_version
+  depends_on                 = [module.eks_cluster]
+  cluster_name               = var.eks_cluster_name
   kubeproxy_version_override = var.eks_addon_kubeproxy_version_override
   coredns_version_override   = var.eks_addon_coredns_version_override
   vpccni_version_override    = var.eks_addon_vpccni_version_override
+  cluster_version            = var.eks_cluster_version
 }
 
 module "k8s_priority_class" {

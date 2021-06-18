@@ -1,36 +1,20 @@
-resource "null_resource" "kubeproxy" {
-  provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${var.kubeconfig_path} -n kube-system set image daemonset.apps/kube-proxy kube-proxy=602401143452.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/eks/kube-proxy:v${local.kubeproxy_version}-eksbuild.1"
-  }
-
-  triggers = {
-    kubeproxy_version = local.kubeproxy_version
-  }
-
-  depends_on = [local.kubeproxy_version]
-
+resource "aws_eks_addon" "vpc-cni" {
+  cluster_name      = var.cluster_name
+  addon_name        = "vpc-cni"
+  addon_version     = local.vpccni_version
+  resolve_conflicts = "OVERWRITE"
 }
 
-resource "null_resource" "coredns" {
-  provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${var.kubeconfig_path} -n kube-system set image deployment.apps/coredns coredns=602401143452.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/eks/coredns:v${local.coredns_version}-eksbuild.1"
-  }
-
-  triggers = {
-    coredns_version = local.coredns_version
-  }
-
-  depends_on = [null_resource.kubeproxy, local.coredns_version]
+resource "aws_eks_addon" "coredns" {
+  cluster_name      = var.cluster_name
+  addon_name        = "coredns"
+  addon_version     = local.coredns_version
+  resolve_conflicts = "OVERWRITE"
 }
 
-resource "null_resource" "vpccni" {
-  provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${var.kubeconfig_path} apply -f https://raw.githubusercontent.com/aws/amazon-vpc-cni-k8s/v${local.vpccni_version}/config/v${local.vpccni_minorversion}/aws-k8s-cni.yaml"
-  }
-
-  triggers = {
-    vpccni_version = local.vpccni_version
-  }
-
-  depends_on = [null_resource.coredns, local.vpccni_version]
+resource "aws_eks_addon" "kube-proxy" {
+  cluster_name      = var.cluster_name
+  addon_name        = "kube-proxy"
+  addon_version     = local.kubeproxy_version
+  resolve_conflicts = "OVERWRITE"
 }
