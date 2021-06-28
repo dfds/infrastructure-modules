@@ -13,7 +13,8 @@ locals {
     "apiVersion" = "kustomize.config.k8s.io/v1beta1"
     "kind"       = "Kustomization"
     "resources" = [
-      "https://github.com/dfds/platform-apps/apps/traefik"
+      "https://github.com/dfds/platform-apps/apps/traefik",
+      "fallback.yaml"
     ]
     "patchesStrategicMerge" = [
       "patch.yaml"
@@ -38,6 +39,31 @@ locals {
           }
         }
       }
+    }
+  }
+
+  fallback = {
+    "apiVersion" = "traefik.containo.us/v1alpha1"
+    "kind"       = "IngressRoute"
+    "metadata" = {
+      "name"      = "trafik-v1-fallback"
+      "namespace" = "kube-system"
+    }
+    "spec" = {
+      "entryPoints" = ["web"]
+      "routes": [
+      {
+        "match": "HostRegexp(`{domain:.+}`)",
+        "kind": "Rule",
+        "priority": 2,
+        "services": [
+          {
+            "name": "traefik",
+            "port": 80
+          }
+        ]
+      }
+    ]
     }
   }
 }
