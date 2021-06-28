@@ -116,14 +116,15 @@ module "traefik_deploy" {
 }
 
 module "traefik_flux_manifests" {
-  source         = "../../_sub/compute/k8s-traefik-flux"
-  count          = var.traefik_deploy ? 1 : 0
-  cluster_name   = var.eks_cluster_name
-  http_nodeport  = var.traefik_flux_http_nodeport
-  admin_nodeport = var.traefik_flux_admin_nodeport
-  github_owner   = var.traefik_flux_github_owner
-  repo_name      = var.traefik_flux_repo_name
-  repo_branch    = var.traefik_flux_repo_branch
+  source                = "../../_sub/compute/k8s-traefik-flux"
+  count                 = var.traefik_deploy ? 1 : 0
+  cluster_name          = var.eks_cluster_name
+  http_nodeport         = var.traefik_flux_http_nodeport
+  admin_nodeport        = var.traefik_flux_admin_nodeport
+  github_owner          = var.traefik_flux_github_owner
+  repo_name             = var.traefik_flux_repo_name
+  repo_branch           = var.traefik_flux_repo_branch
+  fallback_host_regexp  = local.traefik_fallback_host_regexp
 
   providers = {
     github = github.fluxcd

@@ -33,3 +33,9 @@ variable "repo_branch" {
   description = "Override the default branch of the repo (optional)"
   default     = null
 }
+
+variable "fallback_host_regexp" {
+  type        = string
+  description = "The full regexp of hosts to serve through a fallback ingressroute"
+  default     = null
+}
