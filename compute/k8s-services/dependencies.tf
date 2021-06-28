@@ -229,5 +229,5 @@ locals {
 # --------------------------------------------------
 
 locals {
-  traefik_fallback_host_regexp = "`${local.core_dns_zone_name}`, `{subdomain:[a-z]+}.${local.core_dns_zone_name}`, `{subdomain:[a-z]+}.${var.workload_dns_zone_name}`, `{subdomain:[a-z]+}.${var.eks_cluster_name}.${var.workload_dns_zone_name}`"
+  traefik_fallback_host_regexp = "`{subdomain:[a-z]+}.${local.core_dns_zone_name}`, `{subdomain:[a-z]+}.${var.eks_cluster_name}.${var.workload_dns_zone_name}`"
 }
