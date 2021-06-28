@@ -124,7 +124,10 @@ module "traefik_flux_manifests" {
   github_owner   = var.traefik_flux_github_owner
   repo_name      = var.traefik_flux_repo_name
   repo_branch    = var.traefik_flux_repo_branch
-  # version?
+  
+  providers = {
+    github = github.fluxcd
+  }
 }
 
 module "traefik_alb_cert" {
