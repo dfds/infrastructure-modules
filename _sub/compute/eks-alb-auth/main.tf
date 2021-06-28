@@ -19,7 +19,7 @@ resource "aws_lb_target_group" "traefik_auth" {
   port                 = var.target_http_port
   protocol             = "HTTP"
   vpc_id               = var.vpc_id
-  deregistration_delay = 0
+  deregistration_delay = 300
 
   health_check {
     path     = var.health_check_path

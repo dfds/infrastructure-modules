@@ -1,0 +1,23 @@
+{
+    "hosts": [
+        "kiam-server",
+        "kiam-server:443",
+        "127.0.0.1",
+        "127.0.0.1:443",
+        "127.0.0.1:9610",
+        "localhost"
+    ],
+    "key": {
+        "algo": "rsa",
+        "size": 4096
+    },
+    "names": [
+        {
+            "C": "Denmark",
+            "L": "Copenhagen",
+            "O": "DFDS A/S",
+            "OU": "DevEx",
+            "ST": "Copenhagen"
+        }
+    ]
+}

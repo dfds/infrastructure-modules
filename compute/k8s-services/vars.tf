@@ -72,19 +72,30 @@ variable "traefik_deploy" {
   default = true
 }
 
-variable "traefik_version" {
-  type    = string
-  default = "1.7"
+variable "traefik_flux_github_owner" {
+  type        = string
+  description = "Name of the Treaefik Flux repo Github owner (previously: organization)"
 }
 
-variable "traefik_http_nodeport" {
-  type    = number
-  default = 30000
+variable "traefik_flux_repo_name" {
+  type        = string
+  description = "Name of the Github repo to store the Traefik Flux manifests in"
 }
 
-variable "traefik_admin_nodeport" {
+variable "traefik_flux_repo_branch" {
+  type        = string
+  description = "Override the default branch of the Traefik Flux repo (optional)"
+  default     = null
+}
+
+variable "traefik_flux_http_nodeport" {
   type    = number
-  default = 30001
+  default = 31000
+}
+
+variable "traefik_flux_admin_nodeport" {
+  type    = number
+  default = 31001
 }
 
 variable "traefik_alb_anon_deploy" {
@@ -109,16 +120,6 @@ variable "traefik_alb_auth_core_alias" {
   default     = []
 }
 
-variable "traefik_nlb_deploy" {
-  type    = bool
-  default = false
-}
-
-variable "traefik_nlb_cidr_blocks" {
-  type    = list(string)
-  default = []
-}
-
 variable "blaster_configmap_deploy" {
   type    = bool
   default = false
@@ -133,6 +134,37 @@ variable "traefik_dashboard_deploy" {
   type        = bool
   description = "Deploy ingress for secure access to Traefik dashboard."
   default     = true
+}
+
+
+# --------------------------------------------------
+# Traefik legacy
+# --------------------------------------------------
+
+variable "traefik_version" {
+  type    = string
+  default = "1.7"
+}
+
+variable "traefik_http_nodeport" {
+  type    = number
+  default = 30000
+}
+
+variable "traefik_admin_nodeport" {
+  type    = number
+  default = 30001
+}
+
+
+variable "traefik_nlb_deploy" {
+  type    = bool
+  default = false
+}
+
+variable "traefik_nlb_cidr_blocks" {
+  type    = list(string)
+  default = []
 }
 
 
@@ -231,7 +263,7 @@ variable "monitoring_namespace_iam_roles" {
   description = "IAM roles allowed to assume"
   default     = ""
   validation {
-    condition     = var.monitoring_namespace_iam_roles == "" ? true : (
+    condition = var.monitoring_namespace_iam_roles == "" ? true : (
       can(regex("^arn:aws:iam::", var.monitoring_namespace_iam_roles))
     )
     error_message = "The value must contain full role ARNs."
@@ -648,37 +680,37 @@ variable "crossplane_providers" {
 variable "crossplane_admin_service_accounts" {
   type = list(object({
     serviceaccount = string
-    namespace = string
+    namespace      = string
   }))
   description = "List of service account objects that should have crossplane-admin access"
-  default = []
+  default     = []
 }
 
 variable "crossplane_edit_service_accounts" {
   type = list(object({
     serviceaccount = string
-    namespace = string
+    namespace      = string
   }))
   description = "List of service account objects that should have crossplane-edit access"
-  default = []
+  default     = []
 }
 
 variable "crossplane_view_service_accounts" {
   type = list(object({
     serviceaccount = string
-    namespace = string
+    namespace      = string
   }))
   description = "List of service account objects that should have crossplane-view access"
-  default = []
+  default     = []
 }
 
 variable "crossplane_metrics_enabled" {
   type        = bool
   description = "Enable crossplane metrics"
-  default = true
+  default     = true
 }
 variable "kiam_strict_mode_disabled" {
-  type = bool
+  type        = bool
   description = "Disable default strict namespace regexp when matching roles"
-  default = false
+  default     = false
 }
