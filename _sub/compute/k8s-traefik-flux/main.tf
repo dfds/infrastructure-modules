@@ -16,5 +16,5 @@ resource "github_repository_file" "traefik_fallback" {
   repository = var.repo_name
   branch     = local.repo_branch
   file       = "${local.base_repo_path}/fallback.yaml"
-  content    = jsonencode(local.patch)
+  content    = jsonencode(local.fallback)
 }
