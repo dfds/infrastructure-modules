@@ -223,3 +223,11 @@ locals {
     local.traefik_dashboard_ingress_prod_host
   ) ? local.traefik_dashboard_ingress_prod_host : "${local.traefik_alb_auth_dns_name}.${var.workload_dns_zone_name}"
 }
+
+# --------------------------------------------------
+# Traefik v2
+# --------------------------------------------------
+
+locals {
+  traefik_fallback_host_regexp = "`${local.core_dns_zone_name}`, `{subdomain:[a-z]+}.${local.core_dns_zone_name}`, `{subdomain:[a-z]+}.${var.workload_dns_zone_name}`, `{subdomain:[a-z]+}.${var.eks_cluster_name}.${var.workload_dns_zone_name}`"
+}

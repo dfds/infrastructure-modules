@@ -53,7 +53,7 @@ locals {
       "entryPoints" = ["web"]
       "routes": [
       {
-        "match": "HostRegexp(`{domain:.+}`)",
+        "match": "HostRegexp(${var.fallback_host_regexp})",
         "kind": "Rule",
         "priority": 2,
         "services": [
