@@ -163,8 +163,8 @@ module "traefik_alb_auth" {
   azure_tenant_id       = try(module.traefik_alb_auth_appreg[0].tenant_id, "")
   azure_client_id       = try(module.traefik_alb_auth_appreg[0].application_id, "")
   azure_client_secret   = try(module.traefik_alb_auth_appreg[0].application_key, "")
-  target_http_port      = var.traefik_http_nodeport
-  target_admin_port     = var.traefik_admin_nodeport
+  target_http_port      = var.traefik_flux_http_nodeport
+  target_admin_port     = var.traefik_flux_admin_nodeport
   health_check_path     = var.traefik_health_check_path
 }
 
@@ -204,7 +204,7 @@ module "traefik_alb_anon" {
   nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
   target_http_port      = var.traefik_http_nodeport
   target_admin_port     = var.traefik_admin_nodeport
-  health_check_path     = var.traefik_health_check_path
+  health_check_path     = var.traefik_health_check_ping
 }
 
 module "traefik_alb_anon_dns" {

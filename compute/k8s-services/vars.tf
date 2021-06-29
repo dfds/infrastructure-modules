@@ -130,6 +130,11 @@ variable "traefik_health_check_path" {
   default = "/dashboard/"
 }
 
+variable "traefik_health_check_ping" {
+  type    = string
+  default = "/ping/"
+}
+
 variable "traefik_dashboard_deploy" {
   type        = bool
   description = "Deploy ingress for secure access to Traefik dashboard."

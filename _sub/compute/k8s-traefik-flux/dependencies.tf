@@ -34,7 +34,7 @@ locals {
           "web" = {
             "nodePort" = var.http_nodeport
           }
-          "websecure" = {
+          "traefik" = {
             "nodePort" = var.admin_nodeport
           }
         }
