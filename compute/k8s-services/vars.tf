@@ -62,6 +62,14 @@ variable "cloudwatchlogs_iam_role_deploy" {
   description = "Deploy an AWS IAM role for FluentD to assume, to enabling shipping logs to CloudWatch Logs"
 }
 
+# --------------------------------------------------
+# ALB access logs S3 bucket
+# --------------------------------------------------
+
+variable "traefik_alb_s3_access_logs_retiontion_days" {
+  type    = number
+  default = 30
+}
 
 # --------------------------------------------------
 # Traefik
@@ -231,7 +239,7 @@ variable "monitoring_namespace_iam_roles" {
   description = "IAM roles allowed to assume"
   default     = ""
   validation {
-    condition     = var.monitoring_namespace_iam_roles == "" ? true : (
+    condition = var.monitoring_namespace_iam_roles == "" ? true : (
       can(regex("^arn:aws:iam::", var.monitoring_namespace_iam_roles))
     )
     error_message = "The value must contain full role ARNs."
@@ -648,37 +656,37 @@ variable "crossplane_providers" {
 variable "crossplane_admin_service_accounts" {
   type = list(object({
     serviceaccount = string
-    namespace = string
+    namespace      = string
   }))
   description = "List of service account objects that should have crossplane-admin access"
-  default = []
+  default     = []
 }
 
 variable "crossplane_edit_service_accounts" {
   type = list(object({
     serviceaccount = string
-    namespace = string
+    namespace      = string
   }))
   description = "List of service account objects that should have crossplane-edit access"
-  default = []
+  default     = []
 }
 
 variable "crossplane_view_service_accounts" {
   type = list(object({
     serviceaccount = string
-    namespace = string
+    namespace      = string
   }))
   description = "List of service account objects that should have crossplane-view access"
-  default = []
+  default     = []
 }
 
 variable "crossplane_metrics_enabled" {
   type        = bool
   description = "Enable crossplane metrics"
-  default = true
+  default     = true
 }
 variable "kiam_strict_mode_disabled" {
-  type = bool
+  type        = bool
   description = "Disable default strict namespace regexp when matching roles"
-  default = false
+  default     = false
 }
