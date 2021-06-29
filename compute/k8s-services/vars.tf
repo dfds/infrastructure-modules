@@ -200,12 +200,12 @@ variable "traefik_alb_okta_core_alias" {
 
 variable "traefik_okta_http_nodeport" {
   type    = number
-  default = 31000
+  default = 32000
 }
 
 variable "traefik_okta_admin_nodeport" {
   type    = number
-  default = 31001
+  default = 32001
 }
 
 variable "traefik_okta_health_check_path" {
