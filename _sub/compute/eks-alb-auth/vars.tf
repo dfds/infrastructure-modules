@@ -47,5 +47,14 @@ variable "target_admin_port" {
 }
 
 variable "health_check_path" {
- type = string
+  type = string
+}
+
+variable "access_logs_bucket" {
+  type = string
+}
+
+variable "access_logs_enabled" {
+  type    = bool
+  default = true
 }

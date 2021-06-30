@@ -154,8 +154,8 @@ locals {
 # --------------------------------------------------
 
 locals {
-  grafana_iam_role_name = "${var.eks_cluster_name}-monitoring-grafana-cloudwatch"
-  grafana_iam_role_arn = "arn:aws:iam::${var.aws_workload_account_id}:role/${local.grafana_iam_role_name}"
+  grafana_iam_role_name          = "${var.eks_cluster_name}-monitoring-grafana-cloudwatch"
+  grafana_iam_role_arn           = "arn:aws:iam::${var.aws_workload_account_id}:role/${local.grafana_iam_role_name}"
   monitoring_namespace_iam_roles = var.monitoring_kube_prometheus_stack_deploy ? join("|", compact([var.monitoring_namespace_iam_roles, local.grafana_iam_role_arn])) : var.monitoring_namespace_iam_roles
 }
 
@@ -168,15 +168,15 @@ data "aws_iam_policy_document" "cloudwatch_metrics" {
     effect = "Allow"
 
     actions = [
-                "tag:GetResources",
-                "ec2:DescribeTags",
-                "ec2:DescribeRegions",
-                "ec2:DescribeInstances",
-                "cloudwatch:ListMetrics",
-                "cloudwatch:GetMetricStatistics",
-                "cloudwatch:GetMetricData",
-                "cloudwatch:DescribeAlarmsForMetric"
-                ]
+      "tag:GetResources",
+      "ec2:DescribeTags",
+      "ec2:DescribeRegions",
+      "ec2:DescribeInstances",
+      "cloudwatch:ListMetrics",
+      "cloudwatch:GetMetricStatistics",
+      "cloudwatch:GetMetricData",
+      "cloudwatch:DescribeAlarmsForMetric"
+    ]
 
     resources = ["*"]
   }
@@ -217,9 +217,43 @@ data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
 
 locals {
   traefik_dashboard_ingress_prod_host = "traefik.${local.core_dns_zone_name}"
-  traefik_alb_auth_dns_name = try(module.traefik_alb_auth_dns.record_name["0"], "traefik.${var.eks_cluster_name}")
+  traefik_alb_auth_dns_name           = try(module.traefik_alb_auth_dns.record_name["0"], "traefik.${var.eks_cluster_name}")
   traefik_dashboard_ingress_host = contains(
     var.traefik_alb_auth_core_alias,
     local.traefik_dashboard_ingress_prod_host
   ) ? local.traefik_dashboard_ingress_prod_host : "${local.traefik_alb_auth_dns_name}.${var.workload_dns_zone_name}"
+}
+
+# --------------------------------------------------
+# Loadbalancer service account
+# --------------------------------------------------
+
+data "aws_elb_service_account" "main" {}
+
+# --------------------------------------------------
+# Loadbalancer access logs S3 bucket policy
+# --------------------------------------------------
+
+locals {
+  alb_access_log_bucket_name   = "dfds-k8s-${var.eks_cluster_name}-alb-access-logs"
+  alb_access_log_bucket_policy = <<POLICY
+{
+  "Id": "Policy",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::${local.alb_access_log_bucket_name}/*/AWSLogs/*",
+      "Principal": {
+        "AWS": [
+          "${data.aws_elb_service_account.main.arn}"
+        ]
+      }
+    }
+  ]
+}
+POLICY
 }
