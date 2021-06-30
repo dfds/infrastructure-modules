@@ -5,9 +5,11 @@ resource "aws_lb" "traefik" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.traefik[0].id]
   subnets            = var.subnet_ids
+
   access_logs {
     bucket  = var.access_logs_bucket
     enabled = var.access_logs_enabled
+    prefix  = var.name
   }
 }
 

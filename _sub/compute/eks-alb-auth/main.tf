@@ -9,6 +9,7 @@ resource "aws_lb" "traefik_auth" {
   access_logs {
     bucket  = var.access_logs_bucket
     enabled = var.access_logs_enabled
+    prefix  = var.name
   }
 }
 

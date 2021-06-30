@@ -102,8 +102,9 @@ module "ebs_csi_driver" {
 
 module "traefik_alb_s3_access_logs" {
   source         = "../../_sub/storage/s3-bucket-lifecycle"
-  name           = "dfds-k8s-${var.eks_cluster_name}-alb-access-logs"
+  name           = local.alb_access_log_bucket_name
   retention_days = var.traefik_alb_s3_access_logs_retiontion_days
+  policy         = local.alb_access_log_bucket_policy
 }
 
 # --------------------------------------------------
@@ -263,6 +264,7 @@ module "traefik_alb_okta" {
   target_http_port      = var.traefik_okta_http_nodeport
   target_admin_port     = var.traefik_okta_admin_nodeport
   health_check_path     = var.traefik_okta_health_check_path
+  access_logs_bucket    = module.traefik_alb_s3_access_logs.name
 }
 
 module "traefik_alb_okta_dns" {
