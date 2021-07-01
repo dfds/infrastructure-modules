@@ -5,6 +5,12 @@ resource "aws_lb" "traefik_auth" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.traefik_auth[0].id]
   subnets            = var.subnet_ids
+
+  access_logs {
+    bucket  = var.access_logs_bucket
+    enabled = var.access_logs_enabled
+    prefix  = var.name
+  }
 }
 
 resource "aws_autoscaling_attachment" "traefik_auth" {

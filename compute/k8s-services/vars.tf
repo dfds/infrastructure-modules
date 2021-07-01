@@ -62,6 +62,14 @@ variable "cloudwatchlogs_iam_role_deploy" {
   description = "Deploy an AWS IAM role for FluentD to assume, to enabling shipping logs to CloudWatch Logs"
 }
 
+# --------------------------------------------------
+# ALB access logs S3 bucket
+# --------------------------------------------------
+
+variable "traefik_alb_s3_access_logs_retiontion_days" {
+  type    = number
+  default = 30
+}
 
 # --------------------------------------------------
 # Traefik

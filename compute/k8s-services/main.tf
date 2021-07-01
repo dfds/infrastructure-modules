@@ -96,9 +96,19 @@ module "ebs_csi_driver" {
   kubeconfig_path      = local.kubeconfig_path
 }
 
+# --------------------------------------------------
+# ALB access logs S3 bucket
+# --------------------------------------------------
+
+module "traefik_alb_s3_access_logs" {
+  source         = "../../_sub/storage/s3-bucket-lifecycle"
+  name           = local.alb_access_log_bucket_name
+  retention_days = var.traefik_alb_s3_access_logs_retiontion_days
+  policy         = local.alb_access_log_bucket_policy
+}
 
 # --------------------------------------------------
-# Traefik
+# Traefik / ALB
 # --------------------------------------------------
 
 module "traefik_deploy" {
@@ -166,6 +176,7 @@ module "traefik_alb_auth" {
   target_http_port      = var.traefik_http_nodeport
   target_admin_port     = var.traefik_admin_nodeport
   health_check_path     = var.traefik_health_check_path
+  access_logs_bucket    = module.traefik_alb_s3_access_logs.name
 }
 
 module "traefik_alb_auth_dns" {
@@ -202,9 +213,10 @@ module "traefik_alb_anon" {
   autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
   alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
   nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
-  target_http_port      = var.traefik_flux_http_nodeport
-  target_admin_port     = var.traefik_flux_admin_nodeport
-  health_check_path     = var.traefik_health_check_ping
+  target_http_port      = var.traefik_http_nodeport
+  target_admin_port     = var.traefik_admin_nodeport
+  health_check_path     = var.traefik_health_check_path
+  access_logs_bucket    = module.traefik_alb_s3_access_logs.name
 }
 
 module "traefik_alb_anon_dns" {
@@ -268,6 +280,7 @@ module "traefik_alb_okta" {
   target_http_port      = var.traefik_okta_http_nodeport
   target_admin_port     = var.traefik_okta_admin_nodeport
   health_check_path     = var.traefik_okta_health_check_path
+  access_logs_bucket    = module.traefik_alb_s3_access_logs.name
 }
 
 module "traefik_alb_okta_dns" {
