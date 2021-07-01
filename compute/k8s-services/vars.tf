@@ -106,6 +106,11 @@ variable "traefik_flux_admin_nodeport" {
   default = 31001
 }
 
+variable "traefik_flux_health_check_path" {
+  type    = string
+  default = "/ping/"
+}
+
 variable "traefik_alb_anon_deploy" {
   type    = bool
   default = false
@@ -136,11 +141,6 @@ variable "blaster_configmap_deploy" {
 variable "traefik_health_check_path" {
   type    = string
   default = "/dashboard/"
-}
-
-variable "traefik_health_check_ping" {
-  type    = string
-  default = "/ping/"
 }
 
 variable "traefik_dashboard_deploy" {
