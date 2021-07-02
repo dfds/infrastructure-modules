@@ -65,7 +65,7 @@ fi
 if [ "$ACTION" = "apply-shared" ]; then
     SUBPATH=$2
     WORKDIR="${BASEPATH}/${SUBPATH}"
-        
+
     # Apply the configuration
     terragrunt apply-all --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
 fi
@@ -75,7 +75,7 @@ if [ "$ACTION" = "apply-cluster" ]; then
     REGION=$2
     CLUSTERNAME=$3
     WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}"
-        
+
     # Apply the configuration
     terragrunt apply-all --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
 fi
@@ -121,14 +121,10 @@ if [ "$ACTION" = "test" ]; then
     echo -e "\nCrossplane Providers:\n"
     kubectl get provider.pkg || true
 
-    # Traefik Okta
-    echo -e "\nTraefik Okta:\n"
-    kubectl rollout status -n kube-system deployment traefik-okta || true
-
     # Atlantis
     echo -e "\nAtlantis:\n"
     kubectl -n atlantis get all || true
-    
+
     # Daemonset exists
     # kubectl --kubeconfig $KUBECONFIG -n fluentd get ds -o name | grep fluentd-cloudwatch
     # if [ $? -ne 0 ]; then
@@ -153,7 +149,7 @@ if [ "$ACTION" = "destroy-cluster" ]; then
 
     # Essential cleanup commands (set RETURN=1 if fails)
     terragrunt destroy-all --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve || RETURN=1
-    
+
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
     cleanup_roles "eks-${CLUSTERNAME}-"
     cleanup_eni
@@ -169,7 +165,7 @@ if [ "$ACTION" = "destroy-shared" ]; then
     RETURN=0
     SUBPATH=$2
     WORKDIR="${BASEPATH}/${SUBPATH}"
-    
+
     # Cleanup
     terragrunt destroy-all --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve || RETURN=1
 
