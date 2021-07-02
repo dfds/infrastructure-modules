@@ -649,38 +649,3 @@ variable "kiam_strict_mode_disabled" {
   description = "Disable default strict namespace regexp when matching roles"
   default     = false
 }
-
-# --------------------------------------------------
-# Traefik v2 through Flux CD
-# --------------------------------------------------
-
-variable "traefik_flux_github_owner" {
-  type        = string
-  description = "Name of the Treaefik Flux repo Github owner (previously: organization)"
-}
-
-variable "traefik_flux_repo_name" {
-  type        = string
-  description = "Name of the Github repo to store the Traefik Flux manifests in"
-}
-
-variable "traefik_flux_repo_branch" {
-  type        = string
-  description = "Override the default branch of the Traefik Flux repo (optional)"
-  default     = null
-}
-
-variable "traefik_flux_http_nodeport" {
-  type    = number
-  default = 31000
-}
-
-variable "traefik_flux_admin_nodeport" {
-  type    = number
-  default = 31001
-}
-
-variable "traefik_flux_health_check_path" {
-  type    = string
-  default = "/ping/"
-}
