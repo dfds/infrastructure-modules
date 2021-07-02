@@ -46,14 +46,14 @@ locals {
     "apiVersion" = "traefik.containo.us/v1alpha1"
     "kind"       = "IngressRoute"
     "metadata" = {
-      "name"      = "trafik-v1-fallback"
+      "name"      = "traefik-v1-fallback"
       "namespace" = "kube-system"
     }
     "spec" = {
       "entryPoints" = ["web"]
       "routes": [
       {
-        "match": "HostRegexp(${var.fallback_host_regexp})",
+        "match": var.fallback_rule_match,
         "kind": "Rule",
         "priority": 2,
         "services": [

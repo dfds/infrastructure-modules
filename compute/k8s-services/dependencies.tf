@@ -257,3 +257,11 @@ locals {
 }
 POLICY
 }
+
+
+# --------------------------------------------------
+# Traefik fallback ingressroute
+# --------------------------------------------------
+locals {
+  traefik_fallback_rule_match = "HostRegexp(`{domain:.+}`) && PathPrefix(`/somepath`)"
+}

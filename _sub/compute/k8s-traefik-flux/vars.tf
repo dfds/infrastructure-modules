@@ -34,8 +34,8 @@ variable "repo_branch" {
   default     = null
 }
 
-variable "fallback_host_regexp" {
+variable "fallback_rule_match" {
   type        = string
-  description = "The full regexp of hosts to serve through a fallback ingressroute"
+  description = "The rule match of hosts, regexp and/or paths to serve through a fallback ingressroute"
   default     = null
 }

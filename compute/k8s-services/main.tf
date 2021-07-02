@@ -134,7 +134,7 @@ module "traefik_flux_manifests" {
   github_owner          = var.traefik_flux_github_owner
   repo_name             = var.traefik_flux_repo_name
   repo_branch           = var.traefik_flux_repo_branch
-  fallback_host_regexp  = local.traefik_fallback_host_regexp
+  fallback_rule_match  = local.traefik_fallback_rule_match
 
   providers = {
     github = github.fluxcd
