@@ -58,8 +58,10 @@ locals {
         "priority": 2,
         "services": [
           {
+            "kind": "Service"
             "name": var.fallback_svc_name,
             "port": var.fallback_svc_port
+            "namespace": var.fallback_svc_namespace
           }
         ]
       }
