@@ -13,8 +13,7 @@ locals {
     "apiVersion" = "kustomize.config.k8s.io/v1beta1"
     "kind"       = "Kustomization"
     "resources" = [
-      "https://github.com/dfds/platform-apps/apps/traefik",
-      var.fallback ? "fallback.yaml" : ""
+      "https://github.com/dfds/platform-apps/apps/traefik"
     ]
     "patchesStrategicMerge" = [
       "patch.yaml"
@@ -68,4 +67,24 @@ locals {
     ]
     }
   }
+
+  fallback_manifest = <<YAML
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: "${var.fallback_ingressroute_name}"
+  namespace: "${var.fallback_svc_namespace}"
+spec:
+  entryPoints:
+  - web
+  routes:
+  - kind: Rule
+    match: "${var.fallback_rule_match}"
+    priority: "${var.fallback_ingressroute_priority}"
+    services:
+    - kind: Service
+      name: "${var.fallback_svc_name}"
+      namespace: "${var.fallback_svc_namespace}"
+      port: "${var.fallback_svc_port}"
+YAML
 }

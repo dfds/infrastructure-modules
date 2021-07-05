@@ -35,8 +35,9 @@ variable "repo_branch" {
 }
 
 variable "fallback" {
-  type    = bool
-  default = true
+  type        = bool
+  description = "Should a fallback ingressroute be created that routes traffic to Traefik v1"
+  default     = true
 }
 
 variable "fallback_rule_match" {
@@ -49,6 +50,12 @@ variable "fallback_ingressroute_name" {
   type        = string
   description = "The name for the ingressroute used for fallback"
   default     = "traefik-v1-fallback"
+}
+
+variable "fallback_ingressroute_priority" {
+  type        = number
+  description = "IngressRoute priority. Should be a low number, but preferably not lower than 2"
+  default     = 2
 }
 
 variable "fallback_svc_namespace" {

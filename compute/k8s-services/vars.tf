@@ -657,11 +657,13 @@ variable "kiam_strict_mode_disabled" {
 variable "traefik_flux_github_owner" {
   type        = string
   description = "Name of the Treaefik Flux repo Github owner (previously: organization)"
+  default     = null
 }
 
 variable "traefik_flux_repo_name" {
   type        = string
   description = "Name of the Github repo to store the Traefik Flux manifests in"
+  default     = null
 }
 
 variable "traefik_flux_repo_branch" {
@@ -671,21 +673,32 @@ variable "traefik_flux_repo_branch" {
 }
 
 variable "traefik_flux_http_nodeport" {
-  type    = number
-  default = 31000
+  type        = number
+  description = "Nodeport used by ALB's to connect to the Traefik instance"
+  default     = 31000
 }
 
 variable "traefik_flux_admin_nodeport" {
-  type    = number
-  default = 31001
+  type        = number
+  description = "Nodeport used by ALB's to connect to the Traefik instance admin page"
+  default     = 31001
 }
 
 variable "traefik_flux_health_check_path" {
-  type    = string
-  default = "/ping/"
+  description = "Which path should the LB call when checking if Traefik v2 service is healthy"
+  type        = string
+  default     = "/ping/"
 }
 
 variable "traefik_flux_with_fallback" {
-  type    = bool
-  default = true
+  type        = bool
+  description = "Should a fallback ingressroute be created that routes traffic to Traefik v1"
+  default     = true
+}
+
+
+variable "traefik_fallback_ingressroute_priority" {
+  type        = number
+  description = "IngressRoute priority. Should be a low number, but preferably not lower than 2"
+  default     = 2
 }

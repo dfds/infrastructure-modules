@@ -12,10 +12,7 @@ resource "github_repository_file" "traefik_patch" {
   content    = jsonencode(local.patch)
 }
 
-resource "github_repository_file" "traefik_fallback" {
-  count      = var.fallback ? 1 : 0
-  repository = var.repo_name
-  branch     = local.repo_branch
-  file       = "${local.base_repo_path}/fallback.yaml"
-  content    = jsonencode(local.fallback)
+resource "kubectl_manifest" "traefik_fallback" {
+    count      = var.fallback ? 1 : 0
+    yaml_body = local.fallback_manifest
 }
