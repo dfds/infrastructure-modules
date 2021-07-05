@@ -41,33 +41,6 @@ locals {
     }
   }
 
-  fallback = {
-    "apiVersion" = "traefik.containo.us/v1alpha1"
-    "kind"       = "IngressRoute"
-    "metadata" = {
-      "name"      = var.fallback_ingressroute_name
-      "namespace" = var.fallback_svc_namespace
-    }
-    "spec" = {
-      "entryPoints" = ["web"]
-      "routes": [
-      {
-        "match": var.fallback_rule_match,
-        "kind": "Rule",
-        "priority": 2,
-        "services": [
-          {
-            "kind": "Service"
-            "name": var.fallback_svc_name,
-            "port": var.fallback_svc_port
-            "namespace": var.fallback_svc_namespace
-          }
-        ]
-      }
-    ]
-    }
-  }
-
   fallback_manifest = <<YAML
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
