@@ -684,3 +684,8 @@ variable "traefik_flux_health_check_path" {
   type    = string
   default = "/ping/"
 }
+
+variable "traefik_flux_with_fallback" {
+  type    = bool
+  default = true
+}

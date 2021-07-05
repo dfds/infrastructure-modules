@@ -263,5 +263,6 @@ POLICY
 # Traefik fallback ingressroute
 # --------------------------------------------------
 locals {
-  traefik_fallback_rule_match = "HostRegexp(`{domain:.+}`) && PathPrefix(`/somepath`)"
+  traefik_fallback_rule_match         = "HostRegexp(`{domain:.+}`)"
+  traefik_fallback_ingressroute_name  = "traefik-v1-fallback"
 }

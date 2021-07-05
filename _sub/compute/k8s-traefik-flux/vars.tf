@@ -34,8 +34,37 @@ variable "repo_branch" {
   default     = null
 }
 
+variable "fallback" {
+  type    = bool
+  default = true
+}
+
 variable "fallback_rule_match" {
   type        = string
   description = "The rule match of hosts, regexp and/or paths to serve through a fallback ingressroute"
   default     = null
+}
+
+variable "fallback_ingressroute_name" {
+  type        = string
+  description = "The name for the ingressroute used for fallback"
+  default     = "traefik-v1-fallback"
+}
+
+variable "fallback_svc_namespace" {
+  type        = string
+  description = "The service used for fallback ingress is stored in which namespace"
+  default     = "kube-system"
+}
+
+variable "fallback_svc_name" {
+  type        = string
+  description = "The service name used for fallback ingress"
+  default     = "traefik"
+}
+
+variable "fallback_svc_port" {
+  type        = number
+  description = "The service port used for fallback ingress"
+  default     = 80
 }

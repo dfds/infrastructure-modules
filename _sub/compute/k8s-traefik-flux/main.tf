@@ -13,6 +13,7 @@ resource "github_repository_file" "traefik_patch" {
 }
 
 resource "github_repository_file" "traefik_fallback" {
+  count      = var.fallback ? 1 : 0
   repository = var.repo_name
   branch     = local.repo_branch
   file       = "${local.base_repo_path}/fallback.yaml"

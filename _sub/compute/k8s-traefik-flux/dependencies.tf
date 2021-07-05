@@ -14,7 +14,7 @@ locals {
     "kind"       = "Kustomization"
     "resources" = [
       "https://github.com/dfds/platform-apps/apps/traefik",
-      "fallback.yaml"
+      var.fallback ? "fallback.yaml" : ""
     ]
     "patchesStrategicMerge" = [
       "patch.yaml"
@@ -46,8 +46,8 @@ locals {
     "apiVersion" = "traefik.containo.us/v1alpha1"
     "kind"       = "IngressRoute"
     "metadata" = {
-      "name"      = "traefik-v1-fallback"
-      "namespace" = "kube-system"
+      "name"      = var.fallback_ingressroute_name
+      "namespace" = var.fallback_svc_namespace
     }
     "spec" = {
       "entryPoints" = ["web"]
@@ -58,8 +58,8 @@ locals {
         "priority": 2,
         "services": [
           {
-            "name": "traefik",
-            "port": 80
+            "name": var.fallback_svc_name,
+            "port": var.fallback_svc_port
           }
         ]
       }
