@@ -25,6 +25,7 @@ locals {
                 "ecr:Describe*",
                 "ecr:Get*",
                 "ecr:List*",
+				"ecr-public:*",
                 "globalaccelerator:*",
                 "iam:*",
                 "importexport:*",
