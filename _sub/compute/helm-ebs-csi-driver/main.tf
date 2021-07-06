@@ -100,11 +100,14 @@ resource "helm_release" "aws-ebs-csi-driver" {
 resource "kubernetes_storage_class" "csi-gp2" {
   metadata {
     name = "csi-gp2"
+    annotations = {
+      "storageclass.kubernetes.io/is-default-class" = "true"
+    }
   }
   storage_provisioner    = "ebs.csi.aws.com"
   reclaim_policy         = "Delete"
   volume_binding_mode    = "WaitForFirstConsumer"
-  allow_volume_expansion = "false"
+  allow_volume_expansion = "true"
   parameters = {
     type = "gp2"
   }
@@ -112,19 +115,20 @@ resource "kubernetes_storage_class" "csi-gp2" {
 }
 
 # change gp2 so it's no longer the default storageclass
-resource "null_resource" "gp2_removedefault_patch" {
-  provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${var.kubeconfig_path} patch storageclass gp2 -p '{\"metadata\": {\"annotations\":{\"storageclass.kubernetes.io/is-default-class\":\"false\"}}}'"
-  }
 
-  depends_on = [kubernetes_storage_class.csi-gp2]
+locals {
+  gp2_is_default = false
 }
 
-# change csi-gp2 so it becomes the default storageclass
-resource "null_resource" "csi_gp2_adddefault_patch" {
-  provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${var.kubeconfig_path} patch storageclass csi-gp2 -p '{\"metadata\": {\"annotations\":{\"storageclass.kubernetes.io/is-default-class\":\"true\"}}}'"
-  }
+resource "null_resource" "gp2_removedefault_patch" {
 
   depends_on = [kubernetes_storage_class.csi-gp2]
+  triggers = {
+    is_default = local.gp2_is_default
+  }
+
+  provisioner "local-exec" {
+    command = "kubectl --kubeconfig ${var.kubeconfig_path} patch storageclass gp2 -p '{\"metadata\": {\"annotations\":{\"storageclass.kubernetes.io/is-default-class\":\"${local.gp2_is_default}\"}}}'"
+  }
+
 }
