@@ -40,6 +40,12 @@ variable "repo_branch" {
   default     = null
 }
 
+variable "kubeconfig_path" {
+  type        = string
+  description = "The path to the kubeconfig file."
+  default     = null
+}
+
 variable "fallback" {
   type        = bool
   description = "Should a fallback ingressroute be created that routes traffic to Traefik v1"

@@ -134,6 +134,7 @@ module "traefik_flux_manifests" {
   github_owner                = var.traefik_flux_github_owner
   repo_name                   = var.traefik_flux_repo_name
   repo_branch                 = var.traefik_flux_repo_branch
+  kubeconfig_path             = local.kubeconfig_path
   fallback                    = var.traefik_flux_with_fallback
 
   providers = {
