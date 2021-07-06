@@ -25,7 +25,7 @@ locals {
     "kind"       = "HelmRelease"
     "metadata" = {
       "name"      = var.deploy_name
-      "namespace" = "traefik"
+      "namespace" = var.namespace
     }
     "spec" = {
       "values" = {
@@ -53,11 +53,11 @@ spec:
   routes:
   - kind: Rule
     match: "${var.fallback_rule_match}"
-    priority: "${var.fallback_ingressroute_priority}"
+    priority: ${var.fallback_ingressroute_priority}
     services:
     - kind: Service
       name: "${var.fallback_svc_name}"
       namespace: "${var.fallback_svc_namespace}"
-      port: "${var.fallback_svc_port}"
+      port: ${var.fallback_svc_port}
 YAML
 }

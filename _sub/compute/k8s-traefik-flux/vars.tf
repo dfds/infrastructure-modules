@@ -8,6 +8,12 @@ variable "deploy_name" {
   default     = "traefik"
 }
 
+variable "namespace" {
+  type        = string
+  description = "The namespace in which to deploy Helm resources"
+  default     = "traefik"
+}
+
 variable "http_nodeport" {
   description = "Nodeport used by ALB's to connect to the Traefik instance"
   type        = number
@@ -43,13 +49,13 @@ variable "fallback" {
 variable "fallback_rule_match" {
   type        = string
   description = "The rule match of hosts, regexp and/or paths to serve through a fallback ingressroute"
-  default     = null
+  default     = "HostRegexp(`{domain:.+}`)"
 }
 
 variable "fallback_ingressroute_name" {
   type        = string
   description = "The name for the ingressroute used for fallback"
-  default     = "traefik-v1-fallback"
+  default     = "traefik-fallback-to-v1-ingress"
 }
 
 variable "fallback_ingressroute_priority" {

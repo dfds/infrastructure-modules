@@ -696,9 +696,20 @@ variable "traefik_flux_with_fallback" {
   default     = true
 }
 
-
 variable "traefik_fallback_ingressroute_priority" {
   type        = number
   description = "IngressRoute priority. Should be a low number, but preferably not lower than 2"
   default     = 2
+}
+
+variable "traefik_fallback_rule_match" {
+  type        = string
+  description = "The rule match of hosts, regexp and/or paths to serve through a fallback ingressroute"
+  default     = "HostRegexp(`{domain:.+}`)"
+}
+
+variable "traefik_fallback_ingressroute_name" {
+  type        = string
+  description = "The name for the ingressroute used for fallback"
+  default     = "traefik-fallback-to-v1-ingress"
 }

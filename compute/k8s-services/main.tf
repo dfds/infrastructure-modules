@@ -135,8 +135,6 @@ module "traefik_flux_manifests" {
   repo_name                   = var.traefik_flux_repo_name
   repo_branch                 = var.traefik_flux_repo_branch
   fallback                    = var.traefik_flux_with_fallback
-  fallback_rule_match         = local.traefik_fallback_rule_match
-  fallback_ingressroute_name  = local.traefik_fallback_ingressroute_name
 
   providers = {
     github = github.fluxcd

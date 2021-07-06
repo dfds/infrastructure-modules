@@ -13,6 +13,6 @@ resource "github_repository_file" "traefik_patch" {
 }
 
 resource "kubectl_manifest" "traefik_fallback" {
-    count      = var.fallback ? 1 : 0
-    yaml_body = local.fallback_manifest
+    count       = var.fallback ? 1 : 0
+    yaml_body   = local.fallback_manifest
 }
