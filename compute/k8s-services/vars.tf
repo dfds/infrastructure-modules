@@ -690,7 +690,7 @@ variable "traefik_flux_health_check_path" {
   default     = "/ping/"
 }
 
-variable "traefik_flux_with_fallback" {
+variable "traefik_fallback_enabled" {
   type        = bool
   description = "Should a fallback ingressroute be created that routes traffic to Traefik v1"
   default     = true
@@ -712,4 +712,19 @@ variable "traefik_fallback_ingressroute_name" {
   type        = string
   description = "The name for the ingressroute used for fallback"
   default     = "traefik-fallback-to-v1-ingress"
+}
+
+variable "traefik_fallback_svc_namespace" {
+  type        = string
+  description = "The service used for fallback ingress is stored in which namespace"
+}
+
+variable "traefik_fallback_svc_name" {
+  type        = string
+  description = "The service name used for fallback ingress"
+}
+
+variable "traefik_fallback_svc_port" {
+  type        = number
+  description = "The service port used for fallback ingress"
 }

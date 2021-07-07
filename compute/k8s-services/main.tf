@@ -134,8 +134,10 @@ module "traefik_flux_manifests" {
   github_owner                = var.traefik_flux_github_owner
   repo_name                   = var.traefik_flux_repo_name
   repo_branch                 = var.traefik_flux_repo_branch
-  kubeconfig_path             = local.kubeconfig_path
-  fallback                    = var.traefik_flux_with_fallback
+  fallback_enabled            = var.traefik_fallback_enabled
+  fallback_svc_namespace      = var.traefik_fallback_svc_namespace
+  fallback_svc_name           = var.traefik_fallback_svc_name
+  fallback_svc_port           = var.traefik_fallback_svc_port
 
   providers = {
     github = github.fluxcd
