@@ -125,6 +125,25 @@ module "traefik_deploy" {
   dashboard_deploy       = var.traefik_dashboard_deploy
 }
 
+module "traefik_flux_manifests" {
+  source                      = "../../_sub/compute/k8s-traefik-flux"
+  count                       = var.traefik_deploy ? 1 : 0
+  cluster_name                = var.eks_cluster_name
+  http_nodeport               = var.traefik_flux_http_nodeport
+  admin_nodeport              = var.traefik_flux_admin_nodeport
+  github_owner                = var.traefik_flux_github_owner
+  repo_name                   = var.traefik_flux_repo_name
+  repo_branch                 = var.traefik_flux_repo_branch
+  fallback_enabled            = var.traefik_fallback_enabled
+  fallback_svc_namespace      = var.traefik_fallback_svc_namespace
+  fallback_svc_name           = var.traefik_fallback_svc_name
+  fallback_svc_port           = var.traefik_fallback_svc_port
+
+  providers = {
+    github = github.fluxcd
+  }
+}
+
 module "traefik_alb_cert" {
   source              = "../../_sub/network/acm-certificate-san"
   deploy              = var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy ? true : false

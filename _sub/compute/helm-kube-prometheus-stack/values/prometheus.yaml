@@ -9,12 +9,14 @@ prometheus:
       namespaceSelector:
         any: true
       endpoints:
-      - path: /metrics
-        port: metrics
-      - path: /metrics
-        port: admin
-      - path: /metrics
-        port: http
+        - path: /metrics
+          port: metrics
+        - path: /metrics
+          port: admin
+        - path: /metrics
+          port: http
+        - path: /metrics
+          port: traefik
   prometheusSpec:
     priorityClassName: ${prometheus_priorityclass}
     storageSpec:

@@ -649,3 +649,82 @@ variable "kiam_strict_mode_disabled" {
   description = "Disable default strict namespace regexp when matching roles"
   default     = false
 }
+
+# --------------------------------------------------
+# Traefik v2 through Flux CD
+# --------------------------------------------------
+
+variable "traefik_flux_github_owner" {
+  type        = string
+  description = "Name of the Treaefik Flux repo Github owner (previously: organization)"
+  default     = null
+}
+
+variable "traefik_flux_repo_name" {
+  type        = string
+  description = "Name of the Github repo to store the Traefik Flux manifests in"
+  default     = null
+}
+
+variable "traefik_flux_repo_branch" {
+  type        = string
+  description = "Override the default branch of the Traefik Flux repo (optional)"
+  default     = null
+}
+
+variable "traefik_flux_http_nodeport" {
+  type        = number
+  description = "Nodeport used by ALB's to connect to the Traefik instance"
+  default     = 31000
+}
+
+variable "traefik_flux_admin_nodeport" {
+  type        = number
+  description = "Nodeport used by ALB's to connect to the Traefik instance admin page"
+  default     = 31001
+}
+
+variable "traefik_flux_health_check_path" {
+  description = "Which path should the LB call when checking if Traefik v2 service is healthy"
+  type        = string
+  default     = "/ping/"
+}
+
+variable "traefik_fallback_enabled" {
+  type        = bool
+  description = "Should a fallback ingressroute be created that routes traffic to Traefik v1"
+  default     = true
+}
+
+variable "traefik_fallback_ingressroute_priority" {
+  type        = number
+  description = "IngressRoute priority. Should be a low number, but preferably not lower than 2"
+  default     = 2
+}
+
+variable "traefik_fallback_rule_match" {
+  type        = string
+  description = "The rule match of hosts, regexp and/or paths to serve through a fallback ingressroute"
+  default     = "HostRegexp(`{domain:.+}`)"
+}
+
+variable "traefik_fallback_ingressroute_name" {
+  type        = string
+  description = "The name for the ingressroute used for fallback"
+  default     = "traefik-fallback-to-v1-ingress"
+}
+
+variable "traefik_fallback_svc_namespace" {
+  type        = string
+  description = "The service used for fallback ingress is stored in which namespace"
+}
+
+variable "traefik_fallback_svc_name" {
+  type        = string
+  description = "The service name used for fallback ingress"
+}
+
+variable "traefik_fallback_svc_port" {
+  type        = number
+  description = "The service port used for fallback ingress"
+}
