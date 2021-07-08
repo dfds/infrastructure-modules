@@ -31,6 +31,15 @@ inputs = {
   # traefik_alb_auth_core_alias = ["qa-alias1.dfds.cloud", "qa-alias2.dfds.cloud"]
   traefik_alb_auth_core_alias = []
 
+
+  # --------------------------------------------------
+  # Traefik v2
+  # --------------------------------------------------
+
+  traefik_flux_github_owner = "dfds"
+  traefik_flux_repo_name = "platform-manifests-qa"
+  traefik_flux_repo_branch = "main"
+
   # --------------------------------------------------
   # Blaster
   # Requires: KIAM
