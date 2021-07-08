@@ -693,7 +693,7 @@ variable "traefik_flux_health_check_path" {
 variable "traefik_fallback_enabled" {
   type        = bool
   description = "Should a fallback ingressroute be created that routes traffic to Traefik v1"
-  default     = true
+  default     = false
 }
 
 variable "traefik_fallback_ingressroute_priority" {
@@ -717,14 +717,22 @@ variable "traefik_fallback_ingressroute_name" {
 variable "traefik_fallback_svc_namespace" {
   type        = string
   description = "The service used for fallback ingress is stored in which namespace"
+  default     = "kube-system"
 }
 
 variable "traefik_fallback_svc_name" {
   type        = string
   description = "The service name used for fallback ingress"
+  default     = "traefik"
 }
 
 variable "traefik_fallback_svc_port" {
   type        = number
   description = "The service port used for fallback ingress"
+  default     = 80
+}
+
+variable "traefik_flux_deploy" {
+  type    = bool
+  default = true
 }
