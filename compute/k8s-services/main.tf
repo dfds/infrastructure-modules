@@ -415,7 +415,7 @@ module "monitoring_kube_prometheus_stack" {
   prometheus_retention            = var.monitoring_kube_prometheus_stack_prometheus_retention
   slack_channel                   = var.monitoring_kube_prometheus_stack_slack_channel
   target_namespaces               = var.monitoring_kube_prometheus_stack_target_namespaces
-  alertmanager_silence_namespaces = var.monitoring_alertmanager_silence_namespaces
+  alertmanager_include_namespaces = var.monitoring_alertmanager_include_namespaces
 }
 
 
