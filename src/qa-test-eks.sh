@@ -32,17 +32,6 @@ function cleanup_eni {
 }
 
 
-if [ "$ACTION" = "plan-cluster" ]; then
-    REGION=$2
-    CLUSTERNAME=$3
-    WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}/cluster"
-    # Show the plan of what will be applied
-    # Can't run plan all, because later stages depend on data from Terraform state (which is empty)
-    # terragrunt plan-all --terragrunt-working-dir ./test/integration --terragrunt-source-update --terragrunt-non-interactive -input=false
-    terragrunt plan --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false
-fi
-
-
 if [ "$ACTION" = "cleanup-cluster" ]; then
     REGION=$2
     CLUSTERNAME=$3
