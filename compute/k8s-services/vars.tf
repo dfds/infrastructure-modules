@@ -449,11 +449,6 @@ variable "atlantis_platform_fluxcd_github_token" {
   default     = ""
 }
 
-variable "atlantis_github_organization" {
-  description = "Github organization name. Conflicts with github_owner. Leaving unset will use GITHUB_ORGANIZATION environment variable if exists"
-  default     = null
-}
-
 variable "atlantis_github_owner" {
   description = "Github owner(username). Conflicts with github_organization. Leaving unset will use GITHUB_OWNER environment variable if exists"
   default     = null

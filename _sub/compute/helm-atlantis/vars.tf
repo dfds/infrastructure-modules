@@ -70,13 +70,8 @@ variable "platform_fluxcd_github_token" {
     description = "Github token that the provider uses to perform Github operations for Flux."
 }
 
-variable "github_organization" {
-    description = "Github organization name. Conflicts with github_owner. Leaving unset will use GITHUB_ORGANIZATION environment variable if exists"
-    default = null
-}
-
 variable "github_owner" {
-    description = "Github owner(username). Conflicts with github_organization. Leaving unset will use GITHUB_OWNER environment variable if exists"
+    description = "Github owner (username). Leaving unset will use GITHUB_OWNER environment variable if exists"
     default = null
 }
 
