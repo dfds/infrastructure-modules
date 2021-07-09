@@ -63,9 +63,8 @@ provider "helm" {
 }
 
 provider "github" {
-  token        = var.atlantis_github_token != null ? var.atlantis_github_token : null
-  organization = var.atlantis_github_organization != null ? var.atlantis_github_organization : null
-  owner        = var.atlantis_github_owner != null ? var.atlantis_github_owner : null
+  token        = var.atlantis_github_token
+  owner        = var.atlantis_github_owner
   alias        = "atlantis"
 }
 

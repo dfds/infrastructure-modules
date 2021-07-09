@@ -116,14 +116,14 @@ repoConfig: |
     terragrunt:
       plan:
         steps:
-        - run: terragrunt plan-all -no-color --terragrunt-non-interactive -input=false
+        - run: terragrunt run-all plan -no-color --terragrunt-non-interactive -input=false
       apply:
         steps:
         - run: exit 1
     eks-pipeline:
       plan:
         steps:
-        - run: terragrunt plan-all -no-color --terragrunt-non-interactive -input=false
+        - run: terragrunt run-all plan -no-color --terragrunt-non-interactive -input=false
       apply:
         steps:
         - run: exit 1

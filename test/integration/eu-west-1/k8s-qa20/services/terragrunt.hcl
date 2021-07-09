@@ -6,7 +6,7 @@ terraform {
 
 # Include all settings from the root terraform.tfvars file
 include {
-  path = "${find_in_parent_folders()}"
+  path = find_in_parent_folders()
 }
 
 dependencies {
@@ -37,8 +37,8 @@ inputs = {
   # --------------------------------------------------
 
   traefik_flux_github_owner = "dfds"
-  traefik_flux_repo_name = "platform-manifests-qa"
-  traefik_flux_repo_branch = "main"
+  traefik_flux_repo_name    = "platform-manifests-qa"
+  traefik_flux_repo_branch  = "main"
 
   # --------------------------------------------------
   # Blaster
@@ -107,7 +107,7 @@ inputs = {
   crossplane_admin_service_accounts = [
     {
       serviceaccount = "default"
-      namespace = "kube-system"
+      namespace      = "kube-system"
     }
   ]
 
@@ -122,7 +122,7 @@ inputs = {
 
   atlantis_github_username     = "devex-sa"
   atlantis_github_repositories = ["dfds/qa-dummy-atlantis"]
-  atlantis_github_organization = "dfds"
+  atlantis_github_owner        = "dfds"
   atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
   atlantis_chart_version       = "3.12.10"
 

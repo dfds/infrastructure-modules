@@ -56,7 +56,7 @@ if [ "$ACTION" = "apply-shared" ]; then
     WORKDIR="${BASEPATH}/${SUBPATH}"
 
     # Apply the configuration
-    terragrunt apply-all --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
+    terragrunt run-all apply --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
 fi
 
 
@@ -66,7 +66,7 @@ if [ "$ACTION" = "apply-cluster" ]; then
     WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}"
 
     # Apply the configuration
-    terragrunt apply-all --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
+    terragrunt run-all apply --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
 fi
 
 
@@ -156,7 +156,7 @@ if [ "$ACTION" = "destroy-shared" ]; then
     WORKDIR="${BASEPATH}/${SUBPATH}"
 
     # Cleanup
-    terragrunt destroy-all --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve || RETURN=1
+    terragrunt run-all destroy --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve || RETURN=1
 
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
     cleanup_roles "Velero"
