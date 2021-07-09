@@ -37,6 +37,9 @@ locals {
             "nodePort" = var.admin_nodeport
           }
         }
+        "deployment" = {
+          "replicas" = var.replicas
+        }
       }
     }
   }

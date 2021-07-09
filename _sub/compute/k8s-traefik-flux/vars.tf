@@ -14,6 +14,11 @@ variable "namespace" {
   default     = "traefik"
 }
 
+variable "replicas" {
+  description = "The number of Traefik pods to spawn"
+  type        = number
+}
+
 variable "http_nodeport" {
   description = "Nodeport used by ALB's to connect to the Traefik instance"
   type        = number
