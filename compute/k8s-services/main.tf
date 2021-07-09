@@ -63,9 +63,9 @@ provider "helm" {
 }
 
 provider "github" {
-  token        = var.atlantis_github_token
-  owner        = var.atlantis_github_owner
-  alias        = "atlantis"
+  token = var.atlantis_github_token
+  owner = var.atlantis_github_owner
+  alias = "atlantis"
 }
 
 provider "github" {
@@ -125,19 +125,19 @@ module "traefik_deploy" {
 }
 
 module "traefik_flux_manifests" {
-  source                      = "../../_sub/compute/k8s-traefik-flux"
-  count                       = var.traefik_flux_deploy ? 1 : 0
-  cluster_name                = var.eks_cluster_name
-  replicas                    = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
-  http_nodeport               = var.traefik_flux_http_nodeport
-  admin_nodeport              = var.traefik_flux_admin_nodeport
-  github_owner                = var.traefik_flux_github_owner
-  repo_name                   = var.traefik_flux_repo_name
-  repo_branch                 = var.traefik_flux_repo_branch
-  fallback_enabled            = var.traefik_fallback_enabled
-  fallback_svc_namespace      = var.traefik_fallback_svc_namespace
-  fallback_svc_name           = var.traefik_fallback_svc_name
-  fallback_svc_port           = var.traefik_fallback_svc_port
+  source                 = "../../_sub/compute/k8s-traefik-flux"
+  count                  = var.traefik_flux_deploy ? 1 : 0
+  cluster_name           = var.eks_cluster_name
+  replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
+  http_nodeport          = var.traefik_flux_http_nodeport
+  admin_nodeport         = var.traefik_flux_admin_nodeport
+  github_owner           = var.traefik_flux_github_owner
+  repo_name              = var.traefik_flux_repo_name
+  repo_branch            = var.traefik_flux_repo_branch
+  fallback_enabled       = var.traefik_fallback_enabled
+  fallback_svc_namespace = var.traefik_fallback_svc_namespace
+  fallback_svc_name      = var.traefik_fallback_svc_name
+  fallback_svc_port      = var.traefik_fallback_svc_port
 
   providers = {
     github = github.fluxcd
@@ -465,6 +465,7 @@ module "atlantis" {
   atlantis_image_tag           = var.atlantis_image_tag
   atlantis_ingress             = var.atlantis_ingress
   github_username              = var.atlantis_github_username
+  github_token                 = var.atlantis_github_token
   github_repositories          = var.atlantis_github_repositories
   webhook_url                  = var.atlantis_ingress
   webhook_events               = var.atlantis_webhook_events
