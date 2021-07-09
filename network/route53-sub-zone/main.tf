@@ -1,12 +1,10 @@
 provider "aws" {
-  region  = var.aws_region
-  version = "~> 2.43"
+  region = var.aws_region
 }
 
 provider "aws" {
-  region  = var.aws_region
-  version = "~> 2.43"
-  alias   = "workload"
+  region = var.aws_region
+  alias  = "workload"
 
   assume_role {
     role_arn = "arn:aws:iam::${var.aws_workload_account_id}:role/${var.prime_role_name}"
@@ -14,10 +12,7 @@ provider "aws" {
 }
 
 terraform {
-  # The configuration for this backend will be filled in by Terragrunt
-  # The configuration for this backend will be filled in by Terragrunt
-  backend "s3" {
-  }
+  backend "s3" {}
 }
 
 # Create zone in workload account
