@@ -1,11 +1,8 @@
 provider "aws" {
-  region  = var.aws_region
-  version = "~> 2.43"
+  region = var.aws_region
 }
 
 terraform {
-  # The configuration for this backend will be filled in by Terragrunt
-  # The configuration for this backend will be filled in by Terragrunt
   backend "s3" {
   }
 }
@@ -25,7 +22,6 @@ resource "aws_iam_access_key" "master_user_key" {
   user = aws_iam_user.master_user.name
 }
 
-# 
 resource "aws_iam_user_policy" "assume_noncore_accounts" {
   name   = var.assume_noncore_accounts_iam_policy_name
   user   = aws_iam_user.master_user.id
