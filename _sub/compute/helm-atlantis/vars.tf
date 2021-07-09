@@ -60,6 +60,9 @@ variable "storage_class" {
 }
 
 ## Github ##
+variable "github_token" {
+    description = "Github token that the provider uses to perform Github operations. Leaving unset will fall back to GITHUB_TOKEN environment variable"
+}
 
 variable "platform_fluxcd_github_token" {
     description = "Github token that the provider uses to perform Github operations for Flux."
