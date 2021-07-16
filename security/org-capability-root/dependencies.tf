@@ -12,7 +12,7 @@ locals {
             "NotAction": [
                 "acm:*",
                 "aws-marketplace:*",
-                "aws-portal:View*",
+                "aws-portal:*",
                 "budgets:*",
                 "ce:Describe*",
                 "ce:Get*",
