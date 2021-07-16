@@ -145,6 +145,30 @@ variable "traefik_dashboard_deploy" {
 
 
 # --------------------------------------------------
+# Traefikv2
+# --------------------------------------------------
+variable "traefikv2_test_alb_deploy" {
+  type    = bool
+  default = false
+}
+
+variable "traefikv2_http_nodeport" {
+  type    = number
+  default = 31000
+}
+
+variable "traefikv2_admin_nodeport" {
+  type    = number
+  default = 31001
+}
+
+variable "traefikv2_health_check_path" {
+  type    = string
+  default = "/dashboard/"
+}
+
+
+# --------------------------------------------------
 # Blaster
 # --------------------------------------------------
 
