@@ -691,6 +691,12 @@ variable "traefik_flux_repo_branch" {
   default     = null
 }
 
+variable "traefik_flux_helm_chart_version" {
+  type        = string
+  description = "Helm Chart version to be used to deploy Traefik"
+  default     = null
+}
+
 variable "traefik_flux_http_nodeport" {
   type        = number
   description = "Nodeport used by ALB's to connect to the Traefik instance"

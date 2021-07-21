@@ -128,6 +128,7 @@ module "traefik_flux_manifests" {
   source                 = "../../_sub/compute/k8s-traefik-flux"
   count                  = var.traefik_flux_deploy ? 1 : 0
   cluster_name           = var.eks_cluster_name
+  helm_chart_version     = var.traefik_flux_helm_chart_version
   replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
   http_nodeport          = var.traefik_flux_http_nodeport
   admin_nodeport         = var.traefik_flux_admin_nodeport
