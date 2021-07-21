@@ -45,6 +45,12 @@ variable "repo_branch" {
   default     = null
 }
 
+variable "helm_chart_version" {
+  type        = string
+  description = "The version of the Traefik v2 Helm Chart that should be used"
+  default     = null
+}
+
 variable "fallback_enabled" {
   type        = bool
   description = "Should a fallback ingressroute be created that routes traffic to Traefik v1"

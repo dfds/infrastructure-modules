@@ -28,6 +28,11 @@ locals {
       "namespace" = var.namespace
     }
     "spec" = {
+      "chart" = {
+        "spec" = {
+          "version" = var.helm_chart_version
+        }
+      }
       "values" = {
         "ports" = {
           "web" = {
