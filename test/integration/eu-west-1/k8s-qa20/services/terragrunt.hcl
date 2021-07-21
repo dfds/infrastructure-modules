@@ -35,10 +35,11 @@ inputs = {
   # --------------------------------------------------
   # Traefik v2
   # --------------------------------------------------
-
-  traefik_flux_github_owner = "dfds"
-  traefik_flux_repo_name    = "platform-manifests-qa"
-  traefik_flux_repo_branch  = "main"
+  traefikv2_test_alb_deploy       = true
+  traefik_flux_helm_chart_version = "10.1.1"
+  traefik_flux_github_owner       = "dfds"
+  traefik_flux_repo_name          = "platform-manifests-qa"
+  traefik_flux_repo_branch        = "main"
 
   # --------------------------------------------------
   # Blaster
