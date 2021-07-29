@@ -152,7 +152,8 @@ fi
 
 if [ "$ACTION" = "destroy-shared" ]; then
     RETURN=0
-    SUBPATH=$2
+    REGION=$2
+    SUBPATH=$3
     WORKDIR="${BASEPATH}/${SUBPATH}"
 
     # Cleanup

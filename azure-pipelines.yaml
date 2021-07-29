@@ -86,5 +86,5 @@ stages:
           - destroy_eks_1_20
         condition: ne(variables['NO_DESTROY'], 'true')
         steps:
-          - bash: ./src/qa-test-eks.sh destroy-shared _global eu-west-1
+          - bash: ./src/qa-test-eks.sh destroy-shared eu-west-1 _global
             displayName: "Destroy shared all resources"
