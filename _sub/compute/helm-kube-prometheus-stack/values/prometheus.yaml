@@ -15,8 +15,6 @@ prometheus:
           port: admin
         - path: /metrics
           port: http
-        - path: /metrics
-          port: traefik
   prometheusSpec:
     priorityClassName: ${prometheus_priorityclass}
     storageSpec:
