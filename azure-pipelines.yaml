@@ -57,11 +57,26 @@ stages:
             displayName: "Run tests"
             condition: always()
 
+      - job: eks_1_21
+        displayName: EKS 1.21
+        container: prime
+        dependsOn: init_shared
+        steps:
+          - bash: ./src/qa-test-eks.sh cleanup-cluster eu-west-1 qa21
+            displayName: "Pre-apply cleanup"
+            condition: eq(variables['PRE_CLEANUP'], 'true')
+          - bash: ./src/qa-test-eks.sh apply-cluster eu-west-1 qa21
+            displayName: "Terraform Apply"
+          - bash: ./src/qa-test-eks.sh test eu-west-1 qa21
+            displayName: "Run tests"
+            condition: always()
+
       - job: init_shared_velero
         displayName: Init EKS shared Velero
         container: prime
         dependsOn:
           - eks_1_20
+          - eks_1_21
         steps:
           - bash: ./src/qa-test-eks.sh cleanup-shared eu-west-1
             displayName: "Pre-apply cleanup"
@@ -79,11 +94,22 @@ stages:
           - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1 qa20
             displayName: "Terraform Destroy (post)"
 
+      - job: destroy_eks_1_21
+        displayName: Destroy EKS 1.21
+        container: prime
+        dependsOn:
+          - init_shared_velero
+        condition: ne(variables['NO_DESTROY'], 'true')
+        steps:
+          - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1 qa21
+            displayName: "Terraform Destroy (post)"
+
       - job: destroy_shared
         displayName: Destroy EKS shared resources
         container: prime
         dependsOn:
           - destroy_eks_1_20
+          - destroy_eks_1_21
         condition: ne(variables['NO_DESTROY'], 'true')
         steps:
           - bash: ./src/qa-test-eks.sh destroy-shared eu-west-1 _global
