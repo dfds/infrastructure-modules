@@ -327,12 +327,6 @@ variable "monitoring_kube_prometheus_stack_target_namespaces" {
   default     = ".*"
 }
 
-variable "monitoring_alertmanager_silence_namespaces" {
-  type        = string
-  description = "Silence noisy namespaces via alertmanager"
-  default     = ""
-}
-
 # --------------------------------------------------
 # Metrics-Server
 # --------------------------------------------------

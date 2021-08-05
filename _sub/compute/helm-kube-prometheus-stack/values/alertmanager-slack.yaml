@@ -16,8 +16,12 @@ alertmanager:
           alertname: Watchdog
         receiver: 'null'
       - match_re:
-          namespace: ${alertmanager_silence_namespaces}
+          namespace: '.*'
         receiver: 'null'
+        routes:
+          - match_re:
+              namespace: ${target_namespaces}
+            receiver: 'general'
       - match_re:
           alertname: CPUThrottlingHigh
         receiver: 'null'
