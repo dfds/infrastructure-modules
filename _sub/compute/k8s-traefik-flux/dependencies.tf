@@ -5,22 +5,73 @@ data "github_repository" "main" {
 locals {
   default_repo_branch = data.github_repository.main.default_branch
   repo_branch         = length(var.repo_branch) > 0 ? var.repo_branch : local.default_repo_branch
-  base_repo_path      = "apps/${var.cluster_name}/${var.deploy_name}"
+  cluster_repo_path   = "clusters/${var.cluster_name}"
+  helm_repo_path      = "platform-apps/${var.cluster_name}/${var.deploy_name}/helm"
+  config_repo_path    = "platform-apps/${var.cluster_name}/${var.deploy_name}/config"
+  app_install_name    = "platform-apps-${var.deploy_name}"
 }
 
 locals {
-  kustomization = {
+  app_helm_path = {
+    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta1"
+    "kind" = "Kustomization"
+    "metadata" = {
+      "name" = "${local.app_install_name}-helm"
+      "namespace" = "flux-system"
+    }
+    "spec" = {
+      "interval" = "1m0s"
+      "dependsOn" = [
+        {
+          "name" = "platform-apps-sources"
+        }
+      ]
+      "sourceRef" = {
+        "kind" = "GitRepository"
+        "name" = "flux-system"
+      }
+      "path" = "./${local.helm_repo_path}"
+      "prune" = true
+      "validation" = "client"
+    }
+  }
+
+  app_config_path = {
+    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta1"
+    "kind" = "Kustomization"
+    "metadata" = {
+      "name" = "${local.app_install_name}-config"
+      "namespace" = "flux-system"
+    }
+    "spec" = {
+      "interval" = "1m0s"
+      "dependsOn" = [
+        {
+          "name" = "${local.app_install_name}-helm"
+        }
+      ]
+      "sourceRef" = {
+        "kind" = "GitRepository"
+        "name" = "flux-system"
+      }
+      "path" = "./${local.config_repo_path}"
+      "prune" = true
+      "validation" = "client"
+    }
+  }
+
+  helm_install = {
     "apiVersion" = "kustomize.config.k8s.io/v1beta1"
     "kind"       = "Kustomization"
     "resources" = [
-      "https://github.com/dfds/platform-apps/apps/traefik"
+      "https://github.com/dfds/platform-apps/apps/${var.deploy_name}"
     ]
     "patchesStrategicMerge" = [
       "patch.yaml"
     ]
   }
 
-  patch = {
+  helm_patch = {
     "apiVersion" = "helm.toolkit.fluxcd.io/v2beta1"
     "kind"       = "HelmRelease"
     "metadata" = {
@@ -49,23 +100,36 @@ locals {
     }
   }
 
-  fallback_manifest = <<YAML
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: "${var.fallback_ingressroute_name}"
-  namespace: "${var.fallback_svc_namespace}"
-spec:
-  entryPoints:
-  - web
-  routes:
-  - kind: Rule
-    match: "${var.fallback_rule_match}"
-    priority: ${var.fallback_ingressroute_priority}
-    services:
-    - kind: Service
-      name: "${var.fallback_svc_name}"
-      namespace: "${var.fallback_svc_namespace}"
-      port: ${var.fallback_svc_port}
-YAML
+  config_init = {
+    "apiVersion" = "kustomize.config.k8s.io/v1beta1"
+    "kind" = "Kustomization"
+    "resources" = ["ingressroute.yaml"]
+  }
+
+  config_fallback_ingressroute = {
+    "apiVersion" = "traefik.containo.us/v1alpha1"
+    "kind" = "IngressRoute"
+    "metadata" = {
+      "name" = var.fallback_ingressroute_name
+      "namespace" = var.namespace
+    }
+    "spec" = {
+      "entryPoints" = ["web"]
+      "routes" = [
+        {
+          "kind" = "Rule"
+          "match" = var.fallback_rule_match
+          "priority" = var.fallback_ingressroute_priority
+          "services" = [
+            {
+              "kind" = "Service"
+              "name" = var.fallback_svc_name
+              "namespace" = var.fallback_svc_namespace
+              "port" = var.fallback_svc_port
+            }
+          ]
+        }
+      ]
+    }
+  }
 }
