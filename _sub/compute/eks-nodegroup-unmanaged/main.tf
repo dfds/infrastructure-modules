@@ -27,7 +27,7 @@ resource "aws_placement_group" "cluster" {
 
 
 locals {
-  asg_min_size = 0 # Allow scaling an ASG to zero, e.g. for maintenance og dialing down sandbox clusters at night
+  asg_min_size = 0                               # Allow scaling an ASG to zero, e.g. for maintenance og dialing down sandbox clusters at night
   asg_max_size = 2 * var.desired_size_per_subnet # Allows node roll-over script to double the instance count, to roll-over all nodes in an ASG in one operation
 }
 
@@ -58,8 +58,13 @@ resource "aws_autoscaling_group" "eks" {
   }
 
   lifecycle {
-    ignore_changes = [ target_group_arns ]
+    ignore_changes = [target_group_arns]
   }
+
+  provisioner "local-exec" {
+    command = "sleep 60" # added arbitrary delay to allow ASG to spin up instances, as a workaround to dfds/cloudplatform#380 and hashicorp/terraform-provider-aws#20404
+  }
+
 
 }
 
