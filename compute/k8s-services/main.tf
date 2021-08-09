@@ -519,6 +519,7 @@ module "atlantis" {
   arm_client_secret            = var.atlantis_arm_client_secret
   platform_fluxcd_github_token = var.atlantis_platform_fluxcd_github_token
   storage_class                = var.atlantis_storage_class
+  cluster_name                 = var.eks_cluster_name
 
   providers = {
     github = github.atlantis

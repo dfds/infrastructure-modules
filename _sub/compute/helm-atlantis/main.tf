@@ -7,6 +7,46 @@ locals {
   ]
 }
 
+# --------------------------------------------------
+# Generate random password and create a hash for it
+# --------------------------------------------------
+
+resource "random_password" "password" {
+  length           = 32
+  special          = true
+  override_special = "!@#$%&*-_=+:?"
+}
+
+resource "htpasswd_password" "hash" {
+  password = random_password.password.result
+  salt     = substr(sha512(random_password.password.result), 0, 8)
+}
+
+# --------------------------------------------------
+# Save username and hashed password in a k8s secret
+# --------------------------------------------------
+resource "kubernetes_secret" "secret" {
+  metadata {
+    name      = local.auth_secret_name
+    namespace = var.namespace
+  }
+
+  data = {
+    auth = "${var.auth_username}:${htpasswd_password.hash.apr1}"
+  }
+}
+
+# --------------------------------------------------
+# Save password in AWS Parameter Store
+# --------------------------------------------------
+resource "aws_ssm_parameter" "param_atlantis_ui_auth" {
+  name        = "/eks/${var.cluster_name}/${local.auth_secret_name}"
+  description = "Password for accessing the Atlantis UI"
+  type        = "SecureString"
+  value       = random_password.password.result
+  overwrite   = true
+}
+
 resource "random_password" "webhook_password" {
   length           = 16
   special          = true
@@ -35,12 +75,15 @@ resource "helm_release" "atlantis" {
 
   values = [
     templatefile("${path.module}/values/values.yaml", {
-      atlantis_ingress   = var.atlantis_ingress,
-      atlantis_image     = var.atlantis_image,
-      atlantis_image_tag = var.atlantis_image_tag,
-      github_username    = var.github_username,
-      github_repos       = join(",", local.full_github_repo_names)
-      storage_class      = var.storage_class
+      atlantis_ingress    = var.atlantis_ingress,
+      ingress_class       = local.ingress_class,
+      ingress_auth_type   = local.ingress_auth_type,
+      auth_secret_name    = local.auth_secret_name,
+      atlantis_image      = var.atlantis_image,
+      atlantis_image_tag  = var.atlantis_image_tag,
+      github_username     = var.github_username,
+      github_repos        = join(",", local.full_github_repo_names)
+      storage_class       = var.storage_class
   })]
 
   depends_on = [kubernetes_secret.aws]
@@ -62,7 +105,7 @@ resource "github_repository_webhook" "hook" {
   repository = data.github_repository.repo[count.index].name
 
   configuration {
-    url          = "https://${var.webhook_url}/events"
+    url          = "https://${var.auth_username}:${urlencode(random_password.password.result)}@${var.webhook_url}/events"
     content_type = var.webhook_content_type
     secret       = random_password.webhook_password.result
     insecure_ssl = false
