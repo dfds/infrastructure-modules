@@ -110,3 +110,14 @@ variable "secret_key_master" {
   type = string
   description = "Secret for Core account"
 }
+
+variable "auth_username" {
+  type        = string
+  description = "Username used for basic authentication."
+  default     = "cloudengineer"
+}
+
+variable "cluster_name" {
+  type        = string
+  description = "The name of the Kubernetes cluster"
+}

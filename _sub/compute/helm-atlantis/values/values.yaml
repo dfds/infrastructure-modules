@@ -93,15 +93,18 @@ environmentSecrets:
     secretKeyRef:
       name: gh-credentials
       key: github_token_flux
-   
+
   - name: TF_VAR_atlantis_github_token
     secretKeyRef:
       name: gh-credentials
       key: github_token
 
-
 ingress:
   host: ${atlantis_ingress}
+  annotations:
+    kubernetes.io/ingress.class: ${ingress_class}
+    traefik.ingress.kubernetes.io/auth-type: ${ingress_auth_type}
+    traefik.ingress.kubernetes.io/auth-secret: ${auth_secret_name}
 
 service:
   type: ClusterIP
@@ -127,4 +130,3 @@ repoConfig: |
       apply:
         steps:
         - run: exit 1
-
