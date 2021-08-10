@@ -212,8 +212,12 @@ module "eks_heptio" {
 }
 
 module "eks_addons" {
-  source                     = "../../_sub/compute/eks-addons"
-  depends_on                 = [module.eks_cluster]
+  source = "../../_sub/compute/eks-addons"
+  depends_on = [
+    module.eks_cluster,
+    module.eks_nodegroup1_workers,
+    module.eks_nodegroup2_workers
+  ] # added explicit dependencies on node group modules, as a workaround to dfds/cloudplatform#380 and hashicorp/terraform-provider-aws#20404
   cluster_name               = var.eks_cluster_name
   kubeproxy_version_override = var.eks_addon_kubeproxy_version_override
   coredns_version_override   = var.eks_addon_coredns_version_override
