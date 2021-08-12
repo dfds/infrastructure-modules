@@ -93,6 +93,7 @@ locals {
             "nodePort" = var.admin_nodeport
           }
         }
+        "additionalArguments" = var.additional_args
         "deployment" = {
           "replicas" = var.replicas
         }
