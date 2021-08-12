@@ -51,6 +51,12 @@ variable "helm_chart_version" {
   default     = null
 }
 
+variable "additional_args" {
+  type        = list
+  description = "Pass arguments to the additionalArguments node in the Traefik Helm chart"
+  default     = ["--metrics.prometheus"]
+}
+
 variable "fallback_enabled" {
   type        = bool
   description = "Should a fallback ingressroute be created that routes traffic to Traefik v1"

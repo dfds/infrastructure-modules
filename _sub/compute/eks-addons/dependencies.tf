@@ -10,7 +10,7 @@
 locals {
   vpccni_version_map = {
     "1.19" = "v1.7.5-eksbuild.2"
-    "1.20" = "v1.8.0-eksbuild.1"
+    "1.20" = "v1.9.0-eksbuild.1"
     "1.21" = "v1.9.0-eksbuild.1"
   }
 

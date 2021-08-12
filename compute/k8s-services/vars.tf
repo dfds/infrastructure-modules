@@ -709,6 +709,12 @@ variable "traefik_flux_health_check_path" {
   default     = "/ping/"
 }
 
+variable "traefik_flux_additional_args" {
+  type        = list
+  description = "Pass arguments to the additionalArguments node in the Traefik Helm chart"
+  default     = ["--metrics.prometheus"]
+}
+
 variable "traefik_fallback_enabled" {
   type        = bool
   description = "Should a fallback ingressroute be created that routes traffic to Traefik v1"
