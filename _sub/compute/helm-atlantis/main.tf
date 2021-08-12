@@ -34,6 +34,8 @@ resource "kubernetes_secret" "secret" {
   data = {
     auth = "${var.auth_username}:${htpasswd_password.hash.apr1}"
   }
+
+  depends_on = [helm_release.atlantis]
 }
 
 # --------------------------------------------------
