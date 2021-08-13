@@ -237,7 +237,7 @@ resource "kubernetes_secret" "secret" {
 # --------------------------------------------------
 resource "aws_ssm_parameter" "param_traefik_dashboard" {
   count       = var.dashboard_deploy ? 1 : 0
-  name        = "/eks/${var.cluster_name}/traefik-dashboard"
+  name        = "/eks/${var.cluster_name}/traefik-legacy-dashboard"
   description = "Password for accessing the Traefik dashboard"
   type        = "SecureString"
   value       = random_password.password[0].result
