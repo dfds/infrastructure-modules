@@ -142,6 +142,7 @@ module "traefik_flux_manifests" {
   fallback_svc_port      = var.traefik_fallback_svc_port
   dashboard_deploy       = var.traefik_flux_dashboard_deploy
   dashboard_ingress_host = local.traefik_flux_dashboard_ingress_host
+  is_sandbox             = var.eks_is_sandbox
 
   providers = {
     github = github.fluxcd

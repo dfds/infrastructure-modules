@@ -9,5 +9,10 @@ terraform {
     kubectl = {
       source  = "gavinbunney/kubectl"
     }
+
+    htpasswd = {
+        source  = "loafoe/htpasswd"
+        version = "~> 0.9.0"
+      }
   }
 }

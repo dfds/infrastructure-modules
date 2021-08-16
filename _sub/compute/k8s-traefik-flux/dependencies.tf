@@ -3,12 +3,22 @@ data "github_repository" "main" {
 }
 
 locals {
-  default_repo_branch = data.github_repository.main.default_branch
-  repo_branch         = length(var.repo_branch) > 0 ? var.repo_branch : local.default_repo_branch
-  cluster_repo_path   = "clusters/${var.cluster_name}"
-  helm_repo_path      = "platform-apps/${var.cluster_name}/${var.deploy_name}/helm"
-  config_repo_path    = "platform-apps/${var.cluster_name}/${var.deploy_name}/config"
-  app_install_name    = "platform-apps-${var.deploy_name}"
+  default_repo_branch                   = data.github_repository.main.default_branch
+  repo_branch                           = length(var.repo_branch) > 0 ? var.repo_branch : local.default_repo_branch
+  cluster_repo_path                     = "clusters/${var.cluster_name}"
+  helm_repo_path                        = "platform-apps/${var.cluster_name}/${var.deploy_name}/helm"
+  config_repo_path                      = "platform-apps/${var.cluster_name}/${var.deploy_name}/config"
+  app_install_name                      = "platform-apps-${var.deploy_name}"
+  dashboard_name                        = "${var.deploy_name}-external-dashboard"
+  dashboard_basic_auth_data             = base64encode("${var.dashboard_username}:${htpasswd_password.hash[0].apr1}")
+  dashboard_basic_auth_secret_name      = "${local.dashboard_name}-basic-auth"
+  dashboard_basic_auth_middleware_name  = "${local.dashboard_name}-basic-auth"
+  dashboard_middlewares = [
+    {
+      "name"      = local.dashboard_basic_auth_middleware_name
+      "namespace" = var.namespace
+    }
+  ]
 }
 
 locals {
@@ -106,7 +116,9 @@ locals {
     "kind" = "Kustomization"
     "resources" = [
       "ingressroute-fallback.yaml",
-      "ingressroute-dashboard.yaml"
+      "ingressroute-dashboard.yaml",
+      "secret-dashboard.yaml",
+      "middleware-dashboard.yaml"
     ]
   }
 
@@ -137,11 +149,15 @@ locals {
     }
   }
 
+  # The var.is_sandbox ? local.dashboard_middlewares : []
+  # turns on Basic Authentication in sandbox environments.
+  # In prod environments it will depend on ADSF since it is going through the
+  # authenticated ALB and has to match the alias in traefik_alb_auth_core_alias
   config_dashboard_ingressroute = {
     "apiVersion" = "traefik.containo.us/v1alpha1"
     "kind" = "IngressRoute"
     "metadata" = {
-      "name" = "${var.deploy_name}-external-dashboard"
+      "name" = local.dashboard_name
       "namespace" = var.namespace
     }
     "spec" = {
@@ -156,8 +172,35 @@ locals {
               "name" = "api@internal"
             }
           ]
+          "middlewares" = var.is_sandbox ? local.dashboard_middlewares : []
         }
       ]
+    }
+  }
+
+  config_dashboard_secret = {
+    "apiVersion" = "v1"
+    "kind" = "Secret"
+    "metadata" = {
+      "name" = local.dashboard_basic_auth_secret_name
+      "namespace" = var.namespace
+    }
+    "data" = {
+      "users" = local.dashboard_basic_auth_data
+    }
+  }
+
+  config_dashboard_middleware = {
+    "apiVersion" = "traefik.containo.us/v1alpha1"
+    "kind" = "Middleware"
+    "metadata" = {
+      "name" = local.dashboard_basic_auth_middleware_name
+      "namespace" = var.namespace
+    }
+    "spec" = {
+      "basicAuth" = {
+        "secret" = local.dashboard_basic_auth_secret_name
+      }
     }
   }
 }
