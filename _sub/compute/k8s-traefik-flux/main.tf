@@ -46,7 +46,6 @@ resource "github_repository_file" "traefik_config_dashboard_ingressroute" {
 }
 
 resource "github_repository_file" "traefik_config_init" {
-  count       = var.fallback_enabled ? 1 : 0 || var.dashboard_deploy ? 1 : 0
   repository  = var.repo_name
   branch      = local.repo_branch
   file        = "${local.config_repo_path}/kustomization.yaml"
