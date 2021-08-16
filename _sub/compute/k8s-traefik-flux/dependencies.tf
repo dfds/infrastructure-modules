@@ -145,6 +145,7 @@ locals {
       "namespace" = var.namespace
     }
     "spec" = {
+      "entryPoints" = ["web"]
       "routes" = [
         {
           "kind" = "Rule"
