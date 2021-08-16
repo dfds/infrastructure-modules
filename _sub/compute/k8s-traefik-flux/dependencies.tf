@@ -104,7 +104,10 @@ locals {
   config_init = {
     "apiVersion" = "kustomize.config.k8s.io/v1beta1"
     "kind" = "Kustomization"
-    "resources" = ["ingressroute.yaml"]
+    "resources" = [
+      "ingressroute-fallback.yaml",
+      "ingressroute-dashboard.yaml"
+    ]
   }
 
   config_fallback_ingressroute = {
@@ -127,6 +130,29 @@ locals {
               "name" = var.fallback_svc_name
               "namespace" = var.fallback_svc_namespace
               "port" = var.fallback_svc_port
+            }
+          ]
+        }
+      ]
+    }
+  }
+
+  config_dashboard_ingressroute = {
+    "apiVersion" = "traefik.containo.us/v1alpha1"
+    "kind" = "IngressRoute"
+    "metadata" = {
+      "name" = "${var.deploy_name}-external-dashboard"
+      "namespace" = var.namespace
+    }
+    "spec" = {
+      "routes" = [
+        {
+          "kind" = "Rule"
+          "match" = "Host(`${var.dashboard_ingress_host}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+          "services" = [
+            {
+              "kind" = "TraefikService"
+              "name" = "api@internal"
             }
           ]
         }

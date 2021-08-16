@@ -33,12 +33,20 @@ resource "github_repository_file" "traefik_config_fallback_ingressroute" {
   count       = var.fallback_enabled ? 1 : 0
   repository  = var.repo_name
   branch      = local.repo_branch
-  file        = "${local.config_repo_path}/ingressroute.yaml"
+  file        = "${local.config_repo_path}/ingressroute-fallback.yaml"
   content     = jsonencode(local.config_fallback_ingressroute)
 }
 
+resource "github_repository_file" "traefik_config_dashboard_ingressroute" {
+  count       = var.dashboard_deploy ? 1 : 0
+  repository  = var.repo_name
+  branch      = local.repo_branch
+  file        = "${local.config_repo_path}/ingressroute-dashboard.yaml"
+  content     = jsonencode(local.config_dashboard_ingressroute)
+}
+
 resource "github_repository_file" "traefik_config_init" {
-  count       = var.fallback_enabled ? 1 : 0
+  count       = var.fallback_enabled ? 1 : 0 || var.dashboard_deploy ? 1 : 0
   repository  = var.repo_name
   branch      = local.repo_branch
   file        = "${local.config_repo_path}/kustomization.yaml"

@@ -140,6 +140,8 @@ module "traefik_flux_manifests" {
   fallback_svc_namespace = var.traefik_fallback_svc_namespace
   fallback_svc_name      = var.traefik_fallback_svc_name
   fallback_svc_port      = var.traefik_fallback_svc_port
+  dashboard_deploy       = var.traefik_flux_dashboard_deploy
+  dashboard_ingress_host = local.traefik_flux_dashboard_ingress_host
 
   providers = {
     github = github.fluxcd

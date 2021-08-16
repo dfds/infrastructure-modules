@@ -761,3 +761,9 @@ variable "traefik_flux_deploy" {
   type    = bool
   default = true
 }
+
+variable "traefik_flux_dashboard_deploy" {
+  type        = bool
+  description = "Deploy ingressroute for external access to Traefik dashboard."
+  default     = true
+}
