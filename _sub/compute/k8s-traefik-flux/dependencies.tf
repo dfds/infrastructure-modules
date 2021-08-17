@@ -149,10 +149,9 @@ locals {
     }
   }
 
-  # The var.is_sandbox ? local.dashboard_middlewares : []
-  # turns on Basic Authentication in sandbox environments.
-  # In prod environments it will depend on ADSF since it is going through the
-  # authenticated ALB and has to match the alias in traefik_alb_auth_core_alias
+  # The var.is_using_alb_auth ? []: local.dashboard_middlewares
+  # turns on Basic Authentication in environments where trafik is not mentioned in the
+  # DNS aliases in var.traefik_alb_auth_core_alias in the service configuration.
   config_dashboard_ingressroute = {
     "apiVersion" = "traefik.containo.us/v1alpha1"
     "kind" = "IngressRoute"
@@ -172,7 +171,7 @@ locals {
               "name" = "api@internal"
             }
           ]
-          "middlewares" = var.is_sandbox ? local.dashboard_middlewares : []
+          "middlewares" = var.is_using_alb_auth ? [] : local.dashboard_middlewares
         }
       ]
     }

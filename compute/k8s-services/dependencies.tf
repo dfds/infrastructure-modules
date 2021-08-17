@@ -229,6 +229,7 @@ locals {
     var.traefik_alb_auth_core_alias,
     local.traefik_flux_dashboard_ingress_prod_host
   ) ? local.traefik_flux_dashboard_ingress_prod_host : "${local.traefik_flux_alb_auth_dns_name}.${var.workload_dns_zone_name}"
+  traefik_flux_is_using_alb_auth = contains(var.traefik_alb_auth_core_alias, "traefik") ? true : false
 }
 
 # --------------------------------------------------

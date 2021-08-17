@@ -96,7 +96,7 @@ variable "fallback_svc_port" {
   description = "The service port used for fallback ingress"
 }
 
-variable "is_sandbox" {
+variable "is_using_alb_auth" {
   type    = bool
   default = false
 }
