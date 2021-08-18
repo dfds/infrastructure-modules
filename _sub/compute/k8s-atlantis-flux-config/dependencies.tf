@@ -59,7 +59,7 @@ locals {
       "routes" = [
         {
           "kind" = "Rule"
-          "match" = "Host(`${var.ingressroute_hostname}`) && Path(`/`)"
+          "match" = "Host(`${var.ingressroute_hostname}`) && PathPrefix(`/`)"
           "services" = [
             {
               "kind" = "Service"
