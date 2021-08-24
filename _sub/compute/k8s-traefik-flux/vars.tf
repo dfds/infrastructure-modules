@@ -95,3 +95,25 @@ variable "fallback_svc_port" {
   type        = number
   description = "The service port used for fallback ingress"
 }
+
+variable "is_using_alb_auth" {
+  type    = bool
+  default = false
+}
+
+variable "dashboard_deploy" {
+  type        = bool
+  description = "Deploy ingressroute for external access to Traefik dashboard."
+  default     = true
+}
+
+variable "dashboard_username" {
+  type        = string
+  description = "Username used for basic authentication."
+  default     = "cloudengineer"
+}
+
+variable "dashboard_ingress_host" {
+  type        = string
+  description = "The alb auth dns name for accessing Traefik."
+}
