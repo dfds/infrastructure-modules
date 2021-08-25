@@ -43,3 +43,37 @@ locals {
 data "github_repository" "main" {
   full_name = "${var.github_owner}/${var.repo_name}"
 }
+
+# --------------------------------------------------
+# Monitoring
+# --------------------------------------------------
+
+locals {
+  cluster_repo_path   = "clusters/${var.cluster_name}"
+  default_repo_branch = data.github_repository.main.default_branch
+  repo_branch         = length(var.repo_branch) > 0 ? var.repo_branch : local.default_repo_branch
+  app_install_name    = "platform-apps-flux-monitoring"
+  app_config_path     = {
+    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta1"
+    "kind" = "Kustomization"
+    "metadata" = {
+      "name" = local.app_install_name
+      "namespace" = local.namespace
+    }
+    "spec" = {
+      "dependsOn" = [
+        {
+          "name" = "platform-apps-sources"
+        }
+      ]
+      "interval" = "1m0s"
+      "path" = "./apps/flux-monitoring"
+      "prune" = true
+      "sourceRef" = {
+        "kind" = "GitRepository"
+        "name" = "platform-apps-git"
+      }
+      "validation" = "client"
+    }
+  }
+}
