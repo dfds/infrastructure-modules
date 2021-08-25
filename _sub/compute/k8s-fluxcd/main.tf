@@ -164,3 +164,15 @@ resource "github_repository_file" "kustomize" {
     ]
   }
 }
+
+
+# --------------------------------------------------
+# Monitoring
+# --------------------------------------------------
+
+resource "github_repository_file" "flux_monitoring_config_path" {
+  repository = var.repo_name
+  branch     = local.repo_branch
+  file       = "${local.cluster_repo_path}/${local.app_install_name}.yaml"
+  content    = jsonencode(local.app_config_path)
+}
