@@ -61,11 +61,6 @@ resource "aws_autoscaling_group" "eks" {
     ignore_changes = [target_group_arns]
   }
 
-  provisioner "local-exec" {
-    command = "sleep 60" # added arbitrary delay to allow ASG to spin up instances, as a workaround to dfds/cloudplatform#380 and hashicorp/terraform-provider-aws#20404
-  }
-
-
 }
 
 
