@@ -216,12 +216,20 @@ data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
 # ---------------------------------------------------------------------
 
 locals {
-  traefik_dashboard_ingress_prod_host = "traefik.${local.core_dns_zone_name}"
-  traefik_alb_auth_dns_name           = try(module.traefik_alb_auth_dns.record_name["0"], "traefik.${var.eks_cluster_name}")
+  traefik_dashboard_ingress_prod_host = "traefik-legacy.${local.core_dns_zone_name}"
+  traefik_alb_auth_dns_name           = try(module.traefik_alb_auth_dns.record_name["0"], "traefik-legacy.${var.eks_cluster_name}")
   traefik_dashboard_ingress_host = contains(
     var.traefik_alb_auth_core_alias,
     local.traefik_dashboard_ingress_prod_host
   ) ? local.traefik_dashboard_ingress_prod_host : "${local.traefik_alb_auth_dns_name}.${var.workload_dns_zone_name}"
+
+  traefik_flux_dashboard_ingress_prod_host = "traefik.${local.core_dns_zone_name}"
+  traefik_flux_alb_auth_dns_name           = try(module.traefik_alb_auth_dns.record_name["0"], "traefik.${var.eks_cluster_name}")
+  traefik_flux_dashboard_ingress_host = contains(
+    var.traefik_alb_auth_core_alias,
+    local.traefik_flux_dashboard_ingress_prod_host
+  ) ? local.traefik_flux_dashboard_ingress_prod_host : "${local.traefik_flux_alb_auth_dns_name}.${var.workload_dns_zone_name}"
+  traefik_flux_is_using_alb_auth = length(regexall("^.*traefik.*", join(" ", var.traefik_alb_auth_core_alias))) > 0 ? true : false
 }
 
 # --------------------------------------------------
