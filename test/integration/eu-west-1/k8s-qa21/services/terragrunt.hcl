@@ -127,4 +127,8 @@ inputs = {
   atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
   atlantis_chart_version       = "3.12.10"
 
+  atlantis_flux_repo_name     = "platform-manifests-qa"
+  atlantis_flux_repo_owner    = "dfds"
+  atlantis_flux_repo_branch   = "main"
+
 }

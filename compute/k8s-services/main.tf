@@ -531,6 +531,23 @@ module "atlantis" {
 
 }
 
+module "atlantis_flux_manifests" {
+  source                  = "../../_sub/compute/k8s-atlantis-flux-config"
+  count                   = var.atlantis_deploy ? 1 : 0
+  namespace               = var.atlantis_namespace
+  ingressroute_hostname   = var.atlantis_ingress
+  cluster_name            = var.eks_cluster_name
+  flux_repo_owner         = var.atlantis_flux_repo_owner
+  flux_repo_name          = var.atlantis_flux_repo_name
+  flux_repo_branch        = var.atlantis_flux_repo_branch
+
+  depends_on = [module.atlantis, module.traefik_flux_manifests,]
+
+  providers = {
+    github = github.fluxcd
+  }
+}
+
 # --------------------------------------------------
 # Crossplane
 # --------------------------------------------------

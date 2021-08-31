@@ -17,8 +17,15 @@ function cleanup_roles {
         # Detach policies
         aws --region "$REGION" iam list-attached-role-policies --role-name "$role" --output json | jq '.AttachedPolicies[].PolicyArn' | xargs -tr -L1 aws --no-cli-pager --region "$REGION" iam detach-role-policy --role-name "$role" --policy-arn || true
 
+        # Remove the role from an instance profile (if any)
+        IAM_PROFILE=$(aws --region "$REGION" iam list-instance-profiles-for-role --role-name "$role" --output json | jq -r '.InstanceProfiles[].InstanceProfileName')
+        [[ ! -z "$IAM_PROFILE" ]] && aws --region "$REGION" iam remove-role-from-instance-profile --instance-profile-name "$IAM_PROFILE" --role-name "$role" || true
+
         # Delete role
         aws --region "$REGION" --no-cli-pager iam delete-role --role-name "$role" || true
+
+        # Delete the instance profile
+        [[ ! -z "$IAM_PROFILE" ]] && aws --region "$REGION" iam delete-instance-profile --instance-profile-name "$IAM_PROFILE"
     done
 
 }
