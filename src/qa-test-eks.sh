@@ -32,9 +32,13 @@ function cleanup_roles {
 
 
 function cleanup_eni {
+    # Get all Network interfaces and treat it as an array instead of a space separated string
+    IFS=$'\n' nics=($(aws --no-cli-pager --region "$REGION" ec2 describe-network-interfaces --filters "Name=group-name,Values=eks-${CLUSTERNAME}-node" --query "NetworkInterfaces[].NetworkInterfaceId" --output json | jq -r '.[]'))
 
-    # Delete network interfaces
-    aws --no-cli-pager --region "$REGION" ec2 describe-network-interfaces --filters "Name=group-name,Values=eks-${CLUSTERNAME}-node" --query "NetworkInterfaces[].NetworkInterfaceId" --output text | xargs -tr -L1 aws --no-cli-pager --region "$REGION" ec2 delete-network-interface --network-interface-id || true
+    # Loop over network interfaces and delete them one by one
+    for nic in "${nics[@]}"; do
+        aws --no-cli-pager --region "$REGION" ec2 delete-network-interface --network-interface-id $nic || true
+    done
 
 }
 
