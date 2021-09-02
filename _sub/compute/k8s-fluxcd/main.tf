@@ -128,7 +128,7 @@ resource "github_repository_file" "install" {
   repository = data.github_repository.main.name
   file       = data.flux_install.main.path
   content    = data.flux_install.main.content
-  branch     = data.github_repository.main.default_branch
+  branch     = data.github_branch.flux_branch.branch
 
   lifecycle {
     ignore_changes = [
@@ -141,7 +141,7 @@ resource "github_repository_file" "sync" {
   repository = data.github_repository.main.name
   file       = data.flux_sync.main.path
   content    = data.flux_sync.main.content
-  branch     = data.github_repository.main.default_branch
+  branch     = data.github_branch.flux_branch.branch
   depends_on = [github_repository_file.install]
 
   lifecycle {
@@ -155,7 +155,7 @@ resource "github_repository_file" "kustomize" {
   repository = data.github_repository.main.name
   file       = data.flux_sync.main.kustomize_path
   content    = data.flux_sync.main.kustomize_content
-  branch     = data.github_repository.main.default_branch
+  branch     = data.github_branch.flux_branch.branch
   depends_on = [github_repository_file.sync]
 
   lifecycle {
@@ -172,7 +172,7 @@ resource "github_repository_file" "kustomize" {
 
 resource "github_repository_file" "flux_monitoring_config_path" {
   repository = var.repo_name
-  branch     = local.repo_branch
+  branch     = data.github_branch.flux_branch.branch
   file       = "${local.cluster_repo_path}/${local.app_install_name}.yaml"
   content    = jsonencode(local.app_config_path)
 }
