@@ -30,7 +30,7 @@ terraform {
 
     github = {
       source  = "integrations/github"
-      version = ">= 4.1.0"
+      version = ">= 4.14.0"
     }
 
     flux = {
