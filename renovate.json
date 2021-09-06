@@ -1,0 +1,21 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "branchPrefix": "feature/renovate/",
+    "dryRun": false,
+    "username": "devex-sa",
+    "onboarding": true,
+    "platform": "github",
+    "repositories": [
+        "dfds/test_renovate_on_infrastructure_modules"
+    ],
+    "packageRules": [{
+        "matchUpdateTypes": [
+            "pin",
+            "digest",
+            "patch",
+            "minor",
+            "major"
+        ],
+        "dependencyDashboardApproval": false
+    }]
+}
