@@ -6,7 +6,7 @@
     "onboarding": false,
     "platform": "github",
     "repositories": [
-        "dfds/test_renovate_on_infrastructure_modules"
+        "dfds/infrastructure_modules"
     ],
     "packageRules": [{
         "matchUpdateTypes": [
@@ -14,8 +14,10 @@
             "digest",
             "patch",
             "minor",
-            "major"
+            "major",
+            "lockFileMaintenance"
         ],
-        "dependencyDashboardApproval": false
+        "dependencyDashboardApproval": false,
+        "stabilityDays": 0
     }]
 }

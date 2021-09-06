@@ -1,7 +1,7 @@
 name: Renovate
 on:
   schedule:
-    - cron: '0 5 * * 0' # 05.00 on Sundays
+    - cron: "0 5 * * *" # Every day at 05.00
   workflow_dispatch:
 
 # Depends on RENOVATE_TOKEN and RENOVATE_GIT_AUTHOR set as repository secrets.
