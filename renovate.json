@@ -3,7 +3,7 @@
     "branchPrefix": "feature/renovate/",
     "dryRun": false,
     "username": "devex-sa",
-    "onboarding": true,
+    "onboarding": false,
     "platform": "github",
     "repositories": [
         "dfds/test_renovate_on_infrastructure_modules"
