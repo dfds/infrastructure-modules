@@ -181,10 +181,12 @@ module "traefik_alb_auth" {
   azure_tenant_id       = try(module.traefik_alb_auth_appreg[0].tenant_id, "")
   azure_client_id       = try(module.traefik_alb_auth_appreg[0].application_id, "")
   azure_client_secret   = try(module.traefik_alb_auth_appreg[0].application_key, "")
-  target_http_port      = var.traefik_flux_http_nodeport
-  target_admin_port     = var.traefik_flux_admin_nodeport
-  health_check_path     = var.traefik_health_check_path
-  access_logs_bucket    = module.traefik_alb_s3_access_logs.name
+  # target_http_port      = var.traefik_flux_http_nodeport
+  # target_admin_port     = var.traefik_flux_admin_nodeport
+  target_http_port   = var.traefik_http_nodeport
+  target_admin_port  = var.traefik_admin_nodeport
+  health_check_path  = var.traefik_health_check_path
+  access_logs_bucket = module.traefik_alb_s3_access_logs.name
 }
 
 module "traefik_alb_auth_dns" {
@@ -221,10 +223,12 @@ module "traefik_alb_anon" {
   autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
   alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
   nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
-  target_http_port      = var.traefik_flux_http_nodeport
-  target_admin_port     = var.traefik_flux_admin_nodeport
-  health_check_path     = var.traefik_health_check_path
-  access_logs_bucket    = module.traefik_alb_s3_access_logs.name
+  # target_http_port      = var.traefik_flux_http_nodeport
+  # target_admin_port     = var.traefik_flux_admin_nodeport
+  target_http_port   = var.traefik_http_nodeport
+  target_admin_port  = var.traefik_admin_nodeport
+  health_check_path  = var.traefik_health_check_path
+  access_logs_bucket = module.traefik_alb_s3_access_logs.name
 }
 
 module "traefik_alb_anon_dns" {
@@ -443,23 +447,23 @@ module "monitoring_goldpinger" {
 # --------------------------------------------------
 
 module "monitoring_kube_prometheus_stack" {
-  source                          = "../../_sub/compute/helm-kube-prometheus-stack"
-  count                           = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
-  cluster_name                    = var.eks_cluster_name
-  chart_version                   = var.monitoring_kube_prometheus_stack_chart_version
-  namespace                       = module.monitoring_namespace[0].name
-  priority_class                  = var.monitoring_kube_prometheus_stack_priority_class
-  grafana_admin_password          = var.monitoring_kube_prometheus_stack_grafana_admin_password
-  grafana_ingress_path            = var.monitoring_kube_prometheus_stack_grafana_ingress_path
-  grafana_host                    = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
-  grafana_notifier_name           = "${var.eks_cluster_name}-alerting"
-  grafana_iam_role_arn            = local.grafana_iam_role_arn # Coming from locals to avoid circular dependency between KIAM and Prometheus
-  slack_webhook                   = var.monitoring_kube_prometheus_stack_slack_webhook
-  prometheus_storageclass         = var.monitoring_kube_prometheus_stack_prometheus_storageclass
-  prometheus_storage_size         = var.monitoring_kube_prometheus_stack_prometheus_storage_size
-  prometheus_retention            = var.monitoring_kube_prometheus_stack_prometheus_retention
-  slack_channel                   = var.monitoring_kube_prometheus_stack_slack_channel
-  target_namespaces               = var.monitoring_kube_prometheus_stack_target_namespaces
+  source                  = "../../_sub/compute/helm-kube-prometheus-stack"
+  count                   = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  chart_version           = var.monitoring_kube_prometheus_stack_chart_version
+  namespace               = module.monitoring_namespace[0].name
+  priority_class          = var.monitoring_kube_prometheus_stack_priority_class
+  grafana_admin_password  = var.monitoring_kube_prometheus_stack_grafana_admin_password
+  grafana_ingress_path    = var.monitoring_kube_prometheus_stack_grafana_ingress_path
+  grafana_host            = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
+  grafana_notifier_name   = "${var.eks_cluster_name}-alerting"
+  grafana_iam_role_arn    = local.grafana_iam_role_arn # Coming from locals to avoid circular dependency between KIAM and Prometheus
+  slack_webhook           = var.monitoring_kube_prometheus_stack_slack_webhook
+  prometheus_storageclass = var.monitoring_kube_prometheus_stack_prometheus_storageclass
+  prometheus_storage_size = var.monitoring_kube_prometheus_stack_prometheus_storage_size
+  prometheus_retention    = var.monitoring_kube_prometheus_stack_prometheus_retention
+  slack_channel           = var.monitoring_kube_prometheus_stack_slack_channel
+  target_namespaces       = var.monitoring_kube_prometheus_stack_target_namespaces
 }
 
 
@@ -532,16 +536,16 @@ module "atlantis" {
 }
 
 module "atlantis_flux_manifests" {
-  source                  = "../../_sub/compute/k8s-atlantis-flux-config"
-  count                   = var.atlantis_deploy ? 1 : 0
-  namespace               = var.atlantis_namespace
-  ingressroute_hostname   = var.atlantis_ingress
-  cluster_name            = var.eks_cluster_name
-  flux_repo_owner         = var.atlantis_flux_repo_owner
-  flux_repo_name          = var.atlantis_flux_repo_name
-  flux_repo_branch        = var.atlantis_flux_repo_branch
+  source                = "../../_sub/compute/k8s-atlantis-flux-config"
+  count                 = var.atlantis_deploy ? 1 : 0
+  namespace             = var.atlantis_namespace
+  ingressroute_hostname = var.atlantis_ingress
+  cluster_name          = var.eks_cluster_name
+  flux_repo_owner       = var.atlantis_flux_repo_owner
+  flux_repo_name        = var.atlantis_flux_repo_name
+  flux_repo_branch      = var.atlantis_flux_repo_branch
 
-  depends_on = [module.atlantis, module.traefik_flux_manifests,]
+  depends_on = [module.atlantis, module.traefik_flux_manifests, ]
 
   providers = {
     github = github.fluxcd
