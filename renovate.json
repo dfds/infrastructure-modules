@@ -6,7 +6,7 @@
     "onboarding": false,
     "platform": "github",
     "repositories": [
-        "dfds/infrastructure_modules"
+        "dfds/infrastructure-modules"
     ],
     "packageRules": [{
         "matchUpdateTypes": [
