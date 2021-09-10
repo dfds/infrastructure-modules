@@ -1,3 +1,4 @@
+# tfsec:ignore:aws-vpc-add-description-to-security-group
 resource "aws_security_group" "sg" {
   name        = var.name
   description = var.description

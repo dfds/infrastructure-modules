@@ -134,6 +134,7 @@ resource "aws_security_group" "traefik_auth" {
 
 }
 
+# tfsec:ignore:aws-vpc-add-description-to-security-group
 resource "aws_security_group_rule" "allow_traefik_auth" {
   count                    = var.deploy ? 1 : 0
   type                     = "ingress"
