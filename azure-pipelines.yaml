@@ -23,6 +23,9 @@ resources:
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
         TF_VAR_platform_fluxcd_github_token: $(TF_VAR_platform_fluxcd_github_token)
         TF_VAR_atlantis_github_token: $(TF_VAR_atlantis_github_token)
+    - container: tfsec
+      image: tfsec/tfsec
+      options: --volume $(Agent.WorkFolder)
 
 # Define variable group to use
 variables:
@@ -36,6 +39,10 @@ stages:
       vmImage: "ubuntu-latest"
 
     jobs:
+      - job: tfsec_scan
+        displayName: Scan with tfsec for reporting purposes
+        container: tfsec
+
       - job: init_shared
         displayName: Init EKS shared resources
         container: prime
