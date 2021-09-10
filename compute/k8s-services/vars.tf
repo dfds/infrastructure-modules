@@ -548,7 +548,7 @@ variable "atlantis_arm_client_id" {
 variable "atlantis_arm_client_secret" {
   type        = string
   description = "Used to set environment variable for ARM client secret"
-  default     = ""
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
 variable "atlantis_aws_access_key" {
