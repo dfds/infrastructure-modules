@@ -121,7 +121,7 @@ resource "aws_security_group" "traefik_auth" {
     from_port   = 443
     to_port     = 443
     protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg
   }
 
   tags = {
