@@ -426,8 +426,8 @@ variable "platform_fluxcd_github_owner" {
 
 variable "platform_fluxcd_github_token" {
   type        = string
-  default     = ""
-  description = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = ""
 }
 
 variable "platform_fluxcd_repo_branch" {
