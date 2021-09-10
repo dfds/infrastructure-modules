@@ -40,10 +40,10 @@ stages:
         displayName: Static code analyses using tfsec
         steps:
           - bash: |
-              mkdir -p $(System.DefaultWorkingDirectory)/TFSecReport
+              mkdir -p $(Agent.TempDirectory)/TFSecReport
               docker run --rm -t \
               --volume $(System.DefaultWorkingDirectory):/src \
-              --volume $(System.DefaultWorkingDirectory)/TFSecReport:/TFSecReport \
+              --volume $(Agent.TempDirectory)/TFSecReport:/TFSecReport \
               tfsec/tfsec ./src --format junit --out /TFSecReport/junit.xml || true
             displayName: "Scan the infrastructure-modules"
             continueOnError: true
@@ -53,7 +53,7 @@ stages:
             inputs:
               testResultsFormat: 'JUnit'
               testResultsFiles: '**/junit.xml'
-              searchFolder: '$(System.DefaultWorkingDirectory)/TFSecReport'
+              searchFolder: '$(Agent.TempDirectory)/TFSecReport'
               mergeTestResults: false
               failTaskOnFailedTests: false
               publishRunAttachments: true
