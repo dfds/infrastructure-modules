@@ -25,7 +25,7 @@ resources:
         TF_VAR_atlantis_github_token: $(TF_VAR_atlantis_github_token)
     - container: tfsec
       image: tfsec/tfsec
-      options: --volume $(Agent.WorkFolder)
+      options: --rm -it --volume $(Agent.WorkFolder):/src
 
 # Define variable group to use
 variables:
@@ -42,6 +42,9 @@ stages:
       - job: tfsec_scan
         displayName: Scan with tfsec for reporting purposes
         container: tfsec
+        steps:
+          - bash: tfsec /src
+            displayName: "Scan the module"
 
       - job: init_shared
         displayName: Init EKS shared resources
