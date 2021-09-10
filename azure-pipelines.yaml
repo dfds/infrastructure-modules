@@ -23,9 +23,6 @@ resources:
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
         TF_VAR_platform_fluxcd_github_token: $(TF_VAR_platform_fluxcd_github_token)
         TF_VAR_atlantis_github_token: $(TF_VAR_atlantis_github_token)
-    - container: tfsec
-      image: tfsec/tfsec
-      options: --rm -it --volume $(Agent.WorkFolder):/src
 
 # Define variable group to use
 variables:
@@ -40,11 +37,11 @@ stages:
 
     jobs:
       - job: tfsec_scan
-        displayName: Scan with tfsec for reporting purposes
-        container: tfsec
+        displayName: Static code analyses using tfsec
         steps:
-          - bash: tfsec /src
-            displayName: "Scan the module"
+          - bash: docker run --rm -it -v "$(pwd):/src" tfsec/tfsec /src
+            displayName: "Scan the infrastructure-modules"
+            continueOnError: false
 
       - job: init_shared
         displayName: Init EKS shared resources
