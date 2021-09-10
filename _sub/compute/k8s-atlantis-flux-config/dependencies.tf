@@ -10,7 +10,7 @@ locals {
   config_repo_path                        = "platform-apps/${var.cluster_name}/${local.deploy_name}/config"
   app_install_name                        = "platform-apps-${local.deploy_name}"
   ingressroute_name                       = "${local.deploy_name}"
-  ingressroute_basic_auth_secret_name     = "${local.deploy_name}-basic-auth"
+  ingressroute_basic_auth_secret_name     = "${local.deploy_name}-basic-auth" #tfsec:ignore:general-secrets-sensitive-in-local
   ingressroute_basic_auth_middleware_name = "${local.deploy_name}-basic-auth"
 
   app_config_path = {
