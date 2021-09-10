@@ -40,7 +40,7 @@ stages:
         displayName: Static code analyses using tfsec
         steps:
           - bash: |
-              docker run --rm -t -v $(System.DefaultWorkingDirectory):/src tfsec/tfsec ./src
+              docker run --rm -t -v $(System.DefaultWorkingDirectory):/src tfsec/tfsec ./src –format JUnit > $(System.DefaultWorkingDirectory)/TFSecReport/junit.xml || true
             displayName: "Scan the infrastructure-modules"
             continueOnError: false
       # - job: init_shared
