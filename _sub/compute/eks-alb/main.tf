@@ -1,7 +1,7 @@
 resource "aws_lb" "traefik" {
   count              = var.deploy ? 1 : 0
   name               = var.name
-  internal           = false
+  internal           = false #tfsec:ignore:aws-elbv2-alb-not-public
   load_balancer_type = "application"
   security_groups    = [aws_security_group.traefik[0].id]
   subnets            = var.subnet_ids
