@@ -276,7 +276,7 @@ variable "monitoring_kube_prometheus_stack_priority_class" {
 variable "monitoring_kube_prometheus_stack_grafana_admin_password" {
   type        = string
   description = "Grafana admin password"
-  default     = ""
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
 variable "monitoring_kube_prometheus_stack_grafana_ingress_path" {
@@ -427,7 +427,7 @@ variable "platform_fluxcd_github_owner" {
 variable "platform_fluxcd_github_token" {
   type        = string
   default     = ""
-  description = ""
+  description = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
 variable "platform_fluxcd_repo_branch" {
@@ -464,7 +464,7 @@ variable "atlantis_github_token" {
 
 variable "atlantis_platform_fluxcd_github_token" {
   description = "Github token that the provider uses to perform Github operations for Flux."
-  default     = ""
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
 variable "atlantis_github_owner" {
@@ -530,19 +530,19 @@ variable "atlantis_image_tag" {
 variable "atlantis_arm_tenant_id" {
   type        = string
   description = "Used to set environment variable for ARM tenant ID"
-  default     = ""
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
 variable "atlantis_arm_subscription_id" {
   type        = string
   description = "Used to set environment variable for ARM subscription ID"
-  default     = ""
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
 variable "atlantis_arm_client_id" {
   type        = string
   description = "Used to set environment variable for ARM client ID"
-  default     = ""
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
 variable "atlantis_arm_client_secret" {
@@ -553,24 +553,24 @@ variable "atlantis_arm_client_secret" {
 
 variable "atlantis_aws_access_key" {
   description = "AWS Access Key"
-  default     = ""
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
 variable "atlantis_aws_secret" {
   description = "AWS Secret"
-  default     = ""
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
 variable "atlantis_access_key_master" {
   type        = string
   description = "Access Key for Core account"
-  default     = ""
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
 variable "atlantis_secret_key_master" {
   type        = string
   description = "Secret for Core account"
-  default     = ""
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
 variable "atlantis_storage_class" {
