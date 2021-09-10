@@ -36,19 +36,13 @@ stages:
       vmImage: "ubuntu-latest"
 
     jobs:
-      - job: tfsec_scan
-        displayName: Static code analyses using tfsec
-        steps:
-          - bash: |
-              docker run --rm -t -v $(System.DefaultWorkingDirectory):/src tfsec/tfsec ./src || true
-            displayName: "Scan the infrastructure-modules"
-            continueOnError: true
       - job: init_shared
         displayName: Init EKS shared resources
         container: prime
         steps:
           - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
             displayName: "Provision public S3 bucket"
+
       - job: eks_1_21
         displayName: EKS 1.21
         container: prime
@@ -62,6 +56,7 @@ stages:
           - bash: ./src/qa-test-eks.sh test eu-west-1 qa21
             displayName: "Run tests"
             condition: always()
+
       - job: init_shared_velero
         displayName: Init EKS shared Velero
         container: prime
@@ -73,6 +68,7 @@ stages:
             condition: eq(variables['PRE_CLEANUP'], 'true')
           - bash: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
             displayName: "Provision Velero S3 bucket"
+
       - job: destroy_eks_1_21
         displayName: Destroy EKS 1.21
         container: prime
@@ -82,6 +78,7 @@ stages:
         steps:
           - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1 qa21
             displayName: "Terraform Destroy (post)"
+
       - job: destroy_shared
         displayName: Destroy EKS shared resources
         container: prime
