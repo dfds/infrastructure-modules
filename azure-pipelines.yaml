@@ -40,23 +40,9 @@ stages:
         displayName: Static code analyses using tfsec
         steps:
           - bash: |
-              mkdir -p /tmp/TFSecReport
-              docker run --rm -t \
-              --volume $(System.DefaultWorkingDirectory):/src \
-              --volume /tmp/TFSecReport:/TFSecReport \
-              tfsec/tfsec ./src --format junit --out /TFSecReport/junit.xml || true
+              docker run --rm -t -v $(System.DefaultWorkingDirectory):/src tfsec/tfsec ./src || true
             displayName: "Scan the infrastructure-modules"
             continueOnError: true
-          - task: PublishTestResults@2
-            displayName: Publish tfsec scan report
-            condition: succeededOrFailed()
-            inputs:
-              testResultsFormat: 'JUnit'
-              testResultsFiles: '**/junit.xml'
-              searchFolder: '/tmp/TFSecReport'
-              mergeTestResults: false
-              failTaskOnFailedTests: false
-              publishRunAttachments: true
       # - job: init_shared
       #   displayName: Init EKS shared resources
       #   container: prime
