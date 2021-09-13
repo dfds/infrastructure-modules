@@ -9,7 +9,7 @@ variable "key_name" {
 
 variable "private_key_path" {
   type    = string
-  default = ""
+  default = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
 variable "name" {

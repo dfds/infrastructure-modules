@@ -11,7 +11,7 @@ locals {
   app_install_name                      = "platform-apps-${var.deploy_name}"
   dashboard_name                        = "${var.deploy_name}-external-dashboard"
   dashboard_basic_auth_data             = base64encode("${var.dashboard_username}:${htpasswd_password.hash[0].apr1}")
-  dashboard_basic_auth_secret_name      = "${local.dashboard_name}-basic-auth"
+  dashboard_basic_auth_secret_name      = "${local.dashboard_name}-basic-auth" #tfsec:ignore:general-secrets-sensitive-in-local
   dashboard_basic_auth_middleware_name  = "${local.dashboard_name}-basic-auth"
   dashboard_middlewares = [
     {

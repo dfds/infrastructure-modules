@@ -32,7 +32,7 @@ variable "ec2_public_key" {
 
 variable "ec2_private_key_path" {
   type    = string
-  default = ""
+  default = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
 variable "ec2_instance_type" {

@@ -1,3 +1,4 @@
+# tfsec:ignore:aws-s3-enable-versioning
 resource "aws_s3_bucket" "bucket" {
   count  = var.deploy ? 1 : 0
   bucket = var.s3_bucket

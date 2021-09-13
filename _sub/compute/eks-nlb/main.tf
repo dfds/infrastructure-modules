@@ -1,7 +1,7 @@
 resource "aws_lb" "nlb" {
   count              = var.deploy ? 1 : 0
   name               = "${var.cluster_name}-nlb"
-  internal           = false
+  internal           = false #tfsec:ignore:aws-elbv2-alb-not-public
   load_balancer_type = "network"
   subnets            = var.subnet_ids
 }
@@ -39,7 +39,7 @@ resource "aws_lb_listener" "nlb" {
   }
 }
 
-#
+# tfsec:ignore:aws-vpc-add-description-to-security-group
 resource "aws_security_group_rule" "allow_argo" {
   count     = var.deploy ? 1 : 0
   type      = "ingress"

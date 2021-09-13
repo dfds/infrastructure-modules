@@ -4,7 +4,7 @@ locals {
     http_port               = 80
     admin_name              = "admin"
     admin_port              = 8080
-    dashboard_secret_name = "${var.deploy_name}-legacy-basic-auth"
+    dashboard_secret_name = "${var.deploy_name}-legacy-basic-auth" #tfsec:ignore:general-secrets-sensitive-in-local
     dashboard_ingress_annotations   = {
         "kubernetes.io/ingress.class" = "traefik"
         "traefik.ingress.kubernetes.io/auth-type" = "basic"
