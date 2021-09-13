@@ -1,7 +1,7 @@
 resource "aws_lb" "traefik" {
   count              = var.deploy ? 1 : 0
   name               = var.name
-  internal           = false
+  internal           = false #tfsec:ignore:aws-elbv2-alb-not-public
   load_balancer_type = "application"
   security_groups    = [aws_security_group.traefik[0].id]
   subnets            = var.subnet_ids
@@ -80,14 +80,14 @@ resource "aws_security_group" "traefik" {
     from_port   = 80
     to_port     = 80
     protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sg
   }
 
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sg
   }
 
   ingress {
@@ -101,7 +101,7 @@ resource "aws_security_group" "traefik" {
     from_port   = var.target_http_port
     to_port     = var.target_admin_port
     protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg
   }
 
   tags = {
@@ -114,6 +114,7 @@ resource "aws_security_group" "traefik" {
 
 }
 
+# tfsec:ignore:aws-vpc-add-description-to-security-group
 resource "aws_security_group_rule" "allow_traefik" {
   count                    = var.deploy ? 1 : 0
   type                     = "ingress"

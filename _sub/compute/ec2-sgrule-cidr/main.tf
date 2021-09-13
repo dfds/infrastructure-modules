@@ -1,3 +1,4 @@
+# tfsec:ignore:aws-vpc-add-description-to-security-group
 resource "aws_security_group_rule" "sgr" {
   security_group_id = var.security_group_id
   description       = var.description

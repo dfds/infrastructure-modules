@@ -31,6 +31,7 @@ resource "aws_iam_role" "iam_for_lambda" {
 EOF
 }
 
+#tfsec:ignore:aws-lambda-enable-tracing
 resource "aws_lambda_function" "slack_alarm_notifier" {
   count = var.deploy ? 1 : 0
   filename      = "${path.module}/lambda/slack-alarm-notifier.zip"
