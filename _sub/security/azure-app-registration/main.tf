@@ -1,8 +1,10 @@
 resource "azuread_application" "app" {
   display_name    = var.name
-  homepage        = var.homepage
   identifier_uris = var.identifier_uris
-  reply_urls      = var.reply_urls
+  web {
+    homepage_url    = var.homepage_url
+    redirect_uris      = var.redirect_uris
+  }
 }
 
 resource "azuread_service_principal" "sp" {
@@ -17,6 +19,4 @@ resource "random_password" "password" {
 
 resource "azuread_service_principal_password" "key" {
   service_principal_id = azuread_service_principal.sp.id
-  end_date_relative    = "87660h" # 87660h = 10y
-  value                = random_password.password.result
 }
