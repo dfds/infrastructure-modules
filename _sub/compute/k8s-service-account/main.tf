@@ -4,6 +4,8 @@ resource "kubernetes_service_account" "deploy-user" {
     namespace = "kube-system"
   }
 
+  automount_service_account_token = false
+
   provider = kubernetes
 }
 
