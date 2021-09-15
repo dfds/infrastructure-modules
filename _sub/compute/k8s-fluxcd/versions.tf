@@ -1,6 +1,6 @@
 
 terraform {
-  required_version = ">= 0.13"
+  required_version = ">= 0.12"
 
   /*
   Hashicorp-managed providers can be loaded implicitly
