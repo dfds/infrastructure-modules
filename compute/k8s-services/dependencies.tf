@@ -265,3 +265,34 @@ locals {
 }
 POLICY
 }
+
+# --------------------------------------------------
+# Blackbox Exporter
+# --------------------------------------------------
+
+locals {
+  blackbox_exporter_monitoring_atlantis = var.atlantis_deploy ? [{
+      "name"    = "atlantis"
+      "url"     = "http://atlantis.${var.atlantis_namespace}/healthz"
+      "module"  = "http_2xx"
+    }] : []
+
+  blackbox_exporter_monitoring_grafana = var.monitoring_kube_prometheus_stack_deploy ? [{
+      "name"    = "grafana"
+      "url"     = "http://monitoring-grafana.monitoring/api/health"
+      "module"  = "http_2xx"
+    }] : []
+
+  blackbox_exporter_monitoring_traefik = var.traefik_flux_deploy ? [{
+      "name"    = "traefik"
+      "url"     = "http://traefik.traefik:9000/ping"
+      "module"  = "http_2xx"
+    }] : []
+
+  blackbox_exporter_monitoring_targets = concat(
+    local.blackbox_exporter_monitoring_atlantis,
+    local.blackbox_exporter_monitoring_grafana,
+    local.blackbox_exporter_monitoring_traefik,
+    var.blackbox_exporter_monitoring_targets
+  )
+}
