@@ -566,3 +566,23 @@ module "crossplane" {
   crossplane_view_service_accounts  = var.crossplane_view_service_accounts
   crossplane_metrics_enabled        = var.crossplane_metrics_enabled
 }
+
+# --------------------------------------------------
+# Blackbox Exporter
+# --------------------------------------------------
+
+module "blackbox_exporter_flux_manifests" {
+  source              = "../../_sub/monitoring/blackbox-exporter"
+  cluster_name        = var.eks_cluster_name
+  helm_chart_version  = var.blackbox_exporter_helm_chart_version
+  github_owner        = var.blackbox_exporter_github_owner
+  repo_name           = var.blackbox_exporter_repo_name
+  repo_branch         = var.blackbox_exporter_repo_branch
+  monitoring_targets  = local.blackbox_exporter_monitoring_targets
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.monitoring_kube_prometheus_stack]
+}

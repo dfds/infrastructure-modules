@@ -785,3 +785,43 @@ variable "traefik_flux_dashboard_deploy" {
   description = "Deploy ingressroute for external access to Traefik dashboard."
   default     = true
 }
+
+# --------------------------------------------------
+# Blackbox Exporter
+# --------------------------------------------------
+
+variable "blackbox_exporter_deploy" {
+  type        = bool
+  description = "Should the Blackbox Exporter be deployed through Flux?"
+  default     = true
+}
+
+variable "blackbox_exporter_helm_chart_version" {
+  type        = string
+  description = "Helm Chart version to be used to deploy Traefik"
+  default     = null
+}
+
+variable "blackbox_exporter_github_owner" {
+  type        = string
+  description = "Name of the Flux manifests repo Github owner"
+  default     = null
+}
+
+variable "blackbox_exporter_repo_name" {
+  type        = string
+  description = "Name of the Github repo to store the Flux manifests in"
+  default     = null
+}
+
+variable "blackbox_exporter_repo_branch" {
+  type        = string
+  description = "Override the default branch of the Flux manifests repo (optional)"
+  default     = null
+}
+
+variable "blackbox_exporter_monitoring_targets" {
+  type = list(object({ name=string, url=string, module=string }))
+  description = "Complex object of what to monitor with Blackbox Exporter"
+  default = []
+}
