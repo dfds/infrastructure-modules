@@ -15,7 +15,7 @@ terraform {
 
     kubectl = {
       source  = "gavinbunney/kubectl"
-      version = ">= 1.9.1"
+      version = "~> 1.11.3"
     }
 
     helm = {
@@ -30,7 +30,7 @@ terraform {
 
     github = {
       source  = "integrations/github"
-      version = ">= 4.14.0"
+      version = "~> 4.14.0"
     }
 
     flux = {
