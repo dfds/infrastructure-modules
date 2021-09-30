@@ -51,6 +51,7 @@ provider "kubectl" {
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.eks.token
   load_config_file       = false
+  alias = "kubectl"
 }
 
 provider "helm" {
@@ -310,7 +311,7 @@ module "kiam_deploy" {
   strict_mode_disabled    = var.kiam_strict_mode_disabled
 
   // Depends_on for servicemonitor is ignored if prometheus stack is not deployed but required otherwise
-  depends_on = [module.monitoring_kube_prometheus_stack]
+  depends_on = [module.monitoring_kube_prometheus_stack, module.cert_manager]
 }
 
 
@@ -583,6 +584,20 @@ module "blackbox_exporter_flux_manifests" {
   providers = {
     github = github.fluxcd
   }
+
+  depends_on = [module.monitoring_kube_prometheus_stack]
+}
+
+# --------------------------------------------------
+# Cert-manager
+# --------------------------------------------------
+
+module "cert_manager" {
+  source              = "../../_sub/compute/helm-cert-manager"
+
+  namespace = "cert-manager"
+  chart_version = null
+  priority_class = "service-critical"
 
   depends_on = [module.monitoring_kube_prometheus_stack]
 }

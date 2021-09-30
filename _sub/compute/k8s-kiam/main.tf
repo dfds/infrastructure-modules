@@ -88,7 +88,6 @@ resource "helm_release" "kiam" {
   # See: https://github.com/uswitch/kiam/tree/master/helm/kiam
 
   values = [
-    file("kiam_tls.yaml"),
     file("${path.module}/tolerations.yaml")
   ]
 
@@ -216,4 +215,125 @@ resource "helm_release" "kiam" {
     name = "server.extraArgs.disable-strict-namespace-regexp"
     value = "" # Hardcoding for now. Waiting for upstream PR to get approved.
   }
+
+  set {
+    name = "agent.tlsSecret"
+    value = "agent-tls"
+  }
+
+  set {
+    name = "agent.tlsCerts.certFileName"
+    value = "tls.crt"
+  }
+
+  set {
+    name = "agent.tlsCerts.keyFileName"
+    value = "tls.key"
+  }
+
+  set {
+    name = "agent.tlsCerts.caFileName"
+    value = "ca.crt"
+  }
+  
+  set {
+    name = "server.tlsSecret"
+    value = "server-tls"
+  }
+
+  set {
+    name = "server.tlsCerts.certFileName"
+    value = "tls.crt"
+  }
+
+  set {
+    name = "server.tlsCerts.keyFileName"
+    value = "tls.key"
+  }
+
+  set {
+    name = "server.tlsCerts.caFileName"
+    value = "ca.crt"
+  }
+}
+
+resource "kubectl_manifest" "selfsigning_issuer" {
+  yaml_body = <<YAML
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigning-issuer
+  namespace: kube-system
+spec:
+  selfSigned: {}
+YAML
+}
+
+resource "kubectl_manifest" "example_ca" {
+  yaml_body = <<YAML
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: example-ca
+  namespace: kube-system
+spec:
+  secretName: ca-tls
+  commonName: "my-ca"
+  isCA: true
+  issuerRef:
+    name: selfsigning-issuer
+  usages:
+  - "any"
+YAML
+}
+
+resource "kubectl_manifest" "ca_issuer" {
+  yaml_body = <<YAML
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: ca-issuer
+  namespace: kube-system
+spec:
+  ca:
+    secretName: ca-tls
+YAML
+}
+
+resource "kubectl_manifest" "agent-tls" {
+  yaml_body = <<YAML
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: agent
+  namespace: kube-system
+spec:
+  secretName: agent-tls
+  commonName: agent
+  issuerRef:
+    name: ca-issuer
+  usages:
+  - "any"
+YAML
+}
+
+resource "kubectl_manifest" "server-tls" {
+  yaml_body = <<YAML
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: server
+  namespace: kube-system
+spec:
+  secretName: server-tls
+  issuerRef:
+    name: ca-issuer
+  usages:
+  - "any"
+  dnsNames:
+  - "localhost"
+  - "kiam-server"
+  ipAddresses:
+  - "127.0.0.1"
+YAML
 }

@@ -1,0 +1,60 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigning-issuer
+spec:
+  selfSigned: {}
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: example-ca
+spec:
+  secretName: ca-tls
+  commonName: "my-ca"
+  isCA: true
+  issuerRef:
+    name: selfsigning-issuer
+  usages:
+  - "any"
+
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: ca-issuer
+spec:
+  ca:
+    secretName: ca-tls
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: agent
+spec:
+  secretName: agent-tls
+  commonName: agent
+  issuerRef:
+    name: ca-issuer
+  usages:
+  - "any"
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: server
+spec:
+  secretName: server-tls
+  issuerRef:
+    name: ca-issuer
+  usages:
+  - "any"
+  dnsNames:
+  - "localhost"
+  - "kiam-server"
+  ipAddresses:
+  - "127.0.0.1"
