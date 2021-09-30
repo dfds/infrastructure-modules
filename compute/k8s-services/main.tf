@@ -251,47 +251,6 @@ module "traefik_alb_anon_dns_core_alias" {
   }
 }
 
-
-# --------------------------------------------------
-# Traefik v2: For validation and testing
-# --------------------------------------------------
-
-module "traefikv2_alb_anon" {
-  source                = "../../_sub/compute/eks-alb"
-  deploy                = var.traefikv2_test_alb_deploy
-  name                  = "${var.eks_cluster_name}-traefikv2-alb"
-  cluster_name          = var.eks_cluster_name
-  vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
-  subnet_ids            = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
-  autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
-  alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
-  nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
-  target_http_port      = var.traefikv2_http_nodeport
-  target_admin_port     = var.traefikv2_admin_nodeport
-  health_check_path     = var.traefikv2_health_check_path
-  access_logs_bucket    = module.traefik_alb_s3_access_logs.name
-}
-
-module "traefikv2_alb_auth" {
-  source                = "../../_sub/compute/eks-alb-auth"
-  deploy                = var.traefikv2_test_alb_deploy
-  name                  = "${var.eks_cluster_name}-traefikv2-alb-auth"
-  cluster_name          = var.eks_cluster_name
-  vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
-  subnet_ids            = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
-  autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
-  alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
-  nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
-  azure_tenant_id       = try(module.traefik_alb_auth_appreg[0].tenant_id, "")
-  azure_client_id       = try(module.traefik_alb_auth_appreg[0].application_id, "")
-  azure_client_secret   = try(module.traefik_alb_auth_appreg[0].application_key, "")
-  target_http_port      = var.traefikv2_http_nodeport
-  target_admin_port     = var.traefikv2_admin_nodeport
-  health_check_path     = var.traefikv2_health_check_path
-  access_logs_bucket    = module.traefik_alb_s3_access_logs.name
-}
-
-
 # --------------------------------------------------
 # KIAM
 # --------------------------------------------------
