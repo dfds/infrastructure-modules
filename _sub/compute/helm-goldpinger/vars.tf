@@ -9,7 +9,7 @@ variable "namespace" {
   description = "Namespace to apply goldpinger in"
   default     = "monitoring"
   validation {
-    condition     = can(regex("[a-z]+", var.string))
+    condition     = can(regex("[a-z]+", var.namespace))
     error_message = "Namespace must contain at least one letter."
   }
 }
