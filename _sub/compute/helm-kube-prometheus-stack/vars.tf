@@ -13,6 +13,11 @@ variable "namespace" {
   type        = string
   description = "Namespace to apply Kube-prometheus-stack in"
   default     = "monitoring"
+  validation {
+    condition     = can(regex("[a-z]+", var.string))
+    error_message = "Namespace must contain at least one letter."
+  }
+
 }
 
 variable "priority_class" {

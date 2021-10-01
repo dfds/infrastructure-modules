@@ -59,7 +59,7 @@ resource "helm_release" "atlantis" {
   name             = "atlantis"
   chart            = "atlantis"
   repository       = "https://runatlantis.github.io/helm-charts"
-  version          = var.chart_version != null ? var.chart_version : null
+  version          = var.chart_version
   namespace        = var.namespace
   create_namespace = false
   recreate_pods    = true
@@ -77,15 +77,15 @@ resource "helm_release" "atlantis" {
 
   values = [
     templatefile("${path.module}/values/values.yaml", {
-      atlantis_ingress    = var.atlantis_ingress,
-      ingress_class       = local.ingress_class,
-      ingress_auth_type   = local.ingress_auth_type,
-      auth_secret_name    = local.auth_secret_name,
-      atlantis_image      = var.atlantis_image,
-      atlantis_image_tag  = var.atlantis_image_tag,
-      github_username     = var.github_username,
-      github_repos        = join(",", local.full_github_repo_names)
-      storage_class       = var.storage_class
+      atlantis_ingress   = var.atlantis_ingress,
+      ingress_class      = local.ingress_class,
+      ingress_auth_type  = local.ingress_auth_type,
+      auth_secret_name   = local.auth_secret_name,
+      atlantis_image     = var.atlantis_image,
+      atlantis_image_tag = var.atlantis_image_tag,
+      github_username    = var.github_username,
+      github_repos       = join(",", local.full_github_repo_names)
+      storage_class      = var.storage_class
   })]
 
   depends_on = [kubernetes_secret.aws]

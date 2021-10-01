@@ -2,7 +2,7 @@ resource "helm_release" "goldpinger" {
   name          = "goldpinger"
   chart         = "goldpinger"
   repository    = "https://charts.helm.sh/stable"
-  version       = var.chart_version != null ? var.chart_version : null
+  version       = var.chart_version
   namespace     = var.namespace
   recreate_pods = true
   force_update  = false
@@ -23,7 +23,7 @@ resource "helm_release" "goldpinger" {
   }
 
   set {
-    name = "serviceMonitor.selector.release"
+    name  = "serviceMonitor.selector.release"
     value = "monitoring"
   }
 
