@@ -235,7 +235,7 @@ resource "helm_release" "kiam" {
     name = "agent.tlsCerts.caFileName"
     value = "ca.crt"
   }
-  
+
   set {
     name = "server.tlsSecret"
     value = "server-tls"
@@ -274,7 +274,7 @@ resource "kubectl_manifest" "example_ca" {
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: example-ca
+  name: ca
   namespace: kube-system
 spec:
   secretName: ca-tls

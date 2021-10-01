@@ -596,7 +596,7 @@ module "cert_manager" {
   source              = "../../_sub/compute/helm-cert-manager"
 
   namespace = "cert-manager"
-  chart_version = null
+  chart_version = var.cert_manager_chart_version
   priority_class = "service-critical"
 
   depends_on = [module.monitoring_kube_prometheus_stack]

@@ -825,3 +825,13 @@ variable "blackbox_exporter_monitoring_targets" {
   description = "Complex object of what to monitor with Blackbox Exporter"
   default = []
 }
+
+# --------------------------------------------------
+# Cert-manager
+# --------------------------------------------------
+
+variable "cert_manager_chart_version" {
+  type = string
+  default = null
+  description = "Cert-manager helm chart version."
+}
