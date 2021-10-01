@@ -16,6 +16,7 @@ resource "aws_security_group" "eks-node" {
   }
 }
 
+#tfsec:ignore:aws-vpc-disallow-mixed-sgr
 resource "aws_security_group_rule" "eks-node-ingress-self" {
   description              = "Allow node to communicate with each other"
   from_port                = 0
@@ -26,6 +27,7 @@ resource "aws_security_group_rule" "eks-node-ingress-self" {
   type                     = "ingress"
 }
 
+#tfsec:ignore:aws-vpc-disallow-mixed-sgr
 resource "aws_security_group_rule" "eks-node-ingress-cluster" {
   description              = "Allow worker Kubelets and pods to receive communication from the cluster control plane"
   from_port                = 1025
@@ -47,6 +49,7 @@ resource "aws_security_group_rule" "eks-cluster-ingress-node-https" {
 }
 
 #Enable SSH access to nodes by tfvars set to 1
+#tfsec:ignore:aws-vpc-disallow-mixed-sgr
 resource "aws_security_group_rule" "ssh-access-to-worker-nodes" {
   description       = "Allow SSH access to worker nodes"
   cidr_blocks       = var.ssh_ip_whitelist
