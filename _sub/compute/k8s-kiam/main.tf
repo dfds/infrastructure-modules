@@ -137,11 +137,6 @@ resource "helm_release" "kiam" {
     value = var.agent_request_memory
   }
 
-  # set {
-  #   name = "agent.podLabels.\"slack\""
-  #   value = "dev-excellence"
-  # }
-
   set {
     name  = "server.assumeRoleArn"
     value = "arn:aws:iam::${var.aws_workload_account_id}:role/eks-${var.cluster_name}-kiam-server"
