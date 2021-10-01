@@ -83,7 +83,7 @@ inputs = {
   # --------------------------------------------------
 
   monitoring_kube_prometheus_stack_deploy                  = true
-  monitoring_kube_prometheus_stack_chart_version           = "18.0.13"
+  monitoring_kube_prometheus_stack_chart_version           = "19.0.1"
   monitoring_kube_prometheus_stack_target_namespaces       = "kube-system|monitoring"
   monitoring_kube_prometheus_stack_prometheus_storage_size = "5Gi"
   monitoring_kube_prometheus_stack_prometheus_storageclass = "gp2"
