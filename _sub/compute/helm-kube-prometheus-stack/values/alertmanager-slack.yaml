@@ -6,34 +6,34 @@ alertmanager:
     global:
       resolve_timeout: 5m
     route:
-      group_by: ['alertname']
+      group_by: ["alertname"]
       group_wait: 30s
       group_interval: 5m
       repeat_interval: 12h
-      receiver: 'general'
+      receiver: "general"
       routes:
-      - match:
-          alertname: Watchdog
-        receiver: 'null'
-      - match_re:
-          namespace: '.*'
-        receiver: 'null'
-        routes:
-          - match_re:
-              namespace: ${target_namespaces}
-            receiver: 'general'
-      - match_re:
-          alertname: CPUThrottlingHigh
-        receiver: 'null'
-      - match_re:
-          alertname: KubeletTooManyPods
-        receiver: 'null'
+        - match:
+            alertname: Watchdog
+          receiver: "null"
+        - match_re:
+            namespace: ".*"
+          receiver: "null"
+          routes:
+            - match_re:
+                alertname: CPUThrottlingHigh
+              receiver: "null"
+            - match_re:
+                namespace: ${target_namespaces}
+              receiver: "general"
+        - match_re:
+            alertname: KubeletTooManyPods
+          receiver: "null"
     receivers:
-    - name: 'general'
-      slack_configs:
-      - channel: ${alertmanager_slack_channel}
-        send_resolved: true
-        api_url: ${alertmanager_slack_webhook}
-        title: '{{ if eq .CommonLabels.severity "critical" }}<!channel>{{ else }}<!here>{{ end }} {{ .Alerts | len }} alerts - {{ .GroupLabels.alertname }}'
-        text: "{{ range .Alerts }}\n*{{ .Annotations.description }}*\n*{{ .Annotations.message }}*\n*{{ .Labels.severity }}*\n{{ .Annotations.runbook_url }}\n{{ end }}"
-    - name: 'null'
+      - name: "general"
+        slack_configs:
+          - channel: ${alertmanager_slack_channel}
+            send_resolved: true
+            api_url: ${alertmanager_slack_webhook}
+            title: '{{ if eq .CommonLabels.severity "critical" }}<!channel>{{ else }}<!here>{{ end }} {{ .Alerts | len }} alerts - {{ .GroupLabels.alertname }}'
+            text: "{{ range .Alerts }}\n*{{ .Annotations.description }}*\n*{{ .Annotations.message }}*\n*{{ .Labels.severity }}*\n{{ .Annotations.runbook_url }}\n{{ end }}"
+      - name: "null"
