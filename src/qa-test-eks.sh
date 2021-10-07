@@ -150,10 +150,6 @@ if [ "$ACTION" = "destroy-cluster" ]; then
     # Essential cleanup commands (set RETURN=1 if fails)
     terragrunt destroy-all --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve || RETURN=1
 
-    # Workaround to ensure ENIs are no longer used: Sleep for 15 minutes.
-    # Bug: https://github.com/aws/amazon-vpc-cni-k8s/issues/1399
-    sleep 900
-
     # Remove specific resources that sometimes get left behind (always return true, as resource may have been successfully been cleaned up)
     cleanup_roles "eks-${CLUSTERNAME}-"
     cleanup_eni
