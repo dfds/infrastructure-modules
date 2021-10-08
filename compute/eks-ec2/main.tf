@@ -54,7 +54,7 @@ module "eks_internet_gateway" {
 
 module "eks_route_table" {
   source     = "../../_sub/network/route-table"
-  name       = "eks-${var.eks_cluster_name}"
+  name       = "eks-${var.eks_cluster_name}-subnet"
   vpc_id     = module.eks_cluster.vpc_id
   gateway_id = module.eks_internet_gateway.id
 }
@@ -211,8 +211,8 @@ module "eks_heptio" {
 }
 
 module "eks_addons" {
-  source = "../../_sub/compute/eks-addons"
-  depends_on = [module.eks_cluster]
+  source                     = "../../_sub/compute/eks-addons"
+  depends_on                 = [module.eks_cluster]
   cluster_name               = var.eks_cluster_name
   kubeproxy_version_override = var.eks_addon_kubeproxy_version_override
   coredns_version_override   = var.eks_addon_coredns_version_override
