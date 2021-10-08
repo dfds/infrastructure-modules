@@ -6,6 +6,10 @@ resource "aws_route_table" "table" {
     gateway_id = var.gateway_id
   }
 
+  lifecycle {
+    ignore_changes = [route]
+  }
+
   tags = {
     Name = var.name
   }
