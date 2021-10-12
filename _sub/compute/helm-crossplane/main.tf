@@ -11,6 +11,8 @@ resource "helm_release" "crossplane" {
     templatefile("${path.module}/values/values.yaml", {
       crossplane_metrics_enabled = var.crossplane_metrics_enabled
   })]
+
+  depends_on = [kubernetes_namespace.namespace]
 }
 
 resource "kubernetes_namespace" "namespace" {

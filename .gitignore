@@ -51,3 +51,6 @@ _sub/monitoring/alarm-notifier/lambda/main
 
 #Intellij
 .idea
+
+#Lock files
+.terraform.lock.hcl
