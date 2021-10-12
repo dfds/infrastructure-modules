@@ -26,8 +26,7 @@ inputs = {
   # Traefik
   # --------------------------------------------------
 
-  # TODO: traefik_alb_auth_deploy = false due to https://github.com/hashicorp/terraform-provider-azuread/issues/588
-  traefik_alb_auth_deploy = false # triggers Azure App registration
+  traefik_alb_auth_deploy = true # triggers Azure App registration
   traefik_alb_anon_deploy = true
   # traefik_alb_auth_core_alias = ["qa-alias1.dfds.cloud", "qa-alias2.dfds.cloud"]
   traefik_alb_auth_core_alias = []
