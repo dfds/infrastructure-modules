@@ -5,4 +5,7 @@ resource "aws_ssm_parameter" "putSecureString" {
   type        = "SecureString"
   value       = var.key_value
   overwrite   = true
+  tags = {
+    createdBy = var.tag_createdby
+  }
 }
