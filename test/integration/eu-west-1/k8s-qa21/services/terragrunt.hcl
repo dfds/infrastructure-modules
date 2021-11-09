@@ -135,6 +135,7 @@ inputs = {
   # Blackbox Exporter
   # --------------------------------------------------
 
+  blackbox_exporter_deploy              = "true"
   blackbox_exporter_helm_chart_version  = "5.0.3"
   blackbox_exporter_github_owner        = "dfds"
   blackbox_exporter_repo_name           = "platform-manifests-qa"
