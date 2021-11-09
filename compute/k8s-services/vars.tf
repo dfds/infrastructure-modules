@@ -768,7 +768,7 @@ variable "traefik_flux_dashboard_deploy" {
 variable "blackbox_exporter_deploy" {
   type        = bool
   description = "Should the Blackbox Exporter be deployed through Flux?"
-  default     = true
+  default     = false
 }
 
 variable "blackbox_exporter_helm_chart_version" {

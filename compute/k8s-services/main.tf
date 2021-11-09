@@ -532,6 +532,7 @@ module "crossplane" {
 
 module "blackbox_exporter_flux_manifests" {
   source              = "../../_sub/monitoring/blackbox-exporter"
+  count               = var.blackbox_exporter_deploy ? 1 : 0
   cluster_name        = var.eks_cluster_name
   helm_chart_version  = var.blackbox_exporter_helm_chart_version
   github_owner        = var.blackbox_exporter_github_owner
