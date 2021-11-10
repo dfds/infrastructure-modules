@@ -521,6 +521,7 @@ module "crossplane" {
   chart_version                     = var.crossplane_chart_version
   recreate_pods                     = var.crossplane_recreate_pods
   force_update                      = var.crossplane_force_update
+  devel                             = var.crossplane_devel
   crossplane_providers              = var.crossplane_providers
   crossplane_admin_service_accounts = var.crossplane_admin_service_accounts
   crossplane_edit_service_accounts  = var.crossplane_edit_service_accounts

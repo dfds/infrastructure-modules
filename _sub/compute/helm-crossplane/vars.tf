@@ -23,6 +23,11 @@ variable "force_update" {
   description = "Force resource updates through replacement"
 }
 
+variable "devel" {
+  type        = bool
+  description = "Allow use of development versions of Crossplane"
+}
+
 variable "crossplane_providers" {
   type        = list(string)
   description = "List of Crossplane providers to install"
