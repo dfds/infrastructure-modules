@@ -242,6 +242,9 @@ resource "aws_ssm_parameter" "param_traefik_dashboard" {
   type        = "SecureString"
   value       = random_password.password[0].result
   overwrite   = true
+  tags = {
+    createdBy = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-traefik"
+  }
 }
 
 # --------------------------------------------------

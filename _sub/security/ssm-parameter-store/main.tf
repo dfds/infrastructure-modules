@@ -6,6 +6,6 @@ resource "aws_ssm_parameter" "putSecureString" {
   value       = var.key_value
   overwrite   = true
   tags = {
-    createdBy = var.tag_createdby
+    createdBy = var.tag_createdby != null ? var.tag_createdby : "ssm-parameter-store"
   }
 }
