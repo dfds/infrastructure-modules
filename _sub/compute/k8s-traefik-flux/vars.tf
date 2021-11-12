@@ -117,3 +117,9 @@ variable "dashboard_ingress_host" {
   type        = string
   description = "The alb auth dns name for accessing Traefik."
 }
+
+variable "ssm_param_createdby" {
+  type        = string
+  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
+  default     = null
+}

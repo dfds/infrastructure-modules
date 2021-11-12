@@ -93,10 +93,13 @@ resource "htpasswd_password" "hash" {
 # Save password in AWS Parameter Store
 # --------------------------------------------------
 resource "aws_ssm_parameter" "param_traefik_dashboard" {
-  count       = var.dashboard_deploy ? 1 : 0
-  name        = "/eks/${var.cluster_name}/traefik-dashboard"
-  description = "Password for accessing the Traefik dashboard"
-  type        = "SecureString"
-  value       = random_password.password[0].result
-  overwrite   = true
+  count           = var.dashboard_deploy ? 1 : 0
+  name            = "/eks/${var.cluster_name}/traefik-dashboard"
+  description     = "Password for accessing the Traefik dashboard"
+  type            = "SecureString"
+  value           = random_password.password[0].result
+  overwrite       = true
+  tags = {
+    createdBy = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-traefik-flux"
+  }
 }

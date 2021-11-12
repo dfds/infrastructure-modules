@@ -122,6 +122,7 @@ module "traefik_deploy" {
   admin_nodeport         = var.traefik_admin_nodeport
   dashboard_ingress_host = local.traefik_dashboard_ingress_host
   dashboard_deploy       = var.traefik_dashboard_deploy
+  ssm_param_createdby    = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-services"
 }
 
 module "traefik_flux_manifests" {
@@ -143,6 +144,7 @@ module "traefik_flux_manifests" {
   dashboard_deploy       = var.traefik_flux_dashboard_deploy
   dashboard_ingress_host = local.traefik_flux_dashboard_ingress_host
   is_using_alb_auth      = local.traefik_flux_is_using_alb_auth
+  ssm_param_createdby    = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-services"
 
   providers = {
     github = github.fluxcd
