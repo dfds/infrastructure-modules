@@ -591,13 +591,13 @@ variable "crossplane_deploy" {
 variable "crossplane_namespace" {
   type        = string
   description = "Namespace in which to install Crossplane"
-  default     = "crossplane-system"
+  default     = "upbound-system"
 }
 
 variable "crossplane_release_name" {
   type        = string
   description = "Name of the chart release"
-  default     = "crossplane"
+  default     = "universal-crossplane"
 }
 
 variable "crossplane_chart_version" {
@@ -617,6 +617,14 @@ variable "crossplane_force_update" {
   description = "Force resource updates through replacement"
   default     = false
 }
+
+
+variable "crossplane_devel" {
+  type        = bool
+  description = "Allow use of development versions of Crossplane"
+  default     = true
+}
+
 
 variable "crossplane_providers" {
   type        = list(string)
