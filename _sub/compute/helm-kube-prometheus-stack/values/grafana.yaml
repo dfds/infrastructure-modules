@@ -5,8 +5,6 @@ grafana:
       memory: 200Mi
   adminPassword: "${grafana_admin_password}"
   priorityClassName: ${grafana_priorityclass}
-  ingress:
-    enabled: false
   grafana.ini:
     auth.anonymous:
       enabled: true
