@@ -62,3 +62,30 @@ resource "helm_release" "kube_prometheus_stack" {
   ]
 }
 
+resource "github_repository_file" "grafana_config_path" {
+  repository = var.repo_name
+  branch     = local.repo_branch
+  file       = "${local.cluster_repo_path}/${local.grafana_platform_apps_name}-config.yaml"
+  content    = jsonencode(local.grafana_config_path)
+}
+
+resource "github_repository_file" "grafana_config_middleware" {
+  repository  = var.repo_name
+  branch      = local.repo_branch
+  file        = "${local.config_repo_path}/middleware.yaml"
+  content     = jsonencode(local.grafana_config_middleware)
+}
+
+resource "github_repository_file" "grafana_config_ingressroute" {
+  repository  = var.repo_name
+  branch      = local.repo_branch
+  file        = "${local.config_repo_path}/ingressroute.yaml"
+  content     = jsonencode(local.grafana_config_ingressroute)
+}
+
+resource "github_repository_file" "grafana_config_init" {
+  repository  = var.repo_name
+  branch      = local.repo_branch
+  file        = "${local.config_repo_path}/kustomization.yaml"
+  content     = jsonencode(local.grafana_config_init)
+}
