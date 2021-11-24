@@ -308,6 +308,24 @@ variable "monitoring_kube_prometheus_stack_target_namespaces" {
   default     = ".*"
 }
 
+variable "monitoring_kube_prometheus_stack_github_owner" {
+  type        = string
+  description = "Name of the Treaefik Flux repo Github owner (previously: organization)"
+  default     = null
+}
+
+variable "monitoring_kube_prometheus_stack_repo_name" {
+  type        = string
+  description = "Name of the Github repo to store the Traefik Flux manifests in"
+  default     = null
+}
+
+variable "monitoring_kube_prometheus_stack_repo_branch" {
+  type        = string
+  description = "Override the default branch of the Traefik Flux repo (optional)"
+  default     = null
+}
+
 # --------------------------------------------------
 # Metrics-Server
 # --------------------------------------------------

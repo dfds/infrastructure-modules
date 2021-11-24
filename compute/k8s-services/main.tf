@@ -421,6 +421,15 @@ module "monitoring_kube_prometheus_stack" {
   prometheus_retention    = var.monitoring_kube_prometheus_stack_prometheus_retention
   slack_channel           = var.monitoring_kube_prometheus_stack_slack_channel
   target_namespaces       = var.monitoring_kube_prometheus_stack_target_namespaces
+  github_owner            = var.monitoring_kube_prometheus_stack_github_owner
+  repo_name               = var.monitoring_kube_prometheus_stack_repo_name
+  repo_branch             = var.monitoring_kube_prometheus_stack_repo_branch
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
 }
 
 
