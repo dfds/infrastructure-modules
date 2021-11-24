@@ -90,6 +90,9 @@ inputs = {
   monitoring_kube_prometheus_stack_prometheus_retention    = "1d"
   monitoring_kube_prometheus_stack_slack_webhook           = "https://dummy.slack.webhook"
   monitoring_kube_prometheus_stack_slack_channel           = "#hellman-alerting"
+  monitoring_kube_prometheus_stack_github_owner            = "dfds"
+  monitoring_kube_prometheus_stack_repo_name               = "platform-manifests-qa"
+  monitoring_kube_prometheus_stack_repo_branch             = "main"
 
 
   # --------------------------------------------------
