@@ -74,7 +74,6 @@ locals {
                             "namespace" = var.namespace
                         }
                     ]
-                    "priority" = 2
                 }
             ]
         }

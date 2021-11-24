@@ -13,6 +13,11 @@ grafana:
     server:
       domain: ${grafana_host}
       root_url: ${grafana_root_url}
+  ingress:
+    enabled: false
+    hosts:
+      - ${grafana_host}
+    path: ${grafana_ingress_path}
   plugins:
     - grafana-polystat-panel
   podAnnotations:
