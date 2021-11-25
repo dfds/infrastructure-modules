@@ -78,28 +78,8 @@ variable "traefik_alb_s3_access_logs_retiontion_days" {
 }
 
 # --------------------------------------------------
-# Traefik
+# Load Balancers in front of Traefik
 # --------------------------------------------------
-
-variable "traefik_deploy" {
-  type    = bool
-  default = true
-}
-
-variable "traefik_version" {
-  type    = string
-  default = "1.7"
-}
-
-variable "traefik_http_nodeport" {
-  type    = number
-  default = 30000
-}
-
-variable "traefik_admin_nodeport" {
-  type    = number
-  default = 30001
-}
 
 variable "traefik_alb_anon_deploy" {
   type    = bool
@@ -131,22 +111,6 @@ variable "traefik_nlb_deploy" {
 variable "traefik_nlb_cidr_blocks" {
   type    = list(string)
   default = []
-}
-
-variable "blaster_configmap_deploy" {
-  type    = bool
-  default = false
-}
-
-variable "traefik_health_check_path" {
-  type    = string
-  default = "/dashboard/"
-}
-
-variable "traefik_dashboard_deploy" {
-  type        = bool
-  description = "Deploy ingress for secure access to Traefik dashboard."
-  default     = true
 }
 
 # --------------------------------------------------

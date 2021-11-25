@@ -107,23 +107,8 @@ module "traefik_alb_s3_access_logs" {
 }
 
 # --------------------------------------------------
-# Traefik / ALB
+# Load Balancers in front of Traefik
 # --------------------------------------------------
-
-module "traefik_deploy" {
-  source                 = "../../_sub/compute/k8s-traefik"
-  deploy                 = var.traefik_deploy
-  image_version          = var.traefik_version
-  priority_class         = "service-critical"
-  deploy_name            = "traefik"
-  cluster_name           = var.eks_cluster_name
-  replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
-  http_nodeport          = var.traefik_http_nodeport
-  admin_nodeport         = var.traefik_admin_nodeport
-  dashboard_ingress_host = local.traefik_dashboard_ingress_host
-  dashboard_deploy       = var.traefik_dashboard_deploy
-  ssm_param_createdby    = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-services"
-}
 
 module "traefik_flux_manifests" {
   source                 = "../../_sub/compute/k8s-traefik-flux"
