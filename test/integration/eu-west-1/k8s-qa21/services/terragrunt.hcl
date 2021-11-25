@@ -23,7 +23,7 @@ inputs = {
   eks_cluster_name = "qa21"
 
   # --------------------------------------------------
-  # Traefik
+  # Load Balancers in front of Traefik
   # --------------------------------------------------
 
   traefik_alb_auth_deploy = true # triggers Azure App registration
