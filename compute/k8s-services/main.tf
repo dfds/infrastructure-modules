@@ -107,23 +107,8 @@ module "traefik_alb_s3_access_logs" {
 }
 
 # --------------------------------------------------
-# Traefik / ALB
+# Load Balancers in front of Traefik
 # --------------------------------------------------
-
-module "traefik_deploy" {
-  source                 = "../../_sub/compute/k8s-traefik"
-  deploy                 = var.traefik_deploy
-  image_version          = var.traefik_version
-  priority_class         = "service-critical"
-  deploy_name            = "traefik"
-  cluster_name           = var.eks_cluster_name
-  replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
-  http_nodeport          = var.traefik_http_nodeport
-  admin_nodeport         = var.traefik_admin_nodeport
-  dashboard_ingress_host = local.traefik_dashboard_ingress_host
-  dashboard_deploy       = var.traefik_dashboard_deploy
-  ssm_param_createdby    = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-services"
-}
 
 module "traefik_flux_manifests" {
   source                 = "../../_sub/compute/k8s-traefik-flux"
@@ -137,10 +122,6 @@ module "traefik_flux_manifests" {
   repo_name              = var.traefik_flux_repo_name
   repo_branch            = var.traefik_flux_repo_branch
   additional_args        = var.traefik_flux_additional_args
-  fallback_enabled       = var.traefik_fallback_enabled
-  fallback_svc_namespace = var.traefik_fallback_svc_namespace
-  fallback_svc_name      = var.traefik_fallback_svc_name
-  fallback_svc_port      = var.traefik_fallback_svc_port
   dashboard_deploy       = var.traefik_flux_dashboard_deploy
   dashboard_ingress_host = local.traefik_flux_dashboard_ingress_host
   is_using_alb_auth      = local.traefik_flux_is_using_alb_auth

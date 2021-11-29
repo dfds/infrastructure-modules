@@ -78,28 +78,8 @@ variable "traefik_alb_s3_access_logs_retiontion_days" {
 }
 
 # --------------------------------------------------
-# Traefik
+# Load Balancers in front of Traefik
 # --------------------------------------------------
-
-variable "traefik_deploy" {
-  type    = bool
-  default = true
-}
-
-variable "traefik_version" {
-  type    = string
-  default = "1.7"
-}
-
-variable "traefik_http_nodeport" {
-  type    = number
-  default = 30000
-}
-
-variable "traefik_admin_nodeport" {
-  type    = number
-  default = 30001
-}
 
 variable "traefik_alb_anon_deploy" {
   type    = bool
@@ -131,22 +111,6 @@ variable "traefik_nlb_deploy" {
 variable "traefik_nlb_cidr_blocks" {
   type    = list(string)
   default = []
-}
-
-variable "blaster_configmap_deploy" {
-  type    = bool
-  default = false
-}
-
-variable "traefik_health_check_path" {
-  type    = string
-  default = "/dashboard/"
-}
-
-variable "traefik_dashboard_deploy" {
-  type        = bool
-  description = "Deploy ingress for secure access to Traefik dashboard."
-  default     = true
 }
 
 # --------------------------------------------------
@@ -738,48 +702,6 @@ variable "traefik_flux_additional_args" {
   type        = list
   description = "Pass arguments to the additionalArguments node in the Traefik Helm chart"
   default     = ["--metrics.prometheus"]
-}
-
-variable "traefik_fallback_enabled" {
-  type        = bool
-  description = "Should a fallback ingressroute be created that routes traffic to Traefik v1"
-  default     = false
-}
-
-variable "traefik_fallback_ingressroute_priority" {
-  type        = number
-  description = "IngressRoute priority. Should be a low number, but preferably not lower than 2"
-  default     = 2
-}
-
-variable "traefik_fallback_rule_match" {
-  type        = string
-  description = "The rule match of hosts, regexp and/or paths to serve through a fallback ingressroute"
-  default     = "HostRegexp(`{domain:.+}`)"
-}
-
-variable "traefik_fallback_ingressroute_name" {
-  type        = string
-  description = "The name for the ingressroute used for fallback"
-  default     = "traefik-fallback-to-v1-ingress"
-}
-
-variable "traefik_fallback_svc_namespace" {
-  type        = string
-  description = "The service used for fallback ingress is stored in which namespace"
-  default     = "kube-system"
-}
-
-variable "traefik_fallback_svc_name" {
-  type        = string
-  description = "The service name used for fallback ingress"
-  default     = "traefik"
-}
-
-variable "traefik_fallback_svc_port" {
-  type        = number
-  description = "The service port used for fallback ingress"
-  default     = 80
 }
 
 variable "traefik_flux_deploy" {
