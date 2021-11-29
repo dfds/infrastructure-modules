@@ -26,19 +26,10 @@ resource "github_repository_file" "traefik_helm_patch" {
 }
 
 resource "github_repository_file" "traefik_config_path" {
-  count      = var.fallback_enabled ? 1 : 0
   repository = var.repo_name
   branch     = local.repo_branch
   file       = "${local.cluster_repo_path}/${local.app_install_name}-config.yaml"
   content    = jsonencode(local.app_config_path)
-}
-
-resource "github_repository_file" "traefik_config_fallback_ingressroute" {
-  count       = var.fallback_enabled ? 1 : 0
-  repository  = var.repo_name
-  branch      = local.repo_branch
-  file        = "${local.config_repo_path}/ingressroute-fallback.yaml"
-  content     = jsonencode(local.config_fallback_ingressroute)
 }
 
 resource "github_repository_file" "traefik_config_dashboard_ingressroute" {

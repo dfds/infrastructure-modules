@@ -115,38 +115,10 @@ locals {
     "apiVersion" = "kustomize.config.k8s.io/v1beta1"
     "kind" = "Kustomization"
     "resources" = [
-      "ingressroute-fallback.yaml",
       "ingressroute-dashboard.yaml",
       "secret-dashboard.yaml",
       "middleware-dashboard.yaml"
     ]
-  }
-
-  config_fallback_ingressroute = {
-    "apiVersion" = "traefik.containo.us/v1alpha1"
-    "kind" = "IngressRoute"
-    "metadata" = {
-      "name" = var.fallback_ingressroute_name
-      "namespace" = var.namespace
-    }
-    "spec" = {
-      "entryPoints" = ["web"]
-      "routes" = [
-        {
-          "kind" = "Rule"
-          "match" = var.fallback_rule_match
-          "priority" = var.fallback_ingressroute_priority
-          "services" = [
-            {
-              "kind" = "Service"
-              "name" = var.fallback_svc_name
-              "namespace" = var.fallback_svc_namespace
-              "port" = var.fallback_svc_port
-            }
-          ]
-        }
-      ]
-    }
   }
 
   # The var.is_using_alb_auth ? []: local.dashboard_middlewares
