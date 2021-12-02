@@ -15,7 +15,7 @@ resource "aws_security_group" "eks-cluster" {
   }
 }
 
-#tfsec:ignore:aws-vpc-disallow-mixed-sgr
+#tfsec:ignore:aws-vpc-disallow-mixed-sgr tfsec:ignore:no-public-ingress-sgr
 resource "aws_security_group_rule" "eks-ingress-workstation-https" {
   cidr_blocks       = ["0.0.0.0/0"]
   description       = "Allow workstation to communicate with the cluster API Server"

@@ -6,7 +6,7 @@ resource "aws_security_group" "pgsg" {
     from_port   = 1433
     to_port     = 1433
     protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:no-public-ingress-sgr
   }
 
   tags = {
@@ -34,7 +34,7 @@ resource "aws_db_parameter_group" "dbparams" {
 resource "aws_db_instance" "postgres" {
   engine                  = "postgres"
   engine_version          = "10.9"
-  publicly_accessible     = "true"
+  publicly_accessible     = "true" #tfsec:ignore:aws-rds-no-public-db-access
   backup_retention_period = 10
   apply_immediately       = true
   identifier              = "${var.application}-postgres-${var.environment}"
