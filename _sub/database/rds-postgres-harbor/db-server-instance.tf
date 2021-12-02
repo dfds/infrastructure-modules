@@ -1,4 +1,4 @@
-#tfsec:ignore:aws-rds-backup-retention-specified
+#tfsec:ignore:aws-rds-backup-retention-specified tfsec:ignore:aws-rds-encrypt-instance-storage-data
 resource "aws_db_instance" "instance" {
   count             = var.deploy ? 1 : 0
   allocated_storage = var.db_storage_size
