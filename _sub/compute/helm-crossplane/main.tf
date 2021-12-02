@@ -1,16 +1,18 @@
 resource "helm_release" "crossplane" {
   name          = var.release_name
-  chart         = "crossplane"
-  repository    = "https://charts.crossplane.io/stable"
+  chart         = "universal-crossplane"
+  repository    = "https://charts.upbound.io/stable"
   version       = var.chart_version
   namespace     = var.namespace
   recreate_pods = var.recreate_pods
   force_update  = var.force_update
-
+  devel         = var.devel
   values = [
     templatefile("${path.module}/values/values.yaml", {
       crossplane_metrics_enabled = var.crossplane_metrics_enabled
   })]
+
+  depends_on = [kubernetes_namespace.namespace]
 }
 
 resource "kubernetes_namespace" "namespace" {

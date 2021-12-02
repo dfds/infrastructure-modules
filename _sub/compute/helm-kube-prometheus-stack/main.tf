@@ -1,5 +1,5 @@
 resource "random_password" "grafana_password" {
-  length = 16
+  length  = 16
   special = true
 }
 
@@ -7,7 +7,7 @@ resource "helm_release" "kube_prometheus_stack" {
   name          = "monitoring"
   chart         = "kube-prometheus-stack"
   repository    = "https://prometheus-community.github.io/helm-charts"
-  version       = var.chart_version != null ? var.chart_version : null
+  version       = var.chart_version
   namespace     = var.namespace
   recreate_pods = true
   force_update  = false
@@ -39,10 +39,10 @@ resource "helm_release" "kube_prometheus_stack" {
     }),
 
     length(var.slack_webhook) > 0 ? templatefile("${path.module}/values/alertmanager-slack.yaml", {
-      alertmanager_priorityclass      = var.priority_class
-      alertmanager_slack_channel      = var.slack_channel
-      alertmanager_slack_webhook      = var.slack_webhook
-      target_namespaces = var.target_namespaces
+      alertmanager_priorityclass = var.priority_class
+      alertmanager_slack_channel = var.slack_channel
+      alertmanager_slack_webhook = var.slack_webhook
+      target_namespaces          = var.target_namespaces
     }) : file("${path.module}/values/alertmanager-disabled.yaml"),
 
     templatefile("${path.module}/values/rules.yaml", {
@@ -62,3 +62,30 @@ resource "helm_release" "kube_prometheus_stack" {
   ]
 }
 
+resource "github_repository_file" "grafana_config_path" {
+  repository = var.repo_name
+  branch     = local.repo_branch
+  file       = "${local.cluster_repo_path}/${local.grafana_platform_apps_name}-config.yaml"
+  content    = jsonencode(local.grafana_config_path)
+}
+
+resource "github_repository_file" "grafana_config_middleware" {
+  repository  = var.repo_name
+  branch      = local.repo_branch
+  file        = "${local.config_repo_path}/middleware.yaml"
+  content     = jsonencode(local.grafana_config_middleware)
+}
+
+resource "github_repository_file" "grafana_config_ingressroute" {
+  repository  = var.repo_name
+  branch      = local.repo_branch
+  file        = "${local.config_repo_path}/ingressroute.yaml"
+  content     = jsonencode(local.grafana_config_ingressroute)
+}
+
+resource "github_repository_file" "grafana_config_init" {
+  repository  = var.repo_name
+  branch      = local.repo_branch
+  file        = "${local.config_repo_path}/kustomization.yaml"
+  content     = jsonencode(local.grafana_config_init)
+}

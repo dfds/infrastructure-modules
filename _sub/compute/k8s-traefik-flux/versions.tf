@@ -1,18 +1,18 @@
 terraform {
-  required_version = ">= 0.13"
+  required_version = "~> 1.0"
 
   required_providers {
     github = {
-      source  = "integrations/github"
+      source = "integrations/github"
     }
 
     kubectl = {
-      source  = "gavinbunney/kubectl"
+      source = "gavinbunney/kubectl"
     }
 
     htpasswd = {
-        source  = "loafoe/htpasswd"
-        version = "~> 0.9.0"
-      }
+      source  = "loafoe/htpasswd"
+      version = "~> 1.0.0"
+    }
   }
 }

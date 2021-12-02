@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 0.12"
+  required_version = "~> 1.0"
 
   /*
   Hashicorp-managed providers can be loaded implicitly
@@ -15,7 +15,7 @@ terraform {
 
     htpasswd = {
       source  = "loafoe/htpasswd"
-      version = "~> 0.9.0"
+      version = "~> 1.0.0"
     }
 
   }

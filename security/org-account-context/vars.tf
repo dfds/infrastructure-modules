@@ -27,7 +27,7 @@ variable "shared_account_id" {
 variable "shared_role_path" {
   type        = string
   description = "The path in which to put the IAM role for access to resources in shared account"
-  default = "/"  
+  default     = "/"
 }
 
 variable "access_key_master" {
@@ -112,3 +112,8 @@ variable "kiam_role_arn" {
   default     = ""
 }
 
+variable "ssm_param_createdby" {
+  type        = string
+  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
+  default     = "not-specified"
+}

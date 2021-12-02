@@ -27,6 +27,12 @@ variable "aws_assume_role_arn" {
 variable "workload_dns_zone_name" {
 }
 
+variable "ssm_param_createdby" {
+  type        = string
+  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
+  default     = null
+}
+
 # --------------------------------------------------
 # EKS
 # --------------------------------------------------
@@ -72,28 +78,8 @@ variable "traefik_alb_s3_access_logs_retiontion_days" {
 }
 
 # --------------------------------------------------
-# Traefik
+# Load Balancers in front of Traefik
 # --------------------------------------------------
-
-variable "traefik_deploy" {
-  type    = bool
-  default = true
-}
-
-variable "traefik_version" {
-  type    = string
-  default = "1.7"
-}
-
-variable "traefik_http_nodeport" {
-  type    = number
-  default = 30000
-}
-
-variable "traefik_admin_nodeport" {
-  type    = number
-  default = 30001
-}
 
 variable "traefik_alb_anon_deploy" {
   type    = bool
@@ -126,47 +112,6 @@ variable "traefik_nlb_cidr_blocks" {
   type    = list(string)
   default = []
 }
-
-variable "blaster_configmap_deploy" {
-  type    = bool
-  default = false
-}
-
-variable "traefik_health_check_path" {
-  type    = string
-  default = "/dashboard/"
-}
-
-variable "traefik_dashboard_deploy" {
-  type        = bool
-  description = "Deploy ingress for secure access to Traefik dashboard."
-  default     = true
-}
-
-
-# --------------------------------------------------
-# Traefikv2
-# --------------------------------------------------
-variable "traefikv2_test_alb_deploy" {
-  type    = bool
-  default = false
-}
-
-variable "traefikv2_http_nodeport" {
-  type    = number
-  default = 31000
-}
-
-variable "traefikv2_admin_nodeport" {
-  type    = number
-  default = 31001
-}
-
-variable "traefikv2_health_check_path" {
-  type    = string
-  default = "/dashboard/"
-}
-
 
 # --------------------------------------------------
 # Blaster
@@ -325,6 +270,24 @@ variable "monitoring_kube_prometheus_stack_target_namespaces" {
   type        = string
   description = "Alert target namespaces filter"
   default     = ".*"
+}
+
+variable "monitoring_kube_prometheus_stack_github_owner" {
+  type        = string
+  description = "Name of the Treaefik Flux repo Github owner (previously: organization)"
+  default     = null
+}
+
+variable "monitoring_kube_prometheus_stack_repo_name" {
+  type        = string
+  description = "Name of the Github repo to store the Traefik Flux manifests in"
+  default     = null
+}
+
+variable "monitoring_kube_prometheus_stack_repo_branch" {
+  type        = string
+  description = "Override the default branch of the Traefik Flux repo (optional)"
+  default     = null
 }
 
 # --------------------------------------------------
@@ -610,13 +573,13 @@ variable "crossplane_deploy" {
 variable "crossplane_namespace" {
   type        = string
   description = "Namespace in which to install Crossplane"
-  default     = "crossplane-system"
+  default     = "upbound-system"
 }
 
 variable "crossplane_release_name" {
   type        = string
   description = "Name of the chart release"
-  default     = "crossplane"
+  default     = "universal-crossplane"
 }
 
 variable "crossplane_chart_version" {
@@ -636,6 +599,14 @@ variable "crossplane_force_update" {
   description = "Force resource updates through replacement"
   default     = false
 }
+
+
+variable "crossplane_devel" {
+  type        = bool
+  description = "Allow use of development versions of Crossplane"
+  default     = true
+}
+
 
 variable "crossplane_providers" {
   type        = list(string)
@@ -733,48 +704,6 @@ variable "traefik_flux_additional_args" {
   default     = ["--metrics.prometheus"]
 }
 
-variable "traefik_fallback_enabled" {
-  type        = bool
-  description = "Should a fallback ingressroute be created that routes traffic to Traefik v1"
-  default     = false
-}
-
-variable "traefik_fallback_ingressroute_priority" {
-  type        = number
-  description = "IngressRoute priority. Should be a low number, but preferably not lower than 2"
-  default     = 2
-}
-
-variable "traefik_fallback_rule_match" {
-  type        = string
-  description = "The rule match of hosts, regexp and/or paths to serve through a fallback ingressroute"
-  default     = "HostRegexp(`{domain:.+}`)"
-}
-
-variable "traefik_fallback_ingressroute_name" {
-  type        = string
-  description = "The name for the ingressroute used for fallback"
-  default     = "traefik-fallback-to-v1-ingress"
-}
-
-variable "traefik_fallback_svc_namespace" {
-  type        = string
-  description = "The service used for fallback ingress is stored in which namespace"
-  default     = "kube-system"
-}
-
-variable "traefik_fallback_svc_name" {
-  type        = string
-  description = "The service name used for fallback ingress"
-  default     = "traefik"
-}
-
-variable "traefik_fallback_svc_port" {
-  type        = number
-  description = "The service port used for fallback ingress"
-  default     = 80
-}
-
 variable "traefik_flux_deploy" {
   type    = bool
   default = true
@@ -793,7 +722,7 @@ variable "traefik_flux_dashboard_deploy" {
 variable "blackbox_exporter_deploy" {
   type        = bool
   description = "Should the Blackbox Exporter be deployed through Flux?"
-  default     = true
+  default     = false
 }
 
 variable "blackbox_exporter_helm_chart_version" {

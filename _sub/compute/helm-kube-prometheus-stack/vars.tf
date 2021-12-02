@@ -13,6 +13,11 @@ variable "namespace" {
   type        = string
   description = "Namespace to apply Kube-prometheus-stack in"
   default     = "monitoring"
+  validation {
+    condition     = can(regex("[a-z]+", var.namespace))
+    error_message = "Namespace must contain at least one letter."
+  }
+
 }
 
 variable "priority_class" {
@@ -77,4 +82,26 @@ variable "slack_channel" {
 variable "target_namespaces" {
   type        = string
   description = "Filter on namespaces"
+}
+
+variable "grafana_service_port" {
+  type        = number
+  description = "Grafana service port. See https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml"
+  default     = 80
+}
+
+variable "github_owner" {
+  type        = string
+  description = "Name of the Github owner (previously: organization)"
+}
+
+variable "repo_name" {
+  type        = string
+  description = "Name of the Github repo to store the manifests in"
+}
+
+variable "repo_branch" {
+  type        = string
+  description = "Override the default branch of the repo (optional)"
+  default     = null
 }

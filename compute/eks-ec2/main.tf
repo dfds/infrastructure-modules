@@ -54,7 +54,7 @@ module "eks_internet_gateway" {
 
 module "eks_route_table" {
   source     = "../../_sub/network/route-table"
-  name       = "eks-${var.eks_cluster_name}"
+  name       = "eks-${var.eks_cluster_name}-subnet"
   vpc_id     = module.eks_cluster.vpc_id
   gateway_id = module.eks_internet_gateway.id
 }
@@ -211,8 +211,8 @@ module "eks_heptio" {
 }
 
 module "eks_addons" {
-  source = "../../_sub/compute/eks-addons"
-  depends_on = [module.eks_cluster]
+  source                     = "../../_sub/compute/eks-addons"
+  depends_on                 = [module.eks_cluster]
   cluster_name               = var.eks_cluster_name
   kubeproxy_version_override = var.eks_addon_kubeproxy_version_override
   coredns_version_override   = var.eks_addon_coredns_version_override
@@ -230,6 +230,7 @@ module "param_kubeconfig_admin" {
   key_name        = "/eks/${var.eks_cluster_name}/kubeconfig-admin"
   key_description = "Kube config file for initial admin"
   key_value       = module.eks_heptio.kubeconfig_admin
+  tag_createdby   = var.ssm_param_createdby != null ? var.ssm_param_createdby : "eks-ec2"
 }
 
 module "param_kubeconfig_saml" {
@@ -237,6 +238,7 @@ module "param_kubeconfig_saml" {
   key_name        = "/eks/${var.eks_cluster_name}/kubeconfig-saml"
   key_description = "Kube config file for SAML"
   key_value       = module.eks_heptio.kubeconfig_saml
+  tag_createdby   = var.ssm_param_createdby != null ? var.ssm_param_createdby : "eks-ec2"
 }
 
 module "eks_s3_public_kubeconfig" {
@@ -262,6 +264,7 @@ module "k8s_service_account_store_secret" {
   key_name        = "/eks/${var.eks_cluster_name}/deploy_user"
   key_description = "Kube config file for general deployment user"
   key_value       = module.k8s_service_account.deploy_user_config
+  tag_createdby   = var.ssm_param_createdby != null ? var.ssm_param_createdby : "eks-ec2"
 }
 
 module "cloudwatch_agent_config_bucket" {

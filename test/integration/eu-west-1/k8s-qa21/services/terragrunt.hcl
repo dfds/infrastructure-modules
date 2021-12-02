@@ -23,7 +23,7 @@ inputs = {
   eks_cluster_name = "qa21"
 
   # --------------------------------------------------
-  # Traefik
+  # Load Balancers in front of Traefik
   # --------------------------------------------------
 
   traefik_alb_auth_deploy = true # triggers Azure App registration
@@ -83,13 +83,16 @@ inputs = {
   # --------------------------------------------------
 
   monitoring_kube_prometheus_stack_deploy                  = true
-  monitoring_kube_prometheus_stack_chart_version           = "18.0.13"
+  monitoring_kube_prometheus_stack_chart_version           = "19.0.1"
   monitoring_kube_prometheus_stack_target_namespaces       = "kube-system|monitoring"
   monitoring_kube_prometheus_stack_prometheus_storage_size = "5Gi"
   monitoring_kube_prometheus_stack_prometheus_storageclass = "gp2"
   monitoring_kube_prometheus_stack_prometheus_retention    = "1d"
   monitoring_kube_prometheus_stack_slack_webhook           = "https://dummy.slack.webhook"
   monitoring_kube_prometheus_stack_slack_channel           = "#hellman-alerting"
+  monitoring_kube_prometheus_stack_github_owner            = "dfds"
+  monitoring_kube_prometheus_stack_repo_name               = "platform-manifests-qa"
+  monitoring_kube_prometheus_stack_repo_branch             = "main"
 
 
   # --------------------------------------------------
@@ -103,8 +106,8 @@ inputs = {
   # --------------------------------------------------
 
   crossplane_deploy        = true
-  crossplane_chart_version = "1.2.1"
-  crossplane_providers     = ["crossplane/provider-aws:v0.18.1"]
+  crossplane_chart_version = "1.4.0-up.1"
+  crossplane_providers     = ["crossplane/provider-aws:v0.19.0"]
   crossplane_admin_service_accounts = [
     {
       serviceaccount = "default"
@@ -135,7 +138,8 @@ inputs = {
   # Blackbox Exporter
   # --------------------------------------------------
 
-  blackbox_exporter_helm_chart_version  = "5.0.3"
+  blackbox_exporter_deploy              = "true"
+  blackbox_exporter_helm_chart_version  = "5.3.1"
   blackbox_exporter_github_owner        = "dfds"
   blackbox_exporter_repo_name           = "platform-manifests-qa"
   blackbox_exporter_repo_branch         = "main"

@@ -1,113 +1,114 @@
 ## Atlantis ##
 
 variable "namespace" {
-  type = string
+  type        = string
   description = ""
-  default = "atlantis"
+  default     = "atlantis"
 }
 
 variable "chart_version" {
-  type = string
+  type        = string
   description = ""
+  default     = null
 }
 
 variable "atlantis_ingress" {
-  type = string
+  type        = string
   description = ""
 }
 
 variable "atlantis_image" {
-  type = string
+  type        = string
   description = ""
-  default = "dfdsdk/atlantis-prime-pipeline"
+  default     = "dfdsdk/atlantis-prime-pipeline"
 }
 
 variable "atlantis_image_tag" {
-  type = string
+  type        = string
   description = "Tag of the Atlantis image to use"
-  default = "latest"
+  default     = "latest"
 }
 
 variable "github_repositories" {
-    description = "List of repositories to whitelist for Atlantis"
-    type = list(string)
-    default = []
+  description = "List of repositories to whitelist for Atlantis"
+  type        = list(string)
+  default     = []
 }
 
 variable "arm_tenant_id" {
-  type = string
+  type        = string
   description = ""
 }
 
 variable "arm_subscription_id" {
-  type = string
+  type        = string
   description = ""
 }
 
 variable "arm_client_id" {
-  type = string
+  type        = string
   description = ""
 }
 
 variable "arm_client_secret" {
-  type = string
+  type        = string
   description = ""
 }
 
 variable "storage_class" {
-  type = string
+  type        = string
   description = "Storage class to use for the persistent volume"
 }
 
 ## Github ##
 variable "github_token" {
-    description = "Github token that the provider uses to perform Github operations. Leaving unset will fall back to GITHUB_TOKEN environment variable"
+  description = "Github token that the provider uses to perform Github operations. Leaving unset will fall back to GITHUB_TOKEN environment variable"
 }
 
 variable "platform_fluxcd_github_token" {
-    description = "Github token that the provider uses to perform Github operations for Flux."
+  description = "Github token that the provider uses to perform Github operations for Flux."
 }
 
 
 variable "github_username" {
-    description = "Github username of the account that will post Atlantis comments on PR's"
+  description = "Github username of the account that will post Atlantis comments on PR's"
 }
 
 variable "webhook_url" {
-    description = "URL for the deployed Atlantis endpoint listener"
+  description = "URL for the deployed Atlantis endpoint listener"
 }
 
 variable "webhook_content_type" {
-    default = "application/json"
+  default = "application/json"
 }
 
 variable "webhook_insecure_ssl" {
-    default = false
+  default = false
 }
 
 variable "webhook_events" {
-    description = "A list of events that should trigger the webhook"
-    default = []
-    type = list(string)
+  description = "A list of events that should trigger the webhook"
+  default     = []
+  type        = list(string)
 }
 
 ## Kubernetes ##
 
 variable "aws_access_key" {
-    description = "AWS Access Key"
+  description = "AWS Access Key"
 }
 
 variable "aws_secret" {
-    description = "AWS Secret"
+  description = "AWS Secret"
 }
 
 variable "access_key_master" {
-  type = string
+  type        = string
   description = "Access Key for Core account"
 }
 
 variable "secret_key_master" {
-  type = string
+  type        = string
   description = "Secret for Core account"
 }
 

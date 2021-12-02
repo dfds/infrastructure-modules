@@ -1,6 +1,6 @@
 
 terraform {
-  required_version = ">= 0.13"
+  required_version = "~> 1.0"
 
   /*
   Hashicorp-managed providers can be loaded implicitly
@@ -11,15 +11,15 @@ terraform {
   required_providers {
 
     kubectl = {
-      source  = "gavinbunney/kubectl"
+      source = "gavinbunney/kubectl"
     }
 
     github = {
-      source  = "integrations/github"
+      source = "integrations/github"
     }
 
     flux = {
-      source  = "fluxcd/flux"
+      source = "fluxcd/flux"
     }
 
   }

@@ -26,19 +26,10 @@ resource "github_repository_file" "traefik_helm_patch" {
 }
 
 resource "github_repository_file" "traefik_config_path" {
-  count      = var.fallback_enabled ? 1 : 0
   repository = var.repo_name
   branch     = local.repo_branch
   file       = "${local.cluster_repo_path}/${local.app_install_name}-config.yaml"
   content    = jsonencode(local.app_config_path)
-}
-
-resource "github_repository_file" "traefik_config_fallback_ingressroute" {
-  count       = var.fallback_enabled ? 1 : 0
-  repository  = var.repo_name
-  branch      = local.repo_branch
-  file        = "${local.config_repo_path}/ingressroute-fallback.yaml"
-  content     = jsonencode(local.config_fallback_ingressroute)
 }
 
 resource "github_repository_file" "traefik_config_dashboard_ingressroute" {
@@ -93,10 +84,13 @@ resource "htpasswd_password" "hash" {
 # Save password in AWS Parameter Store
 # --------------------------------------------------
 resource "aws_ssm_parameter" "param_traefik_dashboard" {
-  count       = var.dashboard_deploy ? 1 : 0
-  name        = "/eks/${var.cluster_name}/traefik-dashboard"
-  description = "Password for accessing the Traefik dashboard"
-  type        = "SecureString"
-  value       = random_password.password[0].result
-  overwrite   = true
+  count           = var.dashboard_deploy ? 1 : 0
+  name            = "/eks/${var.cluster_name}/traefik-dashboard"
+  description     = "Password for accessing the Traefik dashboard"
+  type            = "SecureString"
+  value           = random_password.password[0].result
+  overwrite       = true
+  tags = {
+    createdBy = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-traefik-flux"
+  }
 }

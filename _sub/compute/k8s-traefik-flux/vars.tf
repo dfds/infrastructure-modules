@@ -57,45 +57,6 @@ variable "additional_args" {
   default     = ["--metrics.prometheus"]
 }
 
-variable "fallback_enabled" {
-  type        = bool
-  description = "Should a fallback ingressroute be created that routes traffic to Traefik v1"
-  default     = true
-}
-
-variable "fallback_rule_match" {
-  type        = string
-  description = "The rule match of hosts, regexp and/or paths to serve through a fallback ingressroute"
-  default     = "HostRegexp(`{domain:.+}`)"
-}
-
-variable "fallback_ingressroute_name" {
-  type        = string
-  description = "The name for the ingressroute used for fallback"
-  default     = "traefik-fallback-to-v1-ingress"
-}
-
-variable "fallback_ingressroute_priority" {
-  type        = number
-  description = "IngressRoute priority. Should be a low number, but preferably not lower than 2"
-  default     = 2
-}
-
-variable "fallback_svc_namespace" {
-  type        = string
-  description = "The service used for fallback ingress is stored in which namespace"
-}
-
-variable "fallback_svc_name" {
-  type        = string
-  description = "The service name used for fallback ingress"
-}
-
-variable "fallback_svc_port" {
-  type        = number
-  description = "The service port used for fallback ingress"
-}
-
 variable "is_using_alb_auth" {
   type    = bool
   default = false
@@ -116,4 +77,10 @@ variable "dashboard_username" {
 variable "dashboard_ingress_host" {
   type        = string
   description = "The alb auth dns name for accessing Traefik."
+}
+
+variable "ssm_param_createdby" {
+  type        = string
+  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
+  default     = null
 }

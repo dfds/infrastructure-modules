@@ -21,6 +21,12 @@ variable "aws_assume_role_arn" {
 variable "aws_workload_account_id" {
 }
 
+variable "ssm_param_createdby" {
+  type        = string
+  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
+  default     = null
+}
+
 
 # --------------------------------------------------
 # EKS

@@ -108,22 +108,8 @@ module "traefik_alb_s3_access_logs" {
 }
 
 # --------------------------------------------------
-# Traefik / ALB
+# Load Balancers in front of Traefik
 # --------------------------------------------------
-
-module "traefik_deploy" {
-  source                 = "../../_sub/compute/k8s-traefik"
-  deploy                 = var.traefik_deploy
-  image_version          = var.traefik_version
-  priority_class         = "service-critical"
-  deploy_name            = "traefik"
-  cluster_name           = var.eks_cluster_name
-  replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
-  http_nodeport          = var.traefik_http_nodeport
-  admin_nodeport         = var.traefik_admin_nodeport
-  dashboard_ingress_host = local.traefik_dashboard_ingress_host
-  dashboard_deploy       = var.traefik_dashboard_deploy
-}
 
 module "traefik_flux_manifests" {
   source                 = "../../_sub/compute/k8s-traefik-flux"
@@ -137,13 +123,10 @@ module "traefik_flux_manifests" {
   repo_name              = var.traefik_flux_repo_name
   repo_branch            = var.traefik_flux_repo_branch
   additional_args        = var.traefik_flux_additional_args
-  fallback_enabled       = var.traefik_fallback_enabled
-  fallback_svc_namespace = var.traefik_fallback_svc_namespace
-  fallback_svc_name      = var.traefik_fallback_svc_name
-  fallback_svc_port      = var.traefik_fallback_svc_port
   dashboard_deploy       = var.traefik_flux_dashboard_deploy
   dashboard_ingress_host = local.traefik_flux_dashboard_ingress_host
   is_using_alb_auth      = local.traefik_flux_is_using_alb_auth
+  ssm_param_createdby    = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-services"
 
   providers = {
     github = github.fluxcd
@@ -251,47 +234,6 @@ module "traefik_alb_anon_dns_core_alias" {
     aws = aws.core
   }
 }
-
-
-# --------------------------------------------------
-# Traefik v2: For validation and testing
-# --------------------------------------------------
-
-module "traefikv2_alb_anon" {
-  source                = "../../_sub/compute/eks-alb"
-  deploy                = var.traefikv2_test_alb_deploy
-  name                  = "${var.eks_cluster_name}-traefikv2-alb"
-  cluster_name          = var.eks_cluster_name
-  vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
-  subnet_ids            = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
-  autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
-  alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
-  nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
-  target_http_port      = var.traefikv2_http_nodeport
-  target_admin_port     = var.traefikv2_admin_nodeport
-  health_check_path     = var.traefikv2_health_check_path
-  access_logs_bucket    = module.traefik_alb_s3_access_logs.name
-}
-
-module "traefikv2_alb_auth" {
-  source                = "../../_sub/compute/eks-alb-auth"
-  deploy                = var.traefikv2_test_alb_deploy
-  name                  = "${var.eks_cluster_name}-traefikv2-alb-auth"
-  cluster_name          = var.eks_cluster_name
-  vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
-  subnet_ids            = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
-  autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
-  alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
-  nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
-  azure_tenant_id       = try(module.traefik_alb_auth_appreg[0].tenant_id, "")
-  azure_client_id       = try(module.traefik_alb_auth_appreg[0].application_id, "")
-  azure_client_secret   = try(module.traefik_alb_auth_appreg[0].application_key, "")
-  target_http_port      = var.traefikv2_http_nodeport
-  target_admin_port     = var.traefikv2_admin_nodeport
-  health_check_path     = var.traefikv2_health_check_path
-  access_logs_bucket    = module.traefik_alb_s3_access_logs.name
-}
-
 
 # --------------------------------------------------
 # KIAM
@@ -461,6 +403,15 @@ module "monitoring_kube_prometheus_stack" {
   prometheus_retention    = var.monitoring_kube_prometheus_stack_prometheus_retention
   slack_channel           = var.monitoring_kube_prometheus_stack_slack_channel
   target_namespaces       = var.monitoring_kube_prometheus_stack_target_namespaces
+  github_owner            = var.monitoring_kube_prometheus_stack_github_owner
+  repo_name               = var.monitoring_kube_prometheus_stack_repo_name
+  repo_branch             = var.monitoring_kube_prometheus_stack_repo_branch
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
 }
 
 
@@ -561,6 +512,7 @@ module "crossplane" {
   chart_version                     = var.crossplane_chart_version
   recreate_pods                     = var.crossplane_recreate_pods
   force_update                      = var.crossplane_force_update
+  devel                             = var.crossplane_devel
   crossplane_providers              = var.crossplane_providers
   crossplane_admin_service_accounts = var.crossplane_admin_service_accounts
   crossplane_edit_service_accounts  = var.crossplane_edit_service_accounts
@@ -574,6 +526,7 @@ module "crossplane" {
 
 module "blackbox_exporter_flux_manifests" {
   source              = "../../_sub/monitoring/blackbox-exporter"
+  count               = var.blackbox_exporter_deploy ? 1 : 0
   cluster_name        = var.eks_cluster_name
   helm_chart_version  = var.blackbox_exporter_helm_chart_version
   github_owner        = var.blackbox_exporter_github_owner
