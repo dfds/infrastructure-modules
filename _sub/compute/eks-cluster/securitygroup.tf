@@ -4,6 +4,7 @@ resource "aws_security_group" "eks-cluster" {
   vpc_id      = aws_vpc.eks.id
 
   egress {
+    description = "Egress for all protocols"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"

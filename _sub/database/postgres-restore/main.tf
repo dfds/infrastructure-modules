@@ -4,6 +4,7 @@ resource "aws_security_group" "pgsg" {
   description = "Allow all inbound traffic on port ${var.db_port}"
 
   ingress {
+    description = "Ingress to PostgreSQL"
     from_port   = 1433
     to_port     = 1433
     protocol    = "TCP"

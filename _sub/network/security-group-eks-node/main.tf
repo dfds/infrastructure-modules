@@ -4,6 +4,7 @@ resource "aws_security_group" "eks-node" {
   vpc_id      = var.vpc_id
 
   egress {
+    description = "Egress for all protocols"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
