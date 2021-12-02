@@ -41,10 +41,11 @@ resource "aws_db_parameter_group" "dbparams" {
 }
 
 #Restore the postgres database with the pre-configured settings
+#tfsec:ignore:aws-rds-encrypt-instance-storage-data tfsec:ignore:aws-rds-no-public-db-access
 resource "aws_db_instance" "postgres" {
   engine                  = "postgres"
   engine_version          = var.engine_version
-  publicly_accessible     = "true" #tfsec:ignore:aws-rds-no-public-db-access
+  publicly_accessible     = "true"
   backup_retention_period = 10
   apply_immediately       = true
   identifier              = "${var.application}-postgres-${var.environment}"
