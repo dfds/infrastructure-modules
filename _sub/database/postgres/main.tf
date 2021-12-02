@@ -1,6 +1,8 @@
 locals {
   engine_family = var.engine_version == null ? "postgres13" : "postgres${var.engine_version}"
 }
+
+#tfsec:ignore:no-public-ingress-sgr tfsec:ignore:aws-vpc-no-public-ingress-sg
 resource "aws_security_group" "pgsg" {
   name_prefix = "${var.application}-postgres-sg-${var.environment}"
   description = "Allow all inbound traffic on port ${var.db_port}"
@@ -9,7 +11,7 @@ resource "aws_security_group" "pgsg" {
     from_port   = var.db_port
     to_port     = var.db_port
     protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:no-public-ingress-sgr
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   lifecycle {

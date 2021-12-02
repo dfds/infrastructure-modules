@@ -1,3 +1,4 @@
+#tfsec:ignore:no-public-ingress-sgr tfsec:ignore:aws-vpc-no-public-ingress-sg
 resource "aws_security_group" "pgsg" {
   name        = "${var.application}-postgres10-sg-${var.environment}"
   description = "Allow all inbound traffic on port ${var.db_port}"
@@ -6,7 +7,7 @@ resource "aws_security_group" "pgsg" {
     from_port   = 1433
     to_port     = 1433
     protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:no-public-ingress-sgr
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
