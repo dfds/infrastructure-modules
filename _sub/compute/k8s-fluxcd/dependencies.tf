@@ -57,7 +57,7 @@ locals {
   cluster_repo_path   = "clusters/${var.cluster_name}"
   app_install_name    = "platform-apps-flux-monitoring"
   app_config_path     = {
-    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta1"
+    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
     "kind" = "Kustomization"
     "metadata" = {
       "name" = local.app_install_name
@@ -76,7 +76,6 @@ locals {
         "kind" = "GitRepository"
         "name" = "platform-apps-git"
       }
-      "validation" = "client"
     }
   }
 }

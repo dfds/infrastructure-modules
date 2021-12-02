@@ -23,7 +23,7 @@ locals {
 
 locals {
   app_helm_path = {
-    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta1"
+    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
     "kind" = "Kustomization"
     "metadata" = {
       "name" = "${local.app_install_name}-helm"
@@ -42,12 +42,11 @@ locals {
       }
       "path" = "./${local.helm_repo_path}"
       "prune" = true
-      "validation" = "client"
     }
   }
 
   app_config_path = {
-    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta1"
+    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
     "kind" = "Kustomization"
     "metadata" = {
       "name" = "${local.app_install_name}-config"
@@ -66,7 +65,6 @@ locals {
       }
       "path" = "./${local.config_repo_path}"
       "prune" = true
-      "validation" = "client"
     }
   }
 
