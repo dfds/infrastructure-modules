@@ -90,6 +90,7 @@ resource "aws_security_group" "traefik_auth" {
   vpc_id      = var.vpc_id
 
   ingress {
+    description = "Ingress on standard HTTP port"
     from_port   = 80
     to_port     = 80
     protocol    = "TCP"
