@@ -1,3 +1,4 @@
+#tfsec:ignore:aws-sns-enable-topic-encryption
 resource "aws_sns_topic" "cloudwatch_alarms" {
   count = var.deploy ? 1 : 0
   name = var.name
