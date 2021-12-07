@@ -1,11 +1,14 @@
 locals {
   engine_family = var.engine_version == null ? "postgres13" : "postgres${var.engine_version}"
 }
+
+#tfsec:ignore:no-public-ingress-sgr tfsec:ignore:aws-vpc-no-public-ingress-sg
 resource "aws_security_group" "pgsg" {
   name_prefix = "${var.application}-postgres-sg-${var.environment}"
   description = "Allow all inbound traffic on port ${var.db_port}"
 
   ingress {
+    description = "Ingress to PostgreSQL"
     from_port   = var.db_port
     to_port     = var.db_port
     protocol    = "TCP"
@@ -39,6 +42,7 @@ resource "aws_db_parameter_group" "dbparams" {
 }
 
 #Restore the postgres database with the pre-configured settings
+#tfsec:ignore:aws-rds-encrypt-instance-storage-data tfsec:ignore:aws-rds-no-public-db-access
 resource "aws_db_instance" "postgres" {
   engine                  = "postgres"
   engine_version          = var.engine_version

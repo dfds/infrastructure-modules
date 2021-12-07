@@ -1,8 +1,10 @@
+#tfsec:ignore:no-public-ingress-sgr tfsec:ignore:aws-vpc-no-public-ingress-sg
 resource "aws_security_group" "pgsg" {
   name        = "${var.application}-postgres10-sg-${var.environment}"
   description = "Allow all inbound traffic on port ${var.db_port}"
 
   ingress {
+    description = "Ingress to PostgreSQL"
     from_port   = 1433
     to_port     = 1433
     protocol    = "TCP"
@@ -31,6 +33,7 @@ resource "aws_db_parameter_group" "dbparams" {
 }
 
 #Restore the postgres database with the pre-configured settings
+#tfsec:ignore:aws-rds-encrypt-instance-storage-data tfsec:ignore:aws-rds-no-public-db-access
 resource "aws_db_instance" "postgres" {
   engine                  = "postgres"
   engine_version          = "10.9"

@@ -77,6 +77,7 @@ resource "aws_security_group" "traefik" {
   vpc_id      = var.vpc_id
 
   ingress {
+    description = "Ingress on standard HTTP port"
     from_port   = 80
     to_port     = 80
     protocol    = "TCP"
@@ -84,6 +85,7 @@ resource "aws_security_group" "traefik" {
   }
 
   ingress {
+    description = "Ingress on standard HTTPS port"
     from_port   = 443
     to_port     = 443
     protocol    = "TCP"
@@ -91,13 +93,15 @@ resource "aws_security_group" "traefik" {
   }
 
   ingress {
-    from_port = var.target_admin_port
-    to_port   = var.target_admin_port
-    protocol  = "TCP"
-    self      = true
+    description = "Ingress on var.target_admin_port"
+    from_port   = var.target_admin_port
+    to_port     = var.target_admin_port
+    protocol    = "TCP"
+    self        = true
   }
 
   egress {
+    description = "Egress from var.target_http_port to var.target_admin_port"
     from_port   = var.target_http_port
     to_port     = var.target_admin_port
     protocol    = "TCP"

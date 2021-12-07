@@ -14,7 +14,7 @@ locals {
   ingressroute_basic_auth_middleware_name = "${local.deploy_name}-basic-auth"
 
   app_config_path = {
-    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta1"
+    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
     "kind" = "Kustomization"
     "metadata" = {
       "name" = "${local.app_install_name}-config"
@@ -33,7 +33,6 @@ locals {
       }
       "path" = "./${local.config_repo_path}"
       "prune" = true
-      "validation" = "client"
     }
   }
 

@@ -14,7 +14,7 @@ locals {
     grafana_middleware_name       = "${local.grafana_ingressroute_name}-mw"
 
     grafana_config_path = {
-        "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta1"
+        "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
         "kind" = "Kustomization"
         "metadata" = {
             "name" = "${local.grafana_platform_apps_name}-config"
@@ -28,7 +28,6 @@ locals {
             }
             "path" = "./${local.config_repo_path}"
             "prune" = true
-            "validation" = "client"
         }
     }
 
