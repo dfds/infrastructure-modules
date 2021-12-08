@@ -44,3 +44,8 @@ variable "db_instance_class" {
   description = "RDS database instance class"
   default     = "db.t2.micro"
 }
+
+variable "db_allocated_storage" {
+  description = "The amount of space, in GB, to allocate for the database"
+  default     = 20
+}
