@@ -25,6 +25,7 @@ module "postgres" {
   skip_final_snapshot = var.skip_final_snapshot
   engine_version      = var.engine_version
   db_instance_class   = var.db_instance_class
+  db_allocated_storage   = var.db_allocated_storage
 }
 
 module "param_store_pghost" {
