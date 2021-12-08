@@ -13,3 +13,5 @@ The connection strings, passwords etc can be found in parameter store in the sam
 - db_master_password = "testtesttest" (Can be used for changing password)
 - skip_final_snapshot = false (Optional and should NOT be set to true for production)
 - engine_version = 10 (Must be major version. Cannot be downgraded. Optional, but defaults to 10)
+- db_instance_class - "db.t3.nano" RDS (database instance class. Optional, but defaults to "db.t2.micro")
+- db_allocated_storage - 10 (The amount of space, in GB, to allocate for the database. Optional, but defaults to 20)
