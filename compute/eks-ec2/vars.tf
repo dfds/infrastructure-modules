@@ -53,7 +53,7 @@ variable "eks_cluster_zones" {
 variable "eks_cluster_log_types" {
   type        = list(string)
   description = "A list of the desired control plane logging to enable: api, audit, authenticator, controllerManager, scheduler. See also https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html."
-  default     = ["api", "audit", "authenticator", "scheduler", "controllerManager"]
+  default     = ["api", "audit", "authenticator"]
 }
 
 variable "eks_cluster_log_retention_days" {
