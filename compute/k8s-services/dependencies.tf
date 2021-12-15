@@ -60,7 +60,7 @@ data "aws_route53_zone" "workload" {
 }
 
 data "aws_route53_zone" "core" {
-  count        = signum(length(var.traefik_alb_auth_core_alias))
+  count        = signum(length(var.traefik_alb_auth_core_alias) + length(var.traefik_alb_anon_core_alias))
   name         = "${local.core_dns_zone_name}."
   private_zone = false
   provider     = aws.core
@@ -272,22 +272,22 @@ POLICY
 
 locals {
   blackbox_exporter_monitoring_atlantis = var.atlantis_deploy ? [{
-      "name"    = "atlantis"
-      "url"     = "http://atlantis.${var.atlantis_namespace}/healthz"
-      "module"  = "http_2xx"
-    }] : []
+    "name"   = "atlantis"
+    "url"    = "http://atlantis.${var.atlantis_namespace}/healthz"
+    "module" = "http_2xx"
+  }] : []
 
   blackbox_exporter_monitoring_grafana = var.monitoring_kube_prometheus_stack_deploy ? [{
-      "name"    = "grafana"
-      "url"     = "http://monitoring-grafana.monitoring/api/health"
-      "module"  = "http_2xx"
-    }] : []
+    "name"   = "grafana"
+    "url"    = "http://monitoring-grafana.monitoring/api/health"
+    "module" = "http_2xx"
+  }] : []
 
   blackbox_exporter_monitoring_traefik = var.traefik_flux_deploy ? [{
-      "name"    = "traefik"
-      "url"     = "http://traefik.traefik:9000/ping"
-      "module"  = "http_2xx"
-    }] : []
+    "name"   = "traefik"
+    "url"    = "http://traefik.traefik:9000/ping"
+    "module" = "http_2xx"
+  }] : []
 
   blackbox_exporter_monitoring_targets = concat(
     local.blackbox_exporter_monitoring_atlantis,
