@@ -35,7 +35,7 @@ EOF
 }
 
 
-resource "aws_iam_policy" "csi_driver_policy_v2+" {
+resource "aws_iam_policy" "csi_driver_policy_v2plus" {
   name        = "eks-${var.cluster_name}-csidriver"
   description = "Policy for the EKS CSI Driver v2 and later."
 
