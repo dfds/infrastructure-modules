@@ -35,6 +35,10 @@ EOF
 }
 
 
+data "aws_arn" "csi_driver_iam_policy_arn" {
+  arn = "${aws_iam_policy.csi_driver_policy_v2plus.arn}"
+}
+
 resource "aws_iam_policy" "csi_driver_policy_v2plus" {
   name        = "eks-${var.cluster_name}-csidriver"
   description = "Policy for the EKS CSI Driver v2 and later."
@@ -232,6 +236,40 @@ resource "aws_iam_role_policy_attachment" "csi-policy-attach" {
   role       = aws_iam_role.csi_driver_role.name
   policy_arn = aws_iam_policy.csi_driver_policy.arn
 }
+
+# define IAM role for the CSI Driver to utilise, including a trust relationship for the KAIM Server role
+resource "aws_iam_role" "csi_driver_v2plus_role" {
+  name        = "eks-${var.cluster_name}-csiv2plus"
+  description = "Role the EKS CSI Driver process assumes"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::${data.aws_arn.csi_driver_iam_policy_arn.account}:oidc-provider/${trim(var.eks_openid_connect_provider_url,"https://")}"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "${trim(var.eks_openid_connect_provider_url,"https://")}:sub": "system:serviceaccount:kube-system:ebs-csi-controller-sa"
+        }
+      }
+    }
+  ]
+}
+EOF
+
+}
+
+
+resource "aws_iam_role_policy_attachment" "csiv2-policy-attach" {
+  role       = aws_iam_role.csi_driver_v2plus_role.name
+  policy_arn = aws_iam_policy.csi_driver_policy_v2plus.arn
+}
+
 
 # helm chart deployment for the CSI driver
 resource "helm_release" "aws-ebs-csi-driver" {
