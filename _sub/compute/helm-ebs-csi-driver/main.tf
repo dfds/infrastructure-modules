@@ -340,3 +340,23 @@ resource "null_resource" "gp2_removedefault_patch" {
   }
 
 }
+
+
+resource "null_resource" "annotate_csi_serviceaccount" {
+
+  depends_on = [helm_release.aws-ebs-csi-driver]
+
+  provisioner "local-exec" {
+    command = "kubectl --kubeconfig ${var.kubeconfig_path} annotate serviceaccount -n kube-system ebs-csi-controller-sa eks.amazonaws.com/role-arn=arn:aws:iam::${data.aws_arn.csi_driver_iam_policy_arn.account}:role/${aws_iam_role.csi_driver_v2plus_role.name} --overwrite"
+  }
+}
+
+
+resource "null_resource" "restart_csi_pods" {
+
+  depends_on = [null_resource.annotate_csi_serviceaccount]
+
+  provisioner "local-exec" {
+    command = "kubectl --kubeconfig ${var.kubeconfig_path} delete pods -n kube-system -l app.kubernetes.io/instance=aws-ebs-csi-driver"
+  }
+}
