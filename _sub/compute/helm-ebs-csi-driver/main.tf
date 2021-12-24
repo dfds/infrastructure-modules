@@ -158,11 +158,12 @@ EOF
 
 }
 
-
+# required TLS Certificate which is then used for the openid connect provider thumprint list
 data "tls_certificate" "eks" {
   url = "${var.eks_openid_connect_provider_url}"
 }
 
+# define openid connect provider that is bound to the provider URL for the EKS cluster
 resource "aws_iam_openid_connect_provider" "default" {
   url = var.eks_openid_connect_provider_url
 
@@ -200,7 +201,7 @@ EOF
 
 }
 
-
+# bind policy to the IAM role for the CSI Driver
 resource "aws_iam_role_policy_attachment" "csi-policy-attach" {
   role       = aws_iam_role.csi_driver_role.name
   policy_arn = aws_iam_policy.csi_driver_policy.arn
