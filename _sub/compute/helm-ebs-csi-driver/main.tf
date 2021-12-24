@@ -1,47 +1,12 @@
+# IAM Policy ARN instance so we can pull specific information from it later
+data "aws_arn" "csi_driver_iam_policy_arn" {
+  arn = "${aws_iam_policy.csi_driver_policy.arn}"
+}
+
 # define IAM policy for the CSI Driver to utilise
 resource "aws_iam_policy" "csi_driver_policy" {
-  name        = "Amazon_EBS_CSI_Driver_${var.cluster_name}"
-  description = "Policy for the EKS CSI Driver process"
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:AttachVolume",
-        "ec2:CreateSnapshot",
-        "ec2:CreateTags",
-        "ec2:CreateVolume",
-        "ec2:DeleteSnapshot",
-        "ec2:DeleteTags",
-        "ec2:DeleteVolume",
-        "ec2:DescribeAvailabilityZones",
-        "ec2:DescribeInstances",
-        "ec2:DescribeSnapshots",
-        "ec2:DescribeTags",
-        "ec2:DescribeVolumes",
-        "ec2:DescribeVolumesModifications",
-        "ec2:DetachVolume",
-        "ec2:ModifyVolume"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-EOF
-
-}
-
-
-data "aws_arn" "csi_driver_iam_policy_arn" {
-  arn = "${aws_iam_policy.csi_driver_policy_v2plus.arn}"
-}
-
-resource "aws_iam_policy" "csi_driver_policy_v2plus" {
   name        = "eks-${var.cluster_name}-csidriver"
-  description = "Policy for the EKS CSI Driver v2 and later."
+  description = "Policy for the EKS CSI Driver."
 
   policy = <<EOF
 {
@@ -218,35 +183,6 @@ resource "aws_iam_role" "csi_driver_role" {
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "",
-      "Effect": "Allow",
-      "Principal": {
-        "AWS": "${var.kiam_server_role_arn}"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-
-}
-
-# link the CSI Driver Policy to the newly defined CSI Driver Role
-resource "aws_iam_role_policy_attachment" "csi-policy-attach" {
-  role       = aws_iam_role.csi_driver_role.name
-  policy_arn = aws_iam_policy.csi_driver_policy.arn
-}
-
-# define IAM role for the CSI Driver to utilise, including a trust relationship for the KAIM Server role
-resource "aws_iam_role" "csi_driver_v2plus_role" {
-  name        = "eks-${var.cluster_name}-csiv2plus"
-  description = "Role the EKS CSI Driver process assumes"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
       "Effect": "Allow",
       "Principal": {
         "Federated": "arn:aws:iam::${data.aws_arn.csi_driver_iam_policy_arn.account}:oidc-provider/${trim(var.eks_openid_connect_provider_url,"https://")}"
@@ -265,9 +201,9 @@ EOF
 }
 
 
-resource "aws_iam_role_policy_attachment" "csiv2-policy-attach" {
-  role       = aws_iam_role.csi_driver_v2plus_role.name
-  policy_arn = aws_iam_policy.csi_driver_policy_v2plus.arn
+resource "aws_iam_role_policy_attachment" "csi-policy-attach" {
+  role       = aws_iam_role.csi_driver_role.name
+  policy_arn = aws_iam_policy.csi_driver_policy.arn
 }
 
 
@@ -323,7 +259,6 @@ resource "kubernetes_storage_class" "csi-gp2" {
 }
 
 # change gp2 so it's no longer the default storageclass
-
 locals {
   gp2_is_default = false
 }
@@ -342,16 +277,17 @@ resource "null_resource" "gp2_removedefault_patch" {
 }
 
 
+# annotates the Service Account used by the CSI Driver with the IAM Role to be utilised.
 resource "null_resource" "annotate_csi_serviceaccount" {
 
   depends_on = [helm_release.aws-ebs-csi-driver]
 
   provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${var.kubeconfig_path} annotate serviceaccount -n kube-system ebs-csi-controller-sa eks.amazonaws.com/role-arn=arn:aws:iam::${data.aws_arn.csi_driver_iam_policy_arn.account}:role/${aws_iam_role.csi_driver_v2plus_role.name} --overwrite"
+    command = "kubectl --kubeconfig ${var.kubeconfig_path} annotate serviceaccount -n kube-system ebs-csi-controller-sa eks.amazonaws.com/role-arn=arn:aws:iam::${data.aws_arn.csi_driver_iam_policy_arn.account}:role/${aws_iam_role.csi_driver_role.name} --overwrite"
   }
 }
 
-
+# ensures the pods for the CSI Driver are restarted once the Service Account has been annotated.
 resource "null_resource" "restart_csi_pods" {
 
   depends_on = [null_resource.annotate_csi_serviceaccount]
