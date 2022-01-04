@@ -138,7 +138,7 @@ POLICY
 			}
 		},
 		{
-			"Sid": "DenyIAM",
+			"Sid": "DenyIAMOpenIDConnectProvider",
 			"Effect": "Deny",
 			"Action": [
 				"iam:CreateOpenIDConnectProvider",
