@@ -4,6 +4,7 @@ data "aws_arn" "csi_driver_iam_policy_arn" {
 }
 
 # define IAM policy for the CSI Driver to utilise
+#tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_policy" "csi_driver_policy" {
   name        = "eks-${var.cluster_name}-csidriver"
   description = "Policy for the EKS CSI Driver."
