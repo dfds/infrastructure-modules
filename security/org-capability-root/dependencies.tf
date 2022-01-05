@@ -150,7 +150,8 @@ POLICY
 			"Condition": {
 				"StringNotLike": {
 					"aws:PrincipalArn": [
-						"arn:aws:iam::*:role/EKSAdmin"
+						"arn:aws:iam::*:role/EKSAdmin",
+						"arn:aws:iam::*:role/OrgRole"
 					]
 				}
 			}
