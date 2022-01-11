@@ -98,7 +98,6 @@ POLICY
 				"iam:CreateAccountAlias",
 				"iam:CreateGroup",
 				"iam:CreateLoginProfile",
-				"iam:CreateOpenIDConnectProvider",
 				"iam:CreateSAMLProvider",
 				"iam:CreateUser",
 				"iam:CreateVirtualMFADevice",
@@ -108,7 +107,6 @@ POLICY
 				"iam:DeleteGroup",
 				"iam:DeleteGroupPolicy",
 				"iam:DeleteLoginProfile",
-				"iam:DeleteOpenIDConnectProvider",
 				"iam:DeleteSAMLProvider",
 				"iam:DeleteUser",
 				"iam:DeleteUserPermissionsBoundary",
@@ -134,6 +132,25 @@ POLICY
 			"Condition": {
 				"StringNotLike": {
 					"aws:PrincipalArn": [
+						"arn:aws:iam::*:role/OrgRole"
+					]
+				}
+			}
+		},
+		{
+			"Sid": "DenyIAMOpenIDConnectProvider",
+			"Effect": "Deny",
+			"Action": [
+				"iam:CreateOpenIDConnectProvider",
+				"iam:DeleteOpenIDConnectProvider"
+			],
+			"Resource": [
+				"*"
+			],
+			"Condition": {
+				"StringNotLike": {
+					"aws:PrincipalArn": [
+						"arn:aws:iam::*:role/EKSAdmin",
 						"arn:aws:iam::*:role/OrgRole"
 					]
 				}

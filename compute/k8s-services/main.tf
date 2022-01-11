@@ -87,12 +87,13 @@ provider "azuread" {
 # --------------------------------------------------
 
 module "ebs_csi_driver" {
-  source               = "../../_sub/compute/helm-ebs-csi-driver"
-  count                = var.ebs_csi_driver_deploy ? 1 : 0
-  chart_version        = var.ebs_csi_driver_chart_version
-  cluster_name         = var.eks_cluster_name
-  kiam_server_role_arn = module.kiam_deploy.server_role_arn
-  kubeconfig_path      = local.kubeconfig_path
+  source                          = "../../_sub/compute/helm-ebs-csi-driver"
+  count                           = var.ebs_csi_driver_deploy ? 1 : 0
+  chart_version                   = var.ebs_csi_driver_chart_version
+  cluster_name                    = var.eks_cluster_name
+  kiam_server_role_arn            = module.kiam_deploy.server_role_arn
+  kubeconfig_path                 = local.kubeconfig_path
+  eks_openid_connect_provider_url = data.terraform_remote_state.cluster.outputs.eks_openid_connect_provider_url
 }
 
 # --------------------------------------------------

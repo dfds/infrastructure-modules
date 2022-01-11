@@ -2,7 +2,7 @@
 # Cluster
 # --------------------------------------------------
 
-# Legacy, to be decommisioned 
+# Legacy, to be decommisioned
 output "eks_cluster_vpc_id" {
   value = module.eks_cluster.vpc_id
 }
@@ -14,6 +14,11 @@ output "eks_cluster_subnet_ids" {
 
 output "kubeconfig_path" {
   value = local.kubeconfig_path
+}
+
+
+output "eks_openid_connect_provider_url" {
+  value = module.eks_cluster.eks_openid_connect_provider_url
 }
 
 
