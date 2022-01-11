@@ -220,6 +220,11 @@ resource "helm_release" "aws-ebs-csi-driver" {
   force_update  = false
 
   set {
+    name = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = "arn:aws:iam::${data.aws_arn.csi_driver_iam_policy_arn.account}:role/${aws_iam_role.csi_driver_role.name}"
+  }
+
+  set {
     name  = "enableVolumeScheduling"
     value = "true"
   }
@@ -233,11 +238,6 @@ resource "helm_release" "aws-ebs-csi-driver" {
     name  = "enableVolumeSnapshot"
     value = "true"
   }
-
-  values = [
-    templatefile("${path.module}/values/annotations.yaml", {
-    role_arn = aws_iam_role.csi_driver_role.arn
-  })]
 
 }
 
@@ -265,6 +265,7 @@ locals {
   gp2_is_default = false
 }
 
+
 resource "null_resource" "gp2_removedefault_patch" {
 
   depends_on = [kubernetes_storage_class.csi-gp2]
@@ -276,25 +277,4 @@ resource "null_resource" "gp2_removedefault_patch" {
     command = "kubectl --kubeconfig ${var.kubeconfig_path} patch storageclass gp2 -p '{\"metadata\": {\"annotations\":{\"storageclass.kubernetes.io/is-default-class\":\"${local.gp2_is_default}\"}}}'"
   }
 
-}
-
-
-# annotates the Service Account used by the CSI Driver with the IAM Role to be utilised.
-resource "null_resource" "annotate_csi_serviceaccount" {
-
-  depends_on = [helm_release.aws-ebs-csi-driver]
-
-  provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${var.kubeconfig_path} annotate serviceaccount -n kube-system ebs-csi-controller-sa eks.amazonaws.com/role-arn=arn:aws:iam::${data.aws_arn.csi_driver_iam_policy_arn.account}:role/${aws_iam_role.csi_driver_role.name} --overwrite"
-  }
-}
-
-# ensures the pods for the CSI Driver are restarted once the Service Account has been annotated.
-resource "null_resource" "restart_csi_pods" {
-
-  depends_on = [null_resource.annotate_csi_serviceaccount]
-
-  provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${var.kubeconfig_path} delete pods -n kube-system -l app.kubernetes.io/instance=aws-ebs-csi-driver"
-  }
 }
