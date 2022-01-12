@@ -27,9 +27,9 @@ resource "aws_security_group" "pgsg" {
 
 #Enable SSL on the database by default
 resource "aws_db_parameter_group" "dbparams" {
-  name        = "${var.application}-${var.engine_family}-force-ssl-${var.environment}"
-  description = "Force SSL encryption for ${var.engine_family}"
-  family      = var.engine_family
+  name        = "${var.application}-${local.engine_family}-force-ssl-${var.environment}"
+  description = "Force SSL encryption for ${local.engine_family}"
+  family      = local.engine_family
 
   parameter {
     name  = "rds.force_ssl"
