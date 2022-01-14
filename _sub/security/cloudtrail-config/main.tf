@@ -1,3 +1,4 @@
+#tfsec:ignore:aws-cloudtrail-enable-at-rest-encryption
 resource "aws_cloudtrail" "cloudtrail" {
   count                         = var.deploy ? 1 : 0
   name                          = var.trail_name
