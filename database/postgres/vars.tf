@@ -36,7 +36,7 @@ variable "skip_final_snapshot" {
 variable "create_before_destroy" {
   type        = bool
   description = "Define if the parameter group should be created before being destroyed"
-  default     = false
+  default     = true
 }
 
 variable "engine_version" {
