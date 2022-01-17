@@ -25,7 +25,7 @@ terraform {
 
     azuread = {
       source  = "hashicorp/azuread"
-      version = "~> 2.8.0"
+      version = "~> 2.15.0"
     }
 
     github = {
