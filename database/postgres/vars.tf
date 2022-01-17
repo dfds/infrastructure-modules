@@ -33,12 +33,6 @@ variable "skip_final_snapshot" {
   default     = false
 }
 
-variable "create_before_destroy" {
-  type        = bool
-  description = "Define if the parameter group should be created before being destroyed"
-  default     = true
-}
-
 variable "engine_version" {
   type        = string
   description = "RDS engine version"
