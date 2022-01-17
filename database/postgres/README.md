@@ -12,7 +12,6 @@ The connection strings, passwords etc can be found in parameter store in the sam
 - db_master_username = "test" (Destrutive if changed)
 - db_master_password = "testtesttest" (Can be used for changing password)
 - skip_final_snapshot = false (Optional and should NOT be set to true for production)
-- create_before_destroy = true (Set to true when upgrading the DB engine version, otherwise terraform fails to apply because the DB depends on the parameter group which needs to be created before being destroyed. Set to false when doing a manual 'terraform destroy' command (details: https://www.terraform.io/language/meta-arguments/lifecycle#create_before_destroy). Optional, defaults to true)
 - engine_version = 10 (Must be major version. Cannot be downgraded. Optional, but defaults to 10)
 - db_instance_class - "db.t3.nano" RDS (database instance class. Optional, but defaults to "db.t2.micro")
 - db_allocated_storage - 10 (The amount of space, in GB, to allocate for the database. Optional, but defaults to 20)

@@ -15,18 +15,17 @@ provider "aws" {
 # --------------------------------------------------
 
 module "postgres" {
-  source                  = "../../_sub/database/postgres"
-  application             = var.application
-  environment             = var.environment
-  db_name                 = var.db_name
-  db_master_username      = var.db_master_username
-  db_master_password      = var.db_master_password
-  db_port                 = var.db_port
-  skip_final_snapshot     = var.skip_final_snapshot
-  create_before_destroy   = var.create_before_destroy
-  engine_version          = var.engine_version
-  db_instance_class       = var.db_instance_class
-  db_allocated_storage    = var.db_allocated_storage
+  source              = "../../_sub/database/postgres"
+  application         = var.application
+  environment         = var.environment
+  db_name             = var.db_name
+  db_master_username  = var.db_master_username
+  db_master_password  = var.db_master_password
+  db_port             = var.db_port
+  skip_final_snapshot = var.skip_final_snapshot
+  engine_version      = var.engine_version
+  db_instance_class   = var.db_instance_class
+  db_allocated_storage   = var.db_allocated_storage
 }
 
 module "param_store_pghost" {
