@@ -11,6 +11,8 @@ resource "aws_lb" "traefik" {
     enabled = var.access_logs_enabled
     prefix  = var.name
   }
+
+  drop_invalid_header_fields = true
 }
 
 resource "aws_autoscaling_attachment" "traefik" {
