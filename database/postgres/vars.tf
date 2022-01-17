@@ -49,3 +49,9 @@ variable "db_allocated_storage" {
   description = "The amount of space, in GB, to allocate for the database"
   default     = 20
 }
+
+variable "allow_major_version_upgrade" {
+  type        = bool
+  description = "Define if major version upgrades to the Postgres engine are allowed"
+  default     = true
+}
