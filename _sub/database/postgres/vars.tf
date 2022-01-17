@@ -49,3 +49,9 @@ variable "engine_version" {
   description = "RDS engine version (expects major version)"
   default     = null
 }
+
+variable "allow_major_version_upgrade" {
+  type        = bool
+  description = "Define if major version upgrades to the Postgres engine are allowed"
+  default     = true
+}
