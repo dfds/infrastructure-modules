@@ -35,6 +35,10 @@ resource "aws_db_parameter_group" "dbparams" {
     name  = "rds.force_ssl"
     value = "1"
   }
+  
+  lifecycle {
+    create_before_destroy = true
+  }
 
   tags = {
     environment = var.environment
