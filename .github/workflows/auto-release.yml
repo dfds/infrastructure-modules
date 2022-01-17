@@ -1,0 +1,16 @@
+name: Auto release on merge
+
+on:
+  push:
+    branches: ["master", "main"]
+
+jobs:
+  auto-release:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: rymndhng/release-on-push-action@master
+        with:
+          bump_version_scheme: patch
+          tag_prefix: ""
