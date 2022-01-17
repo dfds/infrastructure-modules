@@ -36,6 +36,10 @@ resource "aws_db_parameter_group" "dbparams" {
     value = "1"
   }
 
+  lifecycle {
+    create_before_destroy = var.create_before_destroy
+  }
+
   tags = {
     environment = var.environment
   }
