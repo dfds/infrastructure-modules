@@ -55,3 +55,13 @@ variable "allow_major_version_upgrade" {
   description = "Define if major version upgrades to the Postgres engine are allowed"
   default     = true
 }
+
+variable "ssl_mode" {
+  type        = string
+  description = "Specifies the kind of SSL Mode to use"
+  default     = "Require"
+  validation {
+    condition     = contains(["Require", "VerifyFull", "VerifyCA"], var.ssl_mode)
+    error_message = "Invalid value for SSL mode. Valid values: Require, VerifyFull, VerifyCA."
+  }
+}

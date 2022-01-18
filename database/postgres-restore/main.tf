@@ -22,6 +22,7 @@ module "postgres_restore" {
   db_master_username  = var.db_master_username
   db_master_password  = var.db_master_password
   skip_final_snapshot = var.skip_final_snapshot
+  ssl_mode            = var.ssl_mode
 }
 
 module "param_store_pghost" {

@@ -27,6 +27,7 @@ module "postgres" {
   db_instance_class             = var.db_instance_class
   db_allocated_storage          = var.db_allocated_storage
   allow_major_version_upgrade   = var.allow_major_version_upgrade
+  ssl_mode                      = var.ssl_mode
 }
 
 module "param_store_pghost" {
