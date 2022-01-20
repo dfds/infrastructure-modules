@@ -1,4 +1,4 @@
-name: tfsec
+name: Run tfsec on merge
 on:
   push:
     branches:
@@ -16,10 +16,10 @@ jobs:
       - name: tfsec
         uses: tfsec/tfsec-sarif-action@master
         with:
-          sarif_file: tfsec.sarif          
+          sarif_file: tfsec.sarif
 
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v1
         with:
           # Path to SARIF file relative to the root of the repository
-          sarif_file: tfsec.sarif         
+          sarif_file: tfsec.sarif
