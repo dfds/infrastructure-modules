@@ -104,7 +104,7 @@ resource "helm_release" "aws-efs-csi-driver" {
 resource "aws_security_group" "efs_sg" {
   name        = "EFS Security Group"
   description = "Security Group for EFS"
-  vpc_id      = data.terraform_remote_state.cluster.outputs.eks_cluster_vpc_id
+  vpc_id      = var.eks_cluster_vpc_id
 
   ingress {
     from_port   = 2049
