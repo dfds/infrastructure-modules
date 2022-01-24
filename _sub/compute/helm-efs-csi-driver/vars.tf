@@ -14,3 +14,9 @@ variable "cluster_name" {
   type        = string
   description = "The cluster name"
 }
+
+variable "eks_cluster_vpc_id" {
+  type        = string
+  description = "The VPC ID used by the EKS Cluster."
+}
+
