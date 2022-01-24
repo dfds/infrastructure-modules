@@ -348,6 +348,22 @@ variable "ebs_csi_driver_chart_version" {
 
 
 # --------------------------------------------------
+# AWS EFS CSI Driver
+# --------------------------------------------------
+
+variable "efs_csi_driver_deploy" {
+  type        = bool
+  description = "Deploy AWS EFS CSI driver Helm chart"
+  default     = true
+}
+
+variable "efs_csi_driver_chart_version" {
+  type        = string
+  description = "The version of the AWS EFS CSI driver Helm chart to deploy (defaults to latest)"
+  default     = null
+}
+
+# --------------------------------------------------
 # Platform Flux CD
 # --------------------------------------------------
 
