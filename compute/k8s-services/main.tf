@@ -97,6 +97,35 @@ module "ebs_csi_driver" {
 }
 
 # --------------------------------------------------
+# AWS EFS CSI Driver (Helm Chart Installation)
+# --------------------------------------------------
+
+module "efs_csi_driver" {
+  source                          = "../../_sub/compute/helm-efs-csi-driver"
+  count                           = var.efs_csi_driver_deploy ? 1 : 0
+  chart_version                   = var.efs_csi_driver_chart_version
+  cluster_name                    = var.eks_cluster_name
+  eks_openid_connect_provider_url = data.terraform_remote_state.cluster.outputs.eks_openid_connect_provider_url
+  eks_cluster_vpc_id              = data.terraform_remote_state.cluster.outputs.eks_cluster_vpc_id
+}
+
+# module "efs_volume_1" {
+#   depends_on = [module.efs_csi_driver]
+#   source                          = "../../_sub/storage/efs-filesystem"
+#   filesystem_name                 = "test-volume-1"
+#   securitygroup_id                = module.efs_csi_driver[0].securitygroup_id
+#   eks_worker_subnet_ids           = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
+# }
+
+# module "efs_volume_2" {
+#   depends_on = [module.efs_csi_driver]
+#   source                          = "../../_sub/storage/efs-filesystem"
+#   filesystem_name                 = "test-volume-2"
+#   securitygroup_id                = module.efs_csi_driver[0].securitygroup_id
+#   eks_worker_subnet_ids           = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
+# }
+
+# --------------------------------------------------
 # ALB access logs S3 bucket
 # --------------------------------------------------
 
@@ -540,3 +569,4 @@ module "blackbox_exporter_flux_manifests" {
 
   depends_on = [module.monitoring_kube_prometheus_stack]
 }
+
