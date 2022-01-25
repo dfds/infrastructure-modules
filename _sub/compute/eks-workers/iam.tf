@@ -96,3 +96,22 @@ EOF
 
 }
 
+resource "aws_iam_role_policy" "efs_allow_describemounttargets" {
+  name = "efs_allow_describemounttargets"
+  role = aws_iam_role.eks.id
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "elasticfilesystem:DescribeMountTargets",
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+
+}
