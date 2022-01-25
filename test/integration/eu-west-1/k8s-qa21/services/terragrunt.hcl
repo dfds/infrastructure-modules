@@ -82,17 +82,21 @@ inputs = {
   # Kube-prometheus-stack
   # --------------------------------------------------
 
-  monitoring_kube_prometheus_stack_deploy                  = true
-  monitoring_kube_prometheus_stack_chart_version           = "19.0.1"
-  monitoring_kube_prometheus_stack_target_namespaces       = "kube-system|monitoring"
-  monitoring_kube_prometheus_stack_prometheus_storage_size = "5Gi"
-  monitoring_kube_prometheus_stack_prometheus_storageclass = "gp2"
-  monitoring_kube_prometheus_stack_prometheus_retention    = "1d"
-  monitoring_kube_prometheus_stack_slack_webhook           = "https://dummy.slack.webhook"
-  monitoring_kube_prometheus_stack_slack_channel           = "#hellman-alerting"
-  monitoring_kube_prometheus_stack_github_owner            = "dfds"
-  monitoring_kube_prometheus_stack_repo_name               = "platform-manifests-qa"
-  monitoring_kube_prometheus_stack_repo_branch             = "main"
+  monitoring_kube_prometheus_stack_deploy                     = true
+  monitoring_kube_prometheus_stack_chart_version              = "19.0.1"
+  monitoring_kube_prometheus_stack_target_namespaces          = "kube-system|monitoring"
+  monitoring_kube_prometheus_stack_prometheus_storage_size    = "5Gi"
+  monitoring_kube_prometheus_stack_prometheus_storageclass    = "gp2"
+  monitoring_kube_prometheus_stack_prometheus_retention       = "1d"
+  monitoring_kube_prometheus_stack_slack_webhook              = "https://dummy.slack.webhook"
+  monitoring_kube_prometheus_stack_slack_channel              = "#hellman-alerting"
+  monitoring_kube_prometheus_stack_github_owner               = "dfds"
+  monitoring_kube_prometheus_stack_repo_name                  = "platform-manifests-qa"
+  monitoring_kube_prometheus_stack_repo_branch                = "main"
+  monitoring_kube_prometheus_stack_prometheus_request_memory  = "500Mi"
+  monitoring_kube_prometheus_stack_prometheus_request_cpu     = "500m"
+  monitoring_kube_prometheus_stack_prometheus_limit_memory    = "2Gi"
+  monitoring_kube_prometheus_stack_prometheus_limit_cpu       = "1000m"
 
 
   # --------------------------------------------------
