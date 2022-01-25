@@ -24,6 +24,8 @@ resource "kubernetes_storage_class" "efs-storageclass" {
     provisioningMode = "efs-ap"
     fileSystemId = "${aws_efs_file_system.efs_file_system.id}"
     directoryPerms = "700"
+    gidRangeStart = "1000"
+    gidRangeEnd = "2000"
     basePath = "/dynamic_provisioning"
   }
 }
