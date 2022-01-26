@@ -32,10 +32,14 @@ resource "helm_release" "kube_prometheus_stack" {
     }) : "",
 
     templatefile("${path.module}/values/prometheus.yaml", {
-      prometheus_priorityclass = var.priority_class
-      prometheus_storageclass  = var.prometheus_storageclass
-      prometheus_storage_size  = var.prometheus_storage_size
-      prometheus_retention     = var.prometheus_retention
+      prometheus_priorityclass  = var.priority_class
+      prometheus_storageclass   = var.prometheus_storageclass
+      prometheus_storage_size   = var.prometheus_storage_size
+      prometheus_retention      = var.prometheus_retention
+      prometheus_request_memory = var.prometheus_request_memory
+      prometheus_request_cpu    = var.prometheus_request_cpu
+      prometheus_limit_memory   = var.prometheus_limit_memory
+      prometheus_limit_cpu      = var.prometheus_limit_cpu
     }),
 
     length(var.slack_webhook) > 0 ? templatefile("${path.module}/values/alertmanager-slack.yaml", {

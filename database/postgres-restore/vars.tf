@@ -37,3 +37,12 @@ variable "skip_final_snapshot" {
   default     = false
 }
 
+variable "ssl_mode" {
+  type        = string
+  description = "Specifies the kind of SSL Mode to use"
+  default     = "Require"
+  validation {
+    condition     = contains(["Require", "VerifyFull", "VerifyCA"], var.ssl_mode)
+    error_message = "Invalid value for SSL mode. Valid values: Require, VerifyFull, VerifyCA."
+  }
+}

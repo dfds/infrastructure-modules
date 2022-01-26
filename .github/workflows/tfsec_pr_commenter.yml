@@ -1,4 +1,4 @@
-name: tfsec-pr-commenter
+name: Run tfsec on pull requests
 on:
   pull_request:
 jobs:

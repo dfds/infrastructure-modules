@@ -91,7 +91,6 @@ POLICY
 			"Sid": "DenyIAM",
 			"Effect": "Deny",
 			"Action": [
-				"iam:AddClientIDToOpenIDConnectProvider",
 				"iam:AddUserToGroup",
 				"iam:AttachGroupPolicy",
 				"iam:ChangePassword",
@@ -116,13 +115,11 @@ POLICY
 				"iam:EnableMFADevice",
 				"iam:PutGroupPolicy",
 				"iam:PutUserPermissionsBoundary",
-				"iam:RemoveClientIDFromOpenIDConnectProvider",
 				"iam:RemoveUserFromGroup",
 				"iam:ResyncMFADevice",
 				"iam:UpdateAccountPasswordPolicy",
 				"iam:UpdateGroup",
 				"iam:UpdateLoginProfile",
-				"iam:UpdateOpenIDConnectProviderThumbprint",
 				"iam:UpdateSAMLProvider",
 				"iam:UpdateUser"
 			],
@@ -132,25 +129,6 @@ POLICY
 			"Condition": {
 				"StringNotLike": {
 					"aws:PrincipalArn": [
-						"arn:aws:iam::*:role/OrgRole"
-					]
-				}
-			}
-		},
-		{
-			"Sid": "DenyIAMOpenIDConnectProvider",
-			"Effect": "Deny",
-			"Action": [
-				"iam:CreateOpenIDConnectProvider",
-				"iam:DeleteOpenIDConnectProvider"
-			],
-			"Resource": [
-				"*"
-			],
-			"Condition": {
-				"StringNotLike": {
-					"aws:PrincipalArn": [
-						"arn:aws:iam::*:role/EKSAdmin",
 						"arn:aws:iam::*:role/OrgRole"
 					]
 				}

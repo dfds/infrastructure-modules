@@ -290,6 +290,31 @@ variable "monitoring_kube_prometheus_stack_repo_branch" {
   default     = null
 }
 
+variable "monitoring_kube_prometheus_stack_prometheus_request_memory" {
+  type        = string
+  description = "Prometheus resource setting for memory request"
+  default     = "512Mi"
+}
+
+variable "monitoring_kube_prometheus_stack_prometheus_request_cpu" {
+  type        = string
+  description = "Prometheus resource setting for cpu request"
+  default     = "500m"
+}
+
+variable "monitoring_kube_prometheus_stack_prometheus_limit_memory" {
+  type        = string
+  description = "Prometheus resource setting for limit memory"
+  default     = "2Gi"
+}
+
+variable "monitoring_kube_prometheus_stack_prometheus_limit_cpu" {
+  type        = string
+  description = "Prometheus resource setting for limit cpu"
+  default     = "1000m"
+}
+
+
 # --------------------------------------------------
 # Metrics-Server
 # --------------------------------------------------

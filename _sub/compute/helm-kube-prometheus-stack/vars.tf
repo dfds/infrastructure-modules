@@ -105,3 +105,27 @@ variable "repo_branch" {
   description = "Override the default branch of the repo (optional)"
   default     = null
 }
+
+variable "prometheus_request_memory" {
+  type        = string
+  description = "Prometheus resource setting for memory request"
+  default     = "512Mi"
+}
+
+variable "prometheus_request_cpu" {
+  type        = string
+  description = "Prometheus resource setting for cpu request"
+  default     = "500m"
+}
+
+variable "prometheus_limit_memory" {
+  type        = string
+  description = "Prometheus resource setting for limit memory"
+  default     = "2Gi"
+}
+
+variable "prometheus_limit_cpu" {
+  type        = string
+  description = "Prometheus resource setting for limit cpu"
+  default     = "1000m"
+}

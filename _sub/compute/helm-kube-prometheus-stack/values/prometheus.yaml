@@ -16,6 +16,13 @@ prometheus:
         - path: /metrics
           port: http
   prometheusSpec:
+    resources:
+      requests:
+        memory: ${prometheus_request_memory}
+        cpu: ${prometheus_request_cpu}
+      limits:
+        memory: ${prometheus_limit_memory}
+        cpu: ${prometheus_limit_cpu}
     priorityClassName: ${prometheus_priorityclass}
     storageSpec:
       volumeClaimTemplate:

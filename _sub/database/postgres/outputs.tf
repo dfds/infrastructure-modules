@@ -11,7 +11,7 @@ output "connection_string" {
     aws_db_instance.postgres.endpoint,
     format(":%s", var.db_port),
     "",
-  )};Port=${var.db_port};Database=${var.db_name};SSL Mode=Require"
+  )};Port=${var.db_port};Database=${var.db_name};SSL Mode=${var.ssl_mode}"
 }
 
 output "port" {

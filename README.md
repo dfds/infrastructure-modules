@@ -56,6 +56,14 @@ In this example, I am comparing the lastest release (**0.1.35**) against the com
 
 https://github.com/dfds/infrastructure-modules/compare/0.1.35..75bec8f
 
+### Pre-Commit Hooks (Optional)
+
+This repo defines Git pre-commit hooks intended for use with pre-commit.
+
+Install pre-commit. E.g. brew install pre-commit. https://pre-commit.com/#install
+Run pre-commit install in the repo.
+That’s it! Now every time you commit a code change (.tf file), the hooks in the hooks: config will execute.
+
 ### Credits
 
 The general structure of these modules, file layout etc. are largely based on Gruntwork's recommendations. More specifically the blog posts:
