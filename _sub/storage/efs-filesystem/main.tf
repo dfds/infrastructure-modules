@@ -1,5 +1,5 @@
 # EFS File System
-#tfsec:ignore:aws-cloudtrail-enable-at-rest-encryption
+#tfsec:ignore:aws-efs-enable-at-rest-encryption
 resource "aws_efs_file_system" "efs_file_system" {
   performance_mode = var.performance_mode
   tags = {
