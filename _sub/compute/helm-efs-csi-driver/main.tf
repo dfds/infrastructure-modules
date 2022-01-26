@@ -107,6 +107,7 @@ resource "aws_security_group" "efs_sg" {
   vpc_id      = var.eks_cluster_vpc_id
 
   ingress {
+    description = "NFS Traffic for Amazon EFS"
     from_port   = 2049
     to_port     = 2049
     protocol    = "tcp"

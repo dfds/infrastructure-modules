@@ -96,6 +96,7 @@ EOF
 
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_role_policy" "efs_allow_describemounttargets" {
   name = "efs_allow_describemounttargets"
   role = aws_iam_role.eks.id
