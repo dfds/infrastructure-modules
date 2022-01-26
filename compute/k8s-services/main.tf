@@ -117,14 +117,6 @@ module "efs_volume_1" {
   eks_worker_subnet_ids           = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
 }
 
-# module "efs_volume_2" {
-#   depends_on = [module.efs_csi_driver]
-#   source                          = "../../_sub/storage/efs-filesystem"
-#   filesystem_name                 = "volume-2"
-#   securitygroup_id                = module.efs_csi_driver[0].securitygroup_id
-#   eks_worker_subnet_ids           = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
-# }
-
 # --------------------------------------------------
 # ALB access logs S3 bucket
 # --------------------------------------------------
