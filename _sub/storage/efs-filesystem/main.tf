@@ -7,7 +7,7 @@ resource "aws_efs_file_system" "efs_file_system" {
 }
 
 # EFS Mount Target in each of the subnets in the VPC
-resource "aws_efs_mount_target" "alpha" {
+resource "aws_efs_mount_target" "efs-mounttarget" {
   count = length(var.eks_worker_subnet_ids)
   file_system_id = aws_efs_file_system.efs_file_system.id
   subnet_id      = var.eks_worker_subnet_ids[count.index]

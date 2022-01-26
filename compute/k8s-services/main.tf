@@ -109,18 +109,18 @@ module "efs_csi_driver" {
   eks_cluster_vpc_id              = data.terraform_remote_state.cluster.outputs.eks_cluster_vpc_id
 }
 
-# module "efs_volume_1" {
-#   depends_on = [module.efs_csi_driver]
-#   source                          = "../../_sub/storage/efs-filesystem"
-#   filesystem_name                 = "test-volume-1"
-#   securitygroup_id                = module.efs_csi_driver[0].securitygroup_id
-#   eks_worker_subnet_ids           = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
-# }
+module "efs_volume_1" {
+  depends_on = [module.efs_csi_driver]
+  source                          = "../../_sub/storage/efs-filesystem"
+  filesystem_name                 = "volume-1"
+  securitygroup_id                = module.efs_csi_driver[0].securitygroup_id
+  eks_worker_subnet_ids           = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
+}
 
 # module "efs_volume_2" {
 #   depends_on = [module.efs_csi_driver]
 #   source                          = "../../_sub/storage/efs-filesystem"
-#   filesystem_name                 = "test-volume-2"
+#   filesystem_name                 = "volume-2"
 #   securitygroup_id                = module.efs_csi_driver[0].securitygroup_id
 #   eks_worker_subnet_ids           = data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
 # }
