@@ -386,30 +386,30 @@ module "monitoring_goldpinger" {
 # --------------------------------------------------
 
 module "monitoring_kube_prometheus_stack" {
-  source                      = "../../_sub/compute/helm-kube-prometheus-stack"
-  count                       = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
-  cluster_name                = var.eks_cluster_name
-  chart_version               = var.monitoring_kube_prometheus_stack_chart_version
-  namespace                   = module.monitoring_namespace[0].name
-  priority_class              = var.monitoring_kube_prometheus_stack_priority_class
-  grafana_admin_password      = var.monitoring_kube_prometheus_stack_grafana_admin_password
-  grafana_ingress_path        = var.monitoring_kube_prometheus_stack_grafana_ingress_path
-  grafana_host                = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
-  grafana_notifier_name       = "${var.eks_cluster_name}-alerting"
-  grafana_iam_role_arn        = local.grafana_iam_role_arn # Coming from locals to avoid circular dependency between KIAM and Prometheus
-  slack_webhook               = var.monitoring_kube_prometheus_stack_slack_webhook
-  prometheus_storageclass     = var.monitoring_kube_prometheus_stack_prometheus_storageclass
-  prometheus_storage_size     = var.monitoring_kube_prometheus_stack_prometheus_storage_size
-  prometheus_retention        = var.monitoring_kube_prometheus_stack_prometheus_retention
-  slack_channel               = var.monitoring_kube_prometheus_stack_slack_channel
-  target_namespaces           = var.monitoring_kube_prometheus_stack_target_namespaces
-  github_owner                = var.monitoring_kube_prometheus_stack_github_owner
-  repo_name                   = var.monitoring_kube_prometheus_stack_repo_name
-  repo_branch                 = var.monitoring_kube_prometheus_stack_repo_branch
-  prometheus_request_memory   = var.monitoring_kube_prometheus_stack_prometheus_request_memory
-  prometheus_request_cpu      = var.monitoring_kube_prometheus_stack_prometheus_request_cpu
-  prometheus_limit_memory     = var. monitoring_kube_prometheus_stack_prometheus_limit_memory
-  prometheus_limit_cpu        = var.monitoring_kube_prometheus_stack_prometheus_limit_cpu
+  source                    = "../../_sub/compute/helm-kube-prometheus-stack"
+  count                     = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
+  cluster_name              = var.eks_cluster_name
+  chart_version             = var.monitoring_kube_prometheus_stack_chart_version
+  namespace                 = module.monitoring_namespace[0].name
+  priority_class            = var.monitoring_kube_prometheus_stack_priority_class
+  grafana_admin_password    = var.monitoring_kube_prometheus_stack_grafana_admin_password
+  grafana_ingress_path      = var.monitoring_kube_prometheus_stack_grafana_ingress_path
+  grafana_host              = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
+  grafana_notifier_name     = "${var.eks_cluster_name}-alerting"
+  grafana_iam_role_arn      = local.grafana_iam_role_arn # Coming from locals to avoid circular dependency between KIAM and Prometheus
+  slack_webhook             = var.monitoring_kube_prometheus_stack_slack_webhook
+  prometheus_storageclass   = var.monitoring_kube_prometheus_stack_prometheus_storageclass
+  prometheus_storage_size   = var.monitoring_kube_prometheus_stack_prometheus_storage_size
+  prometheus_retention      = var.monitoring_kube_prometheus_stack_prometheus_retention
+  slack_channel             = var.monitoring_kube_prometheus_stack_slack_channel
+  target_namespaces         = var.monitoring_kube_prometheus_stack_target_namespaces
+  github_owner              = var.monitoring_kube_prometheus_stack_github_owner
+  repo_name                 = var.monitoring_kube_prometheus_stack_repo_name
+  repo_branch               = var.monitoring_kube_prometheus_stack_repo_branch
+  prometheus_request_memory = var.monitoring_kube_prometheus_stack_prometheus_request_memory
+  prometheus_request_cpu    = var.monitoring_kube_prometheus_stack_prometheus_request_cpu
+  prometheus_limit_memory   = var.monitoring_kube_prometheus_stack_prometheus_limit_memory
+  prometheus_limit_cpu      = var.monitoring_kube_prometheus_stack_prometheus_limit_cpu
 
   providers = {
     github = github.fluxcd
@@ -529,18 +529,38 @@ module "crossplane" {
 # --------------------------------------------------
 
 module "blackbox_exporter_flux_manifests" {
-  source              = "../../_sub/monitoring/blackbox-exporter"
-  count               = var.blackbox_exporter_deploy ? 1 : 0
-  cluster_name        = var.eks_cluster_name
-  helm_chart_version  = var.blackbox_exporter_helm_chart_version
-  github_owner        = var.blackbox_exporter_github_owner
-  repo_name           = var.blackbox_exporter_repo_name
-  repo_branch         = var.blackbox_exporter_repo_branch
-  monitoring_targets  = local.blackbox_exporter_monitoring_targets
+  source             = "../../_sub/monitoring/blackbox-exporter"
+  count              = var.blackbox_exporter_deploy ? 1 : 0
+  cluster_name       = var.eks_cluster_name
+  helm_chart_version = var.blackbox_exporter_helm_chart_version
+  github_owner       = var.blackbox_exporter_github_owner
+  repo_name          = var.blackbox_exporter_repo_name
+  repo_branch        = var.blackbox_exporter_repo_branch
+  monitoring_targets = local.blackbox_exporter_monitoring_targets
 
   providers = {
     github = github.fluxcd
   }
 
   depends_on = [module.monitoring_kube_prometheus_stack]
+}
+
+# --------------------------------------------------
+# Podinfo
+# --------------------------------------------------
+
+# It doesn't really make sense to force us to create different github variables
+# for everything that is using Flux, so we should fallback to using the same values
+# as flux is using.
+module "podinfo_flux_manifests" {
+  source       = "../../_sub/examples/podinfo"
+  count        = var.podinfo_flux_deploy ? 1 : 0
+  cluster_name = var.eks_cluster_name
+  github_owner = var.podinfo_flux_github_owner != null ? var.podinfo_flux_github_owner : var.platform_fluxcd_github_owner
+  repo_name    = var.podinfo_flux_repo_name != null ? var.podinfo_flux_repo_name : var.platform_fluxcd_repo_name
+  repo_branch  = var.podinfo_flux_repo_branch != null ? var.podinfo_flux_repo_branch : var.platform_fluxcd_repo_branch
+
+  providers = {
+    github = github.fluxcd
+  }
 }
