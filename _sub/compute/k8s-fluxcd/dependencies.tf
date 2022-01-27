@@ -54,13 +54,13 @@ data "github_branch" "flux_branch" {
 # --------------------------------------------------
 
 locals {
-  cluster_repo_path   = "clusters/${var.cluster_name}"
-  app_install_name    = "platform-apps-flux-monitoring"
-  app_config_path     = {
+  cluster_repo_path = "clusters/${var.cluster_name}"
+  app_install_name  = "platform-apps-flux-monitoring"
+  app_config_path = {
     "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
-    "kind" = "Kustomization"
+    "kind"       = "Kustomization"
     "metadata" = {
-      "name" = local.app_install_name
+      "name"      = local.app_install_name
       "namespace" = local.namespace
     }
     "spec" = {
@@ -70,8 +70,8 @@ locals {
         }
       ]
       "interval" = "1m0s"
-      "path" = "./apps/flux-monitoring"
-      "prune" = true
+      "path"     = "./apps/flux-monitoring"
+      "prune"    = true
       "sourceRef" = {
         "kind" = "GitRepository"
         "name" = "platform-apps-git"
