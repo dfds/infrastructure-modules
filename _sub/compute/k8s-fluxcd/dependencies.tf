@@ -46,7 +46,7 @@ data "github_repository" "main" {
 
 data "github_branch" "flux_branch" {
   repository = var.repo_name
-  branch     = var.repo_name
+  branch     = var.repo_branch
 }
 
 # --------------------------------------------------
