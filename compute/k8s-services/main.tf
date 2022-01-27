@@ -546,7 +546,7 @@ module "blackbox_exporter_flux_manifests" {
 }
 
 # --------------------------------------------------
-# Podinfo
+# podinfo
 # --------------------------------------------------
 
 # It doesn't really make sense to force us to create different github variables
@@ -559,6 +559,23 @@ module "podinfo_flux_manifests" {
   github_owner = var.podinfo_flux_github_owner != null ? var.podinfo_flux_github_owner : var.platform_fluxcd_github_owner
   repo_name    = var.podinfo_flux_repo_name != null ? var.podinfo_flux_repo_name : var.platform_fluxcd_repo_name
   repo_branch  = var.podinfo_flux_repo_branch != null ? var.podinfo_flux_repo_branch : var.platform_fluxcd_repo_branch
+
+  providers = {
+    github = github.fluxcd
+  }
+}
+
+# --------------------------------------------------
+# fluentd-cloudwatch through Flux
+# --------------------------------------------------
+
+module "fluentd_cloudwatch_flux_manifests" {
+  source       = "../../_sub/monitoring/fluentd-cloudwatch"
+  count        = var.fluentd_cloudwatch_flux_deploy ? 1 : 0
+  cluster_name = var.eks_cluster_name
+  github_owner = var.fluentd_cloudwatch_flux_github_owner != null ? var.fluentd_cloudwatch_flux_github_owner : var.platform_fluxcd_github_owner
+  repo_name    = var.fluentd_cloudwatch_flux_repo_name != null ? var.fluentd_cloudwatch_flux_repo_name : var.platform_fluxcd_repo_name
+  repo_branch  = var.fluentd_cloudwatch_flux_repo_branch != null ? var.fluentd_cloudwatch_flux_repo_branch : var.platform_fluxcd_repo_branch
 
   providers = {
     github = github.fluxcd

@@ -806,3 +806,30 @@ variable "podinfo_flux_deploy" {
   type    = bool
   default = false
 }
+
+# --------------------------------------------------
+# fluentd-cloudwatch through Flux
+# --------------------------------------------------
+
+variable "fluentd_cloudwatch_flux_github_owner" {
+  type        = string
+  description = "Name of the Flux repo Github owner (previously: organization)"
+  default     = null
+}
+
+variable "fluentd_cloudwatch_flux_repo_name" {
+  type        = string
+  description = "Name of the Github repo to store the fluentd-cloudwatch Flux manifests in"
+  default     = null
+}
+
+variable "fluentd_cloudwatch_flux_repo_branch" {
+  type        = string
+  description = "Override the default branch of the fluentd-cloudwatch Flux repo (optional)"
+  default     = null
+}
+
+variable "fluentd_cloudwatch_flux_deploy" {
+  type    = bool
+  default = false
+}
