@@ -74,7 +74,7 @@ kind: Namespace
 metadata:
   name: fluentd
   annotations:
-    iam.amazonaws.com/permitted: arn:aws:iam::${var.aws_workload_account_id}:role/eks-${var.cluster_name}-cloudwatchlogs
+    iam.amazonaws.com/permitted: arn:aws:iam::${var.account_id}:role/eks-${var.cluster_name}-cloudwatchlogs
 
 ---
 apiVersion: apps/v1
@@ -86,7 +86,7 @@ spec:
   template:
     metadata:
       annotations:
-        iam.amazonaws.com/role: arn:aws:iam::${var.aws_workload_account_id}:role/eks-${var.cluster_name}-cloudwatchlogs
+        iam.amazonaws.com/role: arn:aws:iam::${var.account_id}:role/eks-${var.cluster_name}-cloudwatchlogs
     spec:
       containers:
         - name: fluentd-cloudwatch
@@ -94,7 +94,7 @@ spec:
             - name: AWS_REGION
               value: "${var.aws_region}"
             - name: RETENTION_IN_DAYS
-              value: "7"
+              value: "${var.retention_in_days}"
 
 ---
 apiVersion: v1

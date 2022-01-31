@@ -570,14 +570,15 @@ module "podinfo_flux_manifests" {
 # --------------------------------------------------
 
 module "fluentd_cloudwatch_flux_manifests" {
-  source                  = "../../_sub/monitoring/fluentd-cloudwatch"
-  count                   = var.fluentd_cloudwatch_flux_deploy ? 1 : 0
-  cluster_name            = var.eks_cluster_name
-  aws_region              = var.aws_region
-  aws_workload_account_id = var.aws_workload_account_id
-  github_owner            = var.fluentd_cloudwatch_flux_github_owner != null ? var.fluentd_cloudwatch_flux_github_owner : var.platform_fluxcd_github_owner
-  repo_name               = var.fluentd_cloudwatch_flux_repo_name != null ? var.fluentd_cloudwatch_flux_repo_name : var.platform_fluxcd_repo_name
-  repo_branch             = var.fluentd_cloudwatch_flux_repo_branch != null ? var.fluentd_cloudwatch_flux_repo_branch : var.platform_fluxcd_repo_branch
+  source            = "../../_sub/monitoring/fluentd-cloudwatch"
+  count             = var.fluentd_cloudwatch_flux_deploy ? 1 : 0
+  cluster_name      = var.eks_cluster_name
+  aws_region        = var.aws_region
+  retention_in_days = var.fluentd_cloudwatch_retention_in_days
+  account_id        = var.fluentd_cloudwatch_account_id != null ? var.fluentd_cloudwatch_account_id : var.aws_workload_account_id
+  github_owner      = var.fluentd_cloudwatch_flux_github_owner != null ? var.fluentd_cloudwatch_flux_github_owner : var.platform_fluxcd_github_owner
+  repo_name         = var.fluentd_cloudwatch_flux_repo_name != null ? var.fluentd_cloudwatch_flux_repo_name : var.platform_fluxcd_repo_name
+  repo_branch       = var.fluentd_cloudwatch_flux_repo_branch != null ? var.fluentd_cloudwatch_flux_repo_branch : var.platform_fluxcd_repo_branch
 
   providers = {
     github = github.fluxcd

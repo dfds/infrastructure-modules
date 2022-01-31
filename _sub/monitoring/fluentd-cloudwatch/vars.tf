@@ -30,7 +30,13 @@ variable "aws_region" {
   description = "Which AWS region to store the cloudwatch logs in."
 }
 
-variable "aws_workload_account_id" {
+variable "account_id" {
   type        = string
-  description = "The account id for the account that owns the cluster."
+  description = "The account id that owns the cloudwatch logs from fluentd."
+}
+
+variable "retention_in_days" {
+  type        = string
+  default     = "7"
+  description = "How many days to keep the logs?"
 }
