@@ -1,19 +1,20 @@
 variable "cluster_name" {
-  type = string
+  type        = string
+  description = "The name of the EKS cluster."
 }
 
 variable "repo_name" {
   type        = string
-  description = ""
+  description = "GitHub repository name for writing Flux manifests to."
 }
 
 variable "repo_branch" {
   type        = string
   default     = "main"
-  description = ""
+  description = "The git branch."
 }
 
 variable "github_owner" {
   type        = string
-  description = ""
+  description = "The GitHub organization owner."
 }
