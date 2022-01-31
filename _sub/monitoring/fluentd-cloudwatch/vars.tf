@@ -31,5 +31,6 @@ variable "aws_region" {
 }
 
 variable "aws_workload_account_id" {
+  type        = string
   description = "The account id for the account that owns the cluster."
 }
