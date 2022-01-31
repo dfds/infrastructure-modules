@@ -724,7 +724,7 @@ variable "traefik_flux_health_check_path" {
 }
 
 variable "traefik_flux_additional_args" {
-  type        = list
+  type        = list(any)
   description = "Pass arguments to the additionalArguments node in the Traefik Helm chart"
   default     = ["--metrics.prometheus"]
 }
@@ -775,7 +775,61 @@ variable "blackbox_exporter_repo_branch" {
 }
 
 variable "blackbox_exporter_monitoring_targets" {
-  type = list(object({ name=string, url=string, module=string }))
+  type        = list(object({ name = string, url = string, module = string }))
   description = "Complex object of what to monitor with Blackbox Exporter"
-  default = []
+  default     = []
+}
+
+# --------------------------------------------------
+# Podinfo through Flux CD
+# --------------------------------------------------
+
+variable "podinfo_flux_github_owner" {
+  type        = string
+  description = "Name of the Flux repo Github owner (previously: organization)"
+  default     = null
+}
+
+variable "podinfo_flux_repo_name" {
+  type        = string
+  description = "Name of the Github repo to store the podinfo Flux manifests in"
+  default     = null
+}
+
+variable "podinfo_flux_repo_branch" {
+  type        = string
+  description = "Override the default branch of the podinfo Flux repo (optional)"
+  default     = null
+}
+
+variable "podinfo_flux_deploy" {
+  type    = bool
+  default = false
+}
+
+# --------------------------------------------------
+# fluentd-cloudwatch through Flux
+# --------------------------------------------------
+
+variable "fluentd_cloudwatch_flux_github_owner" {
+  type        = string
+  description = "Name of the Flux repo Github owner (previously: organization)"
+  default     = null
+}
+
+variable "fluentd_cloudwatch_flux_repo_name" {
+  type        = string
+  description = "Name of the Github repo to store the fluentd-cloudwatch Flux manifests in"
+  default     = null
+}
+
+variable "fluentd_cloudwatch_flux_repo_branch" {
+  type        = string
+  description = "Override the default branch of the fluentd-cloudwatch Flux repo (optional)"
+  default     = null
+}
+
+variable "fluentd_cloudwatch_flux_deploy" {
+  type    = bool
+  default = false
 }
