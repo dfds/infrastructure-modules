@@ -845,3 +845,91 @@ variable "fluentd_cloudwatch_retention_in_days" {
   default     = "7"
   description = "How many days to keep the logs?"
 }
+
+# --------------------------------------------------
+# Velero - requires that s3-bucket-velero module
+# is already applied through Terragrunt.
+# --------------------------------------------------
+
+variable "velero_flux_deploy" {
+  type        = bool
+  default     = false
+  description = "Should Velero Helm chart be deployed?"
+}
+
+variable "velero_flux_deploy_name" {
+  type        = string
+  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
+  default     = "velero"
+}
+
+variable "velero_flux_role_arn" {
+  type        = string
+  description = "The ARN for the role that is permitted to use Velero backup storage."
+  default     = null
+}
+
+variable "velero_flux_bucket_name" {
+  type        = string
+  default     = null
+  description = "The name of the S3 bucket that contains the Velero backup"
+}
+
+variable "velero_flux_snapshots_enabled" {
+  type        = bool
+  default     = false
+  description = "Should Velero use snapshot backups?"
+
+}
+
+variable "velero_flux_log_level" {
+  type        = string
+  default     = "info"
+  description = "Velero log level."
+  validation {
+    condition     = contains(["info", "debug", "warning", "error", "fatal", "panic"], var.velero_flux_log_level)
+    error_message = "Invalid value for log_level. Valid values: info, debug, warning, error, fatal, panic."
+  }
+}
+
+variable "velero_flux_cron_schedule" {
+  type        = string
+  default     = "0 0 * * *"
+  description = "Cron format scheuled time."
+}
+
+variable "velero_flux_schedules_template_ttl" {
+  type        = string
+  default     = "336h"
+  description = "Time to live for the scheduled backup."
+}
+
+variable "velero_flux_schedules_template_snapshot_volumes" {
+  type        = bool
+  default     = false
+  description = "Should Velero use snapshot volumes?"
+}
+
+variable "velero_flux_schedules_template_include_cluster_resources" {
+  type        = bool
+  default     = false
+  description = "Should Velero also backup cluster resources?"
+}
+
+variable "velero_flux_github_owner" {
+  type        = string
+  description = "Name of the Flux repo Github owner (previously: organization)"
+  default     = null
+}
+
+variable "velero_flux_repo_name" {
+  type        = string
+  description = "Name of the Github repo to store the Flux manifests in"
+  default     = null
+}
+
+variable "velero_flux_repo_branch" {
+  type        = string
+  description = "Override the default branch of the Flux repo (optional)"
+  default     = null
+}
