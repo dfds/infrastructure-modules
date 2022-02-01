@@ -833,3 +833,15 @@ variable "fluentd_cloudwatch_flux_deploy" {
   type    = bool
   default = false
 }
+
+variable "fluentd_cloudwatch_account_id" {
+  type        = string
+  description = "The account id that owns the cloudwatch logs from fluentd."
+  default     = null
+}
+
+variable "fluentd_cloudwatch_retention_in_days" {
+  type        = string
+  default     = "7"
+  description = "How many days to keep the logs?"
+}
