@@ -15,7 +15,7 @@
             "patch",
             "lockFileMaintenance"
         ],
-        "stabilityDays": 0,
+        "stabilityDays": 1,
         "automerge": true,
         "matchCurrentVersion": "!/^0/",
         "ignoreTests": true,
@@ -25,7 +25,7 @@
             "major",
             "minor"
         ],
-        "stabilityDays": 0,
+        "stabilityDays": 7,
         "automerge": false,
         "dependencyDashboard": true,
         "dependencyDashboardApproval": false
