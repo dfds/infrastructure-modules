@@ -22,10 +22,18 @@
         "dependencyDashboardApproval": false
     }, {
         "matchUpdateTypes": [
-            "major",
             "minor"
         ],
         "stabilityDays": 7,
+        "automerge": false,
+        "matchCurrentVersion": "!/^0/",
+        "ignoreTests": true,
+        "dependencyDashboardApproval": false
+    }, {
+        "matchUpdateTypes": [
+            "major"
+        ],
+        "stabilityDays": 14,
         "automerge": false,
         "dependencyDashboard": true,
         "dependencyDashboardApproval": false
