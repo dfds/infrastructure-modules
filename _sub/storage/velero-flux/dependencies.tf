@@ -24,9 +24,8 @@ data "github_branch" "flux_branch" {
 }
 
 # --------------------------------------------------
-# Monitoring
+# Velero
 # --------------------------------------------------
-
 locals {
   cluster_repo_path = "clusters/${var.cluster_name}"
   helm_repo_path    = "platform-apps/${var.cluster_name}/${var.deploy_name}/helm"
