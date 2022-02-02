@@ -166,4 +166,13 @@ inputs = {
   # --------------------------------------------------
 
   fluentd_cloudwatch_flux_deploy = true
+
+  # --------------------------------------------------
+  # Velero - requires that s3-bucket-velero module
+  # is already applied through Terragrunt.
+  # --------------------------------------------------
+
+  velero_flux_deploy      = true
+  velero_flux_role_arn    = "arn:aws:iam::266901158286:role/VeleroBackup"
+  velero_flux_bucket_name = "dfds-velero-qa"
 }
