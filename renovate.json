@@ -15,17 +15,25 @@
             "patch",
             "lockFileMaintenance"
         ],
-        "stabilityDays": 0,
+        "stabilityDays": 1,
         "automerge": true,
         "matchCurrentVersion": "!/^0/",
         "ignoreTests": true,
         "dependencyDashboardApproval": false
     }, {
         "matchUpdateTypes": [
-            "major",
             "minor"
         ],
-        "stabilityDays": 0,
+        "stabilityDays": 7,
+        "automerge": false,
+        "matchCurrentVersion": "!/^0/",
+        "ignoreTests": true,
+        "dependencyDashboardApproval": false
+    }, {
+        "matchUpdateTypes": [
+            "major"
+        ],
+        "stabilityDays": 14,
         "automerge": false,
         "dependencyDashboard": true,
         "dependencyDashboardApproval": false
