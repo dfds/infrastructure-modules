@@ -5,7 +5,7 @@ kube-state-metrics:
       memory: 100Mi
   priorityClassName: ${kube_state_metrics_priorityclass}
   prometheus:
-      monitor:
-        enabled: true
-        additionalLabels:
-          release: monitoring
+    monitor:
+      enabled: true
+      additionalLabels:
+        release: monitoring
