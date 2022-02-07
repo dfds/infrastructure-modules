@@ -671,6 +671,21 @@ variable "crossplane_metrics_enabled" {
   description = "Enable crossplane metrics"
   default     = true
 }
+
+variable "crossplane_aws_iam_role_name" {
+  type = string
+  description = ""
+  default = "provider-aws"
+}
+
+variable "eks_openid_connect_provider_url" {
+  type        = string
+  description = "The OpenID Connect provider URL for the EKS cluster"
+  default     = null
+}
+
+# -------------
+
 variable "kiam_strict_mode_disabled" {
   type        = bool
   description = "Disable default strict namespace regexp when matching roles"

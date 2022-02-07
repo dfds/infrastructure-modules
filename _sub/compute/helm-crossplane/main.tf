@@ -128,6 +128,23 @@ resource "kubernetes_service" "crossplane-rbac" {
   }
 }
 
+resource "kubectl_manifest" "aws_provider_controllerconfig" {
+  yaml_body = <<YAML
+apiVersion: pkg.crossplane.io/v1alpha1
+kind: ControllerConfig
+metadata:
+  name: "aws-provider-config"
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.crossplane_aws_iam_role_name}
+spec:
+  podSecurityContext:
+    fsGroup: 2000
+YAML
+
+  depends_on = [helm_release.crossplane]
+
+}
+
 resource "kubectl_manifest" "aws_provider" {
 
   count = length(var.crossplane_providers)
@@ -139,8 +156,69 @@ metadata:
   name: "${replace(split(":", var.crossplane_providers[count.index])[0], "/", "-")}"
 spec:
   package: "${var.crossplane_providers[count.index]}"
+  controllerConfigRef:
+    name: ${kubectl_manifest.aws_provider_controllerconfig.name}
 YAML
 
-  depends_on = [helm_release.crossplane]
+  depends_on = [helm_release.crossplane, kubectl_manifest.aws_provider_controllerconfig]
+
+}
+
+resource "kubectl_manifest" "aws_provider_config" {
+
+  yaml_body = <<YAML
+apiVersion: aws.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: default-aws
+spec:
+  assumeRoleARN: "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.crossplane_role.name}"
+  credentials:
+    source: InjectedIdentity
+YAML
+
+  depends_on = [helm_release.crossplane, kubectl_manifest.aws_provider]
+
+}
+
+
+resource "aws_iam_role" "crossplane_role" {
+  name = var.crossplane_aws_iam_role_name
+
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${trim(var.eks_openid_connect_provider_url, "https://")}"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+	"StringLike": {
+          "${trim(var.eks_openid_connect_provider_url, "https://")}:aud": "sts.amazonaws.com",
+          "${trim(var.eks_openid_connect_provider_url, "https://")}:sub": "system:serviceaccount:${helm_release.crossplane.namespace}:${kubectl_manifest.aws_provider[0].name}-*"
+        }
+      }
+    }
+  ]
+}
+POLICY
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+}
+
+resource "aws_iam_role_policy_attachment" "test-attach" {
+  role       = aws_iam_role.crossplane_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+}
+
+
+
+data "aws_caller_identity" "current" {
 
 }
