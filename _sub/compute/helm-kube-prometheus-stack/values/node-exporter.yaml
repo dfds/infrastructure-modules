@@ -4,3 +4,6 @@ prometheus-node-exporter:
       cpu: 20m
       memory: 50Mi
   priorityClassName: ${prometheus_node_exporter_priorityclass}
+  prometheus:
+    monitor:
+      enabled: true
