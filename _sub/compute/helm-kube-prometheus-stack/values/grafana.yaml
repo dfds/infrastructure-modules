@@ -22,3 +22,5 @@ grafana:
     - grafana-polystat-panel
   podAnnotations:
     iam.amazonaws.com/role: ${grafana_cloudwatch_role}
+  rbac:
+    pspEnabled: true
