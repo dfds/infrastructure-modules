@@ -1,3 +1,7 @@
+locals {
+  provider_aws = [for s in var.crossplane_providers : lower(s) if length(regex("^crossplane/provider-aws:", s)) > 0]
+}
+
 resource "helm_release" "crossplane" {
   name          = var.release_name
   chart         = "universal-crossplane"
@@ -129,6 +133,9 @@ resource "kubernetes_service" "crossplane-rbac" {
 }
 
 resource "kubectl_manifest" "aws_provider_controllerconfig" {
+
+  count = length(local.provider_aws) > 0 ? 1 : 0
+
   yaml_body = <<YAML
 apiVersion: pkg.crossplane.io/v1alpha1
 kind: ControllerConfig
@@ -147,24 +154,40 @@ YAML
 
 resource "kubectl_manifest" "aws_provider" {
 
-  count = length(var.crossplane_providers)
+  count = length(local.provider_aws) > 0 ? 1 : 0
 
   yaml_body = <<YAML
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
-  name: "${replace(split(":", var.crossplane_providers[count.index])[0], "/", "-")}"
+  name: "${replace(split(":", local.provider_aws[count.index])[0], "/", "-")}"
 spec:
-  package: "${var.crossplane_providers[count.index]}"
+  package: "${local.provider_aws[count.index]}"
   controllerConfigRef:
-    name: ${kubectl_manifest.aws_provider_controllerconfig.name}
+    name: ${kubectl_manifest.aws_provider_controllerconfig[0].name}
 YAML
+
+  wait = true
 
   depends_on = [helm_release.crossplane, kubectl_manifest.aws_provider_controllerconfig]
 
 }
 
+resource "time_sleep" "wait_30_seconds_for_aws_provider" {
+  count = length(local.provider_aws) > 0 ? 1 : 0
+
+  depends_on = [kubectl_manifest.aws_provider]
+
+  create_duration = "30s"
+
+  triggers = {
+    kubectl_manifest = kubectl_manifest.aws_provider[0].name
+  }
+}
+
 resource "kubectl_manifest" "aws_provider_config" {
+
+  count = length(local.provider_aws) > 0 ? 1 : 0
 
   yaml_body = <<YAML
 apiVersion: aws.crossplane.io/v1beta1
@@ -172,17 +195,20 @@ kind: ProviderConfig
 metadata:
   name: default-aws
 spec:
-  assumeRoleARN: "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.crossplane_role.name}"
+  assumeRoleARN: "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${aws_iam_role.crossplane_role[0].name}"
   credentials:
     source: InjectedIdentity
 YAML
 
-  depends_on = [helm_release.crossplane, kubectl_manifest.aws_provider]
+  depends_on = [time_sleep.wait_30_seconds_for_aws_provider]
 
 }
 
 
 resource "aws_iam_role" "crossplane_role" {
+
+  count = length(local.provider_aws) > 0 ? 1 : 0
+
   name = var.crossplane_aws_iam_role_name
 
   assume_role_policy = <<POLICY
@@ -212,8 +238,10 @@ POLICY
 
 }
 
-resource "aws_iam_role_policy_attachment" "test-attach" {
-  role       = aws_iam_role.crossplane_role.name
+resource "aws_iam_role_policy_attachment" "admin-attach" {
+  count = length(local.provider_aws) > 0 ? 1 : 0
+
+  role       = aws_iam_role.crossplane_role[0].name
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 
