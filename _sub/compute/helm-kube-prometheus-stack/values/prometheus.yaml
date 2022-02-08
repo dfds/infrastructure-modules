@@ -33,3 +33,6 @@ prometheus:
             requests:
               storage: ${prometheus_storage_size}
     retention: ${prometheus_retention}
+global:
+  rbac:
+    pspEnabled: true

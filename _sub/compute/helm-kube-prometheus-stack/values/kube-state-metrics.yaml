@@ -9,3 +9,5 @@ kube-state-metrics:
       enabled: true
       additionalLabels:
         release: monitoring
+  podSecurityPolicy:
+    enabled: true
