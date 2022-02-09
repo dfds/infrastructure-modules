@@ -13,6 +13,10 @@ dependencies {
   paths = ["../cluster"]
 }
 
+dependency "cluster" {
+  config_path = "../cluster"
+}
+
 
 inputs = {
 
@@ -110,14 +114,15 @@ inputs = {
   # --------------------------------------------------
 
   crossplane_deploy        = true
-  crossplane_chart_version = "1.4.0-up.1"
-  crossplane_providers     = ["crossplane/provider-aws:v0.19.0"]
+  crossplane_chart_version = "1.5.1-up.1"
+  crossplane_providers     = ["crossplane/provider-aws:v0.22.0"]
   crossplane_admin_service_accounts = [
     {
       serviceaccount = "default"
       namespace      = "kube-system"
     }
   ]
+  eks_openid_connect_provider_url = dependency.cluster.outputs.eks_openid_connect_provider_url
 
   # --------------------------------------------------
   # Atlantis
