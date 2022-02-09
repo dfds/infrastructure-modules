@@ -36,3 +36,7 @@ output "capability_access_shared" {
 output "cloudengineer" {
   value = data.aws_iam_policy_document.cloudengineer.json
 }
+
+output "auditor" {
+  value = data.aws_iam_policy_document.auditor.json
+}

@@ -180,7 +180,7 @@ data "aws_iam_policy_document" "capability_access_shared" {
   }
 }
 
-# Admin
+# CloudEngineer
 data "aws_iam_policy_document" "cloudengineer" {
   statement {
     sid    = "CloudEngineerPlaceholder"
@@ -193,6 +193,21 @@ data "aws_iam_policy_document" "cloudengineer" {
     ]
   }
 }
+
+# Auditor
+data "aws_iam_policy_document" "auditor" {
+  statement {
+    sid    = "Auditor"
+    effect = "Allow"
+    actions = [
+      "s3:ListBucket"
+    ]
+    resources = [
+      "arn:aws:s3:::/dfds-audit/*"
+    ]
+  }
+}
+
 
 # ------------------------------------------------------------------------------
 # Trusted Account
