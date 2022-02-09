@@ -11,6 +11,7 @@ prometheus:
       endpoints:
         - path: /metrics
           port: metrics
+          scrapeTimeout: 30s
         - path: /metrics
           port: admin
         - path: /metrics
