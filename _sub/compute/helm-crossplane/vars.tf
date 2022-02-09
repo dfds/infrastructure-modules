@@ -61,3 +61,14 @@ variable "crossplane_metrics_enabled" {
   type        = bool
   description = "Enable crossplane metrics"
 }
+
+variable "crossplane_aws_iam_role_name" {
+  type = string
+  description = "Name for the IAM role name to create for use by the AWS provider"
+}
+
+variable "eks_openid_connect_provider_url" {
+  type        = string
+  description = "The OpenID Connect provider URL for the EKS cluster"
+  default     = null
+}

@@ -522,6 +522,8 @@ module "crossplane" {
   crossplane_edit_service_accounts  = var.crossplane_edit_service_accounts
   crossplane_view_service_accounts  = var.crossplane_view_service_accounts
   crossplane_metrics_enabled        = var.crossplane_metrics_enabled
+  crossplane_aws_iam_role_name      = var.crossplane_aws_iam_role_name
+  eks_openid_connect_provider_url   = var.eks_openid_connect_provider_url
 }
 
 # --------------------------------------------------
