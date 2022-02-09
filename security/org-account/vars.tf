@@ -29,6 +29,22 @@ variable "cloudtrail_central_s3_bucket" {
   type = string
 }
 
+variable "adfs_fqdn" {
+  type        = string
+  description = "The fully-qualified domain name of the ADFS server, e.g. adfs.company.tld"
+}
+
+variable "cloudadmin_iam_role_name" {
+  description = "Name of IAM role"
+  type        = string
+}
+
+variable "auditor_iam_role_name" {
+  description = "Name of IAM role"
+  type        = string
+}
+
+
 # --------------------------------------------------
 # Unused variables - to provent TF warning/error:
 # Using a variables file to set an undeclared variable is deprecated and will

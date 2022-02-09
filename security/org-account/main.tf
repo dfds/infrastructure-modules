@@ -21,6 +21,11 @@ terraform {
   }
 }
 
+module "iam_policies" {
+  source = "../../_sub/security/iam-policies"
+  # iam_role_trusted_account_root_arn = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+}
+
 module "org_account" {
   source        = "../../_sub/security/org-account"
   name          = var.name
@@ -35,6 +40,54 @@ module "iam_account_alias" {
   providers = {
     aws = aws.workload
   }
+}
+
+module "iam_idp" {
+  source        = "../../_sub/security/iam-idp"
+  provider_name = "ADFS"
+  adfs_fqdn     = var.adfs_fqdn
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+resource "aws_iam_role" "cloudadmin" {
+  name                 = var.cloudadmin_iam_role_name
+  description          = "Cloud-admin role"
+  assume_role_policy   = module.iam_idp.adfs_assume_policy
+  max_session_duration = 28800
+
+  provider = aws.workload
+}
+
+# Policy inline to cloud-admin role
+resource "aws_iam_role_policy" "cloudadmin" {
+  name   = "CloudAdmin"
+  role   = aws_iam_role.cloudadmin.id
+  policy = module.iam_policies.admin
+
+  provider = aws.workload
+}
+
+resource "aws_iam_role" "auditor" {
+  count                = var.name == "dfds-security" ? 1 : 0
+  name                 = "Auditor"
+  description          = "For reading, querying audit logs"
+  assume_role_policy   = module.iam_idp.adfs_assume_policy
+  max_session_duration = 28800
+
+  provider = aws.workload
+}
+
+# Policy inline to auditor role
+resource "aws_iam_role_policy" "auditor" {
+  count  = var.name == "dfds-security" ? 1 : 0
+  name   = var.auditor_iam_role_name
+  role   = aws_iam_role.auditor[0].id
+  policy = module.iam_policies.auditor
+
+  provider = aws.workload
 }
 
 module "cloudtrail_s3_central" {
