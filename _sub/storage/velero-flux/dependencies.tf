@@ -88,7 +88,7 @@ spec:
       server:
         create: true
         annotations:
-          iam.amazonaws.com/role: "${var.role_arn}"
+          eks.amazonaws.com/role-arn: "${var.role_arn}"
           eks.amazonaws.com/sts-regional-endpoints: "true"
     schedules:
       ${var.cluster_name}-cluster-backup:
