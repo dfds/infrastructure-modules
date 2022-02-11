@@ -11,12 +11,6 @@ variable "bucket_name" {
   description = "Velero storage bucket name"
 }
 
-variable "kiam_server_role_arn" {
-  type        = list(string)
-  default     = [""]
-  description = "Role to allow for trust relationship to KIAM "
-}
-
 variable "versioning" {
   type        = bool
   default     = true

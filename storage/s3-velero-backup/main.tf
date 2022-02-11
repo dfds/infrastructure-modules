@@ -77,15 +77,6 @@ EOF
 
 data "aws_iam_policy_document" "assume_role" {
   statement {
-    sid     = ""
-    effect  = "Allow"
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "AWS"
-      identifiers = var.kiam_server_role_arn
-    }
-  }
-  statement {
     effect  = "Allow"
     actions = ["sts:AssumeRoleWithWebIdentity"]
     principals {
