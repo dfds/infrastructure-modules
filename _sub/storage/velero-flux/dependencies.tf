@@ -66,8 +66,6 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: velero
-  annotations:
-    iam.amazonaws.com/permitted: "${var.role_arn}"
 
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
@@ -78,12 +76,16 @@ metadata:
 spec:
   values:
     snapshotsEnabled: ${var.snapshots_enabled}
-    podAnnotations:
-      iam.amazonaws.com/role: "${var.role_arn}"
     configuration:
       logLevel: ${var.log_level}
       backupStorageLocation:
         bucket: ${var.bucket_name}
+    serviceAccount:
+      server:
+        create: true
+        annotations:
+          eks.amazonaws.com/role-arn: "${var.role_arn}"
+          eks.amazonaws.com/sts-regional-endpoints: "true"
     schedules:
       ${var.cluster_name}-cluster-backup:
         schedule: "${var.cron_schedule}"
