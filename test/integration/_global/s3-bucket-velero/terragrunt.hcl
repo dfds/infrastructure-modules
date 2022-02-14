@@ -13,7 +13,5 @@ dependencies {
 
 inputs = {
   bucket_name = "dfds-velero-qa"
-  oidc_provider_account_id = "266901158286"
-  # Dummy oidc_provider_server_id, because it can not be calculated at runtime due to race condition
-  oidc_provider_server_id = "oidc.eks.eu-west-1.amazonaws.com/id/00000000000000000000000000000000"
+  kiam_server_role_arn = ["arn:aws:iam::266901158286:role/eks-qa21-kiam-server"]
 }

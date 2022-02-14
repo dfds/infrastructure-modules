@@ -4,7 +4,7 @@ terraform {
 }
 
 provider "aws" {
-  region = var.aws_region
+  region  = var.aws_region
 
   assume_role {
     role_arn = var.aws_assume_role_arn
@@ -77,16 +77,12 @@ EOF
 
 data "aws_iam_policy_document" "assume_role" {
   statement {
+    sid     = ""
     effect  = "Allow"
-    actions = ["sts:AssumeRoleWithWebIdentity"]
+    actions = ["sts:AssumeRole"]
     principals {
-      type        = "Federated"
-      identifiers = ["${local.oidc_provider_arn}"]
-    }
-    condition {
-      test     = "StringEquals"
-      variable = "${var.oidc_provider_server_id}:sub"
-      values   = ["system:serviceaccount:${var.namespace}:${var.service_account}"]
+      type        = "AWS"
+      identifiers = var.kiam_server_role_arn
     }
   }
 }
