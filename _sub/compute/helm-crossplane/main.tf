@@ -256,7 +256,7 @@ kind: ControllerConfig
 metadata:
   name: kubernetes-provider-config
 spec:
-  serviceAccountName: crossplane-provider-kubernetes
+  serviceAccountName: ${kubectl_manifest.kubernetes_provider_sa[0].name}
 YAML
 
   depends_on = [helm_release.crossplane]
@@ -292,7 +292,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: crossplane-provider-kubernetes
-  namespace: upbound-system 
+  namespace: ${helm_release.crossplane.namespace}
 YAML
 
 }
@@ -307,7 +307,7 @@ metadata:
   name: provider-kubernetes-admin-binding
 subjects:
 - kind: ServiceAccount
-  name: crossplane-provider-kubernetes
+  name: ${kubectl_manifest.kubernetes_provider_sa[0].name}
   namespace: ${helm_release.crossplane.namespace}
 roleRef:
   kind: ClusterRole
@@ -324,7 +324,7 @@ data "aws_caller_identity" "current" {
 
 resource "kubectl_manifest" "kubernetes_provider_config" {
 
-  count = length(local.provider_aws) > 0 ? 1 : 0
+  count = length(local.provider_kubernetes) > 0 ? 1 : 0
 
   yaml_body = <<YAML
 apiVersion: kubernetes.crossplane.io/v1alpha1
@@ -336,6 +336,6 @@ spec:
     source: InjectedIdentity
 YAML
 
-  depends_on = [time_sleep.wait_30_seconds_for_aws_provider]
+  depends_on = [kubectl_manifest.kubernetes_provider]
 
 }
