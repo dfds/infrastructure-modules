@@ -198,14 +198,14 @@ data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
       type = "Federated"
 
       identifiers = [
-        trim("${var.eks_openid_connect_provider_url}", "https://"),
+        trim("${data.aws_eks_cluster.eks.identity[0].oidc[0].issuer}", "https://"),
       ]
     }
 
     condition {
       test = "StringEquals"
       values = ["system:serviceaccount:${local.monitoring_namespace_name}:dasdasd"]
-      variable = trim("${var.eks_openid_connect_provider_url}:sub", "https://")
+      variable = trim("${data.aws_eks_cluster.eks.identity[0].oidc[0].issuer}:sub", "https://")
     }
 
     actions = ["sts:AssumeRoleWithWebIdentity"]
