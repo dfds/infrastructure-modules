@@ -49,6 +49,14 @@ locals {
   core_dns_zone_name = join(".", local.core_dns_zone_list)
 }
 
+# --------------------------------------------------
+# Monitoring namespace name
+# --------------------------------------------------
+
+locals {
+  monitoring_namespace_name = "monitoring"
+}
+
 
 # --------------------------------------------------
 # Get Route 53 zones and ids
@@ -187,15 +195,21 @@ data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
     effect = "Allow"
 
     principals {
-      type = "AWS"
+      type = "Federated"
 
       identifiers = [
-        module.kiam_deploy.server_role_arn,
+        var.eks_openid_connect_provider_url,
       ]
     }
 
-    actions = ["sts:AssumeRole"]
-  }
+    condition {
+      test = "StringEquals"
+      values = ["system:serviceaccount:${local.monitoring_namespace_name}:dasdasd"]
+      variable = trim("${var.eks_openid_connect_provider_url}:sub", "https://")
+    }
+
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+}
 }
 
 # ---------------------------------------------------------------------

@@ -360,7 +360,7 @@ module "cloudwatch_alarm_alb_targets_health" {
 module "monitoring_namespace" {
   source    = "../../_sub/compute/k8s-namespace"
   count     = var.monitoring_namespace_deploy ? 1 : 0
-  name      = "monitoring"
+  name      = local.monitoring_namespace_name
   iam_roles = local.monitoring_namespace_iam_roles
 }
 
