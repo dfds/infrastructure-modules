@@ -198,7 +198,7 @@ data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
       type = "Federated"
 
       identifiers = [
-        var.eks_openid_connect_provider_url,
+        trim("${var.eks_openid_connect_provider_url}", "https://"),
       ]
     }
 
