@@ -4,11 +4,21 @@ terraform {
 }
 
 provider "aws" {
-  region  = var.aws_region
+  region = var.aws_region
 
   assume_role {
     role_arn = var.aws_assume_role_arn
   }
+}
+
+# Only create a IAM Provider for OIDC if var.oidc_provider_url is supplied.
+# If var.oidc_provider_url is not supplied, it means that one already exist,
+# and information is fetched through the EKS data source.
+resource "aws_iam_openid_connect_provider" "oidc_iam_provider" {
+  count           = var.oidc_provider_url != null ? 1 : 0
+  url             = local.oidc_provider_url
+  client_id_list  = ["sts.amazonaws.com", ]
+  thumbprint_list = [local.oidc_provider_thumbprints]
 }
 
 resource "aws_s3_bucket" "velero_storage" {
@@ -79,10 +89,15 @@ data "aws_iam_policy_document" "assume_role" {
   statement {
     sid     = ""
     effect  = "Allow"
-    actions = ["sts:AssumeRole"]
+    actions = ["sts:AssumeRoleWithWebIdentity"]
     principals {
-      type        = "AWS"
-      identifiers = var.kiam_server_role_arn
+      type        = "Federated"
+      identifiers = ["${local.oidc_provider_arn}"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "${local.oidc_provider_server_id}:sub"
+      values   = ["system:serviceaccount:${var.namespace}:${var.service_account}"]
     }
   }
 }
