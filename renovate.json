@@ -19,15 +19,17 @@
         "automerge": true,
         "matchCurrentVersion": "!/^0/",
         "ignoreTests": true,
+        "dependencyDashboard": true,
         "dependencyDashboardApproval": false
     }, {
         "matchUpdateTypes": [
             "minor"
         ],
         "stabilityDays": 7,
-        "automerge": false,
+        "automerge": true,
         "matchCurrentVersion": "!/^0/",
         "ignoreTests": true,
+        "dependencyDashboard": true,
         "dependencyDashboardApproval": false
     }, {
         "matchUpdateTypes": [
