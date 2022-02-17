@@ -20,7 +20,11 @@ grafana:
     path: ${grafana_ingress_path}
   plugins:
     - grafana-polystat-panel
-  podAnnotations:
-    iam.amazonaws.com/role: ${grafana_cloudwatch_role}
   rbac:
     pspEnabled: true
+  serviceAccount:
+    name: ${grafana_serviceaccount_name}
+    create: true
+    annotations:
+      eks.amazonaws.com/role-arn: ${grafana_cloudwatch_role}
+      eks.amazonaws.com/sts-regional-endpoints: "true"

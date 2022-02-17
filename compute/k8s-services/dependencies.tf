@@ -190,6 +190,13 @@ data "aws_iam_policy_document" "cloudwatch_metrics" {
   }
 }
 
+data "aws_caller_identity" "workload_account" {
+}
+
+locals {
+  oidc_issuer = trim(data.aws_eks_cluster.eks.identity[0].oidc[0].issuer, "https://")
+}
+
 data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
   statement {
     effect = "Allow"
@@ -198,14 +205,14 @@ data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
       type = "Federated"
 
       identifiers = [
-        trim("${data.aws_eks_cluster.eks.identity[0].oidc[0].issuer}", "https://"),
+        "arn:aws:iam::${data.aws_caller_identity.workload_account.account_id}:oidc-provider/${local.oidc_issuer}",
       ]
     }
 
     condition {
       test = "StringEquals"
-      values = ["system:serviceaccount:${local.monitoring_namespace_name}:dasdasd"]
-      variable = trim("${data.aws_eks_cluster.eks.identity[0].oidc[0].issuer}:sub", "https://")
+      values = ["system:serviceaccount:${local.monitoring_namespace_name}:${var.monitoring_kube_prometheus_stack_grafana_serviceaccount_name}"]
+      variable = "${local.oidc_issuer}:sub"
     }
 
     actions = ["sts:AssumeRoleWithWebIdentity"]
