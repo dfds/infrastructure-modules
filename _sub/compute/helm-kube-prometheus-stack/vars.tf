@@ -51,6 +51,10 @@ variable "grafana_iam_role_arn" {
   description = "Grafana IAM role ARN to add as pod annotation"
 }
 
+variable "grafana_serviceaccount_name" {
+  type        = string
+  description = "Grafana serviceaccount to be used for pod"
+}
 
 variable "slack_webhook" {
   type        = string

@@ -49,6 +49,14 @@ locals {
   core_dns_zone_name = join(".", local.core_dns_zone_list)
 }
 
+# --------------------------------------------------
+# Monitoring namespace name
+# --------------------------------------------------
+
+locals {
+  monitoring_namespace_name = "monitoring"
+}
+
 
 # --------------------------------------------------
 # Get Route 53 zones and ids
@@ -156,7 +164,6 @@ locals {
 locals {
   grafana_iam_role_name          = "${var.eks_cluster_name}-monitoring-grafana-cloudwatch"
   grafana_iam_role_arn           = "arn:aws:iam::${var.aws_workload_account_id}:role/${local.grafana_iam_role_name}"
-  monitoring_namespace_iam_roles = var.monitoring_kube_prometheus_stack_deploy ? join("|", compact([var.monitoring_namespace_iam_roles, local.grafana_iam_role_arn])) : var.monitoring_namespace_iam_roles
 }
 
 # --------------------------------------------------
@@ -182,20 +189,33 @@ data "aws_iam_policy_document" "cloudwatch_metrics" {
   }
 }
 
+data "aws_caller_identity" "workload_account" {
+}
+
+locals {
+  oidc_issuer = trim(data.aws_eks_cluster.eks.identity[0].oidc[0].issuer, "https://")
+}
+
 data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
   statement {
     effect = "Allow"
 
     principals {
-      type = "AWS"
+      type = "Federated"
 
       identifiers = [
-        module.kiam_deploy.server_role_arn,
+        "arn:aws:iam::${data.aws_caller_identity.workload_account.account_id}:oidc-provider/${local.oidc_issuer}",
       ]
     }
 
-    actions = ["sts:AssumeRole"]
-  }
+    condition {
+      test = "StringEquals"
+      values = ["system:serviceaccount:${local.monitoring_namespace_name}:${var.monitoring_kube_prometheus_stack_grafana_serviceaccount_name}"]
+      variable = "${local.oidc_issuer}:sub"
+    }
+
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+}
 }
 
 # ---------------------------------------------------------------------

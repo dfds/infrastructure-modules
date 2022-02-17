@@ -367,8 +367,7 @@ module "cloudwatch_alarm_alb_targets_health" {
 module "monitoring_namespace" {
   source    = "../../_sub/compute/k8s-namespace"
   count     = var.monitoring_namespace_deploy ? 1 : 0
-  name      = "monitoring"
-  iam_roles = local.monitoring_namespace_iam_roles
+  name      = local.monitoring_namespace_name
 }
 
 
@@ -404,6 +403,7 @@ module "monitoring_kube_prometheus_stack" {
   grafana_host              = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
   grafana_notifier_name     = "${var.eks_cluster_name}-alerting"
   grafana_iam_role_arn      = local.grafana_iam_role_arn # Coming from locals to avoid circular dependency between KIAM and Prometheus
+  grafana_serviceaccount_name = var.monitoring_kube_prometheus_stack_grafana_serviceaccount_name
   slack_webhook             = var.monitoring_kube_prometheus_stack_slack_webhook
   prometheus_storageclass   = var.monitoring_kube_prometheus_stack_prometheus_storageclass
   prometheus_storage_size   = var.monitoring_kube_prometheus_stack_prometheus_storage_size
@@ -613,4 +613,19 @@ module "velero_flux_manifests" {
   providers = {
     github = github.fluxcd
   }
+}
+
+
+# --------------------------------------------------
+# aws-subnet-exporter
+# --------------------------------------------------
+
+module "aws_subnet_exporter" {
+  source = "../../_sub/compute/k8s-subnet-exporter"
+  count  = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
+  namespace_name = module.monitoring_namespace[0].name
+  aws_account_id = var.aws_workload_account_id
+  aws_region = var.aws_region
+  image_tag = "0.2"
+  oidc_issuer = local.oidc_issuer
 }

@@ -23,6 +23,7 @@ resource "helm_release" "kube_prometheus_stack" {
       grafana_host            = var.grafana_host
       grafana_root_url        = "https://%(domain)s${var.grafana_ingress_path}"
       grafana_cloudwatch_role = var.grafana_iam_role_arn
+      grafana_serviceaccount_name = var.grafana_serviceaccount_name
     }),
 
     length(var.slack_webhook) > 0 ? templatefile("${path.module}/values/grafana-notifiers.yaml", {

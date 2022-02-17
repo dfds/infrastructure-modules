@@ -236,6 +236,12 @@ variable "monitoring_kube_prometheus_stack_grafana_notifier_name" {
   default     = "notifier1"
 }
 
+variable "monitoring_kube_prometheus_stack_grafana_serviceaccount_name" {
+  type = string
+  description = "Grafana serviceaccount to be used for pod"
+  default = "grafana-cloudwatch"
+}
+
 variable "monitoring_kube_prometheus_stack_slack_webhook" {
   type        = string
   description = "Kube-prometheus-stack alert slack webhook"
