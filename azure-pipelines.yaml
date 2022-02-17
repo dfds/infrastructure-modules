@@ -96,5 +96,5 @@ stages:
           - destroy_eks_1_21
         condition: ne(variables['NO_DESTROY'], 'true')
         steps:
-          - bash: ./src/qa-test-eks.sh destroy-shared-bucket eu-west-1 _global/eks-public-s3-bucket
+          - bash: ./src/qa-test-eks.sh destroy-public-bucket eu-west-1 _global/eks-public-s3-bucket
             displayName: "Terraform Destroy Public S3 bucket (post)"
