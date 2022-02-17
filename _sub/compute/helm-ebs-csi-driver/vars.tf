@@ -21,7 +21,8 @@ variable "cluster_name" {
   description = "The cluster name"
 }
 
-variable "kiam_server_role_arn" {
+variable "csi_ebs_serviceaccount_name" {
   type        = string
-  description = "The role or entity to provide trust for when creating roles to use with annotations in kubernetes"
+  description = "The name of the Service Account used by the CSI EBS Driver."
+  default     = "ebs-csi-controller-sa"
 }

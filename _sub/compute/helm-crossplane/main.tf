@@ -1,5 +1,12 @@
 locals {
-  provider_aws = [for s in var.crossplane_providers : lower(s) if length(regex("^crossplane/provider-aws:", s)) > 0]
+  provider_aws = [for s in var.crossplane_providers : lower(s) if length(try(regex("^crossplane/provider-aws:", s), [])) > 0]
+  provider_kubernetes = [for s in var.crossplane_providers : lower(s) if length(try(regex("^crossplane/provider-kubernetes:", s), [])) > 0]
+}
+
+resource "kubernetes_namespace" "namespace" {
+  metadata {
+    name = var.namespace
+  }
 }
 
 resource "helm_release" "crossplane" {
@@ -19,12 +26,6 @@ resource "helm_release" "crossplane" {
   depends_on = [kubernetes_namespace.namespace]
 }
 
-resource "kubernetes_namespace" "namespace" {
-  metadata {
-    name = var.namespace
-  }
-}
-
 
 resource "kubernetes_cluster_role_binding" "crossplane-admin" {
   count = length(var.crossplane_admin_service_accounts)
@@ -42,6 +43,8 @@ resource "kubernetes_cluster_role_binding" "crossplane-admin" {
     name      = var.crossplane_admin_service_accounts[count.index].serviceaccount
     namespace = var.crossplane_admin_service_accounts[count.index].namespace
   }
+
+  depends_on = [helm_release.crossplane]
 }
 
 resource "kubernetes_cluster_role_binding" "crossplane-edit" {
@@ -60,6 +63,8 @@ resource "kubernetes_cluster_role_binding" "crossplane-edit" {
     name      = var.crossplane_edit_service_accounts[count.index].serviceaccount
     namespace = var.crossplane_edit_service_accounts[count.index].namespace
   }
+
+  depends_on = [helm_release.crossplane]
 }
 
 resource "kubernetes_cluster_role_binding" "crossplane-view" {
@@ -78,6 +83,8 @@ resource "kubernetes_cluster_role_binding" "crossplane-view" {
     name      = var.crossplane_view_service_accounts[count.index].serviceaccount
     namespace = var.crossplane_view_service_accounts[count.index].namespace
   }
+
+  depends_on = [helm_release.crossplane]
 }
 
 resource "kubernetes_service" "crossplane" {
@@ -104,6 +111,8 @@ resource "kubernetes_service" "crossplane" {
 
     type = "ClusterIP"
   }
+
+  depends_on = [helm_release.crossplane]
 }
 
 resource "kubernetes_service" "crossplane-rbac" {
@@ -130,6 +139,8 @@ resource "kubernetes_service" "crossplane-rbac" {
 
     type = "ClusterIP"
   }
+
+  depends_on = [helm_release.crossplane]
 }
 
 resource "kubectl_manifest" "aws_provider_controllerconfig" {
@@ -167,22 +178,21 @@ spec:
     name: ${kubectl_manifest.aws_provider_controllerconfig[0].name}
 YAML
 
-  wait = true
-
-  depends_on = [helm_release.crossplane, kubectl_manifest.aws_provider_controllerconfig]
+  depends_on = [kubectl_manifest.aws_provider_controllerconfig]
 
 }
 
 resource "time_sleep" "wait_30_seconds_for_aws_provider" {
   count = length(local.provider_aws) > 0 ? 1 : 0
 
-  depends_on = [kubectl_manifest.aws_provider]
-
   create_duration = "30s"
+  destroy_duration = "30s"
 
   triggers = {
     kubectl_manifest = kubectl_manifest.aws_provider[0].name
   }
+
+  depends_on = [kubectl_manifest.aws_provider]
 }
 
 resource "kubectl_manifest" "aws_provider_config" {
@@ -244,6 +254,110 @@ resource "aws_iam_role_policy_attachment" "admin-attach" {
   role       = aws_iam_role.crossplane_role[0].name
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
+
+resource "kubectl_manifest" "kubernetes_provider_sa" {
+  count = length(local.provider_kubernetes) > 0 ? 1 : 0
+
+  yaml_body = <<YAML
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: crossplane-provider-kubernetes
+  namespace: ${helm_release.crossplane.namespace}
+YAML
+
+  depends_on = [helm_release.crossplane]
+}
+
+resource "kubectl_manifest" "kubernetes_provider_controllerconfig" {
+
+  count = length(local.provider_kubernetes) > 0 ? 1 : 0
+
+  yaml_body = <<YAML
+apiVersion: pkg.crossplane.io/v1alpha1
+kind: ControllerConfig
+metadata:
+  name: kubernetes-provider-config
+spec:
+  serviceAccountName: ${kubectl_manifest.kubernetes_provider_sa[0].name}
+YAML
+
+  depends_on = [kubectl_manifest.kubernetes_provider_sa]
+
+}
+
+resource "kubectl_manifest" "kubernetes_provider" {
+
+  count = length(local.provider_kubernetes) > 0 ? 1 : 0
+
+  yaml_body = <<YAML
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: "${replace(split(":", local.provider_kubernetes[count.index])[0], "/", "-")}"
+spec:
+  package: "${local.provider_kubernetes[count.index]}"
+  controllerConfigRef:
+    name: kubernetes-provider-config
+YAML
+
+  depends_on = [kubectl_manifest.kubernetes_provider_controllerconfig]
+
+}
+
+
+resource "time_sleep" "wait_30_seconds_for_kubernetes_provider" {
+  count = length(local.provider_kubernetes) > 0 ? 1 : 0
+
+  depends_on = [kubectl_manifest.kubernetes_provider]
+
+  create_duration = "30s"
+  destroy_duration = "30s"
+
+  triggers = {
+    kubectl_manifest = kubectl_manifest.kubernetes_provider[0].name
+  }
+}
+
+resource "kubectl_manifest" "kubernetes_provider_config" {
+
+  count = length(local.provider_kubernetes) > 0 ? 1 : 0
+
+  yaml_body = <<YAML
+apiVersion: kubernetes.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  name: kubernetes-provider
+spec:
+  credentials:
+    source: InjectedIdentity
+YAML
+
+  depends_on = [time_sleep.wait_30_seconds_for_kubernetes_provider]
+
+}
+
+resource "kubectl_manifest" "kubernetes_provider_clusterrole_binding" {
+  count = length(local.provider_kubernetes) > 0 ? 1 : 0
+
+  yaml_body = <<YAML
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: provider-kubernetes-admin-binding
+subjects:
+- kind: ServiceAccount
+  name: ${kubectl_manifest.kubernetes_provider_sa[0].name}
+  namespace: ${helm_release.crossplane.namespace}
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+YAML
+
+  depends_on = [kubectl_manifest.kubernetes_provider_sa]
+}
+
 
 
 
