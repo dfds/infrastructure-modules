@@ -159,21 +159,6 @@ EOF
 
 }
 
-# required TLS Certificate which is then used for the openid connect provider thumprint list
-data "tls_certificate" "eks" {
-  url = "${var.eks_openid_connect_provider_url}"
-}
-
-# define openid connect provider that is bound to the provider URL for the EKS cluster
-resource "aws_iam_openid_connect_provider" "default" {
-  url = var.eks_openid_connect_provider_url
-
-  client_id_list = [
-    "sts.amazonaws.com",
-  ]
-
-  thumbprint_list = [data.tls_certificate.eks.certificates.0.sha1_fingerprint]
-}
 
 # define IAM role for the CSI Driver to utilise, including a trust relationship for the KAIM Server role
 resource "aws_iam_role" "csi_driver_role" {
@@ -192,7 +177,7 @@ resource "aws_iam_role" "csi_driver_role" {
       "Action": "sts:AssumeRoleWithWebIdentity",
       "Condition": {
         "StringEquals": {
-          "${trim(var.eks_openid_connect_provider_url,"https://")}:sub": "system:serviceaccount:kube-system:ebs-csi-controller-sa"
+          "${trim(var.eks_openid_connect_provider_url,"https://")}:sub": "system:serviceaccount:${var.csi_ebs_serviceaccount_namespace}:${var.csi_ebs_serviceaccount_name}"
         }
       }
     }
