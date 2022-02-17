@@ -177,7 +177,7 @@ resource "aws_iam_role" "csi_driver_role" {
       "Action": "sts:AssumeRoleWithWebIdentity",
       "Condition": {
         "StringEquals": {
-          "${trim(var.eks_openid_connect_provider_url,"https://")}:sub": "system:serviceaccount:${var.csi_ebs_serviceaccount_namespace}:${var.csi_ebs_serviceaccount_name}"
+          "${trim(var.eks_openid_connect_provider_url,"https://")}:sub": "system:serviceaccount:kube-system:${var.csi_ebs_serviceaccount_name}"
         }
       }
     }
@@ -203,6 +203,10 @@ resource "helm_release" "aws-ebs-csi-driver" {
   namespace     = "kube-system"
   recreate_pods = true
   force_update  = false
+  values = [
+    templatefile("${path.module}/values/values.yaml", {
+      csi_ebs_serviceaccount_name = var.csi_ebs_serviceaccount_name
+  })]
 
   set {
     name = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"

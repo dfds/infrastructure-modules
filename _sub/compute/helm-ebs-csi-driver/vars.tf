@@ -26,9 +26,3 @@ variable "csi_ebs_serviceaccount_name" {
   description = "The name of the Service Account used by the CSI EBS Driver."
   default     = "ebs-csi-controller-sa"
 }
-
-variable "csi_ebs_serviceaccount_namespace" {
-  type        = string
-  description = "The namespace  where the Service Account used by the CSI EBS Driver is located."
-  default     = "kube-system"
-}
