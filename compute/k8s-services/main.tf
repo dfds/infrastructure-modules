@@ -81,6 +81,14 @@ provider "azuread" {
 
 }
 
+# --------------------------------------------------
+# AWS IAM Open ID Connect Provider
+# --------------------------------------------------
+
+module "aws_iam_oidc_provider" {
+  source                          = "../../_sub/security/iam-oidc-provider"
+  eks_openid_connect_provider_url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
+}
 
 # --------------------------------------------------
 # AWS EBS CSI Driver (Helm Chart Installation)
@@ -91,9 +99,8 @@ module "ebs_csi_driver" {
   count                           = var.ebs_csi_driver_deploy ? 1 : 0
   chart_version                   = var.ebs_csi_driver_chart_version
   cluster_name                    = var.eks_cluster_name
-  kiam_server_role_arn            = module.kiam_deploy.server_role_arn
   kubeconfig_path                 = local.kubeconfig_path
-  eks_openid_connect_provider_url = data.terraform_remote_state.cluster.outputs.eks_openid_connect_provider_url
+  eks_openid_connect_provider_url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
 }
 
 # --------------------------------------------------
@@ -523,7 +530,7 @@ module "crossplane" {
   crossplane_view_service_accounts  = var.crossplane_view_service_accounts
   crossplane_metrics_enabled        = var.crossplane_metrics_enabled
   crossplane_aws_iam_role_name      = var.crossplane_aws_iam_role_name
-  eks_openid_connect_provider_url   = var.eks_openid_connect_provider_url
+  eks_openid_connect_provider_url   = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
 }
 
 # --------------------------------------------------
