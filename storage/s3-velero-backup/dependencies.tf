@@ -38,8 +38,7 @@ data "tls_certificate" "oidc_provider" {
 }
 
 locals {
-  account_id                = data.aws_caller_identity.current.account_id
-  oidc_provider_server_id   = trim(local.oidc_provider_url, "https://")
-  oidc_provider_arn         = "arn:aws:iam::${local.account_id}:oidc-provider/${local.oidc_provider_server_id}"
-  oidc_provider_thumbprints = data.tls_certificate.oidc_provider.certificates.0.sha1_fingerprint
+  account_id              = data.aws_caller_identity.current.account_id
+  oidc_provider_server_id = trim(local.oidc_provider_url, "https://")
+  oidc_provider_arn       = "arn:aws:iam::${local.account_id}:oidc-provider/${local.oidc_provider_server_id}"
 }

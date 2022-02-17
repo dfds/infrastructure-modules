@@ -11,14 +11,17 @@ provider "aws" {
   }
 }
 
+# --------------------------------------------------
+# AWS IAM Open ID Connect Provider
+# --------------------------------------------------
+
 # Only create a IAM Provider for OIDC if var.oidc_provider_url is supplied.
 # If var.oidc_provider_url is not supplied, it means that one already exist,
 # and information is fetched through the EKS data source.
-resource "aws_iam_openid_connect_provider" "oidc_iam_provider" {
-  count           = var.oidc_provider_url != null ? 1 : 0
-  url             = local.oidc_provider_url
-  client_id_list  = ["sts.amazonaws.com", ]
-  thumbprint_list = [local.oidc_provider_thumbprints]
+module "aws_iam_oidc_provider" {
+  count                           = var.oidc_provider_url != null ? 1 : 0
+  source                          = "../../_sub/security/iam-oidc-provider"
+  eks_openid_connect_provider_url = local.oidc_provider_url
 }
 
 resource "aws_s3_bucket" "velero_storage" {
