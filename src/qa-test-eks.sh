@@ -161,7 +161,22 @@ if [ "$ACTION" = "destroy-cluster" ]; then
 fi
 
 
-if [ "$ACTION" = "destroy-shared" ]; then
+if [ "$ACTION" = "destroy-public-bucket" ]; then
+    RETURN=0
+    REGION=$2
+    SUBPATH=$3
+    WORKDIR="${BASEPATH}/${SUBPATH}"
+
+    # Cleanup
+    terragrunt run-all destroy --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve || RETURN=1
+
+    # Return false, if any *eseential* commands failed
+    if [ $RETURN -ne 0 ]; then
+        false
+    fi
+fi
+
+if [ "$ACTION" = "destroy-velero-bucket" ]; then
     RETURN=0
     REGION=$2
     SUBPATH=$3
