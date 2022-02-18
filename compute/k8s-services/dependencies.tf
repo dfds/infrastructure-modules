@@ -162,8 +162,8 @@ locals {
 # --------------------------------------------------
 
 locals {
-  grafana_iam_role_name          = "${var.eks_cluster_name}-monitoring-grafana-cloudwatch"
-  grafana_iam_role_arn           = "arn:aws:iam::${var.aws_workload_account_id}:role/${local.grafana_iam_role_name}"
+  grafana_iam_role_name = "${var.eks_cluster_name}-monitoring-grafana-cloudwatch"
+  grafana_iam_role_arn  = "arn:aws:iam::${var.aws_workload_account_id}:role/${local.grafana_iam_role_name}"
 }
 
 # --------------------------------------------------
@@ -209,13 +209,13 @@ data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
     }
 
     condition {
-      test = "StringEquals"
-      values = ["system:serviceaccount:${local.monitoring_namespace_name}:${var.monitoring_kube_prometheus_stack_grafana_serviceaccount_name}"]
+      test     = "StringEquals"
+      values   = ["system:serviceaccount:${local.monitoring_namespace_name}:${var.monitoring_kube_prometheus_stack_grafana_serviceaccount_name}"]
       variable = "${local.oidc_issuer}:sub"
     }
 
     actions = ["sts:AssumeRoleWithWebIdentity"]
-}
+  }
 }
 
 # ---------------------------------------------------------------------

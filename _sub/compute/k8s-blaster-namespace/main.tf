@@ -145,3 +145,27 @@ resource "aws_iam_role_policy_attachment" "param-store" {
   role       = element(concat(aws_iam_role.self_service.*.name, [""]), 0)
   policy_arn = element(concat(aws_iam_policy.param_store.*.arn, [""]), 0)
 }
+
+# --------------------------------------------------
+# k8s-janitor IAM role
+# --------------------------------------------------
+
+locals {
+  k8s_janitor_iam_role_name = "k8s-janitor"
+}
+
+resource "aws_iam_role" "k8s_janitor" {
+  count                = var.deploy ? 1 : 0
+  name                 = local.k8s_janitor_iam_role_name
+  path                 = "/"
+  description          = "Role for k8s-janitor to manage S3 buckets within its path"
+  assume_role_policy   = data.aws_iam_policy_document.k8s_janitor_trust[0].json
+  max_session_duration = 3600
+}
+
+resource "aws_iam_role_policy" "k8s_janitor" {
+  count  = var.deploy ? 1 : 0
+  name   = local.k8s_janitor_iam_role_name
+  role   = aws_iam_role.k8s_janitor[0].id
+  policy = data.aws_iam_policy_document.k8s_janitor[0].json
+}
