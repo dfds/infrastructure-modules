@@ -145,6 +145,20 @@ module "iam_role_ecr_push" {
   }
 }
 
+module "iam_role_crossplane" {
+  source               = "../../_sub/security/iam-role"
+  role_name            = "crossplane-deploy"
+  role_description     = "This role is used by a capability AWS providerconfig to deploy resources"
+  max_session_duration = 3600
+  assume_role_policy   = data.aws_iam_policy_document.assume_role_policy_crossplane_provider_aws.json
+  role_policy_name     = "crossplane-provider-aws"
+  role_policy_document = module.iam_policies.admin
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
 # --------------------------------------------------
 # IAM deployment user
 # --------------------------------------------------
