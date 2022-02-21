@@ -54,12 +54,3 @@ resource "aws_iam_role_policy" "this" {
   role   = aws_iam_role.this.id
   policy = data.aws_iam_policy_document.this.json
 }
-
-
-
-# TODO
-# - [x] Create OIDC using the Hellman one
-# - [x] Create or modify AWS role
-# - [] Create or modify service account to use IRSA annotations
-# - [] Make sure DaemonSet uses the above mentioned service account
-# - [] Remember that prod is cross account and sandbox is single
