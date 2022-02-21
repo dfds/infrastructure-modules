@@ -574,6 +574,8 @@ module "fluentd_cloudwatch_flux_manifests" {
   github_owner      = var.fluentd_cloudwatch_flux_github_owner != null ? var.fluentd_cloudwatch_flux_github_owner : var.platform_fluxcd_github_owner
   repo_name         = var.fluentd_cloudwatch_flux_repo_name != null ? var.fluentd_cloudwatch_flux_repo_name : var.platform_fluxcd_repo_name
   repo_branch       = var.fluentd_cloudwatch_flux_repo_branch != null ? var.fluentd_cloudwatch_flux_repo_branch : var.platform_fluxcd_repo_branch
+  deploy_oidc_provider = var.aws_assume_logs_role_arn != null ? true : false # do not create extra oidc provider if external log account is provided
+  eks_openid_connect_provider_url = local.oidc_issuer
 
   providers = {
     github = github.fluxcd
@@ -597,8 +599,6 @@ module "velero_flux_manifests" {
   github_owner = var.velero_flux_github_owner != null ? var.velero_flux_github_owner : var.platform_fluxcd_github_owner
   repo_name    = var.velero_flux_repo_name != null ? var.velero_flux_repo_name : var.platform_fluxcd_repo_name
   repo_branch  = var.velero_flux_repo_branch != null ? var.velero_flux_repo_branch : var.platform_fluxcd_repo_branch
-  deploy_oidc_provider = var.aws_assume_logs_role_arn != null ? true : false # do not create extra oidc provider if external log account is provided
-  eks_openid_connect_provider_url = local.oidc_issuer
 
   providers = {
     github = github.fluxcd

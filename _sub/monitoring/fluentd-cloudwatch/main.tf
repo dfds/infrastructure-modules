@@ -37,7 +37,7 @@ resource "aws_iam_openid_connect_provider" "this" {
 }
 
 locals {
-  role_name = "eks-${var.eks_cluster_name}-cloudwatchlogs"
+  role_name = "eks-${var.cluster_name}-cloudwatchlogs"
 }
 
 # create IAM role
@@ -46,7 +46,6 @@ resource "aws_iam_role" "this" {
   path                 = "/"
   description          = "Role for FluentD to assume in order to ship logs to CloudWatch Logs"
   assume_role_policy   = data.aws_iam_policy_document.this_trust.json
-  max_session_duration = var.max_session_duration
 }
 
 resource "aws_iam_role_policy" "this" {

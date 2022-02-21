@@ -129,21 +129,9 @@ YAML
 # AWS
 # --------------------------------------------------
 
-# required TLS Certificate which is then used for the openid connect provider thumprint list
+# required TLS Certificate which is then used for the openid connect provider thumbprint list
 data "tls_certificate" "eks" {
-  url = "${var.eks_openid_connect_provider_url}"
-}
-
-data "aws_iam_policy_document" "this" {
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "ec2:DescribeSubnets",
-    ]
-
-    resources = ["*"]
-  }
+  url = "https://${var.eks_openid_connect_provider_url}"
 }
 
 data "aws_caller_identity" "this" {}
@@ -163,7 +151,7 @@ data "aws_iam_policy_document" "this_trust" {
     condition {
       test = "StringEquals"
       values = ["system:serviceaccount:${local.fluentd_namespace}:${local.fluentd_name}"]
-      variable = "${var.oidc_issuer}:sub"
+      variable = "${var.eks_openid_connect_provider_url}:sub"
     }
 
     actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -186,13 +174,13 @@ data "aws_iam_policy_document" "this" {
     sid      = "LogStream"
     effect   = "Allow"
     actions   = ["logs:*"]
-    resources = ["arn:aws:logs:*:${data.aws_caller_identity.this.account_id}:log-group:/k8s/${var.eks_cluster_name}/*:log-stream:*"]
+    resources = ["arn:aws:logs:*:${data.aws_caller_identity.this.account_id}:log-group:/k8s/${var.cluster_name}/*:log-stream:*"]
   }
 
   statement {
     sid      = "LogGroup"
     effect   = "Allow"
     actions   = ["logs:*"]
-    resources = ["arn:aws:logs:*:${data.aws_caller_identity.this.account_id}:log-group:/k8s/${var.eks_cluster_name}/*"]
+    resources = ["arn:aws:logs:*:${data.aws_caller_identity.this.account_id}:log-group:/k8s/${var.cluster_name}/*"]
   }
 }
