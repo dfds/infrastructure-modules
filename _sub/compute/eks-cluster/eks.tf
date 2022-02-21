@@ -32,3 +32,25 @@ resource "aws_eks_cluster" "eks" {
 
 }
 
+# --------------------------------------------------
+# AWS IAM Open ID Connect Provider
+# --------------------------------------------------
+# required TLS Certificate which is then used for the openid connect provider thumprint list
+data "tls_certificate" "eks" {
+  url = "${aws_eks_cluster.eks.identity[0].oidc[0].issuer}"
+}
+
+# define openid connect provider that is bound to the provider URL for the EKS cluster
+resource "aws_iam_openid_connect_provider" "default" {
+  url = aws_eks_cluster.eks.identity[0].oidc[0].issuer
+
+  client_id_list = [
+    "sts.amazonaws.com",
+  ]
+
+  thumbprint_list = [data.tls_certificate.eks.certificates.0.sha1_fingerprint]
+
+  tags = {
+    "Name" = "eks-${var.cluster_name}"
+  }
+}
