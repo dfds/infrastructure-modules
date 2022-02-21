@@ -69,22 +69,32 @@ stages:
           - bash: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
             displayName: "Provision Velero S3 bucket"
 
+      - job: destroy_velero_bucket
+        displayName: Destroy Velero S3 Bucket
+        container: prime
+        dependsOn:
+          - init_shared_velero
+        condition: ne(variables['NO_DESTROY'], 'true')
+        steps:
+          - bash: ./src/qa-test-eks.sh destroy-velero-bucket eu-west-1 _global/s3-bucket-velero
+            displayName: "Terraform Destroy Velero S3 Bucket (post)"
+
       - job: destroy_eks_1_21
         displayName: Destroy EKS 1.21
         container: prime
         dependsOn:
-          - init_shared_velero
+          - destroy_velero_bucket
         condition: ne(variables['NO_DESTROY'], 'true')
         steps:
           - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1 qa21
             displayName: "Terraform Destroy (post)"
 
       - job: destroy_shared
-        displayName: Destroy EKS shared resources
+        displayName: Destroy Public S3 bucket
         container: prime
         dependsOn:
           - destroy_eks_1_21
         condition: ne(variables['NO_DESTROY'], 'true')
         steps:
-          - bash: ./src/qa-test-eks.sh destroy-shared eu-west-1 _global
-            displayName: "Destroy shared all resources"
+          - bash: ./src/qa-test-eks.sh destroy-public-bucket eu-west-1 _global/eks-public-s3-bucket
+            displayName: "Terraform Destroy Public S3 bucket (post)"
