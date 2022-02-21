@@ -22,3 +22,44 @@ resource "github_repository_file" "fluentd-cloudwatch_config_path" {
   file       = "${local.cluster_repo_path}/${local.app_install_name}-config.yaml"
   content    = jsonencode(local.app_config_path)
 }
+
+
+# define openid connect provider that is bound to the provider URL for the EKS cluster
+resource "aws_iam_openid_connect_provider" "this" {
+  count = var.deploy_oidc_provider ? 1 : 0
+  url = var.eks_openid_connect_provider_url
+
+  client_id_list = [
+    "sts.amazonaws.com",
+  ]
+
+  thumbprint_list = [data.tls_certificate.eks.certificates.0.sha1_fingerprint]
+}
+
+locals {
+  role_name = "eks-${var.eks_cluster_name}-cloudwatchlogs"
+}
+
+# create IAM role
+resource "aws_iam_role" "this" {
+  name                 = local.role_name
+  path                 = "/"
+  description          = "Role for FluentD to assume in order to ship logs to CloudWatch Logs"
+  assume_role_policy   = data.aws_iam_policy_document.this_trust.json
+  max_session_duration = var.max_session_duration
+}
+
+resource "aws_iam_role_policy" "this" {
+  name   = "CloudWatchLogs"
+  role   = aws_iam_role.this.id
+  policy = data.aws_iam_policy_document.this.json
+}
+
+
+
+# TODO
+# - [x] Create OIDC using the Hellman one
+# - [x] Create or modify AWS role
+# - [] Create or modify service account to use IRSA annotations
+# - [] Make sure DaemonSet uses the above mentioned service account
+# - [] Remember that prod is cross account and sandbox is single

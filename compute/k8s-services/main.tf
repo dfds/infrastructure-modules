@@ -268,20 +268,6 @@ module "kiam_deploy" {
 # AWS IAM roles
 # --------------------------------------------------
 
-module "aws_cloudwatchlogs_iam_role" {
-  source               = "../../_sub/security/iam-role"
-  count                = var.cloudwatchlogs_iam_role_deploy ? 1 : 0
-  role_name            = "eks-${var.eks_cluster_name}-cloudwatchlogs"
-  role_description     = "Role for FluentD to assume in order to ship logs to CloudWatch Logs"
-  role_policy_name     = "CloudWatchLogs"
-  role_policy_document = jsonencode(local.cloudwatchlogs_policy)
-  assume_role_policy   = jsonencode(local.cloudwatchlogs_assume_role_policy)
-
-  providers = {
-    aws = aws.logs
-  }
-}
-
 module "aws_cloudwatch_grafana_reader_iam_role" {
   source               = "../../_sub/security/iam-role"
   count                = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
@@ -304,7 +290,6 @@ module "aws_cloudwatch_grafana_reader_iam_role" {
 locals {
   kubesystem_permitted_base_role = flatten([
     try(module.ebs_csi_driver[0].iam_role_name, []),
-    try(module.aws_cloudwatchlogs_iam_role[0].arn, [])
   ])
   kubesystem_permitted_role_list        = concat(local.kubesystem_permitted_base_role, var.kubesystem_permitted_extra_roles)
   kubesystem_permitted_role_list_sorted = sort(local.kubesystem_permitted_role_list)
@@ -592,7 +577,9 @@ module "fluentd_cloudwatch_flux_manifests" {
 
   providers = {
     github = github.fluxcd
+    aws = aws.logs
   }
+
 }
 
 # --------------------------------------------------
@@ -610,6 +597,8 @@ module "velero_flux_manifests" {
   github_owner = var.velero_flux_github_owner != null ? var.velero_flux_github_owner : var.platform_fluxcd_github_owner
   repo_name    = var.velero_flux_repo_name != null ? var.velero_flux_repo_name : var.platform_fluxcd_repo_name
   repo_branch  = var.velero_flux_repo_branch != null ? var.velero_flux_repo_branch : var.platform_fluxcd_repo_branch
+  deploy_oidc_provider = var.aws_assume_logs_role_arn != null ? true : false # do not create extra oidc provider if external log account is provided
+  eks_openid_connect_provider_url = local.oidc_issuer
 
   providers = {
     github = github.fluxcd
