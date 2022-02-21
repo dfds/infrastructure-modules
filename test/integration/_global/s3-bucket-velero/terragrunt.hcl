@@ -13,5 +13,5 @@ dependencies {
 
 inputs = {
   bucket_name = "dfds-velero-qa"
-  kiam_server_role_arn = ["arn:aws:iam::266901158286:role/eks-qa21-kiam-server"]
+  eks_cluster_name = "qa21"
 }

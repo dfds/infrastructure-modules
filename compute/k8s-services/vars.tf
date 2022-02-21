@@ -237,9 +237,9 @@ variable "monitoring_kube_prometheus_stack_grafana_notifier_name" {
 }
 
 variable "monitoring_kube_prometheus_stack_grafana_serviceaccount_name" {
-  type = string
+  type        = string
   description = "Grafana serviceaccount to be used for pod"
-  default = "grafana-cloudwatch"
+  default     = "grafana-cloudwatch"
 }
 
 variable "monitoring_kube_prometheus_stack_slack_webhook" {
@@ -679,9 +679,9 @@ variable "crossplane_metrics_enabled" {
 }
 
 variable "crossplane_aws_iam_role_name" {
-  type = string
+  type        = string
   description = ""
-  default = "provider-aws"
+  default     = "provider-aws"
 }
 
 # -------------
