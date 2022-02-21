@@ -299,3 +299,14 @@ module "k8s_cloudengineer_clusterrole_and_binding" {
     }
   ]
 }
+
+
+# --------------------------------------------------
+# AWS IAM Open ID Connect Provider
+# --------------------------------------------------
+
+module "aws_iam_oidc_provider" {
+  source                          = "../../_sub/security/iam-oidc-provider"
+  eks_openid_connect_provider_url = module.eks_cluster.eks_openid_connect_provider_url
+  eks_cluster_name                = var.eks_cluster_name
+}
