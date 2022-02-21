@@ -82,15 +82,6 @@ provider "azuread" {
 }
 
 # --------------------------------------------------
-# AWS IAM Open ID Connect Provider
-# --------------------------------------------------
-
-module "aws_iam_oidc_provider" {
-  source                          = "../../_sub/security/iam-oidc-provider"
-  eks_openid_connect_provider_url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
-}
-
-# --------------------------------------------------
 # AWS EBS CSI Driver (Helm Chart Installation)
 # --------------------------------------------------
 
