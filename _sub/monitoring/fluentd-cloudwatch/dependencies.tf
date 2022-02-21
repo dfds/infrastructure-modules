@@ -3,8 +3,8 @@
 # --------------------------------------------------
 
 locals {
-  namespace = "flux-system"
-  fluentd_name = "fluentd-cloudwatch"
+  namespace         = "flux-system"
+  fluentd_name      = "fluentd-cloudwatch"
   fluentd_namespace = "fluentd"
 }
 
@@ -149,8 +149,8 @@ data "aws_iam_policy_document" "this_trust" {
     }
 
     condition {
-      test = "StringEquals"
-      values = ["system:serviceaccount:${local.fluentd_namespace}:${local.fluentd_name}"]
+      test     = "StringEquals"
+      values   = ["system:serviceaccount:${local.fluentd_namespace}:${local.fluentd_name}"]
       variable = "${var.eks_openid_connect_provider_url}:sub"
     }
 
@@ -160,26 +160,26 @@ data "aws_iam_policy_document" "this_trust" {
 
 data "aws_iam_policy_document" "this" {
   statement {
-    sid = "ReadLogs"
+    sid    = "ReadLogs"
     effect = "Allow"
     actions = [
-          "logs:Describe*",
-          "logs:Get*",
-          "logs:List*"
+      "logs:Describe*",
+      "logs:Get*",
+      "logs:List*"
     ]
     resources = ["*"]
   }
 
   statement {
-    sid      = "LogStream"
-    effect   = "Allow"
+    sid       = "LogStream"
+    effect    = "Allow"
     actions   = ["logs:*"]
     resources = ["arn:aws:logs:*:${data.aws_caller_identity.this.account_id}:log-group:/k8s/${var.cluster_name}/*:log-stream:*"]
   }
 
   statement {
-    sid      = "LogGroup"
-    effect   = "Allow"
+    sid       = "LogGroup"
+    effect    = "Allow"
     actions   = ["logs:*"]
     resources = ["arn:aws:logs:*:${data.aws_caller_identity.this.account_id}:log-group:/k8s/${var.cluster_name}/*"]
   }

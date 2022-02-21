@@ -42,11 +42,11 @@ variable "retention_in_days" {
 }
 
 variable "eks_openid_connect_provider_url" {
-  type = string
+  type        = string
   description = "EKS OIDC issuer url"
 }
 
 variable "deploy_oidc_provider" {
-  type = bool
+  type        = bool
   description = "Create an OIDC provider only if external log account is provided"
 }
