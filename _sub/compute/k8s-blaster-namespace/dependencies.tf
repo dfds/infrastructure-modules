@@ -29,7 +29,7 @@ data "aws_iam_policy_document" "k8s_janitor" {
       "s3:PutObjectTagging"
     ]
 
-    resources = ["arn:aws:s3:::dfds-oxygen-k8s-hellman/*"]
+    resources = ["arn:aws:s3:::${var.blaster_configmap_bucket}/*"]
   }
 
   statement {
@@ -39,7 +39,7 @@ data "aws_iam_policy_document" "k8s_janitor" {
       "s3:ListBucket"
     ]
 
-    resources = ["arn:aws:s3:::dfds-oxygen-k8s-hellman"]
+    resources = ["arn:aws:s3:::${var.blaster_configmap_bucket}"]
   }
 }
 
