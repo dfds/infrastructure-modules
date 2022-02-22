@@ -27,7 +27,7 @@ resource "github_repository_file" "fluentd-cloudwatch_config_path" {
 # define openid connect provider that is bound to the provider URL for the EKS cluster
 resource "aws_iam_openid_connect_provider" "this" {
   count = var.deploy_oidc_provider ? 1 : 0
-  url   = var.eks_openid_connect_provider_url
+  url   = "https://${var.eks_openid_connect_provider_url}"
 
   client_id_list = [
     "sts.amazonaws.com",
