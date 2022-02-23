@@ -42,7 +42,8 @@ locals {
                 "appsync:*",
                 "waf-regional:*",
                 "wafv2:*",
-                "waf:*"
+                "waf:*",
+                "deepracer:*"
             ],
             "Resource": "*",
             "Condition": {
