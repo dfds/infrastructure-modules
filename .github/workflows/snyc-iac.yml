@@ -33,7 +33,7 @@ jobs:
       - name: Snyk auth
         run: "./snyk auth ${{ secrets.SNYK_TOKEN }}"
       - name: Snyk test open source dependencies
-        run: ./snyk test --sarif --sarif-file-output=snyk.sarif . | true
+        run: ./snyk iac test --sarif --sarif-file-output=snyk.sarif . | true
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v1
         with:
