@@ -31,14 +31,3 @@ resource "aws_eks_cluster" "eks" {
   }
 
 }
-
-
-# --------------------------------------------------
-# AWS IAM Open ID Connect Provider
-# --------------------------------------------------
-
-module "aws_iam_oidc_provider" {
-  source                          = "../../security/iam-oidc-provider"
-  eks_openid_connect_provider_url = aws_eks_cluster.eks.identity[0].oidc[0].issuer
-  eks_cluster_name                = var.cluster_name
-}
