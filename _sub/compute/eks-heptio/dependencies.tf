@@ -19,6 +19,7 @@ data "template_file" "kubeconfig_admin" {
     endpoint     = var.eks_endpoint
     ca           = var.eks_certificate_authority
     role_arn     = var.aws_assume_role_arn
+    aws_region   = data.aws_region.current.name
   }
 }
 
