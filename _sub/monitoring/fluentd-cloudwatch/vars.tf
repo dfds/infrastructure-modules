@@ -40,3 +40,13 @@ variable "retention_in_days" {
   default     = "7"
   description = "How many days to keep the logs?"
 }
+
+variable "eks_openid_connect_provider_url" {
+  type        = string
+  description = "EKS OIDC issuer url"
+}
+
+variable "deploy_oidc_provider" {
+  type        = bool
+  description = "Create an OIDC provider only if external log account is provided"
+}

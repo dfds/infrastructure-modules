@@ -3,7 +3,9 @@
 # --------------------------------------------------
 
 locals {
-  namespace = "flux-system"
+  namespace         = "flux-system"
+  fluentd_name      = "fluentd-cloudwatch"
+  fluentd_namespace = "fluentd"
 }
 
 # --------------------------------------------------
@@ -72,24 +74,20 @@ locals {
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: fluentd
-  annotations:
-    iam.amazonaws.com/permitted: arn:aws:iam::${var.account_id}:role/eks-${var.cluster_name}-cloudwatchlogs
+  name: ${local.fluentd_namespace}
 
 ---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: fluentd-cloudwatch
-  namespace: fluentd
+  name: ${local.fluentd_name}
+  namespace: ${local.fluentd_namespace}
 spec:
   template:
-    metadata:
-      annotations:
-        iam.amazonaws.com/role: arn:aws:iam::${var.account_id}:role/eks-${var.cluster_name}-cloudwatchlogs
     spec:
+      serviceAccountName: ${local.fluentd_name}
       containers:
-        - name: fluentd-cloudwatch
+        - name: ${local.fluentd_name}
           env:
             - name: AWS_REGION
               value: "${var.aws_region}"
@@ -100,8 +98,8 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: fluentd-cloudwatch
-  namespace: fluentd
+  name: ${local.fluentd_name}
+  namespace: ${local.fluentd_namespace}
 data:
   02-tag.conf: |-
     # Tag with namespace and prefix with clustername
@@ -113,5 +111,76 @@ data:
         tag /k8s/${var.cluster_name}/$1
       </rule>
     </match>
-  YAML
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ${local.fluentd_name}
+  namespace: ${local.fluentd_namespace}
+  annotations:
+    eks.amazonaws.com/role-arn: ${aws_iam_role.this.arn}
+    eks.amazonaws.com/sts-regional-endpoints: "true"
+YAML
+}
+
+
+# --------------------------------------------------
+# AWS
+# --------------------------------------------------
+
+# required TLS Certificate which is then used for the openid connect provider thumbprint list
+data "tls_certificate" "eks" {
+  url = "https://${var.eks_openid_connect_provider_url}"
+}
+
+data "aws_caller_identity" "this" {}
+
+data "aws_iam_policy_document" "this_trust" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type = "Federated"
+
+      identifiers = [
+        "arn:aws:iam::${data.aws_caller_identity.this.account_id}:oidc-provider/${var.eks_openid_connect_provider_url}",
+      ]
+    }
+
+    condition {
+      test     = "StringEquals"
+      values   = ["system:serviceaccount:${local.fluentd_namespace}:${local.fluentd_name}"]
+      variable = "${var.eks_openid_connect_provider_url}:sub"
+    }
+
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+  }
+}
+
+data "aws_iam_policy_document" "this" {
+  statement {
+    sid    = "ReadLogs"
+    effect = "Allow"
+    actions = [
+      "logs:Describe*",
+      "logs:Get*",
+      "logs:List*"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid       = "LogStream"
+    effect    = "Allow"
+    actions   = ["logs:*"]
+    resources = ["arn:aws:logs:*:${data.aws_caller_identity.this.account_id}:log-group:/k8s/${var.cluster_name}/*:log-stream:*"]
+  }
+
+  statement {
+    sid       = "LogGroup"
+    effect    = "Allow"
+    actions   = ["logs:*"]
+    resources = ["arn:aws:logs:*:${data.aws_caller_identity.this.account_id}:log-group:/k8s/${var.cluster_name}/*"]
+  }
 }

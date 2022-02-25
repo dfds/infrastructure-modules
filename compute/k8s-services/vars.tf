@@ -62,12 +62,6 @@ variable "aws_assume_logs_role_arn" {
   default = null
 }
 
-variable "cloudwatchlogs_iam_role_deploy" {
-  type        = bool
-  default     = false
-  description = "Deploy an AWS IAM role for FluentD to assume, to enabling shipping logs to CloudWatch Logs"
-}
-
 # --------------------------------------------------
 # ALB access logs S3 bucket
 # --------------------------------------------------
