@@ -21,12 +21,13 @@ provider "kubernetes" {
 
   exec {
     api_version = "client.authentication.k8s.io/v1alpha1"
-    command     = "aws-iam-authenticator"
+    command     = "aws"
     args = [
-      "token",
-      "-i",
+      "eks",
+      "get-token",
+      "--cluster-name",
       var.eks_cluster_name,
-      "-r",
+      "--role-arn",
       var.aws_assume_role_arn,
     ]
   }
