@@ -1,6 +1,7 @@
 locals {
   provider_aws = [for s in var.crossplane_providers : lower(s) if length(try(regex("^crossplane/provider-aws:", s), [])) > 0]
   provider_kubernetes = [for s in var.crossplane_providers : lower(s) if length(try(regex("^crossplane/provider-kubernetes:", s), [])) > 0]
+  template_name = "crossplane"
 }
 
 resource "kubernetes_namespace" "namespace" {
@@ -99,7 +100,7 @@ resource "kubernetes_service" "crossplane" {
   }
   spec {
     selector = {
-      app = helm_release.crossplane.name
+      app = local.template_name
       release = helm_release.crossplane.name
     }
     port {
@@ -358,9 +359,4 @@ YAML
   depends_on = [kubectl_manifest.kubernetes_provider_sa]
 }
 
-
-
-
-data "aws_caller_identity" "current" {
-
-}
+data "aws_caller_identity" "current" {}
