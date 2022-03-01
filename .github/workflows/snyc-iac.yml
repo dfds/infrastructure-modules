@@ -1,40 +1,43 @@
-name: Snyk IaC scan
+name: Snyk
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ "master", "test/snyk-poc" ]
+    branches: [ "master", "main" ]
   pull_request:
-    branches: [ "master", "test/snyk-poc" ]
+    branches: [ "master", "main" ]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
-      - name: Download Snyk
-        run: |
-          curl -LO https://github.com/snyk/snyk/releases/download/v1.856.0/snyk-linux
-          chmod +x snyk-linux
-          mv snyk-linux snyk
-      
-      - name: Snyk auth
-        run: "./snyk auth ${{ secrets.SNYK_TOKEN }}"
-      - name: Snyk test open source dependencies
-        run: ./snyk iac test --sarif --sarif-file-output=snyk.sarif . | true
+      - name: Run Snyk to check for open source vulnerabilities
+        uses: snyk/actions/python@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --sarif-file-output=snyk-os.sarif
+
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v1
         with:
-          sarif_file: snyk.sarif
+          sarif_file: snyk-os.sarif
+
+      - name: Run Snyk to check configuration files for security issues
+        continue-on-error: true
+        uses: snyk/actions/iac@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          file: .
+          args: --sarif-file-output=snyk-iac.sarif
+
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: snyk-iac.sarif
