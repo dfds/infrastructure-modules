@@ -1,3 +1,7 @@
+locals {
+  tag = var.eks_cluster_name != null ? "eks-${var.eks_cluster_name}" : ""
+}
+
 # required TLS Certificate which is then used for the openid connect provider thumprint list
 data "tls_certificate" "eks" {
   url = "${var.eks_openid_connect_provider_url}"
@@ -14,6 +18,6 @@ resource "aws_iam_openid_connect_provider" "default" {
   thumbprint_list = [data.tls_certificate.eks.certificates.0.sha1_fingerprint]
 
   tags = {
-    "Name" = "eks-${var.eks_cluster_name}"
+    "Name" = local.tag
   }
 }
