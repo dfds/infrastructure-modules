@@ -22,6 +22,7 @@ module "aws_iam_oidc_provider" {
   count                           = var.oidc_provider_url != null ? 1 : 0
   source                          = "../../_sub/security/iam-oidc-provider"
   eks_openid_connect_provider_url = local.oidc_provider_url
+  eks_cluster_name = var.eks_cluster_name
 }
 
 resource "aws_s3_bucket" "velero_storage" {
