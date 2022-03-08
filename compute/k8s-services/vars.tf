@@ -678,37 +678,37 @@ variable "crossplane_aws_iam_role_name" {
   default     = "provider-aws"
 }
 
-variable "crossplane_flux_configuration_deploy" {
+variable "crossplane_cfg_pkg_deploy" {
   type        = bool
   description = "Deploy Crossplane configuration package"
   default     = false
 }
 
-variable "crossplane_flux_github_owner" {
+variable "crossplane_cfg_pkg_repo_owner" {
   type        = string
   description = "Name of the Flux manifests repo Github owner"
   default     = null
 }
 
-variable "crossplane_flux_repo_name" {
+variable "crossplane_cfg_pkg_repo_name" {
   type        = string
   description = "Name of the Github repo to store the Flux manifests in"
   default     = null
 }
 
-variable "crossplane_flux_repo_branch" {
+variable "crossplane_cfg_pkg_repo_branch" {
   type        = string
   description = "Override the default branch of the Flux manifests repo (optional)"
   default     = null
 }
 
-variable "crossplane_flux_configuration_name" {
+variable "crossplane_cfg_pkg_name" {
   type        = string
   description = "The configuration name. Default: dfds-infra"
   default     = "dfds-infra"
 }
 
-variable "crossplane_flux_configuration_package" {
+variable "crossplane_cfg_pkg_package" {
   type        = string
   description = "The Docker image address the crossplane configuration we want to deploy, e.g.: dfdsdk/dfds-infra:v0.0.1"
   default     = null
