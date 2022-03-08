@@ -18,14 +18,14 @@ variable "repo_branch" {
   default     = "main"
 }
 
-variable "cluster_name" {
-  type = string
-}
-
 variable "name" {
   type        = string
-  description = "The configuration name. Default: dfds-infra"
-  default     = "dfds-infra"
+  description = "The unique Crossplane configuration name in Kubernetes"
+  default     = "dfdsdk-dfds-infra"
+}
+
+variable "cluster_name" {
+  type = string
 }
 
 variable "package" {

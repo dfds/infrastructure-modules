@@ -3,7 +3,7 @@ data "github_repository" "flux_repo" {
 }
 
 locals {
-  deploy_name         = "crossplane-cfg-pkg"
+  deploy_name         = "crossplane-${var.name}"
   default_repo_branch = data.github_repository.flux_repo.default_branch
   repo_branch         = length(var.repo_branch) > 0 ? var.repo_branch : local.default_repo_branch
   cluster_repo_path   = "clusters/${var.cluster_name}"

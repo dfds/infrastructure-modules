@@ -514,7 +514,7 @@ module "crossplane_configuration_package" {
   source       = "../../_sub/compute/k8s-crossplane-cfg-pkg"
   count        = var.crossplane_cfg_pkg_deploy ? 1 : 0
   name         = var.crossplane_cfg_pkg_name
-  package      = var.crossplane_cfg_pkg_package
+  package      = var.crossplane_cfg_pkg_docker_image
   repo_owner   = var.crossplane_cfg_pkg_repo_owner != null ? var.crossplane_cfg_pkg_repo_owner : var.platform_fluxcd_github_owner
   repo_name    = var.crossplane_cfg_pkg_repo_name != null ? var.crossplane_cfg_pkg_repo_name : var.platform_fluxcd_repo_name
   repo_branch  = var.crossplane_cfg_pkg_repo_branch != null ? var.crossplane_cfg_pkg_repo_branch : var.platform_fluxcd_repo_branch

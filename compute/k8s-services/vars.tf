@@ -704,11 +704,11 @@ variable "crossplane_cfg_pkg_repo_branch" {
 
 variable "crossplane_cfg_pkg_name" {
   type        = string
-  description = "The configuration name. Default: dfds-infra"
-  default     = "dfds-infra"
+  description = "The unique Crossplane configuration name in Kubernetes"
+  default     = "dfdsdk-dfds-infra"
 }
 
-variable "crossplane_cfg_pkg_package" {
+variable "crossplane_cfg_pkg_docker_image" {
   type        = string
   description = "The Docker image address the crossplane configuration we want to deploy, e.g.: dfdsdk/dfds-infra:v0.0.1"
   default     = null
