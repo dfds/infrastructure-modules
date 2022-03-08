@@ -510,6 +510,22 @@ module "crossplane" {
   eks_openid_connect_provider_url   = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
 }
 
+module "crossplane_configuration" {
+  source           = "../../_sub/compute/k8s-crossplane-pkg-flux"
+  count            = var.crossplane_flux_configuration_deploy ? 1 : 0
+  name             = var.crossplane_flux_configuration_name
+  package          = var.crossplane_flux_configuration_package
+  flux_repo_owner  = var.crossplane_flux_github_owner != null ? var.crossplane_flux_github_owner : var.platform_fluxcd_github_owner
+  flux_repo_name   = var.crossplane_flux_repo_name != null ? var.crossplane_flux_repo_name : var.platform_fluxcd_repo_name
+  flux_repo_branch = var.crossplane_flux_repo_branch != null ? var.crossplane_flux_repo_branch : var.platform_fluxcd_repo_branch
+  cluster_name     = var.eks_cluster_name
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.crossplane]
+}
+
 # --------------------------------------------------
 # Blackbox Exporter
 # --------------------------------------------------
