@@ -511,7 +511,7 @@ module "crossplane" {
 }
 
 module "crossplane_configuration_package" {
-  source       = "../../_sub/compute/k8s-crossplane-pkg-flux"
+  source       = "../../_sub/compute/k8s-crossplane-cfg-pkg"
   count        = var.crossplane_cfg_pkg_deploy ? 1 : 0
   name         = var.crossplane_cfg_pkg_name
   package      = var.crossplane_cfg_pkg_package
