@@ -511,7 +511,7 @@ module "crossplane" {
 }
 
 module "crossplane_operator" {
-  source             = "../../_sub/compute/k8s-crossplane-operator-flux"
+  source             = "../../_sub/compute/k8s-crossplane-operator"
   count              = var.crossplane_operator_deploy ? 1 : 0
   deploy_name        = var.crossplane_operator_deploy_name
   helm_chart_version = var.crossplane_operator_helm_chart_version
