@@ -750,6 +750,12 @@ variable "crossplane_operator_helm_chart_version" {
   default     = null
 }
 
+variable "crossplane_operator_image_tag" {
+  type        = string
+  description = "The Docker image tag, e.g. v0.0.1"
+  default     = null
+}
+
 # -------------
 
 variable "kiam_strict_mode_disabled" {

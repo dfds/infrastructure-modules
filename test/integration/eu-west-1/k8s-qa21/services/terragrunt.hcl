@@ -124,6 +124,9 @@ inputs = {
   ]
   eks_openid_connect_provider_url = dependency.cluster.outputs.eks_openid_connect_provider_url
 
+  crossplane_operator_deploy  = true
+  crossplane_operator_image_tag = "v0.0.1"
+
   # --------------------------------------------------
   # Atlantis
   # --------------------------------------------------

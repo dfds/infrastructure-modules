@@ -515,6 +515,7 @@ module "crossplane_operator" {
   count              = var.crossplane_operator_deploy ? 1 : 0
   deploy_name        = var.crossplane_operator_deploy_name
   helm_chart_version = var.crossplane_operator_helm_chart_version
+  image_tag          = var.crossplane_operator_image_tag
   namespace          = var.crossplane_namespace # Same namespace as for the crossplane module
   repo_owner         = var.crossplane_operator_repo_owner != null ? var.crossplane_operator_repo_owner : var.platform_fluxcd_github_owner
   repo_name          = var.crossplane_operator_repo_name != null ? var.crossplane_operator_repo_name : var.platform_fluxcd_repo_name
