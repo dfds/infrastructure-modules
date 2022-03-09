@@ -11,13 +11,7 @@ variable "deploy_name" {
 variable "namespace" {
   type        = string
   description = "The namespace in which to deploy Helm resources"
-  default     = "crossplane"
-}
-
-variable "replicas" {
-  description = "The number of Blackbox pods to spawn"
-  type        = number
-  default     = 1
+  default     = "upbound-system"
 }
 
 variable "repo_owner" {
@@ -38,12 +32,6 @@ variable "repo_branch" {
 
 variable "helm_chart_version" {
   type        = string
-  description = "The version of the Blackbox Exporter Helm Chart that should be used"
+  description = "The version of the Helm Chart that should be used"
   default     = null
-}
-
-variable "monitoring_targets" {
-  type        = list(object({ name = string, url = string, module = string }))
-  description = "Complex object of what to monitor with Blackbox Exporter"
-  default     = []
 }
