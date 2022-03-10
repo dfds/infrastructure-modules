@@ -52,11 +52,6 @@ locals {
           }
         }
       }
-      "values" = {
-        "image" = {
-          "tag" = var.image_tag
-        }
-      }
       "interval" = "1m0s"
       "install" = {
         "crds" = "CreateReplace"

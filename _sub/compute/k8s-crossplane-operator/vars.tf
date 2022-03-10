@@ -35,9 +35,3 @@ variable "helm_chart_version" {
   description = "The version of the Helm Chart that should be used"
   default     = null
 }
-
-variable "image_tag" {
-  type        = string
-  description = "The Docker image tag, e.g. v0.0.1"
-  default     = null
-}
