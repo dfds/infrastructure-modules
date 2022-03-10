@@ -124,6 +124,9 @@ inputs = {
   ]
   eks_openid_connect_provider_url = dependency.cluster.outputs.eks_openid_connect_provider_url
 
+  crossplane_cfg_pkg_deploy       = true
+  crossplane_cfg_pkg_docker_image = "dfdsdk/dfds-infra:v0.0.1-alpha.23"
+
   crossplane_operator_deploy  = true
 
   # --------------------------------------------------
