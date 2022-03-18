@@ -74,7 +74,7 @@ inputs = {
   # AWS EBS CSI Driver
   # --------------------------------------------------
 
-  ebs_csi_driver_chart_version = "2.6.2"
+  ebs_csi_driver_chart_version = "2.6.4"
 
 
   # --------------------------------------------------
