@@ -1,4 +1,4 @@
-# tfsec:ignore:aws-s3-enable-versioning
+# tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-specify-public-access-block tfsec:ignore:aws-s3-no-public-buckets tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "bucket" {
   bucket        = var.name
   acl           = var.acl
