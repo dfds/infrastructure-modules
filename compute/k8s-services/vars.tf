@@ -678,6 +678,78 @@ variable "crossplane_aws_iam_role_name" {
   default     = "provider-aws"
 }
 
+variable "crossplane_cfg_pkg_deploy" {
+  type        = bool
+  description = "Deploy Crossplane configuration package"
+  default     = false
+}
+
+variable "crossplane_cfg_pkg_repo_owner" {
+  type        = string
+  description = "Name of the Flux manifests repo Github owner"
+  default     = null
+}
+
+variable "crossplane_cfg_pkg_repo_name" {
+  type        = string
+  description = "Name of the Github repo to store the Flux manifests in"
+  default     = null
+}
+
+variable "crossplane_cfg_pkg_repo_branch" {
+  type        = string
+  description = "Override the default branch of the Flux manifests repo (optional)"
+  default     = null
+}
+
+variable "crossplane_cfg_pkg_name" {
+  type        = string
+  description = "The unique Crossplane configuration name in Kubernetes"
+  default     = "dfdsdk-dfds-infra"
+}
+
+variable "crossplane_cfg_pkg_docker_image" {
+  type        = string
+  description = "The Docker image address the crossplane configuration we want to deploy, e.g.: dfdsdk/dfds-infra:v0.0.1"
+  default     = null
+}
+
+variable "crossplane_operator_deploy" {
+  type        = bool
+  description = "Deploy Crossplane configuration package"
+  default     = false
+}
+
+variable "crossplane_operator_repo_owner" {
+  type        = string
+  description = "Name of the Flux manifests repo Github owner"
+  default     = null
+}
+
+variable "crossplane_operator_repo_name" {
+  type        = string
+  description = "Name of the Github repo to store the Flux manifests in"
+  default     = null
+}
+
+variable "crossplane_operator_repo_branch" {
+  type        = string
+  description = "Override the default branch of the Flux manifests repo (optional)"
+  default     = null
+}
+
+variable "crossplane_operator_deploy_name" {
+  type        = string
+  description = "The unique name for this deployment."
+  default     = "crossplane-operator"
+}
+
+variable "crossplane_operator_helm_chart_version" {
+  type        = string
+  description = "The Helm Chart version to deploy."
+  default     = null
+}
+
 # -------------
 
 variable "kiam_strict_mode_disabled" {

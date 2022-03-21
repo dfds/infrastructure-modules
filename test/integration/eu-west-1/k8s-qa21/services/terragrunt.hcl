@@ -74,7 +74,7 @@ inputs = {
   # AWS EBS CSI Driver
   # --------------------------------------------------
 
-  ebs_csi_driver_chart_version = "2.6.2"
+  ebs_csi_driver_chart_version = "2.6.4"
 
 
   # --------------------------------------------------
@@ -124,20 +124,25 @@ inputs = {
   ]
   eks_openid_connect_provider_url = dependency.cluster.outputs.eks_openid_connect_provider_url
 
+  crossplane_cfg_pkg_deploy       = true
+  crossplane_cfg_pkg_docker_image = "dfdsdk/dfds-infra:v0.0.1-alpha.23"
+
+  crossplane_operator_deploy  = true
+
   # --------------------------------------------------
   # Atlantis
   # --------------------------------------------------
 
   atlantis_deploy        = true
   atlantis_ingress       = "atlantis.qa21-alias1.dfds.cloud"
-  atlantis_image_tag     = "0.0.12"
+  atlantis_image_tag     = "0.0.21"
   atlantis_storage_class = "gp2"
 
   atlantis_github_username     = "devex-sa"
   atlantis_github_repositories = ["dfds/qa-dummy-atlantis"]
   atlantis_github_owner        = "dfds"
   atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
-  atlantis_chart_version       = "3.12.10"
+  atlantis_chart_version       = "3.16.2"
 
   atlantis_flux_repo_name     = "platform-manifests-qa"
   atlantis_flux_repo_owner    = "dfds"

@@ -25,17 +25,17 @@ terraform {
 
     azuread = {
       source  = "hashicorp/azuread"
-      version = "~> 2.18.0"
+      version = "~> 2.19.0"
     }
 
     github = {
       source  = "integrations/github"
-      version = "~> 4.20.0"
+      version = "~> 4.21.0"
     }
 
     flux = {
       source  = "fluxcd/flux"
-      version = "~> 0.10.0"
+      version = "~> 0.11.0"
     }
 
     random = {
