@@ -642,6 +642,6 @@ module "aws_subnet_exporter" {
   namespace_name = module.monitoring_namespace[0].name
   aws_account_id = var.aws_workload_account_id
   aws_region     = var.aws_region
-  image_tag      = "0.2"
+  image_tag      = "0.3"
   oidc_issuer    = local.oidc_issuer
 }
