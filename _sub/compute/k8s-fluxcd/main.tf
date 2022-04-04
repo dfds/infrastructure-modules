@@ -49,8 +49,8 @@ resource "kubectl_manifest" "sync" {
 # --------------------------------------------------
 
 resource "tls_private_key" "main" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
+  algorithm   = "ECDSA"
+  ecdsa_curve = "P256"
 }
 
 resource "kubernetes_secret" "main" {
