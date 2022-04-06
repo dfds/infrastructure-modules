@@ -127,3 +127,15 @@ resource "github_repository_file" "flux_monitoring_config_path" {
   file       = "${local.cluster_repo_path}/${local.app_install_name}.yaml"
   content    = jsonencode(local.app_config_path)
 }
+
+# --------------------------------------------------
+# Initializing platform-apps
+# --------------------------------------------------
+
+resource "github_repository_file" "platform_apps_init" {
+  repository          = var.repo_name
+  branch              = data.github_branch.flux_branch.branch
+  file                = "${local.cluster_repo_path}/platform-apps.yaml"
+  content             = local.platform_apps_yaml
+  overwrite_on_create = true
+}

@@ -78,4 +78,34 @@ locals {
       }
     }
   }
+
+  platform_apps_yaml = <<YAML
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  name: platform-apps-git
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  ref:
+    branch: main
+  url: https://github.com/dfds/platform-apps
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: platform-apps-sources
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  dependsOn:
+    - name: flux-system
+  sourceRef:
+    kind: GitRepository
+    name: platform-apps-git
+  path: ./sources
+  prune: true
+  validation: client
+  YAML
 }
