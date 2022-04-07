@@ -88,7 +88,30 @@ POLICY
                     ]
                 }
             }
-        },		{
+        },
+		{
+            "Sid": "DenyMFA",
+            "Effect": "Deny",
+            "Action": [
+                "iam:CreateVirtualMFADevice",
+				"iam:DeactivateMFADevice",
+				"iam:DeleteVirtualMFADevice",
+				"iam:EnableMFADevice",
+				"iam:ResyncMFADevice"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Condition": {
+                "StringNotLike": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/OrgRole",
+						"arn:aws:iam::*:root"
+                    ]
+                }
+            }
+        },			
+		{
 			"Sid": "DenyIAM",
 			"Effect": "Deny",
 			"Action": [
@@ -100,8 +123,6 @@ POLICY
 				"iam:CreateLoginProfile",
 				"iam:CreateSAMLProvider",
 				"iam:CreateUser",
-				"iam:CreateVirtualMFADevice",
-				"iam:DeactivateMFADevice",
 				"iam:DeleteAccountAlias",
 				"iam:DeleteAccountPasswordPolicy",
 				"iam:DeleteGroup",
@@ -111,13 +132,10 @@ POLICY
 				"iam:DeleteUser",
 				"iam:DeleteUserPermissionsBoundary",
 				"iam:DeleteUserPolicy",
-				"iam:DeleteVirtualMFADevice",
 				"iam:DetachGroupPolicy",
-				"iam:EnableMFADevice",
 				"iam:PutGroupPolicy",
 				"iam:PutUserPermissionsBoundary",
 				"iam:RemoveUserFromGroup",
-				"iam:ResyncMFADevice",
 				"iam:UpdateAccountPasswordPolicy",
 				"iam:UpdateGroup",
 				"iam:UpdateLoginProfile",
