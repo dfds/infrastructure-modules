@@ -13,22 +13,18 @@ resource "kubernetes_secret" "this" {
   }
 }
 
-resource "kubernetes_manifest" "this" {
-  manifest = {
-    "apiVersion" = "confluent.crossplane.io/v1alpha1"
-    "kind"       = "ProviderConfig"
-    "metadata" = {
-      "name"      = local.name
-    }
-    "spec" = {
-      "credentials" = {
-        "source" = "Secret"
-        "secretRef" = {
-          "name" = local.name
-          "namespace" = kubernetes_secret.this.metadata[0].name
-          "key" = "secret"
-        }
-      }
-    }
-  }
+resource "kubectl_manifest" "this" {
+    yaml_body = <<YAML
+apiVersion: confluent.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  name: ${local.name}
+spec:
+  credentials:
+    source: Secret
+    secretRef:
+      name: ${local.name}
+      namespace: ${var.namespace}
+      key: secret
+YAML
 }
