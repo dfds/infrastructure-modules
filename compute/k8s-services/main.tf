@@ -548,7 +548,7 @@ module "crossplane_configuration_package" {
 
 module "crossplane_provider_confluent_prereqs" {
   source = "../../_sub/compute/k8s-crossplane-provider-confluent"
-  count = contains(var.crossplane_providers, "dfdsdk/provider-confluent") ? 1 : 0
+  # count = contains(var.crossplane_providers, "dfdsdk/provider-confluent") ? 1 : 0
   namespace = var.crossplane_namespace
   email = var.crossplane_provider_confluent_email
   password = var.crossplane_provider_confluent_password
