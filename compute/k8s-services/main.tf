@@ -545,14 +545,17 @@ module "crossplane_configuration_package" {
   depends_on = [module.crossplane]
 }
 
+locals {
+  crossplane_provider_images = [ for provider in var.crossplane_providers : element(split(":", provider), 0)]
+}
 
 module "crossplane_provider_confluent_prereqs" {
   source = "../../_sub/compute/k8s-crossplane-provider-confluent"
-  # count = contains(var.crossplane_providers, "dfdsdk/provider-confluent") ? 1 : 0
+  count = contains(local.crossplane_provider_images, "dfdsdk/provider-confluent") ? 1 : 0
   namespace = var.crossplane_namespace
   email = var.crossplane_provider_confluent_email
   password = var.crossplane_provider_confluent_password
-  
+
   depends_on = [module.crossplane]
 }
 
