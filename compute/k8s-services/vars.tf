@@ -750,6 +750,17 @@ variable "crossplane_operator_helm_chart_version" {
   default     = null
 }
 
+variable "crossplane_provider_confluent_email" {
+  type = string
+  description = "Confluent global admin account email"
+}
+
+variable "crossplane_provider_confluent_password" {
+  type = string
+  description = "Confluent global admin account password"
+  sensitive = true
+}
+
 # -------------
 
 variable "kiam_strict_mode_disabled" {

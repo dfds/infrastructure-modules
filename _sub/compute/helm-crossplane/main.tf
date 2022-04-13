@@ -1,6 +1,7 @@
 locals {
   provider_aws = [for s in var.crossplane_providers : lower(s) if length(try(regex("^crossplane/provider-aws:", s), [])) > 0]
   provider_kubernetes = [for s in var.crossplane_providers : lower(s) if length(try(regex("^crossplane/provider-kubernetes:", s), [])) > 0]
+  provider_confluent = [for s in var.crossplane_providers : lower(s) if length(try(regex("^dfdsdk/provider-confluent:", s), [])) > 0]
   template_name = "crossplane"
 }
 
@@ -360,3 +361,31 @@ YAML
 }
 
 data "aws_caller_identity" "current" {}
+
+resource "kubectl_manifest" "provider_confluent" {
+
+  count = length(local.provider_confluent) > 0 ? 1 : 0
+
+  yaml_body = <<YAML
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: "${replace(split(":", local.provider_confluent[count.index])[0], "/", "-")}"
+spec:
+  package: "${local.provider_confluent[count.index]}"
+YAML
+}
+
+
+resource "time_sleep" "wait_30_seconds_for_provider_confluent" {
+  count = length(local.provider_kubernetes) > 0 ? 1 : 0
+
+  depends_on = [kubectl_manifest.provider_confluent]
+
+  create_duration = "30s"
+  destroy_duration = "30s"
+
+  triggers = {
+    kubectl_manifest = kubectl_manifest.provider_confluent[0].name
+  }
+}
