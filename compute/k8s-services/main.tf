@@ -464,6 +464,8 @@ module "atlantis" {
   platform_fluxcd_github_token = var.atlantis_platform_fluxcd_github_token
   storage_class                = var.atlantis_storage_class
   cluster_name                 = var.eks_cluster_name
+  confluent_email              = var.crossplane_provider_confluent_email
+  confluent_password           = var.crossplane_provider_confluent_password
 
   providers = {
     github = github.atlantis
