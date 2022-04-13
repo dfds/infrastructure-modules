@@ -166,3 +166,16 @@ resource "kubernetes_namespace" "namespace" {
     name = var.namespace
   }
 }
+
+resource "kubernetes_secret" "confluent" {
+  metadata {
+    name      = "confluent-credentials"
+    namespace = var.namespace
+  }
+
+  data = {
+    confluent_email    = var.confluent_email
+    confluent_password = var.confluent_password
+  }
+  depends_on = [kubernetes_namespace.namespace]
+}

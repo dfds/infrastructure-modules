@@ -98,6 +98,16 @@ environmentSecrets:
     secretKeyRef:
       name: gh-credentials
       key: github_token
+  
+  - name: TF_VAR_crossplane_provider_confluent_email
+    secretKeyRef:
+      name: confluent-credentials
+      key: confluent_email
+  - name: TF_VAR_crossplane_provider_confluent_password
+    secretKeyRef:
+      name: confluent-credentials
+      key: confluent_password
+
 
 ingress:
   host: ${atlantis_ingress}

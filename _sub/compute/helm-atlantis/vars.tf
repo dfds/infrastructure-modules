@@ -122,3 +122,14 @@ variable "cluster_name" {
   type        = string
   description = "The name of the Kubernetes cluster"
 }
+
+variable "confluent_email" {
+  type = string
+  description = "Email used for Crossplane provider Confluent"
+}
+
+variable "confluent_password" {
+  type = string
+  description = "Password used for Crossplane provider Confluent"
+  sensitive = true
+}
