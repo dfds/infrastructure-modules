@@ -114,7 +114,7 @@ inputs = {
   # --------------------------------------------------
 
   crossplane_deploy        = true
-  crossplane_chart_version = "1.5.1-up.1"
+  crossplane_chart_version = "1.6.3-up.1"
   crossplane_providers     = ["crossplane/provider-aws:v0.25.0", "crossplane/provider-kubernetes:v0.3.0", "dfdsdk/provider-confluent:v0.0.4"]
   crossplane_admin_service_accounts = [
     {
