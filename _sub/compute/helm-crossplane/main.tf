@@ -28,6 +28,19 @@ resource "helm_release" "crossplane" {
   depends_on = [kubernetes_namespace.namespace]
 }
 
+resource "time_sleep" "wait_30_seconds_for_helm_release" {
+  count = length(local.provider_kubernetes) > 0 ? 1 : 0
+
+  depends_on = [helm_release.crossplane]
+
+  create_duration  = "30s"
+  destroy_duration = "30s"
+
+  triggers = {
+    helm_release = helm_release.crossplane.name
+  }
+}
+
 
 resource "kubernetes_cluster_role_binding" "crossplane-admin" {
   count = length(var.crossplane_admin_service_accounts)
@@ -378,7 +391,7 @@ YAML
 
 
 resource "time_sleep" "wait_30_seconds_for_provider_confluent" {
-  count = length(local.provider_kubernetes) > 0 ? 1 : 0
+  count = length(local.provider_confluent) > 0 ? 1 : 0
 
   depends_on = [kubectl_manifest.provider_confluent]
 
