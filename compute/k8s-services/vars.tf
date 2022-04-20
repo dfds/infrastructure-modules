@@ -751,14 +751,16 @@ variable "crossplane_operator_helm_chart_version" {
 }
 
 variable "crossplane_provider_confluent_email" {
-  type = string
+  type        = string
+  default     = null
   description = "Confluent global admin account email"
 }
 
 variable "crossplane_provider_confluent_password" {
-  type = string
+  type        = string
+  default     = null
   description = "Confluent global admin account password"
-  sensitive = true
+  sensitive   = true
 }
 
 # -------------

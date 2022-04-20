@@ -69,6 +69,7 @@ inputs = {
   platform_fluxcd_deploy       = true
   platform_fluxcd_repo_name    = "platform-manifests-qa"
   platform_fluxcd_github_owner = "dfds"
+  platform_fluxcd_release_tag  = "v0.24.0"
 
   # --------------------------------------------------
   # AWS EBS CSI Driver
@@ -115,7 +116,8 @@ inputs = {
 
   crossplane_deploy        = true
   crossplane_chart_version = "1.6.3-up.1"
-  crossplane_providers     = ["crossplane/provider-aws:v0.26.0", "crossplane/provider-kubernetes:v0.3.0", "dfdsdk/provider-confluent:v0.0.4"]
+  # Do not configure Confluent provider in QA
+  crossplane_providers     = ["crossplane/provider-aws:v0.26.0", "crossplane/provider-kubernetes:v0.3.0"]
   crossplane_admin_service_accounts = [
     {
       serviceaccount = "default"
@@ -129,7 +131,7 @@ inputs = {
 
   crossplane_operator_deploy  = true
   crossplane_operator_helm_chart_version = "0.1.5"
-  
+
   # --------------------------------------------------
   # Atlantis
   # --------------------------------------------------

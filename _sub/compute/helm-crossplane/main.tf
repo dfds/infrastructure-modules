@@ -1,8 +1,8 @@
 locals {
-  provider_aws = [for s in var.crossplane_providers : lower(s) if length(try(regex("^crossplane/provider-aws:", s), [])) > 0]
+  provider_aws        = [for s in var.crossplane_providers : lower(s) if length(try(regex("^crossplane/provider-aws:", s), [])) > 0]
   provider_kubernetes = [for s in var.crossplane_providers : lower(s) if length(try(regex("^crossplane/provider-kubernetes:", s), [])) > 0]
-  provider_confluent = [for s in var.crossplane_providers : lower(s) if length(try(regex("^dfdsdk/provider-confluent:", s), [])) > 0]
-  template_name = "crossplane"
+  provider_confluent  = [for s in var.crossplane_providers : lower(s) if length(try(regex("^dfdsdk/provider-confluent:", s), [])) > 0]
+  template_name       = "crossplane"
 }
 
 resource "kubernetes_namespace" "namespace" {
@@ -26,6 +26,19 @@ resource "helm_release" "crossplane" {
   })]
 
   depends_on = [kubernetes_namespace.namespace]
+}
+
+resource "time_sleep" "wait_30_seconds_for_helm_release" {
+  count = length(local.provider_kubernetes) > 0 ? 1 : 0
+
+  depends_on = [helm_release.crossplane]
+
+  create_duration  = "30s"
+  destroy_duration = "30s"
+
+  triggers = {
+    helm_release = helm_release.crossplane.name
+  }
 }
 
 
@@ -91,7 +104,7 @@ resource "kubernetes_cluster_role_binding" "crossplane-view" {
 
 resource "kubernetes_service" "crossplane" {
   metadata {
-    name = helm_release.crossplane.name
+    name      = helm_release.crossplane.name
     namespace = helm_release.crossplane.namespace
 
     labels = {
@@ -101,14 +114,14 @@ resource "kubernetes_service" "crossplane" {
   }
   spec {
     selector = {
-      app = local.template_name
+      app     = local.template_name
       release = helm_release.crossplane.name
     }
     port {
-      name = "metrics"
+      name        = "metrics"
       port        = 8080
       target_port = 8080
-      protocol = "TCP"
+      protocol    = "TCP"
     }
 
     type = "ClusterIP"
@@ -119,7 +132,7 @@ resource "kubernetes_service" "crossplane" {
 
 resource "kubernetes_service" "crossplane-rbac" {
   metadata {
-    name = "${helm_release.crossplane.name}-rbac-manager"
+    name      = "${helm_release.crossplane.name}-rbac-manager"
     namespace = helm_release.crossplane.namespace
 
     labels = {
@@ -129,14 +142,14 @@ resource "kubernetes_service" "crossplane-rbac" {
   }
   spec {
     selector = {
-      app = "${helm_release.crossplane.name}-rbac-manager"
+      app     = "${helm_release.crossplane.name}-rbac-manager"
       release = helm_release.crossplane.name
     }
     port {
-      name = "metrics"
+      name        = "metrics"
       port        = 8080
       target_port = 8080
-      protocol = "TCP"
+      protocol    = "TCP"
     }
 
     type = "ClusterIP"
@@ -187,7 +200,7 @@ YAML
 resource "time_sleep" "wait_30_seconds_for_aws_provider" {
   count = length(local.provider_aws) > 0 ? 1 : 0
 
-  create_duration = "30s"
+  create_duration  = "30s"
   destroy_duration = "30s"
 
   triggers = {
@@ -313,7 +326,7 @@ resource "time_sleep" "wait_30_seconds_for_kubernetes_provider" {
 
   depends_on = [kubectl_manifest.kubernetes_provider]
 
-  create_duration = "30s"
+  create_duration  = "30s"
   destroy_duration = "30s"
 
   triggers = {
@@ -378,11 +391,11 @@ YAML
 
 
 resource "time_sleep" "wait_30_seconds_for_provider_confluent" {
-  count = length(local.provider_kubernetes) > 0 ? 1 : 0
+  count = length(local.provider_confluent) > 0 ? 1 : 0
 
   depends_on = [kubectl_manifest.provider_confluent]
 
-  create_duration = "30s"
+  create_duration  = "30s"
   destroy_duration = "30s"
 
   triggers = {
