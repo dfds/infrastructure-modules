@@ -12,18 +12,21 @@ locals {
     "1.19" = "v1.7.5-eksbuild.2"
     "1.20" = "v1.9.0-eksbuild.1"
     "1.21" = "v1.10.2-eksbuild.1"
+    "1.22" = "v1.11.0-eksbuild.1"
   }
 
   coredns_version_map = {
     "1.19" = "v1.8.0-eksbuild.1"
     "1.20" = "v1.8.3-eksbuild.1"
     "1.21" = "v1.8.4-eksbuild.1"
+    "1.22" = "v1.8.7-eksbuild.1"
   }
 
   kubeproxy_version_map = {
     "1.19" = "v1.19.6-eksbuild.2"
     "1.20" = "v1.20.4-eksbuild.2"
     "1.21" = "v1.21.2-eksbuild.2"
+    "1.22" = "v1.22.6-eksbuild.1"
   }
 }
 
