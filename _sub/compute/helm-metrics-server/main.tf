@@ -1,8 +1,8 @@
 resource "helm_release" "metrics_server" {
   name          = "metrics-server"
-  repository    = "https://charts.helm.sh/stable"
+  repository    = var.helm_repo_url
   chart         = "metrics-server"
-  version       = var.chart_version
+  version       = var.helm_chart_version
   namespace     = var.namespace
   recreate_pods = true
 
