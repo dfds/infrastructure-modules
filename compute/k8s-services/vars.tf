@@ -337,6 +337,12 @@ variable "monitoring_metrics_server_chart_namespace" {
   default     = "monitoring"
 }
 
+variable "monitoring_metrics_server_repo_url" {
+  type        = string
+  description = "The repository URL for the metrics-server Helm chart"
+  default     = "https://kubernetes-sigs.github.io/metrics-server/"
+}
+
 # --------------------------------------------------
 # Unused variables - to provent TF warning/error:
 # Using a variables file to set an undeclared variable is deprecated and will
