@@ -187,4 +187,6 @@ inputs = {
   velero_flux_deploy      = true
   velero_flux_role_arn    = "arn:aws:iam::266901158286:role/VeleroBackup"
   velero_flux_bucket_name = "dfds-velero-qa"
+  velero_plugin_for_aws_version = "v1.4.1"
+  velero_plugin_for_csi_version = "v0.2.0"
 }
