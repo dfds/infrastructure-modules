@@ -74,8 +74,30 @@ metadata:
   name: velero
   namespace: flux-system
 spec:
+  chart:
+    spec:
+      chart: velero
+      version: ${var.helm_chart_version}
+      sourceRef:
+        kind: HelmRepository
+        name: ${var.helm_repo_name}
+        namespace: flux-system
   values:
+    image:
+      repository: velero/velero
+      tag: ${var.image_tag}
     snapshotsEnabled: ${var.snapshots_enabled}
+    initContainers:
+      - name: velero-plugin-for-aws
+        image: velero/velero-plugin-for-aws:${var.plugin_for_aws_version}
+        volumeMounts:
+          - mountPath: /target
+            name: plugins
+      - name: velero-plugin-for-csi
+        image: velero/velero-plugin-for-csi:${var.plugin_for_csi_version}
+        volumeMounts:
+          - mountPath: /target
+            name: plugins
     configuration:
       logLevel: ${var.log_level}
       backupStorageLocation:

@@ -78,3 +78,40 @@ variable "schedules_template_include_cluster_resources" {
   description = "Should Velero also backup cluster resources?"
 }
 
+variable "helm_repo_name" {
+  type        = string
+  default     = "vmware-tanzu"
+  description = "The name of the Helm repo with the Velero Helm chart"
+}
+
+variable "helm_chart_version" {
+  type        = string
+  default     = ""
+  description = "The Velero Helm chart version to install"
+}
+
+variable "image_tag" {
+  type        = string
+  default     = ""
+  description = "Override the image tag in the Helm chart with a custom version"
+}
+
+variable "plugin_for_aws_version" {
+  type        = string
+  default     = "v1.4.1"
+  description = "The version of velero-plugin-for-aws to use as initContainer"
+  validation {
+    condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.plugin_for_aws_version))
+    error_message = "Velero plugin for AWS must specify a version. The version must start with the letter v and followed by a semantic version number."
+  }
+}
+
+variable "plugin_for_csi_version" {
+  type        = string
+  default     = "v0.2.0"
+  description = "The version of velero-plugin-for-csi to use as initContainer"
+  validation {
+    condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.plugin_for_csi_version))
+    error_message = "Velero plugin for CSI must specify a version. The version must start with the letter v and followed by a semantic version number."
+  }
+}
