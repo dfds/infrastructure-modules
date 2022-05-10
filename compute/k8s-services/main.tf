@@ -548,15 +548,15 @@ module "crossplane_configuration_package" {
 }
 
 locals {
-  crossplane_provider_images = [ for provider in var.crossplane_providers : element(split(":", provider), 0)]
+  crossplane_provider_images = [for provider in var.crossplane_providers : element(split(":", provider), 0)]
 }
 
 module "crossplane_provider_confluent_prereqs" {
-  source = "../../_sub/compute/k8s-crossplane-provider-confluent"
-  count = contains(local.crossplane_provider_images, "dfdsdk/provider-confluent") ? 1 : 0
+  source    = "../../_sub/compute/k8s-crossplane-provider-confluent"
+  count     = contains(local.crossplane_provider_images, "dfdsdk/provider-confluent") ? 1 : 0
   namespace = var.crossplane_namespace
-  email = var.crossplane_provider_confluent_email
-  password = var.crossplane_provider_confluent_password
+  email     = var.crossplane_provider_confluent_email
+  password  = var.crossplane_provider_confluent_password
 
   depends_on = [module.crossplane]
 }
@@ -632,15 +632,19 @@ module "fluentd_cloudwatch_flux_manifests" {
 # --------------------------------------------------
 
 module "velero_flux_manifests" {
-  source       = "../../_sub/storage/velero-flux"
-  count        = var.velero_flux_deploy ? 1 : 0
-  cluster_name = var.eks_cluster_name
-  role_arn     = var.velero_flux_role_arn
-  bucket_name  = var.velero_flux_bucket_name
-  log_level    = var.velero_flux_log_level
-  github_owner = var.velero_flux_github_owner != null ? var.velero_flux_github_owner : var.platform_fluxcd_github_owner
-  repo_name    = var.velero_flux_repo_name != null ? var.velero_flux_repo_name : var.platform_fluxcd_repo_name
-  repo_branch  = var.velero_flux_repo_branch != null ? var.velero_flux_repo_branch : var.platform_fluxcd_repo_branch
+  source                 = "../../_sub/storage/velero-flux"
+  count                  = var.velero_flux_deploy ? 1 : 0
+  cluster_name           = var.eks_cluster_name
+  role_arn               = var.velero_flux_role_arn
+  bucket_name            = var.velero_flux_bucket_name
+  log_level              = var.velero_flux_log_level
+  github_owner           = var.velero_flux_github_owner != null ? var.velero_flux_github_owner : var.platform_fluxcd_github_owner
+  repo_name              = var.velero_flux_repo_name != null ? var.velero_flux_repo_name : var.platform_fluxcd_repo_name
+  repo_branch            = var.velero_flux_repo_branch != null ? var.velero_flux_repo_branch : var.platform_fluxcd_repo_branch
+  helm_chart_version     = var.velero_helm_chart_version
+  image_tag              = var.velero_image_tag
+  plugin_for_aws_version = var.velero_plugin_for_aws_version
+  plugin_for_csi_version = var.velero_plugin_for_csi_version
 
   providers = {
     github = github.fluxcd

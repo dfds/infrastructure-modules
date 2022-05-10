@@ -1027,3 +1027,35 @@ variable "velero_flux_repo_branch" {
   description = "Override the default branch of the Flux repo (optional)"
   default     = null
 }
+
+variable "velero_helm_chart_version" {
+  type        = string
+  default     = ""
+  description = "The Velero Helm chart version to install"
+}
+
+variable "velero_image_tag" {
+  type        = string
+  default     = ""
+  description = "Override the image tag in the Helm chart with a custom version"
+}
+
+variable "velero_plugin_for_aws_version" {
+  type        = string
+  default     = ""
+  description = "The version of velero-plugin-for-aws to use as initContainer"
+  validation {
+    condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.velero_plugin_for_aws_version))
+    error_message = "Velero plugin for AWS must specify a version. The version must start with the letter v and followed by a semantic version number."
+  }
+}
+
+variable "velero_plugin_for_csi_version" {
+  type        = string
+  default     = ""
+  description = "The version of velero-plugin-for-csi to use as initContainer"
+  validation {
+    condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.velero_plugin_for_csi_version))
+    error_message = "Velero plugin for CSI must specify a version. The version must start with the letter v and followed by a semantic version number."
+  }
+}
