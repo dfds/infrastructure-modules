@@ -2,18 +2,26 @@
 resource "aws_s3_bucket" "bucket" {
   count         = var.deploy ? 1 : 0
   bucket        = var.s3_bucket
-  acl           = var.acl
   force_destroy = true
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "aws:kms"
-      }
-    }
-  }
 
   tags = {
     "Managed by" = "Terraform"
   }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_encryption" {
+  count  = var.deploy ? 1 : 0
+  bucket = aws_s3_bucket.bucket[count.index].id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "aws:kms"
+    }
+  }
+}
+
+resource "aws_s3_bucket_acl" "bucket_acl" {
+  count  = var.deploy ? 1 : 0
+  bucket = aws_s3_bucket.bucket[count.index].id
+  acl    = var.acl
 }

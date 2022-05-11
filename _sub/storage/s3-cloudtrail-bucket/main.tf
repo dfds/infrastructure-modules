@@ -1,7 +1,6 @@
 resource "aws_s3_bucket" "bucket" {
   count  = var.create_s3_bucket ? 1 : 0
   bucket = var.s3_bucket
-  acl    = "private"
   tags = {
     "Managed by" = "Terraform"
   }
@@ -54,3 +53,8 @@ POLICY
   }
 }
 
+resource "aws_s3_bucket_acl" "bucket_acl" {
+  count  = var.create_s3_bucket ? 1 : 0
+  bucket = aws_s3_bucket.bucket[count.index].id
+  acl    = "private"
+}

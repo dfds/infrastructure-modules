@@ -1,16 +1,7 @@
 # tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-specify-public-access-block tfsec:ignore:aws-s3-no-public-buckets tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "bucket" {
   bucket        = var.name
-  acl           = var.acl
   force_destroy = true
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "aws:kms"
-      }
-    }
-  }
 
   tags = {
     "Managed by" = "Terraform"
@@ -40,4 +31,19 @@ resource "aws_s3_bucket_public_access_block" "block_public_access" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_encryption" {
+  bucket = aws_s3_bucket.bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "aws:kms"
+    }
+  }
+}
+
+resource "aws_s3_bucket_acl" "bucket_acl" {
+  bucket = aws_s3_bucket.bucket.id
+  acl    = var.acl
 }
