@@ -7,20 +7,6 @@ resource "aws_s3_bucket" "bucket" {
     "Managed by" = "Terraform"
   }
 
-  lifecycle_rule {
-    enabled                                = true
-    id                                     = "retention_policy"
-    abort_incomplete_multipart_upload_days = var.retention_days
-
-    expiration {
-      days = var.retention_days
-    }
-
-    noncurrent_version_expiration {
-      days = var.retention_days
-    }
-  }
-
   policy = var.policy
 }
 
@@ -46,4 +32,25 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_encryption
 resource "aws_s3_bucket_acl" "bucket_acl" {
   bucket = aws_s3_bucket.bucket.id
   acl    = var.acl
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "bucket_liftecycle" {
+  bucket = aws_s3_bucket.bucket.id
+
+  rule {
+    id     = "retention_policy"
+    status = "Enabled"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = var.retention_days
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = var.retention_days
+    }
+
+    expiration {
+      days = var.retention_days
+    }
+  }
 }
