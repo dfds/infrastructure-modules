@@ -1,33 +1,10 @@
-# tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-specify-public-access-block tfsec:ignore:aws-s3-no-public-buckets tfsec:ignore:aws-s3-encryption-customer-key
+# tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-specify-public-access-block tfsec:ignore:aws-s3-no-public-buckets tfsec:ignore:aws-s3-encryption-customer-key tfsec:ignore:aws-s3-block-public-acls tfsec:ignore:aws-s3-block-public-policy tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "bucket" {
   bucket        = var.name
-  acl           = var.acl
   force_destroy = true
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "aws:kms"
-      }
-    }
-  }
 
   tags = {
     "Managed by" = "Terraform"
-  }
-
-  lifecycle_rule {
-    enabled                                = true
-    id                                     = "retention_policy"
-    abort_incomplete_multipart_upload_days = var.retention_days
-
-    expiration {
-      days = var.retention_days
-    }
-
-    noncurrent_version_expiration {
-      days = var.retention_days
-    }
   }
 
   policy = var.policy
@@ -40,4 +17,41 @@ resource "aws_s3_bucket_public_access_block" "block_public_access" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+}
+
+# tfsec:ignore:aws-s3-encryption-customer-key
+resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_encryption" {
+  bucket = aws_s3_bucket.bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "aws:kms"
+    }
+  }
+}
+
+resource "aws_s3_bucket_acl" "bucket_acl" {
+  bucket = aws_s3_bucket.bucket.id
+  acl    = var.acl
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "bucket_liftecycle" {
+  bucket = aws_s3_bucket.bucket.id
+
+  rule {
+    id     = "retention_policy"
+    status = "Enabled"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = var.retention_days
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = var.retention_days
+    }
+
+    expiration {
+      days = var.retention_days
+    }
+  }
 }
