@@ -1,4 +1,4 @@
-# tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-specify-public-access-block tfsec:ignore:aws-s3-no-public-buckets tfsec:ignore:aws-s3-encryption-customer-key
+# tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-specify-public-access-block tfsec:ignore:aws-s3-no-public-buckets tfsec:ignore:aws-s3-encryption-customer-key tfsec:ignore:aws-s3-block-public-acls tfsec:ignore:aws-s3-block-public-policy tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "bucket" {
   count         = var.deploy ? 1 : 0
   bucket        = var.s3_bucket
@@ -9,6 +9,7 @@ resource "aws_s3_bucket" "bucket" {
   }
 }
 
+# tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_encryption" {
   count  = var.deploy ? 1 : 0
   bucket = aws_s3_bucket.bucket[count.index].id
