@@ -25,6 +25,7 @@ module "aws_iam_oidc_provider" {
   eks_cluster_name                = var.eks_cluster_name
 }
 
+# tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "velero_storage" {
   bucket        = var.bucket_name
   force_destroy = var.force_bucket_destroy
