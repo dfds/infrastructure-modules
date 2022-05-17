@@ -98,7 +98,6 @@ variable "image_tag" {
 
 variable "plugin_for_aws_version" {
   type        = string
-  default     = "v1.4.1"
   description = "The version of velero-plugin-for-aws to use as initContainer"
   validation {
     condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.plugin_for_aws_version))
@@ -108,7 +107,6 @@ variable "plugin_for_aws_version" {
 
 variable "plugin_for_csi_version" {
   type        = string
-  default     = "v0.2.0"
   description = "The version of velero-plugin-for-csi to use as initContainer"
   validation {
     condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.plugin_for_csi_version))
