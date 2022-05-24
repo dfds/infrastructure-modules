@@ -18,7 +18,7 @@ resource "aws_lb" "traefik_auth" {
 resource "aws_autoscaling_attachment" "traefik_auth" {
   count                  = var.deploy ? length(var.autoscaling_group_ids) : 0
   autoscaling_group_name = var.autoscaling_group_ids[count.index]
-  alb_target_group_arn   = aws_lb_target_group.traefik_auth[0].arn
+  lb_target_group_arn   = aws_lb_target_group.traefik_auth[0].arn
 }
 
 resource "aws_lb_target_group" "traefik_auth" {
