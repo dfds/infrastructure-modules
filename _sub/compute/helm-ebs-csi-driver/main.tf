@@ -250,20 +250,16 @@ resource "kubernetes_storage_class" "csi-gp2" {
 }
 
 # change gp2 so it's no longer the default storageclass
-locals {
-  gp2_is_default = false
+resource "kubernetes_annotations" "gp2-default" {
+  api_version = "storage.k8s.io/v1"
+  kind        = "StorageClass"
+  force       = "true"
+
+  metadata {
+    name = "gp2"
+  }
+  annotations = {
+    "storageclass.kubernetes.io/is-default-class" = "false"
+  }
 }
 
-
-resource "null_resource" "gp2_removedefault_patch" {
-
-  depends_on = [kubernetes_storage_class.csi-gp2]
-  triggers = {
-    is_default = local.gp2_is_default
-  }
-
-  provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${var.kubeconfig_path} patch storageclass gp2 -p '{\"metadata\": {\"annotations\":{\"storageclass.kubernetes.io/is-default-class\":\"${local.gp2_is_default}\"}}}'"
-  }
-
-}
