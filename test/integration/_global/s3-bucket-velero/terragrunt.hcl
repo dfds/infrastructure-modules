@@ -8,10 +8,10 @@ include {
 }
 
 dependencies {
-  paths = ["../../eu-west-1/k8s-qa21/services"]
+  paths = ["../../eu-west-1/k8s-qa/services"]
 }
 
 inputs = {
   bucket_name = "dfds-velero-qa"
-  eks_cluster_name = "qa21"
+  eks_cluster_name = "qa"
 }
