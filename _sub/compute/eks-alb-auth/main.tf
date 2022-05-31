@@ -18,7 +18,7 @@ resource "aws_lb" "traefik_auth" {
 resource "aws_autoscaling_attachment" "traefik_auth" {
   count                  = var.deploy ? length(var.autoscaling_group_ids) : 0
   autoscaling_group_name = var.autoscaling_group_ids[count.index]
-  lb_target_group_arn   = aws_lb_target_group.traefik_auth[0].arn
+  lb_target_group_arn    = aws_lb_target_group.traefik_auth[0].arn
 }
 
 resource "aws_lb_target_group" "traefik_auth" {
@@ -46,7 +46,7 @@ resource "aws_lb_listener" "traefik_auth" {
   load_balancer_arn = aws_lb.traefik_auth[0].arn
   port              = "443"
   protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2015-05"
+  ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
   certificate_arn   = var.alb_certificate_arn
 
   default_action {
@@ -109,10 +109,10 @@ resource "aws_security_group" "traefik_auth" {
 
   ingress {
     description = "Ingress on target_admin_port"
-    from_port = var.target_admin_port
-    to_port   = var.target_admin_port
-    protocol  = "TCP"
-    self      = true
+    from_port   = var.target_admin_port
+    to_port     = var.target_admin_port
+    protocol    = "TCP"
+    self        = true
   }
 
   egress {
