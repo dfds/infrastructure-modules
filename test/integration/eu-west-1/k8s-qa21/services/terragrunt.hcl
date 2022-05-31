@@ -121,7 +121,7 @@ inputs = {
   # Crossplane
   # --------------------------------------------------
 
-  crossplane_deploy        = false
+  crossplane_deploy        = true
   crossplane_chart_version = "1.6.3-up.1"
   # Do not configure Confluent provider in QA
   crossplane_providers     = ["crossplane/provider-aws:v0.26.0", "crossplane/provider-kubernetes:v0.3.0"]
@@ -133,10 +133,10 @@ inputs = {
   ]
   eks_openid_connect_provider_url = dependency.cluster.outputs.eks_openid_connect_provider_url
 
-  crossplane_cfg_pkg_deploy       = false
+  crossplane_cfg_pkg_deploy       = true
   crossplane_cfg_pkg_docker_image = "dfdsdk/dfds-infra:v0.0.1-alpha.28"
 
-  crossplane_operator_deploy  = false
+  crossplane_operator_deploy  = true
   crossplane_operator_helm_chart_version = "0.1.5"
 
   # --------------------------------------------------
