@@ -16,7 +16,7 @@ resource "helm_release" "kyverno" {
 
 resource "kubernetes_config_map" "configmap" {
   metadata {
-    name = "service-namespace-filters"
+    name      = "service-namespace-filters"
     namespace = kubernetes_namespace.namespace.metadata[0].name
   }
 
@@ -26,7 +26,7 @@ resource "kubernetes_config_map" "configmap" {
 }
 
 resource "kubectl_manifest" "cluster_policy_nodeport" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -72,7 +72,7 @@ YAML
 }
 
 resource "kubectl_manifest" "cluster_policy_loadbalancer" {
-    yaml_body = <<YAML
+  yaml_body  = <<YAML
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:

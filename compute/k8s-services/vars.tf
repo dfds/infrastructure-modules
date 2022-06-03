@@ -1067,13 +1067,13 @@ variable "velero_plugin_for_csi_version" {
 }
 
 variable "kyverno_chart_version" {
-  type = string
-  default = ""
+  type        = string
+  default     = "2.4.1"
   description = "Helm chart version of Kyverno"
 }
 
 variable "kyverno_deploy" {
-  type = string
-  default = true
+  type        = string
+  default     = true
   description = "Feature toggle for Kyverno module"
 }

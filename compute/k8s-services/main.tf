@@ -671,8 +671,8 @@ module "aws_subnet_exporter" {
 # kyverno
 # --------------------------------------------------
 module "kyverno" {
-  source         = "../../_sub/compute/helm-kyverno"
-  count          = var.kyverno_deploy ? 1 : 0
-  chart_version = var.kyverno_chart_version
-  excluded_namespaces = ["${module.traefik_flux_manifests.namespace_name}"]
+  source              = "../../_sub/compute/helm-kyverno"
+  count               = var.kyverno_deploy ? 1 : 0
+  chart_version       = var.kyverno_chart_version
+  excluded_namespaces = ["traefik"]
 }

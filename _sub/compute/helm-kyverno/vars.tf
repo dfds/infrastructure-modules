@@ -4,6 +4,6 @@ variable "chart_version" {
 }
 
 variable "excluded_namespaces" {
-  type        = string
+  type        = list(string)
   description = "Service policies excluded namespaces"
 }
