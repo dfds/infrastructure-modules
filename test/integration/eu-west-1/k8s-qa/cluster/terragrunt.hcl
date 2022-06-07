@@ -20,8 +20,8 @@ inputs = {
   # EKS
   # --------------------------------------------------
 
-  eks_cluster_name    = "qa21"
-  eks_cluster_version = "1.21"
+  eks_cluster_name    = "qa"
+  eks_cluster_version = "1.22"
 
   eks_worker_subnets          = ["10.0.16.0/21", "10.0.24.0/21", "10.0.32.0/21"]
   eks_worker_ssh_ip_whitelist = ["193.9.230.100/32"]
@@ -38,6 +38,6 @@ inputs = {
   # Restore Blaster Configmap
   # --------------------------------------------------
 
-  blaster_configmap_bucket = "dfds-qa21-k8s-configmap"
+  blaster_configmap_bucket = "dfds-qa-k8s-configmap"
 
 }
