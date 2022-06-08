@@ -666,3 +666,13 @@ module "aws_subnet_exporter" {
   image_tag      = "0.3"
   oidc_issuer    = local.oidc_issuer
 }
+
+# --------------------------------------------------
+# kyverno
+# --------------------------------------------------
+module "kyverno" {
+  source              = "../../_sub/compute/helm-kyverno"
+  count               = var.kyverno_deploy ? 1 : 0
+  chart_version       = var.kyverno_chart_version
+  excluded_namespaces = ["traefik"]
+}
