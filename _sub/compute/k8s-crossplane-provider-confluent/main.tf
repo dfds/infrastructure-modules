@@ -48,7 +48,7 @@ resource "github_repository_file" "crossplane_provider_confluent_configmap_envir
   repository = var.repo_name
   branch     = local.repo_branch
   file       = "${local.config_repo_path}/configmap_environments.yaml"
-  content    = jsonencode(local.config_map_confluent_emvironments)
+  content    = jsonencode(local.config_map_confluent_environments)
 }
 
 resource "github_repository_file" "crossplane_provider_confluent_configmap_clusters" {

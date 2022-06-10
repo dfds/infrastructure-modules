@@ -38,27 +38,25 @@ locals {
   }
 
 
-config_map_confluent_emvironments = {
-    "apiVersion" =  "v1"
-"kind:" = "ConfigMap"
-"metadata" = {
+  config_map_confluent_environments = {
+    "apiVersion" = "v1"
+    "kind" = "ConfigMap"
+    "metadata" = {
       "name" =  "environmentid"
-  "namespace" = "${var.namespace}"
+      "namespace" = "${var.namespace}"
+    }
+    "data" = "${var.confluent_environments}"
+  }
 
-}
-"data" = "${var.confluent_environments}"
-}
-
-config_map_confluent_clusters = {
+  config_map_confluent_clusters = {
     "apiVersion" =  "v1"
-"kind:" = "ConfigMap"
-"metadata" = {
+    "kind" = "ConfigMap"
+    "metadata" = {
       "name" =  "clusterid"
-  "namespace" = "${var.namespace}"
-
-}
-"data" = "${var.confluent_clusters}"
-}
+    "namespace" = "${var.namespace}"
+    }
+    "data" = "${var.confluent_clusters}"
+  }
 
 }
 
