@@ -566,6 +566,10 @@ module "crossplane_provider_confluent_prereqs" {
   confluent_environments = var.crossplane_confluent_environments
   confluent_clusters = var.crossplane_confluent_clusters
 
+  providers = {
+    github = github.fluxcd
+  }
+
   depends_on = [module.crossplane]
 }
 
