@@ -182,7 +182,7 @@ variable "blaster_configmap_bucket" {
 
 variable "eks_worker_cloudwatch_agent_config_deploy" {
   type    = bool
-  default = true
+  default = false
 }
 
 variable "eks_worker_cloudwatch_agent_config_file" {
