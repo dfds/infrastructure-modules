@@ -1077,3 +1077,13 @@ variable "kyverno_deploy" {
   default     = true
   description = "Feature toggle for Kyverno module"
 }
+
+variable "crossplane_confluent_environments" {
+  type = map
+  # default = { dev = "dev"}
+}
+
+variable "crossplane_confluent_clusters" {
+  type = map
+  # default = { dev = "devcluster"}
+}

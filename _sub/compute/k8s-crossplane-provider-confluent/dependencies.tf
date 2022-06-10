@@ -1,0 +1,79 @@
+data "github_repository" "flux_repo" {
+  full_name = "${var.repo_owner}/${var.repo_name}"
+}
+
+locals {
+  deploy_name         = "crossplane-provider-confluent"
+  default_repo_branch = data.github_repository.flux_repo.default_branch
+  repo_branch         = length(var.repo_branch) > 0 ? var.repo_branch : local.default_repo_branch
+  cluster_repo_path   = "clusters/${var.cluster_name}"
+  config_repo_path    = "platform-apps/${var.cluster_name}/${local.deploy_name}/config"
+  app_install_name    = "platform-apps-${local.deploy_name}"
+
+  app_config_path = {
+    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
+    "kind"       = "Kustomization"
+    "metadata" = {
+      "name"      = "${local.app_install_name}-config"
+      "namespace" = "flux-system"
+    }
+    "spec" = {
+      "interval" = "1m0s"
+      "sourceRef" = {
+        "kind" = "GitRepository"
+        "name" = "flux-system"
+      }
+      "path"  = "./${local.config_repo_path}"
+      "prune" = true
+    }
+  }
+
+  config_init = {
+    "apiVersion" = "kustomize.config.k8s.io/v1beta1"
+    "kind"       = "Kustomization"
+    "resources" = [
+      "configmaps.yaml"
+    ]
+  }
+
+
+config_map_confluent_emvironments = {
+    "apiVersion" =  "v1"
+"kind:" = "ConfigMap"
+"metadata" = {
+      "name" =  "environmentid"
+  "namespace" = "${var.namespace}"
+
+}
+"data" = "${var.confluent_environments}"
+}
+
+config_map_confluent_clusters = {
+    "apiVersion" =  "v1"
+"kind:" = "ConfigMap"
+"metadata" = {
+      "name" =  "clusterid"
+  "namespace" = "${var.namespace}"
+
+}
+"data" = "${var.confluent_clusters}"
+}
+
+}
+
+#   yaml_body_config_map = <<YAML
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: environmentid
+#   namespace: "${var.namespace}"
+# data: "${var.confluent_environments}"
+# ---
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: clusterid
+#   namespace: "${var.namespace}"
+# data: "${var.confluent_clusters}"
+# YAML
+# }
