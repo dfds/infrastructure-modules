@@ -24,7 +24,7 @@ inputs = {
   # EKS
   # --------------------------------------------------
 
-  eks_cluster_name = "qa21"
+  eks_cluster_name = "qa"
 
   # --------------------------------------------------
   # Load Balancers in front of Traefik
@@ -69,7 +69,7 @@ inputs = {
   platform_fluxcd_deploy       = true
   platform_fluxcd_repo_name    = "platform-manifests-qa"
   platform_fluxcd_github_owner = "dfds"
-  platform_fluxcd_release_tag  = "v0.24.0"
+  platform_fluxcd_release_tag  = "v0.30.2"
 
   # --------------------------------------------------
   # AWS EBS CSI Driver
@@ -144,7 +144,7 @@ inputs = {
   # --------------------------------------------------
 
   atlantis_deploy        = true
-  atlantis_ingress       = "atlantis.qa21-alias1.dfds.cloud"
+  atlantis_ingress       = "atlantis.qa-alias1.dfds.cloud"
   atlantis_image_tag     = "0.0.21"
   atlantis_storage_class = "gp2"
 

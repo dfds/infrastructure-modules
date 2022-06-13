@@ -558,6 +558,17 @@ module "crossplane_provider_confluent_prereqs" {
   namespace = var.crossplane_namespace
   email     = var.crossplane_provider_confluent_email
   password  = var.crossplane_provider_confluent_password
+  repo_owner   = var.crossplane_cfg_pkg_repo_owner != null ? var.crossplane_cfg_pkg_repo_owner : var.platform_fluxcd_github_owner
+  repo_name    = var.crossplane_cfg_pkg_repo_name != null ? var.crossplane_cfg_pkg_repo_name : var.platform_fluxcd_repo_name
+  repo_branch  = var.crossplane_cfg_pkg_repo_branch != null ? var.crossplane_cfg_pkg_repo_branch : var.platform_fluxcd_repo_branch
+  cluster_name = var.eks_cluster_name
+
+  confluent_environments = var.crossplane_confluent_environments
+  confluent_clusters = var.crossplane_confluent_clusters
+
+  providers = {
+    github = github.fluxcd
+  }
 
   depends_on = [module.crossplane]
 }
@@ -665,4 +676,14 @@ module "aws_subnet_exporter" {
   aws_region     = var.aws_region
   image_tag      = "0.3"
   oidc_issuer    = local.oidc_issuer
+}
+
+# --------------------------------------------------
+# kyverno
+# --------------------------------------------------
+module "kyverno" {
+  source              = "../../_sub/compute/helm-kyverno"
+  count               = var.kyverno_deploy ? 1 : 0
+  chart_version       = var.kyverno_chart_version
+  excluded_namespaces = ["traefik"]
 }

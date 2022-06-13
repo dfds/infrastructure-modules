@@ -117,3 +117,15 @@ variable "ssm_param_createdby" {
   description = "The value that will be used for the createdBy key when tagging any SSM parameters"
   default     = "not-specified"
 }
+
+variable "oidc_provider_url" {
+  type        = string
+  description = "The IAM OpenID Connect Provider url from the EKS production account"
+  default     = ""
+}
+
+variable "oidc_provider_tag" {
+  type        = string
+  description = "Used for tagging the IAM OpenID Connect Provider for the capability account"
+  default     = ""
+}

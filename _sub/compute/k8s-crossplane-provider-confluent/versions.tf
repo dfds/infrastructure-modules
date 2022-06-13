@@ -9,5 +9,9 @@ terraform {
     kubectl = {
       source = "gavinbunney/kubectl"
     }
+
+    github = {
+      source = "integrations/github"
+    }
   }
 }

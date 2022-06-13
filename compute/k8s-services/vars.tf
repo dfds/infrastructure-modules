@@ -769,6 +769,14 @@ variable "crossplane_provider_confluent_password" {
   sensitive   = true
 }
 
+variable "crossplane_confluent_environments" {
+  type = map
+}
+
+variable "crossplane_confluent_clusters" {
+  type = map
+}
+
 # -------------
 
 variable "kiam_strict_mode_disabled" {
@@ -1064,4 +1072,16 @@ variable "velero_plugin_for_csi_version" {
     condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.velero_plugin_for_csi_version)) || var.velero_plugin_for_csi_version == ""
     error_message = "Velero plugin for CSI must specify a version. The version must start with the letter v and followed by a semantic version number."
   }
+}
+
+variable "kyverno_chart_version" {
+  type        = string
+  default     = "2.4.1"
+  description = "Helm chart version of Kyverno"
+}
+
+variable "kyverno_deploy" {
+  type        = string
+  default     = true
+  description = "Feature toggle for Kyverno module"
 }
