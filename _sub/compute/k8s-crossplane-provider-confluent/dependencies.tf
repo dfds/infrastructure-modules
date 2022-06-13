@@ -57,22 +57,4 @@ locals {
     }
     "data" = "${var.confluent_clusters}"
   }
-
 }
-
-#   yaml_body_config_map = <<YAML
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   name: environmentid
-#   namespace: "${var.namespace}"
-# data: "${var.confluent_environments}"
-# ---
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   name: clusterid
-#   namespace: "${var.namespace}"
-# data: "${var.confluent_clusters}"
-# YAML
-# }

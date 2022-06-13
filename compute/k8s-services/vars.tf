@@ -769,6 +769,14 @@ variable "crossplane_provider_confluent_password" {
   sensitive   = true
 }
 
+variable "crossplane_confluent_environments" {
+  type = map
+}
+
+variable "crossplane_confluent_clusters" {
+  type = map
+}
+
 # -------------
 
 variable "kiam_strict_mode_disabled" {
@@ -1076,14 +1084,4 @@ variable "kyverno_deploy" {
   type        = string
   default     = true
   description = "Feature toggle for Kyverno module"
-}
-
-variable "crossplane_confluent_environments" {
-  type = map
-  # default = { dev = "dev"}
-}
-
-variable "crossplane_confluent_clusters" {
-  type = map
-  # default = { dev = "devcluster"}
 }
