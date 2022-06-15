@@ -1,4 +1,5 @@
 kube-state-metrics:
+  extraArgs: ["--metric-annotations-allowlist=namespaces=[iam.amazonaws.com/permitted],pods=[iam.amazonaws.com/role]"]
   resources:
     requests:
       cpu: 20m
