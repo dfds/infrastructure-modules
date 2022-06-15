@@ -38,32 +38,6 @@ EOF
 
 }
 
-resource "aws_iam_policy" "iamroleservice" {
-  count       = var.deploy ? 1 : 0
-  name        = "eks-${var.cluster_name}-iamroleservice"
-  description = "Permissions for the iam role service"
-
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": "iam:*",
-            "Resource": "*"
-        }
-    ]
-}
-EOF
-
-}
-
-resource "aws_iam_role_policy_attachment" "iamroleservice" {
-  count      = var.deploy ? 1 : 0
-  role       = element(concat(aws_iam_role.self_service.*.name, [""]), 0)
-  policy_arn = element(concat(aws_iam_policy.iamroleservice.*.arn, [""]), 0)
-}
-
 resource "aws_iam_policy" "rolemapperservice" {
   count       = var.deploy ? 1 : 0
   name        = "eks-${var.cluster_name}-rolemapperservice"
