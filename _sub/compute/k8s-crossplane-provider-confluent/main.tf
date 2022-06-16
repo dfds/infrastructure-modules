@@ -57,3 +57,10 @@ resource "github_repository_file" "crossplane_provider_confluent_configmap_clust
   file       = "${local.config_repo_path}/configmap_clusters.yaml"
   content    = jsonencode(local.config_map_confluent_clusters)
 }
+
+resource "github_repository_file" "crossplane_provider_confluent_configmap_clusters_endpoints" {
+  repository = var.repo_name
+  branch     = local.repo_branch
+  file       = "${local.config_repo_path}/configmap_clusters_endpoints.yaml"
+  content    = jsonencode(local.config_map_confluent_clusters_endpoints)
+}
