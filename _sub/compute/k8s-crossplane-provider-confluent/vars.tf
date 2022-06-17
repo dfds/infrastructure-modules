@@ -22,7 +22,13 @@ variable "confluent_environments" {
 
 variable "confluent_clusters" {
   type = map
-  description = "Supported Confluent Clusters for each environment"
+  description = "Supported Confluent Clusters in each supported environment"
+  default = {}
+}
+
+variable "confluent_clusters_endpoints" {
+  type = map
+  description = "Endpoints for supported Confluent Clusters in supported each environment"
   default = {}
 }
 

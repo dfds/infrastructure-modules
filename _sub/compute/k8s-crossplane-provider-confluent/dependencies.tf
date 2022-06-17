@@ -33,7 +33,8 @@ locals {
     "kind"       = "Kustomization"
     "resources" = [
       "configmap_environments.yaml",
-      "configmap_clusters.yaml"
+      "configmap_clusters.yaml",
+      "configmap_clusters_endpoints.yaml"
     ]
   }
 
@@ -42,7 +43,7 @@ locals {
     "apiVersion" = "v1"
     "kind" = "ConfigMap"
     "metadata" = {
-      "name" =  "environmentid"
+      "name" =  "confluent-environment-id"
       "namespace" = "${var.namespace}"
     }
     "data" = "${var.confluent_environments}"
@@ -52,9 +53,19 @@ locals {
     "apiVersion" =  "v1"
     "kind" = "ConfigMap"
     "metadata" = {
-      "name" =  "clusterid"
+      "name" =  "confluent-cluster-id"
     "namespace" = "${var.namespace}"
     }
     "data" = "${var.confluent_clusters}"
+  }
+
+  config_map_confluent_clusters_endpoints = {
+    "apiVersion" =  "v1"
+    "kind" = "ConfigMap"
+    "metadata" = {
+      "name" =  "confluent-clusters-endpoints"
+    "namespace" = "${var.namespace}"
+    }
+    "data" = "${var.confluent_clusters_endpoints}"
   }
 }

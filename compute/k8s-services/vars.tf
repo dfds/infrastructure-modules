@@ -771,10 +771,20 @@ variable "crossplane_provider_confluent_password" {
 
 variable "crossplane_confluent_environments" {
   type = map
+  default = { }
+  description = "Supported Confluent environments"
 }
 
 variable "crossplane_confluent_clusters" {
   type = map
+  default = { }
+  description = "Supported Confluent clusters"
+}
+
+variable "crossplane_confluent_clusters_endpoints" {
+  type = map
+  default = { }
+  description = "Endpoints for each supported supported Confluent clusters"
 }
 
 # -------------
