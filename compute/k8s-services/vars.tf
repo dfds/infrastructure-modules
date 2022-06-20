@@ -1095,3 +1095,9 @@ variable "kyverno_deploy" {
   default     = true
   description = "Feature toggle for Kyverno module"
 }
+
+variable "kyverno_replicas" {
+  type        = number
+  default     = 2
+  description = "Number of replica pods for Kyverno"
+}

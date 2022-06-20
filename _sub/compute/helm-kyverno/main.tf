@@ -12,6 +12,16 @@ resource "helm_release" "kyverno" {
   namespace     = kubernetes_namespace.namespace.metadata[0].name
   recreate_pods = true
   force_update  = false
+
+  set {
+    name  = "resources.limits.memory"
+    value = "2048Mi"
+  }
+
+  set {
+    name  = "replicaCount"
+    value = var.replicas
+  }
 }
 
 resource "kubernetes_config_map" "configmap" {
@@ -41,7 +51,7 @@ metadata:
       any source. A NetworkPolicy cannot be used to control traffic to host ports.
       Although NodePort Services can be useful, their use must be limited to Services
       with additional upstream security checks. This policy validates that any new Services
-      do not use the `NodePort` type.      
+      do not use the `NodePort` type.
 spec:
   validationFailureAction: enforce
   background: true
@@ -87,7 +97,7 @@ metadata:
       any source. A NetworkPolicy cannot be used to control traffic to host ports.
       Although LoadBalancer Services can be useful, their use must be limited to Services
       with additional upstream security checks. This policy validates that any new Services
-      do not use the `LoadBalancer` type.      
+      do not use the `LoadBalancer` type.
 spec:
   validationFailureAction: enforce
   background: true
