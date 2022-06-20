@@ -770,20 +770,20 @@ variable "crossplane_provider_confluent_password" {
 }
 
 variable "crossplane_confluent_environments" {
-  type = map
-  default = { }
+  type        = map(any)
+  default     = {}
   description = "Supported Confluent environments"
 }
 
 variable "crossplane_confluent_clusters" {
-  type = map
-  default = { }
+  type        = map(any)
+  default     = {}
   description = "Supported Confluent clusters"
 }
 
 variable "crossplane_confluent_clusters_endpoints" {
-  type = map
-  default = { }
+  type        = map(any)
+  default     = {}
   description = "Endpoints for each supported supported Confluent clusters"
 }
 
@@ -1086,7 +1086,7 @@ variable "velero_plugin_for_csi_version" {
 
 variable "kyverno_chart_version" {
   type        = string
-  default     = "2.4.1"
+  default     = "v2.4.1"
   description = "Helm chart version of Kyverno"
 }
 
