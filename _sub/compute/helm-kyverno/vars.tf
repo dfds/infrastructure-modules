@@ -7,3 +7,8 @@ variable "excluded_namespaces" {
   type        = list(string)
   description = "Service policies excluded namespaces"
 }
+
+variable "replicas" {
+  type        = number
+  description = "Number of replica pods"
+}

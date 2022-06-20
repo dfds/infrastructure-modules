@@ -17,6 +17,11 @@ resource "helm_release" "kyverno" {
     name  = "resources.limits.memory"
     value = "2048Mi"
   }
+
+  set {
+    name  = "replicaCount"
+    value = var.replicas
+  }
 }
 
 resource "kubernetes_config_map" "configmap" {
