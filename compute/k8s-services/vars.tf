@@ -1098,6 +1098,6 @@ variable "kyverno_deploy" {
 
 variable "kyverno_replicas" {
   type        = number
-  default     = 2
+  default     = 3
   description = "Number of replica pods for Kyverno"
 }
