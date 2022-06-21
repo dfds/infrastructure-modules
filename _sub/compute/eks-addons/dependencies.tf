@@ -9,10 +9,10 @@
 
 locals {
   vpccni_version_map = {
-    "1.19" = "v1.7.5-eksbuild.2"
-    "1.20" = "v1.9.0-eksbuild.1"
-    "1.21" = "v1.10.2-eksbuild.1"
-    "1.22" = "v1.11.0-eksbuild.1"
+    "1.19" = "v1.11.2-eksbuild.1"
+    "1.20" = "v1.11.2-eksbuild.1"
+    "1.21" = "v1.11.2-eksbuild.1"
+    "1.22" = "v1.11.2-eksbuild.1"
   }
 
   coredns_version_map = {
