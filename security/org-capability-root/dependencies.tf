@@ -40,9 +40,6 @@ locals {
                 "elasticloadbalancing:*",
                 "apigateway:*",
                 "appsync:*",
-                "waf-regional:*",
-                "wafv2:*",
-                "waf:*",
                 "deepracer:*"
             ],
             "Resource": "*",
@@ -110,7 +107,7 @@ POLICY
                     ]
                 }
             }
-        },			
+        },
 		{
 			"Sid": "DenyIAM",
 			"Effect": "Deny",
