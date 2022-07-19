@@ -3,11 +3,11 @@ output "arn" {
 }
 
 output "access_key" {
-  value = aws_iam_access_key.key.id
+  value = var.create_aws_iam_access_key ? aws_iam_access_key.key.id : ""
 }
 
 output "secret_key" {
-  value     = aws_iam_access_key.key.secret
+  value     = var.create_aws_iam_access_key ? aws_iam_access_key.key.secret : "" 
   sensitive = true
 }
 

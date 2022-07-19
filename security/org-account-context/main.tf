@@ -112,7 +112,6 @@ module "iam_role_shared" {
   }
 }
 
-
 # --------------------------------------------------
 # IAM roles - Workload (capability context)
 # --------------------------------------------------
@@ -168,23 +167,6 @@ module "iam_user_deploy" {
   user_name            = "Deploy"
   user_policy_name     = "Admin"
   user_policy_document = module.iam_policies.admin
-
-  providers = {
-    aws = aws.workload
-  }
-}
-
-module "iam_user_deploy_store_credentials" {
-  source          = "../../_sub/security/ssm-parameter-store"
-  key_name        = "/managed/deploy/aws-creds"
-  key_description = "AWS credentials for the IAM 'Deploy' user"
-  tag_createdby   = var.ssm_param_createdby
-
-  key_value = <<EOF
-AWS_ACCESS_KEY_ID=${module.iam_user_deploy.access_key}
-AWS_SECRET_ACCESS_KEY=${module.iam_user_deploy.secret_key}
-EOF
-
 
   providers = {
     aws = aws.workload
