@@ -199,6 +199,11 @@ variable "monitoring_kube_prometheus_stack_deploy" {
   description = "Deploy kube-prometheus-stack helm chart switch"
   default     = false
 }
+variable "monitoring_kube_prometheus_stack_flux_deploy" {
+  type        = bool
+  description = "Deploy kube-prometheus-stack helm chart switch"
+  default     = false
+}
 
 variable "monitoring_kube_prometheus_stack_chart_version" {
   type        = string
@@ -312,6 +317,12 @@ variable "monitoring_kube_prometheus_stack_prometheus_limit_cpu" {
   type        = string
   description = "Prometheus resource setting for limit cpu"
   default     = "1000m"
+}
+
+variable "monitoring_kube_prometheus_stack_enable_node_exporter" {
+  type = bool
+  description = "Bool toggle for enabling node exporter on each node. Requires port 9100 to be free on all nodes."
+  default = true
 }
 
 

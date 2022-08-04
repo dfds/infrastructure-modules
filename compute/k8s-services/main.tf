@@ -381,19 +381,58 @@ module "monitoring_kube_prometheus_stack" {
   grafana_notifier_name       = "${var.eks_cluster_name}-alerting"
   grafana_iam_role_arn        = local.grafana_iam_role_arn # Coming from locals to avoid circular dependency between KIAM and Prometheus
   grafana_serviceaccount_name = var.monitoring_kube_prometheus_stack_grafana_serviceaccount_name
+  slack_webhook             = var.monitoring_kube_prometheus_stack_slack_webhook
+  prometheus_storageclass   = var.monitoring_kube_prometheus_stack_prometheus_storageclass
+  prometheus_storage_size   = var.monitoring_kube_prometheus_stack_prometheus_storage_size
+  prometheus_retention      = var.monitoring_kube_prometheus_stack_prometheus_retention
+  slack_channel             = var.monitoring_kube_prometheus_stack_slack_channel
+  target_namespaces         = var.monitoring_kube_prometheus_stack_target_namespaces
+  github_owner              = var.monitoring_kube_prometheus_stack_github_owner
+  repo_name                 = var.monitoring_kube_prometheus_stack_repo_name
+  repo_branch               = var.monitoring_kube_prometheus_stack_repo_branch
+  prometheus_request_memory = var.monitoring_kube_prometheus_stack_prometheus_request_memory
+  prometheus_request_cpu    = var.monitoring_kube_prometheus_stack_prometheus_request_cpu
+  prometheus_limit_memory   = var.monitoring_kube_prometheus_stack_prometheus_limit_memory
+  prometheus_limit_cpu      = var.monitoring_kube_prometheus_stack_prometheus_limit_cpu
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
+}
+
+// Flux deployment of kube-prometheus-stack
+
+module "kube_prometheus_stack_flux_manifests" {
+  source             = "../../_sub/compute/k8s-kube-prometheus-stack-flux"
+  count              = var.monitoring_kube_prometheus_stack_flux_deploy ? 1 : 0
+  cluster_name       = var.eks_cluster_name
+  helm_chart_version = var.monitoring_kube_prometheus_stack_chart_version
+  github_owner       = var.monitoring_kube_prometheus_stack_github_owner
+  repo_name          = var.monitoring_kube_prometheus_stack_repo_name
+  repo_branch        = var.monitoring_kube_prometheus_stack_repo_branch
+  additional_args    = var.traefik_flux_additional_args
+
+  prometheus_request_memory   = var.monitoring_kube_prometheus_stack_prometheus_request_memory
+  prometheus_request_cpu      = var.monitoring_kube_prometheus_stack_prometheus_request_cpu
+  prometheus_limit_memory     = var.monitoring_kube_prometheus_stack_prometheus_limit_memory
+  prometheus_limit_cpu        = var.monitoring_kube_prometheus_stack_prometheus_limit_cpu
+  priority_class              = var.monitoring_kube_prometheus_stack_priority_class
+  grafana_admin_password      = var.monitoring_kube_prometheus_stack_grafana_admin_password
+  grafana_ingress_path        = var.monitoring_kube_prometheus_stack_grafana_ingress_path
+  grafana_host                = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
+  grafana_notifier_name       = "${var.eks_cluster_name}-alerting"
+  grafana_iam_role_arn        = local.grafana_iam_role_arn
+  # Coming from locals to avoid circular dependency between KIAM and Prometheus
+  grafana_serviceaccount_name = var.monitoring_kube_prometheus_stack_grafana_serviceaccount_name
   slack_webhook               = var.monitoring_kube_prometheus_stack_slack_webhook
   prometheus_storageclass     = var.monitoring_kube_prometheus_stack_prometheus_storageclass
   prometheus_storage_size     = var.monitoring_kube_prometheus_stack_prometheus_storage_size
   prometheus_retention        = var.monitoring_kube_prometheus_stack_prometheus_retention
   slack_channel               = var.monitoring_kube_prometheus_stack_slack_channel
   target_namespaces           = var.monitoring_kube_prometheus_stack_target_namespaces
-  github_owner                = var.monitoring_kube_prometheus_stack_github_owner
-  repo_name                   = var.monitoring_kube_prometheus_stack_repo_name
-  repo_branch                 = var.monitoring_kube_prometheus_stack_repo_branch
-  prometheus_request_memory   = var.monitoring_kube_prometheus_stack_prometheus_request_memory
-  prometheus_request_cpu      = var.monitoring_kube_prometheus_stack_prometheus_request_cpu
-  prometheus_limit_memory     = var.monitoring_kube_prometheus_stack_prometheus_limit_memory
-  prometheus_limit_cpu        = var.monitoring_kube_prometheus_stack_prometheus_limit_cpu
+  enable_node_exporter        = var.monitoring_kube_prometheus_stack_enable_node_exporter
 
   providers = {
     github = github.fluxcd
