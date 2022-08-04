@@ -23,7 +23,7 @@ locals {
       "interval" = "1m0s"
       "dependsOn" = [
         {
-          "name" = "emcla-apps-sources"
+          "name" = "platform-apps-sources"
         }
       ]
       "sourceRef" = {
