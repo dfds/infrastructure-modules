@@ -1,0 +1,13 @@
+kube-state-metrics:
+  extraArgs: ["--metric-annotations-allowlist=namespaces=[iam.amazonaws.com/permitted],pods=[iam.amazonaws.com/role]"]
+  resources:
+    requests:
+      cpu: 20m
+      memory: 100Mi
+  priorityClassName: ${kube_state_metrics_priorityclass}
+  podSecurityPolicy:
+    enabled: true
+  releaseLabel: true
+  prometheus:
+    monitor:
+      enabled: true

@@ -1,0 +1,30 @@
+grafana:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 200Mi
+  adminPassword: "${grafana_admin_password}"
+  priorityClassName: ${grafana_priorityclass}
+  grafana.ini:
+    auth.anonymous:
+      enabled: true
+    metrics:
+      enabled: true
+    server:
+      domain: ${grafana_host}
+      root_url: ${grafana_root_url}
+  ingress:
+    enabled: false
+    hosts:
+      - ${grafana_host}
+    path: ${grafana_ingress_path}
+  plugins:
+    - grafana-polystat-panel
+  rbac:
+    pspEnabled: true
+  serviceAccount:
+    name: ${grafana_serviceaccount_name}
+    create: true
+    annotations:
+      eks.amazonaws.com/role-arn: ${grafana_cloudwatch_role}
+      eks.amazonaws.com/sts-regional-endpoints: "true"

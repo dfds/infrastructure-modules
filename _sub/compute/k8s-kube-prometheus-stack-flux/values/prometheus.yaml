@@ -1,0 +1,52 @@
+prometheus:
+  additionalServiceMonitors:
+    - name: "monitoring-metrics"
+      additionalLabels:
+        release: monitoring
+      selector:
+        matchLabels:
+          scrape-service-metrics: "true"
+      namespaceSelector:
+        any: true
+      endpoints:
+        - path: /metrics
+          port: metrics
+          scrapeTimeout: 30s
+        - path: /metrics
+          port: admin
+        - path: /metrics
+          port: http
+  prometheusSpec:
+    enableAdminAPI: false
+    resources:
+      requests:
+        memory: ${prometheus_request_memory}
+        cpu: ${prometheus_request_cpu}
+      limits:
+        memory: ${prometheus_limit_memory}
+        cpu: ${prometheus_limit_cpu}
+    priorityClassName: ${prometheus_priorityclass}
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: ${prometheus_storageclass}
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: ${prometheus_storage_size}
+    retention: ${prometheus_retention}
+global:
+  rbac:
+    pspEnabled: true
+grafana:
+  serviceMonitor:
+    enabled: true
+#    labels:
+#      release: monitoring
+kubelet:
+  serviceMonitor:
+    cAdvisorMetricRelabelings:
+      - regex: id
+        action: labeldrop
+      - regex: name
+        action: labeldrop

@@ -25,6 +25,13 @@ resource "github_repository_file" "helm_patch" {
   content    = jsonencode(local.helm_patch)
 }
 
+resource "github_repository_file" "helm_values" {
+  repository = var.repo_name
+  branch     = local.repo_branch
+  file       = "${local.helm_repo_path}/values.yaml"
+  content    = local.values
+}
+
 resource "github_repository_file" "config_path" {
   repository = var.repo_name
   branch     = local.repo_branch
@@ -94,3 +101,8 @@ resource "github_repository_file" "config_init" {
 #    createdBy = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-traefik-flux"
 #  }
 #}
+
+resource "random_password" "grafana_password" {
+  length  = 16
+  special = true
+}

@@ -62,7 +62,8 @@ locals {
     "apiVersion" = "kustomize.config.k8s.io/v1beta1"
     "kind"       = "Kustomization"
     "resources" = [
-      "https://github.com/dfds/platform-apps/apps/kube-prometheus-stack?ref=users/emcla/main"
+      "https://github.com/dfds/platform-apps/apps/kube-prometheus-stack?ref=users/emcla/main",
+      "values.yaml"
     ]
     "patchesStrategicMerge" = [
       "patch.yaml"
@@ -77,6 +78,70 @@ locals {
       "namespace" = var.namespace
     }
     "spec" = {
+      "valuesFrom" = [
+        {
+          "kind" = "ConfigMap"
+          "name" = "${var.deploy_name}-helm-values"
+          "valuesKey" = "components.yaml"
+          "optional" = true
+        },
+
+        {
+          "kind" = "ConfigMap"
+          "name" = "${var.deploy_name}-helm-values"
+          "valuesKey" = "grafana.yaml"
+          "optional" = true
+        },
+
+        {
+          "kind" = "ConfigMap"
+          "name" = "${var.deploy_name}-helm-values"
+          "valuesKey" = "grafana_notifiers.yaml"
+          "optional" = true
+        },
+
+        {
+          "kind" = "ConfigMap"
+          "name" = "${var.deploy_name}-helm-values"
+          "valuesKey" = "prometheus.yaml"
+          "optional" = true
+        },
+
+        {
+          "kind" = "ConfigMap"
+          "name" = "${var.deploy_name}-helm-values"
+          "valuesKey" = "alertmanager.yaml"
+          "optional" = true
+        },
+
+        {
+          "kind" = "ConfigMap"
+          "name" = "${var.deploy_name}-helm-values"
+          "valuesKey" = "rules.yaml"
+          "optional" = true
+        },
+
+        {
+          "kind" = "ConfigMap"
+          "name" = "${var.deploy_name}-helm-values"
+          "valuesKey" = "prometheus_operator.yaml"
+          "optional" = true
+        },
+
+        {
+          "kind" = "ConfigMap"
+          "name" = "${var.deploy_name}-helm-values"
+          "valuesKey" = "node_exporter.yaml"
+          "optional" = true
+        },
+
+        {
+          "kind" = "ConfigMap"
+          "name" = "${var.deploy_name}-helm-values"
+          "valuesKey" = "kube_state_metrics.yaml"
+          "optional" = true
+        },
+      ]
       "chart" = {
         "spec" = {
           "version" = var.helm_chart_version
@@ -100,57 +165,115 @@ locals {
     ]
   }
 
-  # The var.is_using_alb_auth ? []: local.dashboard_middlewares
-  # turns on Basic Authentication in environments where trafik is not mentioned in the
-  # DNS aliases in var.traefik_alb_auth_core_alias in the service configuration.
-#  config_dashboard_ingressroute = {
-#    "apiVersion" = "traefik.containo.us/v1alpha1"
-#    "kind" = "IngressRoute"
-#    "metadata" = {
-#      "name" = local.dashboard_name
-#      "namespace" = var.namespace
-#    }
-#    "spec" = {
-#      "entryPoints" = ["web"]
-#      "routes" = [
-#        {
-#          "kind" = "Rule"
-#          "match" = "Host(`${var.dashboard_ingress_host}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
-#          "services" = [
-#            {
-#              "kind" = "TraefikService"
-#              "name" = "api@internal"
-#            }
-#          ]
-#          "middlewares" = var.is_using_alb_auth ? [] : local.dashboard_middlewares
-#        }
-#      ]
-#    }
-#  }
-#
-#  config_dashboard_secret = {
-#    "apiVersion" = "v1"
-#    "kind" = "Secret"
-#    "metadata" = {
-#      "name" = local.dashboard_basic_auth_secret_name
-#      "namespace" = var.namespace
-#    }
-#    "data" = {
-#      "users" = local.dashboard_basic_auth_data
-#    }
-#  }
-#
-#  config_dashboard_middleware = {
-#    "apiVersion" = "traefik.containo.us/v1alpha1"
-#    "kind" = "Middleware"
-#    "metadata" = {
-#      "name" = local.dashboard_basic_auth_middleware_name
-#      "namespace" = var.namespace
-#    }
-#    "spec" = {
-#      "basicAuth" = {
-#        "secret" = local.dashboard_basic_auth_secret_name
-#      }
-#    }
-#  }
+  yaml_values = [
+    templatefile("${path.module}/values/components.yaml", {
+    }),
+
+    templatefile("${path.module}/values/grafana.yaml", {
+      grafana_admin_password  = var.grafana_admin_password != "" ? var.grafana_admin_password : random_password.grafana_password.result
+      grafana_priorityclass   = var.priority_class
+      grafana_ingress_path    = var.grafana_ingress_path
+      grafana_host            = var.grafana_host
+      grafana_root_url        = "https://%(domain)s${var.grafana_ingress_path}"
+      grafana_cloudwatch_role = var.grafana_iam_role_arn
+      grafana_serviceaccount_name = var.grafana_serviceaccount_name
+    }),
+
+    length(var.slack_webhook) > 0 ? templatefile("${path.module}/values/grafana-notifiers.yaml", {
+      grafana_notifier_name          = var.grafana_notifier_name
+      grafana_slack_notifier_channel = var.slack_channel
+      grafana_slack_webhook          = var.slack_webhook
+    }) : "",
+
+    templatefile("${path.module}/values/prometheus.yaml", {
+      prometheus_priorityclass  = var.priority_class
+      prometheus_storageclass   = var.prometheus_storageclass
+      prometheus_storage_size   = var.prometheus_storage_size
+      prometheus_retention      = var.prometheus_retention
+      prometheus_request_memory = var.prometheus_request_memory
+      prometheus_request_cpu    = var.prometheus_request_cpu
+      prometheus_limit_memory   = var.prometheus_limit_memory
+      prometheus_limit_cpu      = var.prometheus_limit_cpu
+    }),
+
+    length(var.slack_webhook) > 0 ? templatefile("${path.module}/values/alertmanager-slack.yaml", {
+      alertmanager_priorityclass = var.priority_class
+      alertmanager_slack_channel = var.slack_channel
+      alertmanager_slack_webhook = var.slack_webhook
+      target_namespaces          = var.target_namespaces
+    }) : file("${path.module}/values/alertmanager-disabled.yaml"),
+
+    templatefile("${path.module}/values/rules.yaml", {
+      target_namespaces = var.target_namespaces
+    }),
+
+    templatefile("${path.module}/values/prometheus-operator.yaml", {
+    }),
+
+    templatefile("${path.module}/values/node-exporter.yaml", {
+      prometheus_node_exporter_priorityclass = var.priority_class
+    }),
+
+    templatefile("${path.module}/values/kube-state-metrics.yaml", {
+      kube_state_metrics_priorityclass = var.priority_class
+    })
+  ]
+
+  values = templatefile("${path.module}/values/_configMap.yaml", {
+    resource_name = "${var.deploy_name}-helm-values"
+    resource_namespace = var.namespace
+
+    files = {
+      components = templatefile("${path.module}/values/components.yaml", {})
+
+      grafana = templatefile("${path.module}/values/grafana.yaml", {
+        grafana_admin_password  = var.grafana_admin_password != "" ? var.grafana_admin_password : random_password.grafana_password.result
+        grafana_priorityclass   = var.priority_class
+        grafana_ingress_path    = var.grafana_ingress_path
+        grafana_host            = var.grafana_host
+        grafana_root_url        = "https://%(domain)s${var.grafana_ingress_path}"
+        grafana_cloudwatch_role = var.grafana_iam_role_arn
+        grafana_serviceaccount_name = var.grafana_serviceaccount_name
+      })
+
+      grafana_notifiers =  length(var.slack_webhook) > 0 ? templatefile("${path.module}/values/grafana-notifiers.yaml", {
+        grafana_notifier_name          = var.grafana_notifier_name
+        grafana_slack_notifier_channel = var.slack_channel
+        grafana_slack_webhook          = var.slack_webhook
+      }) : ""
+
+      prometheus =     templatefile("${path.module}/values/prometheus.yaml", {
+        prometheus_priorityclass  = var.priority_class
+        prometheus_storageclass   = var.prometheus_storageclass
+        prometheus_storage_size   = var.prometheus_storage_size
+        prometheus_retention      = var.prometheus_retention
+        prometheus_request_memory = var.prometheus_request_memory
+        prometheus_request_cpu    = var.prometheus_request_cpu
+        prometheus_limit_memory   = var.prometheus_limit_memory
+        prometheus_limit_cpu      = var.prometheus_limit_cpu
+      }),
+
+      alertmanager = length(var.slack_webhook) > 0 ? templatefile("${path.module}/values/alertmanager-slack.yaml", {
+        alertmanager_priorityclass = var.priority_class
+        alertmanager_slack_channel = var.slack_channel
+        alertmanager_slack_webhook = var.slack_webhook
+        target_namespaces          = var.target_namespaces
+      }) : file("${path.module}/values/alertmanager-disabled.yaml")
+
+      rules = templatefile("${path.module}/values/rules.yaml", {
+        target_namespaces = var.target_namespaces
+      })
+
+      prometheus_operator = templatefile("${path.module}/values/prometheus-operator.yaml", {
+      })
+
+      node_exporter = templatefile("${path.module}/values/node-exporter.yaml", {
+        prometheus_node_exporter_priorityclass = var.priority_class
+      })
+
+      kube_state_metrics = templatefile("${path.module}/values/kube-state-metrics.yaml", {
+        kube_state_metrics_priorityclass = var.priority_class
+      })
+    }
+  })
 }

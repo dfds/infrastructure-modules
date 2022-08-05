@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${resource_name}
+  namespace: ${resource_namespace}
+data:
+%{ for k,v in files ~}
+  ${k}.yaml: |
+    ${indent(4, v)}
+%{ endfor ~}
