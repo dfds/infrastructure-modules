@@ -54,3 +54,6 @@ _sub/monitoring/alarm-notifier/lambda/main
 
 #Lock files
 .terraform.lock.hcl
+
+#Mac OS files
+.DS_Store
