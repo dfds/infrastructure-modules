@@ -29,10 +29,3 @@ variable "extra_permitted_roles" {
     error_message = "The list values (if defined) must contain full roles ARNs."
   }
 }
-
-
-variable "kiam_server_role_arn" {
-  type        = string
-  description = "The role or entity to provide trust for when creating roles to use with annotations in kubernetes"
-}
-
