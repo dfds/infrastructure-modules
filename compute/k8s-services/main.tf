@@ -239,6 +239,7 @@ module "traefik_alb_anon_dns_core_alias" {
 
 module "kiam_deploy" {
   source                  = "../../_sub/compute/k8s-kiam"
+  count                  = var.kiam_deploy ? 1 : 0
   chart_version           = var.kiam_chart_version
   cluster_name            = var.eks_cluster_name
   priority_class          = "service-critical"
