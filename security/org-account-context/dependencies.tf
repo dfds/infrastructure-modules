@@ -32,14 +32,3 @@ data "aws_iam_policy_document" "assume_role_adfs_shared" {
   }
 
 }
-
-data "aws_iam_policy_document" "assume_role_policy_crossplane_provider_aws" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${var.shared_account_id}:role/provider-aws"]
-    }
-  }
-}
