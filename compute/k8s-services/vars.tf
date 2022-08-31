@@ -52,6 +52,11 @@ variable "kiam_chart_version" {
   default     = null
 }
 
+variable "kiam_deploy" {
+  type    = bool
+  default = true
+}
+
 
 # --------------------------------------------------
 # FluentD CloudWatch Logs
