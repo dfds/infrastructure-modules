@@ -221,6 +221,7 @@ variable "monitoring_kube_prometheus_stack_grafana_admin_password" {
   type        = string
   description = "Grafana admin password"
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  sensitive = true
 }
 
 variable "monitoring_kube_prometheus_stack_grafana_ingress_path" {
