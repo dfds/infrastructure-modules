@@ -29,6 +29,7 @@ variable "grafana_admin_password" {
   type        = string
   description = "Grafana admin password"
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  sensitive = true
 }
 
 variable "grafana_ingress_path" {
