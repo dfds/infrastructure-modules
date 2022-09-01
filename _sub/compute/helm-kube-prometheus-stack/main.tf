@@ -1,6 +1,14 @@
 resource "random_password" "grafana_password" {
-  length  = 16
+  length  = 32
   special = true
+}
+
+resource "aws_ssm_parameter" "param_grafana_password" {
+  name        = "/eks/${var.cluster_name}/${helm_release.kube_prometheus_stack.name}-grafana-password"
+  description = "Password for accessing the Grafana dashboard"
+  type        = "SecureString"
+  value       = var.grafana_admin_password != "" ? var.grafana_admin_password : random_password.grafana_password.result
+  overwrite   = true
 }
 
 resource "helm_release" "kube_prometheus_stack" {
