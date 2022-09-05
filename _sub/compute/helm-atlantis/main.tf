@@ -179,3 +179,27 @@ resource "kubernetes_secret" "confluent" {
   }
   depends_on = [kubernetes_namespace.namespace]
 }
+
+resource "kubernetes_secret" "monitoring_kube_prometheus_stack" {
+  metadata {
+    name      = "monitoring-kube-prometheus-stack-credentials"
+    namespace = var.namespace
+  }
+
+  data = {
+    slack_webhook    = var.monitoring_kube_prometheus_stack_slack_webhook
+  }
+  depends_on = [kubernetes_namespace.namespace]
+}
+
+resource "kubernetes_secret" "cloudwatch" {
+  metadata {
+    name      = "cloudwatch-credentials"
+    namespace = var.namespace
+  }
+
+  data = {
+    cloudwatch_webhook    = var.slack_webhook_url
+  }
+  depends_on = [kubernetes_namespace.namespace]
+}

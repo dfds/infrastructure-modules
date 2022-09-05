@@ -108,6 +108,16 @@ environmentSecrets:
       name: confluent-credentials
       key: confluent_password
 
+  - name: TF_VAR_slack_webhook_url
+    secretKeyRef:
+      name: cloudwatch-credentials
+      key: cloudwatch_webhook
+
+  - name: TF_VAR_monitoring_kube_prometheus_stack_slack_webhook
+    secretKeyRef:
+      name: monitoring-kube-prometheus-stack-credentials
+      key: slack_webhook 
+
 
 ingress:
   host: ${atlantis_ingress}

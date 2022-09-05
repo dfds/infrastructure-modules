@@ -467,6 +467,8 @@ module "atlantis" {
   cluster_name                 = var.eks_cluster_name
   confluent_email              = var.crossplane_provider_confluent_email
   confluent_password           = var.crossplane_provider_confluent_password
+  slack_webhook_url = var.slack_webhook_url
+  monitoring_kube_prometheus_stack_slack_webhook = var.monitoring_kube_prometheus_stack_slack_webhook
 
   providers = {
     github = github.atlantis

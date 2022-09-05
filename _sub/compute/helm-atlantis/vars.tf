@@ -133,3 +133,13 @@ variable "confluent_password" {
   description = "Password used for Crossplane provider Confluent"
   sensitive = true
 }
+
+variable "slack_webhook_url" {
+  type = string
+  description = "Cloudwatch alarm notifier to Slack"
+}
+
+variable "monitoring_kube_prometheus_stack_slack_webhook" {
+  type = string
+  description = "Kube-prometheus-stack alert slack webhook"
+}
