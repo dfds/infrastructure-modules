@@ -167,19 +167,6 @@ resource "kubernetes_namespace" "namespace" {
   }
 }
 
-resource "kubernetes_secret" "confluent" {
-  metadata {
-    name      = "confluent-credentials"
-    namespace = var.namespace
-  }
-
-  data = {
-    confluent_email    = var.confluent_email
-    confluent_password = var.confluent_password
-  }
-  depends_on = [kubernetes_namespace.namespace]
-}
-
 resource "kubernetes_secret" "monitoring_kube_prometheus_stack" {
   metadata {
     name      = "monitoring-kube-prometheus-stack-credentials"

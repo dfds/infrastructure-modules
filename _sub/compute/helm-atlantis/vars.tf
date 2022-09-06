@@ -123,17 +123,6 @@ variable "cluster_name" {
   description = "The name of the Kubernetes cluster"
 }
 
-variable "confluent_email" {
-  type = string
-  description = "Email used for Crossplane provider Confluent"
-}
-
-variable "confluent_password" {
-  type = string
-  description = "Password used for Crossplane provider Confluent"
-  sensitive = true
-}
-
 variable "slack_webhook_url" {
   type = string
   description = "Cloudwatch alarm notifier to Slack"
