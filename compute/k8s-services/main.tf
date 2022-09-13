@@ -239,6 +239,7 @@ module "traefik_alb_anon_dns_core_alias" {
 
 module "kiam_deploy" {
   source                  = "../../_sub/compute/k8s-kiam"
+  count                  = var.kiam_deploy ? 1 : 0
   chart_version           = var.kiam_chart_version
   cluster_name            = var.eks_cluster_name
   priority_class          = "service-critical"
@@ -304,7 +305,6 @@ module "blaster_namespace" {
   deploy                   = var.blaster_deploy
   cluster_name             = var.eks_cluster_name
   blaster_configmap_bucket = data.terraform_remote_state.cluster.outputs.blaster_configmap_bucket
-  kiam_server_role_arn     = module.kiam_deploy.server_role_arn
   extra_permitted_roles    = var.blaster_namespace_extra_permitted_roles
   oidc_issuer              = local.oidc_issuer
 }
@@ -465,8 +465,8 @@ module "atlantis" {
   platform_fluxcd_github_token = var.atlantis_platform_fluxcd_github_token
   storage_class                = var.atlantis_storage_class
   cluster_name                 = var.eks_cluster_name
-  confluent_email              = var.crossplane_provider_confluent_email
-  confluent_password           = var.crossplane_provider_confluent_password
+  slack_webhook_url = var.slack_webhook_url
+  monitoring_kube_prometheus_stack_slack_webhook = var.monitoring_kube_prometheus_stack_slack_webhook
 
   providers = {
     github = github.atlantis
