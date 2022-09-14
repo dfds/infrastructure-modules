@@ -153,6 +153,7 @@ module "iam_user_deploy" {
   user_name            = "Deploy"
   user_policy_name     = "Admin"
   user_policy_document = module.iam_policies.admin
+  create_aws_iam_access_key = var.create_aws_iam_access_key
 
   providers = {
     aws = aws.workload
