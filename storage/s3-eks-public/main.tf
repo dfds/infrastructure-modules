@@ -20,4 +20,5 @@ module "s3_bucket" {
   deploy    = length(var.eks_public_s3_bucket) >= 1 ? true : false
   s3_bucket = var.eks_public_s3_bucket
   acl       = "public-read"
+  enable_server_side_encryption = var.enable_server_side_encryption
 }
