@@ -12,3 +12,8 @@ variable "acl" {
   default     = "private"
 }
 
+variable "enable_server_side_encryption" {
+  description = "Enable server side encryption (SSE) on the S3 bucket"
+  type = bool
+  default = true
+}

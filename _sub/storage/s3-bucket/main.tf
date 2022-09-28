@@ -11,7 +11,7 @@ resource "aws_s3_bucket" "bucket" {
 
 # tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_encryption" {
-  count  = var.deploy ? 1 : 0
+  count  = var.deploy && var.enable_server_side_encryption ? 1 : 0
   bucket = aws_s3_bucket.bucket[count.index].id
 
   rule {
