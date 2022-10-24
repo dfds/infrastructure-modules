@@ -10,6 +10,7 @@ locals {
             "Sid": "DenyAllOutsideEU",
             "Effect": "Deny",
             "NotAction": [
+                "access-analyzer:ValidatePolicy",
                 "acm:*",
                 "aws-marketplace:*",
                 "aws-portal:*",
