@@ -14,7 +14,8 @@ logLevel: "info"
 disableApply: true
 disableApplyAll: true
 
-storageClassName: ${storage_class}
+volumeClaim:
+  storageClassName: ${storage_class}
 
 github:
   user: ${github_username}
@@ -108,7 +109,6 @@ environmentSecrets:
     secretKeyRef:
       name: monitoring-kube-prometheus-stack-credentials
       key: slack_webhook
-
 
 ingress:
   host: ${atlantis_ingress}
