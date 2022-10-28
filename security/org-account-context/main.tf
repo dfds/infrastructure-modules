@@ -160,22 +160,6 @@ module "iam_user_deploy" {
 }
 
 # --------------------------------------------------
-# IAM Store deploy credentials
-# --------------------------------------------------
-
-module "iam_user_deploy_store_credentials" {
-  source          = "../../_sub/security/ssm-parameter-store"
-  key_name        = "/managed/deploy/aws-creds"
-  key_description = "AWS credentials for the IAM 'Deploy' user"
-  tag_createdby   = var.ssm_param_createdby
-  key_value = <<EOF
-AWS_ACCESS_KEY_ID=${module.iam_user_deploy.access_key}
-AWS_SECRET_ACCESS_KEY=${module.iam_user_deploy.secret_key}
-  EOF
-  count = var.create_aws_iam_access_key ? 1 : 0
-}
-
-# --------------------------------------------------
 # IAM OpenID Connect Provider
 # --------------------------------------------------
 
