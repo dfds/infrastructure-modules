@@ -12,7 +12,7 @@ locals {
     "1.19" = "v1.11.2-eksbuild.1"
     "1.20" = "v1.11.2-eksbuild.1"
     "1.21" = "v1.11.2-eksbuild.1"
-    "1.22" = "v1.11.2-eksbuild.1"
+    "1.22" = "v1.11.4-eksbuild.1"
   }
 
   coredns_version_map = {
