@@ -136,6 +136,11 @@ variable "eks_nodegroup1_desired_size_per_subnet" {
   default = 0
 }
 
+variable "eks_nodegroup1_ami_id" {
+  type    = string
+  default = ""
+}
+
 
 # --------------------------------------------------
 # EKS Nodegroup 2
@@ -164,6 +169,11 @@ variable "eks_nodegroup2_kubelet_extra_args" {
 variable "eks_nodegroup2_desired_size_per_subnet" {
   type    = number
   default = 0
+}
+
+variable "eks_nodegroup2_ami_id" {
+  type    = string
+  default = ""
 }
 
 

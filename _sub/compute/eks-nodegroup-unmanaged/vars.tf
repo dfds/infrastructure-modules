@@ -85,3 +85,9 @@ variable "scale_to_zero_cron" {
   type        = string
   description = "The time when the ASG will be scaled to zero, specified in Unix cron syntax"
 }
+
+variable "ami_id" {
+  type = string
+  description = "Set a specific AMI ID to use. Should over-ride the default value"
+  default = ""
+}

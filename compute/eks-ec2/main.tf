@@ -142,6 +142,7 @@ module "eks_nodegroup1_workers" {
   instance_types          = var.eks_nodegroup1_instance_types
   gpu_ami                 = var.eks_nodegroup1_gpu_ami
   ec2_ssh_key             = module.eks_workers_keypair.key_name
+  ami_id                  = var.eks_nodegroup1_ami_id
 
   kubelet_extra_args = var.eks_nodegroup1_kubelet_extra_args
 
@@ -177,6 +178,7 @@ module "eks_nodegroup2_workers" {
   instance_types          = var.eks_nodegroup2_instance_types
   gpu_ami                 = var.eks_nodegroup2_gpu_ami
   ec2_ssh_key             = module.eks_workers_keypair.key_name
+  ami_id                  = var.eks_nodegroup2_ami_id
 
   kubelet_extra_args = var.eks_nodegroup2_kubelet_extra_args
 
