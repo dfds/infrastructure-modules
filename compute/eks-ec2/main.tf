@@ -140,6 +140,7 @@ module "eks_nodegroup1_workers" {
   subnet_ids              = module.eks_workers_subnet.subnet_ids
   disk_size               = var.eks_nodegroup1_disk_size
   instance_types          = var.eks_nodegroup1_instance_types
+  ami_id                  = var.eks_nodegroup1_ami_id
   gpu_ami                 = var.eks_nodegroup1_gpu_ami
   ec2_ssh_key             = module.eks_workers_keypair.key_name
 
@@ -175,6 +176,7 @@ module "eks_nodegroup2_workers" {
   subnet_ids              = module.eks_workers_subnet.subnet_ids
   disk_size               = var.eks_nodegroup2_disk_size
   instance_types          = var.eks_nodegroup2_instance_types
+  ami_id                  = var.eks_nodegroup2_ami_id
   gpu_ami                 = var.eks_nodegroup2_gpu_ami
   ec2_ssh_key             = module.eks_workers_keypair.key_name
 

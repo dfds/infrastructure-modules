@@ -121,9 +121,16 @@ variable "eks_nodegroup1_disk_size" {
   default = 128
 }
 
+variable "eks_nodegroup1_ami_id" {
+  type        = string
+  default     = ""
+  description = "Pins the AMI ID of the nodes to the specified AMI, bypassing AMI updates."
+}
+
 variable "eks_nodegroup1_gpu_ami" {
-  type    = bool
-  default = false
+  type        = bool
+  default     = false
+  description = "Deploys the latest amazon-eks-gpu-node. Note, this field is ignored if eks_nodegroup1_ami_id is set."
 }
 
 variable "eks_nodegroup1_kubelet_extra_args" {
@@ -151,9 +158,16 @@ variable "eks_nodegroup2_disk_size" {
   default = 128
 }
 
+variable "eks_nodegroup2_ami_id" {
+  type        = string
+  default     = ""
+  description = "Pins the AMI ID of the nodes to the specified AMI, bypassing AMI updates."
+}
+
 variable "eks_nodegroup2_gpu_ami" {
-  type    = bool
-  default = false
+  type        = bool
+  default     = false
+  description = "Deploys the latest amazon-eks-gpu-node. Note, this field is ignored if eks_nodegroup2_ami_id is set."
 }
 
 variable "eks_nodegroup2_kubelet_extra_args" {
