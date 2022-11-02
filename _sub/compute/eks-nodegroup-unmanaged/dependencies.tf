@@ -19,10 +19,14 @@ data "aws_ami" "eks-gpu-node" {
   owners      = ["602401143452"] # Amazon Account ID
 }
 
+locals {
+  # Determine the latest AMI for the specified cluster version using the GPU variant if the 'gpu_ami' is set to true.
+  latest_ami = var.gpu_ami ? data.aws_ami.eks-gpu-node.id : data.aws_ami.eks-node.id
+}
 
 locals {
-  # Use GPU AMI if 'gpu_ami' is true
-  node_ami = var.gpu_ami ? data.aws_ami.eks-gpu-node.id : data.aws_ami.eks-node.id
+  # Pins AMI to 'ami_id' if it is set, otherwise, sets to the latest AMI.
+  node_ami = var.ami_id != "" ? var.ami_id : local.latest_ami
 }
 
 

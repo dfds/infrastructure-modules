@@ -39,6 +39,12 @@ variable "instance_types" {
   default = []
 }
 
+variable "ami_id" {
+  type        = string
+  default     = ""
+  description = "Pins the AMI ID of the nodes to the specified AMI, bypassing AMI updates."
+}
+
 variable "gpu_ami" {
   type    = bool
   default = false

@@ -121,6 +121,12 @@ variable "eks_nodegroup1_disk_size" {
   default = 128
 }
 
+variable "eks_nodegroup1_ami_id" {
+  type        = string
+  default     = ""
+  description = "Pins the AMI ID of the nodes to the specified AMI, bypassing AMI updates."
+}
+
 variable "eks_nodegroup1_gpu_ami" {
   type    = bool
   default = false
@@ -149,6 +155,12 @@ variable "eks_nodegroup2_instance_types" {
 variable "eks_nodegroup2_disk_size" {
   type    = number
   default = 128
+}
+
+variable "eks_nodegroup2_ami_id" {
+  type        = string
+  default     = ""
+  description = "Pins the AMI ID of the nodes to the specified AMI, bypassing AMI updates."
 }
 
 variable "eks_nodegroup2_gpu_ami" {
