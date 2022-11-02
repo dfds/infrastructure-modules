@@ -46,8 +46,9 @@ variable "ami_id" {
 }
 
 variable "gpu_ami" {
-  type    = bool
-  default = false
+  type        = bool
+  default     = false
+  description = "Deploys a latest amazon-eks-gpu-node. Note, this field is ignored if an ami_id is set."
 }
 
 variable "ec2_ssh_key" {
