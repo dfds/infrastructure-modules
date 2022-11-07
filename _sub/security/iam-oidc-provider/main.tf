@@ -4,7 +4,7 @@ locals {
 
 # required TLS Certificate which is then used for the openid connect provider thumprint list
 data "tls_certificate" "eks" {
-  url = "${var.eks_openid_connect_provider_url}"
+  url = var.eks_openid_connect_provider_url
 }
 
 # define openid connect provider that is bound to the provider URL for the EKS cluster
