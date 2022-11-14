@@ -30,6 +30,7 @@ inputs = {
   eks_nodegroup1_desired_size_per_subnet = 1
   eks_nodegroup1_kubelet_extra_args      = "--node-labels=nodegroup=ng1"
 
+  eks_nodegroup2_ami_id                  = "ami-0ed22cc46dcbf16ed"
   eks_nodegroup2_instance_types          = ["m5a.xlarge"]
   eks_nodegroup2_desired_size_per_subnet = 1
   eks_nodegroup2_kubelet_extra_args      = "--node-labels=nodegroup=ng2"

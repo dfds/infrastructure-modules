@@ -40,7 +40,7 @@ inputs = {
   # Traefik v2
   # --------------------------------------------------
   traefikv2_test_alb_deploy       = true
-  traefik_flux_helm_chart_version = "10.3.2"
+  traefik_flux_helm_chart_version = "10.21.1"
   traefik_flux_github_owner       = "dfds"
   traefik_flux_repo_name          = "platform-manifests-qa"
   traefik_flux_repo_branch        = "main"
@@ -82,6 +82,7 @@ inputs = {
   # KIAM
   # --------------------------------------------------
 
+  kiam_chart_version = "6.1.2" # With KIAM v4
 
   # --------------------------------------------------
   # Kube-prometheus-stack
@@ -121,7 +122,7 @@ inputs = {
   # Crossplane
   # --------------------------------------------------
 
-  crossplane_deploy        = true
+  crossplane_deploy        = false
   crossplane_chart_version = "1.6.3-up.1"
   # Do not configure Confluent provider in QA
   crossplane_providers     = ["crossplane/provider-aws:v0.26.0", "crossplane/provider-kubernetes:v0.3.0"]
@@ -133,10 +134,10 @@ inputs = {
   ]
   eks_openid_connect_provider_url = dependency.cluster.outputs.eks_openid_connect_provider_url
 
-  crossplane_cfg_pkg_deploy       = true
+  crossplane_cfg_pkg_deploy       = false
   crossplane_cfg_pkg_docker_image = "dfdsdk/dfds-infra:v0.0.1-alpha.28"
 
-  crossplane_operator_deploy  = true
+  crossplane_operator_deploy  = false
   crossplane_operator_helm_chart_version = "0.1.5"
 
   # --------------------------------------------------
@@ -196,4 +197,13 @@ inputs = {
   velero_flux_bucket_name = "dfds-velero-qa"
   velero_plugin_for_aws_version = "v1.4.1"
   velero_plugin_for_csi_version = "v0.2.0"
+
+  # --------------------------------------------------
+  # kyverno
+  # --------------------------------------------------
+
+  kyverno_deploy = false
+  kyverno_chart_version = "v2.5.2"
+
+}
 }
