@@ -206,4 +206,3 @@ inputs = {
   kyverno_chart_version = "v2.5.2"
 
 }
-}
