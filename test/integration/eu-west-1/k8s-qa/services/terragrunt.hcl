@@ -153,7 +153,7 @@ inputs = {
   atlantis_github_repositories = ["dfds/qa-dummy-atlantis"]
   atlantis_github_owner        = "dfds"
   atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
-  atlantis_chart_version       = "3.16.2"
+  atlantis_chart_version       = "4.1.2"
 
   atlantis_flux_repo_name     = "platform-manifests-qa"
   atlantis_flux_repo_owner    = "dfds"
