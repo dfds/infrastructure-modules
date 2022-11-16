@@ -20,10 +20,15 @@ resource "aws_eks_addon" "kube-proxy" {
 }
 
 resource "aws_eks_addon" "aws-ebs-csi-driver" {
-  cluster_name      = var.cluster_name
-  addon_name        = "aws-ebs-csi-driver"
-  addon_version     = local.awsebscsidriver_version
-  resolve_conflicts = "OVERWRITE"
+  cluster_name             = var.cluster_name
+  addon_name               = "aws-ebs-csi-driver"
+  addon_version            = local.awsebscsidriver_version
+  resolve_conflicts        = "OVERWRITE"
+  service_account_role_arn = aws_iam_role.ebs-csi-driver-role.arn
+
+  depends_on = [
+    aws_iam_role_policy_attachment.managed-ebs-csi-driver-policy
+  ]
 }
 
 # Roles & policies
@@ -71,26 +76,6 @@ resource "aws_iam_role_policy_attachment" "managed-ebs-csi-driver-policy" {
   role       = aws_iam_role.ebs-csi-driver-role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
-
-resource "kubernetes_annotations" "ebs-csi-driver-role" {
-  api_version = "v1"
-  kind        = "ServiceAccount"
-  force       = "true"
-
-  metadata {
-    name      = "ebs-csi-controller-sa"
-    namespace = "kube-system"
-  }
-
-  annotations = {
-    "eks.amazonaws.com/role-arn" = aws_iam_role.ebs-csi-driver-role.arn
-  }
-
-  depends_on = [
-    aws_eks_addon.aws-ebs-csi-driver
-  ]
-}
-
 
 # Storage classes
 
