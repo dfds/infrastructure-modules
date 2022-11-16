@@ -40,7 +40,7 @@ inputs = {
   # Traefik v2
   # --------------------------------------------------
   traefikv2_test_alb_deploy       = true
-  traefik_flux_helm_chart_version = "10.3.2"
+  traefik_flux_helm_chart_version = "10.21.1"
   traefik_flux_github_owner       = "dfds"
   traefik_flux_repo_name          = "platform-manifests-qa"
   traefik_flux_repo_branch        = "main"
@@ -82,6 +82,7 @@ inputs = {
   # KIAM
   # --------------------------------------------------
 
+  kiam_chart_version = "6.1.2" # With KIAM v4
 
   # --------------------------------------------------
   # Kube-prometheus-stack
@@ -121,7 +122,7 @@ inputs = {
   # Crossplane
   # --------------------------------------------------
 
-  crossplane_deploy        = true
+  crossplane_deploy        = false
   crossplane_chart_version = "1.6.3-up.1"
   # Do not configure Confluent provider in QA
   crossplane_providers     = ["crossplane/provider-aws:v0.26.0", "crossplane/provider-kubernetes:v0.3.0"]
@@ -133,10 +134,10 @@ inputs = {
   ]
   eks_openid_connect_provider_url = dependency.cluster.outputs.eks_openid_connect_provider_url
 
-  crossplane_cfg_pkg_deploy       = true
+  crossplane_cfg_pkg_deploy       = false
   crossplane_cfg_pkg_docker_image = "dfdsdk/dfds-infra:v0.0.1-alpha.28"
 
-  crossplane_operator_deploy  = true
+  crossplane_operator_deploy  = false
   crossplane_operator_helm_chart_version = "0.1.5"
 
   # --------------------------------------------------
@@ -145,14 +146,14 @@ inputs = {
 
   atlantis_deploy        = true
   atlantis_ingress       = "atlantis.qa-alias1.dfds.cloud"
-  atlantis_image_tag     = "0.0.22"
+  atlantis_image_tag     = "0.0.23"
   atlantis_storage_class = "gp2"
 
   atlantis_github_username     = "devex-sa"
   atlantis_github_repositories = ["dfds/qa-dummy-atlantis"]
   atlantis_github_owner        = "dfds"
   atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
-  atlantis_chart_version       = "3.16.2"
+  atlantis_chart_version       = "4.1.2"
 
   atlantis_flux_repo_name     = "platform-manifests-qa"
   atlantis_flux_repo_owner    = "dfds"
@@ -196,4 +197,12 @@ inputs = {
   velero_flux_bucket_name = "dfds-velero-qa"
   velero_plugin_for_aws_version = "v1.4.1"
   velero_plugin_for_csi_version = "v0.2.0"
+
+  # --------------------------------------------------
+  # kyverno
+  # --------------------------------------------------
+
+  kyverno_deploy = false
+  kyverno_chart_version = "v2.5.2"
+
 }

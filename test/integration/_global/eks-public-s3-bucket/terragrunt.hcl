@@ -10,3 +10,7 @@ include {
 }
 
 # Variable inherited from parent folders.
+
+inputs = {
+  enable_server_side_encryption = false
+}
