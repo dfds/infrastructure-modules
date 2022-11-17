@@ -12,5 +12,5 @@ variable "user_policy_document" {
 
 variable "create_aws_iam_access_key" {
   type = bool
-  default = true
+  default = false
 }
