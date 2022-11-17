@@ -132,5 +132,5 @@ variable "oidc_provider_tag" {
 
 variable "create_aws_iam_access_key" {
   type = bool
-  default = true
+  default = false
 }
