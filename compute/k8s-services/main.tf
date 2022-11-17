@@ -129,6 +129,8 @@ module "traefik_flux_manifests" {
   providers = {
     github = github.fluxcd
   }
+
+  depends_on = [module.platform_fluxcd]
 }
 
 module "traefik_alb_cert" {
@@ -484,7 +486,7 @@ module "atlantis_flux_manifests" {
   flux_repo_name        = var.atlantis_flux_repo_name
   flux_repo_branch      = var.atlantis_flux_repo_branch
 
-  depends_on = [module.atlantis, module.traefik_flux_manifests, ]
+  depends_on = [module.atlantis, module.traefik_flux_manifests, module.platform_fluxcd]
 
   providers = {
     github = github.fluxcd
@@ -528,7 +530,7 @@ module "crossplane_operator" {
     github = github.fluxcd
   }
 
-  depends_on = [module.crossplane]
+  depends_on = [module.crossplane, module.platform_fluxcd]
 }
 
 module "crossplane_configuration_package" {
@@ -545,7 +547,7 @@ module "crossplane_configuration_package" {
     github = github.fluxcd
   }
 
-  depends_on = [module.crossplane]
+  depends_on = [module.crossplane, module.platform_fluxcd]
 }
 
 locals {
@@ -571,7 +573,7 @@ module "crossplane_provider_confluent_prereqs" {
     github = github.fluxcd
   }
 
-  depends_on = [module.crossplane]
+  depends_on = [module.crossplane, module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -592,7 +594,7 @@ module "blackbox_exporter_flux_manifests" {
     github = github.fluxcd
   }
 
-  depends_on = [module.monitoring_kube_prometheus_stack]
+  depends_on = [module.monitoring_kube_prometheus_stack, module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -613,6 +615,8 @@ module "podinfo_flux_manifests" {
   providers = {
     github = github.fluxcd
   }
+
+  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -637,6 +641,7 @@ module "fluentd_cloudwatch_flux_manifests" {
     aws    = aws.logs
   }
 
+  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -662,6 +667,8 @@ module "velero_flux_manifests" {
   providers = {
     github = github.fluxcd
   }
+
+  depends_on = [module.platform_fluxcd]
 }
 
 
