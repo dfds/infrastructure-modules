@@ -221,7 +221,7 @@ variable "monitoring_kube_prometheus_stack_grafana_admin_password" {
   type        = string
   description = "Grafana admin password"
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  sensitive = true
+  sensitive   = true
 }
 
 variable "monitoring_kube_prometheus_stack_grafana_ingress_path" {
@@ -335,12 +335,6 @@ variable "monitoring_metrics_server_chart_version" {
   type        = string
   description = "metrics-server helm chart version"
   default     = null
-}
-
-variable "monitoring_metrics_server_chart_namespace" {
-  type        = string
-  description = "Namespace to apply metrics-server in"
-  default     = "monitoring"
 }
 
 variable "monitoring_metrics_server_repo_url" {

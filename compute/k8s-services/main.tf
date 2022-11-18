@@ -241,7 +241,7 @@ module "traefik_alb_anon_dns_core_alias" {
 
 module "kiam_deploy" {
   source                  = "../../_sub/compute/k8s-kiam"
-  count                  = var.kiam_deploy ? 1 : 0
+  count                   = var.kiam_deploy ? 1 : 0
   chart_version           = var.kiam_chart_version
   cluster_name            = var.eks_cluster_name
   priority_class          = "service-critical"
@@ -444,30 +444,30 @@ module "platform_fluxcd" {
 # --------------------------------------------------
 
 module "atlantis" {
-  source                       = "../../_sub/compute/helm-atlantis"
-  count                        = var.atlantis_deploy ? 1 : 0
-  namespace                    = var.atlantis_namespace
-  chart_version                = var.atlantis_chart_version
-  atlantis_image               = var.atlantis_image
-  atlantis_image_tag           = var.atlantis_image_tag
-  atlantis_ingress             = var.atlantis_ingress
-  github_username              = var.atlantis_github_username
-  github_token                 = var.atlantis_github_token
-  github_repositories          = var.atlantis_github_repositories
-  webhook_url                  = var.atlantis_ingress
-  webhook_events               = var.atlantis_webhook_events
-  aws_access_key               = var.atlantis_aws_access_key
-  aws_secret                   = var.atlantis_aws_secret
-  access_key_master            = var.atlantis_access_key_master
-  secret_key_master            = var.atlantis_secret_key_master
-  arm_tenant_id                = var.atlantis_arm_tenant_id
-  arm_subscription_id          = var.atlantis_arm_subscription_id
-  arm_client_id                = var.atlantis_arm_client_id
-  arm_client_secret            = var.atlantis_arm_client_secret
-  platform_fluxcd_github_token = var.atlantis_platform_fluxcd_github_token
-  storage_class                = var.atlantis_storage_class
-  cluster_name                 = var.eks_cluster_name
-  slack_webhook_url = var.slack_webhook_url
+  source                                         = "../../_sub/compute/helm-atlantis"
+  count                                          = var.atlantis_deploy ? 1 : 0
+  namespace                                      = var.atlantis_namespace
+  chart_version                                  = var.atlantis_chart_version
+  atlantis_image                                 = var.atlantis_image
+  atlantis_image_tag                             = var.atlantis_image_tag
+  atlantis_ingress                               = var.atlantis_ingress
+  github_username                                = var.atlantis_github_username
+  github_token                                   = var.atlantis_github_token
+  github_repositories                            = var.atlantis_github_repositories
+  webhook_url                                    = var.atlantis_ingress
+  webhook_events                                 = var.atlantis_webhook_events
+  aws_access_key                                 = var.atlantis_aws_access_key
+  aws_secret                                     = var.atlantis_aws_secret
+  access_key_master                              = var.atlantis_access_key_master
+  secret_key_master                              = var.atlantis_secret_key_master
+  arm_tenant_id                                  = var.atlantis_arm_tenant_id
+  arm_subscription_id                            = var.atlantis_arm_subscription_id
+  arm_client_id                                  = var.atlantis_arm_client_id
+  arm_client_secret                              = var.atlantis_arm_client_secret
+  platform_fluxcd_github_token                   = var.atlantis_platform_fluxcd_github_token
+  storage_class                                  = var.atlantis_storage_class
+  cluster_name                                   = var.eks_cluster_name
+  slack_webhook_url                              = var.slack_webhook_url
   monitoring_kube_prometheus_stack_slack_webhook = var.monitoring_kube_prometheus_stack_slack_webhook
 
   providers = {
@@ -589,6 +589,7 @@ module "blackbox_exporter_flux_manifests" {
   repo_name          = var.blackbox_exporter_repo_name
   repo_branch        = var.blackbox_exporter_repo_branch
   monitoring_targets = local.blackbox_exporter_monitoring_targets
+  namespace          = module.monitoring_namespace[0].name
 
   providers = {
     github = github.fluxcd
