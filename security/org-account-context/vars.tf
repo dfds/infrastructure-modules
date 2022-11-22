@@ -129,3 +129,8 @@ variable "oidc_provider_tag" {
   description = "Used for tagging the IAM OpenID Connect Provider for the capability account"
   default     = ""
 }
+
+variable "create_aws_iam_access_key" {
+  type = bool
+  default = false
+}

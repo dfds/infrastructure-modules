@@ -67,16 +67,13 @@ POLICY
         {
             "Sid": "DenyIAMUpdatesManagedUsers",
             "Effect": "Deny",
-            "Action": [
+ 			"Action": [
                 "iam:AttachUserPolicy",
-                "iam:CreateAccessKey",
-                "iam:DeleteAccessKey",
                 "iam:DeleteUserPolicy",
                 "iam:DetachUserPolicy",
                 "iam:PutUserPolicy",
                 "iam:TagUser",
-                "iam:UntagUser",
-                "iam:UpdateAccessKey"
+                "iam:UntagUser"
             ],
             "Resource": [
                 "arn:aws:iam::*:user/Deploy",
@@ -111,7 +108,7 @@ POLICY
                     ]
                 }
             }
-        },			
+        },
 		{
 			"Sid": "DenyIAM",
 			"Effect": "Deny",
