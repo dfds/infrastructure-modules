@@ -12,7 +12,6 @@ variable "chart_version" {
 variable "namespace" {
   type        = string
   description = "Namespace to apply Kube-prometheus-stack in"
-  default     = "monitoring"
   validation {
     condition     = can(regex("[a-z]+", var.namespace))
     error_message = "Namespace must contain at least one letter."
@@ -29,7 +28,7 @@ variable "grafana_admin_password" {
   type        = string
   description = "Grafana admin password"
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  sensitive = true
+  sensitive   = true
 }
 
 variable "grafana_ingress_path" {

@@ -11,7 +11,6 @@ variable "deploy_name" {
 variable "namespace" {
   type        = string
   description = "The namespace in which to deploy Helm resources"
-  default     = "monitoring"
 }
 
 variable "replicas" {
@@ -43,7 +42,7 @@ variable "helm_chart_version" {
 }
 
 variable "monitoring_targets" {
-  type = list(object({ name=string, url=string, module=string }))
+  type        = list(object({ name = string, url = string, module = string }))
   description = "Complex object of what to monitor with Blackbox Exporter"
-  default = []
+  default     = []
 }

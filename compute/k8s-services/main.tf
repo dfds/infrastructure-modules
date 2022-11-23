@@ -129,6 +129,8 @@ module "traefik_flux_manifests" {
   providers = {
     github = github.fluxcd
   }
+
+  depends_on = [module.platform_fluxcd]
 }
 
 module "traefik_alb_cert" {
@@ -239,7 +241,7 @@ module "traefik_alb_anon_dns_core_alias" {
 
 module "kiam_deploy" {
   source                  = "../../_sub/compute/k8s-kiam"
-  count                  = var.kiam_deploy ? 1 : 0
+  count                   = var.kiam_deploy ? 1 : 0
   chart_version           = var.kiam_chart_version
   cluster_name            = var.eks_cluster_name
   priority_class          = "service-critical"
@@ -345,6 +347,12 @@ module "monitoring_namespace" {
   source = "../../_sub/compute/k8s-namespace"
   count  = var.monitoring_namespace_deploy ? 1 : 0
   name   = local.monitoring_namespace_name
+
+  # The monitoring namespace has resources that are provisioned and
+  # deprovisioned from it via Flux. If Flux is removed before the monitoring
+  # namespace, the monitoring namespace may be unable to terminated as it will
+  # have resources left in it with Flux finalizers which cannot be finalized.
+  depends_on = [module.platform_fluxcd]
 }
 
 
@@ -442,30 +450,30 @@ module "platform_fluxcd" {
 # --------------------------------------------------
 
 module "atlantis" {
-  source                       = "../../_sub/compute/helm-atlantis"
-  count                        = var.atlantis_deploy ? 1 : 0
-  namespace                    = var.atlantis_namespace
-  chart_version                = var.atlantis_chart_version
-  atlantis_image               = var.atlantis_image
-  atlantis_image_tag           = var.atlantis_image_tag
-  atlantis_ingress             = var.atlantis_ingress
-  github_username              = var.atlantis_github_username
-  github_token                 = var.atlantis_github_token
-  github_repositories          = var.atlantis_github_repositories
-  webhook_url                  = var.atlantis_ingress
-  webhook_events               = var.atlantis_webhook_events
-  aws_access_key               = var.atlantis_aws_access_key
-  aws_secret                   = var.atlantis_aws_secret
-  access_key_master            = var.atlantis_access_key_master
-  secret_key_master            = var.atlantis_secret_key_master
-  arm_tenant_id                = var.atlantis_arm_tenant_id
-  arm_subscription_id          = var.atlantis_arm_subscription_id
-  arm_client_id                = var.atlantis_arm_client_id
-  arm_client_secret            = var.atlantis_arm_client_secret
-  platform_fluxcd_github_token = var.atlantis_platform_fluxcd_github_token
-  storage_class                = var.atlantis_storage_class
-  cluster_name                 = var.eks_cluster_name
-  slack_webhook_url = var.slack_webhook_url
+  source                                         = "../../_sub/compute/helm-atlantis"
+  count                                          = var.atlantis_deploy ? 1 : 0
+  namespace                                      = var.atlantis_namespace
+  chart_version                                  = var.atlantis_chart_version
+  atlantis_image                                 = var.atlantis_image
+  atlantis_image_tag                             = var.atlantis_image_tag
+  atlantis_ingress                               = var.atlantis_ingress
+  github_username                                = var.atlantis_github_username
+  github_token                                   = var.atlantis_github_token
+  github_repositories                            = var.atlantis_github_repositories
+  webhook_url                                    = var.atlantis_ingress
+  webhook_events                                 = var.atlantis_webhook_events
+  aws_access_key                                 = var.atlantis_aws_access_key
+  aws_secret                                     = var.atlantis_aws_secret
+  access_key_master                              = var.atlantis_access_key_master
+  secret_key_master                              = var.atlantis_secret_key_master
+  arm_tenant_id                                  = var.atlantis_arm_tenant_id
+  arm_subscription_id                            = var.atlantis_arm_subscription_id
+  arm_client_id                                  = var.atlantis_arm_client_id
+  arm_client_secret                              = var.atlantis_arm_client_secret
+  platform_fluxcd_github_token                   = var.atlantis_platform_fluxcd_github_token
+  storage_class                                  = var.atlantis_storage_class
+  cluster_name                                   = var.eks_cluster_name
+  slack_webhook_url                              = var.slack_webhook_url
   monitoring_kube_prometheus_stack_slack_webhook = var.monitoring_kube_prometheus_stack_slack_webhook
 
   providers = {
@@ -484,7 +492,7 @@ module "atlantis_flux_manifests" {
   flux_repo_name        = var.atlantis_flux_repo_name
   flux_repo_branch      = var.atlantis_flux_repo_branch
 
-  depends_on = [module.atlantis, module.traefik_flux_manifests, ]
+  depends_on = [module.atlantis, module.traefik_flux_manifests, module.platform_fluxcd]
 
   providers = {
     github = github.fluxcd
@@ -528,7 +536,7 @@ module "crossplane_operator" {
     github = github.fluxcd
   }
 
-  depends_on = [module.crossplane]
+  depends_on = [module.crossplane, module.platform_fluxcd]
 }
 
 module "crossplane_configuration_package" {
@@ -545,7 +553,7 @@ module "crossplane_configuration_package" {
     github = github.fluxcd
   }
 
-  depends_on = [module.crossplane]
+  depends_on = [module.crossplane, module.platform_fluxcd]
 }
 
 locals {
@@ -571,7 +579,7 @@ module "crossplane_provider_confluent_prereqs" {
     github = github.fluxcd
   }
 
-  depends_on = [module.crossplane]
+  depends_on = [module.crossplane, module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -587,12 +595,13 @@ module "blackbox_exporter_flux_manifests" {
   repo_name          = var.blackbox_exporter_repo_name
   repo_branch        = var.blackbox_exporter_repo_branch
   monitoring_targets = local.blackbox_exporter_monitoring_targets
+  namespace          = module.monitoring_namespace[0].name
 
   providers = {
     github = github.fluxcd
   }
 
-  depends_on = [module.monitoring_kube_prometheus_stack]
+  depends_on = [module.monitoring_kube_prometheus_stack, module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -613,6 +622,8 @@ module "podinfo_flux_manifests" {
   providers = {
     github = github.fluxcd
   }
+
+  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -637,6 +648,7 @@ module "fluentd_cloudwatch_flux_manifests" {
     aws    = aws.logs
   }
 
+  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -662,6 +674,8 @@ module "velero_flux_manifests" {
   providers = {
     github = github.fluxcd
   }
+
+  depends_on = [module.platform_fluxcd]
 }
 
 
