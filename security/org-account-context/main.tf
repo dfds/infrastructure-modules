@@ -3,7 +3,7 @@
 # --------------------------------------------------
 
 provider "aws" {
-  region  = var.aws_region
+  region = var.aws_region
 
   # Assume role in Master account
   assume_role {
@@ -12,13 +12,13 @@ provider "aws" {
 }
 
 provider "aws" {
-  region  = var.aws_region
-  alias   = "core" # this provider does not seem to be used?
+  region = var.aws_region
+  alias  = "core" # this provider does not seem to be used?
 }
 
 provider "aws" {
-  region  = var.aws_region
-  alias   = "shared"
+  region = var.aws_region
+  alias  = "shared"
 
   # Assume role in Shared account
   assume_role {
@@ -27,8 +27,8 @@ provider "aws" {
 }
 
 provider "aws" {
-  region  = var.aws_region
-  alias   = "workload"
+  region = var.aws_region
+  alias  = "workload"
 
   # Need explicit credentials in Master, to be able to assume Organizational Role in Workload account
   access_key = var.access_key_master
@@ -82,10 +82,11 @@ module "iam_account_alias" {
 }
 
 module "iam_idp" {
-  source           = "../../_sub/security/iam-idp"
-  provider_name    = "ADFS"
-  adfs_fqdn        = var.adfs_fqdn
-  assume_role_arns = [var.kiam_role_arn]
+  source        = "../../_sub/security/iam-idp"
+  provider_name = "ADFS"
+  adfs_fqdn     = var.adfs_fqdn
+  # TODO(emil): remove dependence on Kiam
+  assume_role_arns = var.kiam_role_arn != "" ? [var.kiam_role_arn] : []
 
   providers = {
     aws = aws.workload
@@ -149,10 +150,10 @@ module "iam_role_ecr_push" {
 # --------------------------------------------------
 
 module "iam_user_deploy" {
-  source               = "../../_sub/security/iam-user"
-  user_name            = "Deploy"
-  user_policy_name     = "Admin"
-  user_policy_document = module.iam_policies.admin
+  source                    = "../../_sub/security/iam-user"
+  user_name                 = "Deploy"
+  user_policy_name          = "Admin"
+  user_policy_document      = module.iam_policies.admin
   create_aws_iam_access_key = var.create_aws_iam_access_key
   providers = {
     aws = aws.workload

@@ -106,6 +106,7 @@ variable "parent_id" {
   default     = ""
 }
 
+# TODO(emil): remove dependence on Kiam
 variable "kiam_role_arn" {
   type        = string
   description = "Optional: The KIAM role ARN that can assume roles"
@@ -131,6 +132,6 @@ variable "oidc_provider_tag" {
 }
 
 variable "create_aws_iam_access_key" {
-  type = bool
+  type    = bool
   default = false
 }

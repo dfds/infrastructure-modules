@@ -39,13 +39,16 @@ data "aws_iam_policy_document" "adfs_role_assume" {
     }
   }
 
-  statement {
-    sid     = "RoleArns"
-    actions = ["sts:AssumeRole"]
+  dynamic "statement" {
+    for_each = var.assume_role_arns
+    content {
+      sid     = "RoleArns"
+      actions = ["sts:AssumeRole"]
 
-    principals {
-      type        = "AWS"
-      identifiers = var.assume_role_arns
+      principals {
+        type        = "AWS"
+        identifiers = [statement.value]
+      }
     }
   }
 }
