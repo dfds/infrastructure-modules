@@ -3,8 +3,8 @@
 # --------------------------------------------------
 
 resource "aws_iam_role_policy" "server_node" {
-  name  = "eks-${var.cluster_name}-node"
-  role  = var.worker_role_id # get from eks-workers
+  name = "eks-${var.cluster_name}-node"
+  role = var.worker_role_id # get from eks-workers
 
   policy = <<EOF
 {
@@ -94,7 +94,7 @@ resource "helm_release" "kiam" {
 
   set {
     name  = "agent.allowRouteRegexp"
-    value = "(^/latest/meta-data/iam/info$|^/latest/meta-data/instance-id$|^/latest/dynamic/instance-identity/document$|^/latest/meta-data/outpost-arn$)"
+    value = "(^/latest/meta-data/iam/info$|^/latest/meta-data/instance-id$|^/latest/dynamic/instance-identity/document$|^/latest/meta-data/outpost-arn$|^/latest/meta-data/network/interfaces/macs$|^/latest/meta-data/block-device-mapping$)"
   }
 
   set {
@@ -188,27 +188,27 @@ resource "helm_release" "kiam" {
   }
 
   set {
-    name = "agent.prometheus.servicemonitor.enabled"
+    name  = "agent.prometheus.servicemonitor.enabled"
     value = var.servicemonitor_enabled
   }
 
   set {
-    name = "agent.prometheus.servicemonitor.labels.release"
+    name  = "agent.prometheus.servicemonitor.labels.release"
     value = "monitoring"
   }
 
   set {
-    name = "server.prometheus.servicemonitor.enabled"
+    name  = "server.prometheus.servicemonitor.enabled"
     value = var.servicemonitor_enabled
   }
 
   set {
-    name = "server.prometheus.servicemonitor.labels.release"
+    name  = "server.prometheus.servicemonitor.labels.release"
     value = "monitoring"
   }
 
   set {
-    name = "server.extraArgs.disable-strict-namespace-regexp"
+    name  = "server.extraArgs.disable-strict-namespace-regexp"
     value = "" # Hardcoding for now. Waiting for upstream PR to get approved.
   }
 }

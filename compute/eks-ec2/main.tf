@@ -216,13 +216,15 @@ module "eks_heptio" {
 }
 
 module "eks_addons" {
-  source                     = "../../_sub/compute/eks-addons"
-  depends_on                 = [module.eks_cluster]
-  cluster_name               = var.eks_cluster_name
-  kubeproxy_version_override = var.eks_addon_kubeproxy_version_override
-  coredns_version_override   = var.eks_addon_coredns_version_override
-  vpccni_version_override    = var.eks_addon_vpccni_version_override
-  cluster_version            = var.eks_cluster_version
+  source                           = "../../_sub/compute/eks-addons"
+  depends_on                       = [module.eks_cluster]
+  cluster_name                     = var.eks_cluster_name
+  kubeproxy_version_override       = var.eks_addon_kubeproxy_version_override
+  coredns_version_override         = var.eks_addon_coredns_version_override
+  vpccni_version_override          = var.eks_addon_vpccni_version_override
+  awsebscsidriver_version_override = var.eks_addon_awsebscsidriver_version_override
+  cluster_version                  = var.eks_cluster_version
+  eks_openid_connect_provider_url  = module.eks_cluster.eks_openid_connect_provider_url
 }
 
 module "k8s_priority_class" {

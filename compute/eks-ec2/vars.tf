@@ -100,6 +100,11 @@ variable "eks_addon_vpccni_version_override" {
   default = ""
 }
 
+variable "eks_addon_awsebscsidriver_version_override" {
+  type    = string
+  default = ""
+}
+
 variable "eks_public_s3_bucket" {
   description = "The name of the public S3 bucket, where non-sensitive Kubeconfig will be copied to"
   type        = string
