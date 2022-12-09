@@ -27,6 +27,9 @@ variable "aws_assume_role_arn" {
 variable "workload_dns_zone_name" {
 }
 
+# Optional
+# --------------------------------------------------
+
 variable "ssm_param_createdby" {
   type        = string
   description = "The value that will be used for the createdBy key when tagging any SSM parameters"
