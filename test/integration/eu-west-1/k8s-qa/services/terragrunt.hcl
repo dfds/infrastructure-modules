@@ -76,6 +76,7 @@ inputs = {
   # --------------------------------------------------
 
   kiam_chart_version = "6.1.2" # With KIAM v4
+  kiam_deploy = false
 
   # --------------------------------------------------
   # Kube-prometheus-stack
