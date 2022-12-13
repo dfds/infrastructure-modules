@@ -1,3 +1,0 @@
-controller:
-  serviceAccount:
-    name: ${csi_ebs_serviceaccount_name}

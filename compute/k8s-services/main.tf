@@ -82,19 +82,6 @@ provider "azuread" {
 }
 
 # --------------------------------------------------
-# AWS EBS CSI Driver (Helm Chart Installation)
-# --------------------------------------------------
-
-module "ebs_csi_driver" {
-  source                          = "../../_sub/compute/helm-ebs-csi-driver"
-  count                           = var.ebs_csi_driver_deploy ? 1 : 0
-  chart_version                   = var.ebs_csi_driver_chart_version
-  cluster_name                    = var.eks_cluster_name
-  kubeconfig_path                 = local.kubeconfig_path
-  eks_openid_connect_provider_url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
-}
-
-# --------------------------------------------------
 # ALB access logs S3 bucket
 # --------------------------------------------------
 
@@ -276,17 +263,8 @@ module "aws_cloudwatch_grafana_reader_iam_role" {
 # Namespaces
 # --------------------------------------------------
 
-# Annotate the kube-system namespace so that KIAM allows the traffic needed by the EBS CSI Driver
-# This annotation is always applied.  The decision to allow this was taken on the basis that the annotation
-# is a lightweight element with little cost.  If we wished to have it defined based on a feature toggle
-# then it would create additional complexity and require that the toggle variable exist in two places,
-# thus leading to confusion
 locals {
-  kubesystem_permitted_base_role = flatten([
-    try(module.ebs_csi_driver[0].iam_role_name, []),
-  ])
-  kubesystem_permitted_role_list        = concat(local.kubesystem_permitted_base_role, var.kubesystem_permitted_extra_roles)
-  kubesystem_permitted_role_list_sorted = sort(local.kubesystem_permitted_role_list)
+  kubesystem_permitted_role_list_sorted = sort(var.kubesystem_permitted_extra_roles)
   kubesystem_permitted_role_string      = join("|", local.kubesystem_permitted_role_list_sorted)
 }
 
