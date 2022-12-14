@@ -85,8 +85,7 @@ module "iam_idp" {
   source        = "../../_sub/security/iam-idp"
   provider_name = "ADFS"
   adfs_fqdn     = var.adfs_fqdn
-  # TODO(emil): remove dependence on Kiam
-  assume_role_arns = var.kiam_role_arn != "" ? [var.kiam_role_arn] : []
+  assume_role_arns = var.assume_role_arn != "" ? [var.assume_role_arn] : []
 
   providers = {
     aws = aws.workload
