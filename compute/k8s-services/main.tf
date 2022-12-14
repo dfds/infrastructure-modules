@@ -268,14 +268,6 @@ locals {
   kubesystem_permitted_role_string      = join("|", local.kubesystem_permitted_role_list_sorted)
 }
 
-module "kube_system_namespace" {
-  source          = "../../_sub/compute/k8s-annotate-namespace"
-  namespace       = "kube-system"
-  kubeconfig_path = local.kubeconfig_path
-  annotations     = { "iam.amazonaws.com/permitted" = local.kubesystem_permitted_role_string }
-}
-
-
 # --------------------------------------------------
 # Blaster - depends on KIAM
 # --------------------------------------------------
