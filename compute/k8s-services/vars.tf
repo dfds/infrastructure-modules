@@ -41,23 +41,6 @@ variable "eks_cluster_name" {
   type = string
 }
 
-
-# --------------------------------------------------
-# KIAM
-# --------------------------------------------------
-
-variable "kiam_chart_version" {
-  type        = string
-  description = "KIAM helm chart version"
-  default     = null
-}
-
-variable "kiam_deploy" {
-  type    = bool
-  default = true
-}
-
-
 # --------------------------------------------------
 # FluentD CloudWatch Logs
 # --------------------------------------------------
@@ -119,13 +102,6 @@ variable "traefik_nlb_cidr_blocks" {
 variable "blaster_deploy" {
   default = false
 }
-
-variable "blaster_namespace_extra_permitted_roles" {
-  type        = list(string)
-  default     = []
-  description = "Additional role names or ARNs that can be assumed from this namespace through KIAM"
-}
-
 
 # --------------------------------------------------
 # Cloudwatch alarms and alarm notifier (Slack)
@@ -768,14 +744,6 @@ variable "crossplane_confluent_clusters_endpoints" {
   type        = map(any)
   default     = {}
   description = "Endpoints for each supported supported Confluent clusters"
-}
-
-# -------------
-
-variable "kiam_strict_mode_disabled" {
-  type        = bool
-  description = "Disable default strict namespace regexp when matching roles"
-  default     = false
 }
 
 # --------------------------------------------------

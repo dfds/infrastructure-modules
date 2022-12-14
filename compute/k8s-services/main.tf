@@ -223,29 +223,6 @@ module "traefik_alb_anon_dns_core_alias" {
 }
 
 # --------------------------------------------------
-# KIAM
-# --------------------------------------------------
-
-module "kiam_deploy" {
-  source                  = "../../_sub/compute/k8s-kiam"
-  count                   = var.kiam_deploy ? 1 : 0
-  chart_version           = var.kiam_chart_version
-  cluster_name            = var.eks_cluster_name
-  priority_class          = "service-critical"
-  aws_workload_account_id = var.aws_workload_account_id
-  worker_role_id          = data.terraform_remote_state.cluster.outputs.eks_worker_role_id
-  agent_deep_liveness     = true
-  agent_liveness_timeout  = 5
-  server_gateway_timeout  = "5s"
-  servicemonitor_enabled  = var.monitoring_kube_prometheus_stack_deploy
-  strict_mode_disabled    = var.kiam_strict_mode_disabled
-
-  // Depends_on for servicemonitor is ignored if prometheus stack is not deployed but required otherwise
-  depends_on = [module.monitoring_kube_prometheus_stack]
-}
-
-
-# --------------------------------------------------
 # AWS IAM roles
 # --------------------------------------------------
 
@@ -269,7 +246,7 @@ locals {
 }
 
 # --------------------------------------------------
-# Blaster - depends on KIAM
+# Blaster
 # --------------------------------------------------
 
 module "blaster_namespace" {
@@ -277,7 +254,6 @@ module "blaster_namespace" {
   deploy                   = var.blaster_deploy
   cluster_name             = var.eks_cluster_name
   blaster_configmap_bucket = data.terraform_remote_state.cluster.outputs.blaster_configmap_bucket
-  extra_permitted_roles    = var.blaster_namespace_extra_permitted_roles
   oidc_issuer              = local.oidc_issuer
 }
 
@@ -357,7 +333,7 @@ module "monitoring_kube_prometheus_stack" {
   grafana_ingress_path        = var.monitoring_kube_prometheus_stack_grafana_ingress_path
   grafana_host                = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
   grafana_notifier_name       = "${var.eks_cluster_name}-alerting"
-  grafana_iam_role_arn        = local.grafana_iam_role_arn # Coming from locals to avoid circular dependency between KIAM and Prometheus
+  grafana_iam_role_arn        = local.grafana_iam_role_arn
   grafana_serviceaccount_name = var.monitoring_kube_prometheus_stack_grafana_serviceaccount_name
   slack_webhook               = var.monitoring_kube_prometheus_stack_slack_webhook
   prometheus_storageclass     = var.monitoring_kube_prometheus_stack_prometheus_storageclass

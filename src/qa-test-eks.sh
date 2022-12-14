@@ -97,10 +97,6 @@ if [ "$ACTION" = "test" ]; then
     # Simply output certain resources for manual inspection
     # --------------------------------------------------
 
-    # KIAM
-    echo -e "\nKIAM:\n"
-    kubectl -n kube-system get ds -l app=kiam -o wide || true
-
     # AWS EBS CSI driver
     echo -e "\nAWS EBS CSI snapshot controller statefulset:\n"
     kubectl -n kube-system get statefulset -l app.kubernetes.io/name=aws-ebs-csi-driver -o wide || true

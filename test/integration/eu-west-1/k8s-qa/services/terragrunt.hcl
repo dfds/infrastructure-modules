@@ -47,7 +47,6 @@ inputs = {
 
   # --------------------------------------------------
   # Blaster
-  # Requires: KIAM
   # --------------------------------------------------
 
   blaster_deploy           = true
@@ -70,13 +69,6 @@ inputs = {
   platform_fluxcd_repo_name    = "platform-manifests-qa"
   platform_fluxcd_github_owner = "dfds"
   platform_fluxcd_release_tag  = "v0.30.2"
-
-  # --------------------------------------------------
-  # KIAM
-  # --------------------------------------------------
-
-  kiam_chart_version = "6.1.2" # With KIAM v4
-  kiam_deploy = false
 
   # --------------------------------------------------
   # Kube-prometheus-stack
