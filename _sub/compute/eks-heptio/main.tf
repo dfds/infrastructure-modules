@@ -3,7 +3,7 @@
 # --------------------------------------------------
 
 resource "local_file" "kubeconfig_admin" {
-  content  = data.template_file.kubeconfig_admin.rendered
+  content  = local.kubeconfig_admin_template
   filename = local.temp_kubeconfig_path
 
   # The path ${var.kubeconfig_path} is OS and user context-depdendent. This causes problems e.g. when executed locally.
@@ -25,7 +25,7 @@ locals {
 }
 
 resource "local_file" "default-configmap" {
-  content  = data.template_file.default_auth_cm.rendered
+  content  = local.default_auth_cm_template
   filename = local.path_default_configmap
 }
 
