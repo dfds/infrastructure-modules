@@ -3,10 +3,19 @@ resource "aws_s3_bucket" "bucket" {
   bucket        = var.name
   force_destroy = true
 
-  tags = {
-    "Managed by" = "Terraform"
+  tags = merge(
+    var.additional_tags,
+    var.is_sandbox ? local.sandbox_tags : {},
+    {
+      "Managed by" = "Terraform"
+    }
+  )
+}
+
+locals {
+  sandbox_tags = {
+    "is_sandbox" = "true"
   }
- 
 }
 
 resource "aws_s3_bucket_policy" "bucketpolicy" {

@@ -361,6 +361,12 @@ variable "eks_is_sandbox" {
   default = false
 }
 
+variable "s3_bucket_additional_tags" {
+  description = "Add additional tags to s3 bucket"
+  type = map(any)
+  default = {}
+}
+
 # --------------------------------------------------
 # Platform Flux CD
 # --------------------------------------------------
