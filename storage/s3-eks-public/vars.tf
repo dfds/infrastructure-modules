@@ -22,6 +22,12 @@ variable "enable_server_side_encryption" {
   default = true
 }
 
+variable "additional_tags" {
+  description = "Add additional tags to s3 bucket"
+  type = map(string)
+  default = {}
+}
+
 # --------------------------------------------------
 # Unused variables - to provent TF warning/error:
 # Using a variables file to set an undeclared variable is deprecated and will

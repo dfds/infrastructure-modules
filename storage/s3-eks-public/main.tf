@@ -21,4 +21,5 @@ module "s3_bucket" {
   s3_bucket = var.eks_public_s3_bucket
   acl       = "public-read"
   enable_server_side_encryption = var.enable_server_side_encryption
+  additional_tags = var.additional_tags
 }

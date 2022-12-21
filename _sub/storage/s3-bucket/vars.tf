@@ -17,3 +17,9 @@ variable "enable_server_side_encryption" {
   type = bool
   default = true
 }
+
+variable "additional_tags" {
+  description = "Add additional tags to s3 bucket"
+  type = map(string)
+  default = {}
+}

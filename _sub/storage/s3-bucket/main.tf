@@ -4,9 +4,12 @@ resource "aws_s3_bucket" "bucket" {
   bucket        = var.s3_bucket
   force_destroy = true
 
-  tags = {
-    "Managed by" = "Terraform"
-  }
+  tags = merge(
+    var.additional_tags,
+    {
+      "Managed by" = "Terraform"
+    }
+  )
 }
 
 # tfsec:ignore:aws-s3-encryption-customer-key

@@ -200,6 +200,7 @@ module "blaster_configmap_bucket" {
   source    = "../../_sub/storage/s3-bucket"
   deploy    = length(var.blaster_configmap_bucket) >= 1 ? true : false
   s3_bucket = var.blaster_configmap_bucket
+  additional_tags = var.blaster_configmap_bucket_tags
 }
 
 module "eks_heptio" {
