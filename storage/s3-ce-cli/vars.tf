@@ -16,3 +16,9 @@ variable "additional_tags" {
   type = map(string)
   default = {}
 }
+
+variable "is_sandbox" {
+  description = "Whether to add sandbox tags to the S3 bucket"
+  type = bool
+  default = false
+}
