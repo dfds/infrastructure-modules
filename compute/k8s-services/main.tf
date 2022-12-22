@@ -91,7 +91,6 @@ module "traefik_alb_s3_access_logs" {
   retention_days = var.traefik_alb_s3_access_logs_retiontion_days
   policy         = local.alb_access_log_bucket_policy
   additional_tags = var.s3_bucket_additional_tags
-  is_sandbox = var.eks_is_sandbox
 }
 
 # --------------------------------------------------

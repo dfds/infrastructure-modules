@@ -28,12 +28,6 @@ variable "additional_tags" {
   default = {}
 }
 
-variable "is_sandbox" {
-  description = "Whether to add sandbox tags to the S3 bucket"
-  type = bool
-  default = false
-}
-
 # --------------------------------------------------
 # Unused variables - to provent TF warning/error:
 # Using a variables file to set an undeclared variable is deprecated and will

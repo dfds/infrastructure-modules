@@ -22,5 +22,4 @@ module "s3_bucket" {
   acl       = "public-read"
   enable_server_side_encryption = var.enable_server_side_encryption
   additional_tags = var.additional_tags
-  is_sandbox = var.is_sandbox
 }

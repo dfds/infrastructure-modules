@@ -201,7 +201,6 @@ module "blaster_configmap_bucket" {
   deploy    = length(var.blaster_configmap_bucket) >= 1 ? true : false
   s3_bucket = var.blaster_configmap_bucket
   additional_tags = var.blaster_configmap_bucket_tags
-  is_sandbox = var.eks_is_sandbox
 }
 
 module "eks_heptio" {
