@@ -89,7 +89,7 @@ if [ "$ACTION" = "test" ]; then
     REGION=$2
     CLUSTERNAME=$3
     WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}/cluster"
-    export KUBECONFIG=$(terragrunt output kubeconfig_path --terragrunt-working-dir "$WORKDIR")
+    export KUBECONFIG=$(terragrunt output --raw kubeconfig_path --terragrunt-working-dir "$WORKDIR")
 
     # Sleep before test?
 
