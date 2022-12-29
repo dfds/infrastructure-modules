@@ -37,7 +37,7 @@ func AssertDaemonSet(t *testing.T, clientset *kubernetes.Clientset, namespace, n
 	check := func() bool {
 		resp, err := clientset.AppsV1().DaemonSets(namespace).List(
 			context.Background(), metav1.ListOptions{
-				LabelSelector: "app.kubernetes.io/name=" + name,
+				FieldSelector: "metadata.name=" + name,
 			})
 		if err != nil {
 			t.Log(err.Error())
