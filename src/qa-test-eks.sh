@@ -91,6 +91,11 @@ if [ "$ACTION" = "test" ]; then
     WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}/cluster"
     export KUBECONFIG=$(terragrunt output --raw kubeconfig_path --terragrunt-working-dir "$WORKDIR")
 
+    # Debugging
+    (cd "${BASEPATH}/suite" && exec pwd || true)
+    (cd "${BASEPATH}/suite" && exec go version || true)
+    (cd "${BASEPATH}/suite" && exec go env || true)
+
     # Run test suite
     (cd "${BASEPATH}/suite" && exec go test -v)
 fi
