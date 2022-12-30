@@ -39,22 +39,53 @@ stages:
 
     jobs:
       - job: init_shared
-        displayName: Init EKS shared resources
+        displayName: Provision shared resources from master branch
         container: prime
         steps:
+          - checkout: self@master
           - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
             displayName: "Provision public S3 bucket"
 
-      - job: eks_cluster
-        displayName: EKS Cluster
+      - job: init
+        displayName: Provision cluster & services from master branch
         container: prime
         dependsOn: init_shared
         steps:
+          - checkout: self@master
           - bash: ./src/qa-test-eks.sh cleanup-cluster eu-west-1 qa
             displayName: "Pre-apply cleanup"
             condition: eq(variables['PRE_CLEANUP'], 'true')
           - bash: ./src/qa-test-eks.sh apply-cluster eu-west-1 qa
-            displayName: "Terraform Apply"
+            displayName: "Terraform apply"
+          # TODO(emil): Move this to the Docker image after code freeze
+          - bash: sudo apt-get update && sudo apt-get --yes install golang
+            displayName: "Install Go"
+            condition: always()
+          - bash: ./src/qa-test-eks.sh test eu-west-1 qa
+            displayName: "Run tests"
+            condition: always()
+
+      - job: apply_shared
+        condition: ne($(Build.SourceBranchName), 'master')
+        displayName: Apply shared resources from feature branch
+        container: prime
+        steps:
+          - checkout: self
+          - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
+            displayName: "Provision public S3 bucket"
+
+      - job: apply
+        condition: ne($(Build.SourceBranchName), 'master')
+        displayName: Apply cluster & services from feature branch
+        container: prime
+        dependsOn: apply_shared
+        steps:
+          - checkout: self
+          - bash: ./src/qa-test-eks.sh cleanup-cluster eu-west-1 qa
+            displayName: "Pre-apply cleanup"
+            condition: eq(variables['PRE_CLEANUP'], 'true')
+          - bash: ./src/qa-test-eks.sh apply-cluster eu-west-1 qa
+            displayName: "Terraform apply"
           # TODO(emil): Move this to the Docker image after code freeze
           - bash: sudo apt-get update && sudo apt-get --yes install golang
             displayName: "Install Go"
@@ -67,7 +98,7 @@ stages:
         displayName: Init EKS shared Velero
         container: prime
         dependsOn:
-          - eks_cluster
+          - init
         steps:
           - bash: ./src/qa-test-eks.sh cleanup-shared eu-west-1
             displayName: "Pre-apply cleanup"
@@ -83,24 +114,26 @@ stages:
         condition: ne(variables['NO_DESTROY'], 'true')
         steps:
           - bash: ./src/qa-test-eks.sh destroy-velero-bucket eu-west-1 _global/s3-bucket-velero
-            displayName: "Terraform Destroy Velero S3 Bucket (post)"
+            displayName: "Terraform destroy Velero S3 Bucket (post)"
 
-      - job: destroy_eks_cluster
-        displayName: Destroy EKS Cluster
+      - job: destroy
+        displayName: Destroy cluster & services
         container: prime
         dependsOn:
           - destroy_velero_bucket
         condition: ne(variables['NO_DESTROY'], 'true')
         steps:
+          - checkout: self
           - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1 qa
-            displayName: "Terraform Destroy (post)"
+            displayName: "Terraform destroy (post)"
 
       - job: destroy_shared
-        displayName: Destroy Public S3 bucket
+        displayName: Destroy shared resources
         container: prime
         dependsOn:
-          - destroy_eks_cluster
+          - destroy
         condition: ne(variables['NO_DESTROY'], 'true')
         steps:
+          - checkout: self
           - bash: ./src/qa-test-eks.sh destroy-public-bucket eu-west-1 _global/eks-public-s3-bucket
-            displayName: "Terraform Destroy Public S3 bucket (post)"
+            displayName: "Terraform destroy public S3 bucket (post)"
