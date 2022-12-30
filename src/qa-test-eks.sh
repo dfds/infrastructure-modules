@@ -92,8 +92,7 @@ if [ "$ACTION" = "test" ]; then
     export KUBECONFIG=$(terragrunt output --raw kubeconfig_path --terragrunt-working-dir "$WORKDIR")
 
     # Debugging
-    (cd "${BASEPATH}/suite" && exec pwd || true)
-    (cd "${BASEPATH}/suite" && exec go version || true)
+    go version
     (cd "${BASEPATH}/suite" && exec go env || true)
 
     # Run test suite
