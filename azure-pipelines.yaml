@@ -25,6 +25,11 @@ resources:
         TF_VAR_atlantis_github_token: $(TF_VAR_atlantis_github_token)
         TF_VAR_crossplane_provider_confluent_email: $(CROSSPLANE_PROVIDER_CONFLUENT_EMAIL)
         TF_VAR_crossplane_provider_confluent_password: $(CROSSPLANE_PROVIDER_CONFLUENT_PASSWORD)
+  repositories:
+    - repository: GitHubInfrastructureModulesRepo
+      type: github
+      endpoint: "dfds (2)"
+      name: dfds/infrastructure-modules
 
 # Define variable group to use
 variables:
@@ -42,7 +47,7 @@ stages:
         displayName: Provision shared resources from master branch
         container: prime
         steps:
-          - checkout: self@master
+          - checkout: GitHubInfrastructureModulesRepo@master
           - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
             displayName: "Provision public S3 bucket"
 
@@ -51,7 +56,7 @@ stages:
         container: prime
         dependsOn: init_shared
         steps:
-          - checkout: self@master
+          - checkout: GitHubInfrastructureModulesRepo@master
           - bash: ./src/qa-test-eks.sh cleanup-cluster eu-west-1 qa
             displayName: "Pre-apply cleanup"
             condition: eq(variables['PRE_CLEANUP'], 'true')
