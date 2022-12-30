@@ -66,7 +66,7 @@ stages:
             condition: always()
 
       - job: apply_shared
-        condition: ne($(Build.SourceBranchName), 'master')
+        condition: ne(variables['Build.SourceBranchName'], 'master')
         displayName: Apply shared resources from feature branch
         container: prime
         steps:
@@ -75,7 +75,7 @@ stages:
             displayName: "Provision public S3 bucket"
 
       - job: apply
-        condition: ne($(Build.SourceBranchName), 'master')
+        condition: ne(variables['Build.SourceBranchName'], 'master')
         displayName: Apply cluster & services from feature branch
         container: prime
         dependsOn: apply_shared
