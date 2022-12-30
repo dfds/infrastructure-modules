@@ -26,8 +26,6 @@ func NewK8sClientSet(t *testing.T) *kubernetes.Clientset {
 	return clientset
 }
 
-// TODO(emil): assertion that a resource with given label exists (eventually) with the specified status
-
 const (
 	defaultEventualTimeout time.Duration = 5 * time.Minute
 	defaultEventualPeriod  time.Duration = 5 * time.Second
@@ -35,29 +33,69 @@ const (
 
 func AssertDaemonSet(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberAvailable int) {
 	check := func() bool {
-		resp, err := clientset.AppsV1().DaemonSets(namespace).List(
-			context.Background(), metav1.ListOptions{
-				FieldSelector: "metadata.name=" + name,
-			})
+		resp, err := clientset.AppsV1().DaemonSets(namespace).Get(
+			context.Background(), name, metav1.GetOptions{})
 		if err != nil {
 			t.Log(err.Error())
 			return false
 		}
-		if len(resp.Items) != 1 {
-			t.Logf("expecting one resource to match the label, found %d\n", len(resp.Items))
-			return false
-		}
 
-		// Assertions on the daemonset state
-		ds := resp.Items[0]
-		if int(ds.Status.NumberAvailable) != numberAvailable {
-			t.Logf("expecting number available to be %d, found %d",
-				numberAvailable, ds.Status.NumberAvailable)
+		// Assertions
+		if int(resp.Status.NumberAvailable) != numberAvailable {
+			t.Logf("expecting number available pods to be %d, found %d",
+				numberAvailable, resp.Status.NumberAvailable)
 			return false
 		}
 		return true
 	}
+
 	assert.Eventuallyf(t, check, defaultEventualTimeout, defaultEventualPeriod,
 		"daemonset %q in namespace %q and %d available pods not found",
+		name, namespace, numberAvailable)
+}
+
+func AssertDeployment(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberAvailable int) {
+	check := func() bool {
+		resp, err := clientset.AppsV1().Deployments(namespace).Get(
+			context.Background(), name, metav1.GetOptions{})
+		if err != nil {
+			t.Log(err.Error())
+			return false
+		}
+
+		// Assertions
+		if int(resp.Status.AvailableReplicas) != numberAvailable {
+			t.Logf("expecting number of available replicas to be %d, found %d",
+				numberAvailable, resp.Status.AvailableReplicas)
+			return false
+		}
+		return true
+	}
+
+	assert.Eventuallyf(t, check, defaultEventualTimeout, defaultEventualPeriod,
+		"deployment %q in namespace %q and %d available replicas not found",
+		name, namespace, numberAvailable)
+}
+
+func AssertStatefulSet(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberAvailable int) {
+	check := func() bool {
+		resp, err := clientset.AppsV1().StatefulSets(namespace).Get(
+			context.Background(), name, metav1.GetOptions{})
+		if err != nil {
+			t.Log(err.Error())
+			return false
+		}
+
+		// Assertions
+		if int(resp.Status.AvailableReplicas) != numberAvailable {
+			t.Logf("expecting number of available replicas to be %d, found %d",
+				numberAvailable, resp.Status.AvailableReplicas)
+			return false
+		}
+		return true
+	}
+
+	assert.Eventuallyf(t, check, defaultEventualTimeout, defaultEventualPeriod,
+		"stateful set %q in namespace %q and %d available replicas not found",
 		name, namespace, numberAvailable)
 }
