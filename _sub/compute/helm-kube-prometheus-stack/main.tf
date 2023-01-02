@@ -33,12 +33,12 @@ resource "helm_release" "kube_prometheus_stack" {
     }),
 
     templatefile("${path.module}/values/grafana.yaml", {
-      grafana_admin_password  = var.grafana_admin_password != "" ? var.grafana_admin_password : random_password.grafana_password.result
-      grafana_priorityclass   = var.priority_class
-      grafana_ingress_path    = var.grafana_ingress_path
-      grafana_host            = var.grafana_host
-      grafana_root_url        = "https://%(domain)s${var.grafana_ingress_path}"
-      grafana_cloudwatch_role = var.grafana_iam_role_arn
+      grafana_admin_password      = var.grafana_admin_password != "" ? var.grafana_admin_password : random_password.grafana_password.result
+      grafana_priorityclass       = var.priority_class
+      grafana_ingress_path        = var.grafana_ingress_path
+      grafana_host                = var.grafana_host
+      grafana_root_url            = "https://%(domain)s${var.grafana_ingress_path}"
+      grafana_cloudwatch_role     = var.grafana_iam_role_arn
       grafana_serviceaccount_name = var.grafana_serviceaccount_name
     }),
 
@@ -91,22 +91,22 @@ resource "github_repository_file" "grafana_config_path" {
 }
 
 resource "github_repository_file" "grafana_config_middleware" {
-  repository  = var.repo_name
-  branch      = local.repo_branch
-  file        = "${local.config_repo_path}/middleware.yaml"
-  content     = jsonencode(local.grafana_config_middleware)
+  repository = var.repo_name
+  branch     = local.repo_branch
+  file       = "${local.config_repo_path}/middleware.yaml"
+  content    = jsonencode(local.grafana_config_middleware)
 }
 
 resource "github_repository_file" "grafana_config_ingressroute" {
-  repository  = var.repo_name
-  branch      = local.repo_branch
-  file        = "${local.config_repo_path}/ingressroute.yaml"
-  content     = jsonencode(local.grafana_config_ingressroute)
+  repository = var.repo_name
+  branch     = local.repo_branch
+  file       = "${local.config_repo_path}/ingressroute.yaml"
+  content    = jsonencode(local.grafana_config_ingressroute)
 }
 
 resource "github_repository_file" "grafana_config_init" {
-  repository  = var.repo_name
-  branch      = local.repo_branch
-  file        = "${local.config_repo_path}/kustomization.yaml"
-  content     = jsonencode(local.grafana_config_init)
+  repository = var.repo_name
+  branch     = local.repo_branch
+  file       = "${local.config_repo_path}/kustomization.yaml"
+  content    = jsonencode(local.grafana_config_init)
 }

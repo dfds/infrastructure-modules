@@ -6,7 +6,7 @@ resource "aws_s3_bucket" "bucket" {
   tags = {
     "Managed by" = "Terraform"
   }
- 
+
 }
 
 resource "aws_s3_bucket_policy" "bucketpolicy" {

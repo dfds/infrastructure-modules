@@ -124,11 +124,11 @@ variable "cluster_name" {
 }
 
 variable "slack_webhook_url" {
-  type = string
+  type        = string
   description = "Cloudwatch alarm notifier to Slack"
 }
 
 variable "monitoring_kube_prometheus_stack_slack_webhook" {
-  type = string
+  type        = string
   description = "Kube-prometheus-stack alert slack webhook"
 }

@@ -3,18 +3,18 @@ data "github_repository" "main" {
 }
 
 locals {
-  default_repo_branch                   = data.github_repository.main.default_branch
-  repo_branch                           = length(var.repo_branch) > 0 ? var.repo_branch : local.default_repo_branch
-  cluster_repo_path                     = "clusters/${var.cluster_name}"
-  helm_repo_path                        = "platform-apps/${var.cluster_name}/${var.deploy_name}/helm"
-  config_repo_path                      = "platform-apps/${var.cluster_name}/${var.deploy_name}/config"
-  app_install_name                      = "platform-apps-${var.deploy_name}"
+  default_repo_branch = data.github_repository.main.default_branch
+  repo_branch         = length(var.repo_branch) > 0 ? var.repo_branch : local.default_repo_branch
+  cluster_repo_path   = "clusters/${var.cluster_name}"
+  helm_repo_path      = "platform-apps/${var.cluster_name}/${var.deploy_name}/helm"
+  config_repo_path    = "platform-apps/${var.cluster_name}/${var.deploy_name}/config"
+  app_install_name    = "platform-apps-${var.deploy_name}"
 
   app_helm_path = {
     "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
-    "kind" = "Kustomization"
+    "kind"       = "Kustomization"
     "metadata" = {
-      "name" = "${local.app_install_name}-helm"
+      "name"      = "${local.app_install_name}-helm"
       "namespace" = "flux-system"
     }
     "spec" = {
@@ -28,7 +28,7 @@ locals {
         "kind" = "GitRepository"
         "name" = "flux-system"
       }
-      "path" = "./${local.helm_repo_path}"
+      "path"  = "./${local.helm_repo_path}"
       "prune" = true
     }
   }

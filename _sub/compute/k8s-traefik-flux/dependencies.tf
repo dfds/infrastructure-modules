@@ -3,16 +3,16 @@ data "github_repository" "main" {
 }
 
 locals {
-  default_repo_branch                   = data.github_repository.main.default_branch
-  repo_branch                           = length(var.repo_branch) > 0 ? var.repo_branch : local.default_repo_branch
-  cluster_repo_path                     = "clusters/${var.cluster_name}"
-  helm_repo_path                        = "platform-apps/${var.cluster_name}/${var.deploy_name}/helm"
-  config_repo_path                      = "platform-apps/${var.cluster_name}/${var.deploy_name}/config"
-  app_install_name                      = "platform-apps-${var.deploy_name}"
-  dashboard_name                        = "${var.deploy_name}-external-dashboard"
-  dashboard_basic_auth_data             = base64encode("${var.dashboard_username}:${htpasswd_password.hash[0].apr1}")
-  dashboard_basic_auth_secret_name      = "${local.dashboard_name}-basic-auth" #tfsec:ignore:general-secrets-sensitive-in-local
-  dashboard_basic_auth_middleware_name  = "${local.dashboard_name}-basic-auth"
+  default_repo_branch                  = data.github_repository.main.default_branch
+  repo_branch                          = length(var.repo_branch) > 0 ? var.repo_branch : local.default_repo_branch
+  cluster_repo_path                    = "clusters/${var.cluster_name}"
+  helm_repo_path                       = "platform-apps/${var.cluster_name}/${var.deploy_name}/helm"
+  config_repo_path                     = "platform-apps/${var.cluster_name}/${var.deploy_name}/config"
+  app_install_name                     = "platform-apps-${var.deploy_name}"
+  dashboard_name                       = "${var.deploy_name}-external-dashboard"
+  dashboard_basic_auth_data            = base64encode("${var.dashboard_username}:${htpasswd_password.hash[0].apr1}")
+  dashboard_basic_auth_secret_name     = "${local.dashboard_name}-basic-auth" #tfsec:ignore:general-secrets-sensitive-in-local
+  dashboard_basic_auth_middleware_name = "${local.dashboard_name}-basic-auth"
   dashboard_middlewares = [
     {
       "name"      = local.dashboard_basic_auth_middleware_name
@@ -24,9 +24,9 @@ locals {
 locals {
   app_helm_path = {
     "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
-    "kind" = "Kustomization"
+    "kind"       = "Kustomization"
     "metadata" = {
-      "name" = "${local.app_install_name}-helm"
+      "name"      = "${local.app_install_name}-helm"
       "namespace" = "flux-system"
     }
     "spec" = {
@@ -40,16 +40,16 @@ locals {
         "kind" = "GitRepository"
         "name" = "flux-system"
       }
-      "path" = "./${local.helm_repo_path}"
+      "path"  = "./${local.helm_repo_path}"
       "prune" = true
     }
   }
 
   app_config_path = {
     "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
-    "kind" = "Kustomization"
+    "kind"       = "Kustomization"
     "metadata" = {
-      "name" = "${local.app_install_name}-config"
+      "name"      = "${local.app_install_name}-config"
       "namespace" = "flux-system"
     }
     "spec" = {
@@ -63,7 +63,7 @@ locals {
         "kind" = "GitRepository"
         "name" = "flux-system"
       }
-      "path" = "./${local.config_repo_path}"
+      "path"  = "./${local.config_repo_path}"
       "prune" = true
     }
   }
@@ -111,7 +111,7 @@ locals {
 
   config_init = {
     "apiVersion" = "kustomize.config.k8s.io/v1beta1"
-    "kind" = "Kustomization"
+    "kind"       = "Kustomization"
     "resources" = [
       "ingressroute-dashboard.yaml",
       "secret-dashboard.yaml",
@@ -124,16 +124,16 @@ locals {
   # DNS aliases in var.traefik_alb_auth_core_alias in the service configuration.
   config_dashboard_ingressroute = {
     "apiVersion" = "traefik.containo.us/v1alpha1"
-    "kind" = "IngressRoute"
+    "kind"       = "IngressRoute"
     "metadata" = {
-      "name" = local.dashboard_name
+      "name"      = local.dashboard_name
       "namespace" = var.namespace
     }
     "spec" = {
       "entryPoints" = ["web"]
       "routes" = [
         {
-          "kind" = "Rule"
+          "kind"  = "Rule"
           "match" = "Host(`${var.dashboard_ingress_host}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
           "services" = [
             {
@@ -149,9 +149,9 @@ locals {
 
   config_dashboard_secret = {
     "apiVersion" = "v1"
-    "kind" = "Secret"
+    "kind"       = "Secret"
     "metadata" = {
-      "name" = local.dashboard_basic_auth_secret_name
+      "name"      = local.dashboard_basic_auth_secret_name
       "namespace" = var.namespace
     }
     "data" = {
@@ -161,9 +161,9 @@ locals {
 
   config_dashboard_middleware = {
     "apiVersion" = "traefik.containo.us/v1alpha1"
-    "kind" = "Middleware"
+    "kind"       = "Middleware"
     "metadata" = {
-      "name" = local.dashboard_basic_auth_middleware_name
+      "name"      = local.dashboard_basic_auth_middleware_name
       "namespace" = var.namespace
     }
     "spec" = {

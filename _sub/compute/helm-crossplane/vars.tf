@@ -36,7 +36,7 @@ variable "crossplane_providers" {
 variable "crossplane_admin_service_accounts" {
   type = list(object({
     serviceaccount = string
-    namespace = string
+    namespace      = string
   }))
   description = "List of service account objects that should have crossplane-admin access"
 }
@@ -44,7 +44,7 @@ variable "crossplane_admin_service_accounts" {
 variable "crossplane_edit_service_accounts" {
   type = list(object({
     serviceaccount = string
-    namespace = string
+    namespace      = string
   }))
   description = "List of service account objects that should have crossplane-edit access"
 }
@@ -52,7 +52,7 @@ variable "crossplane_edit_service_accounts" {
 variable "crossplane_view_service_accounts" {
   type = list(object({
     serviceaccount = string
-    namespace = string
+    namespace      = string
   }))
   description = "List of service account objects that should have crossplane-view access"
 }
@@ -63,7 +63,7 @@ variable "crossplane_metrics_enabled" {
 }
 
 variable "crossplane_aws_iam_role_name" {
-  type = string
+  type        = string
   description = "Name for the IAM role name to create for use by the AWS provider"
 }
 

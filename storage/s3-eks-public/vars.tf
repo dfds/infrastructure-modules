@@ -18,8 +18,8 @@ variable "eks_public_s3_bucket" {
 
 variable "enable_server_side_encryption" {
   description = "Enable server side encryption (SSE) on the S3 bucket"
-  type = bool
-  default = true
+  type        = bool
+  default     = true
 }
 
 # --------------------------------------------------
