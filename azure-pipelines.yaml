@@ -70,10 +70,6 @@ stages:
                 - bash: ./src/qa-test-eks.sh cleanup-cluster eu-west-1 qa
                   displayName: "Pre-apply cleanup"
                   condition: eq(variables['PRE_CLEANUP'], 'true')
-                # TODO(emil): Move this to the Docker image after code freeze
-                - bash: sudo apt-get update && sudo apt-get --yes install golang
-                  displayName: "Install Go"
-                  condition: always()
             deploy:
               steps:
                 - checkout: Origin
@@ -83,6 +79,10 @@ stages:
               success:
                 steps:
                   - checkout: Origin
+                  # TODO(emil): Move this to the Docker image after code freeze
+                  - bash: sudo apt-get update && sudo apt-get --yes install golang
+                    displayName: "Install Go"
+                    condition: always()
                   - bash: ./src/qa-test-eks.sh test eu-west-1 qa
                     displayName: "Run tests"
                     condition: always()
@@ -115,10 +115,6 @@ stages:
                 - bash: ./src/qa-test-eks.sh cleanup-cluster eu-west-1 qa
                   displayName: "Pre-apply cleanup"
                   condition: eq(variables['PRE_CLEANUP'], 'true')
-                # TODO(emil): Move this to the Docker image after code freeze
-                - bash: sudo apt-get update && sudo apt-get --yes install golang
-                  displayName: "Install Go"
-                  condition: always()
             deploy:
               steps:
                 - checkout: self
@@ -128,6 +124,10 @@ stages:
               success:
                 steps:
                   - checkout: self
+                  # TODO(emil): Move this to the Docker image after code freeze
+                  - bash: sudo apt-get update && sudo apt-get --yes install golang
+                    displayName: "Install Go"
+                    condition: always()
                   - bash: ./src/qa-test-eks.sh test eu-west-1 qa
                     displayName: "Run tests"
                     condition: always()
