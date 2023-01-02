@@ -101,11 +101,11 @@ stages:
             displayName: "Run tests"
             condition: always()
 
-      - job: init_shared_velero
-        displayName: Init EKS shared Velero
+      - job: init_velero
+        displayName: Init Velero S3 bucket
         container: prime
         dependsOn:
-          - init
+          - apply
         steps:
           - bash: ./src/qa-test-eks.sh cleanup-shared eu-west-1
             displayName: "Pre-apply cleanup"
@@ -113,21 +113,21 @@ stages:
           - bash: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
             displayName: "Provision Velero S3 bucket"
 
-      - job: destroy_velero_bucket
-        displayName: Destroy Velero S3 Bucket
+      - job: destroy_velero
+        displayName: Destroy Velero S3 bucket
         container: prime
         dependsOn:
-          - init_shared_velero
+          - init_velero
         condition: ne(variables['NO_DESTROY'], 'true')
         steps:
           - bash: ./src/qa-test-eks.sh destroy-velero-bucket eu-west-1 _global/s3-bucket-velero
-            displayName: "Terraform destroy Velero S3 Bucket (post)"
+            displayName: "Terraform destroy Velero S3 bucket (post)"
 
       - job: destroy
         displayName: Destroy cluster & services
         container: prime
         dependsOn:
-          - destroy_velero_bucket
+          - destroy_velero
         condition: ne(variables['NO_DESTROY'], 'true')
         steps:
           - checkout: self
