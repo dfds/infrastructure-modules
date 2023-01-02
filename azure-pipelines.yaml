@@ -75,17 +75,13 @@ stages:
                 - checkout: Origin
                 - bash: ./src/qa-test-eks.sh apply-cluster eu-west-1 qa
                   displayName: "Terraform apply"
-            on:
-              success:
-                steps:
-                  - checkout: Origin
-                  # TODO(emil): Move this to the Docker image after code freeze
-                  - bash: sudo apt-get update && sudo apt-get --yes install golang
-                    displayName: "Install Go"
-                    condition: always()
-                  - bash: ./src/qa-test-eks.sh test eu-west-1 qa
-                    displayName: "Run tests"
-                    condition: always()
+                # TODO(emil): Move this to the Docker image after code freeze
+                - bash: sudo apt-get update && sudo apt-get --yes install golang
+                  displayName: "Install Go"
+                  condition: always()
+                - bash: ./src/qa-test-eks.sh test eu-west-1 qa
+                  displayName: "Run tests"
+                  condition: always()
 
       - deployment: apply_shared
         condition: ne(variables['Build.SourceBranchName'], 'master')
@@ -120,17 +116,13 @@ stages:
                 - checkout: self
                 - bash: ./src/qa-test-eks.sh apply-cluster eu-west-1 qa
                   displayName: "Terraform apply"
-            on:
-              success:
-                steps:
-                  - checkout: self
-                  # TODO(emil): Move this to the Docker image after code freeze
-                  - bash: sudo apt-get update && sudo apt-get --yes install golang
-                    displayName: "Install Go"
-                    condition: always()
-                  - bash: ./src/qa-test-eks.sh test eu-west-1 qa
-                    displayName: "Run tests"
-                    condition: always()
+                # TODO(emil): Move this to the Docker image after code freeze
+                - bash: sudo apt-get update && sudo apt-get --yes install golang
+                  displayName: "Install Go"
+                  condition: always()
+                - bash: ./src/qa-test-eks.sh test eu-west-1 qa
+                  displayName: "Run tests"
+                  condition: always()
 
       - deployment: init_velero
         displayName: Init Velero S3 bucket
