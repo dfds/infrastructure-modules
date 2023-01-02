@@ -134,11 +134,13 @@ stages:
           runOnce:
             preDeploy:
               steps:
+                - checkout: self
                 - bash: ./src/qa-test-eks.sh cleanup-shared eu-west-1
                   displayName: "Pre-apply cleanup"
                   condition: eq(variables['PRE_CLEANUP'], 'true')
             deploy:
               steps:
+                - checkout: self
                 - bash: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
                   displayName: "Provision Velero S3 bucket"
 
@@ -153,6 +155,7 @@ stages:
           runOnce:
             deploy:
               steps:
+                - checkout: self
                 - bash: ./src/qa-test-eks.sh destroy-velero-bucket eu-west-1 _global/s3-bucket-velero
                   displayName: "Terraform destroy Velero S3 bucket (post)"
 
