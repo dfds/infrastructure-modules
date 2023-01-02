@@ -45,7 +45,10 @@ resource "aws_ssm_parameter" "param_atlantis_ui_auth" {
   name        = "/eks/${var.cluster_name}/${local.auth_secret_name}"
   description = "Password for accessing the Atlantis UI"
   type        = "SecureString"
-  value       = random_password.password.result
+  value       = jsonencode({
+    "Username" = var.auth_username
+    "Password" = random_password.password.result
+  })
   overwrite   = true
 }
 
