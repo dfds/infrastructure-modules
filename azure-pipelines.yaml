@@ -1,10 +1,18 @@
 name: $(Build.BuildId)
 
-# Triggers Pipeline only from schedule
-trigger: none
-pr: none
+# Triggers
+trigger:
+  - master
+
+pr:
+  autoCancel: false
+  drafts: false
+  branches:
+    include:
+      - "*"
 
 # Run a daily test at midnight
+# TODO(emil): this can be removed later
 schedules:
   - cron: "0 0 * * *"
     displayName: Daily midnight test
