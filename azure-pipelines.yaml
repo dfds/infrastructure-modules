@@ -36,6 +36,7 @@ resources:
 variables:
   - group: "Infrastructure-Modules QA"
 
+lockBehavior: runLatest
 stages:
   # Continuous Integration steps
   - stage: CI
