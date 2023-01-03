@@ -1,26 +1,36 @@
-resource "aws_launch_configuration" "eks" {
-  count                       = signum(var.desired_size_per_subnet)
-  associate_public_ip_address = true
-  iam_instance_profile        = var.iam_instance_profile
-  image_id                    = local.node_ami
-  instance_type               = element(var.instance_types, 0)
-  name_prefix                 = "eks-${var.cluster_name}-${var.nodegroup_name}-"
-  security_groups             = var.security_groups
-  user_data_base64            = var.cloudwatch_agent_enabled ? base64encode(local.worker-node-userdata-cw-agent) : base64encode(local.worker-node-userdata)
-  key_name                    = var.ec2_ssh_key
+resource "aws_launch_template" "eks" {
+  count = signum(var.desired_size_per_subnet)
+
+  image_id      = local.node_ami
+  instance_type = element(var.instance_types, 0)
+  name_prefix   = "eks-${var.cluster_name}-${var.nodegroup_name}-"
+  user_data     = var.cloudwatch_agent_enabled ? base64encode(local.worker-node-userdata-cw-agent) : base64encode(local.worker-node-userdata)
+  key_name      = var.ec2_ssh_key
+
+  network_interfaces {
+    associate_public_ip_address = true
+    security_groups             = var.security_groups
+  }
+
+  iam_instance_profile {
+    name = var.iam_instance_profile
+  }
 
   metadata_options {
     http_endpoint = "enabled"
     http_tokens   = "required"
   }
 
-  root_block_device {
-    volume_size = var.disk_size
-    volume_type = "gp2"
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size           = var.disk_size
+      volume_type           = "gp2"
+      delete_on_termination = true
+    }
   }
-
-  lifecycle {
-    create_before_destroy = true
+  monitoring {
+    enabled = true
   }
 }
 
@@ -40,7 +50,9 @@ locals {
 resource "aws_autoscaling_group" "eks" {
   count                = var.desired_size_per_subnet > 0 ? length(var.subnet_ids) : 0
   name                 = "eks-${var.cluster_name}-${var.nodegroup_name}_${data.aws_subnet.subnet[count.index].availability_zone}"
-  launch_configuration = try(aws_launch_configuration.eks[0].id, ["NA"])
+  launch_template {
+    id = try(aws_launch_template.eks[0].id, ["NA"])
+  }
   min_size             = local.asg_min_size
   max_size             = local.asg_max_size
   desired_capacity     = var.desired_size_per_subnet
