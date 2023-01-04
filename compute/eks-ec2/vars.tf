@@ -197,8 +197,8 @@ variable "blaster_configmap_bucket" {
 
 variable "blaster_configmap_bucket_tags" {
   description = "Add additional tags to s3 bucket"
-  type = map(string)
-  default = {}
+  type        = map(string)
+  default     = {}
 }
 
 # --------------------------------------------------

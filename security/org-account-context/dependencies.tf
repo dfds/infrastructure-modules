@@ -18,7 +18,7 @@ data "aws_iam_policy_document" "assume_role_adfs_shared" {
     actions = ["sts:AssumeRoleWithSAML"]
 
     principals {
-      type        = "Federated"
+      type = "Federated"
       identifiers = [
         "arn:aws:iam::${var.shared_account_id}:saml-provider/ADFS"
       ]

@@ -86,10 +86,10 @@ provider "azuread" {
 # --------------------------------------------------
 
 module "traefik_alb_s3_access_logs" {
-  source         = "../../_sub/storage/s3-bucket-lifecycle"
-  name           = local.alb_access_log_bucket_name
-  retention_days = var.traefik_alb_s3_access_logs_retiontion_days
-  policy         = local.alb_access_log_bucket_policy
+  source          = "../../_sub/storage/s3-bucket-lifecycle"
+  name            = local.alb_access_log_bucket_name
+  retention_days  = var.traefik_alb_s3_access_logs_retiontion_days
+  policy          = local.alb_access_log_bucket_policy
   additional_tags = var.s3_bucket_additional_tags
 }
 

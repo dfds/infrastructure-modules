@@ -14,12 +14,12 @@ variable "acl" {
 
 variable "enable_server_side_encryption" {
   description = "Enable server side encryption (SSE) on the S3 bucket"
-  type = bool
-  default = true
+  type        = bool
+  default     = true
 }
 
 variable "additional_tags" {
   description = "Add additional tags to s3 bucket"
-  type = map(any)
-  default = {}
+  type        = map(any)
+  default     = {}
 }

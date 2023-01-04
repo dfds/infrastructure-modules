@@ -12,8 +12,8 @@ provider "aws" {
 }
 
 module "bucket" {
-  source    = "../../_sub/storage/s3-bucket"
-  s3_bucket = var.bucket_name
+  source          = "../../_sub/storage/s3-bucket"
+  s3_bucket       = var.bucket_name
   additional_tags = var.additional_tags
 }
 

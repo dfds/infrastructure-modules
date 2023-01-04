@@ -3,12 +3,12 @@ variable "sns_topic_arn" {
 }
 
 variable "check_period" {
-  type = string
+  type    = string
   default = "60"
 }
 
 variable "check_threshold" {
-  type = string
+  type    = string
   default = "20"
 }
 
@@ -17,6 +17,6 @@ variable "alb_arn_suffixes" {
 }
 
 variable "deploy" {
-  type = bool
+  type    = bool
   default = true
 }

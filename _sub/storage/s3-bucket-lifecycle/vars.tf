@@ -21,6 +21,6 @@ variable "policy" {
 
 variable "additional_tags" {
   description = "Add additional tags to s3 bucket"
-  type = map(any)
-  default = {}
+  type        = map(any)
+  default     = {}
 }

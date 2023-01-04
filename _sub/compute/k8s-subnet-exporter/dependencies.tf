@@ -23,8 +23,8 @@ data "aws_iam_policy_document" "subnet_exporter_trust" {
     }
 
     condition {
-      test = "StringEquals"
-      values = ["system:serviceaccount:${var.namespace_name}:${local.serviceaccount_name}"]
+      test     = "StringEquals"
+      values   = ["system:serviceaccount:${var.namespace_name}:${local.serviceaccount_name}"]
       variable = "${var.oidc_issuer}:sub"
     }
 

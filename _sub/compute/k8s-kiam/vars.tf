@@ -91,7 +91,7 @@ variable "chart_version" {
   default     = null
 
   validation {
-    condition     = var.chart_version == null ? true : (
+    condition = var.chart_version == null ? true : (
       tonumber(element(split(".", var.chart_version), 0)) >= 6
     )
     error_message = "The KIAM Helm chart_version must be greater than 6.0.0."
@@ -99,13 +99,13 @@ variable "chart_version" {
 }
 
 variable "servicemonitor_enabled" {
-  type = bool
+  type        = bool
   description = "Deploy af Prometheus servicemonitor crd to enable metrics scraping"
-  default = false
+  default     = false
 }
 
 variable "strict_mode_disabled" {
-  type = bool
+  type        = bool
   description = "Disable default strict namespace regexp when matching roles"
-  default = false
+  default     = false
 }

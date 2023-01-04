@@ -7,7 +7,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = var.aws_region
+  region = var.aws_region
 }
 
 # --------------------------------------------------
@@ -15,9 +15,9 @@ provider "aws" {
 # --------------------------------------------------
 
 module "ecr_repository" {
-  source = "../../_sub/compute/ecr-repo"
-  names = var.names
-  scan_on_push = var.scan_on_push
+  source          = "../../_sub/compute/ecr-repo"
+  names           = var.names
+  scan_on_push    = var.scan_on_push
   pull_principals = var.pull_principals
 }
 

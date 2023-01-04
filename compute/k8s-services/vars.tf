@@ -363,8 +363,8 @@ variable "eks_is_sandbox" {
 
 variable "s3_bucket_additional_tags" {
   description = "Add additional tags to s3 bucket"
-  type = map(any)
-  default = {}
+  type        = map(any)
+  default     = {}
 }
 
 # --------------------------------------------------
