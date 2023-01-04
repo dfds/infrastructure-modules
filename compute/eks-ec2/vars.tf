@@ -111,6 +111,12 @@ variable "eks_public_s3_bucket" {
   default     = ""
 }
 
+variable "eks_k8s_auth_api_version" {
+  description = "The fully qualified version for the client authentication API."
+  type        = string
+  default     = "client.authentication.k8s.io/v1alpha1"
+}
+
 
 # --------------------------------------------------
 # EKS Nodegroup 1
