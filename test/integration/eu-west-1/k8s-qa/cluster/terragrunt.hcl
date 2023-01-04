@@ -32,8 +32,6 @@ inputs = {
   eks_nodegroup2_desired_size_per_subnet = 1
   eks_nodegroup2_kubelet_extra_args      = "--node-labels=nodegroup=ng2"
 
-  eks_k8s_auth_api_version = "client.authentication.k8s.io/v1beta"
-
   # --------------------------------------------------
   # Restore Blaster Configmap
   # --------------------------------------------------
