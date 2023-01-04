@@ -6,17 +6,10 @@ resource "aws_s3_bucket" "bucket" {
 
   tags = merge(
     var.additional_tags,
-    var.is_sandbox ? local.sandbox_tags : {},
     {
       "Managed by" = "Terraform"
     }
   )
-}
-
-locals {
-  sandbox_tags = {
-    "is_sandbox" = "true"
-  }
 }
 
 # tfsec:ignore:aws-s3-encryption-customer-key
