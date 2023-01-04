@@ -18,3 +18,9 @@ variable "policy" {
   type        = string
   description = "Bucket policy."
 }
+
+variable "additional_tags" {
+  description = "Add additional tags to s3 bucket"
+  type        = map(any)
+  default     = {}
+}

@@ -1,5 +1,5 @@
 provider "aws" {
-  region  = var.aws_region
+  region = var.aws_region
 
   # Assume role in Master account
   assume_role {
@@ -8,12 +8,12 @@ provider "aws" {
 }
 
 provider "aws" {
-  region  = var.aws_region
-  alias   = "core"
+  region = var.aws_region
+  alias  = "core"
 }
 
 provider "aws" {
-  region  = var.aws_region
+  region = var.aws_region
 
   # Need explicit credentials in Master, to be able to assume Organizational Role in Workload account
   access_key = var.access_key_master

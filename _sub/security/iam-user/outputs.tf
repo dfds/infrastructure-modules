@@ -7,7 +7,7 @@ output "access_key" {
 }
 
 output "secret_key" {
-  value     = var.create_aws_iam_access_key ? aws_iam_access_key.key[0].secret : "" 
+  value     = var.create_aws_iam_access_key ? aws_iam_access_key.key[0].secret : ""
   sensitive = true
 }
 

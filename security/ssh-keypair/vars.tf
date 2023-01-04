@@ -14,7 +14,7 @@ variable "keypairname" {
 }
 
 variable "deploy" {
-  type = bool
+  type    = bool
   default = true
 }
 

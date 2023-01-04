@@ -194,7 +194,7 @@ data "aws_iam_policy_document" "cloudengineer" {
   }
 
   statement {
-    sid = "CloudEngineerSSM"
+    sid    = "CloudEngineerSSM"
     effect = "Allow"
     actions = [
       "ssm:GetParameter"

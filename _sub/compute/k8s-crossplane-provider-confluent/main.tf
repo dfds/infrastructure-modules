@@ -1,5 +1,5 @@
 locals {
-  name      = "confluent-provider"
+  name = "confluent-provider"
 }
 
 resource "kubernetes_secret" "this" {
@@ -14,7 +14,7 @@ resource "kubernetes_secret" "this" {
 }
 
 resource "kubectl_manifest" "this" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 apiVersion: confluent.crossplane.io/v1alpha1
 kind: ProviderConfig
 metadata:

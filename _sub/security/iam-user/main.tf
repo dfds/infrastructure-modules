@@ -10,5 +10,5 @@ resource "aws_iam_user_policy" "policy" {
 
 resource "aws_iam_access_key" "key" {
   count = var.create_aws_iam_access_key ? 1 : 0
-  user = aws_iam_user.user.name
+  user  = aws_iam_user.user.name
 }

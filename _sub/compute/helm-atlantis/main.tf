@@ -174,7 +174,7 @@ resource "kubernetes_secret" "monitoring_kube_prometheus_stack" {
   }
 
   data = {
-    slack_webhook    = var.monitoring_kube_prometheus_stack_slack_webhook
+    slack_webhook = var.monitoring_kube_prometheus_stack_slack_webhook
   }
   depends_on = [kubernetes_namespace.namespace]
 }
@@ -186,7 +186,7 @@ resource "kubernetes_secret" "cloudwatch" {
   }
 
   data = {
-    cloudwatch_webhook    = var.slack_webhook_url
+    cloudwatch_webhook = var.slack_webhook_url
   }
   depends_on = [kubernetes_namespace.namespace]
 }

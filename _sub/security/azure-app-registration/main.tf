@@ -2,8 +2,8 @@ resource "azuread_application" "app" {
   display_name    = var.name
   identifier_uris = var.identifier_uris
   web {
-    homepage_url    = var.homepage_url
-    redirect_uris      = var.redirect_uris
+    homepage_url  = var.homepage_url
+    redirect_uris = var.redirect_uris
   }
 }
 
