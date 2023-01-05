@@ -1,11 +1,12 @@
 resource "aws_launch_template" "eks" {
   count = signum(var.desired_size_per_subnet)
 
-  image_id      = local.node_ami
-  instance_type = element(var.instance_types, 0)
-  name_prefix   = "eks-${var.cluster_name}-${var.nodegroup_name}-"
-  user_data     = var.cloudwatch_agent_enabled ? base64encode(local.worker-node-userdata-cw-agent) : base64encode(local.worker-node-userdata)
-  key_name      = var.ec2_ssh_key
+  image_id               = local.node_ami
+  instance_type          = element(var.instance_types, 0)
+  name_prefix            = "eks-${var.cluster_name}-${var.nodegroup_name}-"
+  user_data              = var.cloudwatch_agent_enabled ? base64encode(local.worker-node-userdata-cw-agent) : base64encode(local.worker-node-userdata)
+  key_name               = var.ec2_ssh_key
+  update_default_version = true
 
   network_interfaces {
     associate_public_ip_address = true
@@ -48,15 +49,15 @@ locals {
 
 
 resource "aws_autoscaling_group" "eks" {
-  count                = var.desired_size_per_subnet > 0 ? length(var.subnet_ids) : 0
-  name                 = "eks-${var.cluster_name}-${var.nodegroup_name}_${data.aws_subnet.subnet[count.index].availability_zone}"
+  count = var.desired_size_per_subnet > 0 ? length(var.subnet_ids) : 0
+  name  = "eks-${var.cluster_name}-${var.nodegroup_name}_${data.aws_subnet.subnet[count.index].availability_zone}"
   launch_template {
     id = try(aws_launch_template.eks[0].id, ["NA"])
   }
-  min_size             = local.asg_min_size
-  max_size             = local.asg_max_size
-  desired_capacity     = var.desired_size_per_subnet
-  vpc_zone_identifier  = toset([data.aws_subnet.subnet[count.index].id])
+  min_size            = local.asg_min_size
+  max_size            = local.asg_max_size
+  desired_capacity    = var.desired_size_per_subnet
+  vpc_zone_identifier = toset([data.aws_subnet.subnet[count.index].id])
 
   # The following can be set in case of the default health check are not sufficient
   #health_check_grace_period = 5
