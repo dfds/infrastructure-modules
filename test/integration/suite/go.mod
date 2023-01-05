@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/stretchr/testify v1.8.0
 	k8s.io/apimachinery v0.22.17
-	k8s.io/client-go v0.22.17
+	k8s.io/client-go/v12 v12.0.0
 )
 
 require (
