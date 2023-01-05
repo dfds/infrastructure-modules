@@ -19,8 +19,6 @@ locals {
                 "ce:Get*",
                 "ce:List*",
                 "cloudfront:*",
-                "cloudwatch:Get*",
-                "cloudwatch:List*",
                 "dynamoDB:DescribeTable",
                 "ecr:BatchGetImage",
                 "ecr:Describe*",
