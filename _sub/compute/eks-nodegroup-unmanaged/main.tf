@@ -53,7 +53,7 @@ resource "aws_autoscaling_group" "eks" {
   name  = "eks-${var.cluster_name}-${var.nodegroup_name}_${data.aws_subnet.subnet[count.index].availability_zone}"
   launch_template {
     id      = try(aws_launch_template.eks[0].id, ["NA"])
-    version = aws_launch_template.eks.latest_version
+    version = aws_launch_template.eks[0].latest_version
   }
   min_size            = local.asg_min_size
   max_size            = local.asg_max_size
