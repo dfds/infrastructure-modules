@@ -25,7 +25,7 @@ schedules:
 resources:
   containers:
     - container: prime
-      image: dfdsdk/prime-pipeline:0.6.15
+      image: dfdsdk/prime-pipeline:0.6.17
       env:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
