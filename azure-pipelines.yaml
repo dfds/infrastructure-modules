@@ -63,7 +63,7 @@ stages:
             deploy:
               steps:
                 - checkout: Nuke
-                - bash: /usr/local/bin/aws-nuke -c ./nuke-config.yaml --force --force-sleep 0 --no-dry-run
+                - bash: /usr/local/bin/aws-nuke -c ./nuke-config.yaml --force --force-sleep 5 --no-dry-run
                   displayName: "Nuke resources in QA account"
                   timeoutInMinutes: 60
 
