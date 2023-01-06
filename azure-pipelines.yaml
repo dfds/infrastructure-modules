@@ -11,16 +11,6 @@ pr:
     include:
       - "*"
 
-# Run a daily test at midnight
-# TODO(emil): this can be removed later
-schedules:
-  - cron: "0 0 * * *"
-    displayName: Daily midnight test
-    branches:
-      include:
-        - master
-    always: true
-
 # Define resources for container to use.
 resources:
   containers:
@@ -33,12 +23,22 @@ resources:
         TF_VAR_atlantis_github_token: $(TF_VAR_atlantis_github_token)
         TF_VAR_crossplane_provider_confluent_email: $(CROSSPLANE_PROVIDER_CONFLUENT_EMAIL)
         TF_VAR_crossplane_provider_confluent_password: $(CROSSPLANE_PROVIDER_CONFLUENT_PASSWORD)
+    - container: aws-nuke
+      image: dfdsdk/aws-nuke:0.0.7
+      env:
+        AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
   repositories:
     - repository: Origin
       type: github
       endpoint: "dfds (2)"
       name: dfds/infrastructure-modules
       ref: master
+    - repository: Nuke
+      type: github
+      endpoint: "dfds (2)"
+      name: dfds/qa-nuke-config
+      ref: main
 
 # Define variable group to use
 variables:
@@ -53,9 +53,24 @@ stages:
       vmImage: "ubuntu-latest"
 
     jobs:
+      - deployment: nuke_account
+        displayName: Nuke QA account
+        container: aws-nuke
+        condition: eq(variables['NUKE_QA'], 'true')
+        environment: QA
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: Nuke
+                - bash: /usr/local/bin/aws-nuke -c ./nuke-config.yaml --force --force-sleep 0 --no-dry-run
+                  displayName: "Nuke resources in QA account"
+
       - deployment: init_shared
         displayName: Provision shared resources from master branch
         container: prime
+        dependsOn:
+          - nuke_account
         environment: QA
         strategy:
           runOnce:
