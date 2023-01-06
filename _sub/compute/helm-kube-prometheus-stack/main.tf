@@ -11,6 +11,14 @@ resource "aws_ssm_parameter" "param_grafana_password" {
   overwrite   = true
 }
 
+resource "aws_ssm_parameter" "param_grafana_username" {
+  name        = "/eks/${var.cluster_name}/${helm_release.kube_prometheus_stack.name}-grafana-username"
+  description = "Username for accessing the Grafana dashboard"
+  type        = "String"
+  value       = "admin"
+  overwrite   = true
+}
+
 resource "helm_release" "kube_prometheus_stack" {
   name          = "monitoring"
   chart         = "kube-prometheus-stack"
