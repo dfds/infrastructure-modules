@@ -36,6 +36,12 @@ variable "ssm_param_createdby" {
   default     = null
 }
 
+variable "s3_bucket_additional_tags" {
+  description = "Add additional tags to s3 bucket"
+  type        = map(any)
+  default     = {}
+}
+
 # --------------------------------------------------
 # EKS
 # --------------------------------------------------
