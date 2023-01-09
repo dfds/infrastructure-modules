@@ -52,7 +52,7 @@ variable "helm_chart_version" {
 }
 
 variable "additional_args" {
-  type        = list
+  type        = list(any)
   description = "Pass arguments to the additionalArguments node in the Traefik Helm chart"
   default     = ["--metrics.prometheus"]
 }

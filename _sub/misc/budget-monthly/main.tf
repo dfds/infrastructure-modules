@@ -2,7 +2,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = "eu-central-1"
+  region = "eu-central-1"
 }
 
 variable "sns_topic_arn" {

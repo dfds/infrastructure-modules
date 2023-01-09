@@ -192,6 +192,15 @@ data "aws_iam_policy_document" "cloudengineer" {
       "arn:aws:s3:::/test/*"
     ]
   }
+
+  statement {
+    sid    = "CloudEngineerSSM"
+    effect = "Allow"
+    actions = [
+      "ssm:GetParameter"
+    ]
+    resources = ["*"]
+  }
 }
 
 # Auditor

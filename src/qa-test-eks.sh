@@ -89,46 +89,14 @@ if [ "$ACTION" = "test" ]; then
     REGION=$2
     CLUSTERNAME=$3
     WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}/cluster"
-    export KUBECONFIG=$(terragrunt output kubeconfig_path --terragrunt-working-dir "$WORKDIR")
+    export KUBECONFIG=$(terragrunt output --raw kubeconfig_path --terragrunt-working-dir "$WORKDIR")
 
-    # Sleep before test?
+    # Debugging
+    go version
+    (cd "${BASEPATH}/suite" && exec go env || true)
 
-    # --------------------------------------------------
-    # Simply output certain resources for manual inspection
-    # --------------------------------------------------
-
-    # AWS EBS CSI driver
-    echo -e "\nAWS EBS CSI snapshot controller statefulset:\n"
-    kubectl -n kube-system get statefulset -l app.kubernetes.io/name=aws-ebs-csi-driver -o wide || true
-    echo -e "\nAWS EBS CSI controller deloyment:\n"
-    kubectl -n kube-system get deployment -l app.kubernetes.io/name=aws-ebs-csi-driver -o wide || true
-    echo -e "\nAWS EBS CSI node daemonset:\n"
-    kubectl -n kube-system get ds -l app.kubernetes.io/name=aws-ebs-csi-driver || true
-
-    # Flux
-    echo -e "\nFlux deployments:\n"
-    kubectl -n flux-system get deploy || true
-
-    # FluentD
-    echo -e "\nFluentD daemonset:\n"
-    kubectl -n fluentd get ds fluentd-cloudwatch || true
-
-    # Crossplane
-    echo -e "\nCrossplane Providers:\n"
-    kubectl get provider.pkg || true
-
-    # Atlantis
-    echo -e "\nAtlantis:\n"
-    kubectl -n atlantis get all || true
-
-    # Daemonset exists
-    # kubectl --kubeconfig $KUBECONFIG -n fluentd get ds -o name | grep fluentd-cloudwatch
-    # if [ $? -ne 0 ]; then
-    #     echo "Daemonset 'fluentd-cloudwatch' not found"
-    # fi
-
-    # Verify number of available pods?
-
+    # Run test suite
+    (cd "${BASEPATH}/suite" && exec go test -v)
 fi
 
 

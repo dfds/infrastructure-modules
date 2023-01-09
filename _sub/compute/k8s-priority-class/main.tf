@@ -4,7 +4,7 @@ resource "kubernetes_priority_class" "class" {
     name = var.priority_class[count.index].name
   }
 
-  description = var.priority_class[count.index].description
-  value       = var.priority_class[count.index].priority
-  global_default = try(var.priority_class[count.index].default, false) 
+  description    = var.priority_class[count.index].description
+  value          = var.priority_class[count.index].priority
+  global_default = try(var.priority_class[count.index].default, false)
 }

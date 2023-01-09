@@ -30,12 +30,12 @@ terraform {
 
     github = {
       source  = "integrations/github"
-      version = "~> 5.12.0"
+      version = "~> 5.13.0"
     }
 
     flux = {
       source  = "fluxcd/flux"
-      version = "~> 0.21.0"
+      version = "~> 0.22.0"
     }
 
     random = {

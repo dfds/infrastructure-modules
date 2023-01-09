@@ -26,10 +26,6 @@ validate.json
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-### Go Patch ###
-/vendor/
-/Godeps/
-
 # Certificates
 *.pem
 *.cer
@@ -43,11 +39,6 @@ validate.json
 *.cer
 *.csr
 *.b64
-
-# Golang
-*.sum
-*.mod
-_sub/monitoring/alarm-notifier/lambda/main
 
 #Intellij
 .idea

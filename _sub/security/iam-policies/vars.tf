@@ -6,8 +6,8 @@ variable "iam_role_trusted_account_root_arn" {
 
 variable "replace_token" {
   description = "The name of the token to replace in policies, e.g. a capability root id"
-  type = string
-  default = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  type        = string
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
 

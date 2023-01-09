@@ -33,34 +33,34 @@ resource "github_repository_file" "traefik_config_path" {
 }
 
 resource "github_repository_file" "traefik_config_dashboard_ingressroute" {
-  count       = var.dashboard_deploy ? 1 : 0
-  repository  = var.repo_name
-  branch      = local.repo_branch
-  file        = "${local.config_repo_path}/ingressroute-dashboard.yaml"
-  content     = jsonencode(local.config_dashboard_ingressroute)
+  count      = var.dashboard_deploy ? 1 : 0
+  repository = var.repo_name
+  branch     = local.repo_branch
+  file       = "${local.config_repo_path}/ingressroute-dashboard.yaml"
+  content    = jsonencode(local.config_dashboard_ingressroute)
 }
 
 resource "github_repository_file" "traefik_config_dashboard_secret" {
-  count       = var.dashboard_deploy ? 1 : 0
-  repository  = var.repo_name
-  branch      = local.repo_branch
-  file        = "${local.config_repo_path}/secret-dashboard.yaml"
-  content     = jsonencode(local.config_dashboard_secret)
+  count      = var.dashboard_deploy ? 1 : 0
+  repository = var.repo_name
+  branch     = local.repo_branch
+  file       = "${local.config_repo_path}/secret-dashboard.yaml"
+  content    = jsonencode(local.config_dashboard_secret)
 }
 
 resource "github_repository_file" "traefik_config_dashboard_middleware" {
-  count       = var.dashboard_deploy ? 1 : 0
-  repository  = var.repo_name
-  branch      = local.repo_branch
-  file        = "${local.config_repo_path}/middleware-dashboard.yaml"
-  content     = jsonencode(local.config_dashboard_middleware)
+  count      = var.dashboard_deploy ? 1 : 0
+  repository = var.repo_name
+  branch     = local.repo_branch
+  file       = "${local.config_repo_path}/middleware-dashboard.yaml"
+  content    = jsonencode(local.config_dashboard_middleware)
 }
 
 resource "github_repository_file" "traefik_config_init" {
-  repository  = var.repo_name
-  branch      = local.repo_branch
-  file        = "${local.config_repo_path}/kustomization.yaml"
-  content     = jsonencode(local.config_init)
+  repository = var.repo_name
+  branch     = local.repo_branch
+  file       = "${local.config_repo_path}/kustomization.yaml"
+  content    = jsonencode(local.config_init)
 }
 
 # --------------------------------------------------
@@ -86,9 +86,14 @@ resource "htpasswd_password" "hash" {
 resource "aws_ssm_parameter" "param_traefik_dashboard" {
   count           = var.dashboard_deploy ? 1 : 0
   name            = "/eks/${var.cluster_name}/traefik-dashboard"
-  description     = "Password for accessing the Traefik dashboard"
+  description     = "Credentials for accessing the Traefik dashboard"
   type            = "SecureString"
-  value           = random_password.password[0].result
+  value           = jsonencode(
+    {
+      "Username" = var.dashboard_username
+      "Password" = random_password.password[0].result
+    }
+  )
   overwrite       = true
   tags = {
     createdBy = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-traefik-flux"

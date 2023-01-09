@@ -41,30 +41,30 @@ locals {
 
   config_map_confluent_environments = {
     "apiVersion" = "v1"
-    "kind" = "ConfigMap"
+    "kind"       = "ConfigMap"
     "metadata" = {
-      "name" =  "confluent-environment-id"
+      "name"      = "confluent-environment-id"
       "namespace" = "${var.namespace}"
     }
     "data" = "${var.confluent_environments}"
   }
 
   config_map_confluent_clusters = {
-    "apiVersion" =  "v1"
-    "kind" = "ConfigMap"
+    "apiVersion" = "v1"
+    "kind"       = "ConfigMap"
     "metadata" = {
-      "name" =  "confluent-cluster-id"
-    "namespace" = "${var.namespace}"
+      "name"      = "confluent-cluster-id"
+      "namespace" = "${var.namespace}"
     }
     "data" = "${var.confluent_clusters}"
   }
 
   config_map_confluent_clusters_endpoints = {
-    "apiVersion" =  "v1"
-    "kind" = "ConfigMap"
+    "apiVersion" = "v1"
+    "kind"       = "ConfigMap"
     "metadata" = {
-      "name" =  "confluent-clusters-endpoints"
-    "namespace" = "${var.namespace}"
+      "name"      = "confluent-clusters-endpoints"
+      "namespace" = "${var.namespace}"
     }
     "data" = "${var.confluent_clusters_endpoints}"
   }

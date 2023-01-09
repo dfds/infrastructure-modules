@@ -52,3 +52,9 @@ variable "oidc_provider_url" {
   default     = null
   description = "The OIDC provider URL. Only supply this if Velero S3 bucket and EKS cluster exist in the DIFFERENT accounts"
 }
+
+variable "additional_tags" {
+  description = "Add additional tags to s3 bucket"
+  type        = map(any)
+  default     = {}
+}

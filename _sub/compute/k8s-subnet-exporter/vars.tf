@@ -4,7 +4,7 @@ variable "aws_account_id" {
 }
 
 variable "aws_region" {
-  type = string
+  type        = string
   description = "Used to filter subnets by AWS region"
 }
 
@@ -18,11 +18,11 @@ variable "oidc_issuer" {
 }
 
 variable "namespace_name" {
-  type = string
+  type        = string
   description = "K8s namespace for deployment/iam policy"
 }
 
 variable "image_tag" {
-  type = string
+  type        = string
   description = "K8s subnet-exporter image tag"
 }

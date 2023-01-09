@@ -36,13 +36,3 @@ data "kubernetes_secret" "deploy-token" {
     namespace = kubernetes_service_account.deploy-user.metadata[0].namespace
   }
 }
-
-data "template_file" "kubeconfig_token" {
-  template = file("${path.module}/kubeconfig-token.yaml")
-  vars = {
-    cluster_name = var.cluster_name
-    endpoint     = var.eks_endpoint
-    ca           = var.eks_certificate_authority
-    token        = data.kubernetes_secret.deploy-token.data.token
-  }
-}

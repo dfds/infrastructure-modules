@@ -1,9 +1,9 @@
 terraform {
   required_version = "~> 1.0"
-    required_providers {
+  required_providers {
 
     kubernetes = {
-      source  = "hashicorp/kubernetes"
+      source = "hashicorp/kubernetes"
     }
 
     kubectl = {

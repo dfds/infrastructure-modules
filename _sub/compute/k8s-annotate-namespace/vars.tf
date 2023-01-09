@@ -10,7 +10,7 @@ variable "namespace" {
 }
 
 variable "annotations" {
-  type        = map
+  type        = map(any)
   description = "One or more annotations that should be added to the namespace."
   default     = {}
 }
