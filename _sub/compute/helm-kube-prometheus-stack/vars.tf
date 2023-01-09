@@ -1,6 +1,6 @@
 variable "cluster_name" {
   type        = string
-  description = "Used to set the trust relationship with the correct cluster's kiam-server role"
+  description = "Used to name created items such as stored password in SSM parameter store and flux paths"
 }
 
 variable "chart_version" {
