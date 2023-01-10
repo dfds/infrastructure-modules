@@ -13,6 +13,7 @@ locals {
     "1.20" = "v1.11.2-eksbuild.1"
     "1.21" = "v1.11.2-eksbuild.1"
     "1.22" = "v1.11.4-eksbuild.1"
+    "1.23" = "v1.12.0-eksbuild.1"
   }
 
   coredns_version_map = {
@@ -20,6 +21,7 @@ locals {
     "1.20" = "v1.8.3-eksbuild.1"
     "1.21" = "v1.8.4-eksbuild.1"
     "1.22" = "v1.8.7-eksbuild.1"
+    "1.23" = "v1.8.7-eksbuild.3"
   }
 
   kubeproxy_version_map = {
@@ -27,11 +29,12 @@ locals {
     "1.20" = "v1.20.4-eksbuild.2"
     "1.21" = "v1.21.2-eksbuild.2"
     "1.22" = "v1.22.11-eksbuild.2"
+    "1.23" = "v1.23.8-eksbuild.2"
   }
 
   awsebscsidriver_version_map = {
     "1.22" = "v1.11.4-eksbuild.1"
-    "1.23" = "v1.11.4-eksbuild.1"
+    "1.23" = "v1.14.0-eksbuild.1"
   }
 }
 
