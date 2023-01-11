@@ -180,6 +180,20 @@ data "aws_iam_policy_document" "capability_access_shared" {
   }
 }
 
+# SsoReader
+data "aws_iam_policy_document" "ssoreader" {
+  statement {
+    sid    = "SsoReaderTf"
+    effect = "Allow"
+    actions = [
+      "iam:ListRoles"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+}
+
 # CloudEngineer
 data "aws_iam_policy_document" "cloudengineer" {
   statement {

@@ -2,6 +2,10 @@ output "admin" {
   value = data.aws_iam_policy_document.admin.json
 }
 
+output "ssoreader" {
+  value = data.aws_iam_policy_document.ssoreader.json
+}
+
 output "push_to_ecr" {
   value = data.aws_iam_policy_document.push_to_ecr.json
 }
