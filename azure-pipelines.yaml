@@ -21,7 +21,7 @@ schedules:
         - master
     always: true
 
-# Define resources for container to use
+# Define resources for container to use.
 resources:
   containers:
     - container: prime
