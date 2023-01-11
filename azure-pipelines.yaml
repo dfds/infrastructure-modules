@@ -127,9 +127,6 @@ stages:
         environment: QA
         strategy:
           runOnce:
-            preDeploy:
-              steps:
-                - checkout: self
             deploy:
               steps:
                 - checkout: self
