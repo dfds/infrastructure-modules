@@ -67,11 +67,12 @@ stages:
                   displayName: "Nuke resources in QA account"
                   timeoutInMinutes: 60
 
-      - deployment: init_shared
-        displayName: Provision shared resources from master branch
+      - deployment: init
+        displayName: Provision from master branch
         container: prime
         dependsOn:
           - nuke_account
+        condition: or(succeeded(), ne(variables['NUKE_QA'], 'true'))
         environment: QA
         strategy:
           runOnce:
@@ -79,92 +80,68 @@ stages:
               steps:
                 - checkout: Origin
                 - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
-                  displayName: "Provision public S3 bucket"
+                  displayName: "Provision shared resources"
                   timeoutInMinutes: 15
-
-      - deployment: init
-        displayName: Provision cluster & services from master branch
-        container: prime
-        dependsOn: init_shared
-        environment: QA
-        strategy:
-          runOnce:
-            preDeploy:
-              steps:
-                - checkout: Origin
                 - bash: ./src/qa-test-eks.sh cleanup-cluster eu-west-1 qa
                   displayName: "Pre-apply cleanup"
-                  condition: eq(variables['PRE_CLEANUP'], 'true')
-            deploy:
-              steps:
-                - checkout: Origin
+                  condition: and(succeeded(), eq(variables['PRE_CLEANUP'], 'true'))
+                  timeoutInMinutes: 15
                 - bash: ./src/qa-test-eks.sh apply-cluster eu-west-1 qa
                   displayName: "Terraform apply"
                   timeoutInMinutes: 60
                 - bash: ./src/qa-test-eks.sh test eu-west-1 qa
                   displayName: "Run tests"
-
-      - deployment: apply_shared
-        condition: ne(variables['Build.SourceBranchName'], 'master')
-        displayName: Apply shared resources from feature branch
-        container: prime
-        dependsOn: init
-        environment: QA
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - checkout: self
-                - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
-                  displayName: "Provision public S3 bucket"
                   timeoutInMinutes: 15
 
       - deployment: apply
-        condition: ne(variables['Build.SourceBranchName'], 'master')
-        displayName: Apply cluster & services from feature branch
+        displayName: Apply from feature branch
         container: prime
-        dependsOn: apply_shared
+        dependsOn: init
+        condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'master'))
         environment: QA
         strategy:
           runOnce:
-            preDeploy:
-              steps:
-                - checkout: self
-                - bash: ./src/qa-test-eks.sh cleanup-cluster eu-west-1 qa
-                  displayName: "Pre-apply cleanup"
-                  condition: eq(variables['PRE_CLEANUP'], 'true')
             deploy:
               steps:
                 - checkout: self
+                - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
+                  displayName: "Provision public S3 bucket"
+                  timeoutInMinutes: 15
+                - bash: ./src/qa-test-eks.sh cleanup-cluster eu-west-1 qa
+                  displayName: "Pre-apply cleanup"
+                  condition: and(succeeded(), eq(variables['PRE_CLEANUP'], 'true'))
+                  timeoutInMinutes: 15
                 - bash: ./src/qa-test-eks.sh apply-cluster eu-west-1 qa
                   displayName: "Terraform apply"
                   timeoutInMinutes: 60
                 - bash: ./src/qa-test-eks.sh test eu-west-1 qa
                   displayName: "Run tests"
+                  timeoutInMinutes: 15
 
       - deployment: init_velero
         displayName: Init Velero S3 bucket
         container: prime
         dependsOn:
           - apply
+        condition: succeeded()
         environment: QA
         strategy:
           runOnce:
             preDeploy:
               steps:
                 - checkout: self
-                - bash: ./src/qa-test-eks.sh cleanup-shared eu-west-1
-                  displayName: "Pre-apply cleanup"
-                  condition: eq(variables['PRE_CLEANUP'], 'true')
             deploy:
               steps:
                 - checkout: self
+                - bash: ./src/qa-test-eks.sh cleanup-shared eu-west-1
+                  displayName: "Pre-apply cleanup"
+                  condition: eq(variables['PRE_CLEANUP'], 'true')
                 - bash: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
                   displayName: "Provision Velero S3 bucket"
                   timeoutInMinutes: 15
 
-      - deployment: destroy_velero
-        displayName: Destroy Velero S3 bucket
+      - deployment: destroy
+        displayName: Destroy resources
         container: prime
         dependsOn:
           - init_velero
@@ -176,37 +153,14 @@ stages:
               steps:
                 - checkout: self
                 - bash: ./src/qa-test-eks.sh destroy-velero-bucket eu-west-1 _global/s3-bucket-velero
-                  displayName: "Terraform destroy Velero S3 bucket (post)"
+                  displayName: "Terraform destroy Velero S3 bucket"
+                  condition: succeededOrFailed()
                   timeoutInMinutes: 30
-
-      - deployment: destroy
-        displayName: Destroy cluster & services
-        container: prime
-        dependsOn:
-          - destroy_velero
-        condition: ne(variables['NO_DESTROY'], 'true')
-        environment: QA
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - checkout: self
                 - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1 qa
-                  displayName: "Terraform destroy (post)"
+                  displayName: "Terraform destroy cluster & services"
+                  condition: succeededOrFailed()
                   timeoutInMinutes: 60
-
-      - deployment: destroy_shared
-        displayName: Destroy shared resources
-        container: prime
-        dependsOn:
-          - destroy
-        condition: ne(variables['NO_DESTROY'], 'true')
-        environment: QA
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - checkout: self
                 - bash: ./src/qa-test-eks.sh destroy-public-bucket eu-west-1 _global/eks-public-s3-bucket
-                  displayName: "Terraform destroy public S3 bucket (post)"
+                  displayName: "Terraform destroy shared resources"
+                  condition: succeededOrFailed()
                   timeoutInMinutes: 30
