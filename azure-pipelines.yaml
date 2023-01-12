@@ -45,11 +45,11 @@ variables:
   - group: "Infrastructure-Modules QA"
 
 lockBehavior: sequential
+pool:
+  vmImage: "ubuntu-latest"
 stages:
   - stage: nuke
     displayName: "Nuke QA Account"
-    pool:
-      vmImage: "ubuntu-latest"
     condition: eq(variables['NUKE_QA'], 'true')
     jobs:
       - deployment: nuke_account
@@ -67,8 +67,6 @@ stages:
 
   - stage: test
     displayName: "Testing"
-    pool:
-      vmImage: "ubuntu-latest"
     condition: or(succeeded(), ne(variables['NUKE_QA'], 'true'))
     jobs:
       - deployment: init
@@ -133,14 +131,11 @@ stages:
 
   - stage: destroy
     displayName: "Destruction"
-    pool:
-      vmImage: "ubuntu-latest"
-    condition: succeededOrFailed()
+    condition: ne(variables['NO_DESTROY'], 'true')
     jobs:
       - deployment: destroy
         displayName: Destroy resources
         container: prime
-        condition: ne(variables['NO_DESTROY'], 'true')
         environment: QA
         strategy:
           runOnce:
