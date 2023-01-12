@@ -46,12 +46,10 @@ variables:
 
 lockBehavior: sequential
 stages:
-  # Continuous Integration steps
-  - stage: CI
-    displayName: "Continuous Integration"
+  - stage: nuke
+    displayName: "Nuke QA Account"
     pool:
       vmImage: "ubuntu-latest"
-
     jobs:
       - deployment: nuke_account
         displayName: Nuke QA account
@@ -67,27 +65,35 @@ stages:
                   displayName: "Nuke resources in QA account"
                   timeoutInMinutes: 60
 
+  - stage: test
+    displayName: "Testing"
+    pool:
+      vmImage: "ubuntu-latest"
+    jobs:
       - deployment: init
         displayName: Provision from master branch
         container: prime
-        dependsOn:
-          - nuke_account
-        condition: or(succeeded(), ne(variables['NUKE_QA'], 'true'))
         environment: QA
         strategy:
           runOnce:
             deploy:
               steps:
                 - checkout: Origin
-                - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
-                  displayName: "Provision shared resources"
-                  timeoutInMinutes: 15
                 - bash: ./src/qa-test-eks.sh cleanup-cluster eu-west-1 qa
                   displayName: "Pre-apply cleanup"
                   condition: and(succeeded(), eq(variables['PRE_CLEANUP'], 'true'))
                   timeoutInMinutes: 15
+                - bash: ./src/qa-test-eks.sh cleanup-shared eu-west-1
+                  displayName: "Pre-apply cleanup shared"
+                  condition: and(succeeded(), eq(variables['PRE_CLEANUP'], 'true'))
+                - bash: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
+                  displayName: "Provision Velero S3 bucket"
+                  timeoutInMinutes: 15
+                - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
+                  displayName: "Provision shared EKS S3 bucket"
+                  timeoutInMinutes: 15
                 - bash: ./src/qa-test-eks.sh apply-cluster eu-west-1 qa
-                  displayName: "Terraform apply"
+                  displayName: "Provision cluster & services"
                   timeoutInMinutes: 60
                 - bash: ./src/qa-test-eks.sh test eu-west-1 qa
                   displayName: "Run tests"
@@ -104,44 +110,34 @@ stages:
             deploy:
               steps:
                 - checkout: self
-                - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
-                  displayName: "Provision public S3 bucket"
-                  timeoutInMinutes: 15
                 - bash: ./src/qa-test-eks.sh cleanup-cluster eu-west-1 qa
                   displayName: "Pre-apply cleanup"
                   condition: and(succeeded(), eq(variables['PRE_CLEANUP'], 'true'))
                   timeoutInMinutes: 15
+                - bash: ./src/qa-test-eks.sh cleanup-shared eu-west-1
+                  displayName: "Pre-apply cleanup shared"
+                  condition: and(succeeded(), eq(variables['PRE_CLEANUP'], 'true'))
+                - bash: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
+                  displayName: "Provision Velero S3 bucket"
+                  timeoutInMinutes: 15
+                - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
+                  displayName: "Provision shared EKS S3 bucket"
+                  timeoutInMinutes: 15
                 - bash: ./src/qa-test-eks.sh apply-cluster eu-west-1 qa
-                  displayName: "Terraform apply"
+                  displayName: "Provision cluster & services"
                   timeoutInMinutes: 60
                 - bash: ./src/qa-test-eks.sh test eu-west-1 qa
                   displayName: "Run tests"
                   timeoutInMinutes: 15
 
-      - deployment: init_velero
-        displayName: Init Velero S3 bucket
-        container: prime
-        dependsOn:
-          - apply
-        condition: succeeded()
-        environment: QA
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - checkout: self
-                - bash: ./src/qa-test-eks.sh cleanup-shared eu-west-1
-                  displayName: "Pre-apply cleanup"
-                  condition: eq(variables['PRE_CLEANUP'], 'true')
-                - bash: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
-                  displayName: "Provision Velero S3 bucket"
-                  timeoutInMinutes: 15
-
+  - stage: destroy
+    displayName: "Destruction"
+    pool:
+      vmImage: "ubuntu-latest"
+    jobs:
       - deployment: destroy
         displayName: Destroy resources
         container: prime
-        dependsOn:
-          - init_velero
         condition: ne(variables['NO_DESTROY'], 'true')
         environment: QA
         strategy:
