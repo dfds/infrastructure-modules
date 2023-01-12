@@ -135,7 +135,7 @@ stages:
     displayName: "Destruction"
     pool:
       vmImage: "ubuntu-latest"
-    condition: succededOrFailed()
+    condition: succeededOrFailed()
     jobs:
       - deployment: destroy
         displayName: Destroy resources
