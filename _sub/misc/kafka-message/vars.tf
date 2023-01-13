@@ -42,3 +42,7 @@ variable "publish" {
   default = true
 }
 
+variable "kafka_cli" {
+  type    = string
+  default = "kcat"
+}

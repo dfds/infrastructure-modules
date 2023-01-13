@@ -18,6 +18,6 @@ resource "null_resource" "message" {
   }
 
   provisioner "local-exec" {
-    command = "if [ \"${var.publish}\" = \"true\" ]; then echo '${var.key}:${local.message_json}' | kafkacat -P -b ${var.broker} -t ${var.topic} -K: -X security.protocol=SASL_SSL -X sasl.mechanisms=PLAIN -X sasl.username=${var.username} -X sasl.password=${var.password} -X api.version.request=true -X ssl.ca.location=/etc/ssl/certs/ca-certificates.crt; fi"
+    command = "if [ \"${var.publish}\" = \"true\" ]; then echo '${var.key}:${local.message_json}' | ${var.kafka_cli} -P -b ${var.broker} -t ${var.topic} -K: -X security.protocol=SASL_SSL -X sasl.mechanisms=PLAIN -X sasl.username=${var.username} -X sasl.password=${var.password} -X api.version.request=true -X ssl.ca.location=/etc/ssl/certs/ca-certificates.crt; fi"
   }
 }
