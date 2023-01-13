@@ -134,7 +134,7 @@ stages:
   - stage: destroy
     lockBehavior: sequential
     displayName: "Destruction"
-    condition: ne(variables['NO_DESTROY'], 'true')
+    condition: and(succeededOrFailed(), ne(variables['NO_DESTROY'], 'true'))
     jobs:
       - deployment: destroy
         displayName: Destroy resources
