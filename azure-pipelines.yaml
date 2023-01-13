@@ -52,9 +52,29 @@ stages:
     displayName: "Nuke QA Account"
     condition: eq(variables['NUKE_QA'], 'true')
     jobs:
+      - deployment: destroy
+        displayName: Destroy resources
+        container: prime
+        environment: QA
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: origin
+                - bash: ./src/qa-test-eks.sh destroy-velero-bucket eu-west-1 _global/s3-bucket-velero
+                  displayName: "Terraform destroy Velero S3 bucket"
+                  timeoutInMinutes: 30
+                - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1 qa
+                  displayName: "Terraform destroy cluster & services"
+                  timeoutInMinutes: 60
+                - bash: ./src/qa-test-eks.sh destroy-public-bucket eu-west-1 _global/eks-public-s3-bucket
+                  displayName: "Terraform destroy shared resources"
+                  timeoutInMinutes: 30
+
       - deployment: nuke_account
-        displayName: Nuke QA account
+        displayName: Nuke QA's AWS account
         container: aws-nuke
+        dependsOn: destroy
         environment: QA
         strategy:
           runOnce:
