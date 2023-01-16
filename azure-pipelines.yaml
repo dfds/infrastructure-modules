@@ -23,6 +23,10 @@ resources:
         TF_VAR_atlantis_github_token: $(TF_VAR_atlantis_github_token)
         TF_VAR_crossplane_provider_confluent_email: $(CROSSPLANE_PROVIDER_CONFLUENT_EMAIL)
         TF_VAR_crossplane_provider_confluent_password: $(CROSSPLANE_PROVIDER_CONFLUENT_PASSWORD)
+    - container: powershell_devex_container
+      image: dfdsdk/powershell-devex:0.8.2
+      env:
+        AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
     - container: aws-nuke
       image: dfdsdk/aws-nuke:0.0.7
       env:
@@ -34,6 +38,11 @@ resources:
       endpoint: "dfds (2)"
       name: dfds/infrastructure-modules
       ref: master
+    - repository: Rollover
+      type: github
+      endpoint: "dfds (2)"
+      name: dfds/node-rollover
+      ref: main
     - repository: Nuke
       type: github
       endpoint: "dfds (2)"
@@ -116,10 +125,27 @@ stages:
                   displayName: "Run tests"
                   timeoutInMinutes: 15
 
+      - deployment: rollover # TODO work on these steps here
+        timeoutInMinutes: 15
+        container: powershell_devex_container
+        dependsOn: init
+        environment: QA
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: Rollover
+                - task: PowerShell@2
+                  inputs:
+                    targetType: filePath
+                    filePath: "asg_k8s_rollover.ps1"
+                    arguments: "-ClusterName qa -AwsRegion eu-west-1 -KubeParameterRegion eu-west-1"
+                    pwsh: true
+
       - deployment: apply
         displayName: Apply from feature branch
         container: prime
-        dependsOn: init
+        dependsOn: rollover
         condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'master'))
         environment: QA
         strategy:
