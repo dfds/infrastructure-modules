@@ -78,6 +78,7 @@ stages:
         displayName: Nuke QA's AWS account
         container: aws-nuke
         dependsOn: destroy
+        condition: succeededOrFailed()
         environment: QA
         strategy:
           runOnce:
@@ -86,7 +87,6 @@ stages:
                 - checkout: Nuke
                 - bash: /usr/local/bin/aws-nuke -c ./nuke-config.yaml --force --force-sleep 5 --no-dry-run
                   displayName: "Nuke resources in QA account"
-                  condition: succeededOrFailed()
                   timeoutInMinutes: 60
 
   - stage: test
