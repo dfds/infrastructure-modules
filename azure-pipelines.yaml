@@ -122,6 +122,7 @@ stages:
           runOnce:
             deploy:
               steps:
+                - checkout: self
                 - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
                   displayName: "Provision shared EKS S3 bucket"
                   timeoutInMinutes: 15
