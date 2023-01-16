@@ -87,7 +87,8 @@ stages:
 
   - stage: test
     displayName: "Testing"
-    condition: or(succeeded(), ne(variables['NUKE_QA'], 'true'))
+    dependsOn: nuke
+    condition: or(succeeded('nuke'), ne(variables['NUKE_QA'], 'true'))
     jobs:
       - deployment: init
         displayName: Provision from master branch
