@@ -144,7 +144,7 @@ stages:
         displayName: Destroy resources
         container: prime
         dependsOn: apply
-        condition: and(succeededOrFailed(), ne(variables['NO_DESTROY'], 'true'))
+        condition: and(succeededOrFailed(), eq(variables['TEST_DESTROY'], 'true'))
         environment: QA
         strategy:
           runOnce:
