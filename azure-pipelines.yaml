@@ -63,12 +63,15 @@ stages:
                 - checkout: origin
                 - bash: ./src/qa-test-eks.sh destroy-velero-bucket eu-west-1 _global/s3-bucket-velero
                   displayName: "Terraform destroy Velero S3 bucket"
+                  condition: succeededOrFailed()
                   timeoutInMinutes: 30
                 - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1 qa
                   displayName: "Terraform destroy cluster & services"
+                  condition: succeededOrFailed()
                   timeoutInMinutes: 60
                 - bash: ./src/qa-test-eks.sh destroy-public-bucket eu-west-1 _global/eks-public-s3-bucket
                   displayName: "Terraform destroy shared resources"
+                  condition: succeededOrFailed()
                   timeoutInMinutes: 30
 
       - deployment: nuke_account
@@ -83,6 +86,7 @@ stages:
                 - checkout: Nuke
                 - bash: /usr/local/bin/aws-nuke -c ./nuke-config.yaml --force --force-sleep 5 --no-dry-run
                   displayName: "Nuke resources in QA account"
+                  condition: succeededOrFailed()
                   timeoutInMinutes: 60
 
   - stage: test
