@@ -134,7 +134,7 @@ stages:
       - deployment: apply
         displayName: Apply from feature branch
         container: prime
-        dependsOn: rollover
+        dependsOn: init
         condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'master'))
         environment: QA
         strategy:
