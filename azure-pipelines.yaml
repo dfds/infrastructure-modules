@@ -111,6 +111,16 @@ stages:
                   path: source
                 - checkout: Rollover
                   path: rollover
+                - bash: |
+                    echo "##vso[task.setvariable variable=gocache]$(go env GOCACHE)"
+                  displayName: Determine Go build cache path
+                - task: Cache@2
+                  inputs:
+                    key: 'go | "$(Agent.OS)" | **/go.sum'
+                    restoreKeys: |
+                      'go | "$(Agent.OS)"'
+                    path: $(gocache)
+                  displayName: Restore Go build cache
                 - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
                   workingDirectory: $(Agent.BuildDirectory)/source
                   displayName: "Provision shared EKS S3 bucket"
@@ -150,6 +160,16 @@ stages:
                   path: source
                 - checkout: Rollover
                   path: rollover
+                - bash: |
+                    echo "##vso[task.setvariable variable=gocache]$(go env GOCACHE)"
+                  displayName: Determine Go build cache path
+                - task: Cache@2
+                  inputs:
+                    key: 'go | "$(Agent.OS)" | **/go.sum'
+                    restoreKeys: |
+                      'go | "$(Agent.OS)"'
+                    path: $(gocache)
+                  displayName: Restore Go build cache
                 - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
                   workingDirectory: $(Agent.BuildDirectory)/source
                   displayName: "Provision shared EKS S3 bucket"
