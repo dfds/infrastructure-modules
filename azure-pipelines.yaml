@@ -122,6 +122,7 @@ stages:
                   timeoutInMinutes: 15
                 - task: PowerShell@2
                   displayName: "Rollover nodes"
+                  timeoutInMinutes: 15
                   inputs:
                     targetType: filePath
                     filePath: "rollover/asg_k8s_rollover.ps1"
@@ -156,6 +157,7 @@ stages:
                   timeoutInMinutes: 15
                 - task: PowerShell@2
                   displayName: "Rollover nodes"
+                  timeoutInMinutes: 15
                   inputs:
                     targetType: filePath
                     filePath: "rollover/asg_k8s_rollover.ps1"
