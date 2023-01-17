@@ -111,13 +111,13 @@ stages:
                   path: source
                 - checkout: Rollover
                   path: rollover
-                - bash: ./source/src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
+                - bash: $(Agent.BuildDirectory)/source/src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
                   displayName: "Provision shared EKS S3 bucket"
                   timeoutInMinutes: 15
-                - bash: ./source/src/qa-test-eks.sh apply-cluster eu-west-1 qa
+                - bash: $(Agent.BuildDirectory)/source/src/qa-test-eks.sh apply-cluster eu-west-1 qa
                   displayName: "Provision cluster & services"
                   timeoutInMinutes: 60
-                - bash: ./source/src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
+                - bash: $(Agent.BuildDirectory)/source/src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
                   displayName: "Provision Velero S3 bucket"
                   timeoutInMinutes: 15
                 - task: PowerShell@2
@@ -125,10 +125,10 @@ stages:
                   timeoutInMinutes: 15
                   inputs:
                     targetType: filePath
-                    filePath: "rollover/asg_k8s_rollover.ps1"
+                    filePath: $(Agent.BuildDirectory)/rollover/asg_k8s_rollover.ps1
                     arguments: "-ClusterName qa -AwsRegion eu-west-1 -KubeParameterRegion eu-west-1"
                     pwsh: true
-                - bash: ./source/src/qa-test-eks.sh test eu-west-1 qa
+                - bash: $(Agent.BuildDirectory)/source/src/qa-test-eks.sh test eu-west-1 qa
                   displayName: "Run tests"
                   timeoutInMinutes: 15
 
@@ -146,13 +146,13 @@ stages:
                   path: source
                 - checkout: Rollover
                   path: rollover
-                - bash: ./source/src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
+                - bash: $(Agent.BuildDirectory)/source/src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
                   displayName: "Provision shared EKS S3 bucket"
                   timeoutInMinutes: 15
-                - bash: ./source/src/qa-test-eks.sh apply-cluster eu-west-1 qa
+                - bash: $(Agent.BuildDirectory)/source/src/qa-test-eks.sh apply-cluster eu-west-1 qa
                   displayName: "Provision cluster & services"
                   timeoutInMinutes: 60
-                - bash: ./source/src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
+                - bash: $(Agent.BuildDirectory)/source/src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
                   displayName: "Provision Velero S3 bucket"
                   timeoutInMinutes: 15
                 - task: PowerShell@2
@@ -160,10 +160,10 @@ stages:
                   timeoutInMinutes: 15
                   inputs:
                     targetType: filePath
-                    filePath: "rollover/asg_k8s_rollover.ps1"
+                    filePath: $(Agent.BuildDirectory)/rollover/asg_k8s_rollover.ps1
                     arguments: "-ClusterName qa -AwsRegion eu-west-1 -KubeParameterRegion eu-west-1"
                     pwsh: true
-                - bash: ./source/src/qa-test-eks.sh test eu-west-1 qa
+                - bash: $(Agent.BuildDirectory)/source/src/qa-test-eks.sh test eu-west-1 qa
                   displayName: "Run tests"
                   timeoutInMinutes: 15
 
