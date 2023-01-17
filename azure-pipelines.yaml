@@ -116,7 +116,7 @@ stages:
                   displayName: Determine Go build cache path
                 - task: Cache@2
                   inputs:
-                    key: 'go | "$(Agent.OS)" | "$(Agent.BuildDirectory)/source/test/integration/suite/go.sum"'
+                    key: 'go | "$(Agent.OS)" | $(Agent.BuildDirectory)/source/test/integration/suite/go.sum'
                     restoreKeys: |
                       'go | "$(Agent.OS)"'
                     path: $(gocache)
@@ -165,7 +165,7 @@ stages:
                   displayName: Determine Go build cache path
                 - task: Cache@2
                   inputs:
-                    key: 'go | "$(Agent.OS)" | "$(Agent.BuildDirectory)/source/test/integration/suite/go.sum"'
+                    key: 'go | "$(Agent.OS)" | $(Agent.BuildDirectory)/source/test/integration/suite/go.sum'
                     restoreKeys: |
                       'go | "$(Agent.OS)"'
                     path: $(gocache)
