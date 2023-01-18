@@ -99,7 +99,7 @@ stages:
     dependsOn: nuke
     condition: or(succeededOrFailed('nuke'), ne(variables['NUKE_QA'], 'true'))
     jobs:
-      - job: test_master
+      - job: build_test_master
         displayName: Build test binary from master branch
         container: prime
         steps:
@@ -119,7 +119,7 @@ stages:
               pathToPublish: $(Build.ArtifactStagingDirectory)/test-master.bin
               artifactName: test-master
 
-      - job: test_feature
+      - job: build_test_feature
         displayName: Build test binary from feature branch
         condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'master'))
         container: prime
@@ -143,6 +143,8 @@ stages:
       - deployment: init
         displayName: Provision from master branch
         container: prime
+        dependsOn: build_test_master
+        condition: succeeded()
         environment: QA
         strategy:
           runOnce:
@@ -189,7 +191,9 @@ stages:
       - deployment: apply
         displayName: Apply from feature branch
         container: prime
-        dependsOn: init
+        dependsOn:
+          - init
+          - build_test_feature
         condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'master'))
         environment: QA
         strategy:
