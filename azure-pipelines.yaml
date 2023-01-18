@@ -182,6 +182,9 @@ stages:
                     filePath: $(Agent.BuildDirectory)/rollover/asg_k8s_rollover.ps1
                     arguments: "-ClusterName qa -AwsRegion eu-west-1 -KubeParameterRegion eu-west-1"
                     pwsh: true
+                - download: current
+                  display: "Download test binary"
+                  artifact: test-master
                 - bash: ./src/qa-test-eks.sh test-run eu-west-1 qa ./test-master/test-master.bin
                   workingDirectory: $(System.ArtifactsDirectory)
                   displayName: "Run tests"
@@ -223,6 +226,9 @@ stages:
                     filePath: $(Agent.BuildDirectory)/rollover/asg_k8s_rollover.ps1
                     arguments: "-ClusterName qa -AwsRegion eu-west-1 -KubeParameterRegion eu-west-1"
                     pwsh: true
+                - download: current
+                  display: "Download test binary"
+                  artifact: test-feature
                 - bash: ./src/qa-test-eks.sh test-run eu-west-1 qa ./test-feature/test-feature.bin
                   workingDirectory: $(System.ArtifactsDirectory)
                   displayName: "Run tests"
