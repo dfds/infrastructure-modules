@@ -132,8 +132,8 @@ stages:
             displayName: Determine Go build cache path
           - task: Cache@2
             inputs:
-              key: '"go" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum'
-              restoreKeys: '"go" | "$(Agent.OS)"'
+              key: '"build" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum'
+              restoreKeys: '"build" | "$(Agent.OS)"'
               path: $(gocache)
             displayName: Restore Go build cache
           - bash: ./src/qa-test-eks.sh test-build eu-west-1 qa $(Build.ArtifactStagingDirectory)/test-feature.bin
@@ -141,7 +141,7 @@ stages:
             timeoutInMinutes: 15
           - bash: ls -alh $(gocache) && echo $(gocache)
             displayName: "Debug Go build cache"
-          - bash: ls -alh $(go env GOCACHE) && $(go env GOCACHE)
+          - bash: ls -alh $(go env GOCACHE) && echo $(go env GOCACHE)
             displayName: "Debug Go build cache (2)"
           - bash: ls -alh /home/vsts_azpcontainer/.cache/go-build
             displayName: "Debug Go build cache (3)"
