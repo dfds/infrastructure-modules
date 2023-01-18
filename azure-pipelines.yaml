@@ -116,7 +116,7 @@ stages:
             fetchTags: false
           - task: Cache@2
             inputs:
-              key: '"go" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum'
+              key: '"go" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum | $(Build.Repository.LocalPath)/src/qa-test-eks.sh'
               restoreKeys: '"go" | "$(Agent.OS)"'
               path: $(GO_CACHE_DIR)
             displayName: Restore Go build cache
@@ -142,7 +142,7 @@ stages:
             fetchTags: false
           - task: Cache@2
             inputs:
-              key: '"go" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum'
+              key: '"go" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum | $(Build.Repository.LocalPath)/src/qa-test-eks.sh'
               restoreKeys: '"go" | "$(Agent.OS)"'
               path: $(GO_CACHE_DIR)
             displayName: Restore Go build cache
