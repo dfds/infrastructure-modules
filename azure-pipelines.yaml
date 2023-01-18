@@ -158,6 +158,7 @@ stages:
             inputs:
               pathToPublish: $(Build.ArtifactStagingDirectory)/test-feature.bin
               artifactName: test-feature
+
       - deployment: init
         displayName: Provision from master branch
         container: prime
@@ -168,7 +169,7 @@ stages:
           runOnce:
             deploy:
               steps:
-                - checkout: Origin
+                - checkout: self # TODO switch to Origin before merge
                   fetchDepth: 1
                   fetchTags: false
                   path: source
@@ -199,7 +200,7 @@ stages:
                 - download: current
                   displayName: "Download test binary"
                   artifact: test-master
-                - bash: ./src/qa-test-eks.sh test-run eu-west-1 qa $(System.ArtifactsDirectory)/test-master/test-master.bin
+                - bash: ./src/qa-test-eks.sh test-run eu-west-1 qa $(Pipeline.Workspace)/test-master/test-master.bin
                   workingDirectory: $(Agent.BuildDirectory)/source
                   displayName: "Run tests"
                   timeoutInMinutes: 15
@@ -247,7 +248,7 @@ stages:
                 - download: current
                   displayName: "Download test binary"
                   artifact: test-feature
-                - bash: ./src/qa-test-eks.sh test-run eu-west-1 qa $(System.ArtifactsDirectory)/test-feature/test-feature.bin
+                - bash: ./src/qa-test-eks.sh test-run eu-west-1 qa $(Pipeline.Workspace)/test-feature/test-feature.bin
                   workingDirectory: $(Agent.BuildDirectory)/source
                   displayName: "Run tests"
                   timeoutInMinutes: 15
