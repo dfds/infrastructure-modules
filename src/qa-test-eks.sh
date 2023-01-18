@@ -57,6 +57,12 @@ if [ "$ACTION" = "test-run" ]; then
     # Debugging
     stat $TEST_BINARY_PATH
 
+    # Make executable
+    chmod o+x $TEST_BINARY_PATH
+
+    # Debugging
+    stat $TEST_BINARY_PATH
+
     # Run test suite
     exec $TEST_BINARY_PATH
 fi
