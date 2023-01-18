@@ -132,6 +132,8 @@ stages:
           - bash: |
               echo "##vso[task.setvariable variable=gocache]$(go env GOCACHE)"
             displayName: Determine Go build cache path
+            env:
+              GOCACHE: $(GO_CACHE_DIR)
           - task: Cache@2
             inputs:
               key: '"go" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum'
@@ -139,16 +141,18 @@ stages:
               path: $(GO_CACHE_DIR)
             displayName: Restore Go build cache
           - bash: ./src/qa-test-eks.sh test-build eu-west-1 qa $(Build.ArtifactStagingDirectory)/test-feature.bin
+            env:
+              GOCACHE: $(GO_CACHE_DIR)
             displayName: "Build test binary"
             timeoutInMinutes: 15
           - bash: ls -alh $(gocache) && echo $(gocache)
             displayName: "Debug Go build cache"
           - bash: ls -alh $(go env GOCACHE) && echo $(go env GOCACHE)
+            env:
+              GOCACHE: $(GO_CACHE_DIR)
             displayName: "Debug Go build cache (2)"
-          - bash: ls -alh /home/vsts_azpcontainer/.cache/go-build
+          - bash: ls -alh $(GO_CACHE_DIR) && echo $(GO_CACHE_DIR)
             displayName: "Debug Go build cache (3)"
-          - bash: ls -alh $(GO_CACHE_DIR) && echo $(go env GO_CACHE_DIR)
-            displayName: "Debug Go build cache (4)"
           - task: PublishBuildArtifacts@1
             inputs:
               pathToPublish: $(Build.ArtifactStagingDirectory)/test-feature.bin
