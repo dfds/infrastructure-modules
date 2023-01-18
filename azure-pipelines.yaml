@@ -119,8 +119,8 @@ stages:
             displayName: Determine Go build cache path
           - task: Cache@2
             inputs:
-              key: '"go" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum'
-              restoreKeys: '"go" | "$(Agent.OS)"'
+              key: '"go-master" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum'
+              restoreKeys: '"go-master" | "$(Agent.OS)"'
               path: $(GO_CACHE_DIR)
             displayName: Restore Go build cache
           - bash: ./src/qa-test-eks.sh test-build eu-west-1 qa $(Build.ArtifactStagingDirectory)/test-master.bin
@@ -145,8 +145,8 @@ stages:
             fetchTags: false
           - task: Cache@2
             inputs:
-              key: '"go" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum'
-              restoreKeys: '"go" | "$(Agent.OS)"'
+              key: '"go-feature" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum'
+              restoreKeys: '"go-feature" | "$(Agent.OS)"'
               path: $(GO_CACHE_DIR)
             displayName: Restore Go build cache
           - bash: ./src/qa-test-eks.sh test-build eu-west-1 qa $(Build.ArtifactStagingDirectory)/test-feature.bin
