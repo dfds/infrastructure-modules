@@ -128,7 +128,7 @@ stages:
         steps:
           - checkout: self
           - bash: |
-              echo "##vso[task.setvariable variable=gocache]$(go env GOCACHE)"
+              echo "##vso[task.setvariable variable=gocache]$(go env GOCACHE)/trim.txt"
             displayName: Determine Go build cache path
           - task: Cache@2
             inputs:
