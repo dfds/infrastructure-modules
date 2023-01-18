@@ -102,7 +102,7 @@ stages:
       - job: test_master
         displayName: Build test binary from master branch
         container: prime
-        tasks:
+        steps:
           - checkout: Origin
           - task: Cache@2
             inputs:
@@ -123,7 +123,7 @@ stages:
         displayName: Build test binary from feature branch
         condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'master'))
         container: prime
-        tasks:
+        steps:
           - checkout: self
           - task: Cache@2
             inputs:
