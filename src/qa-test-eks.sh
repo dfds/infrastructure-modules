@@ -23,20 +23,32 @@ if [ "$ACTION" = "apply-cluster" ]; then
     terragrunt run-all apply --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
 fi
 
-
-if [ "$ACTION" = "test" ]; then
+if [ "$ACTION" = "test-build" ]; then
     # Get kubeconfig path
     REGION=$2
     CLUSTERNAME=$3
     WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}/cluster"
     export KUBECONFIG=$(terragrunt output --raw kubeconfig_path --terragrunt-working-dir "$WORKDIR")
+    TEST_BINARY_PATH=$4
 
     # Debugging
     go version
     (cd "${BASEPATH}/suite" && exec go env || true)
 
     # Run test suite
-    (cd "${BASEPATH}/suite" && exec go test -v)
+    (cd "${BASEPATH}/suite" && exec go test -c -v -vet=off -o $TEST_BINARY_PATH)
+fi
+
+
+if [ "$ACTION" = "test-run" ]; then
+    # Get kubeconfig path
+    REGION=$2
+    CLUSTERNAME=$3
+    WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}/cluster"
+    export KUBECONFIG=$(terragrunt output --raw kubeconfig_path --terragrunt-working-dir "$WORKDIR")
+    TEST_BINARY_PATH=$4
+
+    exec $TEST_BINARY_PATH
 fi
 
 
