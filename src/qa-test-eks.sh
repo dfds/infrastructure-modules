@@ -37,12 +37,6 @@ if [ "$ACTION" = "test-build" ]; then
 
     # Build test suite
     (cd "${BASEPATH}/suite" && exec go test -c -v -vet=off -o $TEST_BINARY_PATH)
-
-    # Make executable
-    chmod a+x $TEST_BINARY_PATH
-
-    # Debugging
-    stat $TEST_BINARY_PATH
 fi
 
 
@@ -54,17 +48,11 @@ if [ "$ACTION" = "test-run" ]; then
     export KUBECONFIG=$(terragrunt output --raw kubeconfig_path --terragrunt-working-dir "$WORKDIR")
     TEST_BINARY_PATH=$4
 
-    # Debugging
-    stat $TEST_BINARY_PATH
-
     # Make executable
     chmod a+x $TEST_BINARY_PATH
 
-    # Debugging
-    stat $TEST_BINARY_PATH
-
     # Run test suite
-    exec $TEST_BINARY_PATH
+    exec $TEST_BINARY_PATH -v
 fi
 
 
