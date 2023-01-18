@@ -114,9 +114,6 @@ stages:
           - checkout: self # TODO switch to Origin before merge
             fetchDepth: 1
             fetchTags: false
-          - bash: |
-              echo "##vso[task.setvariable variable=gocache]$(go env GOCACHE)"
-            displayName: Determine Go build cache path
           - task: Cache@2
             inputs:
               key: '"go-master" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum'
