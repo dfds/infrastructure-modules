@@ -66,6 +66,8 @@ stages:
             deploy:
               steps:
                 - checkout: origin
+                  fetchDepth: 1
+                  fetchTags: false
                 - bash: ./src/qa-test-eks.sh destroy-velero-bucket eu-west-1 _global/s3-bucket-velero
                   displayName: "Terraform destroy Velero S3 bucket"
                   condition: succeededOrFailed()
@@ -90,6 +92,8 @@ stages:
             deploy:
               steps:
                 - checkout: Nuke
+                  fetchDepth: 1
+                  fetchTags: false
                 - bash: /usr/local/bin/aws-nuke -c ./nuke-config.yaml --force --force-sleep 5 --no-dry-run
                   displayName: "Nuke resources in QA account"
                   timeoutInMinutes: 60
@@ -106,6 +110,8 @@ stages:
           GO_CACHE_DIR: $(Pipeline.Workspace)/.cache/go-build/
         steps:
           - checkout: self # TODO switch to Origin before merge
+            fetchDepth: 1
+            fetchTags: false
           - bash: |
               echo "##vso[task.setvariable variable=gocache]$(go env GOCACHE)"
             displayName: Determine Go build cache path
@@ -133,6 +139,8 @@ stages:
           GO_CACHE_DIR: $(Pipeline.Workspace)/.cache/go-build/
         steps:
           - checkout: self
+            fetchDepth: 1
+            fetchTags: false
           - task: Cache@2
             inputs:
               key: '"go" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum'
@@ -159,8 +167,12 @@ stages:
             deploy:
               steps:
                 - checkout: Origin
+                  fetchDepth: 1
+                  fetchTags: false
                   path: source
                 - checkout: Rollover
+                  fetchDepth: 1
+                  fetchTags: false
                   path: rollover
                 - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
                   workingDirectory: $(Agent.BuildDirectory)/source
@@ -203,8 +215,12 @@ stages:
             deploy:
               steps:
                 - checkout: self
+                  fetchDepth: 1
+                  fetchTags: false
                   path: source
                 - checkout: Rollover
+                  fetchDepth: 1
+                  fetchTags: false
                   path: rollover
                 - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
                   workingDirectory: $(Agent.BuildDirectory)/source
@@ -245,6 +261,8 @@ stages:
             deploy:
               steps:
                 - checkout: self
+                  fetchDepth: 1
+                  fetchTags: false
                 - bash: ./src/qa-test-eks.sh destroy-velero-bucket eu-west-1 _global/s3-bucket-velero
                   displayName: "Terraform destroy Velero S3 bucket"
                   condition: succeededOrFailed()
