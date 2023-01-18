@@ -183,7 +183,7 @@ stages:
                     arguments: "-ClusterName qa -AwsRegion eu-west-1 -KubeParameterRegion eu-west-1"
                     pwsh: true
                 - download: current
-                  display: "Download test binary"
+                  displayName: "Download test binary"
                   artifact: test-master
                 - bash: ./src/qa-test-eks.sh test-run eu-west-1 qa $(System.ArtifactsDirectory)/test-master/test-master.bin
                   workingDirectory: $(Agent.BuildDirectory)/source
@@ -227,7 +227,7 @@ stages:
                     arguments: "-ClusterName qa -AwsRegion eu-west-1 -KubeParameterRegion eu-west-1"
                     pwsh: true
                 - download: current
-                  display: "Download test binary"
+                  displayName: "Download test binary"
                   artifact: test-feature
                 - bash: ./src/qa-test-eks.sh test-run eu-west-1 qa $(System.ArtifactsDirectory)/test-feature/test-feature.bin
                   workingDirectory: $(Agent.BuildDirectory)/source
