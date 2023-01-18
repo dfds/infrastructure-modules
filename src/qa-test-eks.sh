@@ -48,6 +48,7 @@ if [ "$ACTION" = "test-run" ]; then
     export KUBECONFIG=$(terragrunt output --raw kubeconfig_path --terragrunt-working-dir "$WORKDIR")
     TEST_BINARY_PATH=$4
 
+    stat $TEST_BINARY_PATH
     exec $TEST_BINARY_PATH
 fi
 
