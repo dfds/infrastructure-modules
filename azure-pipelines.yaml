@@ -125,16 +125,18 @@ stages:
         displayName: Build test binary from feature branch
         condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'master'))
         container: prime
+        variables:
+          GO_CACHE_DIR: $(Pipeline.Workspace)/.cache/go-build/
         steps:
           - checkout: self
           - bash: |
-              echo "##vso[task.setvariable variable=gocache]$(go env GOCACHE)/trim.txt" # TODO remove the /trim.txt part
+              echo "##vso[task.setvariable variable=gocache]$(go env GOCACHE)"
             displayName: Determine Go build cache path
           - task: Cache@2
             inputs:
-              key: '"zsksk" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum'
-              restoreKeys: '"zsksk" | "$(Agent.OS)"'
-              path: $(gocache)
+              key: '"go" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum'
+              restoreKeys: '"go" | "$(Agent.OS)"'
+              path: $(GO_CACHE_DIR)
             displayName: Restore Go build cache
           - bash: ./src/qa-test-eks.sh test-build eu-west-1 qa $(Build.ArtifactStagingDirectory)/test-feature.bin
             displayName: "Build test binary"
@@ -145,6 +147,8 @@ stages:
             displayName: "Debug Go build cache (2)"
           - bash: ls -alh /home/vsts_azpcontainer/.cache/go-build
             displayName: "Debug Go build cache (3)"
+          - bash: ls -alh $(GO_CACHE_DIR) && echo $(go env GO_CACHE_DIR)
+            displayName: "Debug Go build cache (4)"
           - task: PublishBuildArtifacts@1
             inputs:
               pathToPublish: $(Build.ArtifactStagingDirectory)/test-feature.bin
