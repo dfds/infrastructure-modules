@@ -39,7 +39,7 @@ if [ "$ACTION" = "test-build" ]; then
     (cd "${BASEPATH}/suite" && exec go test -c -v -vet=off -o $TEST_BINARY_PATH)
 
     # Make executable
-    chmod o+x $TEST_BINARY_PATH
+    chmod a+x $TEST_BINARY_PATH
 
     # Debugging
     stat $TEST_BINARY_PATH
@@ -58,7 +58,7 @@ if [ "$ACTION" = "test-run" ]; then
     stat $TEST_BINARY_PATH
 
     # Make executable
-    chmod o+x $TEST_BINARY_PATH
+    chmod a+x $TEST_BINARY_PATH
 
     # Debugging
     stat $TEST_BINARY_PATH
