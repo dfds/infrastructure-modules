@@ -5,7 +5,7 @@ trigger:
   - master
 
 pr:
-  autoCancel: false
+  autoCancel: true
   drafts: false
   branches:
     include:
