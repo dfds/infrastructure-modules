@@ -6,6 +6,7 @@
     "platform": "github",
     "repositories": ["dfds/infrastructure-modules"],
     "ignorePaths": ["test/integration/suite/vendor/**"],
+    "postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"],
     "packageRules": [
         {
             "matchUpdateTypes": [
@@ -36,6 +37,11 @@
             "automerge": false,
             "dependencyDashboard": true,
             "dependencyDashboardApproval": false
+        },
+        {
+            "matchManagers": ["gomod"],
+            "matchDepTypes": ["indirect"],
+            "enabled": true
         }
     ]
 }
