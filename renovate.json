@@ -5,7 +5,7 @@
     "onboarding": false,
     "platform": "github",
     "repositories": ["dfds/infrastructure-modules"],
-    "excludeCommitPaths": ["test/integration/suite/vendor/**"],
+    "ignorePaths": ["test/integration/suite/vendor/**"],
     "packageRules": [
         {
             "matchUpdateTypes": [
