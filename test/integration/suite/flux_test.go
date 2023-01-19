@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"testing"
+
+	v1 "k8s.io/api/core/v1"
+)
 
 func TestFluxHelmControllerDeployment(t *testing.T) {
 	t.Parallel()
@@ -24,4 +28,12 @@ func TestFluxSourceControllerDeployment(t *testing.T) {
 	t.Parallel()
 	clientset := NewK8sClientSet(t)
 	AssertDeployment(t, clientset, "flux-system", "source-controller", 1)
+}
+
+// TODO(emil): this is just a wip
+func TestFluxEventAssert(t *testing.T) {
+	t.Parallel()
+	clientset := NewK8sClientSet(t)
+	regarding := v1.ObjectReference{Kind: "Deployment", Name: "helm-controller"}
+	AssertEvent(t, clientset, "flux-system", "Normal", "ArtifactUpToDate", regarding, testSuiteStartTime)
 }
