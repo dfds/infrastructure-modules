@@ -114,7 +114,7 @@ stages:
         variables:
           GO_CACHE_DIR: $(Pipeline.Workspace)/.cache/go-build/
         steps:
-          - checkout: self # TODO switch to Origin before merge
+          - checkout: Origin
             fetchDepth: 1
             fetchTags: false
           - task: Cache@2
@@ -171,7 +171,7 @@ stages:
           runOnce:
             deploy:
               steps:
-                - checkout: self # TODO switch to Origin before merge
+                - checkout: Origin
                   fetchDepth: 1
                   fetchTags: false
                   path: source
