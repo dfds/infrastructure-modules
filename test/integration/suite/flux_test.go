@@ -34,6 +34,6 @@ func TestFluxSourceControllerDeployment(t *testing.T) {
 func TestFluxEventAssert(t *testing.T) {
 	t.Parallel()
 	clientset := NewK8sClientSet(t)
-	regarding := v1.ObjectReference{Kind: "Deployment", Name: "helm-controller"}
-	AssertEvent(t, clientset, "flux-system", "Normal", "ArtifactUpToDate", regarding, testSuiteStartTime)
+	regarding := v1.ObjectReference{Kind: "Kustomization", Name: "flux-system"}
+	AssertEvent(t, clientset, "flux-system", "Normal", "ReconciliationSucceeded", regarding, testSuiteStartTime)
 }

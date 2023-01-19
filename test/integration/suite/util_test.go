@@ -132,7 +132,6 @@ func AssertEvent(t *testing.T, clientset *kubernetes.Clientset, namespace, event
 				context.Background(), metav1.ListOptions{
 					FieldSelector: fmt.Sprintf("reason=%s,type=%s", eventReason, eventType),
 					Continue:      continueToken,
-					Limit:         5,
 				})
 			if err != nil {
 				t.Log(err.Error())
@@ -140,6 +139,7 @@ func AssertEvent(t *testing.T, clientset *kubernetes.Clientset, namespace, event
 			}
 			t.Log("resp, remaining/continue", resp.ListMeta.RemainingItemCount, resp.ListMeta.Continue)
 
+			// TODO(emil): filter by emittedafter time
 			// TODO(emil): filter the event by the involved object
 			for i, event := range resp.Items {
 				if event.Regarding.Kind != regarding.Kind ||
@@ -147,9 +147,13 @@ func AssertEvent(t *testing.T, clientset *kubernetes.Clientset, namespace, event
 					t.Log("skip event, regarding", event.Regarding.Kind, event.Regarding.Name)
 					continue
 				}
+				if event.ObjectMeta.CreationTimestamp.Time.Before(emittedAfter) {
+					t.Log("skip emitted before", emittedAfter, event.ObjectMeta.CreationTimestamp)
+					continue
+				}
 				t.Log("i", i)
 				t.Log("type", event.Type)
-				t.Log("event time", event.EventTime)
+				t.Log("creation time", event.ObjectMeta.CreationTimestamp)
 				t.Log("reason", event.Reason)
 				t.Log("regarding", event.Regarding.Kind, event.Regarding.Name)
 				return true
