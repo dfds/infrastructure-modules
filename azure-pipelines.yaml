@@ -50,8 +50,6 @@ resources:
 # Define variable group to use
 variables:
   - group: "Infrastructure-Modules QA"
-  - name: NUKE_QA
-    value: false
 
 lockBehavior: sequential
 pool:
