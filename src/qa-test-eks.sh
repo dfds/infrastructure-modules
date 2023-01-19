@@ -47,7 +47,7 @@ if [ "$ACTION" = "test-run" ]; then
     chmod a+x $TEST_BINARY_PATH
 
     # Run test suite
-    exec $TEST_BINARY_PATH -test.v -test.parallel 10
+    exec $TEST_BINARY_PATH -test.v -test.parallel 30
 fi
 
 
