@@ -63,6 +63,7 @@ stages:
     jobs:
       - deployment: destroy
         displayName: Destroy resources
+        cancelTimeoutInMinutes: 5
         container: prime
         environment: QA
         strategy:
@@ -87,6 +88,7 @@ stages:
 
       - deployment: nuke_account
         displayName: Nuke QA's AWS account
+        cancelTimeoutInMinutes: 5
         container: aws-nuke
         dependsOn: destroy
         condition: succeededOrFailed()
@@ -110,6 +112,7 @@ stages:
       - job: build_test_master
         displayName: Build test binary from master branch
         container: go-build
+        cancelTimeoutInMinutes: 0
         variables:
           GO_CACHE_DIR: $(Pipeline.Workspace)/.cache/go-build/
         steps:
@@ -134,6 +137,7 @@ stages:
 
       - job: build_test_feature
         displayName: Build test binary from feature branch
+        cancelTimeoutInMinutes: 0
         condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'master'))
         container: go-build
         variables:
@@ -160,6 +164,7 @@ stages:
 
       - deployment: init
         displayName: Provision from master branch
+        cancelTimeoutInMinutes: 5
         container: prime
         dependsOn: build_test_master
         condition: succeeded()
@@ -206,6 +211,7 @@ stages:
 
       - deployment: apply
         displayName: Apply from feature branch
+        cancelTimeoutInMinutes: 5
         container: prime
         dependsOn:
           - init
@@ -254,6 +260,7 @@ stages:
 
       - deployment: destroy
         displayName: Destroy resources
+        cancelTimeoutInMinutes: 5
         container: prime
         dependsOn: apply
         condition: and(succeededOrFailed(), eq(variables['TEST_DESTROY'], 'true'))
