@@ -24,11 +24,6 @@ if [ "$ACTION" = "apply-cluster" ]; then
 fi
 
 if [ "$ACTION" = "test-build" ]; then
-    # Get kubeconfig path
-    REGION=$2
-    CLUSTERNAME=$3
-    WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}/cluster"
-    export KUBECONFIG=$(terragrunt output --raw kubeconfig_path --terragrunt-working-dir "$WORKDIR")
     TEST_BINARY_PATH=$4
 
     # Debugging
@@ -52,7 +47,7 @@ if [ "$ACTION" = "test-run" ]; then
     chmod a+x $TEST_BINARY_PATH
 
     # Run test suite
-    exec $TEST_BINARY_PATH -test.v
+    exec $TEST_BINARY_PATH -test.v -test.parallel 10
 fi
 
 
