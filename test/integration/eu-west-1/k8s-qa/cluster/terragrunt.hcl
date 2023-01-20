@@ -20,6 +20,7 @@ inputs = {
   # EKS
   # --------------------------------------------------
 
+  eks_is_sandbox      = true
   eks_cluster_name    = "qa"
   eks_cluster_version = "1.22"
 

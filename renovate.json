@@ -1,43 +1,47 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "branchPrefix": "feature/renovate/",
-    "dryRun": false,
     "username": "devex-sa",
     "onboarding": false,
     "platform": "github",
-    "repositories": [
-        "dfds/infrastructure-modules"
-    ],
-    "packageRules": [{
-        "matchUpdateTypes": [
-            "pin",
-            "digest",
-            "patch",
-            "lockFileMaintenance"
-        ],
-        "stabilityDays": 1,
-        "automerge": true,
-        "matchCurrentVersion": "!/^0/",
-        "ignoreTests": true,
-        "dependencyDashboard": true,
-        "dependencyDashboardApproval": false
-    }, {
-        "matchUpdateTypes": [
-            "minor"
-        ],
-        "stabilityDays": 7,
-        "automerge": true,
-        "matchCurrentVersion": "!/^0/",
-        "ignoreTests": true,
-        "dependencyDashboard": true,
-        "dependencyDashboardApproval": false
-    }, {
-        "matchUpdateTypes": [
-            "major"
-        ],
-        "stabilityDays": 14,
-        "automerge": false,
-        "dependencyDashboard": true,
-        "dependencyDashboardApproval": false
-    }]
+    "repositories": ["dfds/infrastructure-modules"],
+    "ignorePaths": ["test/integration/suite/vendor/**"],
+    "postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"],
+    "packageRules": [
+        {
+            "matchUpdateTypes": [
+                "pin",
+                "digest",
+                "patch",
+                "lockFileMaintenance"
+            ],
+            "stabilityDays": 1,
+            "automerge": true,
+            "matchCurrentVersion": "!/^0/",
+            "ignoreTests": true,
+            "dependencyDashboard": true,
+            "dependencyDashboardApproval": false
+        },
+        {
+            "matchUpdateTypes": ["minor"],
+            "stabilityDays": 7,
+            "automerge": true,
+            "matchCurrentVersion": "!/^0/",
+            "ignoreTests": true,
+            "dependencyDashboard": true,
+            "dependencyDashboardApproval": false
+        },
+        {
+            "matchUpdateTypes": ["major"],
+            "stabilityDays": 14,
+            "automerge": false,
+            "dependencyDashboard": true,
+            "dependencyDashboardApproval": false
+        },
+        {
+            "matchManagers": ["gomod"],
+            "matchDepTypes": ["indirect"],
+            "enabled": true
+        }
+    ]
 }
