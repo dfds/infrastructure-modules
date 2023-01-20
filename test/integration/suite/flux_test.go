@@ -30,7 +30,7 @@ func TestFluxSourceControllerDeployment(t *testing.T) {
 	AssertDeployment(t, clientset, "flux-system", "source-controller", 1)
 }
 
-// TODO(emil): this is just a wip
+// TODO(emil): trigger a reconcillation
 func TestFluxEventAssert(t *testing.T) {
 	t.Parallel()
 	clientset := NewK8sClientSet(t)

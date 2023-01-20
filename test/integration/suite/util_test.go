@@ -112,11 +112,9 @@ func AssertStatefulSet(t *testing.T, clientset *kubernetes.Clientset, namespace,
 		name, namespace, numberAvailable)
 }
 
+// TODO(emil): remove logs
 func AssertEvent(t *testing.T, clientset *kubernetes.Clientset, namespace, eventType, eventReason string, regarding corev1.ObjectReference, emittedAfter time.Time) {
 	check := func() bool {
-		// TODO(emil): turn into a list request
-		// TODO(emil): filter the events to the ones that match the criteria
-
 		var err error
 		var resp *eventsv1.EventList
 		var continueToken string
@@ -139,8 +137,6 @@ func AssertEvent(t *testing.T, clientset *kubernetes.Clientset, namespace, event
 			}
 			t.Log("resp, remaining/continue", resp.ListMeta.RemainingItemCount, resp.ListMeta.Continue)
 
-			// TODO(emil): filter by emittedafter time
-			// TODO(emil): filter the event by the involved object
 			for i, event := range resp.Items {
 				if event.Regarding.Kind != regarding.Kind ||
 					event.Regarding.Name != regarding.Name {
