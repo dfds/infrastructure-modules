@@ -22,7 +22,7 @@ import (
 
 var kubeClientConfig *rest.Config
 
-func init() {
+func initK8s() {
 	kubeConfig := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
 		clientcmd.NewDefaultClientConfigLoadingRules(), &clientcmd.ConfigOverrides{})
 	var err error
@@ -46,10 +46,10 @@ const (
 	defaultEventualPeriod  time.Duration = 5 * time.Second
 )
 
-func SetK8sAnnotation(t *testing.T, gvr schema.GroupVersionResource, namespace, name, key, value string) {
+func SetK8sAnnotation(gvr schema.GroupVersionResource, namespace, name, key, value string) error {
 	client, err := dynamic.NewForConfig(kubeClientConfig)
 	if err != nil {
-		t.Fatal(err)
+		return err
 	}
 
 	// Get the resource
@@ -57,7 +57,7 @@ func SetK8sAnnotation(t *testing.T, gvr schema.GroupVersionResource, namespace, 
 		Namespace(namespace).
 		Get(context.Background(), name, metav1.GetOptions{})
 	if err != nil {
-		t.Fatal(err)
+		return err
 	}
 
 	// Formulate the patch
@@ -70,7 +70,7 @@ func SetK8sAnnotation(t *testing.T, gvr schema.GroupVersionResource, namespace, 
 	}
 	patchBytes, err := json.Marshal(patch)
 	if err != nil {
-		t.Fatal(err)
+		return err
 	}
 
 	// Apply the patch
@@ -78,8 +78,9 @@ func SetK8sAnnotation(t *testing.T, gvr schema.GroupVersionResource, namespace, 
 		Namespace(obj.GetNamespace()).
 		Patch(context.Background(), obj.GetName(), types.MergePatchType, patchBytes, metav1.PatchOptions{})
 	if err != nil {
-		t.Fatal(err)
+		return err
 	}
+	return nil
 }
 
 func AssertK8sDaemonSet(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberAvailable int) {
@@ -151,7 +152,6 @@ func AssertK8sStatefulSet(t *testing.T, clientset *kubernetes.Clientset, namespa
 		name, namespace, numberAvailable)
 }
 
-// TODO(emil): remove logs
 func AssertK8sEvent(t *testing.T, clientset *kubernetes.Clientset, namespace,
 	eventType, eventReason string, regarding corev1.ObjectReference, emittedAfter time.Time) {
 	check := func() bool {
@@ -165,7 +165,6 @@ func AssertK8sEvent(t *testing.T, clientset *kubernetes.Clientset, namespace,
 				}
 				continueToken = resp.ListMeta.Continue
 			}
-			t.Log("request, continue token", continueToken)
 			resp, err = clientset.EventsV1().Events(namespace).List(
 				context.Background(), metav1.ListOptions{
 					FieldSelector: fmt.Sprintf("reason=%s,type=%s", eventReason, eventType),
@@ -175,25 +174,17 @@ func AssertK8sEvent(t *testing.T, clientset *kubernetes.Clientset, namespace,
 				t.Log(err.Error())
 				return false
 			}
-			t.Log("resp, remaining/continue", resp.ListMeta.RemainingItemCount, resp.ListMeta.Continue)
 
-			for i, event := range resp.Items {
+			for _, event := range resp.Items {
 				if event.Regarding.Kind != regarding.Kind ||
 					event.Regarding.Name != regarding.Name {
-					t.Log("skip event, regarding", event.Regarding.Kind, event.Regarding.Name)
 					continue
 				}
 				// Consecutive similar events could be combined into one event so one must
 				// check the last observed time.
 				if event.DeprecatedLastTimestamp.Time.Before(emittedAfter) {
-					t.Log("skip emitted before", emittedAfter, event.DeprecatedLastTimestamp)
 					continue
 				}
-				t.Log("i", i)
-				t.Log("type", event.Type)
-				t.Log("last observed", event.DeprecatedLastTimestamp)
-				t.Log("reason", event.Reason)
-				t.Log("regarding", event.Regarding.Kind, event.Regarding.Name)
 				return true
 			}
 		}

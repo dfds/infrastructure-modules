@@ -1,14 +1,13 @@
 package main
 
 import (
-	"testing"
 	"time"
 
 	fluxmeta "github.com/fluxcd/pkg/apis/meta"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
-func TriggerFluxReconcillation(t *testing.T, resource, namespace, name string) {
+func TriggerFluxReconcillation(resource, namespace, name string) (time.Time, error) {
 	// Trigger reconcillation
 	gvr := schema.GroupVersionResource{
 		Group:    "kustomize.toolkit.fluxcd.io",
@@ -17,6 +16,7 @@ func TriggerFluxReconcillation(t *testing.T, resource, namespace, name string) {
 	}
 
 	// Set annotation with reconcillation timestamp
-	SetK8sAnnotation(t, gvr, namespace, name,
-		fluxmeta.ReconcileRequestAnnotation, time.Now().Format(time.RFC3339Nano))
+	requestTime := time.Now()
+	return requestTime, SetK8sAnnotation(gvr, namespace, name,
+		fluxmeta.ReconcileRequestAnnotation, requestTime.Format(time.RFC3339Nano))
 }
