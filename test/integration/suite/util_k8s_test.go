@@ -82,7 +82,7 @@ func SetK8sAnnotation(t *testing.T, gvr schema.GroupVersionResource, namespace, 
 	}
 }
 
-func AssertDaemonSet(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberAvailable int) {
+func AssertK8sDaemonSet(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberAvailable int) {
 	check := func() bool {
 		resp, err := clientset.AppsV1().DaemonSets(namespace).Get(
 			context.Background(), name, metav1.GetOptions{})
@@ -105,7 +105,7 @@ func AssertDaemonSet(t *testing.T, clientset *kubernetes.Clientset, namespace, n
 		name, namespace, numberAvailable)
 }
 
-func AssertDeployment(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberAvailable int) {
+func AssertK8sDeployment(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberAvailable int) {
 	check := func() bool {
 		resp, err := clientset.AppsV1().Deployments(namespace).Get(
 			context.Background(), name, metav1.GetOptions{})
@@ -128,7 +128,7 @@ func AssertDeployment(t *testing.T, clientset *kubernetes.Clientset, namespace, 
 		name, namespace, numberAvailable)
 }
 
-func AssertStatefulSet(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberAvailable int) {
+func AssertK8sStatefulSet(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberAvailable int) {
 	check := func() bool {
 		resp, err := clientset.AppsV1().StatefulSets(namespace).Get(
 			context.Background(), name, metav1.GetOptions{})
@@ -152,7 +152,7 @@ func AssertStatefulSet(t *testing.T, clientset *kubernetes.Clientset, namespace,
 }
 
 // TODO(emil): remove logs
-func AssertEvent(t *testing.T, clientset *kubernetes.Clientset, namespace,
+func AssertK8sEvent(t *testing.T, clientset *kubernetes.Clientset, namespace,
 	eventType, eventReason string, regarding corev1.ObjectReference, emittedAfter time.Time) {
 	check := func() bool {
 		var err error
@@ -183,13 +183,15 @@ func AssertEvent(t *testing.T, clientset *kubernetes.Clientset, namespace,
 					t.Log("skip event, regarding", event.Regarding.Kind, event.Regarding.Name)
 					continue
 				}
-				if event.ObjectMeta.CreationTimestamp.Time.Before(emittedAfter) {
-					t.Log("skip emitted before", emittedAfter, event.ObjectMeta.CreationTimestamp)
+				// Consecutive similar events could be combined into one event so one must
+				// check the last observed time.
+				if event.DeprecatedLastTimestamp.Time.Before(emittedAfter) {
+					t.Log("skip emitted before", emittedAfter, event.DeprecatedLastTimestamp)
 					continue
 				}
 				t.Log("i", i)
 				t.Log("type", event.Type)
-				t.Log("creation time", event.ObjectMeta.CreationTimestamp)
+				t.Log("last observed", event.DeprecatedLastTimestamp)
 				t.Log("reason", event.Reason)
 				t.Log("regarding", event.Regarding.Kind, event.Regarding.Name)
 				return true
