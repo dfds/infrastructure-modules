@@ -4,15 +4,15 @@ on:
   push:
     branches: ["master", "main"]
     paths-ignore:
-      - '.github/*'
+      - '.github/**'
       - '**/*.md'
       - 'azure-pipelines.yaml'
       - '.gitignore'
       - '.pre-commit-config.yaml'
       - 'LICENSE'
       - 'renovate.json'
-      - 'test/*'
-      - 'src/*'
+      - 'test/**'
+      - 'src/**'
 
 jobs:
   auto-release:
