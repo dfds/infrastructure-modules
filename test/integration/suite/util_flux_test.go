@@ -8,14 +8,13 @@ import (
 )
 
 func TriggerFluxReconcillation(resource, namespace, name string) (time.Time, error) {
-	// Trigger reconcillation
 	gvr := schema.GroupVersionResource{
 		Group:    "kustomize.toolkit.fluxcd.io",
 		Version:  "v1beta2",
 		Resource: resource,
 	}
 
-	// Set annotation with reconcillation timestamp
+	// Set annotation with reconciliation request timestamp
 	requestTime := time.Now()
 	return requestTime, SetK8sAnnotation(gvr, namespace, name,
 		fluxmeta.ReconcileRequestAnnotation, requestTime.Format(time.RFC3339Nano))
