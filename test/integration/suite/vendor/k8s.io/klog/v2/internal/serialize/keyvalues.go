@@ -24,10 +24,13 @@ import (
 	"github.com/go-logr/logr"
 )
 
+<<<<<<< HEAD
 type textWriter interface {
 	WriteText(*bytes.Buffer)
 }
 
+=======
+>>>>>>> 83d9a92e (trigger reconcillation)
 // WithValues implements LogSink.WithValues. The old key/value pairs are
 // assumed to be well-formed, the new ones are checked and padded if
 // necessary. It returns a new slice.
@@ -95,6 +98,7 @@ func MergeKVs(first, second []interface{}) []interface{} {
 	return merged
 }
 
+<<<<<<< HEAD
 // MergeKVsInto is a variant of MergeKVs which directly formats the key/value
 // pairs into a buffer.
 func MergeAndFormatKVs(b *bytes.Buffer, first, second []interface{}) {
@@ -140,6 +144,8 @@ func MergeAndFormatKVs(b *bytes.Buffer, first, second []interface{}) {
 	}
 }
 
+=======
+>>>>>>> 83d9a92e (trigger reconcillation)
 const missingValue = "(MISSING)"
 
 // KVListFormat serializes all key/value pairs into the provided buffer.
@@ -153,6 +159,7 @@ func KVListFormat(b *bytes.Buffer, keysAndValues ...interface{}) {
 		} else {
 			v = missingValue
 		}
+<<<<<<< HEAD
 		KVFormat(b, k, v)
 	}
 }
@@ -221,6 +228,68 @@ func KVFormat(b *bytes.Buffer, k, v interface{}) {
 		b.WriteString(fmt.Sprintf("%+q", v))
 	default:
 		writeStringValue(b, false, fmt.Sprintf("%+v", v))
+=======
+		b.WriteByte(' ')
+		// Keys are assumed to be well-formed according to
+		// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-instrumentation/migration-to-structured-logging.md#name-arguments
+		// for the sake of performance. Keys with spaces,
+		// special characters, etc. will break parsing.
+		if sK, ok := k.(string); ok {
+			// Avoid one allocation when the key is a string, which
+			// normally it should be.
+			b.WriteString(sK)
+		} else {
+			b.WriteString(fmt.Sprintf("%s", k))
+		}
+
+		// The type checks are sorted so that more frequently used ones
+		// come first because that is then faster in the common
+		// cases. In Kubernetes, ObjectRef (a Stringer) is more common
+		// than plain strings
+		// (https://github.com/kubernetes/kubernetes/pull/106594#issuecomment-975526235).
+		switch v := v.(type) {
+		case fmt.Stringer:
+			writeStringValue(b, true, StringerToString(v))
+		case string:
+			writeStringValue(b, true, v)
+		case error:
+			writeStringValue(b, true, ErrorToString(v))
+		case logr.Marshaler:
+			value := MarshalerToValue(v)
+			// A marshaler that returns a string is useful for
+			// delayed formatting of complex values. We treat this
+			// case like a normal string. This is useful for
+			// multi-line support.
+			//
+			// We could do this by recursively formatting a value,
+			// but that comes with the risk of infinite recursion
+			// if a marshaler returns itself. Instead we call it
+			// only once and rely on it returning the intended
+			// value directly.
+			switch value := value.(type) {
+			case string:
+				writeStringValue(b, true, value)
+			default:
+				writeStringValue(b, false, fmt.Sprintf("%+v", value))
+			}
+		case []byte:
+			// In https://github.com/kubernetes/klog/pull/237 it was decided
+			// to format byte slices with "%+q". The advantages of that are:
+			// - readable output if the bytes happen to be printable
+			// - non-printable bytes get represented as unicode escape
+			//   sequences (\uxxxx)
+			//
+			// The downsides are that we cannot use the faster
+			// strconv.Quote here and that multi-line output is not
+			// supported. If developers know that a byte array is
+			// printable and they want multi-line output, they can
+			// convert the value to string before logging it.
+			b.WriteByte('=')
+			b.WriteString(fmt.Sprintf("%+q", v))
+		default:
+			writeStringValue(b, false, fmt.Sprintf("%+v", v))
+		}
+>>>>>>> 83d9a92e (trigger reconcillation)
 	}
 }
 
@@ -260,6 +329,7 @@ func ErrorToString(err error) (ret string) {
 	return
 }
 
+<<<<<<< HEAD
 func writeTextWriterValue(b *bytes.Buffer, v textWriter) {
 	b.WriteRune('=')
 	defer func() {
@@ -270,6 +340,8 @@ func writeTextWriterValue(b *bytes.Buffer, v textWriter) {
 	v.WriteText(b)
 }
 
+=======
+>>>>>>> 83d9a92e (trigger reconcillation)
 func writeStringValue(b *bytes.Buffer, quote bool, v string) {
 	data := []byte(v)
 	index := bytes.IndexByte(data, '\n')

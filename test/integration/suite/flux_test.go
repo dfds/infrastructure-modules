@@ -2,8 +2,11 @@ package main
 
 import (
 	"testing"
+	"time"
 
+	fluxmeta "github.com/fluxcd/pkg/apis/meta"
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
 func TestFluxHelmControllerDeployment(t *testing.T) {
@@ -30,10 +33,20 @@ func TestFluxSourceControllerDeployment(t *testing.T) {
 	AssertDeployment(t, clientset, "flux-system", "source-controller", 1)
 }
 
-// TODO(emil): trigger a reconcillation
-func TestFluxEventAssert(t *testing.T) {
+func TestFluxKustomizationFluxSystemReconciallationSucceeded(t *testing.T) {
 	t.Parallel()
+
+	// Trigger reconcillation
+	gvr := schema.GroupVersionResource{
+		Group:    "kustomize.toolkit.fluxcd.io",
+		Version:  "v1beta2",
+		Resource: "kustomizations",
+	}
+	SetK8sAnnotation(t, gvr, "flux-system", "flux-system",
+		fluxmeta.ReconcileRequestAnnotation, time.Now().Format(time.RFC3339Nano))
+
+	// Wait for event
 	clientset := NewK8sClientSet(t)
 	regarding := v1.ObjectReference{Kind: "Kustomization", Name: "flux-system"}
-	AssertEvent(t, clientset, "flux-system", "Normal", "ReconciliationSucceeded", regarding, testSuiteStartTime)
+	AssertEvent(t, clientset, "flux-system", "Normal", "ReconciliationSucceeded", regarding, time.Now())
 }

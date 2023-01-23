@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"log"
 	"testing"
 	"time"
 
@@ -10,28 +12,29 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	eventsv1 "k8s.io/api/events/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-// testSuiteStartTime is used to keep track of when the test binary began executing
-// some assertions (i.e. events) want to limit their queries to resources which were
-// created only after this time.
-var testSuiteStartTime time.Time
+var kubeClientConfig *rest.Config
 
 func init() {
-	testSuiteStartTime = time.Now()
+	kubeConfig := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
+		clientcmd.NewDefaultClientConfigLoadingRules(), &clientcmd.ConfigOverrides{})
+	var err error
+	kubeClientConfig, err = kubeConfig.ClientConfig()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	log.Println("Kube client config initialized")
 }
 
 func NewK8sClientSet(t *testing.T) *kubernetes.Clientset {
-	kubeConfig := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
-		clientcmd.NewDefaultClientConfigLoadingRules(), &clientcmd.ConfigOverrides{})
-	config, err := kubeConfig.ClientConfig()
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-
-	clientset, err := kubernetes.NewForConfig(config)
+	clientset, err := kubernetes.NewForConfig(kubeClientConfig)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -42,6 +45,42 @@ const (
 	defaultEventualTimeout time.Duration = 5 * time.Minute
 	defaultEventualPeriod  time.Duration = 5 * time.Second
 )
+
+func SetK8sAnnotation(t *testing.T, gvr schema.GroupVersionResource, namespace, name, key, value string) {
+	client, err := dynamic.NewForConfig(kubeClientConfig)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Get the resource
+	obj, err := client.Resource(gvr).
+		Namespace(namespace).
+		Get(context.Background(), name, metav1.GetOptions{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Formulate the patch
+	patch := map[string]interface{}{
+		"metadata": map[string]interface{}{
+			"annotations": map[string]string{
+				key: value,
+			},
+		},
+	}
+	patchBytes, err := json.Marshal(patch)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Apply the patch
+	_, err = client.Resource(gvr).
+		Namespace(obj.GetNamespace()).
+		Patch(context.Background(), obj.GetName(), types.MergePatchType, patchBytes, metav1.PatchOptions{})
+	if err != nil {
+		t.Fatal(err)
+	}
+}
 
 func AssertDaemonSet(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberAvailable int) {
 	check := func() bool {
@@ -113,7 +152,8 @@ func AssertStatefulSet(t *testing.T, clientset *kubernetes.Clientset, namespace,
 }
 
 // TODO(emil): remove logs
-func AssertEvent(t *testing.T, clientset *kubernetes.Clientset, namespace, eventType, eventReason string, regarding corev1.ObjectReference, emittedAfter time.Time) {
+func AssertEvent(t *testing.T, clientset *kubernetes.Clientset, namespace,
+	eventType, eventReason string, regarding corev1.ObjectReference, emittedAfter time.Time) {
 	check := func() bool {
 		var err error
 		var resp *eventsv1.EventList

@@ -532,6 +532,14 @@ func (s settings) deepCopy() settings {
 type loggingT struct {
 	settings
 
+<<<<<<< HEAD
+=======
+	// bufferCache maintains the free list. It uses its own mutex
+	// so buffers can be grabbed and printed to without holding the main lock,
+	// for better parallelization.
+	bufferCache buffer.Buffers
+
+>>>>>>> 83d9a92e (trigger reconcillation)
 	// flushD holds a flushDaemon that frequently flushes log file buffers.
 	// Uses its own mutex.
 	flushD *flushDaemon
@@ -659,7 +667,11 @@ func (l *loggingT) header(s severity.Severity, depth int) (*buffer.Buffer, strin
 
 // formatHeader formats a log header using the provided file name and line number.
 func (l *loggingT) formatHeader(s severity.Severity, file string, line int) *buffer.Buffer {
+<<<<<<< HEAD
 	buf := buffer.GetBuffer()
+=======
+	buf := l.bufferCache.GetBuffer()
+>>>>>>> 83d9a92e (trigger reconcillation)
 	if l.skipHeaders {
 		return buf
 	}
@@ -677,8 +689,13 @@ func (l *loggingT) printlnDepth(s severity.Severity, logger *logr.Logger, filter
 	// if logger is set, we clear the generated header as we rely on the backing
 	// logger implementation to print headers
 	if logger != nil {
+<<<<<<< HEAD
 		buffer.PutBuffer(buf)
 		buf = buffer.GetBuffer()
+=======
+		l.bufferCache.PutBuffer(buf)
+		buf = l.bufferCache.GetBuffer()
+>>>>>>> 83d9a92e (trigger reconcillation)
 	}
 	if filter != nil {
 		args = filter.Filter(args)
@@ -696,8 +713,13 @@ func (l *loggingT) printDepth(s severity.Severity, logger *logr.Logger, filter L
 	// if logr is set, we clear the generated header as we rely on the backing
 	// logr implementation to print headers
 	if logger != nil {
+<<<<<<< HEAD
 		buffer.PutBuffer(buf)
 		buf = buffer.GetBuffer()
+=======
+		l.bufferCache.PutBuffer(buf)
+		buf = l.bufferCache.GetBuffer()
+>>>>>>> 83d9a92e (trigger reconcillation)
 	}
 	if filter != nil {
 		args = filter.Filter(args)
@@ -718,8 +740,13 @@ func (l *loggingT) printfDepth(s severity.Severity, logger *logr.Logger, filter 
 	// if logr is set, we clear the generated header as we rely on the backing
 	// logr implementation to print headers
 	if logger != nil {
+<<<<<<< HEAD
 		buffer.PutBuffer(buf)
 		buf = buffer.GetBuffer()
+=======
+		l.bufferCache.PutBuffer(buf)
+		buf = l.bufferCache.GetBuffer()
+>>>>>>> 83d9a92e (trigger reconcillation)
 	}
 	if filter != nil {
 		format, args = filter.FilterF(format, args)
@@ -739,8 +766,13 @@ func (l *loggingT) printWithFileLine(s severity.Severity, logger *logr.Logger, f
 	// if logr is set, we clear the generated header as we rely on the backing
 	// logr implementation to print headers
 	if logger != nil {
+<<<<<<< HEAD
 		buffer.PutBuffer(buf)
 		buf = buffer.GetBuffer()
+=======
+		l.bufferCache.PutBuffer(buf)
+		buf = l.bufferCache.GetBuffer()
+>>>>>>> 83d9a92e (trigger reconcillation)
 	}
 	if filter != nil {
 		args = filter.Filter(args)
@@ -780,7 +812,11 @@ func (l *loggingT) infoS(logger *logr.Logger, filter LogFilter, depth int, msg s
 // set log severity by s
 func (l *loggingT) printS(err error, s severity.Severity, depth int, msg string, keysAndValues ...interface{}) {
 	// Only create a new buffer if we don't have one cached.
+<<<<<<< HEAD
 	b := buffer.GetBuffer()
+=======
+	b := l.bufferCache.GetBuffer()
+>>>>>>> 83d9a92e (trigger reconcillation)
 	// The message is always quoted, even if it contains line breaks.
 	// If developers want multi-line output, they should use a small, fixed
 	// message and put the multi-line output into a value.
@@ -791,7 +827,11 @@ func (l *loggingT) printS(err error, s severity.Severity, depth int, msg string,
 	serialize.KVListFormat(&b.Buffer, keysAndValues...)
 	l.printDepth(s, logging.logger, nil, depth+1, &b.Buffer)
 	// Make the buffer available for reuse.
+<<<<<<< HEAD
 	buffer.PutBuffer(b)
+=======
+	l.bufferCache.PutBuffer(b)
+>>>>>>> 83d9a92e (trigger reconcillation)
 }
 
 // redirectBuffer is used to set an alternate destination for the logs
@@ -943,7 +983,11 @@ func (l *loggingT) output(s severity.Severity, log *logr.Logger, buf *buffer.Buf
 		timeoutFlush(ExitFlushTimeout)
 		OsExit(255) // C++ uses -1, which is silly because it's anded with 255 anyway.
 	}
+<<<<<<< HEAD
 	buffer.PutBuffer(buf)
+=======
+	l.bufferCache.PutBuffer(buf)
+>>>>>>> 83d9a92e (trigger reconcillation)
 
 	if stats := severityStats[s]; stats != nil {
 		atomic.AddInt64(&stats.lines, 1)

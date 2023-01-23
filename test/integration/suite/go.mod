@@ -3,6 +3,7 @@ module go.dfds.cloud/infrastructure-modules/test/integration/suite
 go 1.19
 
 require (
+	github.com/fluxcd/pkg/apis/meta v0.18.0
 	github.com/stretchr/testify v1.8.0
 	k8s.io/apimachinery v0.26.1
 	k8s.io/client-go v0.26.1
@@ -20,6 +21,8 @@ require (
 	k8s.io/kube-openapi v0.0.0-20221012153701-172d655c2280 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect; indirect // indirect
 )
+
+replace k8s.io/apimachinery => k8s.io/apimachinery v0.22.17
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
