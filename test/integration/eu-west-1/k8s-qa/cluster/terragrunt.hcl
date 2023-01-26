@@ -28,7 +28,7 @@ inputs = {
   eks_worker_ssh_ip_whitelist = ["193.9.230.100/32"]
   eks_worker_ssh_public_key   = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDS85QojLMO8eI5ArwburDpVthEZmW3IVs4/nmv7YnDMgs+ucJmW/etm7MlkRDvWphH4X/6mSGGmylJq7vUIn5rHMG0KTFxg06G2ZJ0zS6ryQ89tDLA9LXhD3q//TzXDFJ4ztjcSyxL1fSW44Lpmt7l7wWHdgrMaP3db2TRYOKY2/0iC22TwQKjTSGku59sFmv3XkLVBehO3fFOXcbLChZ4+maPMmgJDUyYMVSVZNJ2YsjFHHeaYClaN0az0Agcab2HIZMZh0Vv08ro0Se5ZBUjyfoPuDe3WjutkivePajG710k10vSOx6X5CHO3bZvQEBA8klCY58Xp2XrzSChNZhP eks-deploy-hellman"
 
-  eks_nodegroup2_ami_id                  = "ami-0ed22cc46dcbf16ed"
+  eks_nodegroup2_ami_id                  = "ami-00bb9c27782a0d4c1"
   eks_nodegroup2_instance_types          = ["m5a.xlarge"]
   eks_nodegroup2_desired_size_per_subnet = 1
   eks_nodegroup2_kubelet_extra_args      = "--node-labels=nodegroup=ng2"
