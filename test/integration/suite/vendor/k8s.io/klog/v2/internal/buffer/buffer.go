@@ -40,7 +40,6 @@ type Buffer struct {
 	next *Buffer
 }
 
-<<<<<<< HEAD
 var buffers = sync.Pool{
 	New: func() interface{} {
 		return new(Buffer)
@@ -51,51 +50,12 @@ var buffers = sync.Pool{
 func GetBuffer() *Buffer {
 	b := buffers.Get().(*Buffer)
 	b.Reset()
-=======
-// Buffers manages the reuse of individual buffer instances. It is thread-safe.
-type Buffers struct {
-	// mu protects the free list. It is separate from the main mutex
-	// so buffers can be grabbed and printed to without holding the main lock,
-	// for better parallelization.
-	mu sync.Mutex
-
-	// freeList is a list of byte buffers, maintained under mu.
-	freeList *Buffer
-}
-
-// GetBuffer returns a new, ready-to-use buffer.
-func (bl *Buffers) GetBuffer() *Buffer {
-	bl.mu.Lock()
-	b := bl.freeList
-	if b != nil {
-		bl.freeList = b.next
-	}
-	bl.mu.Unlock()
-	if b == nil {
-		b = new(Buffer)
-	} else {
-		b.next = nil
-		b.Reset()
-	}
->>>>>>> 83d9a92e (trigger reconcillation)
 	return b
 }
 
 // PutBuffer returns a buffer to the free list.
-<<<<<<< HEAD
 func PutBuffer(b *Buffer) {
 	buffers.Put(b)
-=======
-func (bl *Buffers) PutBuffer(b *Buffer) {
-	if b.Len() >= 256 {
-		// Let big buffers die a natural death.
-		return
-	}
-	bl.mu.Lock()
-	b.next = bl.freeList
-	bl.freeList = b
-	bl.mu.Unlock()
->>>>>>> 83d9a92e (trigger reconcillation)
 }
 
 // Some custom tiny helper functions to print the log header efficiently.

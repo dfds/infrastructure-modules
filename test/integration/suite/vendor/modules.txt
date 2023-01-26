@@ -375,11 +375,7 @@ k8s.io/client-go/util/flowcontrol
 k8s.io/client-go/util/homedir
 k8s.io/client-go/util/keyutil
 k8s.io/client-go/util/workqueue
-<<<<<<< HEAD
 # k8s.io/klog/v2 v2.90.0
-=======
-# k8s.io/klog/v2 v2.80.1
->>>>>>> 83d9a92e (trigger reconcillation)
 ## explicit; go 1.13
 k8s.io/klog/v2
 k8s.io/klog/v2/internal/buffer
@@ -402,9 +398,6 @@ k8s.io/kube-openapi/pkg/spec3
 k8s.io/kube-openapi/pkg/util/proto
 k8s.io/kube-openapi/pkg/validation/spec
 # k8s.io/utils v0.0.0-20230115233650-391b47cb4029
-=======
-# k8s.io/utils v0.0.0-20221108210102-8e77b1f39fe2
->>>>>>> 83d9a92e (trigger reconcillation)
 ## explicit; go 1.18
 k8s.io/utils/clock
 k8s.io/utils/clock/testing
