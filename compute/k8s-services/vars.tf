@@ -294,6 +294,12 @@ variable "monitoring_kube_prometheus_stack_prometheus_limit_cpu" {
   default     = "1000m"
 }
 
+variable "monitoring_kube_prometheus_stack_grafana_serve_from_sub_path" {
+  type        = bool
+  default     = false
+  description = "Serve Grafana from subpath specified in root_url setting. By default it is set to false for compatibility reasons"
+}
+
 
 # --------------------------------------------------
 # Metrics-Server
