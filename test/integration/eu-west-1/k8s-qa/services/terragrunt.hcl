@@ -41,7 +41,7 @@ inputs = {
   # Traefik v2
   # --------------------------------------------------
   traefikv2_test_alb_deploy       = true
-  traefik_flux_helm_chart_version = "10.21.1"
+  traefik_flux_helm_chart_version = "20.8.0"
   traefik_flux_github_owner       = "dfds"
   traefik_flux_repo_name          = "platform-manifests-qa"
   traefik_flux_repo_branch        = "main"
