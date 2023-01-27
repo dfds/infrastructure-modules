@@ -349,7 +349,6 @@ module "monitoring_kube_prometheus_stack" {
   prometheus_request_cpu      = var.monitoring_kube_prometheus_stack_prometheus_request_cpu
   prometheus_limit_memory     = var.monitoring_kube_prometheus_stack_prometheus_limit_memory
   prometheus_limit_cpu        = var.monitoring_kube_prometheus_stack_prometheus_limit_cpu
-  grafana_serve_from_sub_path = var.monitoring_kube_prometheus_stack_grafana_serve_from_sub_path
 
   providers = {
     github = github.fluxcd
