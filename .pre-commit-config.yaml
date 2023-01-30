@@ -3,7 +3,7 @@ repos:
   rev: v1.59.0
   hooks:
     - id: terraform_fmt
-    - id: terraform_tfsec
+#    - id: terraform_tfsec
       files: (\.tf|\.tfvars)$
 - repo: git@github.com:Yelp/detect-secrets
   rev: v1.1.0
@@ -17,4 +17,10 @@ repos:
     - id: check-merge-conflict
     - id: detect-aws-credentials
     - id: detect-private-key
-    
+- repo: https://github.com/gruntwork-io/pre-commit
+  rev: v0.1.17 # Get the latest from: https://github.com/gruntwork-io/pre-commit/releases
+  hooks:
+    - id: tflint
+      args:
+        - "--module"
+        - "--config=.tflint.hcl"

@@ -3,4 +3,5 @@ variable "cluster_name" {
 }
 
 variable "cloudwatch_agent_config_bucket" {
+  type = string
 }
