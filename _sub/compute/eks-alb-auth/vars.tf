@@ -58,3 +58,21 @@ variable "access_logs_enabled" {
   type    = bool
   default = true
 }
+
+variable "deploy_variant" {
+  type        = bool
+  description = "Whether to deploy a variant target group for the listener."
+  default     = false
+}
+
+variable "variant_target_http_port" {
+  type = number
+}
+
+variable "variant_target_admin_port" {
+  type = number
+}
+
+variable "variant_health_check_path" {
+  type = string
+}

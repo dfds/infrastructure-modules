@@ -15,12 +15,6 @@ resource "aws_lb" "traefik_auth" {
   drop_invalid_header_fields = true
 }
 
-resource "aws_autoscaling_attachment" "traefik_auth" {
-  count                  = var.deploy ? length(var.autoscaling_group_ids) : 0
-  autoscaling_group_name = var.autoscaling_group_ids[count.index]
-  lb_target_group_arn    = aws_lb_target_group.traefik_auth[0].arn
-}
-
 resource "aws_lb_target_group" "traefik_auth" {
   count                = var.deploy ? 1 : 0
   name_prefix          = substr(var.cluster_name, 0, min(6, length(var.cluster_name)))
@@ -41,6 +35,41 @@ resource "aws_lb_target_group" "traefik_auth" {
   }
 }
 
+resource "aws_autoscaling_attachment" "traefik_auth" {
+  count                  = var.deploy ? length(var.autoscaling_group_ids) : 0
+  autoscaling_group_name = var.autoscaling_group_ids[count.index]
+  lb_target_group_arn    = aws_lb_target_group.traefik_auth[0].arn
+}
+
+# A variant target group is deployed if we want to gradually rollout
+# a new listener target.
+
+resource "aws_lb_target_group" "traefik_auth_variant" {
+  count                = var.deploy_variant ? 1 : 0
+  name_prefix          = "variant-${substr(var.cluster_name, 0, min(6, length(var.cluster_name)))}"
+  port                 = var.variant_target_http_port
+  protocol             = "HTTP"
+  vpc_id               = var.vpc_id
+  deregistration_delay = 300
+
+  health_check {
+    path     = var.variant_health_check_path
+    port     = var.variant_target_admin_port
+    protocol = "HTTP"
+    matcher  = 200
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_autoscaling_attachment" "traefik_auth_variant" {
+  count                  = var.deploy_variant ? length(var.autoscaling_group_ids) : 0
+  autoscaling_group_name = var.autoscaling_group_ids[count.index]
+  lb_target_group_arn    = aws_lb_target_group.traefik_auth_variant[0].arn
+}
+
 resource "aws_lb_listener" "traefik_auth" {
   count             = var.deploy ? 1 : 0
   load_balancer_arn = aws_lb.traefik_auth[0].arn
@@ -50,7 +79,8 @@ resource "aws_lb_listener" "traefik_auth" {
   certificate_arn   = var.alb_certificate_arn
 
   default_action {
-    type = "authenticate-oidc"
+    type  = "authenticate-oidc"
+    order = 1
 
     authenticate_oidc {
       authorization_endpoint = "https://login.microsoftonline.com/${var.azure_tenant_id}/oauth2/v2.0/authorize"
@@ -63,8 +93,85 @@ resource "aws_lb_listener" "traefik_auth" {
   }
 
   default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.traefik_auth[0].arn
+    type  = "forward"
+    order = 2
+
+    dynamic "target_group" {
+      for_each = concat(aws_lb_target_group.traefik_auth, aws_lb_target_group.traefik_auth_variant)
+      content {
+        arn = var.arn
+        # TODO(emil): switch the weighting
+        weight = 1
+      }
+    }
+  }
+}
+
+resource "aws_lb_listener" "traefik_auth_variant_1" {
+  count             = var.deploy ? 1 : 0
+  load_balancer_arn = aws_lb.traefik_auth[0].arn
+  port              = "8443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
+  certificate_arn   = var.alb_certificate_arn
+
+  default_action {
+    type  = "authenticate-oidc"
+    order = 1
+
+    authenticate_oidc {
+      authorization_endpoint = "https://login.microsoftonline.com/${var.azure_tenant_id}/oauth2/v2.0/authorize"
+      client_id              = var.azure_client_id
+      client_secret          = var.azure_client_secret
+      issuer                 = "https://login.microsoftonline.com/${var.azure_tenant_id}/v2.0"
+      token_endpoint         = "https://login.microsoftonline.com/${var.azure_tenant_id}/oauth2/v2.0/token"
+      user_info_endpoint     = "https://graph.microsoft.com/oidc/userinfo"
+    }
+  }
+
+  default_action {
+    type  = "forward"
+    order = 2
+
+    target_group {
+      arn = aws_lb_target_group.traefik_auth[0].arn
+      # TODO(emil): switch the weighting
+      weight = 1
+    }
+  }
+}
+
+resource "aws_lb_listener" "traefik_auth_variant_2" {
+  count             = var.deploy_variant ? 1 : 0
+  load_balancer_arn = aws_lb.traefik_auth[0].arn
+  port              = "9443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
+  certificate_arn   = var.alb_certificate_arn
+
+  default_action {
+    type  = "authenticate-oidc"
+    order = 1
+
+    authenticate_oidc {
+      authorization_endpoint = "https://login.microsoftonline.com/${var.azure_tenant_id}/oauth2/v2.0/authorize"
+      client_id              = var.azure_client_id
+      client_secret          = var.azure_client_secret
+      issuer                 = "https://login.microsoftonline.com/${var.azure_tenant_id}/v2.0"
+      token_endpoint         = "https://login.microsoftonline.com/${var.azure_tenant_id}/oauth2/v2.0/token"
+      user_info_endpoint     = "https://graph.microsoft.com/oidc/userinfo"
+    }
+  }
+
+  default_action {
+    type  = "forward"
+    order = 2
+
+    target_group {
+      arn = aws_lb_target_group.traefik_auth_variant[0].arn
+      # TODO(emil): switch the weighting
+      weight = 1
+    }
   }
 }
 
@@ -107,6 +214,14 @@ resource "aws_security_group" "traefik_auth" {
     cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sg
   }
 
+  egress {
+    description = "Egress on standard HTTPS port"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg
+  }
+
   ingress {
     description = "Ingress on target_admin_port"
     from_port   = var.target_admin_port
@@ -123,10 +238,50 @@ resource "aws_security_group" "traefik_auth" {
     cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg
   }
 
+  ingress {
+    description = "Ingress on variant_target_admin_port"
+    from_port   = var.variant_target_admin_port
+    to_port     = var.variant_target_admin_port
+    protocol    = "TCP"
+    self        = true
+  }
+
   egress {
-    description = "Egress on standard HTTPS port"
-    from_port   = 443
-    to_port     = 443
+    description = "Egress from var.variant_target_http_port to var.variant_target_admin_port"
+    from_port   = var.variant_target_http_port
+    to_port     = var.variant_target_admin_port
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg
+  }
+
+  ingress {
+    description = "Ingress on HTTPS port fixed at target of variant A"
+    from_port   = 8443
+    to_port     = 8443
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sg
+  }
+
+  egress {
+    description = "Egress on HTTPS port fixed at target of variant A"
+    from_port   = 8443
+    to_port     = 8443
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg
+  }
+
+  ingress {
+    description = "Ingress on HTTPS port fixed at target of variant B"
+    from_port   = 9443
+    to_port     = 9443
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sg
+  }
+
+  egress {
+    description = "Egress on HTTPS port fixed at target of variant B"
+    from_port   = 9443
+    to_port     = 9443
     protocol    = "TCP"
     cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg
   }
@@ -153,3 +308,14 @@ resource "aws_security_group_rule" "allow_traefik_auth" {
   security_group_id = var.nodes_sg_id
 }
 
+# tfsec:ignore:aws-vpc-add-description-to-security-group
+resource "aws_security_group_rule" "allow_traefik_auth_variant" {
+  count                    = var.deploy_variant ? 1 : 0
+  type                     = "ingress"
+  from_port                = var.variant_target_http_port
+  to_port                  = var.variant_target_admin_port
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.traefik_auth[0].id
+
+  security_group_id = var.nodes_sg_id
+}

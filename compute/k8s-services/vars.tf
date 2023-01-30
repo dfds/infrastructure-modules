@@ -763,43 +763,43 @@ variable "traefik_flux_dashboard_deploy" {
   default     = true
 }
 
-# A traefik replica is deployed to allow us to perform zero downtime updates
+# A traefik variant is deployed to allow us to perform zero downtime updates
 # in cases where the Traefik deployment needs to recreated, such as a modification
 # of an immutable field.
 
-variable "traefik_replica_flux_helm_chart_version" {
+variable "traefik_variant_flux_helm_chart_version" {
   type        = string
-  description = "Helm Chart version to be used to deploy the Traefik replica"
+  description = "Helm Chart version to be used to deploy the Traefik variant"
   default     = null
 }
 
-variable "traefik_replica_flux_http_nodeport" {
+variable "traefik_variant_flux_http_nodeport" {
   type        = number
-  description = "Nodeport used by ALB's to connect to the Traefik replica instance"
+  description = "Nodeport used by ALB's to connect to the Traefik variant instance"
   default     = 32000
 }
 
-variable "traefik_replica_flux_admin_nodeport" {
+variable "traefik_variant_flux_admin_nodeport" {
   type        = number
-  description = "Nodeport used by ALB's to connect to the Traefik replica instance admin page"
+  description = "Nodeport used by ALB's to connect to the Traefik variant instance admin page"
   default     = 32001
 }
 
-variable "traefik_replica_flux_additional_args" {
+variable "traefik_variant_flux_additional_args" {
   type        = list(any)
-  description = "Pass arguments to the additionalArguments node in the Traefik Helm chart for the replica"
+  description = "Pass arguments to the additionalArguments node in the Traefik Helm chart for the variant"
   default     = ["--metrics.prometheus"]
 }
 
-variable "traefik_replica_flux_deploy" {
+variable "traefik_variant_flux_deploy" {
   type        = bool
-  description = "Whether to deploy the Traefika replica."
+  description = "Whether to deploy the Traefika variant."
   default     = false
 }
 
-variable "traefik_replica_flux_dashboard_deploy" {
+variable "traefik_variant_flux_dashboard_deploy" {
   type        = bool
-  description = "Deploy ingressroute for external access to the replica Traefik dashboard."
+  description = "Deploy ingressroute for external access to the variant Traefik dashboard."
   default     = false
 }
 
