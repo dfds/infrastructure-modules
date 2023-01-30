@@ -763,6 +763,46 @@ variable "traefik_flux_dashboard_deploy" {
   default     = true
 }
 
+# A traefik replica is deployed to allow us to perform zero downtime updates
+# in cases where the Traefik deployment needs to recreated, such as a modification
+# of an immutable field.
+
+variable "traefik_replica_flux_helm_chart_version" {
+  type        = string
+  description = "Helm Chart version to be used to deploy the Traefik replica"
+  default     = null
+}
+
+variable "traefik_replica_flux_http_nodeport" {
+  type        = number
+  description = "Nodeport used by ALB's to connect to the Traefik replica instance"
+  default     = 32000
+}
+
+variable "traefik_replica_flux_admin_nodeport" {
+  type        = number
+  description = "Nodeport used by ALB's to connect to the Traefik replica instance admin page"
+  default     = 32001
+}
+
+variable "traefik_replica_flux_additional_args" {
+  type        = list(any)
+  description = "Pass arguments to the additionalArguments node in the Traefik Helm chart for the replica"
+  default     = ["--metrics.prometheus"]
+}
+
+variable "traefik_replica_flux_deploy" {
+  type        = bool
+  description = "Whether to deploy the Traefika replica."
+  default     = false
+}
+
+variable "traefik_replica_flux_dashboard_deploy" {
+  type        = bool
+  description = "Deploy ingressroute for external access to the replica Traefik dashboard."
+  default     = false
+}
+
 # --------------------------------------------------
 # Blackbox Exporter
 # --------------------------------------------------
