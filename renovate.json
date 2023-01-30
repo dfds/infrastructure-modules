@@ -37,11 +37,6 @@
             "automerge": false,
             "dependencyDashboard": true,
             "dependencyDashboardApproval": false
-        },
-        {
-            "matchManagers": ["gomod"],
-            "matchDepTypes": ["indirect"],
-            "enabled": true
         }
     ]
 }
