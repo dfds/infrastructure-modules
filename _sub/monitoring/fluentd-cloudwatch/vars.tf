@@ -20,19 +20,9 @@ variable "repo_branch" {
   description = "The git branch."
 }
 
-variable "github_owner" {
-  type        = string
-  description = "The GitHub organization owner."
-}
-
 variable "aws_region" {
   type        = string
   description = "Which AWS region to store the cloudwatch logs in."
-}
-
-variable "account_id" {
-  type        = string
-  description = "The account id that owns the cloudwatch logs from fluentd."
 }
 
 variable "retention_in_days" {
