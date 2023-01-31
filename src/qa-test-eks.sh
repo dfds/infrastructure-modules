@@ -18,7 +18,16 @@ if [ "$ACTION" = "apply-cluster" ]; then
 	WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}"
 
 	# Apply the configuration
-	terragrunt run-all apply --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
+	terragrunt run-all apply --terragrunt-working-dir "$WORKDIR" --terragrunt-exclude-dir "$WORKDIR/services" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
+fi
+
+if [ "$ACTION" = "apply-services" ]; then
+	REGION=$2
+	CLUSTERNAME=$3
+	WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}"
+
+	# Apply the configuration
+	terragrunt apply --terragrunt-working-dir "$WORKDIR/services" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
 fi
 
 if [ "$ACTION" = "test-build" ]; then
