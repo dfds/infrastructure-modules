@@ -42,7 +42,7 @@ resource "aws_security_group_rule" "allow_connections_from_security_group" {
   protocol                 = "tcp"
   source_security_group_id = element(var.allow_connections_from_security_groups, count.index)
 
-  security_group_id = element(concat(aws_security_group.db.*.id, [""]), 0)
+  security_group_id = element(concat(aws_security_group.db[*].id, [""]), 0)
 
   lifecycle {
     create_before_destroy = true
