@@ -154,13 +154,15 @@ module "traefik_alb_auth" {
   azure_tenant_id       = try(module.traefik_alb_auth_appreg[0].tenant_id, "")
   azure_client_id       = try(module.traefik_alb_auth_appreg[0].application_id, "")
   azure_client_secret   = try(module.traefik_alb_auth_appreg[0].application_key, "")
+  target_http_port      = var.traefik_flux_http_nodeport
+  target_admin_port     = var.traefik_flux_admin_nodeport
   health_check_path     = "/ping"
   access_logs_bucket    = module.traefik_alb_s3_access_logs.name
 
   # TODO(emil): put this in a var
   deploy_variant            = true
-  variant_target_http_port  = var.variant_traefik_flux_http_nodeport
-  variant_target_admin_port = var.variant_traefik_flux_admin_nodeport
+  variant_target_http_port  = var.traefik_variant_flux_http_nodeport
+  variant_target_admin_port = var.traefik_variant_flux_admin_nodeport
   variant_health_check_path = "/ping"
 }
 

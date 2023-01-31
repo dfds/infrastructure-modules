@@ -46,7 +46,7 @@ resource "aws_autoscaling_attachment" "traefik_auth" {
 
 resource "aws_lb_target_group" "traefik_auth_variant" {
   count                = var.deploy_variant ? 1 : 0
-  name_prefix          = "variant-${substr(var.cluster_name, 0, min(6, length(var.cluster_name)))}"
+  name_prefix          = "b-${substr(var.cluster_name, 0, min(4, length(var.cluster_name)))}"
   port                 = var.variant_target_http_port
   protocol             = "HTTP"
   vpc_id               = var.vpc_id
@@ -96,12 +96,14 @@ resource "aws_lb_listener" "traefik_auth" {
     type  = "forward"
     order = 2
 
-    dynamic "target_group" {
-      for_each = concat(aws_lb_target_group.traefik_auth, aws_lb_target_group.traefik_auth_variant)
-      content {
-        arn = var.arn
-        # TODO(emil): switch the weighting
-        weight = 1
+    forward {
+      dynamic "target_group" {
+        for_each = concat(aws_lb_target_group.traefik_auth, aws_lb_target_group.traefik_auth_variant)
+        content {
+          arn = target_group.value["arn"]
+          # TODO(emil): switch the weighting
+          weight = 1
+        }
       }
     }
   }
@@ -133,10 +135,12 @@ resource "aws_lb_listener" "traefik_auth_variant_1" {
     type  = "forward"
     order = 2
 
-    target_group {
-      arn = aws_lb_target_group.traefik_auth[0].arn
-      # TODO(emil): switch the weighting
-      weight = 1
+    forward {
+      target_group {
+        arn = aws_lb_target_group.traefik_auth[0].arn
+        # TODO(emil): switch the weighting
+        weight = 1
+      }
     }
   }
 }
@@ -167,10 +171,12 @@ resource "aws_lb_listener" "traefik_auth_variant_2" {
     type  = "forward"
     order = 2
 
-    target_group {
-      arn = aws_lb_target_group.traefik_auth_variant[0].arn
-      # TODO(emil): switch the weighting
-      weight = 1
+    forward {
+      target_group {
+        arn = aws_lb_target_group.traefik_auth_variant[0].arn
+        # TODO(emil): switch the weighting
+        weight = 1
+      }
     }
   }
 }
