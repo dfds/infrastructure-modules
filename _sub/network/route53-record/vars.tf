@@ -4,6 +4,7 @@ variable "deploy" {
 }
 
 variable "zone_id" {
+  type = string
 }
 
 variable "record_name" {
@@ -11,11 +12,14 @@ variable "record_name" {
 }
 
 variable "record_type" {
+  type = string
 }
 
 variable "record_value" {
+  type = string
 }
 
 variable "record_ttl" {
+  type    = number
   default = 900
 }
