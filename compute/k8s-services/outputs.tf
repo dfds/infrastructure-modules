@@ -19,8 +19,7 @@ output "traefik_alb_auth_dns_name" {
 }
 
 output "traefik_dashboard_url" {
-  # try() can't be used on module outputs due to: module.traefik_flux_manifests is a list of object, known only after apply
-  value = var.traefik_flux_dashboard_deploy ? "https://${local.traefik_flux_dashboard_ingress_host}/dashboard/" : "Not enabled in service configuration."
+  value = var.traefik_flux_deploy ? "https://traefik.${var.eks_cluster_name}.${var.workload_dns_zone_name}/dashboard/" : "Not enabled in service configuration."
 }
 
 output "grafana_url" {

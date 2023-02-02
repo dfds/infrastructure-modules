@@ -57,30 +57,7 @@ variable "additional_args" {
   default     = ["--metrics.prometheus"]
 }
 
-variable "is_using_alb_auth" {
-  type    = bool
-  default = false
-}
-
-variable "dashboard_deploy" {
-  type        = bool
-  description = "Deploy ingressroute for external access to Traefik dashboard."
-  default     = true
-}
-
-variable "dashboard_username" {
-  type        = string
-  description = "Username used for basic authentication."
-  default     = "cloudengineer"
-}
-
 variable "dashboard_ingress_host" {
   type        = string
   description = "The alb auth dns name for accessing Traefik."
-}
-
-variable "ssm_param_createdby" {
-  type        = string
-  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
-  default     = null
 }
