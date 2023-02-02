@@ -103,18 +103,21 @@ resource "aws_lb_listener" "traefik_auth" {
         enabled  = false
       }
 
-      # TODO(emil): handle non-variant case
       dynamic "target_group" {
-        for_each = [
-          {
-            arn    = aws_lb_target_group.traefik_auth[0].arn
-            weight = var.weight
-          },
-          {
-            arn    = aws_lb_target_group.traefik_auth_variant[0].arn
-            weight = var.variant_weight
-          }
-        ]
+        for_each = concat(
+          var.deploy ? [
+            {
+              arn    = aws_lb_target_group.traefik_auth[0].arn
+              weight = var.weight
+            }
+          ] : [],
+          var.deploy_variant ? [
+            {
+              arn    = aws_lb_target_group.traefik_auth_variant[0].arn
+              weight = var.variant_weight
+            }
+          ] : []
+        )
         content {
           arn    = target_group.value["arn"]
           weight = target_group.value["weight"]
