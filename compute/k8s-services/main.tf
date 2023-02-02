@@ -223,7 +223,7 @@ module "traefik_alb_auth_dns_core_alias" {
   record_name  = var.traefik_alb_auth_core_alias
   record_type  = "CNAME"
   record_ttl   = "900"
-  record_value = "${element(concat(module.traefik_alb_auth_dns.record_name, [""]), 0)}.${var.workload_dns_zone_name}."
+  record_value = "${module.traefik_alb_auth.alb_fqdn}."
 
   providers = {
     aws = aws.core

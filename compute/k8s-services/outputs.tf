@@ -14,12 +14,12 @@ output "traefik_alb_anon_dns_name" {
   value = "${element(concat(module.traefik_alb_anon_dns.record_name, [""]), 0)}.${var.workload_dns_zone_name}"
 }
 
-output "traefik_alb_auth_dns_name" {
-  value = "${element(concat(module.traefik_alb_auth_dns.record_name, [""]), 0)}.${var.workload_dns_zone_name}"
+output "traefik_dashboard_url" {
+  value = var.traefik_flux_deploy ? var.traefik_variant_flux_deploy ? "https://traefik.${var.eks_cluster_name}.${var.workload_dns_zone_name}:8443/dashboard/" : "https://traefik.${var.eks_cluster_name}.${var.workload_dns_zone_name}/dashboard/" : "Not enabled in service configuration."
 }
 
-output "traefik_dashboard_url" {
-  value = var.traefik_flux_deploy ? "https://traefik.${var.eks_cluster_name}.${var.workload_dns_zone_name}/dashboard/" : "Not enabled in service configuration."
+output "traefik_variant_dashboard_url" {
+  value = var.traefik_variant_flux_deploy ? "https://traefik-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}:9443/dashboard/" : "Not enabled in service configuration."
 }
 
 output "grafana_url" {
