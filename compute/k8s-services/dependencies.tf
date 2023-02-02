@@ -89,6 +89,7 @@ locals {
   traefik_alb_auth_endpoints = concat(
     var.traefik_flux_deploy && !var.traefik_variant_flux_deploy ? ["traefik.${local.eks_fqdn}"] : [],
     var.traefik_flux_deploy && var.traefik_variant_flux_deploy ? ["traefik.${local.eks_fqdn}:8443", "traefik-variant.${local.eks_fqdn}:9443"] : [],
+    var.traefik_flux_deploy ? ["grafana.${local.eks_fqdn}"] : [],
     var.traefik_flux_deploy ? var.traefik_alb_auth_core_alias : [],
   )
   traefik_alb_auth_appreg_reply_join        = "^${join("$,^", local.traefik_alb_auth_endpoints)}$"
@@ -164,43 +165,6 @@ data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
 
     actions = ["sts:AssumeRoleWithWebIdentity"]
   }
-}
-
-# ---------------------------------------------------------------------
-# Traefik dashboard secure access
-#
-# Caution:
-# Each instance of the traefik sub module needs its
-# own locals to calculate the ingress host to use for
-# that instance of Traefik. That is to avoid sending
-# too many irrelevant variables into the sub module.
-#
-# Logic explained:
-# IF traefik_alb_auth_core_alias in services/terragrunt.hcl contains
-#   traefik.dfds.cloud
-# THEN use traefik.dfds.cloud as Traefik dashboard ingress host
-# ELSE use traefik.<cluster-name>.<capability-name>.dfds.cloud
-#
-# ---------------------------------------------------------------------
-
-locals {
-  traefik_flux_dashboard_ingress_prod_host = "traefik.${local.core_dns_zone_name}"
-  traefik_flux_alb_auth_dns_name           = try(module.traefik_alb_auth_dns.record_name["0"], "traefik.${var.eks_cluster_name}")
-  traefik_flux_dashboard_ingress_host = contains(
-    var.traefik_alb_auth_core_alias,
-    local.traefik_flux_dashboard_ingress_prod_host
-  ) ? local.traefik_flux_dashboard_ingress_prod_host : "${local.traefik_flux_alb_auth_dns_name}.${var.workload_dns_zone_name}"
-  traefik_flux_is_using_alb_auth = length(regexall("^.*traefik.*", join(" ", var.traefik_alb_auth_core_alias))) > 0 ? true : false
-}
-
-locals {
-  traefik_variant_flux_dashboard_ingress_prod_host = "traefik-variant.${local.core_dns_zone_name}"
-  traefik_variant_flux_alb_auth_dns_name           = try(module.traefik_variant_alb_auth_dns.record_name["0"], "traefik-variant.${var.eks_cluster_name}")
-  traefik_variant_flux_dashboard_ingress_host = contains(
-    var.traefik_alb_auth_core_alias,
-    local.traefik_variant_flux_dashboard_ingress_prod_host
-  ) ? local.traefik_variant_flux_dashboard_ingress_prod_host : "${local.traefik_variant_flux_alb_auth_dns_name}.${var.workload_dns_zone_name}"
-  traefik_variant_flux_is_using_alb_auth = length(regexall("^.*traefik-variant.*", join(" ", var.traefik_alb_auth_core_alias))) > 0 ? true : false
 }
 
 # --------------------------------------------------

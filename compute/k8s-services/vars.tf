@@ -30,12 +30,6 @@ variable "workload_dns_zone_name" {
 # Optional
 # --------------------------------------------------
 
-variable "ssm_param_createdby" {
-  type        = string
-  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
-  default     = null
-}
-
 variable "s3_bucket_additional_tags" {
   description = "Add additional tags to s3 bucket"
   type        = map(any)
@@ -757,12 +751,6 @@ variable "traefik_flux_deploy" {
   default = true
 }
 
-variable "traefik_flux_dashboard_deploy" {
-  type        = bool
-  description = "Deploy ingressroute for external access to Traefik dashboard."
-  default     = true
-}
-
 # A traefik variant is deployed to allow us to perform zero downtime updates
 # in cases where the Traefik deployment needs to recreated, such as a modification
 # of an immutable field.
@@ -794,12 +782,6 @@ variable "traefik_variant_flux_additional_args" {
 variable "traefik_variant_flux_deploy" {
   type        = bool
   description = "Whether to deploy the Traefika variant."
-  default     = false
-}
-
-variable "traefik_variant_flux_dashboard_deploy" {
-  type        = bool
-  description = "Deploy ingressroute for external access to the variant Traefik dashboard."
   default     = false
 }
 

@@ -111,10 +111,7 @@ module "traefik_flux_manifests" {
   repo_name              = var.traefik_flux_repo_name
   repo_branch            = var.traefik_flux_repo_branch
   additional_args        = var.traefik_flux_additional_args
-  dashboard_deploy       = var.traefik_flux_dashboard_deploy
-  dashboard_ingress_host = local.traefik_flux_dashboard_ingress_host
-  is_using_alb_auth      = local.traefik_flux_is_using_alb_auth
-  ssm_param_createdby    = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-services"
+  dashboard_ingress_host = "traefik.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
 
   providers = {
     github = github.fluxcd
@@ -137,10 +134,7 @@ module "traefik_variant_flux_manifests" {
   repo_name              = var.traefik_flux_repo_name
   repo_branch            = var.traefik_flux_repo_branch
   additional_args        = var.traefik_variant_flux_additional_args
-  dashboard_deploy       = var.traefik_variant_flux_dashboard_deploy
-  dashboard_ingress_host = local.traefik_variant_flux_dashboard_ingress_host
-  is_using_alb_auth      = local.traefik_variant_flux_is_using_alb_auth
-  ssm_param_createdby    = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-services"
+  dashboard_ingress_host = "traefik-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
 
   providers = {
     github = github.fluxcd
@@ -192,21 +186,31 @@ module "traefik_alb_auth" {
   variant_health_check_path = "/ping"
 }
 
-module "traefik_alb_auth_dns" {
+module "traefik_alb_auth_dns_for_grafana" {
   source       = "../../_sub/network/route53-record"
-  deploy       = var.traefik_flux_deploy && var.traefik_alb_auth_deploy
+  deploy       = (var.traefik_alb_auth_deploy && var.monitoring_kube_prometheus_stack_deploy) ? true : false
   zone_id      = local.workload_dns_zone_id
-  record_name  = ["traefik.${var.eks_cluster_name}"]
+  record_name  = ["grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
   record_type  = "CNAME"
   record_ttl   = "900"
   record_value = "${module.traefik_alb_auth.alb_fqdn}."
 }
 
-module "traefik_variant_alb_auth_dns" {
+module "traefik_alb_auth_dns_for_traefik_dashboard" {
   source       = "../../_sub/network/route53-record"
-  deploy       = var.traefik_variant_flux_deploy && var.traefik_alb_auth_deploy
+  deploy       = (var.traefik_flux_deploy && var.traefik_alb_auth_deploy) ? true : false
   zone_id      = local.workload_dns_zone_id
-  record_name  = ["traefik-variant.${var.eks_cluster_name}"]
+  record_name  = ["traefik.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = "${module.traefik_alb_auth.alb_fqdn}."
+}
+
+module "traefik_alb_auth_dns_for_traefik_variant_dashboard" {
+  source       = "../../_sub/network/route53-record"
+  deploy       = (var.traefik_variant_flux_deploy && var.traefik_alb_auth_deploy) ? true : false
+  zone_id      = local.workload_dns_zone_id
+  record_name  = ["traefik-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
   record_type  = "CNAME"
   record_ttl   = "900"
   record_value = "${module.traefik_alb_auth.alb_fqdn}."
