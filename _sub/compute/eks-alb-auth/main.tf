@@ -46,7 +46,7 @@ resource "aws_autoscaling_attachment" "traefik_auth" {
 
 resource "aws_lb_target_group" "traefik_auth_variant" {
   count                = var.deploy_variant ? 1 : 0
-  name_prefix          = "b-${substr(var.cluster_name, 0, min(4, length(var.cluster_name)))}"
+  name_prefix          = "v${substr(var.cluster_name, 0, min(5, length(var.cluster_name)))}"
   port                 = var.variant_target_http_port
   protocol             = "HTTP"
   vpc_id               = var.vpc_id
@@ -110,7 +110,7 @@ resource "aws_lb_listener" "traefik_auth" {
 }
 
 resource "aws_lb_listener" "traefik_auth_variant_1" {
-  count             = var.deploy ? 1 : 0
+  count             = var.deploy_variant ? 1 : 0
   load_balancer_arn = aws_lb.traefik_auth[0].arn
   port              = "8443"
   protocol          = "HTTPS"
@@ -137,8 +137,7 @@ resource "aws_lb_listener" "traefik_auth_variant_1" {
 
     forward {
       target_group {
-        arn = aws_lb_target_group.traefik_auth[0].arn
-        # TODO(emil): switch the weighting
+        arn    = aws_lb_target_group.traefik_auth[0].arn
         weight = 1
       }
     }
@@ -173,8 +172,7 @@ resource "aws_lb_listener" "traefik_auth_variant_2" {
 
     forward {
       target_group {
-        arn = aws_lb_target_group.traefik_auth_variant[0].arn
-        # TODO(emil): switch the weighting
+        arn    = aws_lb_target_group.traefik_auth_variant[0].arn
         weight = 1
       }
     }

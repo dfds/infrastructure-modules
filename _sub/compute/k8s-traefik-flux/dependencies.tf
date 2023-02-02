@@ -72,7 +72,7 @@ locals {
     "apiVersion" = "kustomize.config.k8s.io/v1beta1"
     "kind"       = "Kustomization"
     "resources" = [
-      "https://github.com/dfds/platform-apps/apps/${var.deploy_name}"
+      "https://github.com/dfds/platform-apps/apps/${var.deploy_name}?ref=add-traefik-variant" # TODO(emil): remove this after testing
     ]
     "patchesStrategicMerge" = [
       "patch.yaml"
@@ -169,6 +169,7 @@ locals {
     "spec" = {
       "basicAuth" = {
         "secret" = local.dashboard_basic_auth_secret_name
+        "realm"  = var.deploy_name
       }
     }
   }

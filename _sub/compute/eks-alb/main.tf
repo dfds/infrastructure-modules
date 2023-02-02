@@ -15,12 +15,6 @@ resource "aws_lb" "traefik" {
   drop_invalid_header_fields = true
 }
 
-resource "aws_autoscaling_attachment" "traefik" {
-  count                  = var.deploy ? length(var.autoscaling_group_ids) : 0
-  autoscaling_group_name = var.autoscaling_group_ids[count.index]
-  lb_target_group_arn    = aws_lb_target_group.traefik[0].arn
-}
-
 resource "aws_lb_target_group" "traefik" {
   count                = var.deploy ? 1 : 0
   name_prefix          = substr(var.cluster_name, 0, min(6, length(var.cluster_name)))
@@ -41,6 +35,41 @@ resource "aws_lb_target_group" "traefik" {
   }
 }
 
+resource "aws_autoscaling_attachment" "traefik" {
+  count                  = var.deploy ? length(var.autoscaling_group_ids) : 0
+  autoscaling_group_name = var.autoscaling_group_ids[count.index]
+  lb_target_group_arn    = aws_lb_target_group.traefik[0].arn
+}
+
+# A variant target group is deployed if we want to gradually rollout
+# a new listener target.
+
+resource "aws_lb_target_group" "traefik_variant" {
+  count                = var.deploy_variant ? 1 : 0
+  name_prefix          = "v${substr(var.cluster_name, 0, min(5, length(var.cluster_name)))}"
+  port                 = var.variant_target_http_port
+  protocol             = "HTTP"
+  vpc_id               = var.vpc_id
+  deregistration_delay = 300
+
+  health_check {
+    path     = var.variant_health_check_path
+    port     = var.variant_target_admin_port
+    protocol = "HTTP"
+    matcher  = 200
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_autoscaling_attachment" "traefik_variant" {
+  count                  = var.deploy_variant ? length(var.autoscaling_group_ids) : 0
+  autoscaling_group_name = var.autoscaling_group_ids[count.index]
+  lb_target_group_arn    = aws_lb_target_group.traefik_variant[0].arn
+}
+
 resource "aws_lb_listener" "traefik" {
   count             = var.deploy ? 1 : 0
   load_balancer_arn = aws_lb.traefik[0].arn
@@ -50,8 +79,61 @@ resource "aws_lb_listener" "traefik" {
   certificate_arn   = var.alb_certificate_arn
 
   default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.traefik[0].arn
+    type  = "forward"
+    order = 1
+
+    forward {
+      dynamic "target_group" {
+        for_each = concat(aws_lb_target_group.traefik, aws_lb_target_group.traefik_variant)
+        content {
+          arn = target_group.value["arn"]
+          # TODO(emil): switch the weighting
+          weight = 1
+        }
+      }
+    }
+  }
+}
+
+resource "aws_lb_listener" "traefik_variant_1" {
+  count             = var.deploy_variant ? 1 : 0
+  load_balancer_arn = aws_lb.traefik[0].arn
+  port              = "8443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
+  certificate_arn   = var.alb_certificate_arn
+
+  default_action {
+    type  = "forward"
+    order = 1
+
+    forward {
+      target_group {
+        arn    = aws_lb_target_group.traefik[0].arn
+        weight = 1
+      }
+    }
+  }
+}
+
+resource "aws_lb_listener" "traefik_variant_2" {
+  count             = var.deploy_variant ? 1 : 0
+  load_balancer_arn = aws_lb.traefik[0].arn
+  port              = "9443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
+  certificate_arn   = var.alb_certificate_arn
+
+  default_action {
+    type  = "forward"
+    order = 1
+
+    forward {
+      target_group {
+        arn    = aws_lb_target_group.traefik_variant[0].arn
+        weight = 1
+      }
+    }
   }
 }
 
@@ -110,6 +192,38 @@ resource "aws_security_group" "traefik" {
     cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg
   }
 
+  ingress {
+    description = "Ingress on var.variant_target_admin_port"
+    from_port   = var.variant_target_admin_port
+    to_port     = var.variant_target_admin_port
+    protocol    = "TCP"
+    self        = true
+  }
+
+  egress {
+    description = "Egress from var.variant_target_http_port to var.variant_target_admin_port"
+    from_port   = var.variant_target_http_port
+    to_port     = var.variant_target_admin_port
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg
+  }
+
+  ingress {
+    description = "Ingress on HTTPS port fixed at target of variant A"
+    from_port   = 8443
+    to_port     = 8443
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sg
+  }
+
+  ingress {
+    description = "Ingress on HTTPS port fixed at target of variant B"
+    from_port   = 9443
+    to_port     = 9443
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sg
+  }
+
   tags = {
     Name = "${var.cluster_name}-traefik-sg"
   }
@@ -132,3 +246,14 @@ resource "aws_security_group_rule" "allow_traefik" {
   security_group_id = var.nodes_sg_id
 }
 
+# tfsec:ignore:aws-vpc-add-description-to-security-group
+resource "aws_security_group_rule" "allow_traefik_variant" {
+  count                    = var.deploy_variant ? 1 : 0
+  type                     = "ingress"
+  from_port                = var.variant_target_http_port
+  to_port                  = var.variant_target_admin_port
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.traefik[0].id
+
+  security_group_id = var.nodes_sg_id
+}

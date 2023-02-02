@@ -101,6 +101,8 @@ module "traefik_flux_manifests" {
   source                 = "../../_sub/compute/k8s-traefik-flux"
   count                  = var.traefik_flux_deploy ? 1 : 0
   cluster_name           = var.eks_cluster_name
+  deploy_name            = "traefik"
+  namespace              = "traefik"
   helm_chart_version     = var.traefik_flux_helm_chart_version
   replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
   http_nodeport          = var.traefik_flux_http_nodeport
@@ -112,6 +114,32 @@ module "traefik_flux_manifests" {
   dashboard_deploy       = var.traefik_flux_dashboard_deploy
   dashboard_ingress_host = local.traefik_flux_dashboard_ingress_host
   is_using_alb_auth      = local.traefik_flux_is_using_alb_auth
+  ssm_param_createdby    = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-services"
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
+}
+
+module "traefik_variant_flux_manifests" {
+  source                 = "../../_sub/compute/k8s-traefik-flux"
+  count                  = var.traefik_variant_flux_deploy ? 1 : 0
+  cluster_name           = var.eks_cluster_name
+  deploy_name            = "traefik-variant"
+  namespace              = "traefik-variant"
+  helm_chart_version     = var.traefik_variant_flux_helm_chart_version
+  replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
+  http_nodeport          = var.traefik_variant_flux_http_nodeport
+  admin_nodeport         = var.traefik_variant_flux_admin_nodeport
+  github_owner           = var.traefik_flux_github_owner
+  repo_name              = var.traefik_flux_repo_name
+  repo_branch            = var.traefik_flux_repo_branch
+  additional_args        = var.traefik_variant_flux_additional_args
+  dashboard_deploy       = var.traefik_variant_flux_dashboard_deploy
+  dashboard_ingress_host = local.traefik_variant_flux_dashboard_ingress_host
+  is_using_alb_auth      = local.traefik_variant_flux_is_using_alb_auth
   ssm_param_createdby    = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-services"
 
   providers = {
@@ -140,7 +168,6 @@ module "traefik_alb_auth_appreg" {
   redirect_uris   = local.traefik_alb_auth_appreg_reply_urls
 }
 
-# TODO(emil): add optional replica here
 module "traefik_alb_auth" {
   source                = "../../_sub/compute/eks-alb-auth"
   deploy                = var.traefik_alb_auth_deploy
@@ -159,8 +186,7 @@ module "traefik_alb_auth" {
   health_check_path     = "/ping"
   access_logs_bucket    = module.traefik_alb_s3_access_logs.name
 
-  # TODO(emil): put this in a var
-  deploy_variant            = true
+  deploy_variant            = var.traefik_variant_flux_deploy
   variant_target_http_port  = var.traefik_variant_flux_http_nodeport
   variant_target_admin_port = var.traefik_variant_flux_admin_nodeport
   variant_health_check_path = "/ping"
@@ -168,9 +194,19 @@ module "traefik_alb_auth" {
 
 module "traefik_alb_auth_dns" {
   source       = "../../_sub/network/route53-record"
-  deploy       = var.traefik_alb_auth_deploy
+  deploy       = var.traefik_flux_deploy && var.traefik_alb_auth_deploy
   zone_id      = local.workload_dns_zone_id
-  record_name  = ["internal.${var.eks_cluster_name}"]
+  record_name  = ["traefik.${var.eks_cluster_name}"]
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = "${module.traefik_alb_auth.alb_fqdn}."
+}
+
+module "traefik_variant_alb_auth_dns" {
+  source       = "../../_sub/network/route53-record"
+  deploy       = var.traefik_variant_flux_deploy && var.traefik_alb_auth_deploy
+  zone_id      = local.workload_dns_zone_id
+  record_name  = ["traefik-variant.${var.eks_cluster_name}"]
   record_type  = "CNAME"
   record_ttl   = "900"
   record_value = "${module.traefik_alb_auth.alb_fqdn}."
@@ -204,6 +240,11 @@ module "traefik_alb_anon" {
   target_admin_port     = var.traefik_flux_admin_nodeport
   health_check_path     = "/ping"
   access_logs_bucket    = module.traefik_alb_s3_access_logs.name
+
+  deploy_variant            = var.traefik_variant_flux_deploy
+  variant_target_http_port  = var.traefik_variant_flux_http_nodeport
+  variant_target_admin_port = var.traefik_variant_flux_admin_nodeport
+  variant_health_check_path = "/ping"
 }
 
 module "traefik_alb_anon_dns" {

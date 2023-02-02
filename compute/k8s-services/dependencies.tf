@@ -87,8 +87,9 @@ locals {
 
 locals {
   traefik_alb_auth_endpoints = concat(
-    ["internal.${local.eks_fqdn}"],
-    var.traefik_alb_auth_core_alias,
+    var.traefik_flux_deploy && !var.traefik_variant_flux_deploy ? ["traefik.${local.eks_fqdn}"] : [],
+    var.traefik_flux_deploy && var.traefik_variant_flux_deploy ? ["traefik.${local.eks_fqdn}:8443", "traefik-variant.${local.eks_fqdn}:9443"] : [],
+    var.traefik_flux_deploy ? var.traefik_alb_auth_core_alias : [],
   )
   traefik_alb_auth_appreg_reply_join        = "^${join("$,^", local.traefik_alb_auth_endpoints)}$"
   traefik_alb_auth_appreg_reply_replace_pre = replace(local.traefik_alb_auth_appreg_reply_join, "^", "https://")
@@ -178,7 +179,7 @@ data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
 # IF traefik_alb_auth_core_alias in services/terragrunt.hcl contains
 #   traefik.dfds.cloud
 # THEN use traefik.dfds.cloud as Traefik dashboard ingress host
-# ELSE use internal.<cluster-name>.<capability-name>.dfds.cloud
+# ELSE use traefik.<cluster-name>.<capability-name>.dfds.cloud
 #
 # ---------------------------------------------------------------------
 
@@ -190,6 +191,16 @@ locals {
     local.traefik_flux_dashboard_ingress_prod_host
   ) ? local.traefik_flux_dashboard_ingress_prod_host : "${local.traefik_flux_alb_auth_dns_name}.${var.workload_dns_zone_name}"
   traefik_flux_is_using_alb_auth = length(regexall("^.*traefik.*", join(" ", var.traefik_alb_auth_core_alias))) > 0 ? true : false
+}
+
+locals {
+  traefik_variant_flux_dashboard_ingress_prod_host = "traefik-variant.${local.core_dns_zone_name}"
+  traefik_variant_flux_alb_auth_dns_name           = try(module.traefik_variant_alb_auth_dns.record_name["0"], "traefik-variant.${var.eks_cluster_name}")
+  traefik_variant_flux_dashboard_ingress_host = contains(
+    var.traefik_alb_auth_core_alias,
+    local.traefik_variant_flux_dashboard_ingress_prod_host
+  ) ? local.traefik_variant_flux_dashboard_ingress_prod_host : "${local.traefik_variant_flux_alb_auth_dns_name}.${var.workload_dns_zone_name}"
+  traefik_variant_flux_is_using_alb_auth = length(regexall("^.*traefik-variant.*", join(" ", var.traefik_alb_auth_core_alias))) > 0 ? true : false
 }
 
 # --------------------------------------------------
@@ -249,10 +260,18 @@ locals {
     "module" = "http_2xx"
   }] : []
 
+  blackbox_exporter_monitoring_traefik_variant = var.traefik_variant_flux_deploy ? [{
+    "name"   = "traefik"
+    "url"    = "http://traefik-variant.traefik-variant:9000/ping"
+    "module" = "http_2xx"
+  }] : []
+
+
   blackbox_exporter_monitoring_targets = concat(
     local.blackbox_exporter_monitoring_atlantis,
     local.blackbox_exporter_monitoring_grafana,
     local.blackbox_exporter_monitoring_traefik,
+    local.blackbox_exporter_monitoring_traefik_variant,
     var.blackbox_exporter_monitoring_targets
   )
 }
