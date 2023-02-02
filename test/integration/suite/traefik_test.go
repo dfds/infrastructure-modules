@@ -1,12 +1,7 @@
 package main
 
 import (
-	"encoding/json"
-	"net/http"
-	"strings"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestTraefikDeployment(t *testing.T) {
@@ -15,6 +10,7 @@ func TestTraefikDeployment(t *testing.T) {
 	AssertK8sDeployment(t, clientset, "traefik", "traefik", 3)
 }
 
+/* The Grafana endpoint is not public any longer, but protected by SSO.
 func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 	clientset := NewK8sClientSet(t)
 	AssertFluxReconciliation(t, clientset)
@@ -44,3 +40,4 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 	}
 	assert.Equal(t, "ok", strings.ToLower(msg.Database))
 }
+*/
