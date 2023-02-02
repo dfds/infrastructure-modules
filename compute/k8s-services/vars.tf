@@ -751,6 +751,12 @@ variable "traefik_flux_deploy" {
   default = true
 }
 
+variable "traefik_flux_weight" {
+  type        = number
+  description = "The weight of the Traefik instance target groups in the load balancers. Only relevant if there is variant instance deployed."
+  default     = 1
+}
+
 # A traefik variant is deployed to allow us to perform zero downtime updates
 # in cases where the Traefik deployment needs to recreated, such as a modification
 # of an immutable field.
@@ -781,8 +787,14 @@ variable "traefik_variant_flux_additional_args" {
 
 variable "traefik_variant_flux_deploy" {
   type        = bool
-  description = "Whether to deploy the Traefika variant."
+  description = "Whether to deploy the Traefik variant."
   default     = false
+}
+
+variable "traefik_variant_flux_weight" {
+  type        = number
+  description = "The weight of the Traefik variant instance target groups in the load balancers."
+  default     = 0
 }
 
 # --------------------------------------------------

@@ -184,6 +184,8 @@ module "traefik_alb_auth" {
   variant_target_http_port  = var.traefik_variant_flux_http_nodeport
   variant_target_admin_port = var.traefik_variant_flux_admin_nodeport
   variant_health_check_path = "/ping"
+  weight                    = var.traefik_flux_weight
+  variant_weight            = var.traefik_variant_flux_weight
 }
 
 module "traefik_alb_auth_dns_for_grafana" {
@@ -249,6 +251,8 @@ module "traefik_alb_anon" {
   variant_target_http_port  = var.traefik_variant_flux_http_nodeport
   variant_target_admin_port = var.traefik_variant_flux_admin_nodeport
   variant_health_check_path = "/ping"
+  weight                    = var.traefik_flux_weight
+  variant_weight            = var.traefik_variant_flux_weight
 }
 
 module "traefik_alb_anon_dns" {

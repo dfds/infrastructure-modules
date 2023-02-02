@@ -83,12 +83,27 @@ resource "aws_lb_listener" "traefik" {
     order = 1
 
     forward {
+
+      stickiness {
+        duration = 1
+        enabled  = false
+      }
+
+      # TODO(emil): handle non-variant case
       dynamic "target_group" {
-        for_each = concat(aws_lb_target_group.traefik, aws_lb_target_group.traefik_variant)
+        for_each = [
+          {
+            arn    = aws_lb_target_group.traefik[0].arn
+            weight = var.weight
+          },
+          {
+            arn    = aws_lb_target_group.traefik_variant[0].arn
+            weight = var.variant_weight
+          }
+        ]
         content {
-          arn = target_group.value["arn"]
-          # TODO(emil): switch the weighting
-          weight = 1
+          arn    = target_group.value["arn"]
+          weight = target_group.value["weight"]
         }
       }
     }
@@ -104,15 +119,9 @@ resource "aws_lb_listener" "traefik_variant_1" {
   certificate_arn   = var.alb_certificate_arn
 
   default_action {
-    type  = "forward"
-    order = 1
-
-    forward {
-      target_group {
-        arn    = aws_lb_target_group.traefik[0].arn
-        weight = 1
-      }
-    }
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.traefik[0].arn
+    order            = 1
   }
 }
 
@@ -125,15 +134,9 @@ resource "aws_lb_listener" "traefik_variant_2" {
   certificate_arn   = var.alb_certificate_arn
 
   default_action {
-    type  = "forward"
-    order = 1
-
-    forward {
-      target_group {
-        arn    = aws_lb_target_group.traefik_variant[0].arn
-        weight = 1
-      }
-    }
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.traefik_variant[0].arn
+    order            = 1
   }
 }
 

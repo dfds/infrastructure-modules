@@ -59,6 +59,10 @@ variable "access_logs_enabled" {
   default = true
 }
 
+variable "weight" {
+  type = number
+}
+
 variable "deploy_variant" {
   type        = bool
   description = "Whether to deploy a variant target group for the listener."
@@ -75,4 +79,8 @@ variable "variant_target_admin_port" {
 
 variable "variant_health_check_path" {
   type = string
+}
+
+variable "variant_weight" {
+  type = number
 }
