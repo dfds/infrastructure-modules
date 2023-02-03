@@ -1,10 +1,19 @@
+# Using the variant variables one can perform a blue/green update on Traefik,
+# routing traffic gradually to a new version and then decomissioning an older
+# version without downtime.
+
 resource "aws_lb" "traefik" {
-  count              = var.deploy ? 1 : 0
+  count              = var.deploy || var.deploy_variant ? 1 : 0
   name               = var.name
   internal           = false #tfsec:ignore:aws-elbv2-alb-not-public
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.traefik[0].id]
-  subnets            = var.subnet_ids
+  security_groups = concat(
+    var.deploy || var.deploy_variant ? [aws_security_group.traefik[0].id] : [],
+    var.deploy ? [aws_security_group.traefik_blue[0].id] : [],
+    var.deploy_variant ? [aws_security_group.traefik_green[0].id] : [],
+    var.deploy && var.deploy_variant ? [aws_security_group.traefik_debug[0].id] : []
+  )
+  subnets = var.subnet_ids
 
   access_logs {
     bucket  = var.access_logs_bucket
@@ -41,9 +50,6 @@ resource "aws_autoscaling_attachment" "traefik" {
   lb_target_group_arn    = aws_lb_target_group.traefik[0].arn
 }
 
-# A variant target group is deployed if we want to gradually rollout
-# a new listener target.
-
 resource "aws_lb_target_group" "traefik_variant" {
   count                = var.deploy_variant ? 1 : 0
   name_prefix          = "v${substr(var.cluster_name, 0, min(5, length(var.cluster_name)))}"
@@ -71,7 +77,7 @@ resource "aws_autoscaling_attachment" "traefik_variant" {
 }
 
 resource "aws_lb_listener" "traefik" {
-  count             = var.deploy ? 1 : 0
+  count             = var.deploy || var.deploy_variant ? 1 : 0
   load_balancer_arn = aws_lb.traefik[0].arn
   port              = "443"
   protocol          = "HTTPS"
@@ -114,7 +120,7 @@ resource "aws_lb_listener" "traefik" {
 }
 
 resource "aws_lb_listener" "traefik_variant_1" {
-  count             = var.deploy_variant ? 1 : 0
+  count             = var.deploy && var.deploy_variant ? 1 : 0
   load_balancer_arn = aws_lb.traefik[0].arn
   port              = "8443"
   protocol          = "HTTPS"
@@ -129,7 +135,7 @@ resource "aws_lb_listener" "traefik_variant_1" {
 }
 
 resource "aws_lb_listener" "traefik_variant_2" {
-  count             = var.deploy_variant ? 1 : 0
+  count             = var.deploy && var.deploy_variant ? 1 : 0
   load_balancer_arn = aws_lb.traefik[0].arn
   port              = "9443"
   protocol          = "HTTPS"
@@ -144,7 +150,7 @@ resource "aws_lb_listener" "traefik_variant_2" {
 }
 
 resource "aws_lb_listener" "http-to-https" {
-  count             = var.deploy ? 1 : 0
+  count             = var.deploy || var.deploy_variant ? 1 : 0
   load_balancer_arn = aws_lb.traefik[0].arn
   port              = "80"
   protocol          = "HTTP"
@@ -161,7 +167,7 @@ resource "aws_lb_listener" "http-to-https" {
 }
 
 resource "aws_security_group" "traefik" {
-  count       = var.deploy ? 1 : 0
+  count       = var.deploy || var.deploy_variant ? 1 : 0
   name_prefix = "allow_traefik-${var.cluster_name}"
   description = "Allow traefik connection for ${var.cluster_name}"
   vpc_id      = var.vpc_id
@@ -182,6 +188,22 @@ resource "aws_security_group" "traefik" {
     cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sg
   }
 
+  tags = {
+    Name = "${var.cluster_name}-traefik-sg"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+}
+
+resource "aws_security_group" "traefik_blue" {
+  count       = var.deploy ? 1 : 0
+  name_prefix = "allow_traefik_blue-${var.cluster_name}"
+  description = "Allow traefik connection related to the blue variant for ${var.cluster_name}"
+  vpc_id      = var.vpc_id
+
   ingress {
     description = "Ingress on var.target_admin_port"
     from_port   = var.target_admin_port
@@ -198,6 +220,22 @@ resource "aws_security_group" "traefik" {
     cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg
   }
 
+  tags = {
+    Name = "${var.cluster_name}-traefik-blue-sg"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+}
+
+resource "aws_security_group" "traefik_green" {
+  count       = var.deploy_variant ? 1 : 0
+  name_prefix = "allow_traefik_green-${var.cluster_name}"
+  description = "Allow traefik connection related to the green variant for ${var.cluster_name}"
+  vpc_id      = var.vpc_id
+
   ingress {
     description = "Ingress on var.variant_target_admin_port"
     from_port   = var.variant_target_admin_port
@@ -213,6 +251,22 @@ resource "aws_security_group" "traefik" {
     protocol    = "TCP"
     cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg
   }
+
+  tags = {
+    Name = "${var.cluster_name}-traefik-blue-sg"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+}
+
+resource "aws_security_group" "traefik_debug" {
+  count       = var.deploy && var.deploy_variant ? 1 : 0
+  name_prefix = "allow_traefik_debug-${var.cluster_name}"
+  description = "Allow traefik connection related to debugging a blue/green deployment for ${var.cluster_name}"
+  vpc_id      = var.vpc_id
 
   ingress {
     description = "Ingress on HTTPS port fixed at target of variant A"
@@ -231,7 +285,7 @@ resource "aws_security_group" "traefik" {
   }
 
   tags = {
-    Name = "${var.cluster_name}-traefik-sg"
+    Name = "${var.cluster_name}-traefik-debug-sg"
   }
 
   lifecycle {
@@ -240,9 +294,9 @@ resource "aws_security_group" "traefik" {
 
 }
 
-# tfsec:ignore:aws-vpc-add-description-to-security-group
 resource "aws_security_group_rule" "allow_traefik" {
   count                    = var.deploy ? 1 : 0
+  description              = "Ingress on HTTP port for the Traefik blue variant."
   type                     = "ingress"
   from_port                = var.target_http_port
   to_port                  = var.target_admin_port
@@ -252,9 +306,9 @@ resource "aws_security_group_rule" "allow_traefik" {
   security_group_id = var.nodes_sg_id
 }
 
-# tfsec:ignore:aws-vpc-add-description-to-security-group
-resource "aws_security_group_rule" "allow_traefik_variant" {
+resource "aws_security_group_rule" "allow_traefik_green" {
   count                    = var.deploy_variant ? 1 : 0
+  description              = "Ingress on HTTP port for the Traefik green variant."
   type                     = "ingress"
   from_port                = var.variant_target_http_port
   to_port                  = var.variant_target_admin_port
