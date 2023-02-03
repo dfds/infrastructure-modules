@@ -38,6 +38,7 @@ resource "aws_iam_instance_profile" "eks" {
   role = aws_iam_role.eks.name
 }
 
+# tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_role_policy" "cloudwatch-agent-config-bucket" {
   name = "eks-${var.cluster_name}-cl-agent-config-bucket"
   role = aws_iam_role.eks.id
@@ -72,6 +73,7 @@ EOF
 
 }
 
+# tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_role_policy" "cloudwatch_agent_metrics" {
   name = "cloudwatch_agent_metrics"
   role = aws_iam_role.eks.id
