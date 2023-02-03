@@ -91,8 +91,8 @@ resource "aws_lb_listener" "traefik" {
     forward {
 
       stickiness {
-        duration = 1
-        enabled  = false
+        enabled  = true
+        duration = 10
       }
 
       dynamic "target_group" {

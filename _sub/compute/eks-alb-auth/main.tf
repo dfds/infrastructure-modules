@@ -105,8 +105,8 @@ resource "aws_lb_listener" "traefik_auth" {
     forward {
 
       stickiness {
-        duration = 1
-        enabled  = false
+        enabled  = true
+        duration = 10
       }
 
       dynamic "target_group" {
