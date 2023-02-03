@@ -3,7 +3,7 @@ repos:
   rev: v1.59.0
   hooks:
     - id: terraform_fmt
-#    - id: terraform_tfsec
+    - id: terraform_tfsec
       files: (\.tf|\.tfvars)$
 - repo: git@github.com:Yelp/detect-secrets
   rev: v1.1.0
