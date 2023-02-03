@@ -30,12 +30,6 @@ variable "workload_dns_zone_name" {
 # Optional
 # --------------------------------------------------
 
-variable "ssm_param_createdby" {
-  type        = string
-  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
-  default     = null
-}
-
 variable "s3_bucket_additional_tags" {
   description = "Add additional tags to s3 bucket"
   type        = map(any)
@@ -755,12 +749,6 @@ variable "traefik_flux_additional_args" {
 variable "traefik_flux_deploy" {
   type    = bool
   default = true
-}
-
-variable "traefik_flux_dashboard_deploy" {
-  type        = bool
-  description = "Deploy ingressroute for external access to Traefik dashboard."
-  default     = true
 }
 
 # --------------------------------------------------
