@@ -87,10 +87,18 @@ locals {
 
 locals {
   traefik_alb_auth_endpoints = concat(
-    var.traefik_flux_deploy && !var.traefik_variant_flux_deploy ? ["traefik.${local.eks_fqdn}"] : [],
-    var.traefik_flux_deploy && var.traefik_variant_flux_deploy ? ["traefik.${local.eks_fqdn}:8443", "traefik-variant.${local.eks_fqdn}:9443"] : [],
-    var.traefik_flux_deploy ? ["grafana.${local.eks_fqdn}"] : [],
-    var.traefik_flux_deploy ? var.traefik_alb_auth_core_alias : [],
+    var.traefik_flux_deploy || var.traefik_variant_flux_deploy ? concat(
+      [
+        "traefik.${local.eks_fqdn}",
+        "grafana.${local.eks_fqdn}"
+      ],
+      var.traefik_alb_auth_core_alias
+    ) : [],
+    var.traefik_flux_deploy && var.traefik_variant_flux_deploy ?
+    [
+      "traefik.${local.eks_fqdn}:8443",
+      "traefik-variant.${local.eks_fqdn}:9443"
+    ] : [],
   )
   traefik_alb_auth_appreg_reply_join        = "^${join("$,^", local.traefik_alb_auth_endpoints)}$"
   traefik_alb_auth_appreg_reply_replace_pre = replace(local.traefik_alb_auth_appreg_reply_join, "^", "https://")
