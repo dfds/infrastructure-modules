@@ -255,15 +255,6 @@ module "aws_cloudwatch_grafana_reader_iam_role" {
 }
 
 # --------------------------------------------------
-# Namespaces
-# --------------------------------------------------
-
-locals {
-  kubesystem_permitted_role_list_sorted = sort(var.kubesystem_permitted_extra_roles)
-  kubesystem_permitted_role_string      = join("|", local.kubesystem_permitted_role_list_sorted)
-}
-
-# --------------------------------------------------
 # Blaster
 # --------------------------------------------------
 
@@ -400,7 +391,6 @@ module "platform_fluxcd" {
   repo_name       = var.platform_fluxcd_repo_name
   repo_path       = "./clusters/${var.eks_cluster_name}"
   github_owner    = var.platform_fluxcd_github_owner
-  github_token    = var.platform_fluxcd_github_token
   kubeconfig_path = local.kubeconfig_path
   repo_branch     = var.platform_fluxcd_repo_branch
 
@@ -579,7 +569,6 @@ module "podinfo_flux_manifests" {
   source       = "../../_sub/examples/podinfo"
   count        = var.podinfo_flux_deploy ? 1 : 0
   cluster_name = var.eks_cluster_name
-  github_owner = var.podinfo_flux_github_owner != null ? var.podinfo_flux_github_owner : var.platform_fluxcd_github_owner
   repo_name    = var.podinfo_flux_repo_name != null ? var.podinfo_flux_repo_name : var.platform_fluxcd_repo_name
   repo_branch  = var.podinfo_flux_repo_branch != null ? var.podinfo_flux_repo_branch : var.platform_fluxcd_repo_branch
 
@@ -600,8 +589,6 @@ module "fluentd_cloudwatch_flux_manifests" {
   cluster_name                    = var.eks_cluster_name
   aws_region                      = var.aws_region
   retention_in_days               = var.fluentd_cloudwatch_retention_in_days
-  account_id                      = var.fluentd_cloudwatch_account_id != null ? var.fluentd_cloudwatch_account_id : var.aws_workload_account_id
-  github_owner                    = var.fluentd_cloudwatch_flux_github_owner != null ? var.fluentd_cloudwatch_flux_github_owner : var.platform_fluxcd_github_owner
   repo_name                       = var.fluentd_cloudwatch_flux_repo_name != null ? var.fluentd_cloudwatch_flux_repo_name : var.platform_fluxcd_repo_name
   repo_branch                     = var.fluentd_cloudwatch_flux_repo_branch != null ? var.fluentd_cloudwatch_flux_repo_branch : var.platform_fluxcd_repo_branch
   deploy_oidc_provider            = var.aws_assume_logs_role_arn != null ? true : false # do not create extra oidc provider if external log account is provided

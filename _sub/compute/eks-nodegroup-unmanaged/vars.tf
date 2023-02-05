@@ -32,6 +32,7 @@ variable "subnet_ids" {
 }
 
 variable "disk_size" {
+  type = number
 }
 
 variable "instance_types" {
@@ -55,26 +56,29 @@ variable "ec2_ssh_key" {
   type = string
 }
 
-variable "autoscale_security_group" {
-}
-
 variable "eks_endpoint" {
+  type = string
 }
 
 variable "eks_certificate_authority" {
+  type = string
 }
 
 variable "cloudwatch_agent_config_bucket" {
+  type = string
 }
 
 variable "cloudwatch_agent_config_file" {
+  type = string
 }
 
 variable "cloudwatch_agent_enabled" {
+  type    = bool
   default = false
 }
 
 variable "worker_inotify_max_user_watches" {
+  type = number
 }
 
 variable "kubelet_extra_args" {

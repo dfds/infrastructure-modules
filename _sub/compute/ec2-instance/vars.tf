@@ -44,10 +44,12 @@ variable "subnet_id" {
 }
 
 variable "associate_public_ip_address" {
+  type    = bool
   default = false
 }
 
 variable "get_password_data" {
+  type    = bool
   default = false
 }
 

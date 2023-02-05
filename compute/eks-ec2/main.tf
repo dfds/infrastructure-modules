@@ -152,7 +152,6 @@ module "eks_nodegroup1_workers" {
   eks_endpoint                    = module.eks_cluster.eks_endpoint
   eks_certificate_authority       = module.eks_cluster.eks_certificate_authority
   worker_inotify_max_user_watches = var.eks_worker_inotify_max_user_watches
-  autoscale_security_group        = module.eks_cluster.autoscale_security_group
 }
 
 
@@ -188,7 +187,6 @@ module "eks_nodegroup2_workers" {
   eks_endpoint                    = module.eks_cluster.eks_endpoint
   eks_certificate_authority       = module.eks_cluster.eks_certificate_authority
   worker_inotify_max_user_watches = var.eks_worker_inotify_max_user_watches
-  autoscale_security_group        = module.eks_cluster.autoscale_security_group
 }
 
 

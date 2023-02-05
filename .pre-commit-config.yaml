@@ -10,11 +10,19 @@ repos:
   hooks:
     - id: detect-secrets
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.0.1
+  rev: v4.4.0
   hooks:
     - id: trailing-whitespace
     - id: check-added-large-files
     - id: check-merge-conflict
     - id: detect-aws-credentials
+      args:
+        - "--allow-missing-credentials"
     - id: detect-private-key
-    
+- repo: https://github.com/gruntwork-io/pre-commit
+  rev: v0.1.17 # Get the latest from: https://github.com/gruntwork-io/pre-commit/releases
+  hooks:
+    - id: tflint
+      args:
+        - "--module"
+        - "--config=.tflint.hcl"
