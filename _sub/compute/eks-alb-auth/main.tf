@@ -29,7 +29,8 @@ resource "aws_lb" "traefik_auth" {
 }
 
 resource "aws_lb_target_group" "traefik_auth" {
-  count                = var.deploy ? 1 : 0
+  count = var.deploy ? 1 : 0
+  # TODO(emil): prefix this with "b-" for blue after it is destroyed.
   name_prefix          = substr(var.cluster_name, 0, min(6, length(var.cluster_name)))
   port                 = var.target_http_port
   protocol             = "HTTP"
@@ -56,7 +57,7 @@ resource "aws_autoscaling_attachment" "traefik_auth" {
 
 resource "aws_lb_target_group" "traefik_auth_green_variant" {
   count                = var.deploy_green_variant ? 1 : 0
-  name_prefix          = "v${substr(var.cluster_name, 0, min(5, length(var.cluster_name)))}"
+  name_prefix          = "g-${substr(var.cluster_name, 0, min(4, length(var.cluster_name)))}"
   port                 = var.green_variant_target_http_port
   protocol             = "HTTP"
   vpc_id               = var.vpc_id
