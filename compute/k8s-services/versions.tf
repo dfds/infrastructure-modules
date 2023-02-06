@@ -5,7 +5,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.51.0"
+      version = "~> 4.52.0"
     }
 
     kubernetes = {
@@ -35,7 +35,7 @@ terraform {
 
     flux = {
       source  = "fluxcd/flux"
-      version = "~> 0.22.0"
+      version = "~> 0.23.0"
     }
 
     random = {

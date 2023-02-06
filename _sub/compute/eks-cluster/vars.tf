@@ -7,6 +7,7 @@ variable "cluster_version" {
 }
 
 variable "cluster_zones" {
+  type = number
 }
 
 variable "log_types" {
@@ -22,6 +23,7 @@ variable "log_retention_days" {
 }
 
 variable "sleep_after" {
+  type        = number
   default     = 120
   description = "The AWS API will return OK before the Kubernetes cluster is actually available. Wait an arbitrary amount of time for cluster to become ready. Workaround for https://github.com/aws/containers-roadmap/issues/654"
 }

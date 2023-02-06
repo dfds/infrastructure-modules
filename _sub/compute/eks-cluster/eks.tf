@@ -4,7 +4,7 @@ resource "aws_cloudwatch_log_group" "eks" {
   retention_in_days = var.log_retention_days
 }
 
-#tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr tfsec:ignore:aws-eks-no-public-cluster-access tfsec:ignore:aws-eks-encrypt-secrets
+#tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr tfsec:ignore:aws-eks-no-public-cluster-access tfsec:ignore:aws-eks-encrypt-secrets tfsec:ignore:aws-eks-enable-control-plane-logging
 resource "aws_eks_cluster" "eks" {
   name     = var.cluster_name
   role_arn = aws_iam_role.eks.arn
@@ -14,7 +14,7 @@ resource "aws_eks_cluster" "eks" {
 
   vpc_config {
     security_group_ids = [aws_security_group.eks-cluster.id]
-    subnet_ids         = aws_subnet.eks.*.id
+    subnet_ids         = aws_subnet.eks[*].id
   }
 
   depends_on = [

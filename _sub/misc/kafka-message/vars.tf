@@ -39,6 +39,7 @@ variable "password" {
 }
 
 variable "publish" {
+  type    = bool
   default = true
 }
 

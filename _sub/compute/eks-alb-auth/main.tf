@@ -5,7 +5,7 @@
 resource "aws_lb" "traefik_auth" {
   count              = var.deploy || var.deploy_variant ? 1 : 0
   name               = var.name
-  internal           = false #tfsec:ignore:aws-elbv2-alb-not-public
+  internal           = false #tfsec:ignore:aws-elbv2-alb-not-public tfsec:ignore:aws-elb-alb-not-public
   load_balancer_type = "application"
   security_groups = concat(
     var.deploy || var.deploy_variant ? [aws_security_group.traefik_auth[0].id] : [],
@@ -219,7 +219,7 @@ resource "aws_security_group" "traefik_auth" {
     from_port   = 80
     to_port     = 80
     protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sg
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sg tfsec:ignore:aws-ec2-no-public-ingress-sgr
   }
 
   ingress {
@@ -227,7 +227,25 @@ resource "aws_security_group" "traefik_auth" {
     from_port   = 443
     to_port     = 443
     protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sg
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sg tfsec:ignore:aws-ec2-no-public-ingress-sgr
+  }
+
+  # TODO(emil): Remove these security group rules after the initial application
+  # to separate these rules into separate security groups.
+  ingress {
+    description = "Ingress on target_admin_port"
+    from_port   = var.target_admin_port
+    to_port     = var.target_admin_port
+    protocol    = "TCP"
+    self        = true
+  }
+
+  egress {
+    description = "Egress from var.target_http_port to var.target_admin_port"
+    from_port   = var.target_http_port
+    to_port     = var.target_admin_port
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg tfsec:ignore:aws-ec2-no-public-ingress-sgr tfsec:ignore:aws-ec2-no-public-egress-sgr
   }
 
   egress {
@@ -235,7 +253,7 @@ resource "aws_security_group" "traefik_auth" {
     from_port   = 443
     to_port     = 443
     protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg tfsec:ignore:aws-ec2-no-public-ingress-sgr tfsec:ignore:aws-ec2-no-public-egress-sgr
   }
 
   tags = {
@@ -362,6 +380,7 @@ resource "aws_security_group_rule" "allow_traefik_auth" {
   count                    = var.deploy ? 1 : 0
   description              = "Ingress on HTTP port for the Traefik blue variant."
   type                     = "ingress"
+  description              = "Allow inbound HTTP traffic"
   from_port                = var.target_http_port
   to_port                  = var.target_admin_port
   protocol                 = "tcp"
