@@ -10,6 +10,7 @@ variable "deploy_name" {
 
 variable "namespace" {
   type        = string
+  default     = "monitoring"
   description = "The namespace in which to deploy Helm resources"
 }
 

@@ -893,7 +893,7 @@ variable "helm_exporter_deploy" {
 
 variable "helm_exporter_helm_chart_version" {
   type        = string
-  description = "Helm Chart version to be used to deploy Traefik"
+  description = "Helm Chart version to be used to deploy Helm Exporter"
   default     = null
 }
 
