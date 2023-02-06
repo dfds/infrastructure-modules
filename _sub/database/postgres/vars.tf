@@ -75,3 +75,9 @@ variable "ssl_mode" {
     error_message = "Invalid value for SSL mode. Valid values: Require, VerifyFull, VerifyCA."
   }
 }
+
+variable "deletion_protection" {
+  type        = bool
+  default     = true
+  description = "Protect database against deletion?"
+}
