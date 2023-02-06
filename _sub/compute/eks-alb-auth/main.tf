@@ -380,7 +380,6 @@ resource "aws_security_group_rule" "allow_traefik_auth" {
   count                    = var.deploy ? 1 : 0
   description              = "Ingress on HTTP port for the Traefik blue variant."
   type                     = "ingress"
-  description              = "Allow inbound HTTP traffic"
   from_port                = var.target_http_port
   to_port                  = var.target_admin_port
   protocol                 = "tcp"
