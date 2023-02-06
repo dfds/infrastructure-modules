@@ -54,7 +54,7 @@ resource "aws_autoscaling_attachment" "traefik_auth" {
   lb_target_group_arn    = aws_lb_target_group.traefik_auth[0].arn
 }
 
-resource "aws_lb_target_group" "traefik_auth_variant" {
+resource "aws_lb_target_group" "traefik_auth_green_variant" {
   count                = var.deploy_green_variant ? 1 : 0
   name_prefix          = "v${substr(var.cluster_name, 0, min(5, length(var.cluster_name)))}"
   port                 = var.green_variant_target_http_port
@@ -74,10 +74,10 @@ resource "aws_lb_target_group" "traefik_auth_variant" {
   }
 }
 
-resource "aws_autoscaling_attachment" "traefik_auth_variant" {
+resource "aws_autoscaling_attachment" "traefik_auth_green_variant" {
   count                  = var.deploy_green_variant ? length(var.autoscaling_group_ids) : 0
   autoscaling_group_name = var.autoscaling_group_ids[count.index]
-  lb_target_group_arn    = aws_lb_target_group.traefik_auth_variant[0].arn
+  lb_target_group_arn    = aws_lb_target_group.traefik_auth_green_variant[0].arn
 }
 
 resource "aws_lb_listener" "traefik_auth" {
@@ -123,7 +123,7 @@ resource "aws_lb_listener" "traefik_auth" {
           ] : [],
           var.deploy_green_variant ? [
             {
-              arn    = aws_lb_target_group.traefik_auth_variant[0].arn
+              arn    = aws_lb_target_group.traefik_auth_green_variant[0].arn
               weight = var.green_variant_weight
             }
           ] : []
@@ -137,7 +137,7 @@ resource "aws_lb_listener" "traefik_auth" {
   }
 }
 
-resource "aws_lb_listener" "traefik_auth_variant_blue" {
+resource "aws_lb_listener" "traefik_auth_blue_variant" {
   count             = var.deploy && var.deploy_green_variant ? 1 : 0
   load_balancer_arn = aws_lb.traefik_auth[0].arn
   port              = "8443"
@@ -166,7 +166,7 @@ resource "aws_lb_listener" "traefik_auth_variant_blue" {
   }
 }
 
-resource "aws_lb_listener" "traefik_auth_variant_green" {
+resource "aws_lb_listener" "traefik_auth_green_variant" {
   count             = var.deploy && var.deploy_green_variant ? 1 : 0
   load_balancer_arn = aws_lb.traefik_auth[0].arn
   port              = "9443"
@@ -190,7 +190,7 @@ resource "aws_lb_listener" "traefik_auth_variant_green" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.traefik_auth_variant[0].arn
+    target_group_arn = aws_lb_target_group.traefik_auth_green_variant[0].arn
     order            = 2
   }
 }

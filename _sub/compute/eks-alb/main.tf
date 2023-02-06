@@ -54,7 +54,7 @@ resource "aws_autoscaling_attachment" "traefik" {
   lb_target_group_arn    = aws_lb_target_group.traefik[0].arn
 }
 
-resource "aws_lb_target_group" "traefik_variant" {
+resource "aws_lb_target_group" "traefik_green_variant" {
   count                = var.deploy_green_variant ? 1 : 0
   name_prefix          = "v${substr(var.cluster_name, 0, min(5, length(var.cluster_name)))}"
   port                 = var.green_variant_target_http_port
@@ -74,10 +74,10 @@ resource "aws_lb_target_group" "traefik_variant" {
   }
 }
 
-resource "aws_autoscaling_attachment" "traefik_variant" {
+resource "aws_autoscaling_attachment" "traefik_green_variant" {
   count                  = var.deploy_green_variant ? length(var.autoscaling_group_ids) : 0
   autoscaling_group_name = var.autoscaling_group_ids[count.index]
-  lb_target_group_arn    = aws_lb_target_group.traefik_variant[0].arn
+  lb_target_group_arn    = aws_lb_target_group.traefik_green_variant[0].arn
 }
 
 resource "aws_lb_listener" "traefik" {
@@ -109,7 +109,7 @@ resource "aws_lb_listener" "traefik" {
           ] : [],
           var.deploy_green_variant ? [
             {
-              arn    = aws_lb_target_group.traefik_variant[0].arn
+              arn    = aws_lb_target_group.traefik_green_variant[0].arn
               weight = var.green_variant_weight
             }
           ] : []
@@ -123,7 +123,7 @@ resource "aws_lb_listener" "traefik" {
   }
 }
 
-resource "aws_lb_listener" "traefik_variant_blue" {
+resource "aws_lb_listener" "traefik_blue_variant" {
   count             = var.deploy && var.deploy_green_variant ? 1 : 0
   load_balancer_arn = aws_lb.traefik[0].arn
   port              = "8443"
@@ -138,7 +138,7 @@ resource "aws_lb_listener" "traefik_variant_blue" {
   }
 }
 
-resource "aws_lb_listener" "traefik_variant_green" {
+resource "aws_lb_listener" "traefik_green_variant" {
   count             = var.deploy && var.deploy_green_variant ? 1 : 0
   load_balancer_arn = aws_lb.traefik[0].arn
   port              = "9443"
@@ -148,7 +148,7 @@ resource "aws_lb_listener" "traefik_variant_green" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.traefik_variant[0].arn
+    target_group_arn = aws_lb_target_group.traefik_green_variant[0].arn
     order            = 1
   }
 }
@@ -273,7 +273,7 @@ resource "aws_security_group" "traefik_debug" {
   vpc_id      = var.vpc_id
 
   ingress {
-    description = "Ingress on HTTPS port fixed at target of variant A"
+    description = "Ingress on HTTPS port fixed at target of blue variant"
     from_port   = 8443
     to_port     = 8443
     protocol    = "TCP"
@@ -281,7 +281,7 @@ resource "aws_security_group" "traefik_debug" {
   }
 
   ingress {
-    description = "Ingress on HTTPS port fixed at target of variant B"
+    description = "Ingress on HTTPS port fixed at target of green variant"
     from_port   = 9443
     to_port     = 9443
     protocol    = "TCP"
