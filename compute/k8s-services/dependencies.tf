@@ -89,15 +89,22 @@ locals {
   traefik_alb_auth_endpoints = concat(
     var.traefik_flux_deploy || var.traefik_green_variant_flux_deploy ? concat(
       [
-        "traefik.${local.eks_fqdn}",
         "grafana.${local.eks_fqdn}"
       ],
       var.traefik_alb_auth_core_alias
     ) : [],
     var.traefik_flux_deploy && var.traefik_green_variant_flux_deploy ?
     [
-      "traefik.${local.eks_fqdn}:8443",
-      "traefik-variant.${local.eks_fqdn}:9443"
+      "traefik-blue-variant.${local.eks_fqdn}:8443",
+      "traefik-green-variant.${local.eks_fqdn}:9443"
+    ] : [],
+    var.traefik_flux_deploy ?
+    [
+      "traefik-blue-variant.${local.eks_fqdn}"
+    ] : [],
+    var.traefik_green_variant_flux_deploy ?
+    [
+      "traefik-green-variant.${local.eks_fqdn}"
     ] : [],
   )
   traefik_alb_auth_appreg_reply_join        = "^${join("$,^", local.traefik_alb_auth_endpoints)}$"
