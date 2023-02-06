@@ -1,8 +1,3 @@
-variable "deploy" {
-  type    = bool
-  default = true
-}
-
 variable "name" {
   type = string
 }
@@ -45,6 +40,23 @@ variable "azure_client_secret" {
   type = string
 }
 
+variable "access_logs_bucket" {
+  type = string
+}
+
+variable "access_logs_enabled" {
+  type    = bool
+  default = true
+}
+
+# Blue variant
+
+variable "deploy" {
+  type        = bool
+  description = "Whether to deploy a blue variant target group for the listener."
+  default     = true
+}
+
 variable "target_http_port" {
   type = number
 }
@@ -57,37 +69,30 @@ variable "health_check_path" {
   type = string
 }
 
-variable "access_logs_bucket" {
-  type = string
-}
-
-variable "access_logs_enabled" {
-  type    = bool
-  default = true
-}
-
 variable "weight" {
   type = number
 }
 
-variable "deploy_variant" {
+# Green variant
+
+variable "deploy_green_variant" {
   type        = bool
-  description = "Whether to deploy a variant target group for the listener."
+  description = "Whether to deploy a green variant target group for the listener."
   default     = false
 }
 
-variable "variant_target_http_port" {
+variable "green_variant_target_http_port" {
   type = number
 }
 
-variable "variant_target_admin_port" {
+variable "green_variant_target_admin_port" {
   type = number
 }
 
-variable "variant_health_check_path" {
+variable "green_variant_health_check_path" {
   type = string
 }
 
-variable "variant_weight" {
+variable "green_variant_weight" {
   type = number
 }
