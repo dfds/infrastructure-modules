@@ -715,7 +715,7 @@ variable "crossplane_confluent_clusters_endpoints" {
 
 variable "traefik_flux_github_owner" {
   type        = string
-  description = "Name of the Treaefik Flux repo Github owner (previously: organization)"
+  description = "Name of the Traefik Flux repo Github owner (previously: organization)"
   default     = null
 }
 
