@@ -13,8 +13,3 @@ variable "repo_branch" {
   default     = "main"
   description = "The git branch."
 }
-
-variable "github_owner" {
-  type        = string
-  description = "The GitHub organization owner."
-}

@@ -20,7 +20,7 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(module.eks_cluster.eks_certificate_authority)
 
   exec {
-    api_version = "client.authentication.k8s.io/v1alpha1"
+    api_version = var.eks_k8s_auth_api_version
     command     = "aws"
     args = [
       "eks",
@@ -152,7 +152,6 @@ module "eks_nodegroup1_workers" {
   eks_endpoint                    = module.eks_cluster.eks_endpoint
   eks_certificate_authority       = module.eks_cluster.eks_certificate_authority
   worker_inotify_max_user_watches = var.eks_worker_inotify_max_user_watches
-  autoscale_security_group        = module.eks_cluster.autoscale_security_group
 }
 
 
@@ -188,7 +187,6 @@ module "eks_nodegroup2_workers" {
   eks_endpoint                    = module.eks_cluster.eks_endpoint
   eks_certificate_authority       = module.eks_cluster.eks_certificate_authority
   worker_inotify_max_user_watches = var.eks_worker_inotify_max_user_watches
-  autoscale_security_group        = module.eks_cluster.autoscale_security_group
 }
 
 
@@ -197,9 +195,10 @@ module "eks_nodegroup2_workers" {
 # --------------------------------------------------
 
 module "blaster_configmap_bucket" {
-  source    = "../../_sub/storage/s3-bucket"
-  deploy    = length(var.blaster_configmap_bucket) >= 1 ? true : false
-  s3_bucket = var.blaster_configmap_bucket
+  source          = "../../_sub/storage/s3-bucket"
+  deploy          = length(var.blaster_configmap_bucket) >= 1 ? true : false
+  s3_bucket       = var.blaster_configmap_bucket
+  additional_tags = var.blaster_configmap_bucket_tags
 }
 
 module "eks_heptio" {
@@ -213,6 +212,7 @@ module "eks_heptio" {
   blaster_configmap_s3_bucket = module.blaster_configmap_bucket.bucket_name
   blaster_configmap_key       = "configmap_${module.eks_heptio.cluster_name}_blaster.yml"
   aws_assume_role_arn         = var.aws_assume_role_arn
+  eks_k8s_auth_api_version    = var.eks_k8s_auth_api_version
 }
 
 module "eks_addons" {

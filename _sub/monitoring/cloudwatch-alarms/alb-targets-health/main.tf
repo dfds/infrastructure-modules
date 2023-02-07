@@ -17,7 +17,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_exists" {
   alarm_actions = [var.sns_topic_arn]
   ok_actions    = [var.sns_topic_arn]
 
-  dimensions          = { "TargetGroup" = var.alb_target_group_arn_suffixes[count.index]
+  dimensions = { "TargetGroup" = var.alb_target_group_arn_suffixes[count.index]
     "LoadBalancer" = var.alb_arn_suffixes[count.index]
   }
   datapoints_to_alarm = 2
@@ -42,7 +42,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_target_healthy" {
   alarm_actions = [var.sns_topic_arn]
   ok_actions    = [var.sns_topic_arn]
 
-  dimensions          = { "TargetGroup" = var.alb_target_group_arn_suffixes[count.index]
+  dimensions = { "TargetGroup" = var.alb_target_group_arn_suffixes[count.index]
     "LoadBalancer" = var.alb_arn_suffixes[count.index]
   }
   datapoints_to_alarm = 2

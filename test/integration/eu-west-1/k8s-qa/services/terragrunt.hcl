@@ -24,6 +24,7 @@ inputs = {
   # EKS
   # --------------------------------------------------
 
+  eks_is_sandbox      = true
   eks_cluster_name = "qa"
 
   # --------------------------------------------------
@@ -47,7 +48,6 @@ inputs = {
 
   # --------------------------------------------------
   # Blaster
-  # Requires: KIAM
   # --------------------------------------------------
 
   blaster_deploy           = true
@@ -69,20 +69,14 @@ inputs = {
   platform_fluxcd_deploy       = true
   platform_fluxcd_repo_name    = "platform-manifests-qa"
   platform_fluxcd_github_owner = "dfds"
-  platform_fluxcd_release_tag  = "v0.30.2"
-
-  # --------------------------------------------------
-  # KIAM
-  # --------------------------------------------------
-
-  kiam_chart_version = "6.1.2" # With KIAM v4
+  platform_fluxcd_release_tag  = "v0.38.2"
 
   # --------------------------------------------------
   # Kube-prometheus-stack
   # --------------------------------------------------
 
   monitoring_kube_prometheus_stack_deploy                     = true
-  monitoring_kube_prometheus_stack_chart_version              = "31.0.0"
+  monitoring_kube_prometheus_stack_chart_version              = "44.3.0"
   monitoring_kube_prometheus_stack_target_namespaces          = "kube-system|monitoring"
   monitoring_kube_prometheus_stack_prometheus_storage_size    = "5Gi"
   monitoring_kube_prometheus_stack_prometheus_storageclass    = "gp2"

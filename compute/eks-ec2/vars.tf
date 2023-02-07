@@ -1,12 +1,4 @@
 # --------------------------------------------------
-# Terraform
-# --------------------------------------------------
-
-variable "terraform_state_s3_bucket" {
-  type = string
-}
-
-# --------------------------------------------------
 # AWS
 # --------------------------------------------------
 
@@ -18,8 +10,8 @@ variable "aws_assume_role_arn" {
   type = string
 }
 
-variable "aws_workload_account_id" {
-}
+# Optional
+# --------------------------------------------------
 
 variable "ssm_param_createdby" {
   type        = string
@@ -39,6 +31,17 @@ variable "eks_cluster_name" {
 variable "eks_cluster_version" {
   type = string
 }
+
+variable "eks_worker_ssh_public_key" {
+  type = string
+}
+
+variable "eks_worker_ssh_ip_whitelist" {
+  type = list(string)
+}
+
+# Optional
+# --------------------------------------------------
 
 variable "eks_is_sandbox" {
   type        = bool
@@ -62,10 +65,6 @@ variable "eks_cluster_log_retention_days" {
   default     = 90
 }
 
-variable "eks_worker_ssh_public_key" {
-  type = string
-}
-
 variable "eks_worker_inotify_max_user_watches" {
   default = 131072 # default t3.large is 8192 which is too low
 }
@@ -73,10 +72,6 @@ variable "eks_worker_inotify_max_user_watches" {
 variable "eks_worker_subnets" {
   type    = list(string)
   default = []
-}
-
-variable "eks_worker_ssh_ip_whitelist" {
-  type = list(string)
 }
 
 variable "eks_worker_scale_to_zero_cron" {
@@ -109,6 +104,12 @@ variable "eks_public_s3_bucket" {
   description = "The name of the public S3 bucket, where non-sensitive Kubeconfig will be copied to"
   type        = string
   default     = ""
+}
+
+variable "eks_k8s_auth_api_version" {
+  description = "The fully qualified version of the client authentication API."
+  type        = string
+  default     = "client.authentication.k8s.io/v1alpha1"
 }
 
 
@@ -195,6 +196,12 @@ variable "blaster_configmap_bucket" {
   default = ""
 }
 
+variable "blaster_configmap_bucket_tags" {
+  description = "Add additional tags to s3 bucket"
+  type        = map(string)
+  default     = {}
+}
+
 # --------------------------------------------------
 # Cloudwatch agent setup
 # --------------------------------------------------
@@ -207,23 +214,4 @@ variable "eks_worker_cloudwatch_agent_config_deploy" {
 variable "eks_worker_cloudwatch_agent_config_file" {
   type    = string
   default = "aws-cloudwatch-agent-conf.json"
-}
-
-
-# --------------------------------------------------
-# Unused variables - to provent TF warning/error:
-# Using a variables file to set an undeclared variable is deprecated and will
-# become an error in a future release. If you wish to provide certain "global"
-# settings to all configurations in your organization, use TF_VAR_...
-# environment variables to set these instead.
-# --------------------------------------------------
-
-variable "workload_dns_zone_name" {
-  type    = string
-  default = ""
-}
-
-variable "terraform_state_region" {
-  type    = string
-  default = ""
 }

@@ -1,11 +1,9 @@
 provider "aws" {
-  region  = var.aws_region
-  version = "~> 4.46.0"
+  region = var.aws_region
 }
 
 provider "aws" {
-  version = "~> 4.46.0"
-  region  = var.aws_region
+  region = var.aws_region
 
   # Assume the Organizational role in Workload account
   assume_role {

@@ -106,10 +106,9 @@ variable "parent_id" {
   default     = ""
 }
 
-# TODO(emil): remove dependence on Kiam
-variable "kiam_role_arn" {
+variable "assume_role_arn" {
   type        = string
-  description = "Optional: The KIAM role ARN that can assume roles"
+  description = "Optional: The AWS assume role ARN"
   default     = ""
 }
 

@@ -30,9 +30,12 @@ resource "aws_s3_bucket" "velero_storage" {
   bucket        = var.bucket_name
   force_destroy = var.force_bucket_destroy
 
-  tags = {
-    "Managed by" = "Terraform"
-  }
+  tags = merge(
+    var.additional_tags,
+    {
+      "Managed by" = "Terraform"
+    }
+  )
 }
 
 resource "aws_s3_bucket_public_access_block" "veloro_storage_block_public_access" {

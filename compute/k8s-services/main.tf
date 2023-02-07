@@ -86,10 +86,11 @@ provider "azuread" {
 # --------------------------------------------------
 
 module "traefik_alb_s3_access_logs" {
-  source         = "../../_sub/storage/s3-bucket-lifecycle"
-  name           = local.alb_access_log_bucket_name
-  retention_days = var.traefik_alb_s3_access_logs_retiontion_days
-  policy         = local.alb_access_log_bucket_policy
+  source          = "../../_sub/storage/s3-bucket-lifecycle"
+  name            = local.alb_access_log_bucket_name
+  retention_days  = var.traefik_alb_s3_access_logs_retiontion_days
+  policy          = local.alb_access_log_bucket_policy
+  additional_tags = var.s3_bucket_additional_tags
 }
 
 # --------------------------------------------------
@@ -108,10 +109,7 @@ module "traefik_flux_manifests" {
   repo_name              = var.traefik_flux_repo_name
   repo_branch            = var.traefik_flux_repo_branch
   additional_args        = var.traefik_flux_additional_args
-  dashboard_deploy       = var.traefik_flux_dashboard_deploy
-  dashboard_ingress_host = local.traefik_flux_dashboard_ingress_host
-  is_using_alb_auth      = local.traefik_flux_is_using_alb_auth
-  ssm_param_createdby    = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-services"
+  dashboard_ingress_host = "traefik.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
 
   providers = {
     github = github.fluxcd
@@ -163,6 +161,26 @@ module "traefik_alb_auth_dns" {
   deploy       = var.traefik_alb_auth_deploy
   zone_id      = local.workload_dns_zone_id
   record_name  = ["internal.${var.eks_cluster_name}"]
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = "${module.traefik_alb_auth.alb_fqdn}."
+}
+
+module "traefik_alb_auth_dns_for_grafana" {
+  source       = "../../_sub/network/route53-record"
+  deploy       = (var.traefik_alb_auth_deploy && var.monitoring_kube_prometheus_stack_deploy) ? true : false
+  zone_id      = local.workload_dns_zone_id
+  record_name  = ["grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = "${module.traefik_alb_auth.alb_fqdn}."
+}
+
+module "traefik_alb_auth_dns_for_traefik_dashboard" {
+  source       = "../../_sub/network/route53-record"
+  deploy       = (var.traefik_flux_deploy && var.traefik_alb_auth_deploy) ? true : false
+  zone_id      = local.workload_dns_zone_id
+  record_name  = ["traefik.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
   record_type  = "CNAME"
   record_ttl   = "900"
   record_value = "${module.traefik_alb_auth.alb_fqdn}."
@@ -223,29 +241,6 @@ module "traefik_alb_anon_dns_core_alias" {
 }
 
 # --------------------------------------------------
-# KIAM
-# --------------------------------------------------
-
-module "kiam_deploy" {
-  source                  = "../../_sub/compute/k8s-kiam"
-  count                   = var.kiam_deploy ? 1 : 0
-  chart_version           = var.kiam_chart_version
-  cluster_name            = var.eks_cluster_name
-  priority_class          = "service-critical"
-  aws_workload_account_id = var.aws_workload_account_id
-  worker_role_id          = data.terraform_remote_state.cluster.outputs.eks_worker_role_id
-  agent_deep_liveness     = true
-  agent_liveness_timeout  = 5
-  server_gateway_timeout  = "5s"
-  servicemonitor_enabled  = var.monitoring_kube_prometheus_stack_deploy
-  strict_mode_disabled    = var.kiam_strict_mode_disabled
-
-  // Depends_on for servicemonitor is ignored if prometheus stack is not deployed but required otherwise
-  depends_on = [module.monitoring_kube_prometheus_stack]
-}
-
-
-# --------------------------------------------------
 # AWS IAM roles
 # --------------------------------------------------
 
@@ -260,24 +255,7 @@ module "aws_cloudwatch_grafana_reader_iam_role" {
 }
 
 # --------------------------------------------------
-# Namespaces
-# --------------------------------------------------
-
-locals {
-  kubesystem_permitted_role_list_sorted = sort(var.kubesystem_permitted_extra_roles)
-  kubesystem_permitted_role_string      = join("|", local.kubesystem_permitted_role_list_sorted)
-}
-
-module "kube_system_namespace" {
-  source          = "../../_sub/compute/k8s-annotate-namespace"
-  namespace       = "kube-system"
-  kubeconfig_path = local.kubeconfig_path
-  annotations     = { "iam.amazonaws.com/permitted" = local.kubesystem_permitted_role_string }
-}
-
-
-# --------------------------------------------------
-# Blaster - depends on KIAM
+# Blaster
 # --------------------------------------------------
 
 module "blaster_namespace" {
@@ -285,7 +263,6 @@ module "blaster_namespace" {
   deploy                   = var.blaster_deploy
   cluster_name             = var.eks_cluster_name
   blaster_configmap_bucket = data.terraform_remote_state.cluster.outputs.blaster_configmap_bucket
-  extra_permitted_roles    = var.blaster_namespace_extra_permitted_roles
   oidc_issuer              = local.oidc_issuer
 }
 
@@ -365,7 +342,7 @@ module "monitoring_kube_prometheus_stack" {
   grafana_ingress_path        = var.monitoring_kube_prometheus_stack_grafana_ingress_path
   grafana_host                = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
   grafana_notifier_name       = "${var.eks_cluster_name}-alerting"
-  grafana_iam_role_arn        = local.grafana_iam_role_arn # Coming from locals to avoid circular dependency between KIAM and Prometheus
+  grafana_iam_role_arn        = local.grafana_iam_role_arn
   grafana_serviceaccount_name = var.monitoring_kube_prometheus_stack_grafana_serviceaccount_name
   slack_webhook               = var.monitoring_kube_prometheus_stack_slack_webhook
   prometheus_storageclass     = var.monitoring_kube_prometheus_stack_prometheus_storageclass
@@ -414,7 +391,6 @@ module "platform_fluxcd" {
   repo_name       = var.platform_fluxcd_repo_name
   repo_path       = "./clusters/${var.eks_cluster_name}"
   github_owner    = var.platform_fluxcd_github_owner
-  github_token    = var.platform_fluxcd_github_token
   kubeconfig_path = local.kubeconfig_path
   repo_branch     = var.platform_fluxcd_repo_branch
 
@@ -614,7 +590,6 @@ module "podinfo_flux_manifests" {
   source       = "../../_sub/examples/podinfo"
   count        = var.podinfo_flux_deploy ? 1 : 0
   cluster_name = var.eks_cluster_name
-  github_owner = var.podinfo_flux_github_owner != null ? var.podinfo_flux_github_owner : var.platform_fluxcd_github_owner
   repo_name    = var.podinfo_flux_repo_name != null ? var.podinfo_flux_repo_name : var.platform_fluxcd_repo_name
   repo_branch  = var.podinfo_flux_repo_branch != null ? var.podinfo_flux_repo_branch : var.platform_fluxcd_repo_branch
 
@@ -635,8 +610,6 @@ module "fluentd_cloudwatch_flux_manifests" {
   cluster_name                    = var.eks_cluster_name
   aws_region                      = var.aws_region
   retention_in_days               = var.fluentd_cloudwatch_retention_in_days
-  account_id                      = var.fluentd_cloudwatch_account_id != null ? var.fluentd_cloudwatch_account_id : var.aws_workload_account_id
-  github_owner                    = var.fluentd_cloudwatch_flux_github_owner != null ? var.fluentd_cloudwatch_flux_github_owner : var.platform_fluxcd_github_owner
   repo_name                       = var.fluentd_cloudwatch_flux_repo_name != null ? var.fluentd_cloudwatch_flux_repo_name : var.platform_fluxcd_repo_name
   repo_branch                     = var.fluentd_cloudwatch_flux_repo_branch != null ? var.fluentd_cloudwatch_flux_repo_branch : var.platform_fluxcd_repo_branch
   deploy_oidc_provider            = var.aws_assume_logs_role_arn != null ? true : false # do not create extra oidc provider if external log account is provided

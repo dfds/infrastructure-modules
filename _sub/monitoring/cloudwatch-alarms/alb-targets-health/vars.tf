@@ -3,27 +3,27 @@ variable "sns_topic_arn" {
 }
 
 variable "alb_target_exists_check_period" {
-  type = string
+  type    = string
   default = "60"
 }
 
 variable "alb_target_exists_check_threshold" {
-  type = string
+  type    = string
   default = "1"
 }
 
 variable "alb_target_healthy_check_period" {
-  type = string
+  type    = string
   default = "60"
 }
 
 variable "alb_target_healthy_check_threshold" {
-  type = string
+  type    = string
   default = "1"
 }
 
 variable "deploy" {
-  type = bool
+  type    = bool
   default = true
 }
 

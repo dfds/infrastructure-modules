@@ -13,12 +13,23 @@ data "aws_iam_policy_document" "assume_role_policy_self" {
   }
 }
 
+data "aws_iam_policy_document" "assume_role_policy_selfservice" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.shared_account_id}:role/aad-aws-sync"]
+    }
+  }
+}
+
 data "aws_iam_policy_document" "assume_role_adfs_shared" {
   statement {
     actions = ["sts:AssumeRoleWithSAML"]
 
     principals {
-      type        = "Federated"
+      type = "Federated"
       identifiers = [
         "arn:aws:iam::${var.shared_account_id}:saml-provider/ADFS"
       ]

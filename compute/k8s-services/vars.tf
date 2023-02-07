@@ -27,10 +27,13 @@ variable "aws_assume_role_arn" {
 variable "workload_dns_zone_name" {
 }
 
-variable "ssm_param_createdby" {
-  type        = string
-  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
-  default     = null
+# Optional
+# --------------------------------------------------
+
+variable "s3_bucket_additional_tags" {
+  description = "Add additional tags to s3 bucket"
+  type        = map(any)
+  default     = {}
 }
 
 # --------------------------------------------------
@@ -40,23 +43,6 @@ variable "ssm_param_createdby" {
 variable "eks_cluster_name" {
   type = string
 }
-
-
-# --------------------------------------------------
-# KIAM
-# --------------------------------------------------
-
-variable "kiam_chart_version" {
-  type        = string
-  description = "KIAM helm chart version"
-  default     = null
-}
-
-variable "kiam_deploy" {
-  type    = bool
-  default = true
-}
-
 
 # --------------------------------------------------
 # FluentD CloudWatch Logs
@@ -107,11 +93,6 @@ variable "traefik_nlb_deploy" {
   default = false
 }
 
-variable "traefik_nlb_cidr_blocks" {
-  type    = list(string)
-  default = []
-}
-
 # --------------------------------------------------
 # Blaster
 # --------------------------------------------------
@@ -119,13 +100,6 @@ variable "traefik_nlb_cidr_blocks" {
 variable "blaster_deploy" {
   default = false
 }
-
-variable "blaster_namespace_extra_permitted_roles" {
-  type        = list(string)
-  default     = []
-  description = "Additional role names or ARNs that can be assumed from this namespace through KIAM"
-}
-
 
 # --------------------------------------------------
 # Cloudwatch alarms and alarm notifier (Slack)
@@ -228,12 +202,6 @@ variable "monitoring_kube_prometheus_stack_grafana_ingress_path" {
   type        = string
   description = "Grafana ingress path"
   default     = "/infrastructure"
-}
-
-variable "monitoring_kube_prometheus_stack_grafana_notifier_name" {
-  type        = string
-  description = "Grafana alert notifier name"
-  default     = "notifier1"
 }
 
 variable "monitoring_kube_prometheus_stack_grafana_serviceaccount_name" {
@@ -344,24 +312,6 @@ variable "monitoring_metrics_server_repo_url" {
 }
 
 # --------------------------------------------------
-# Unused variables - to provent TF warning/error:
-# Using a variables file to set an undeclared variable is deprecated and will
-# become an error in a future release. If you wish to provide certain "global"
-# settings to all configurations in your organization, use TF_VAR_...
-# environment variables to set these instead.
-# --------------------------------------------------
-
-variable "eks_public_s3_bucket" {
-  type    = string
-  default = ""
-}
-
-variable "eks_is_sandbox" {
-  type    = bool
-  default = false
-}
-
-# --------------------------------------------------
 # Platform Flux CD
 # --------------------------------------------------
 
@@ -377,19 +327,7 @@ variable "platform_fluxcd_release_tag" {
   description = "The release tag of Flux CD to use."
 }
 
-variable "platform_fluxcd_namespace" {
-  type        = string
-  default     = "platform-flux"
-  description = ""
-}
-
 variable "platform_fluxcd_repo_name" {
-  type        = string
-  default     = ""
-  description = ""
-}
-
-variable "platform_fluxcd_repo_path" {
   type        = string
   default     = ""
   description = ""
@@ -458,14 +396,6 @@ variable "atlantis_github_repositories" {
   description = "List of repositories to whitelist for Atlantis"
   type        = list(string)
   default     = []
-}
-
-variable "atlantis_webhook_content_type" {
-  default = "application/json"
-}
-
-variable "atlantis_webhook_insecure_ssl" {
-  default = false
 }
 
 variable "atlantis_webhook_events" {
@@ -770,14 +700,6 @@ variable "crossplane_confluent_clusters_endpoints" {
   description = "Endpoints for each supported supported Confluent clusters"
 }
 
-# -------------
-
-variable "kiam_strict_mode_disabled" {
-  type        = bool
-  description = "Disable default strict namespace regexp when matching roles"
-  default     = false
-}
-
 # --------------------------------------------------
 # Traefik v2 through Flux CD
 # --------------------------------------------------
@@ -818,12 +740,6 @@ variable "traefik_flux_admin_nodeport" {
   default     = 31001
 }
 
-variable "traefik_flux_health_check_path" {
-  description = "Which path should the LB call when checking if Traefik v2 service is healthy"
-  type        = string
-  default     = "/ping/"
-}
-
 variable "traefik_flux_additional_args" {
   type        = list(any)
   description = "Pass arguments to the additionalArguments node in the Traefik Helm chart"
@@ -833,12 +749,6 @@ variable "traefik_flux_additional_args" {
 variable "traefik_flux_deploy" {
   type    = bool
   default = true
-}
-
-variable "traefik_flux_dashboard_deploy" {
-  type        = bool
-  description = "Deploy ingressroute for external access to Traefik dashboard."
-  default     = true
 }
 
 # --------------------------------------------------
@@ -993,12 +903,6 @@ variable "velero_flux_deploy" {
   description = "Should Velero Helm chart be deployed?"
 }
 
-variable "velero_flux_deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "velero"
-}
-
 variable "velero_flux_role_arn" {
   type        = string
   description = "The ARN for the role that is permitted to use Velero backup storage."
@@ -1011,13 +915,6 @@ variable "velero_flux_bucket_name" {
   description = "The name of the S3 bucket that contains the Velero backup"
 }
 
-variable "velero_flux_snapshots_enabled" {
-  type        = bool
-  default     = false
-  description = "Should Velero use snapshot backups?"
-
-}
-
 variable "velero_flux_log_level" {
   type        = string
   default     = "info"
@@ -1026,30 +923,6 @@ variable "velero_flux_log_level" {
     condition     = contains(["info", "debug", "warning", "error", "fatal", "panic"], var.velero_flux_log_level)
     error_message = "Invalid value for log_level. Valid values: info, debug, warning, error, fatal, panic."
   }
-}
-
-variable "velero_flux_cron_schedule" {
-  type        = string
-  default     = "0 0 * * *"
-  description = "Cron format scheuled time."
-}
-
-variable "velero_flux_schedules_template_ttl" {
-  type        = string
-  default     = "336h"
-  description = "Time to live for the scheduled backup."
-}
-
-variable "velero_flux_schedules_template_snapshot_volumes" {
-  type        = bool
-  default     = false
-  description = "Should Velero use snapshot volumes?"
-}
-
-variable "velero_flux_schedules_template_include_cluster_resources" {
-  type        = bool
-  default     = false
-  description = "Should Velero also backup cluster resources?"
 }
 
 variable "velero_flux_github_owner" {

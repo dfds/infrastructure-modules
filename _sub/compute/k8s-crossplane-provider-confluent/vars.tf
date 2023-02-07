@@ -1,35 +1,35 @@
 variable "email" {
-  type = string
+  type        = string
   description = "Confluent global admin account email"
 }
 
 variable "password" {
-  type = string
+  type        = string
   description = "Confluent global admin account password"
-  sensitive = true
+  sensitive   = true
 }
 
 variable "namespace" {
-  type = string
+  type        = string
   description = "Namespace to deploy in"
 }
 
 variable "confluent_environments" {
-  type = map
+  type        = map(any)
   description = "Supported Confluent environments"
-  default = {}
+  default     = {}
 }
 
 variable "confluent_clusters" {
-  type = map
+  type        = map(any)
   description = "Supported Confluent Clusters in each supported environment"
-  default = {}
+  default     = {}
 }
 
 variable "confluent_clusters_endpoints" {
-  type = map
+  type        = map(any)
   description = "Endpoints for supported Confluent Clusters in supported each environment"
-  default = {}
+  default     = {}
 }
 
 variable "repo_owner" {

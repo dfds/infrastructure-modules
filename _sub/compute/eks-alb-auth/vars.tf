@@ -8,6 +8,7 @@ variable "name" {
 }
 
 variable "cluster_name" {
+  type = string
 }
 
 variable "subnet_ids" {
@@ -15,6 +16,7 @@ variable "subnet_ids" {
 }
 
 variable "vpc_id" {
+  type = string
 }
 
 variable "autoscaling_group_ids" {
@@ -24,18 +26,23 @@ variable "autoscaling_group_ids" {
 # variable "traefik_k8s_name" {}
 
 variable "alb_certificate_arn" {
+  type = string
 }
 
 variable "nodes_sg_id" {
+  type = string
 }
 
 variable "azure_tenant_id" {
+  type = string
 }
 
 variable "azure_client_id" {
+  type = string
 }
 
 variable "azure_client_secret" {
+  type = string
 }
 
 variable "target_http_port" {

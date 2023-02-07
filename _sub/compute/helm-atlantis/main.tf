@@ -43,10 +43,15 @@ resource "kubernetes_secret" "secret" {
 # --------------------------------------------------
 resource "aws_ssm_parameter" "param_atlantis_ui_auth" {
   name        = "/eks/${var.cluster_name}/${local.auth_secret_name}"
-  description = "Password for accessing the Atlantis UI"
+  description = "Credentials for accessing the Atlantis UI"
   type        = "SecureString"
-  value       = random_password.password.result
-  overwrite   = true
+  value = jsonencode(
+    {
+      "Username" = var.auth_username
+      "Password" = random_password.password.result
+    }
+  )
+  overwrite = true
 }
 
 resource "random_password" "webhook_password" {
@@ -92,10 +97,6 @@ resource "helm_release" "atlantis" {
 }
 
 ## Github ##
-
-data "github_user" "github_user" {
-  username = var.github_username
-}
 
 data "github_repository" "repo" {
   count     = length(var.github_repositories)
@@ -174,7 +175,7 @@ resource "kubernetes_secret" "monitoring_kube_prometheus_stack" {
   }
 
   data = {
-    slack_webhook    = var.monitoring_kube_prometheus_stack_slack_webhook
+    slack_webhook = var.monitoring_kube_prometheus_stack_slack_webhook
   }
   depends_on = [kubernetes_namespace.namespace]
 }
@@ -186,7 +187,7 @@ resource "kubernetes_secret" "cloudwatch" {
   }
 
   data = {
-    cloudwatch_webhook    = var.slack_webhook_url
+    cloudwatch_webhook = var.slack_webhook_url
   }
   depends_on = [kubernetes_namespace.namespace]
 }
