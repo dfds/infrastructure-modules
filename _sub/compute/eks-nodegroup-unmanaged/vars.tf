@@ -62,7 +62,7 @@ variable "eks_endpoint" {
 
 variable "container_runtime" {
   type    = string
-  default = "dockershim"
+  default = "containerd"
 }
 
 variable "eks_certificate_authority" {
