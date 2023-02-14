@@ -45,13 +45,13 @@ resource "aws_ssm_parameter" "param_atlantis_ui_auth" {
   name        = "/eks/${var.cluster_name}/${local.auth_secret_name}"
   description = "Credentials for accessing the Atlantis UI"
   type        = "SecureString"
-  value       = jsonencode(
+  value = jsonencode(
     {
       "Username" = var.auth_username
       "Password" = random_password.password.result
     }
   )
-  overwrite   = true
+  overwrite = true
 }
 
 resource "random_password" "webhook_password" {
@@ -97,10 +97,6 @@ resource "helm_release" "atlantis" {
 }
 
 ## Github ##
-
-data "github_user" "github_user" {
-  username = var.github_username
-}
 
 data "github_repository" "repo" {
   count     = length(var.github_repositories)

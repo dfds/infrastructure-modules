@@ -7,11 +7,6 @@ variable "repo_name" {
   description = ""
 }
 
-variable "repo_visibility" {
-  type    = string
-  default = "private"
-}
-
 variable "repo_branch" {
   type        = string
   default     = "main"
@@ -24,11 +19,6 @@ variable "repo_path" {
 }
 
 variable "github_owner" {
-  type        = string
-  description = ""
-}
-
-variable "github_token" {
   type        = string
   description = ""
 }

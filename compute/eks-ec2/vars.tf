@@ -122,6 +122,11 @@ variable "eks_nodegroup1_instance_types" {
   default = ["t3.small"]
 }
 
+variable "eks_nodegroup1_container_runtime" {
+  type    = string
+  default = "containerd"
+}
+
 variable "eks_nodegroup1_disk_size" {
   type    = number
   default = 128
@@ -157,6 +162,11 @@ variable "eks_nodegroup1_desired_size_per_subnet" {
 variable "eks_nodegroup2_instance_types" {
   type    = list(string)
   default = ["t3.small"]
+}
+
+variable "eks_nodegroup2_container_runtime" {
+  type    = string
+  default = "containerd"
 }
 
 variable "eks_nodegroup2_disk_size" {

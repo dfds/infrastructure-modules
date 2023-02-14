@@ -46,13 +46,14 @@ resource "aws_db_parameter_group" "dbparams" {
 }
 
 #Restore the postgres database with the pre-configured settings
-#tfsec:ignore:aws-rds-encrypt-instance-storage-data tfsec:ignore:aws-rds-no-public-db-access
+#tfsec:ignore:aws-rds-encrypt-instance-storage-data tfsec:ignore:aws-rds-no-public-db-access tfsec:ignore:aws-rds-enable-performance-insights
 resource "aws_db_instance" "postgres" {
   engine                  = "postgres"
   engine_version          = var.engine_version
   publicly_accessible     = "true"
   backup_retention_period = 10
   apply_immediately       = true
+  deletion_protection     = var.deletion_protection
   identifier              = "${var.application}-postgres-${var.environment}"
   parameter_group_name    = aws_db_parameter_group.dbparams.name
   vpc_security_group_ids  = [aws_security_group.pgsg.id]
@@ -65,7 +66,7 @@ resource "aws_db_instance" "postgres" {
   instance_class              = var.db_instance_class
   allocated_storage           = var.db_allocated_storage
   port                        = var.db_port
-  name                        = var.db_name
+  db_name                     = var.db_name
   username                    = var.db_master_username
   password                    = var.db_master_password
   skip_final_snapshot         = var.skip_final_snapshot

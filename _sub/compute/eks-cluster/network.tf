@@ -3,6 +3,7 @@
 data "aws_availability_zones" "available" {
 }
 
+# tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs
 resource "aws_vpc" "eks" {
   cidr_block = "10.0.0.0/16"
 

@@ -4,9 +4,11 @@ variable "deploy" {
 }
 
 variable "cluster_name" {
+  type = string
 }
 
 variable "blaster_configmap_bucket" {
+  type = string
 }
 
 variable "oidc_issuer" {

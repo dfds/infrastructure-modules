@@ -41,7 +41,7 @@ inputs = {
   # Traefik v2
   # --------------------------------------------------
   traefikv2_test_alb_deploy       = true
-  traefik_flux_helm_chart_version = "10.21.1"
+  traefik_flux_helm_chart_version = "20.8.0"
   traefik_flux_github_owner       = "dfds"
   traefik_flux_repo_name          = "platform-manifests-qa"
   traefik_flux_repo_branch        = "main"
@@ -76,7 +76,7 @@ inputs = {
   # --------------------------------------------------
 
   monitoring_kube_prometheus_stack_deploy                     = true
-  monitoring_kube_prometheus_stack_chart_version              = "31.0.0"
+  monitoring_kube_prometheus_stack_chart_version              = "44.3.0"
   monitoring_kube_prometheus_stack_target_namespaces          = "kube-system|monitoring"
   monitoring_kube_prometheus_stack_prometheus_storage_size    = "5Gi"
   monitoring_kube_prometheus_stack_prometheus_storageclass    = "gp2"

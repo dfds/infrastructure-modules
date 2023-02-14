@@ -97,10 +97,17 @@ module "traefik_alb_s3_access_logs" {
 # Load Balancers in front of Traefik
 # --------------------------------------------------
 
+# TODO(emil): Rename the original Traefik instance resources and variables to
+# specify that they refer to the "blue" variant after the "blue" instance is
+# destroyed.  This is to avoid downtime or having to reimport resources due to
+# renaming.
+
 module "traefik_flux_manifests" {
   source                 = "../../_sub/compute/k8s-traefik-flux"
   count                  = var.traefik_flux_deploy ? 1 : 0
   cluster_name           = var.eks_cluster_name
+  deploy_name            = "traefik"
+  namespace              = "traefik"
   helm_chart_version     = var.traefik_flux_helm_chart_version
   replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
   http_nodeport          = var.traefik_flux_http_nodeport
@@ -109,10 +116,30 @@ module "traefik_flux_manifests" {
   repo_name              = var.traefik_flux_repo_name
   repo_branch            = var.traefik_flux_repo_branch
   additional_args        = var.traefik_flux_additional_args
-  dashboard_deploy       = var.traefik_flux_dashboard_deploy
-  dashboard_ingress_host = local.traefik_flux_dashboard_ingress_host
-  is_using_alb_auth      = local.traefik_flux_is_using_alb_auth
-  ssm_param_createdby    = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-services"
+  dashboard_ingress_host = "traefik.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
+}
+
+module "traefik_variant_flux_manifests" {
+  source                 = "../../_sub/compute/k8s-traefik-flux"
+  count                  = var.traefik_green_variant_flux_deploy ? 1 : 0
+  cluster_name           = var.eks_cluster_name
+  deploy_name            = "traefik-green-variant"
+  namespace              = "traefik-green-variant"
+  helm_chart_version     = var.traefik_green_variant_flux_helm_chart_version
+  replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
+  http_nodeport          = var.traefik_green_variant_flux_http_nodeport
+  admin_nodeport         = var.traefik_green_variant_flux_admin_nodeport
+  github_owner           = var.traefik_flux_github_owner
+  repo_name              = var.traefik_flux_repo_name
+  repo_branch            = var.traefik_flux_repo_branch
+  additional_args        = var.traefik_green_variant_flux_additional_args
+  dashboard_ingress_host = "traefik-green-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
 
   providers = {
     github = github.fluxcd
@@ -142,7 +169,6 @@ module "traefik_alb_auth_appreg" {
 
 module "traefik_alb_auth" {
   source                = "../../_sub/compute/eks-alb-auth"
-  deploy                = var.traefik_alb_auth_deploy
   name                  = "${var.eks_cluster_name}-traefik-alb-auth"
   cluster_name          = var.eks_cluster_name
   vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
@@ -153,17 +179,58 @@ module "traefik_alb_auth" {
   azure_tenant_id       = try(module.traefik_alb_auth_appreg[0].tenant_id, "")
   azure_client_id       = try(module.traefik_alb_auth_appreg[0].application_id, "")
   azure_client_secret   = try(module.traefik_alb_auth_appreg[0].application_key, "")
-  target_http_port      = var.traefik_flux_http_nodeport
-  target_admin_port     = var.traefik_flux_admin_nodeport
-  health_check_path     = "/ping"
   access_logs_bucket    = module.traefik_alb_s3_access_logs.name
+
+  # Blue variant
+  deploy            = var.traefik_alb_auth_deploy && var.traefik_flux_deploy
+  target_http_port  = var.traefik_flux_http_nodeport
+  target_admin_port = var.traefik_flux_admin_nodeport
+  health_check_path = "/ping"
+  weight            = var.traefik_flux_weight
+
+  # Green variant
+  deploy_green_variant            = var.traefik_alb_auth_deploy && var.traefik_green_variant_flux_deploy
+  green_variant_target_http_port  = var.traefik_green_variant_flux_http_nodeport
+  green_variant_target_admin_port = var.traefik_green_variant_flux_admin_nodeport
+  green_variant_health_check_path = "/ping"
+  green_variant_weight            = var.traefik_green_variant_flux_weight
 }
 
 module "traefik_alb_auth_dns" {
   source       = "../../_sub/network/route53-record"
-  deploy       = var.traefik_alb_auth_deploy
+  deploy       = (var.traefik_alb_auth_deploy && (var.traefik_flux_deploy || var.traefik_green_variant_flux_deploy)) ? true : false
   zone_id      = local.workload_dns_zone_id
-  record_name  = ["internal.${var.eks_cluster_name}"]
+  record_name  = ["internal.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = "${module.traefik_alb_auth.alb_fqdn}."
+}
+
+module "traefik_alb_auth_dns_for_grafana" {
+  source       = "../../_sub/network/route53-record"
+  deploy       = (var.traefik_alb_auth_deploy && var.monitoring_kube_prometheus_stack_deploy) ? true : false
+  zone_id      = local.workload_dns_zone_id
+  record_name  = ["grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = "${module.traefik_alb_auth.alb_fqdn}."
+}
+
+module "traefik_alb_auth_dns_for_traefik_blue_variant_dashboard" {
+  source       = "../../_sub/network/route53-record"
+  deploy       = (var.traefik_flux_deploy && var.traefik_alb_auth_deploy) ? true : false
+  zone_id      = local.workload_dns_zone_id
+  record_name  = ["traefik-blue-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = "${module.traefik_alb_auth.alb_fqdn}."
+}
+
+module "traefik_alb_auth_dns_for_traefik_green_variant_dashboard" {
+  source       = "../../_sub/network/route53-record"
+  deploy       = (var.traefik_green_variant_flux_deploy && var.traefik_alb_auth_deploy) ? true : false
+  zone_id      = local.workload_dns_zone_id
+  record_name  = ["traefik-green-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
   record_type  = "CNAME"
   record_ttl   = "900"
   record_value = "${module.traefik_alb_auth.alb_fqdn}."
@@ -176,7 +243,7 @@ module "traefik_alb_auth_dns_core_alias" {
   record_name  = var.traefik_alb_auth_core_alias
   record_type  = "CNAME"
   record_ttl   = "900"
-  record_value = "${element(concat(module.traefik_alb_auth_dns.record_name, [""]), 0)}.${var.workload_dns_zone_name}."
+  record_value = "${module.traefik_alb_auth.alb_fqdn}."
 
   providers = {
     aws = aws.core
@@ -185,7 +252,6 @@ module "traefik_alb_auth_dns_core_alias" {
 
 module "traefik_alb_anon" {
   source                = "../../_sub/compute/eks-alb"
-  deploy                = var.traefik_alb_anon_deploy
   name                  = "${var.eks_cluster_name}-traefik-alb"
   cluster_name          = var.eks_cluster_name
   vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
@@ -193,10 +259,21 @@ module "traefik_alb_anon" {
   autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
   alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
   nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
-  target_http_port      = var.traefik_flux_http_nodeport
-  target_admin_port     = var.traefik_flux_admin_nodeport
-  health_check_path     = "/ping"
   access_logs_bucket    = module.traefik_alb_s3_access_logs.name
+
+  # Blue variant
+  deploy            = var.traefik_alb_anon_deploy && var.traefik_flux_deploy
+  target_http_port  = var.traefik_flux_http_nodeport
+  target_admin_port = var.traefik_flux_admin_nodeport
+  health_check_path = "/ping"
+  weight            = var.traefik_flux_weight
+
+  # Green variant
+  deploy_green_variant            = var.traefik_alb_anon_deploy && var.traefik_green_variant_flux_deploy
+  green_variant_target_http_port  = var.traefik_green_variant_flux_http_nodeport
+  green_variant_target_admin_port = var.traefik_green_variant_flux_admin_nodeport
+  green_variant_health_check_path = "/ping"
+  green_variant_weight            = var.traefik_green_variant_flux_weight
 }
 
 module "traefik_alb_anon_dns" {
@@ -235,15 +312,6 @@ module "aws_cloudwatch_grafana_reader_iam_role" {
   role_policy_name     = local.grafana_iam_role_name
   role_policy_document = data.aws_iam_policy_document.cloudwatch_metrics.json
   assume_role_policy   = data.aws_iam_policy_document.cloudwatch_metrics_trust.json
-}
-
-# --------------------------------------------------
-# Namespaces
-# --------------------------------------------------
-
-locals {
-  kubesystem_permitted_role_list_sorted = sort(var.kubesystem_permitted_extra_roles)
-  kubesystem_permitted_role_string      = join("|", local.kubesystem_permitted_role_list_sorted)
 }
 
 # --------------------------------------------------
@@ -383,7 +451,6 @@ module "platform_fluxcd" {
   repo_name       = var.platform_fluxcd_repo_name
   repo_path       = "./clusters/${var.eks_cluster_name}"
   github_owner    = var.platform_fluxcd_github_owner
-  github_token    = var.platform_fluxcd_github_token
   kubeconfig_path = local.kubeconfig_path
   repo_branch     = var.platform_fluxcd_repo_branch
 
@@ -562,7 +629,6 @@ module "podinfo_flux_manifests" {
   source       = "../../_sub/examples/podinfo"
   count        = var.podinfo_flux_deploy ? 1 : 0
   cluster_name = var.eks_cluster_name
-  github_owner = var.podinfo_flux_github_owner != null ? var.podinfo_flux_github_owner : var.platform_fluxcd_github_owner
   repo_name    = var.podinfo_flux_repo_name != null ? var.podinfo_flux_repo_name : var.platform_fluxcd_repo_name
   repo_branch  = var.podinfo_flux_repo_branch != null ? var.podinfo_flux_repo_branch : var.platform_fluxcd_repo_branch
 
@@ -583,8 +649,6 @@ module "fluentd_cloudwatch_flux_manifests" {
   cluster_name                    = var.eks_cluster_name
   aws_region                      = var.aws_region
   retention_in_days               = var.fluentd_cloudwatch_retention_in_days
-  account_id                      = var.fluentd_cloudwatch_account_id != null ? var.fluentd_cloudwatch_account_id : var.aws_workload_account_id
-  github_owner                    = var.fluentd_cloudwatch_flux_github_owner != null ? var.fluentd_cloudwatch_flux_github_owner : var.platform_fluxcd_github_owner
   repo_name                       = var.fluentd_cloudwatch_flux_repo_name != null ? var.fluentd_cloudwatch_flux_repo_name : var.platform_fluxcd_repo_name
   repo_branch                     = var.fluentd_cloudwatch_flux_repo_branch != null ? var.fluentd_cloudwatch_flux_repo_branch : var.platform_fluxcd_repo_branch
   deploy_oidc_provider            = var.aws_assume_logs_role_arn != null ? true : false # do not create extra oidc provider if external log account is provided

@@ -10,6 +10,7 @@ variable "sns_topic_arn" {
 }
 
 variable "budget_limit" {
+  type = number
 }
 
 resource "aws_budgets_budget" "total_monthly_cost" {
