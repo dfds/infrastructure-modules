@@ -13,7 +13,7 @@ resource "github_repository_file" "fluentd-cloudwatch_config_patch_yaml" {
   repository = var.repo_name
   branch     = data.github_branch.flux_branch.branch
   file       = "${local.config_repo_path}/patch.yaml"
-  content    = local.config_patch_yaml
+  content    = var.container_runtime == "containerd" ? local.config_patch_yaml_containerd : local.config_patch_yaml_dockerd
 }
 
 resource "github_repository_file" "fluentd-cloudwatch_config_path" {
