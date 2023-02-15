@@ -84,7 +84,9 @@ spec:
               value: "${var.aws_region}"
             - name: RETENTION_IN_DAYS
               value: "${var.retention_in_days}"
-
+            # Override default parser to match containerd's raw log format.
+            - name: FLUENT_CONTAINER_TAIL_PARSER_TYPE
+              value: /^(?<time>.+) (?<stream>stdout|stderr) (?<logtag>[FP]) (?<log>.+)$/
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -92,6 +94,15 @@ metadata:
   name: ${local.fluentd_name}
   namespace: ${local.fluentd_namespace}
 data:
+  01-filter-concat.conf: |-
+    # Concatenate partial log messages together, necessary with containerd container runtime.
+    <filter kubernetes.**>
+      @type concat
+      key log
+      partial_key logtag
+      partial_value P
+      separator ""
+    </filter>
   02-tag.conf: |-
     # Tag with namespace and prefix with clustername
     <match kubernetes.**>
