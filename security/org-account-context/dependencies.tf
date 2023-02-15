@@ -77,7 +77,13 @@ data "aws_iam_policy_document" "shared_role_adfs_cap_acc" {
 
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${module.org_account.id}:role/AWSReservedSSO_CapabilityAccess_*"]
+      identifiers = ["arn:aws:iam::${module.org_account.id}:root"]
+    }
+
+    condition {
+      test     = "ArnLike"
+      values   = ["arn:aws:iam::${module.org_account.id}:AWSReservedSSO_CapabilityAccess_*"]
+      variable = "aws:PrincipalArn"
     }
   }
 }
