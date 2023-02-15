@@ -30,8 +30,8 @@ inputs = {
 
   # This comment configures the renovate bot to automatically update this variable:
   # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.24-*"]}]
-  # currentImageName=unknown
-  eks_nodegroup2_ami_id                  = "ami-0b5476968dbc19ad9"
+  # currentImageName=amazon-eks-node-1.24-v20230203
+  eks_nodegroup2_ami_id                  = "ami-00f4e61a1ea45067d"
   eks_nodegroup2_instance_types          = ["m5a.xlarge"]
   eks_nodegroup2_container_runtime          = "containerd"
   eks_nodegroup2_desired_size_per_subnet = 1
