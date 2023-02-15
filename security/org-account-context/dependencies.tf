@@ -68,15 +68,6 @@ data "aws_iam_policy_document" "shared_role_adfs_cap_acc" {
 
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${module.org_account.id}:role/Capability"]
-    }
-  }
-
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "AWS"
       identifiers = ["arn:aws:iam::${module.org_account.id}:root"]
     }
   }
