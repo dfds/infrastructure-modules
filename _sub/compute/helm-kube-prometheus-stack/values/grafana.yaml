@@ -1,6 +1,6 @@
 grafana:
   image:
-    tag: 9.4.0-beta1
+    tag: 9.4.0-beta1 # TODO: Remove when Grafana 9.4.0 is released AND becomes part of kube-prometheus-stack
   resources:
     requests:
       cpu: 50m
