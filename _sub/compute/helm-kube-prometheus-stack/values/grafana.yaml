@@ -1,4 +1,6 @@
 grafana:
+  image:
+    tag: 9.4.0-beta1
   resources:
     requests:
       cpu: 50m
@@ -6,6 +8,8 @@ grafana:
   adminPassword: "${grafana_admin_password}"
   priorityClassName: ${grafana_priorityclass}
   grafana.ini:
+    database:
+      wal: true
     auth.anonymous:
       enabled: true
     metrics:
