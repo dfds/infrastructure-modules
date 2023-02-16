@@ -32,7 +32,7 @@ inputs = {
   # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.24-*"]}]
   # currentImageName=amazon-eks-node-1.24-v20230203
   eks_nodegroup2_ami_id                  = "ami-00f4e61a1ea45067d"
-  eks_nodegroup2_instance_types          = ["m6a.xlarge"]
+  eks_nodegroup2_instance_types          = ["m5a.xlarge"]
   eks_nodegroup2_container_runtime          = "containerd"
   eks_nodegroup2_desired_size_per_subnet = 1
   eks_nodegroup2_kubelet_extra_args      = "--node-labels=nodegroup=ng2"
