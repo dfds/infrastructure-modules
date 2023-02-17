@@ -54,9 +54,48 @@ locals {
   More information: https://docs.aws.amazon.com/eks/latest/userguide/launch-workers.html
   */
 
+  # TODO(emil): make configurable, use a template perhaps
+  # TODO(emil): pass in the addon version
   worker-node-userdata = <<USERDATA
 #!/bin/sh
 set -o xtrace
+
+cat <<EOT > /etc/eks/eni-max-pods.txt
+m5a.12xlarge 3714
+m5a.16xlarge 11762
+m5a.24xlarge 11762
+m5a.2xlarge 898
+m5a.4xlarge 3714
+m5a.8xlarge 3714
+m5a.large 434
+m5a.xlarge 898
+m6a.12xlarge 3714
+m6a.16xlarge 11762
+m6a.24xlarge 11762
+m6a.2xlarge 898
+m6a.32xlarge 11762
+m6a.48xlarge 11762
+m6a.4xlarge 3714
+m6a.8xlarge 3714
+m6a.large 434
+m6a.metal 737
+m6a.xlarge 898
+t3.2xlarge 898
+t3.large 530
+t3.medium 242
+t3.micro 34
+t3.nano 34
+t3.small 146
+t3.xlarge 898
+t3a.2xlarge 898
+t3a.large 530
+t3a.medium 242
+t3a.micro 34
+t3a.nano 34
+t3a.small 98
+t3a.xlarge 898
+EOT
+
 /etc/eks/bootstrap.sh --apiserver-endpoint '${var.eks_endpoint}' --container-runtime '${var.container_runtime}' --b64-cluster-ca '${var.eks_certificate_authority}' ${local.bootstrap_extra_args} '${var.cluster_name}'
 
 echo fs.inotify.max_user_watches=${var.worker_inotify_max_user_watches} | sudo tee -a /etc/sysctl.conf

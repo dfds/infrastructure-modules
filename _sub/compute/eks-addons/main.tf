@@ -1,7 +1,13 @@
 resource "aws_eks_addon" "vpc-cni" {
-  cluster_name      = var.cluster_name
-  addon_name        = "vpc-cni"
-  addon_version     = local.vpccni_version
+  cluster_name  = var.cluster_name
+  addon_name    = "vpc-cni"
+  addon_version = local.vpccni_version
+  # TODO(emil): make configurable
+  configuration_values = jsonencode({
+    "env" = {
+      "ENABLE_PREFIX_DELEGATION" = "true"
+    }
+  })
   resolve_conflicts = "OVERWRITE"
 }
 
