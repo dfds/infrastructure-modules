@@ -704,9 +704,18 @@ variable "crossplane_confluent_clusters_endpoints" {
 # Traefik v2 through Flux CD
 # --------------------------------------------------
 
+# Using the variant variables one can perform a blue/green update on Traefik,
+# routing traffic gradually to a new version and then decomissioning an older
+# version without downtime.
+
+# TODO(emil): Rename the original Traefik instance resources and variables to
+# specify that they refer to the "blue" variant after the "blue" instance is
+# destroyed.  This is to avoid downtime or having to reimport resources due to
+# renaming.
+
 variable "traefik_flux_github_owner" {
   type        = string
-  description = "Name of the Treaefik Flux repo Github owner (previously: organization)"
+  description = "Name of the Traefik Flux repo Github owner (previously: organization)"
   default     = null
 }
 
@@ -749,6 +758,50 @@ variable "traefik_flux_additional_args" {
 variable "traefik_flux_deploy" {
   type    = bool
   default = true
+}
+
+variable "traefik_flux_weight" {
+  type        = number
+  description = "The weight of the Traefik instance target groups in the load balancers. Only relevant if there is variant instance deployed."
+  default     = 1
+}
+
+# Green variant
+
+variable "traefik_green_variant_flux_helm_chart_version" {
+  type        = string
+  description = "Helm Chart version to be used to deploy the Traefik green variant"
+  default     = null
+}
+
+variable "traefik_green_variant_flux_http_nodeport" {
+  type        = number
+  description = "Nodeport used by ALB's to connect to the Traefik green variant instance"
+  default     = 32000
+}
+
+variable "traefik_green_variant_flux_admin_nodeport" {
+  type        = number
+  description = "Nodeport used by ALB's to connect to the Traefik green variant instance admin page"
+  default     = 32001
+}
+
+variable "traefik_green_variant_flux_additional_args" {
+  type        = list(any)
+  description = "Pass arguments to the additionalArguments node in the Traefik Helm chart for the green variant"
+  default     = ["--metrics.prometheus"]
+}
+
+variable "traefik_green_variant_flux_deploy" {
+  type        = bool
+  description = "Whether to deploy the Traefik green variant."
+  default     = false
+}
+
+variable "traefik_green_variant_flux_weight" {
+  type        = number
+  description = "The weight of the Traefik green variant instance target groups in the load balancers."
+  default     = 0
 }
 
 # --------------------------------------------------

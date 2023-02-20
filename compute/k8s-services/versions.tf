@@ -5,7 +5,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.52.0"
+      version = "~> 4.53.0"
     }
 
     kubernetes = {
@@ -30,7 +30,7 @@ terraform {
 
     github = {
       source  = "integrations/github"
-      version = "~> 5.16.0"
+      version = "~> 5.17.0"
     }
 
     flux = {

@@ -87,10 +87,26 @@ locals {
 
 locals {
   traefik_alb_auth_endpoints = concat(
-    ["internal.${local.eks_fqdn}"],
-    ["grafana.${local.eks_fqdn}"],
-    ["traefik.${local.eks_fqdn}"],
-    var.traefik_alb_auth_core_alias,
+    var.traefik_flux_deploy || var.traefik_green_variant_flux_deploy ? concat(
+      [
+        "internal.${local.eks_fqdn}",
+        "grafana.${local.eks_fqdn}"
+      ],
+      var.traefik_alb_auth_core_alias
+    ) : [],
+    var.traefik_flux_deploy && var.traefik_green_variant_flux_deploy ?
+    [
+      "traefik-blue-variant.${local.eks_fqdn}:8443",
+      "traefik-green-variant.${local.eks_fqdn}:9443"
+    ] : [],
+    var.traefik_flux_deploy ?
+    [
+      "traefik-blue-variant.${local.eks_fqdn}"
+    ] : [],
+    var.traefik_green_variant_flux_deploy ?
+    [
+      "traefik-green-variant.${local.eks_fqdn}"
+    ] : [],
   )
   traefik_alb_auth_appreg_reply_join        = "^${join("$,^", local.traefik_alb_auth_endpoints)}$"
   traefik_alb_auth_appreg_reply_replace_pre = replace(local.traefik_alb_auth_appreg_reply_join, "^", "https://")
@@ -224,10 +240,18 @@ locals {
     "module" = "http_2xx"
   }] : []
 
+  blackbox_exporter_monitoring_traefik_green_variant = var.traefik_green_variant_flux_deploy ? [{
+    "name"   = "traefik-green-variant"
+    "url"    = "http://traefik-green-variant.traefik-green-variant:9000/ping"
+    "module" = "http_2xx"
+  }] : []
+
+
   blackbox_exporter_monitoring_targets = concat(
     local.blackbox_exporter_monitoring_atlantis,
     local.blackbox_exporter_monitoring_grafana,
     local.blackbox_exporter_monitoring_traefik,
+    local.blackbox_exporter_monitoring_traefik_green_variant,
     var.blackbox_exporter_monitoring_targets
   )
 }

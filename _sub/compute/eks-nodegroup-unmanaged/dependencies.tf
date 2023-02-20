@@ -57,7 +57,7 @@ locals {
   worker-node-userdata = <<USERDATA
 #!/bin/sh
 set -o xtrace
-/etc/eks/bootstrap.sh --apiserver-endpoint '${var.eks_endpoint}' --b64-cluster-ca '${var.eks_certificate_authority}' ${local.bootstrap_extra_args} '${var.cluster_name}'
+/etc/eks/bootstrap.sh --apiserver-endpoint '${var.eks_endpoint}' --container-runtime '${var.container_runtime}' --b64-cluster-ca '${var.eks_certificate_authority}' ${local.bootstrap_extra_args} '${var.cluster_name}'
 
 echo fs.inotify.max_user_watches=${var.worker_inotify_max_user_watches} | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
@@ -66,7 +66,7 @@ USERDATA
   worker-node-userdata-cw-agent = <<USERDATA
 #!/bin/sh
 set -o xtrace
-/etc/eks/bootstrap.sh --apiserver-endpoint '${var.eks_endpoint}' --b64-cluster-ca '${var.eks_certificate_authority}' ${local.bootstrap_extra_args} '${var.cluster_name}'
+/etc/eks/bootstrap.sh --apiserver-endpoint '${var.eks_endpoint}' --container-runtime '${var.container_runtime}' --b64-cluster-ca '${var.eks_certificate_authority}' ${local.bootstrap_extra_args} '${var.cluster_name}'
 
 echo fs.inotify.max_user_watches=${var.worker_inotify_max_user_watches} | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
