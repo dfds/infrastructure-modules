@@ -4,7 +4,7 @@ resource "aws_launch_template" "eks" {
   image_id      = local.node_ami
   instance_type = element(var.instance_types, 0)
   name_prefix   = "eks-${var.cluster_name}-${var.nodegroup_name}-"
-  # Make sure to update the max pod values in the tempalte below using the script
+  # Make sure to update the max pod values in the template below using the script
   # `src/produce-eni-max-pods.sh` when updating the EKS VPC CNI addon.
   user_data = base64encode(templatefile("${path.module}/user-data.sh.tftpl", {
     eks_endpoint : var.eks_endpoint,
