@@ -647,6 +647,7 @@ module "fluentd_cloudwatch_flux_manifests" {
   source                          = "../../_sub/monitoring/fluentd-cloudwatch"
   count                           = var.fluentd_cloudwatch_flux_deploy ? 1 : 0
   cluster_name                    = var.eks_cluster_name
+  container_runtime               = contains(data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_container_runtimes, "dockerd") ? "dockerd" : "containerd"
   aws_region                      = var.aws_region
   retention_in_days               = var.fluentd_cloudwatch_retention_in_days
   repo_name                       = var.fluentd_cloudwatch_flux_repo_name != null ? var.fluentd_cloudwatch_flux_repo_name : var.platform_fluxcd_repo_name

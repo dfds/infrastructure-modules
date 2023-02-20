@@ -262,20 +262,20 @@ module "eks_s3_public_kubeconfig" {
   acl     = "public-read"
 }
 
-# What is this even needed for?
+# The primary motivation behind this service account is to provide an
+# alternative way of authenticating without dependence on ADFS.
 module "k8s_service_account" {
   source                    = "../../_sub/compute/k8s-service-account"
   cluster_name              = var.eks_cluster_name
   eks_endpoint              = module.eks_cluster.eks_endpoint
   eks_certificate_authority = module.eks_cluster.eks_certificate_authority
-  # eks_certificate_authority = base64decode(module.eks_cluster.eks_certificate_authority)
 }
 
 module "k8s_service_account_store_secret" {
   source          = "../../_sub/security/ssm-parameter-store"
-  key_name        = "/eks/${var.eks_cluster_name}/deploy_user"
+  key_name        = "/eks/${var.eks_cluster_name}/kubeconfig-deploy-user"
   key_description = "Kube config file for general deployment user"
-  key_value       = module.k8s_service_account.deploy_user_config
+  key_value       = module.k8s_service_account.deploy_user_kubeconfig
   tag_createdby   = var.ssm_param_createdby != null ? var.ssm_param_createdby : "eks-ec2"
 }
 
