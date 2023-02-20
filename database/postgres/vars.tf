@@ -38,7 +38,7 @@ variable "skip_final_snapshot" {
 variable "engine_version" {
   type        = string
   description = "RDS engine version"
-  default     = 10
+  default     = 14
 }
 
 variable "db_instance_class" {

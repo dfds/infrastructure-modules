@@ -74,3 +74,9 @@ variable "deletion_protection" {
   default     = true
   description = "Protect database against deletion?"
 }
+
+variable "engine_version" {
+  type        = string
+  description = "RDS engine version (expects major version)"
+  default     = 14
+}

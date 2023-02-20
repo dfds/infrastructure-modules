@@ -57,7 +57,7 @@ variable "skip_final_snapshot" {
 variable "engine_version" {
   type        = string
   description = "RDS engine version (expects major version)"
-  default     = null
+  default     = 14
 }
 
 variable "allow_major_version_upgrade" {

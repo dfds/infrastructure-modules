@@ -36,7 +36,7 @@ resource "aws_db_parameter_group" "dbparams" {
 #tfsec:ignore:aws-rds-encrypt-instance-storage-data tfsec:ignore:aws-rds-no-public-db-access tfsec:ignore:AVD-AWS-0176 tfsec:ignore:aws-rds-enable-performance-insights
 resource "aws_db_instance" "postgres" {
   engine                  = "postgres"
-  engine_version          = "14"
+  engine_version          = var.engine_version
   publicly_accessible     = "true"
   deletion_protection     = var.deletion_protection
   backup_retention_period = 10
