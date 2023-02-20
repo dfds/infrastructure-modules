@@ -55,7 +55,6 @@ locals {
   */
 
   # TODO(emil): make configurable, use a template perhaps
-  # TODO(emil): pass in the addon version
 
   # Make sure to update the max pod values below using the script
   # `src/produce-eni-max-pods.sh` when updating the EKS VPC CNI addon.

@@ -20,7 +20,7 @@ func TestNodeMaxPod(t *testing.T) {
 
 	for _, node := range resp.Items {
 		assert.EqualValues(t, node.Status.Capacity.Pods().Value(),
-			// Asssuming a m5a.xlarge instance and prefix delegation enable.
+			// Asssuming a m5a.xlarge instance and prefix delegation enabled.
 			898, "node %q pods limit does not match", node.Name)
 	}
 }
