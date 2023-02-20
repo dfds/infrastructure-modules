@@ -29,10 +29,3 @@ resource "kubernetes_cluster_role_binding" "deploy-user" {
 
   provider = kubernetes
 }
-
-data "kubernetes_secret" "deploy-token" {
-  metadata {
-    name      = kubernetes_service_account.deploy-user.default_secret_name
-    namespace = kubernetes_service_account.deploy-user.metadata[0].namespace
-  }
-}
