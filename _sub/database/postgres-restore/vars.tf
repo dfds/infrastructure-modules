@@ -38,8 +38,8 @@ variable "db_storage_type" {
 
 variable "db_instance_class" {
   type        = string
-  description = "The instance class of the DB (e.g. db.t2.micro)"
-  default     = "db.t2.micro"
+  description = "The instance class of the DB (e.g. db.t3.micro)"
+  default     = "db.t3.micro"
 }
 
 variable "db_allocated_storage" {
@@ -67,4 +67,10 @@ variable "ssl_mode" {
     condition     = contains(["Require", "VerifyFull", "VerifyCA"], var.ssl_mode)
     error_message = "Invalid value for SSL mode. Valid values: Require, VerifyFull, VerifyCA."
   }
+}
+
+variable "deletion_protection" {
+  type        = bool
+  default     = true
+  description = "Protect database against deletion?"
 }

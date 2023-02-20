@@ -38,8 +38,8 @@ variable "db_storage_type" {
 
 variable "db_instance_class" {
   type        = string
-  description = "The instance class of the DB (e.g. db.t2.micro)"
-  default     = "db.t2.micro"
+  description = "The instance class of the DB (e.g. db.t3.micro)"
+  default     = "db.t3.micro"
 }
 
 variable "db_allocated_storage" {
