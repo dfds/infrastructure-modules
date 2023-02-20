@@ -147,12 +147,13 @@ module "eks_nodegroup1_workers" {
 
   kubelet_extra_args = var.eks_nodegroup1_kubelet_extra_args
 
-  cloudwatch_agent_config_bucket  = var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"
-  cloudwatch_agent_config_file    = var.eks_worker_cloudwatch_agent_config_file
-  cloudwatch_agent_enabled        = var.eks_worker_cloudwatch_agent_config_deploy
-  eks_endpoint                    = module.eks_cluster.eks_endpoint
-  eks_certificate_authority       = module.eks_cluster.eks_certificate_authority
-  worker_inotify_max_user_watches = var.eks_worker_inotify_max_user_watches
+  cloudwatch_agent_config_bucket    = var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"
+  cloudwatch_agent_config_file      = var.eks_worker_cloudwatch_agent_config_file
+  cloudwatch_agent_enabled          = var.eks_worker_cloudwatch_agent_config_deploy
+  vpc_cni_prefix_delegation_enabled = var.eks_addon_vpccni_prefix_delegation_enabled
+  eks_endpoint                      = module.eks_cluster.eks_endpoint
+  eks_certificate_authority         = module.eks_cluster.eks_certificate_authority
+  worker_inotify_max_user_watches   = var.eks_worker_inotify_max_user_watches
 }
 
 
@@ -183,12 +184,13 @@ module "eks_nodegroup2_workers" {
 
   kubelet_extra_args = var.eks_nodegroup2_kubelet_extra_args
 
-  cloudwatch_agent_config_bucket  = var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"
-  cloudwatch_agent_config_file    = var.eks_worker_cloudwatch_agent_config_file
-  cloudwatch_agent_enabled        = var.eks_worker_cloudwatch_agent_config_deploy
-  eks_endpoint                    = module.eks_cluster.eks_endpoint
-  eks_certificate_authority       = module.eks_cluster.eks_certificate_authority
-  worker_inotify_max_user_watches = var.eks_worker_inotify_max_user_watches
+  cloudwatch_agent_config_bucket    = var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"
+  cloudwatch_agent_config_file      = var.eks_worker_cloudwatch_agent_config_file
+  cloudwatch_agent_enabled          = var.eks_worker_cloudwatch_agent_config_deploy
+  vpc_cni_prefix_delegation_enabled = var.eks_addon_vpccni_prefix_delegation_enabled
+  eks_endpoint                      = module.eks_cluster.eks_endpoint
+  eks_certificate_authority         = module.eks_cluster.eks_certificate_authority
+  worker_inotify_max_user_watches   = var.eks_worker_inotify_max_user_watches
 }
 
 
@@ -224,6 +226,7 @@ module "eks_addons" {
   kubeproxy_version_override       = var.eks_addon_kubeproxy_version_override
   coredns_version_override         = var.eks_addon_coredns_version_override
   vpccni_version_override          = var.eks_addon_vpccni_version_override
+  vpccni_prefix_delegation_enabled = var.eks_addon_vpccni_prefix_delegation_enabled
   awsebscsidriver_version_override = var.eks_addon_awsebscsidriver_version_override
   cluster_version                  = var.eks_cluster_version
   eks_openid_connect_provider_url  = module.eks_cluster.eks_openid_connect_provider_url

@@ -1,10 +1,23 @@
 resource "aws_launch_template" "eks" {
   count = signum(var.desired_size_per_subnet)
 
-  image_id               = local.node_ami
-  instance_type          = element(var.instance_types, 0)
-  name_prefix            = "eks-${var.cluster_name}-${var.nodegroup_name}-"
-  user_data              = var.cloudwatch_agent_enabled ? base64encode(local.worker-node-userdata-cw-agent) : base64encode(local.worker-node-userdata)
+  image_id      = local.node_ami
+  instance_type = element(var.instance_types, 0)
+  name_prefix   = "eks-${var.cluster_name}-${var.nodegroup_name}-"
+  # Make sure to update the max pod values in the tempalte below using the script
+  # `src/produce-eni-max-pods.sh` when updating the EKS VPC CNI addon.
+  user_data = base64encode(templatefile("${path.module}/user-data.sh.tftpl", {
+    eks_endpoint : var.eks_endpoint,
+    container_runtime : var.container_runtime,
+    eks_certificate_authority : var.eks_certificate_authority,
+    cluster_name : var.cluster_name,
+    bootstrap_extra_args : local.bootstrap_extra_args,
+    worker_inotify_max_user_watches : var.worker_inotify_max_user_watches,
+    cloudwatch_agent_enabled : var.cloudwatch_agent_enabled,
+    cloudwatch_agent_config_bucket : var.cloudwatch_agent_config_bucket,
+    cloudwatch_agent_config_file : var.cloudwatch_agent_config_file,
+    vpc_cni_prefix_delegation_enabled : var.vpc_cni_prefix_delegation_enabled,
+  }))
   key_name               = var.ec2_ssh_key
   update_default_version = true
 
