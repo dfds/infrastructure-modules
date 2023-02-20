@@ -1,11 +1,11 @@
-output "deploy_user_config" {
+output "deploy_user_kubeconfig" {
   value = templatefile(
     "${path.module}/kubeconfig-token.yaml",
     {
       cluster_name = var.cluster_name
       endpoint     = var.eks_endpoint
       ca           = var.eks_certificate_authority
-      token        = data.kubernetes_secret.deploy-token.data.token
+      token        = kubernetes_secret_v1.deploy-token.data.token
     }
   )
 }

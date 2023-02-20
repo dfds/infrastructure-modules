@@ -4,3 +4,5 @@ defaultRules:
     kubeSchedulerAlerting: false
     kubeSchedulerRecording: false
   appNamespacesTarget: ${target_namespaces}
+  disabled:
+    InfoInhibitor: true

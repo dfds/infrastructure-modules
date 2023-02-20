@@ -24,30 +24,33 @@ variable "environment" {
 }
 
 variable "db_port" {
+  type        = number
   default     = 5432
   description = "The port to use for the database"
 }
 
 variable "skip_final_snapshot" {
-  description = "Define if the default of creating a backup upon deletion should be skipped. Default is false"
+  type        = bool
   default     = false
+  description = "Define if the default of creating a backup upon deletion should be skipped. Default is false"
 }
 
 variable "engine_version" {
   type        = string
   description = "RDS engine version"
-  default     = 10
+  default     = 14
 }
 
 variable "db_instance_class" {
   type        = string
   description = "RDS database instance class"
-  default     = "db.t2.micro"
+  default     = "db.t3.micro"
 }
 
 variable "db_allocated_storage" {
-  description = "The amount of space, in GB, to allocate for the database"
+  type        = number
   default     = 20
+  description = "The amount of space, in GB, to allocate for the database"
 }
 
 variable "allow_major_version_upgrade" {

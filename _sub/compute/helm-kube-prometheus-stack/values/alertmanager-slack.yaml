@@ -28,6 +28,9 @@ alertmanager:
         - match_re:
             alertname: KubeletTooManyPods
           receiver: "null"
+        - matchers:
+          - alertname: InfoInhibitor
+          receiver: "null"
     receivers:
       - name: "general"
         slack_configs:
