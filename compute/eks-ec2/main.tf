@@ -268,11 +268,20 @@ module "k8s_service_account" {
   # eks_certificate_authority = base64decode(module.eks_cluster.eks_certificate_authority)
 }
 
+module "k8s_service_account_store_secret" {
+  source          = "../../_sub/security/ssm-parameter-store"
+  key_name        = "/eks/${var.eks_cluster_name}/deploy_user"
+  key_description = "Kube config file for general deployment user"
+  key_value       = module.k8s_service_account.deploy_user_config
+  tag_createdby   = var.ssm_param_createdby != null ? var.ssm_param_createdby : "eks-ec2"
+}
+
 module "cloudwatch_agent_config_bucket" {
   source    = "../../_sub/storage/s3-bucket"
   deploy    = var.eks_worker_cloudwatch_agent_config_deploy
   s3_bucket = "${var.eks_cluster_name}-cl-agent-config"
 }
+
 
 # --------------------------------------------------
 # Cluster access
