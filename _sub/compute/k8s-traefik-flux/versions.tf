@@ -4,15 +4,15 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 4.52.0"
+      version = "~> 4.52.0"
     }
     github = {
       source  = "integrations/github"
-      version = ">= 5.14.0"
+      version = "~> 5.14.0"
     }
     kubectl = {
       source  = "gavinbunney/kubectl"
-      version = ">= 1.14.0"
+      version = "~> 1.14.0"
     }
     htpasswd = {
       source  = "loafoe/htpasswd"
@@ -20,7 +20,7 @@ terraform {
     }
     random = {
       source  = "hashicorp/random"
-      version = ">= 3.4.0"
+      version = "~> 3.4.0"
     }
   }
 }
