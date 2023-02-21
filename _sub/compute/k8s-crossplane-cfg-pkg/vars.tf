@@ -60,3 +60,8 @@ variable "revision_history_limit" {
   default     = 1
 }
 
+variable "overwrite_on_create" {
+  type        = bool
+  default     = true
+  description = "Enable overwriting existing files"
+}

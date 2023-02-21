@@ -76,10 +76,11 @@ resource "github_repository_deploy_key" "main" {
 }
 
 resource "github_repository_file" "install" {
-  repository = data.github_repository.main.name
-  file       = data.flux_install.main.path
-  content    = data.flux_install.main.content
-  branch     = data.github_branch.flux_branch.branch
+  repository          = data.github_repository.main.name
+  file                = data.flux_install.main.path
+  content             = data.flux_install.main.content
+  branch              = data.github_branch.flux_branch.branch
+  overwrite_on_create = var.overwrite_on_create
 
   lifecycle {
     ignore_changes = [
@@ -89,11 +90,12 @@ resource "github_repository_file" "install" {
 }
 
 resource "github_repository_file" "sync" {
-  repository = data.github_repository.main.name
-  file       = data.flux_sync.main.path
-  content    = data.flux_sync.main.content
-  branch     = data.github_branch.flux_branch.branch
-  depends_on = [github_repository_file.install]
+  repository          = data.github_repository.main.name
+  file                = data.flux_sync.main.path
+  content             = data.flux_sync.main.content
+  branch              = data.github_branch.flux_branch.branch
+  overwrite_on_create = var.overwrite_on_create
+  depends_on          = [github_repository_file.install]
 
   lifecycle {
     ignore_changes = [
@@ -103,11 +105,12 @@ resource "github_repository_file" "sync" {
 }
 
 resource "github_repository_file" "kustomize" {
-  repository = data.github_repository.main.name
-  file       = data.flux_sync.main.kustomize_path
-  content    = data.flux_sync.main.kustomize_content
-  branch     = data.github_branch.flux_branch.branch
-  depends_on = [github_repository_file.sync]
+  repository          = data.github_repository.main.name
+  file                = data.flux_sync.main.kustomize_path
+  content             = data.flux_sync.main.kustomize_content
+  branch              = data.github_branch.flux_branch.branch
+  overwrite_on_create = var.overwrite_on_create
+  depends_on          = [github_repository_file.sync]
 
   lifecycle {
     ignore_changes = [
@@ -122,10 +125,11 @@ resource "github_repository_file" "kustomize" {
 # --------------------------------------------------
 
 resource "github_repository_file" "flux_monitoring_config_path" {
-  repository = var.repo_name
-  branch     = data.github_branch.flux_branch.branch
-  file       = "${local.cluster_repo_path}/${local.app_install_name}.yaml"
-  content    = jsonencode(local.app_config_path)
+  repository          = var.repo_name
+  branch              = data.github_branch.flux_branch.branch
+  file                = "${local.cluster_repo_path}/${local.app_install_name}.yaml"
+  content             = jsonencode(local.app_config_path)
+  overwrite_on_create = var.overwrite_on_create
 }
 
 # --------------------------------------------------
@@ -137,5 +141,5 @@ resource "github_repository_file" "platform_apps_init" {
   branch              = data.github_branch.flux_branch.branch
   file                = "${local.cluster_repo_path}/platform-apps.yaml"
   content             = local.platform_apps_yaml
-  overwrite_on_create = true
+  overwrite_on_create = var.overwrite_on_create
 }

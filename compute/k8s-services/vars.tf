@@ -251,7 +251,7 @@ variable "monitoring_kube_prometheus_stack_target_namespaces" {
 
 variable "monitoring_kube_prometheus_stack_github_owner" {
   type        = string
-  description = "Name of the Treaefik Flux repo Github owner (previously: organization)"
+  description = "Name of the Traefik Flux repo Github owner (previously: organization)"
   default     = null
 }
 
@@ -352,6 +352,12 @@ variable "platform_fluxcd_repo_branch" {
   type        = string
   default     = "main"
   description = ""
+}
+
+variable "platform_fluxcd_overwrite_on_create" {
+  type        = bool
+  default     = true
+  description = "Enable overwriting existing files"
 }
 
 
