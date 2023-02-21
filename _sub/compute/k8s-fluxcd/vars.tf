@@ -32,3 +32,9 @@ variable "release_tag" {
   type    = string
   default = "latest"
 }
+
+variable "overwrite_on_create" {
+  type        = bool
+  default     = true
+  description = "Enable overwriting existing files"
+}

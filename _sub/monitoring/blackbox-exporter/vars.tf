@@ -46,3 +46,9 @@ variable "monitoring_targets" {
   description = "Complex object of what to monitor with Blackbox Exporter"
   default     = []
 }
+
+variable "overwrite_on_create" {
+  type        = bool
+  default     = true
+  description = "Enable overwriting existing files"
+}

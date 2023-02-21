@@ -13,3 +13,9 @@ variable "repo_branch" {
   default     = "main"
   description = "The git branch."
 }
+
+variable "overwrite_on_create" {
+  type        = bool
+  default     = true
+  description = "Enable overwriting existing files"
+}

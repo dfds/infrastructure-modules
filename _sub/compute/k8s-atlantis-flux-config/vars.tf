@@ -31,3 +31,9 @@ variable "flux_repo_branch" {
   description = "Override the default branch of the Atlantis Flux repo (optional)"
   default     = "main"
 }
+
+variable "overwrite_on_create" {
+  type        = bool
+  default     = true
+  description = "Enable overwriting existing files"
+}
