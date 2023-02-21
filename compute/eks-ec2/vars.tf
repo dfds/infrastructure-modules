@@ -95,6 +95,12 @@ variable "eks_addon_vpccni_version_override" {
   default = ""
 }
 
+variable "eks_addon_vpccni_prefix_delegation_enabled" {
+  type        = bool
+  description = "Whether to enable the prefix delegation mode on the VPC CNI EKS addon."
+  default     = false
+}
+
 variable "eks_addon_awsebscsidriver_version_override" {
   type    = string
   default = ""
