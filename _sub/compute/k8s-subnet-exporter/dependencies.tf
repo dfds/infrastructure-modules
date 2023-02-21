@@ -1,3 +1,9 @@
+locals {
+  serviceaccount_name = "subnet-exporter"
+  deployment_name     = "aws-subnet-exporter"
+  iam_role_name       = var.iam_role_name == null ? "eks-${var.cluster_name}-subnet-exporter" : var.iam_role_name
+}
+
 data "aws_iam_policy_document" "subnet_exporter" {
   statement {
     effect = "Allow"

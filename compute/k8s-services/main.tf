@@ -714,6 +714,8 @@ module "aws_subnet_exporter" {
   aws_region     = var.aws_region
   image_tag      = "0.3"
   oidc_issuer    = local.oidc_issuer
+  cluster_name   = var.eks_cluster_name
+  iam_role_name  = var.subnet_exporter_iam_role_name
 }
 
 # --------------------------------------------------

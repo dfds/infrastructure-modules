@@ -1,9 +1,3 @@
-locals {
-  serviceaccount_name = "subnet-exporter"
-  deployment_name     = "aws-subnet-exporter"
-  iam_role_name       = "SubnetExporter"
-}
-
 resource "aws_iam_role" "this" {
   name                 = local.iam_role_name
   path                 = "/"
