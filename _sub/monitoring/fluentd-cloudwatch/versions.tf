@@ -1,6 +1,6 @@
 
 terraform {
-  required_version = "~> 1.0"
+  required_version = "~> 1.3.0"
 
   /*
   Hashicorp-managed providers can be loaded implicitly
@@ -15,7 +15,7 @@ terraform {
     }
     github = {
       source  = "integrations/github"
-      version = "~> 5.14.0"
+      version = "~> 5.18.0"
     }
     tls = {
       source  = "hashicorp/tls"
