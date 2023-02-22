@@ -11,6 +11,7 @@ variable "email" {
 }
 
 variable "sleep_after" {
+  type    = number
   default = 0
 }
 
@@ -19,15 +20,3 @@ variable "parent_id" {
   description = "The ID of the parent AWS Organization OU. Defaults to the root."
   default     = "r-65k1" # TODO: Get from data source, once supported
 }
-
-variable "master_account_id" {
-  type        = string
-  description = "The AWS account ID of the Organizations Master account"
-  default     = ""
-}
-
-variable "prime_role_name" {
-  type    = string
-  default = ""
-}
-
