@@ -5,7 +5,8 @@ resource "aws_subnet" "subnet" {
   vpc_id            = var.vpc_id
 
   tags = {
-    "Name"                                      = "${var.name}-${data.aws_availability_zones.available.names[count.index]}"
+    "Name"                                      = "${var.name}-nodes-${data.aws_availability_zones.available.names[count.index]}"
+    "Description"                               = "Subnet for worker nodes and Kubernetes resource in the ${var.cluster_name} cluster."
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
   }
 }

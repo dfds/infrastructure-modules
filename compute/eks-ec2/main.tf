@@ -71,6 +71,9 @@ module "eks_workers_subnet" {
   subnets      = var.eks_worker_subnets
 }
 
+# TODO(emil): create managed workers subnets
+# TODO(emil): add ability to specify reservations with the vpc subnets
+
 module "eks_workers_keypair" {
   source     = "../../_sub/compute/ec2-keypair"
   name       = "eks-${var.eks_cluster_name}-workers"
