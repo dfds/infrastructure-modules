@@ -1,5 +1,5 @@
 terraform {
-  required_version = "~> 1.0"
+  required_version = "~> 1.3.0"
 
   /*
   Hashicorp-managed providers can be loaded implicitly
@@ -10,15 +10,15 @@ terraform {
   required_providers {
     helm = {
       source  = "hashicorp/helm"
-      version = ">= 2.8.0"
+      version = "~> 2.9.0"
     }
     kubectl = {
       source  = "gavinbunney/kubectl"
-      version = ">= 1.14.0"
+      version = "~> 1.14.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = ">= 2.16.0"
+      version = "~> 2.16.0"
     }
   }
 }

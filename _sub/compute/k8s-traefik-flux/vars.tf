@@ -61,3 +61,9 @@ variable "dashboard_ingress_host" {
   type        = string
   description = "The alb auth dns name for accessing Traefik."
 }
+
+variable "overwrite_on_create" {
+  type        = bool
+  default     = true
+  description = "Enable overwriting existing files"
+}

@@ -133,3 +133,9 @@ variable "prometheus_limit_cpu" {
   description = "Prometheus resource setting for limit cpu"
   default     = "1000m"
 }
+
+variable "overwrite_on_create" {
+  type        = bool
+  default     = true
+  description = "Enable overwriting existing files"
+}
