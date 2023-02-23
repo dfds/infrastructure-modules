@@ -20,7 +20,7 @@ resource "aws_ec2_subnet_cidr_reservation" "prefix_reservation" {
           cidr_block = cidr
         }
       ]
-  ]) : "${res.subnet_id}-${res.cidr_block}" => res }
+  ]) : "${res.cidr_block}" => res }
   reservation_type = "prefix"
   cidr_block       = each.value.cidr_block
   subnet_id        = each.value.subnet_id
