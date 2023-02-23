@@ -35,7 +35,6 @@ provider "kubernetes" {
   }
 }
 
-
 # --------------------------------------------------
 # EKS Cluster
 # --------------------------------------------------
@@ -94,6 +93,8 @@ module "eks_workers_keypair" {
   public_key = var.eks_worker_ssh_public_key
 }
 
+# TODO(emil): clean up some of this module
+
 # module "eks_workers_iam_role" {
 #   source = "../../_sub/security/iam-role"
 # }
@@ -121,12 +122,21 @@ module "eks_workers_route_table_assoc" {
   route_table_id = module.eks_route_table.id
 }
 
+# TODO(emil): remove this when unmanaged nodes are removed
 # Misleading - is actually for all node groups. Might even not need both this, and eks_workers_route_table_assoc?
 module "eks_nodegroup1_route_table_assoc" {
   source = "../../_sub/network/route-table-assoc"
 
   # count          = "${length(var.eks_worker_subnets)}"       # need to pass count explicitly, otherwise: value of 'count' cannot be computed
   subnet_ids     = module.eks_workers_subnet.subnet_ids
+  route_table_id = module.eks_route_table.id
+}
+
+# TODO(emil): should this even be a module?
+module "eks_managed_workers_route_table_assoc" {
+  source = "../../_sub/network/route-table-assoc"
+
+  subnet_ids     = module.eks_managed_workers_subnet.subnet_ids
   route_table_id = module.eks_route_table.id
 }
 
