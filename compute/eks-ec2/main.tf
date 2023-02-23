@@ -94,6 +94,7 @@ module "eks_workers" {
   source                         = "../../_sub/compute/eks-workers"
   cluster_name                   = var.eks_cluster_name
   cloudwatch_agent_config_bucket = var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"
+  cur_bucket_arn                 = var.eks_worker_cur_bucket_arn
 }
 
 module "eks_workers_route_table_assoc" {

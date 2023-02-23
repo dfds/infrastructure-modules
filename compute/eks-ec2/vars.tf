@@ -50,6 +50,7 @@ variable "eks_is_sandbox" {
 }
 
 variable "eks_cluster_zones" {
+  type    = number
   default = 3
 }
 
@@ -66,6 +67,7 @@ variable "eks_cluster_log_retention_days" {
 }
 
 variable "eks_worker_inotify_max_user_watches" {
+  type    = number
   default = 131072 # default t3.large is 8192 which is too low
 }
 
@@ -230,4 +232,14 @@ variable "eks_worker_cloudwatch_agent_config_deploy" {
 variable "eks_worker_cloudwatch_agent_config_file" {
   type    = string
   default = "aws-cloudwatch-agent-conf.json"
+}
+
+# --------------------------------------------------
+# Cost and Usage Report integration
+# --------------------------------------------------
+
+variable "eks_worker_cur_bucket_arn" {
+  type        = string
+  default     = null
+  description = "S3 ARN for Billing Cost and Usage Report (CUR)"
 }
