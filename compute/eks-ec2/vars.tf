@@ -74,6 +74,14 @@ variable "eks_worker_subnets" {
   default = []
 }
 
+variable "eks_managed_worker_subnets" {
+  type = list(object({
+    subnet_cidr               = string,
+    prefix_reservations_cidrs = list(string),
+  }))
+  default = []
+}
+
 variable "eks_worker_scale_to_zero_cron" {
   type        = string
   description = "The time when the ASG will be scaled to zero, specified in Unix cron syntax"

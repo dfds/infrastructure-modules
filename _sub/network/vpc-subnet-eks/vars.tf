@@ -12,7 +12,10 @@ variable "vpc_id" {
 }
 
 variable "subnets" {
-  type    = list(string)
+  type = list(object({
+    subnet_cidr               = string,
+    prefix_reservations_cidrs = list(string),
+  }))
   default = []
 }
 

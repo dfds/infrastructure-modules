@@ -62,17 +62,31 @@ module "eks_route_table" {
   gateway_id = module.eks_internet_gateway.id
 }
 
+# TODO(emil): remove when unmanaged nodes are removed
 module "eks_workers_subnet" {
   source       = "../../_sub/network/vpc-subnet-eks"
   deploy       = length(var.eks_worker_subnets) >= 1 ? true : false
-  name         = "eks-${var.eks_cluster_name}"
+  name         = "eks-${var.eks_cluster_name}-nodes"
   cluster_name = var.eks_cluster_name
   vpc_id       = module.eks_cluster.vpc_id
-  subnets      = var.eks_worker_subnets
+  # To keep this variable backward compatible we do the
+  # transformation here.
+  subnets = [
+    for cidr in var.eks_worker_subnets : {
+      subnet_cidr : cidr,
+      prefix_reservations_cidrs : []
+    }
+  ]
 }
 
-# TODO(emil): create managed workers subnets
-# TODO(emil): add ability to specify reservations with the vpc subnets
+module "eks_managed_workers_subnet" {
+  source       = "../../_sub/network/vpc-subnet-eks"
+  deploy       = length(var.eks_managed_worker_subnets) >= 1 ? true : false
+  name         = "eks-${var.eks_cluster_name}-managed-nodes"
+  cluster_name = var.eks_cluster_name
+  vpc_id       = module.eks_cluster.vpc_id
+  subnets      = var.eks_managed_worker_subnets
+}
 
 module "eks_workers_keypair" {
   source     = "../../_sub/compute/ec2-keypair"
