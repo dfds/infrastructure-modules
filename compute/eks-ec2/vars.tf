@@ -233,3 +233,13 @@ variable "eks_worker_cloudwatch_agent_config_file" {
   type    = string
   default = "aws-cloudwatch-agent-conf.json"
 }
+
+# --------------------------------------------------
+# Cost and Usage Report integration
+# --------------------------------------------------
+
+variable "eks_worker_cur_bucket_arn" {
+  type        = string
+  default     = null
+  description = "S3 ARN for Billing Cost and Usage Report (CUR)"
+}
