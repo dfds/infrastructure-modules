@@ -18,6 +18,7 @@ variable "aws_region" {
 }
 
 variable "aws_workload_account_id" {
+  type = string
 }
 
 variable "aws_assume_role_arn" {
@@ -25,6 +26,7 @@ variable "aws_assume_role_arn" {
 }
 
 variable "workload_dns_zone_name" {
+  type = string
 }
 
 # Optional
@@ -98,6 +100,7 @@ variable "traefik_nlb_deploy" {
 # --------------------------------------------------
 
 variable "blaster_deploy" {
+  type    = bool
   default = false
 }
 
@@ -248,7 +251,7 @@ variable "monitoring_kube_prometheus_stack_target_namespaces" {
 
 variable "monitoring_kube_prometheus_stack_github_owner" {
   type        = string
-  description = "Name of the Treaefik Flux repo Github owner (previously: organization)"
+  description = "Name of the Traefik Flux repo Github owner (previously: organization)"
   default     = null
 }
 
@@ -351,14 +354,10 @@ variable "platform_fluxcd_repo_branch" {
   description = ""
 }
 
-# --------------------------------------------------
-# Namespaces
-# --------------------------------------------------
-
-variable "kubesystem_permitted_extra_roles" {
-  type        = list(string)
-  default     = []
-  description = "Defines additional roles that can be assumed from the kube-system namespace"
+variable "platform_fluxcd_overwrite_on_create" {
+  type        = bool
+  default     = true
+  description = "Enable overwriting existing files"
 }
 
 
@@ -373,23 +372,27 @@ variable "atlantis_deploy" {
 }
 
 variable "atlantis_github_token" {
-  description = "Github token that the provider uses to perform Github operations. Leaving unset will fall back to GITHUB_TOKEN environment variable"
+  type        = string
   default     = null
+  description = "Github token that the provider uses to perform Github operations. Leaving unset will fall back to GITHUB_TOKEN environment variable"
 }
 
 variable "atlantis_platform_fluxcd_github_token" {
-  description = "Github token that the provider uses to perform Github operations for Flux."
+  type        = string
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "Github token that the provider uses to perform Github operations for Flux."
 }
 
 variable "atlantis_github_owner" {
-  description = "Github owner(username). Conflicts with github_organization. Leaving unset will use GITHUB_OWNER environment variable if exists"
+  type        = string
   default     = null
+  description = "Github owner(username). Conflicts with github_organization. Leaving unset will use GITHUB_OWNER environment variable if exists"
 }
 
 variable "atlantis_github_username" {
-  description = "Github username of the account that will post Atlantis comments on PR's"
+  type        = string
   default     = null
+  description = "Github username of the account that will post Atlantis comments on PR's"
 }
 
 variable "atlantis_github_repositories" {
@@ -459,13 +462,15 @@ variable "atlantis_arm_client_secret" {
 }
 
 variable "atlantis_aws_access_key" {
-  description = "AWS Access Key"
+  type        = string
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "AWS Access Key"
 }
 
 variable "atlantis_aws_secret" {
-  description = "AWS Secret"
+  type        = string
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "AWS Secret"
 }
 
 variable "atlantis_access_key_master" {
@@ -848,12 +853,6 @@ variable "blackbox_exporter_monitoring_targets" {
 # Podinfo through Flux CD
 # --------------------------------------------------
 
-variable "podinfo_flux_github_owner" {
-  type        = string
-  description = "Name of the Flux repo Github owner (previously: organization)"
-  default     = null
-}
-
 variable "podinfo_flux_repo_name" {
   type        = string
   description = "Name of the Github repo to store the podinfo Flux manifests in"
@@ -875,12 +874,6 @@ variable "podinfo_flux_deploy" {
 # fluentd-cloudwatch through Flux
 # --------------------------------------------------
 
-variable "fluentd_cloudwatch_flux_github_owner" {
-  type        = string
-  description = "Name of the Flux repo Github owner (previously: organization)"
-  default     = null
-}
-
 variable "fluentd_cloudwatch_flux_repo_name" {
   type        = string
   description = "Name of the Github repo to store the fluentd-cloudwatch Flux manifests in"
@@ -896,12 +889,6 @@ variable "fluentd_cloudwatch_flux_repo_branch" {
 variable "fluentd_cloudwatch_flux_deploy" {
   type    = bool
   default = false
-}
-
-variable "fluentd_cloudwatch_account_id" {
-  type        = string
-  description = "The account id that owns the cloudwatch logs from fluentd."
-  default     = null
 }
 
 variable "fluentd_cloudwatch_retention_in_days" {
@@ -1009,4 +996,15 @@ variable "kyverno_replicas" {
   type        = number
   default     = 3
   description = "Number of replica pods for Kyverno"
+}
+
+
+# --------------------------------------------------
+# Subnet Exporter
+# --------------------------------------------------
+
+variable "subnet_exporter_iam_role_name" {
+  type        = string
+  default     = null
+  description = "The IAM role name used for the AWS Subnet Exporter"
 }

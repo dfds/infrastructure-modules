@@ -24,33 +24,13 @@ data "aws_iam_policy_document" "assume_role_policy_selfservice" {
   }
 }
 
-data "aws_iam_policy_document" "assume_role_adfs_shared" {
-  statement {
-    actions = ["sts:AssumeRoleWithSAML"]
-
-    principals {
-      type = "Federated"
-      identifiers = [
-        "arn:aws:iam::${var.shared_account_id}:saml-provider/ADFS"
-      ]
-    }
-
-    condition {
-      test     = "StringEquals"
-      variable = "SAML:aud"
-      values   = ["https://signin.aws.amazon.com/saml"]
-    }
-  }
-
-}
-
 // Gives access to role through ADFS as well as the individual Capability account
 data "aws_iam_policy_document" "shared_role_adfs_cap_acc" {
   statement {
     actions = ["sts:AssumeRoleWithSAML"]
 
     principals {
-      type        = "Federated"
+      type = "Federated"
       identifiers = [
         "arn:aws:iam::${var.shared_account_id}:saml-provider/ADFS"
       ]

@@ -50,3 +50,9 @@ variable "deploy_oidc_provider" {
   type        = bool
   description = "Create an OIDC provider only if external log account is provided"
 }
+
+variable "overwrite_on_create" {
+  type        = bool
+  default     = true
+  description = "Enable overwriting existing files"
+}

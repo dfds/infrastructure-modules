@@ -117,6 +117,7 @@ module "traefik_flux_manifests" {
   repo_branch            = var.traefik_flux_repo_branch
   additional_args        = var.traefik_flux_additional_args
   dashboard_ingress_host = "traefik.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
+  overwrite_on_create    = var.platform_fluxcd_overwrite_on_create
 
   providers = {
     github = github.fluxcd
@@ -140,6 +141,7 @@ module "traefik_variant_flux_manifests" {
   repo_branch            = var.traefik_flux_repo_branch
   additional_args        = var.traefik_green_variant_flux_additional_args
   dashboard_ingress_host = "traefik-green-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
+  overwrite_on_create    = var.platform_fluxcd_overwrite_on_create
 
   providers = {
     github = github.fluxcd
@@ -417,6 +419,7 @@ module "monitoring_kube_prometheus_stack" {
   prometheus_request_cpu      = var.monitoring_kube_prometheus_stack_prometheus_request_cpu
   prometheus_limit_memory     = var.monitoring_kube_prometheus_stack_prometheus_limit_memory
   prometheus_limit_cpu        = var.monitoring_kube_prometheus_stack_prometheus_limit_cpu
+  overwrite_on_create         = var.platform_fluxcd_overwrite_on_create
 
   providers = {
     github = github.fluxcd
@@ -444,15 +447,16 @@ module "monitoring_metrics_server" {
 # --------------------------------------------------
 
 module "platform_fluxcd" {
-  source          = "../../_sub/compute/k8s-fluxcd"
-  count           = var.platform_fluxcd_deploy ? 1 : 0
-  release_tag     = var.platform_fluxcd_release_tag
-  cluster_name    = var.eks_cluster_name
-  repo_name       = var.platform_fluxcd_repo_name
-  repo_path       = "./clusters/${var.eks_cluster_name}"
-  github_owner    = var.platform_fluxcd_github_owner
-  kubeconfig_path = local.kubeconfig_path
-  repo_branch     = var.platform_fluxcd_repo_branch
+  source              = "../../_sub/compute/k8s-fluxcd"
+  count               = var.platform_fluxcd_deploy ? 1 : 0
+  release_tag         = var.platform_fluxcd_release_tag
+  cluster_name        = var.eks_cluster_name
+  repo_name           = var.platform_fluxcd_repo_name
+  repo_path           = "./clusters/${var.eks_cluster_name}"
+  github_owner        = var.platform_fluxcd_github_owner
+  kubeconfig_path     = local.kubeconfig_path
+  repo_branch         = var.platform_fluxcd_repo_branch
+  overwrite_on_create = var.platform_fluxcd_overwrite_on_create
 
   providers = {
     github = github.fluxcd
@@ -505,6 +509,7 @@ module "atlantis_flux_manifests" {
   flux_repo_owner       = var.atlantis_flux_repo_owner
   flux_repo_name        = var.atlantis_flux_repo_name
   flux_repo_branch      = var.atlantis_flux_repo_branch
+  overwrite_on_create   = var.platform_fluxcd_overwrite_on_create
 
   depends_on = [module.atlantis, module.traefik_flux_manifests, module.platform_fluxcd]
 
@@ -536,15 +541,16 @@ module "crossplane" {
 }
 
 module "crossplane_operator" {
-  source             = "../../_sub/compute/k8s-crossplane-operator"
-  count              = var.crossplane_operator_deploy ? 1 : 0
-  deploy_name        = var.crossplane_operator_deploy_name
-  helm_chart_version = var.crossplane_operator_helm_chart_version
-  namespace          = var.crossplane_namespace # Same namespace as for the crossplane module
-  repo_owner         = var.crossplane_operator_repo_owner != null ? var.crossplane_operator_repo_owner : var.platform_fluxcd_github_owner
-  repo_name          = var.crossplane_operator_repo_name != null ? var.crossplane_operator_repo_name : var.platform_fluxcd_repo_name
-  repo_branch        = var.crossplane_operator_repo_branch != null ? var.crossplane_operator_repo_branch : var.platform_fluxcd_repo_branch
-  cluster_name       = var.eks_cluster_name
+  source              = "../../_sub/compute/k8s-crossplane-operator"
+  count               = var.crossplane_operator_deploy ? 1 : 0
+  deploy_name         = var.crossplane_operator_deploy_name
+  helm_chart_version  = var.crossplane_operator_helm_chart_version
+  namespace           = var.crossplane_namespace # Same namespace as for the crossplane module
+  repo_owner          = var.crossplane_operator_repo_owner != null ? var.crossplane_operator_repo_owner : var.platform_fluxcd_github_owner
+  repo_name           = var.crossplane_operator_repo_name != null ? var.crossplane_operator_repo_name : var.platform_fluxcd_repo_name
+  repo_branch         = var.crossplane_operator_repo_branch != null ? var.crossplane_operator_repo_branch : var.platform_fluxcd_repo_branch
+  cluster_name        = var.eks_cluster_name
+  overwrite_on_create = var.platform_fluxcd_overwrite_on_create
 
   providers = {
     github = github.fluxcd
@@ -554,14 +560,15 @@ module "crossplane_operator" {
 }
 
 module "crossplane_configuration_package" {
-  source       = "../../_sub/compute/k8s-crossplane-cfg-pkg"
-  count        = var.crossplane_cfg_pkg_deploy ? 1 : 0
-  name         = var.crossplane_cfg_pkg_name
-  package      = var.crossplane_cfg_pkg_docker_image
-  repo_owner   = var.crossplane_cfg_pkg_repo_owner != null ? var.crossplane_cfg_pkg_repo_owner : var.platform_fluxcd_github_owner
-  repo_name    = var.crossplane_cfg_pkg_repo_name != null ? var.crossplane_cfg_pkg_repo_name : var.platform_fluxcd_repo_name
-  repo_branch  = var.crossplane_cfg_pkg_repo_branch != null ? var.crossplane_cfg_pkg_repo_branch : var.platform_fluxcd_repo_branch
-  cluster_name = var.eks_cluster_name
+  source              = "../../_sub/compute/k8s-crossplane-cfg-pkg"
+  count               = var.crossplane_cfg_pkg_deploy ? 1 : 0
+  name                = var.crossplane_cfg_pkg_name
+  package             = var.crossplane_cfg_pkg_docker_image
+  repo_owner          = var.crossplane_cfg_pkg_repo_owner != null ? var.crossplane_cfg_pkg_repo_owner : var.platform_fluxcd_github_owner
+  repo_name           = var.crossplane_cfg_pkg_repo_name != null ? var.crossplane_cfg_pkg_repo_name : var.platform_fluxcd_repo_name
+  repo_branch         = var.crossplane_cfg_pkg_repo_branch != null ? var.crossplane_cfg_pkg_repo_branch : var.platform_fluxcd_repo_branch
+  cluster_name        = var.eks_cluster_name
+  overwrite_on_create = var.platform_fluxcd_overwrite_on_create
 
   providers = {
     github = github.fluxcd
@@ -601,15 +608,16 @@ module "crossplane_provider_confluent_prereqs" {
 # --------------------------------------------------
 
 module "blackbox_exporter_flux_manifests" {
-  source             = "../../_sub/monitoring/blackbox-exporter"
-  count              = var.blackbox_exporter_deploy ? 1 : 0
-  cluster_name       = var.eks_cluster_name
-  helm_chart_version = var.blackbox_exporter_helm_chart_version
-  github_owner       = var.blackbox_exporter_github_owner
-  repo_name          = var.blackbox_exporter_repo_name
-  repo_branch        = var.blackbox_exporter_repo_branch
-  monitoring_targets = local.blackbox_exporter_monitoring_targets
-  namespace          = module.monitoring_namespace[0].name
+  source              = "../../_sub/monitoring/blackbox-exporter"
+  count               = var.blackbox_exporter_deploy ? 1 : 0
+  cluster_name        = var.eks_cluster_name
+  helm_chart_version  = var.blackbox_exporter_helm_chart_version
+  github_owner        = var.blackbox_exporter_github_owner
+  repo_name           = var.blackbox_exporter_repo_name
+  repo_branch         = var.blackbox_exporter_repo_branch
+  monitoring_targets  = local.blackbox_exporter_monitoring_targets
+  namespace           = module.monitoring_namespace[0].name
+  overwrite_on_create = var.platform_fluxcd_overwrite_on_create
 
   providers = {
     github = github.fluxcd
@@ -626,11 +634,12 @@ module "blackbox_exporter_flux_manifests" {
 # for everything that is using Flux, so we should fallback to using the same values
 # as flux is using.
 module "podinfo_flux_manifests" {
-  source       = "../../_sub/examples/podinfo"
-  count        = var.podinfo_flux_deploy ? 1 : 0
-  cluster_name = var.eks_cluster_name
-  repo_name    = var.podinfo_flux_repo_name != null ? var.podinfo_flux_repo_name : var.platform_fluxcd_repo_name
-  repo_branch  = var.podinfo_flux_repo_branch != null ? var.podinfo_flux_repo_branch : var.platform_fluxcd_repo_branch
+  source              = "../../_sub/examples/podinfo"
+  count               = var.podinfo_flux_deploy ? 1 : 0
+  cluster_name        = var.eks_cluster_name
+  repo_name           = var.podinfo_flux_repo_name != null ? var.podinfo_flux_repo_name : var.platform_fluxcd_repo_name
+  repo_branch         = var.podinfo_flux_repo_branch != null ? var.podinfo_flux_repo_branch : var.platform_fluxcd_repo_branch
+  overwrite_on_create = var.platform_fluxcd_overwrite_on_create
 
   providers = {
     github = github.fluxcd
@@ -654,6 +663,7 @@ module "fluentd_cloudwatch_flux_manifests" {
   repo_branch                     = var.fluentd_cloudwatch_flux_repo_branch != null ? var.fluentd_cloudwatch_flux_repo_branch : var.platform_fluxcd_repo_branch
   deploy_oidc_provider            = var.aws_assume_logs_role_arn != null ? true : false # do not create extra oidc provider if external log account is provided
   eks_openid_connect_provider_url = local.oidc_issuer
+  overwrite_on_create             = var.platform_fluxcd_overwrite_on_create
 
   providers = {
     github = github.fluxcd
@@ -682,6 +692,7 @@ module "velero_flux_manifests" {
   image_tag              = var.velero_image_tag
   plugin_for_aws_version = var.velero_plugin_for_aws_version
   plugin_for_csi_version = var.velero_plugin_for_csi_version
+  overwrite_on_create    = var.platform_fluxcd_overwrite_on_create
 
   providers = {
     github = github.fluxcd
@@ -703,6 +714,8 @@ module "aws_subnet_exporter" {
   aws_region     = var.aws_region
   image_tag      = "0.3"
   oidc_issuer    = local.oidc_issuer
+  cluster_name   = var.eks_cluster_name
+  iam_role_name  = var.subnet_exporter_iam_role_name
 }
 
 # --------------------------------------------------
