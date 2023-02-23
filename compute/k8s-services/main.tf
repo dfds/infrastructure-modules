@@ -627,6 +627,27 @@ module "blackbox_exporter_flux_manifests" {
 }
 
 # --------------------------------------------------
+# helm Exporter
+# --------------------------------------------------
+
+module "helm_exporter_flux_manifests" {
+  source             = "../../_sub/monitoring/helm-exporter"
+  count              = var.helm_exporter_deploy ? 1 : 0
+  cluster_name       = var.eks_cluster_name
+  helm_chart_version = var.helm_exporter_helm_chart_version
+  github_owner       = var.helm_exporter_github_owner != null ? var.helm_exporter_github_owner : var.platform_fluxcd_github_owner
+  repo_name          = var.helm_exporter_repo_name != null ? var.helm_exporter_repo_name : var.platform_fluxcd_repo_name
+  repo_branch        = var.helm_exporter_repo_branch != null ? var.helm_exporter_repo_branch : var.platform_fluxcd_repo_branch
+  namespace          = module.monitoring_namespace[0].name
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.monitoring_kube_prometheus_stack, module.platform_fluxcd]
+}
+
+# --------------------------------------------------
 # podinfo
 # --------------------------------------------------
 
