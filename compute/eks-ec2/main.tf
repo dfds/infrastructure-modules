@@ -147,8 +147,9 @@ Feature toggle nodegroups
  - Test 0, 1, more-subnets-than-AZs
 */
 
+# TODO(emil): remove  when unmanaged nodes are removed
 # --------------------------------------------------
-# NODE GROUP 1
+# UNMANGED NODE GROUP 1
 # --------------------------------------------------
 
 module "eks_nodegroup1_workers" {
@@ -183,8 +184,9 @@ module "eks_nodegroup1_workers" {
 }
 
 
+# TODO(emil): remove  when unmanaged nodes are removed
 # --------------------------------------------------
-# NODE GROUP 2
+# UNMANAGED NODE GROUP 2
 # --------------------------------------------------
 
 module "eks_nodegroup2_workers" {
@@ -218,6 +220,45 @@ module "eks_nodegroup2_workers" {
   worker_inotify_max_user_watches = var.eks_worker_inotify_max_user_watches
 }
 
+# --------------------------------------------------
+# Managed node groups
+# --------------------------------------------------
+
+# TODO(emil): make configurable
+module "eks_managed_workers_node_group" {
+  source = "../../_sub/compute/eks-nodegroup-managed"
+
+  cluster_name    = var.eks_cluster_name
+  cluster_version = var.eks_cluster_version
+  is_sandbox      = var.eks_is_sandbox
+  nodegroup_name  = "managed poc"
+
+  # node_role_arn           = "${module.eks_workers_iam_role.arn}"
+  # TODO(emil): do I want to use this module here?
+  iam_instance_profile = module.eks_workers.iam_instance_profile_name
+  security_groups      = [module.eks_workers_security_group.id]
+  scale_to_zero_cron   = var.eks_worker_scale_to_zero_cron
+  subnet_ids           = module.eks_workers_subnet.subnet_ids
+  ec2_ssh_key          = module.eks_workers_keypair.key_name
+
+  # TODO(emil): can this be done better
+  cloudwatch_agent_config_bucket  = var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"
+  cloudwatch_agent_config_file    = var.eks_worker_cloudwatch_agent_config_file
+  cloudwatch_agent_enabled        = var.eks_worker_cloudwatch_agent_config_deploy
+  eks_endpoint                    = module.eks_cluster.eks_endpoint
+  eks_certificate_authority       = module.eks_cluster.eks_certificate_authority
+  worker_inotify_max_user_watches = var.eks_worker_inotify_max_user_watches
+
+
+  # Node group variables
+  desired_size_per_subnet = var.eks_nodegroup2_desired_size_per_subnet
+  disk_size               = var.eks_nodegroup2_disk_size
+  instance_types          = var.eks_nodegroup2_instance_types
+  container_runtime       = var.eks_nodegroup2_container_runtime
+  ami_id                  = var.eks_nodegroup2_ami_id
+  gpu_ami                 = var.eks_nodegroup2_gpu_ami
+  kubelet_extra_args      = var.eks_nodegroup2_kubelet_extra_args
+}
 
 # --------------------------------------------------
 # OTHER
@@ -308,7 +349,6 @@ module "cloudwatch_agent_config_bucket" {
   deploy    = var.eks_worker_cloudwatch_agent_config_deploy
   s3_bucket = "${var.eks_cluster_name}-cl-agent-config"
 }
-
 
 # --------------------------------------------------
 # Cluster access
