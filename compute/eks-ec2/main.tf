@@ -242,14 +242,13 @@ module "eks_managed_workers_node_group" {
   subnet_ids         = module.eks_workers_subnet.subnet_ids
   ec2_ssh_key        = module.eks_workers_keypair.key_name
 
-  # TODO(emil): can this be done better
+  eks_endpoint                      = module.eks_cluster.eks_endpoint
+  eks_certificate_authority         = module.eks_cluster.eks_certificate_authority
+  vpc_cni_prefix_delegation_enabled = var.eks_addon_vpccni_prefix_delegation_enabled
+  worker_inotify_max_user_watches   = var.eks_worker_inotify_max_user_watches
   cloudwatch_agent_config_bucket    = var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"
   cloudwatch_agent_config_file      = var.eks_worker_cloudwatch_agent_config_file
   cloudwatch_agent_enabled          = var.eks_worker_cloudwatch_agent_config_deploy
-  eks_endpoint                      = module.eks_cluster.eks_endpoint
-  eks_certificate_authority         = module.eks_cluster.eks_certificate_authority
-  worker_inotify_max_user_watches   = var.eks_worker_inotify_max_user_watches
-  vpc_cni_prefix_delegation_enabled = var.eks_addon_vpccni_prefix_delegation_enabled
 
   # Node group variables
   desired_size_per_subnet = var.eks_nodegroup2_desired_size_per_subnet

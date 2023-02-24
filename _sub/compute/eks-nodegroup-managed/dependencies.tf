@@ -1,7 +1,8 @@
 locals {
   asg_desired_size = length(var.subnet_ids) * var.desired_size_per_subnet
-  asg_min_size     = var.is_sandbox ? 0 : local.asg_desired_size
-  asg_max_size     = 2 * local.asg_desired_size
+  # A sandbox should be able to be put scaled down to 0 at the end of the workday.
+  asg_min_size = var.is_sandbox ? 0 : local.asg_desired_size
+  asg_max_size = 2 * local.asg_desired_size
 }
 
 data "aws_ami" "eks-node" {
@@ -33,11 +34,6 @@ locals {
 locals {
   # Pins AMI to 'ami_id' if it is set, otherwise, sets to the latest AMI.
   node_ami = var.ami_id != "" ? var.ami_id : local.latest_ami
-}
-
-data "aws_subnet" "subnet" {
-  count = length(var.subnet_ids)
-  id    = var.subnet_ids[count.index]
 }
 
 locals {
