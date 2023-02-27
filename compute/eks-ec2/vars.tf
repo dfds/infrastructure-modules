@@ -129,8 +129,9 @@ variable "eks_k8s_auth_api_version" {
 }
 
 
+# TODO(emil): remove when unmanaged node groups are removed
 # --------------------------------------------------
-# EKS Nodegroup 1
+# EKS unmanged node group 1
 # --------------------------------------------------
 
 variable "eks_nodegroup1_instance_types" {
@@ -171,8 +172,9 @@ variable "eks_nodegroup1_desired_size_per_subnet" {
 }
 
 
+# TODO(emil): remove when unmanaged node groups are removed
 # --------------------------------------------------
-# EKS Nodegroup 2
+# EKS unmanged node group 2
 # --------------------------------------------------
 
 variable "eks_nodegroup2_instance_types" {
@@ -212,6 +214,22 @@ variable "eks_nodegroup2_desired_size_per_subnet" {
   default = 0
 }
 
+# --------------------------------------------------
+# EKS managed node group
+# --------------------------------------------------
+variable "eks_managed_nodegroups" {
+  type = list(object({
+    name                    = string
+    ami_id                  = optional(string, "")
+    instance_types          = optional(list(string), ["t3.small"])
+    container_runtime       = optional(string, "containerd")
+    disk_size               = optional(number, 128)
+    desired_size_per_subnet = optional(number, 0)
+    kubelet_extra_args      = optional(string, "")
+    gpu_ami                 = optional(bool, false)
+  }))
+  default = []
+}
 
 # --------------------------------------------------
 # Blaster Configmap

@@ -42,6 +42,7 @@ output "eks_worker_autoscaling_group_ids" {
   value = flatten([
     module.eks_nodegroup1_workers.autoscaling_group_id,
     module.eks_nodegroup2_workers.autoscaling_group_id,
+    [for m in module.eks_managed_workers_node_group : m.autoscaling_group_id],
   ])
 }
 
@@ -53,6 +54,7 @@ output "eks_worker_autoscaling_group_container_runtimes" {
   value = flatten([
     module.eks_nodegroup1_workers.container_runtime,
     module.eks_nodegroup2_workers.container_runtime,
+    [for m in module.eks_managed_workers_node_group : m.container_runtime],
   ])
 }
 

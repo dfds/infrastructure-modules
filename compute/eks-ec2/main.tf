@@ -70,12 +70,7 @@ module "eks_workers_subnet" {
   vpc_id       = module.eks_cluster.vpc_id
   # To keep this variable backward compatible we do the
   # transformation here.
-  subnets = [
-    for cidr in var.eks_worker_subnets : {
-      subnet_cidr : cidr,
-      prefix_reservations_cidrs : []
-    }
-  ]
+  subnets = [for cidr in var.eks_worker_subnets : { subnet_cidr : cidr }]
 }
 
 module "eks_managed_workers_subnet" {
@@ -227,21 +222,20 @@ module "eks_nodegroup2_workers" {
 # Managed node groups
 # --------------------------------------------------
 
-# TODO(emil): make configurable
 module "eks_managed_workers_node_group" {
   source = "../../_sub/compute/eks-nodegroup-managed"
+
+  for_each = { for ng in var.eks_managed_nodegroups : ng.name => ng }
 
   cluster_name    = var.eks_cluster_name
   cluster_version = var.eks_cluster_version
   is_sandbox      = var.eks_is_sandbox
-  nodegroup_name  = "managed-poc"
 
-  node_role_arn      = module.eks_workers.worker_role_arn
-  security_groups    = [module.eks_workers_security_group.id]
-  scale_to_zero_cron = var.eks_worker_scale_to_zero_cron
-  subnet_ids         = module.eks_workers_subnet.subnet_ids
-  ec2_ssh_key        = module.eks_workers_keypair.key_name
-
+  node_role_arn                     = module.eks_workers.worker_role_arn
+  security_groups                   = [module.eks_workers_security_group.id]
+  scale_to_zero_cron                = var.eks_worker_scale_to_zero_cron
+  subnet_ids                        = module.eks_workers_subnet.subnet_ids
+  ec2_ssh_key                       = module.eks_workers_keypair.key_name
   eks_endpoint                      = module.eks_cluster.eks_endpoint
   eks_certificate_authority         = module.eks_cluster.eks_certificate_authority
   vpc_cni_prefix_delegation_enabled = var.eks_addon_vpccni_prefix_delegation_enabled
@@ -250,14 +244,15 @@ module "eks_managed_workers_node_group" {
   cloudwatch_agent_config_file      = var.eks_worker_cloudwatch_agent_config_file
   cloudwatch_agent_enabled          = var.eks_worker_cloudwatch_agent_config_deploy
 
-  # Node group variables
-  desired_size_per_subnet = var.eks_nodegroup2_desired_size_per_subnet
-  disk_size               = var.eks_nodegroup2_disk_size
-  instance_types          = var.eks_nodegroup2_instance_types
-  container_runtime       = var.eks_nodegroup2_container_runtime
-  ami_id                  = var.eks_nodegroup2_ami_id
-  gpu_ami                 = var.eks_nodegroup2_gpu_ami
-  kubelet_extra_args      = var.eks_nodegroup2_kubelet_extra_args
+  # Node group variations
+  nodegroup_name          = each.value.name
+  ami_id                  = each.value.ami_id
+  instance_types          = each.value.instance_types
+  container_runtime       = each.value.container_runtime
+  disk_size               = each.value.disk_size
+  desired_size_per_subnet = each.value.desired_size_per_subnet
+  kubelet_extra_args      = each.value.kubelet_extra_args
+  gpu_ami                 = each.value.gpu_ami
 }
 
 # --------------------------------------------------

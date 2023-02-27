@@ -45,6 +45,7 @@ resource "aws_launch_template" "eks" {
 }
 
 resource "aws_eks_node_group" "group" {
+  count           = signum(var.desired_size_per_subnet)
   cluster_name    = var.cluster_name
   node_group_name = var.nodegroup_name
   node_role_arn   = var.node_role_arn
@@ -63,8 +64,8 @@ resource "aws_eks_node_group" "group" {
 }
 
 resource "aws_autoscaling_schedule" "eks" {
-  count                  = var.is_sandbox ? signum(local.asg_desired_size) : 0
-  autoscaling_group_name = aws_eks_node_group.group.resources[0].autoscaling_groups[0].name
+  count                  = var.is_sandbox ? signum(var.desired_size_per_subnet) : 0
+  autoscaling_group_name = aws_eks_node_group.group[0].resources[0].autoscaling_groups[0].name
   scheduled_action_name  = "Scale to zero"
   recurrence             = var.scale_to_zero_cron
   min_size               = local.asg_min_size

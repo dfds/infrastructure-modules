@@ -1,5 +1,6 @@
 output "autoscaling_group_id" {
-  value = try(aws_eks_node_group.group.resources[*].autoscaling_groups[*].id, [])
+  # For an auto scaling group the name is the ID.
+  value = try(aws_eks_node_group.group[*].resources[*].autoscaling_groups[*].name, [])
 }
 
 output "container_runtime" {
