@@ -62,14 +62,12 @@ module "iam_policies_shared" {
 # --------------------------------------------------
 
 module "org_account" {
-  source            = "../../_sub/security/org-account"
-  name              = var.name
-  org_role_name     = var.org_role_name
-  email             = var.email
-  parent_id         = var.parent_id
-  master_account_id = var.master_account_id
-  prime_role_name   = var.prime_role_name
-  sleep_after       = 120
+  source        = "../../_sub/security/org-account"
+  name          = var.name
+  org_role_name = var.org_role_name
+  email         = var.email
+  parent_id     = var.parent_id
+  sleep_after   = 120
 }
 
 module "iam_account_alias" {
