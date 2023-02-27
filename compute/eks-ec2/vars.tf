@@ -229,6 +229,11 @@ variable "eks_managed_nodegroups" {
     kubelet_extra_args      = optional(string, "")
     gpu_ami                 = optional(bool, false)
     availability_zones      = optional(list(string), [])
+    taints = optional(list(object({
+      key    = string,
+      value  = optional(string),
+      effect = string
+    })), [])
   }))
   default = []
 }

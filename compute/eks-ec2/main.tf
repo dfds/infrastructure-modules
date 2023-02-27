@@ -261,6 +261,7 @@ module "eks_managed_workers_node_group" {
   desired_size_per_subnet = each.value.desired_size_per_subnet
   kubelet_extra_args      = each.value.kubelet_extra_args
   gpu_ami                 = each.value.gpu_ami
+  taints                  = each.value.taints
   subnet_ids = length(each.value.availability_zones) == 0 ? module.eks_workers_subnet.subnet_ids : [
     for sn in module.eks_workers_subnet.subnets : sn.id if contains(each.value.availability_zones, sn.availability_zone)
   ]

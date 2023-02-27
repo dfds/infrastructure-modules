@@ -51,6 +51,15 @@ resource "aws_eks_node_group" "group" {
   node_role_arn   = var.node_role_arn
   subnet_ids      = var.subnet_ids
 
+  dynamic "taint" {
+    for_each = var.taints
+    content {
+      key    = taint.value["key"]
+      value  = taint.value["value"]
+      effect = taint.value["effect"]
+    }
+  }
+
   launch_template {
     id      = aws_launch_template.eks[0].id
     version = aws_launch_template.eks[0].latest_version

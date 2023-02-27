@@ -23,6 +23,15 @@ variable "desired_size_per_subnet" {
   default = 0
 }
 
+variable "taints" {
+  type = list(object({
+    key    = string
+    value  = optional(string)
+    effect = string
+  }))
+  default = []
+}
+
 variable "subnet_ids" {
   type = list(string)
 }
