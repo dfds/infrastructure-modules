@@ -8,7 +8,8 @@ variable "role_path" {
 }
 
 variable "max_session_duration" {
-  description = "The maximum time a role session can last, before requiring re-authentication. Default is  1 hour. "
+  type        = number
+  description = "The maximum time a role session can last, before requiring re-authentication. Default is  3600 seconds. "
   default     = 3600
 }
 
