@@ -24,8 +24,6 @@ grafana:
     path: ${grafana_ingress_path}
   plugins:
     - grafana-polystat-panel
-  rbac:
-    pspEnabled: true
   serviceAccount:
     name: ${grafana_serviceaccount_name}
     create: true
