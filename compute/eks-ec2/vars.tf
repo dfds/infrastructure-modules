@@ -78,6 +78,7 @@ variable "eks_worker_subnets" {
 
 variable "eks_managed_worker_subnets" {
   type = list(object({
+    availability_zone         = string,
     subnet_cidr               = string,
     prefix_reservations_cidrs = list(string),
   }))
@@ -227,6 +228,7 @@ variable "eks_managed_nodegroups" {
     desired_size_per_subnet = optional(number, 0)
     kubelet_extra_args      = optional(string, "")
     gpu_ami                 = optional(bool, false)
+    availability_zones      = optional(list(string), [])
   }))
   default = []
 }

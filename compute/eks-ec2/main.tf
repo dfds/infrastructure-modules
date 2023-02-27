@@ -62,6 +62,10 @@ module "eks_route_table" {
 }
 
 # TODO(emil): remove when unmanaged nodes are removed
+data "aws_availability_zones" "available" {
+}
+
+# TODO(emil): remove when unmanaged nodes are removed
 module "eks_workers_subnet" {
   source       = "../../_sub/network/vpc-subnet-eks"
   deploy       = length(var.eks_worker_subnets) >= 1 ? true : false
@@ -70,7 +74,12 @@ module "eks_workers_subnet" {
   vpc_id       = module.eks_cluster.vpc_id
   # To keep this variable backward compatible we do the
   # transformation here.
-  subnets = [for cidr in var.eks_worker_subnets : { subnet_cidr : cidr }]
+  subnets = [
+    for index, cidr in var.eks_worker_subnets : {
+      availability_zone : data.aws_availability_zones.available.names[index],
+      subnet_cidr : cidr
+    }
+  ]
 }
 
 module "eks_managed_workers_subnet" {
@@ -234,7 +243,6 @@ module "eks_managed_workers_node_group" {
   node_role_arn                     = module.eks_workers.worker_role_arn
   security_groups                   = [module.eks_workers_security_group.id]
   scale_to_zero_cron                = var.eks_worker_scale_to_zero_cron
-  subnet_ids                        = module.eks_workers_subnet.subnet_ids
   ec2_ssh_key                       = module.eks_workers_keypair.key_name
   eks_endpoint                      = module.eks_cluster.eks_endpoint
   eks_certificate_authority         = module.eks_cluster.eks_certificate_authority
@@ -253,6 +261,9 @@ module "eks_managed_workers_node_group" {
   desired_size_per_subnet = each.value.desired_size_per_subnet
   kubelet_extra_args      = each.value.kubelet_extra_args
   gpu_ami                 = each.value.gpu_ami
+  subnet_ids = length(each.value.availability_zones) == 0 ? module.eks_workers_subnet.subnet_ids : [
+    for sn in module.eks_workers_subnet.subnets : sn.id if contains(each.value.availability_zones, sn.availability_zone)
+  ]
 }
 
 # --------------------------------------------------

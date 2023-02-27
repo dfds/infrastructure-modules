@@ -1,6 +1,6 @@
 resource "aws_subnet" "subnet" {
   count             = var.deploy ? length(var.subnets) : 0
-  availability_zone = data.aws_availability_zones.available.names[count.index]
+  availability_zone = var.subnets[count.index].availability_zone
   cidr_block        = var.subnets[count.index].subnet_cidr
   vpc_id            = var.vpc_id
 

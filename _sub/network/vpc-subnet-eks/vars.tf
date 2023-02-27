@@ -14,6 +14,7 @@ variable "vpc_id" {
 variable "subnets" {
   type = list(object({
     subnet_cidr               = string,
+    availability_zone         = string,
     prefix_reservations_cidrs = optional(list(string), []),
   }))
   default = []
