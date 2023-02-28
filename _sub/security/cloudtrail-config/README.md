@@ -1,4 +1,4 @@
-# Cloudtrail module 
+# Cloudtrail module
 This module can be used to configure A trail for AWS Cloudtrail in an aws account. The configured trail will send logs to an existing S3 bucket.
 
 ## How do you use this module?
