@@ -20,11 +20,6 @@ variable "repo_branch" {
   description = "The git branch."
 }
 
-variable "github_owner" {
-  type        = string
-  description = "The GitHub organization owner."
-}
-
 variable "role_arn" {
   type        = string
   description = "The ARN for the role that is permitted to use Velero backup storage."
