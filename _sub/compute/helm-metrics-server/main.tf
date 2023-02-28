@@ -7,6 +7,9 @@ resource "helm_release" "metrics_server" {
   recreate_pods = true
 
   values = [
-    file("${path.module}/values/values.yaml")
+    templatefile("${path.module}/values/values.yaml", {
+      tolerations = var.tolerations,
+      affinity    = var.affinity,
+    }),
   ]
 }

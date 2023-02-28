@@ -40,6 +40,8 @@ resource "helm_release" "kube_prometheus_stack" {
       grafana_root_url            = "https://%(domain)s${var.grafana_ingress_path}"
       grafana_cloudwatch_role     = var.grafana_iam_role_arn
       grafana_serviceaccount_name = var.grafana_serviceaccount_name
+      tolerations                 = var.tolerations,
+      affinity                    = var.affinity,
     }),
 
     length(var.slack_webhook) > 0 ? templatefile("${path.module}/values/grafana-notifiers.yaml", {
@@ -57,6 +59,8 @@ resource "helm_release" "kube_prometheus_stack" {
       prometheus_request_cpu    = var.prometheus_request_cpu
       prometheus_limit_memory   = var.prometheus_limit_memory
       prometheus_limit_cpu      = var.prometheus_limit_cpu
+      tolerations               = var.tolerations,
+      affinity                  = var.affinity,
     }),
 
     length(var.slack_webhook) > 0 ? templatefile("${path.module}/values/alertmanager-slack.yaml", {
@@ -71,6 +75,8 @@ resource "helm_release" "kube_prometheus_stack" {
     }),
 
     templatefile("${path.module}/values/prometheus-operator.yaml", {
+      tolerations = var.tolerations,
+      affinity    = var.affinity,
     }),
 
     templatefile("${path.module}/values/node-exporter.yaml", {
@@ -79,6 +85,8 @@ resource "helm_release" "kube_prometheus_stack" {
 
     templatefile("${path.module}/values/kube-state-metrics.yaml", {
       kube_state_metrics_priorityclass = var.priority_class
+      tolerations                      = var.tolerations,
+      affinity                         = var.affinity,
     })
   ]
 }

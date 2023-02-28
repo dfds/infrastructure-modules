@@ -150,6 +150,27 @@ variable "monitoring_namespace_iam_roles" {
   }
 }
 
+variable "monitoring_tolerations" {
+  type = list(object({
+    key      = string,
+    operator = string,
+    value    = optional(string),
+    effect   = string,
+  }))
+  description = "Tolerations to apply to the cluster-wide monitoring workloads."
+  default     = []
+}
+
+variable "monitoring_affinity" {
+  type = list(object({
+    key      = string,
+    operator = string,
+    values   = list(string)
+  }))
+  description = "Affinities to apply to the cluster-wide monitoring workloads."
+  default     = []
+}
+
 # --------------------------------------------------
 # Goldpinger
 # --------------------------------------------------
@@ -290,7 +311,6 @@ variable "monitoring_kube_prometheus_stack_prometheus_limit_cpu" {
   description = "Prometheus resource setting for limit cpu"
   default     = "1000m"
 }
-
 
 # --------------------------------------------------
 # Metrics-Server

@@ -420,6 +420,8 @@ module "monitoring_kube_prometheus_stack" {
   prometheus_limit_memory     = var.monitoring_kube_prometheus_stack_prometheus_limit_memory
   prometheus_limit_cpu        = var.monitoring_kube_prometheus_stack_prometheus_limit_cpu
   overwrite_on_create         = var.platform_fluxcd_overwrite_on_create
+  tolerations                 = var.monitoring_tolerations
+  affinity                    = var.monitoring_affinity
 
   providers = {
     github = github.fluxcd
@@ -439,8 +441,9 @@ module "monitoring_metrics_server" {
   helm_chart_version = var.monitoring_metrics_server_chart_version
   helm_repo_url      = var.monitoring_metrics_server_repo_url
   namespace          = module.monitoring_namespace[0].name
+  tolerations        = var.monitoring_tolerations
+  affinity           = var.monitoring_affinity
 }
-
 
 # --------------------------------------------------
 # Flux CD
@@ -716,6 +719,8 @@ module "aws_subnet_exporter" {
   oidc_issuer    = local.oidc_issuer
   cluster_name   = var.eks_cluster_name
   iam_role_name  = var.subnet_exporter_iam_role_name
+  tolerations    = var.monitoring_tolerations
+  affinity       = var.monitoring_affinity
 }
 
 # --------------------------------------------------

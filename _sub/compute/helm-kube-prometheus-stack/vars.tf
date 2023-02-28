@@ -139,3 +139,22 @@ variable "overwrite_on_create" {
   default     = true
   description = "Enable overwriting existing files"
 }
+
+variable "tolerations" {
+  type = list(object({
+    key      = string,
+    operator = string,
+    value    = optional(string),
+    effect   = string,
+  }))
+  default = []
+}
+
+variable "affinity" {
+  type = list(object({
+    key      = string,
+    operator = string,
+    values   = list(string)
+  }))
+  default = []
+}
