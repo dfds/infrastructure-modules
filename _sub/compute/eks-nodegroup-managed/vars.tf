@@ -32,6 +32,11 @@ variable "taints" {
   default = []
 }
 
+variable "labels" {
+  type    = map(string)
+  default = {}
+}
+
 variable "subnet_ids" {
   type = list(string)
 }

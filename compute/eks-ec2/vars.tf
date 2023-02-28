@@ -234,6 +234,7 @@ variable "eks_managed_nodegroups" {
       value  = optional(string),
       effect = string
     })), [])
+    labels = optional(map(string), {})
   }))
   default = []
 }

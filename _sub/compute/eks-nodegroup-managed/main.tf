@@ -60,6 +60,8 @@ resource "aws_eks_node_group" "group" {
     }
   }
 
+  labels = var.labels
+
   launch_template {
     id      = aws_launch_template.eks[0].id
     version = aws_launch_template.eks[0].latest_version
