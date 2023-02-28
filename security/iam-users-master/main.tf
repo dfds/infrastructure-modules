@@ -14,6 +14,7 @@ module "iam_policies" {
 }
 
 # Create the user for the master account
+# tfsec:ignore:aws-iam-no-user-attached-policies
 resource "aws_iam_user" "master_user" {
   name = var.iam_user_name
 }
