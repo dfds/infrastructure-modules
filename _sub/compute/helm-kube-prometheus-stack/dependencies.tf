@@ -45,6 +45,21 @@ locals {
     }
   }
 
+  grafana_config_middleware_redirect = {
+    "apiVersion" = "traefik.containo.us/v1alpha1"
+    "kind"       = "Middleware"
+    "metadata" = {
+      "name"      = "${local.grafana_middleware_name}-redirect"
+      "namespace" = var.namespace
+    }
+    "spec" = {
+      "redirectRegex" = {
+        "regex"       = "https://${var.grafana_host}/(.*)"
+        "replacement" = "https://${var.grafana_host}${var.grafana_ingress_path}/$${1}"
+      }
+    }
+  }
+
   grafana_config_ingressroute = {
     "apiVersion" = "traefik.containo.us/v1alpha1"
     "kind"       = "IngressRoute"
@@ -57,7 +72,7 @@ locals {
       "routes" = [
         {
           "kind"  = "Rule"
-          "match" = "Host(`${var.grafana_host}`) && PathPrefix(`${var.grafana_ingress_path}`)"
+          "match" = "Host(`${var.grafana_host}`)"
           "services" = [
             {
               "kind"      = "Service"
@@ -69,6 +84,10 @@ locals {
           "middlewares" = [
             {
               "name"      = local.grafana_middleware_name
+              "namespace" = var.namespace
+            },
+            {
+              "name"      = "${local.grafana_middleware_name}-redirect"
               "namespace" = var.namespace
             }
           ]
@@ -82,7 +101,8 @@ locals {
     "kind"       = "Kustomization"
     "resources" = [
       "ingressroute.yaml",
-      "middleware.yaml"
+      "middleware.yaml",
+      "middleware-redirect.yaml"
     ]
   }
 }
