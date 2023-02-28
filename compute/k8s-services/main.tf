@@ -706,7 +706,6 @@ module "velero_flux_manifests" {
   role_arn               = var.velero_flux_role_arn
   bucket_name            = var.velero_flux_bucket_name
   log_level              = var.velero_flux_log_level
-  github_owner           = var.velero_flux_github_owner != null ? var.velero_flux_github_owner : var.platform_fluxcd_github_owner
   repo_name              = var.velero_flux_repo_name != null ? var.velero_flux_repo_name : var.platform_fluxcd_repo_name
   repo_branch            = var.velero_flux_repo_branch != null ? var.velero_flux_repo_branch : var.platform_fluxcd_repo_branch
   helm_chart_version     = var.velero_helm_chart_version
