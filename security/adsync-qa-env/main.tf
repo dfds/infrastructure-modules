@@ -36,7 +36,6 @@ module "vpc" {
 }
 
 module "subnets" {
-  # TODO(emil): only use of this module
   source      = "../../_sub/network/vpc-subnet"
   name        = local.default_resource_name
   vpc_id      = module.vpc.id

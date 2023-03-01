@@ -61,8 +61,29 @@ module "eks_route_table" {
   gateway_id = module.eks_internet_gateway.id
 }
 
-# TODO(emil): remove when unmanaged nodes are removed
 data "aws_availability_zones" "available" {
+  # At the moment, this is the best way to validate multiple variables against
+  # each other:
+  # https://github.com/hashicorp/terraform/issues/25609#issuecomment-1136340278
+  lifecycle {
+
+    precondition {
+      condition = alltrue([
+        for sn in var.eks_managed_worker_subnets : startswith(sn.availability_zone, var.aws_region)
+      ])
+      error_message = "All managed worker subnet availability zones must be within the region specified by var.aws_region."
+    }
+
+    precondition {
+      condition = alltrue(flatten([
+        for ng in var.eks_managed_nodegroups : [
+          for az in ng.availability_zones : startswith(az, var.aws_region)
+        ]
+      ]))
+      error_message = "All managed node group subnet availability zones must be within the region specified by var.aws_region."
+    }
+
+  }
 }
 
 # TODO(emil): remove when unmanaged nodes are removed
@@ -96,8 +117,6 @@ module "eks_workers_keypair" {
   name       = "eks-${var.eks_cluster_name}-workers"
   public_key = var.eks_worker_ssh_public_key
 }
-
-# TODO(emil): clean up some of this module
 
 # module "eks_workers_iam_role" {
 #   source = "../../_sub/security/iam-role"
@@ -137,7 +156,6 @@ module "eks_nodegroup1_route_table_assoc" {
   route_table_id = module.eks_route_table.id
 }
 
-# TODO(emil): should this even be a module?
 module "eks_managed_workers_route_table_assoc" {
   source = "../../_sub/network/route-table-assoc"
 
