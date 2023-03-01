@@ -6,7 +6,7 @@ require (
 	github.com/fluxcd/pkg/apis/meta v0.19.0
 	github.com/stretchr/testify v1.8.2
 	k8s.io/api v0.26.1
-	k8s.io/apimachinery v0.26.1
+	k8s.io/apimachinery v0.26.2
 	k8s.io/client-go v0.26.1
 )
 
