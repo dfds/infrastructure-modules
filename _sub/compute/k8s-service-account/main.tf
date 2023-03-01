@@ -32,7 +32,7 @@ resource "kubernetes_cluster_role_binding" "deploy-user" {
 
 resource "kubernetes_secret_v1" "deploy-token" {
   metadata {
-    generate_name = "${kubernetes_service_account.deploy-user.metadata.0.name}-token-"
+    generate_name = "${kubernetes_service_account.deploy-user.metadata[0].name}-token-"
     namespace     = kubernetes_service_account.deploy-user.metadata[0].namespace
     annotations = {
       "kubernetes.io/service-account.name" = kubernetes_service_account.deploy-user.metadata[0].name

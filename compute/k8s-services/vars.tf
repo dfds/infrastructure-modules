@@ -870,6 +870,41 @@ variable "blackbox_exporter_monitoring_targets" {
 }
 
 # --------------------------------------------------
+# helm Exporter
+# --------------------------------------------------
+
+variable "helm_exporter_deploy" {
+  type        = bool
+  description = "Should the helm Exporter be deployed through Flux?"
+  default     = false
+}
+
+variable "helm_exporter_helm_chart_version" {
+  type        = string
+  description = "Helm Chart version to be used to deploy Helm Exporter"
+  default     = null
+}
+
+variable "helm_exporter_github_owner" {
+  type        = string
+  description = "Name of the Flux manifests repo Github owner"
+  default     = null
+}
+
+variable "helm_exporter_repo_name" {
+  type        = string
+  description = "Name of the Github repo to store the Flux manifests in"
+  default     = null
+}
+
+variable "helm_exporter_repo_branch" {
+  type        = string
+  description = "Override the default branch of the Flux manifests repo (optional)"
+  default     = null
+}
+
+
+# --------------------------------------------------
 # Podinfo through Flux CD
 # --------------------------------------------------
 

@@ -163,6 +163,16 @@ inputs = {
   ]
 
   # --------------------------------------------------
+  # Helm Exporter
+  # --------------------------------------------------
+
+  helm_exporter_deploy              = "true"
+  helm_exporter_helm_chart_version  = "1.2.3"
+  helm_exporter_github_owner        = "dfds"
+  helm_exporter_repo_name           = "platform-manifests-qa"
+  helm_exporter_repo_branch         = "main"
+  
+  # --------------------------------------------------
   # Podinfo
   # --------------------------------------------------
 

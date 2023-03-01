@@ -62,9 +62,6 @@ prometheus:
 %{ endfor ~}
 %{ endfor ~}
 %{ endif ~}
-global:
-  rbac:
-    pspEnabled: true
 grafana:
   serviceMonitor:
     enabled: true

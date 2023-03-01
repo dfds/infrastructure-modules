@@ -4,8 +4,6 @@ kube-state-metrics:
       cpu: 20m
       memory: 100Mi
   priorityClassName: ${kube_state_metrics_priorityclass}
-  podSecurityPolicy:
-    enabled: true
   releaseLabel: true
   prometheus:
     monitor:

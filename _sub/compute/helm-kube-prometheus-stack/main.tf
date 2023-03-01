@@ -107,6 +107,14 @@ resource "github_repository_file" "grafana_config_middleware" {
   overwrite_on_create = var.overwrite_on_create
 }
 
+resource "github_repository_file" "grafana_config_middleware_redirect" {
+  repository          = var.repo_name
+  branch              = local.repo_branch
+  file                = "${local.config_repo_path}/middleware-redirect.yaml"
+  content             = jsonencode(local.grafana_config_middleware_redirect)
+  overwrite_on_create = var.overwrite_on_create
+}
+
 resource "github_repository_file" "grafana_config_ingressroute" {
   repository          = var.repo_name
   branch              = local.repo_branch

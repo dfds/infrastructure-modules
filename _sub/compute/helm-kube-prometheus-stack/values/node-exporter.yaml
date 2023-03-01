@@ -7,5 +7,3 @@ prometheus-node-exporter:
   prometheus:
     monitor:
       enabled: true
-  rbac:
-    pspEnabled: true

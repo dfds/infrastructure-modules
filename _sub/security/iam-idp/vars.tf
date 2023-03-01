@@ -9,6 +9,7 @@ variable "adfs_fqdn" {
 }
 
 variable "assume_role_arns" {
+  type        = list(string)
   description = "Optional: The trusted role ARNs to be included in the output assume role policy"
   default     = []
 }

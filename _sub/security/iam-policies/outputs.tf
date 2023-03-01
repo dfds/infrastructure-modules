@@ -16,7 +16,7 @@ output "create_org_account" {
 
 output "trusted_account" {
   value = element(
-    concat(data.aws_iam_policy_document.trusted_account.*.json, [""]),
+    concat(data.aws_iam_policy_document.trusted_account[*].json, [""]),
     0,
   )
 }
