@@ -36,7 +36,7 @@ function SplitAssumedCreds()
 }
 
 
-# Generate AWS CLI config files, if 
+# Generate AWS CLI config files, if
 if [ -n "$4" ]; then
     AWS_ASSUME_ARN=$6
     AWS_ASSUMED_CREDS=($(aws --region "$REGION" sts assume-role \

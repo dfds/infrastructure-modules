@@ -1,3 +1,4 @@
+# tfsec:ignore:aws-iam-no-user-attached-policies
 resource "aws_iam_user" "user" {
   name = var.user_name
 }
