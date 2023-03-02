@@ -27,7 +27,7 @@ output "eks_openid_connect_provider_url" {
 # --------------------------------------------------
 
 output "eks_worker_subnet_ids" {
-  value = module.eks_workers_subnet.subnet_ids
+  value = length(module.eks_workers_subnet.subnet_ids) > 0 ? module.eks_workers_subnet.subnet_ids : module.eks_managed_workers_subnet.subnet_ids
 }
 
 output "eks_workers_security_group_id" {
