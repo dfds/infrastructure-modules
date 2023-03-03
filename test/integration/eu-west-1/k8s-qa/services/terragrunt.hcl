@@ -90,7 +90,9 @@ inputs = {
   monitoring_kube_prometheus_stack_prometheus_request_cpu     = "500m"
   monitoring_kube_prometheus_stack_prometheus_limit_memory    = "2Gi"
   monitoring_kube_prometheus_stack_prometheus_limit_cpu       = "1000m"
-
+  monitoring_kube_prometheus_stack_grafana_storage_enabled    = true
+  monitoring_kube_prometheus_stack_grafana_storage_size       = "5Gi"
+  monitoring_kube_prometheus_stack_grafana_storageclass       = "gp2"
 
   # --------------------------------------------------
   # Metrics-Server
@@ -171,7 +173,7 @@ inputs = {
   helm_exporter_github_owner        = "dfds"
   helm_exporter_repo_name           = "platform-manifests-qa"
   helm_exporter_repo_branch         = "main"
-  
+
   # --------------------------------------------------
   # Podinfo
   # --------------------------------------------------
