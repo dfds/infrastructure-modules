@@ -40,6 +40,9 @@ resource "helm_release" "kube_prometheus_stack" {
       grafana_root_url            = "https://%(domain)s${var.grafana_ingress_path}"
       grafana_cloudwatch_role     = var.grafana_iam_role_arn
       grafana_serviceaccount_name = var.grafana_serviceaccount_name
+      grafana_storage_enabled     = var.grafana_storage_enabled
+      grafana_storage_class       = var.grafana_storage_class
+      grafana_storage_size        = var.grafana_storage_size
     }),
 
     length(var.slack_webhook) > 0 ? templatefile("${path.module}/values/grafana-notifiers.yaml", {

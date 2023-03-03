@@ -213,6 +213,24 @@ variable "monitoring_kube_prometheus_stack_grafana_serviceaccount_name" {
   default     = "grafana-cloudwatch"
 }
 
+variable "monitoring_kube_prometheus_stack_grafana_storage_enabled" {
+  type        = bool
+  description = "Enable persistence in Grafana using Persistent Volume Claims"
+  default = false
+}
+
+variable "monitoring_kube_prometheus_stack_grafana_storageclass" {
+  type        = string
+  description = "Storage class for Grafana Persistent Volume"
+  default     = "csi-gp2"
+}
+
+variable "monitoring_kube_prometheus_stack_grafana_storage_size" {
+  type        = string
+  description = "Storage size for Grafana Persistent Volume"
+  default     = ""
+}
+
 variable "monitoring_kube_prometheus_stack_slack_webhook" {
   type        = string
   description = "Kube-prometheus-stack alert slack webhook"
