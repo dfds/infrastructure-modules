@@ -406,6 +406,9 @@ module "monitoring_kube_prometheus_stack" {
   grafana_notifier_name       = "${var.eks_cluster_name}-alerting"
   grafana_iam_role_arn        = local.grafana_iam_role_arn
   grafana_serviceaccount_name = var.monitoring_kube_prometheus_stack_grafana_serviceaccount_name
+  grafana_storage_enabled     = var.monitoring_kube_prometheus_stack_grafana_storage_enabled
+  grafana_storage_class       = var.monitoring_kube_prometheus_stack_grafana_storageclass
+  grafana_storage_size        = var.monitoring_kube_prometheus_stack_grafana_storage_size
   slack_webhook               = var.monitoring_kube_prometheus_stack_slack_webhook
   prometheus_storageclass     = var.monitoring_kube_prometheus_stack_prometheus_storageclass
   prometheus_storage_size     = var.monitoring_kube_prometheus_stack_prometheus_storage_size

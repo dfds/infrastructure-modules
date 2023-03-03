@@ -30,3 +30,7 @@ grafana:
     annotations:
       eks.amazonaws.com/role-arn: ${grafana_cloudwatch_role}
       eks.amazonaws.com/sts-regional-endpoints: "true"
+  persistence:
+    enabled: ${grafana_storage_enabled}
+    storageClassName: ${grafana_storage_class}
+    size: ${grafana_storage_size}

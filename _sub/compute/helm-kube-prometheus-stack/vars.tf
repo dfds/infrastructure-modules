@@ -56,6 +56,21 @@ variable "grafana_serviceaccount_name" {
   description = "Grafana serviceaccount to be used for pod"
 }
 
+variable "grafana_storage_enabled" {
+  type = bool
+  description = "Enable persistence in Grafana using Persistent Volume Claims"
+}
+
+variable "grafana_storage_class" {
+  type = string
+  description = "Storage class for Grafana Persistent Volume"
+}
+
+variable "grafana_storage_size" {
+  type = string
+  description = "Storage size for Grafana Persistent Volume"
+}
+
 variable "slack_webhook" {
   type        = string
   description = "Alert Slack webhook"
