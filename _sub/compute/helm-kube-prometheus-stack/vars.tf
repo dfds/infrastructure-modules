@@ -57,18 +57,24 @@ variable "grafana_serviceaccount_name" {
 }
 
 variable "grafana_storage_enabled" {
-  type = bool
+  type        = bool
   description = "Enable persistence in Grafana using Persistent Volume Claims"
 }
 
 variable "grafana_storage_class" {
-  type = string
+  type        = string
   description = "Storage class for Grafana Persistent Volume"
 }
 
 variable "grafana_storage_size" {
-  type = string
+  type        = string
   description = "Storage size for Grafana Persistent Volume"
+}
+
+variable "grafana_service_port" {
+  type        = number
+  description = "Grafana service port."
+  default     = 80
 }
 
 variable "slack_webhook" {
@@ -101,12 +107,6 @@ variable "slack_channel" {
 variable "target_namespaces" {
   type        = string
   description = "Filter on namespaces"
-}
-
-variable "grafana_service_port" {
-  type        = number
-  description = "Grafana service port. See https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml"
-  default     = 80
 }
 
 variable "github_owner" {
@@ -153,4 +153,10 @@ variable "overwrite_on_create" {
   type        = bool
   default     = true
   description = "Enable overwriting existing files"
+}
+
+variable "azure_tenant_id" {
+  type        = string
+  default     = ""
+  description = "Azure Tenant ID"
 }
