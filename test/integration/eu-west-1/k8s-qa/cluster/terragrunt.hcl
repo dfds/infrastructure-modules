@@ -93,6 +93,27 @@ inputs = {
     }
   ]
 
+  eks_managed_nodegroups = [
+    {
+      name = "monitoring"
+      instance_types = ["m5a.xlarge"]
+      desired_size_per_subnet = 1
+
+      availability_zones = ["eu-west-1b"]
+      kubelet_extra_args = "--max-pods=30 --kube-reserved=memory=585Mi,cpu=80m"
+
+      taints = [
+        {
+          key = "monitoring.dfds"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+      labels = {
+        dedicated = "monitoring"
+      }
+    },
+  ]
+
   # --------------------------------------------------
   # Restore Blaster Configmap
   # --------------------------------------------------
