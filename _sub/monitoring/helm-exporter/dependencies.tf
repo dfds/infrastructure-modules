@@ -60,6 +60,7 @@ locals {
         "deployment" = {
           "replicas" = var.replicas
         }
+        "intervalDuration" = var.interval_duration
       }
     }
   }
