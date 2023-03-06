@@ -904,7 +904,7 @@ variable "helm_exporter_repo_branch" {
 variable "helm_exporter_target_namespaces" {
   type        = string
   description = "target namespaces filter"
-  default     = ".*"
+  default     = ""
 }
 
 

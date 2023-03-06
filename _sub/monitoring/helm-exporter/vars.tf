@@ -43,7 +43,13 @@ variable "helm_chart_version" {
 }
 
 variable "interval_duration" {
-  type = string
+  type        = string
   description = "Interval between scrapes of Helm releases"
-  default = "10m"
+  default     = "10m"
+}
+
+
+variable "target_namespaces" {
+  type        = string
+  description = "Filter on namespaces"
 }

@@ -61,6 +61,7 @@ locals {
           "replicas" = var.replicas
         }
         "intervalDuration" = var.interval_duration
+        "namespaces"       = var.target_namespaces
       }
     }
   }
