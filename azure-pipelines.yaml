@@ -117,7 +117,7 @@ stages:
           - checkout: Origin
             fetchDepth: 1
             fetchTags: false
-          - task: Cache@2
+          - task: Cache@2.198.0
             inputs:
               key: '"go" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum | $(Build.Repository.LocalPath)/src/qa-test-eks.sh'
               restoreKeys: '"go" | "$(Agent.OS)"'
@@ -144,7 +144,7 @@ stages:
           - checkout: self
             fetchDepth: 1
             fetchTags: false
-          - task: Cache@2
+          - task: Cache@2.198.0
             inputs:
               key: '"go" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum | $(Build.Repository.LocalPath)/src/qa-test-eks.sh'
               restoreKeys: '"go" | "$(Agent.OS)"'
