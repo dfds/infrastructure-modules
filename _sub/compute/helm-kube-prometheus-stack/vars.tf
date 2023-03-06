@@ -154,9 +154,3 @@ variable "overwrite_on_create" {
   default     = true
   description = "Enable overwriting existing files"
 }
-
-variable "azure_tenant_id" {
-  type        = string
-  default     = ""
-  description = "Azure Tenant ID"
-}
