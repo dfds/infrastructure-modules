@@ -51,4 +51,5 @@ variable "interval_duration" {
 variable "target_namespaces" {
   type        = string
   description = "Filter on namespaces"
+
 }
