@@ -48,7 +48,6 @@ variable "interval_duration" {
   default     = "10m"
 }
 
-
 variable "target_namespaces" {
   type        = string
   description = "Filter on namespaces"
