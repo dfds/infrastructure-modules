@@ -13,7 +13,6 @@ if [ "$ACTION" = "apply-shared" ]; then
     terragrunt run-all apply --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
 fi
 
-
 if [ "$ACTION" = "apply-cluster" ]; then
     REGION=$2
     CLUSTERNAME=$3

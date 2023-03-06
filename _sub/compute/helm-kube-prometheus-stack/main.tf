@@ -46,6 +46,8 @@ resource "helm_release" "kube_prometheus_stack" {
       grafana_app_id              = azuread_application.grafana[0].application_id
       grafana_app_secret          = azuread_application_password.grafana[0].value
       azure_tenant_id             = length(data.azuread_client_config.current.tenant_id) == 36 ? data.azuread_client_config.current.tenant_id : ""
+      tolerations                 = var.tolerations,
+      affinity                    = var.affinity,
     }),
 
     length(var.slack_webhook) > 0 ? templatefile("${path.module}/values/grafana-notifiers.yaml", {
@@ -63,6 +65,8 @@ resource "helm_release" "kube_prometheus_stack" {
       prometheus_request_cpu    = var.prometheus_request_cpu
       prometheus_limit_memory   = var.prometheus_limit_memory
       prometheus_limit_cpu      = var.prometheus_limit_cpu
+      tolerations               = var.tolerations,
+      affinity                  = var.affinity,
     }),
 
     length(var.slack_webhook) > 0 ? templatefile("${path.module}/values/alertmanager-slack.yaml", {
@@ -77,6 +81,8 @@ resource "helm_release" "kube_prometheus_stack" {
     }),
 
     templatefile("${path.module}/values/prometheus-operator.yaml", {
+      tolerations = var.tolerations,
+      affinity    = var.affinity,
     }),
 
     templatefile("${path.module}/values/node-exporter.yaml", {
@@ -85,6 +91,8 @@ resource "helm_release" "kube_prometheus_stack" {
 
     templatefile("${path.module}/values/kube-state-metrics.yaml", {
       kube_state_metrics_priorityclass = var.priority_class
+      tolerations                      = var.tolerations,
+      affinity                         = var.affinity,
     })
   ]
 }
