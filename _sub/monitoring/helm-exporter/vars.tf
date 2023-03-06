@@ -38,7 +38,7 @@ variable "repo_branch" {
 
 variable "helm_chart_version" {
   type        = string
-  description = "The version of the helm Exporter Helm Chart that should be used"
+  description = "The version of the Helm Exporter Helm Chart that should be used"
   default     = null
 }
 

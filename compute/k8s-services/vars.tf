@@ -868,7 +868,7 @@ variable "blackbox_exporter_monitoring_targets" {
 }
 
 # --------------------------------------------------
-# helm Exporter
+# Helm Exporter
 # --------------------------------------------------
 
 variable "helm_exporter_deploy" {
@@ -899,6 +899,12 @@ variable "helm_exporter_repo_branch" {
   type        = string
   description = "Override the default branch of the Flux manifests repo (optional)"
   default     = null
+}
+
+variable "helm_exporter_target_namespaces" {
+  type        = string
+  description = "target namespaces filter"
+  default     = ".*"
 }
 
 

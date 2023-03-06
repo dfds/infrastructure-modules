@@ -630,7 +630,7 @@ module "blackbox_exporter_flux_manifests" {
 }
 
 # --------------------------------------------------
-# helm Exporter
+# Helm Exporter
 # --------------------------------------------------
 
 module "helm_exporter_flux_manifests" {
@@ -642,6 +642,7 @@ module "helm_exporter_flux_manifests" {
   repo_name          = var.helm_exporter_repo_name != null ? var.helm_exporter_repo_name : var.platform_fluxcd_repo_name
   repo_branch        = var.helm_exporter_repo_branch != null ? var.helm_exporter_repo_branch : var.platform_fluxcd_repo_branch
   namespace          = module.monitoring_namespace[0].name
+  target_namespaces  = var.helm_exporter_target_namespaces
 
   providers = {
     github = github.fluxcd
