@@ -1,6 +1,6 @@
 grafana:
   image:
-    tag: 9.4.0-beta1 # TODO: Remove when Grafana 9.4.0 is released AND becomes part of kube-prometheus-stack
+    tag: 9.4.3 # TODO: Remove when Grafana 9.4.0 or higher is part of kube-prometheus-stack
   resources:
     requests:
       cpu: 50m
@@ -11,12 +11,28 @@ grafana:
     database:
       wal: true
     auth.anonymous:
+      enabled: false
+%{ if length(azure_tenant_id) == 36 ~}
+    auth.azuread:
+      name: Azure AD
       enabled: true
+      allow_sign_up: true
+      auto_login: false
+      client_id: ${grafana_app_id}
+      client_secret: ${grafana_app_secret}
+      scopes: openid email profile
+      auth_url: https://login.microsoftonline.com/${azure_tenant_id}/oauth2/v2.0/authorize
+      token_url: https://login.microsoftonline.com/${azure_tenant_id}/oauth2/v2.0/token
+      role_attribute_strict: false
+      allow_assign_grafana_admin: false
+      skip_org_role_sync: false
+%{ endif ~}
     metrics:
       enabled: true
     server:
       domain: ${grafana_host}
       root_url: ${grafana_root_url}
+      serve_from_sub_path: true
   ingress:
     enabled: false
     hosts:
