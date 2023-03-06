@@ -2,39 +2,39 @@
 set -o xtrace
 %{ if vpc_cni_prefix_delegation_enabled }
 cat <<EOT > /etc/eks/eni-max-pods.txt
-m5a.12xlarge 3714
-m5a.16xlarge 11762
-m5a.24xlarge 11762
-m5a.2xlarge 898
-m5a.4xlarge 3714
-m5a.8xlarge 3714
-m5a.large 434
-m5a.xlarge 898
-m6a.12xlarge 3714
-m6a.16xlarge 11762
-m6a.24xlarge 11762
-m6a.2xlarge 898
-m6a.32xlarge 11762
-m6a.48xlarge 11762
-m6a.4xlarge 3714
-m6a.8xlarge 3714
-m6a.large 434
-m6a.metal 737
-m6a.xlarge 898
-t3.2xlarge 898
-t3.large 530
-t3.medium 242
+m5a.12xlarge 250
+m5a.16xlarge 250
+m5a.24xlarge 250
+m5a.2xlarge 110
+m5a.4xlarge 110
+m5a.8xlarge 250
+m5a.large 110
+m5a.xlarge 110
+m6a.12xlarge 250
+m6a.16xlarge 250
+m6a.24xlarge 250
+m6a.2xlarge 110
+m6a.32xlarge 250
+m6a.48xlarge 250
+m6a.4xlarge 110
+m6a.8xlarge 250
+m6a.large 110
+m6a.metal 250
+m6a.xlarge 110
+t3.2xlarge 110
+t3.large 110
+t3.medium 110
 t3.micro 34
 t3.nano 34
-t3.small 146
-t3.xlarge 898
-t3a.2xlarge 898
-t3a.large 530
-t3a.medium 242
+t3.small 110
+t3.xlarge 110
+t3a.2xlarge 110
+t3a.large 110
+t3a.medium 110
 t3a.micro 34
 t3a.nano 34
 t3a.small 98
-t3a.xlarge 898
+t3a.xlarge 110
 EOT
 %{ endif ~}
 /etc/eks/bootstrap.sh --apiserver-endpoint '${eks_endpoint}' --container-runtime '${container_runtime}' --b64-cluster-ca '${eks_certificate_authority}' ${bootstrap_extra_args} '${cluster_name}'
