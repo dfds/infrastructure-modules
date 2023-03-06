@@ -45,8 +45,9 @@ func TestMonitoringNodeMaxPod(t *testing.T) {
 
 	for _, node := range resp.Items {
 		assert.EqualValues(t,
-			// This node group has an overriden value for max pods to avoid excessive
-			// reservations by the kubelet to accomodate a higher limit for pods.
+			// This node group has an overriden value for max pods to avoid
+			// excessive memory reservations by the kubelet to accomodate a
+			// higher limit for pods.
 			30, node.Status.Capacity.Pods().Value(), "monitoring node %q pods limit does not match", node.Name)
 	}
 }
