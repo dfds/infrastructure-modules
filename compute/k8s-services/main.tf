@@ -208,16 +208,6 @@ module "traefik_alb_auth_dns" {
   record_value = "${module.traefik_alb_auth.alb_fqdn}."
 }
 
-module "traefik_alb_auth_dns_for_grafana" {
-  source       = "../../_sub/network/route53-record"
-  deploy       = (var.traefik_alb_auth_deploy && var.monitoring_kube_prometheus_stack_deploy) ? true : false
-  zone_id      = local.workload_dns_zone_id
-  record_name  = ["grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
-  record_type  = "CNAME"
-  record_ttl   = "900"
-  record_value = "${module.traefik_alb_auth.alb_fqdn}."
-}
-
 module "traefik_alb_auth_dns_for_traefik_blue_variant_dashboard" {
   source       = "../../_sub/network/route53-record"
   deploy       = (var.traefik_flux_deploy && var.traefik_alb_auth_deploy) ? true : false
