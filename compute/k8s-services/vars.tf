@@ -216,7 +216,7 @@ variable "monitoring_kube_prometheus_stack_grafana_serviceaccount_name" {
 variable "monitoring_kube_prometheus_stack_grafana_storage_enabled" {
   type        = bool
   description = "Enable persistence in Grafana using Persistent Volume Claims"
-  default = false
+  default     = false
 }
 
 variable "monitoring_kube_prometheus_stack_grafana_storageclass" {
@@ -981,12 +981,6 @@ variable "velero_flux_log_level" {
     condition     = contains(["info", "debug", "warning", "error", "fatal", "panic"], var.velero_flux_log_level)
     error_message = "Invalid value for log_level. Valid values: info, debug, warning, error, fatal, panic."
   }
-}
-
-variable "velero_flux_github_owner" {
-  type        = string
-  description = "Name of the Flux repo Github owner (previously: organization)"
-  default     = null
 }
 
 variable "velero_flux_repo_name" {

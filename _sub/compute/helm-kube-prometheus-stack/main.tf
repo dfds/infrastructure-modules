@@ -43,6 +43,9 @@ resource "helm_release" "kube_prometheus_stack" {
       grafana_storage_enabled     = var.grafana_storage_enabled
       grafana_storage_class       = var.grafana_storage_class
       grafana_storage_size        = var.grafana_storage_size
+      grafana_app_id              = azuread_application.grafana[0].application_id
+      grafana_app_secret          = azuread_application_password.grafana[0].value
+      azure_tenant_id             = length(data.azuread_client_config.current.tenant_id) == 36 ? data.azuread_client_config.current.tenant_id : ""
     }),
 
     length(var.slack_webhook) > 0 ? templatefile("${path.module}/values/grafana-notifiers.yaml", {
@@ -116,4 +119,56 @@ resource "github_repository_file" "grafana_config_init" {
   file                = "${local.config_repo_path}/kustomization.yaml"
   content             = jsonencode(local.grafana_config_init)
   overwrite_on_create = var.overwrite_on_create
+}
+
+data "azuread_client_config" "current" {}
+
+resource "random_uuid" "admin" {}
+
+resource "random_uuid" "viewer" {}
+
+resource "random_uuid" "editor" {}
+
+resource "azuread_application" "grafana" {
+  count           = length(data.azuread_client_config.current.tenant_id) == 36 ? 1 : 0
+  display_name    = "Grafana OAuth for ${var.grafana_host}"
+  identifier_uris = ["https://${var.grafana_host}"]
+  owners          = [data.azuread_client_config.current.object_id]
+
+  web {
+    homepage_url  = "https://${var.grafana_host}${var.grafana_ingress_path}"
+    redirect_uris = ["https://${var.grafana_host}${var.grafana_ingress_path}/login/azuread", "https://${var.grafana_host}${var.grafana_ingress_path}"]
+  }
+
+  app_role {
+    allowed_member_types = ["User"]
+    description          = "Grafana org admin Users"
+    display_name         = "Grafana Org Admin"
+    enabled              = true
+    id                   = random_uuid.admin.result
+    value                = "Admin"
+  }
+
+  app_role {
+    allowed_member_types = ["User"]
+    description          = "Grafana read only Users"
+    display_name         = "Grafana Viewer"
+    enabled              = true
+    id                   = random_uuid.viewer.result
+    value                = "Viewer"
+  }
+
+  app_role {
+    allowed_member_types = ["User"]
+    description          = "Grafana Editor Users"
+    display_name         = "Grafana Editor"
+    enabled              = true
+    id                   = random_uuid.editor.result
+    value                = "Editor"
+  }
+}
+
+resource "azuread_application_password" "grafana" {
+  count                 = length(data.azuread_client_config.current.tenant_id) == 36 ? 1 : 0
+  application_object_id = azuread_application.grafana[0].object_id
 }
