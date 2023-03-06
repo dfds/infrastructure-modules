@@ -3,12 +3,6 @@
 variable "aws_region" {
   type = string
 }
-
-# variable "aws_assume_role_arn" {
-#   type = "string"
-#   description = "The ARN of the role to assume, for creating the account"
-# }
-
 variable "master_account_id" {
   type        = string
   description = "The AWS account ID of the Organizations Master account"
@@ -61,22 +55,4 @@ variable "cloudengineer_iam_role_name" {
 variable "cloudadmin_iam_role_name" {
   description = "Name of IAM role"
   type        = string
-}
-
-# --------------------------------------------------
-# Unused variables - to provent TF warning/error:
-# Using a variables file to set an undeclared variable is deprecated and will
-# become an error in a future release. If you wish to provide certain "global"
-# settings to all configurations in your organization, use TF_VAR_...
-# environment variables to set these instead.
-# --------------------------------------------------
-
-variable "terraform_state_s3_bucket" {
-  type    = string
-  default = ""
-}
-
-variable "terraform_state_region" {
-  type    = string
-  default = ""
 }

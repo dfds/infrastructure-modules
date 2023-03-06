@@ -41,9 +41,3 @@ variable "helm_chart_version" {
   description = "The version of the helm Exporter Helm Chart that should be used"
   default     = null
 }
-
-variable "monitoring_targets" {
-  type        = list(object({ name = string, url = string, module = string }))
-  description = "Complex object of what to monitor with helm Exporter"
-  default     = []
-}

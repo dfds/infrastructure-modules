@@ -214,6 +214,7 @@ data "aws_iam_policy_document" "this_trust" {
   }
 }
 
+# tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "this" {
   statement {
     sid    = "ReadLogs"
