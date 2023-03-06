@@ -754,36 +754,36 @@ variable "traefik_flux_repo_branch" {
   default     = null
 }
 
-variable "traefik_flux_helm_chart_version" {
+variable "traefik_blue_variant_flux_helm_chart_version" {
   type        = string
   description = "Helm Chart version to be used to deploy Traefik"
   default     = null
 }
 
-variable "traefik_flux_http_nodeport" {
+variable "traefik_blue_variant_flux_http_nodeport" {
   type        = number
   description = "Nodeport used by ALB's to connect to the Traefik instance"
   default     = 31000
 }
 
-variable "traefik_flux_admin_nodeport" {
+variable "traefik_blue_variant_flux_admin_nodeport" {
   type        = number
   description = "Nodeport used by ALB's to connect to the Traefik instance admin page"
   default     = 31001
 }
 
-variable "traefik_flux_additional_args" {
+variable "traefik_blue_variant_flux_additional_args" {
   type        = list(any)
   description = "Pass arguments to the additionalArguments node in the Traefik Helm chart"
   default     = ["--metrics.prometheus"]
 }
 
-variable "traefik_flux_deploy" {
+variable "traefik_blue_variant_flux_deploy" {
   type    = bool
   default = true
 }
 
-variable "traefik_flux_weight" {
+variable "traefik_blue_variant_flux_weight" {
   type        = number
   description = "The weight of the Traefik instance target groups in the load balancers. Only relevant if there is variant instance deployed."
   default     = 1

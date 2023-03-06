@@ -7,15 +7,15 @@
 # This is to avoid downtime or having to reimport resources due to renaming.
 
 resource "aws_lb" "traefik" {
-  count              = var.deploy || var.deploy_green_variant ? 1 : 0
+  count              = var.deploy_blue_variant || var.deploy_green_variant ? 1 : 0
   name               = var.name
   internal           = false #tfsec:ignore:aws-elbv2-alb-not-public tfsec:ignore:aws-elb-alb-not-public
   load_balancer_type = "application"
   security_groups = concat(
-    var.deploy || var.deploy_green_variant ? [aws_security_group.traefik[0].id] : [],
-    var.deploy ? [aws_security_group.traefik_blue[0].id] : [],
+    var.deploy_blue_variant || var.deploy_green_variant ? [aws_security_group.traefik[0].id] : [],
+    var.deploy_blue_variant ? [aws_security_group.traefik_blue[0].id] : [],
     var.deploy_green_variant ? [aws_security_group.traefik_green[0].id] : [],
-    var.deploy && var.deploy_green_variant ? [aws_security_group.traefik_debug[0].id] : []
+    var.deploy_blue_variant && var.deploy_green_variant ? [aws_security_group.traefik_debug[0].id] : []
   )
   subnets = var.subnet_ids
 
@@ -28,18 +28,18 @@ resource "aws_lb" "traefik" {
   drop_invalid_header_fields = true
 }
 
-resource "aws_lb_target_group" "traefik" {
-  count = var.deploy ? 1 : 0
+resource "aws_lb_target_group" "traefik_blue_variant" {
+  count = var.deploy_blue_variant ? 1 : 0
   # TODO(emil): prefix this with "b-" for blue after it is destroyed.
-  name_prefix          = substr(var.cluster_name, 0, min(6, length(var.cluster_name)))
-  port                 = var.target_http_port
+  name_prefix          = "b-${substr(var.cluster_name, 0, min(4, length(var.cluster_name)))}"
+  port                 = var.blue_variant_target_http_port
   protocol             = "HTTP"
   vpc_id               = var.vpc_id
   deregistration_delay = 300
 
   health_check {
-    path     = var.health_check_path
-    port     = var.target_admin_port
+    path     = var.blue_variant_health_check_path
+    port     = var.blue_variant_target_admin_port
     protocol = "HTTP"
     matcher  = 200
   }
@@ -49,10 +49,10 @@ resource "aws_lb_target_group" "traefik" {
   }
 }
 
-resource "aws_autoscaling_attachment" "traefik" {
-  count                  = var.deploy ? length(var.autoscaling_group_ids) : 0
+resource "aws_autoscaling_attachment" "traefik_blue_variant" {
+  count                  = var.deploy_blue_variant ? length(var.autoscaling_group_ids) : 0
   autoscaling_group_name = var.autoscaling_group_ids[count.index]
-  lb_target_group_arn    = aws_lb_target_group.traefik[0].arn
+  lb_target_group_arn    = aws_lb_target_group.traefik_blue_variant[0].arn
 }
 
 resource "aws_lb_target_group" "traefik_green_variant" {
@@ -82,7 +82,7 @@ resource "aws_autoscaling_attachment" "traefik_green_variant" {
 }
 
 resource "aws_lb_listener" "traefik" {
-  count             = var.deploy || var.deploy_green_variant ? 1 : 0
+  count             = var.deploy_blue_variant || var.deploy_green_variant ? 1 : 0
   load_balancer_arn = aws_lb.traefik[0].arn
   port              = "443"
   protocol          = "HTTPS"
@@ -102,10 +102,10 @@ resource "aws_lb_listener" "traefik" {
 
       dynamic "target_group" {
         for_each = concat(
-          var.deploy ? [
+          var.deploy_blue_variant ? [
             {
-              arn    = aws_lb_target_group.traefik[0].arn
-              weight = var.weight
+              arn    = aws_lb_target_group.traefik_blue_variant[0].arn
+              weight = var.blue_variant_weight
             }
           ] : [],
           var.deploy_green_variant ? [
@@ -125,7 +125,7 @@ resource "aws_lb_listener" "traefik" {
 }
 
 resource "aws_lb_listener" "traefik_blue_variant" {
-  count             = var.deploy && var.deploy_green_variant ? 1 : 0
+  count             = var.deploy_blue_variant && var.deploy_green_variant ? 1 : 0
   load_balancer_arn = aws_lb.traefik[0].arn
   port              = "8443"
   protocol          = "HTTPS"
@@ -134,13 +134,13 @@ resource "aws_lb_listener" "traefik_blue_variant" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.traefik[0].arn
+    target_group_arn = aws_lb_target_group.traefik_blue_variant[0].arn
     order            = 1
   }
 }
 
 resource "aws_lb_listener" "traefik_green_variant" {
-  count             = var.deploy && var.deploy_green_variant ? 1 : 0
+  count             = var.deploy_blue_variant && var.deploy_green_variant ? 1 : 0
   load_balancer_arn = aws_lb.traefik[0].arn
   port              = "9443"
   protocol          = "HTTPS"
@@ -155,7 +155,7 @@ resource "aws_lb_listener" "traefik_green_variant" {
 }
 
 resource "aws_lb_listener" "http-to-https" {
-  count             = var.deploy || var.deploy_green_variant ? 1 : 0
+  count             = var.deploy_blue_variant || var.deploy_green_variant ? 1 : 0
   load_balancer_arn = aws_lb.traefik[0].arn
   port              = "80"
   protocol          = "HTTP"
@@ -172,7 +172,7 @@ resource "aws_lb_listener" "http-to-https" {
 }
 
 resource "aws_security_group" "traefik" {
-  count       = var.deploy || var.deploy_green_variant ? 1 : 0
+  count       = var.deploy_blue_variant || var.deploy_green_variant ? 1 : 0
   name_prefix = "allow_traefik-${var.cluster_name}"
   description = "Allow traefik connection for ${var.cluster_name}"
   vpc_id      = var.vpc_id
@@ -204,23 +204,23 @@ resource "aws_security_group" "traefik" {
 }
 
 resource "aws_security_group" "traefik_blue" {
-  count       = var.deploy ? 1 : 0
+  count       = var.deploy_blue_variant ? 1 : 0
   name_prefix = "allow_traefik_blue-${var.cluster_name}"
   description = "Allow traefik connection related to the blue variant for ${var.cluster_name}"
   vpc_id      = var.vpc_id
 
   ingress {
     description = "Ingress on var.target_admin_port"
-    from_port   = var.target_admin_port
-    to_port     = var.target_admin_port
+    from_port   = var.blue_variant_target_admin_port
+    to_port     = var.blue_variant_target_admin_port
     protocol    = "TCP"
     self        = true
   }
 
   egress {
     description = "Egress from var.target_http_port to var.target_admin_port"
-    from_port   = var.target_http_port
-    to_port     = var.target_admin_port
+    from_port   = var.blue_variant_target_http_port
+    to_port     = var.blue_variant_target_admin_port
     protocol    = "TCP"
     cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg tfsec:ignore:aws-ec2-no-public-egress-sgr
   }
@@ -268,7 +268,7 @@ resource "aws_security_group" "traefik_green" {
 }
 
 resource "aws_security_group" "traefik_debug" {
-  count       = var.deploy && var.deploy_green_variant ? 1 : 0
+  count       = var.deploy_blue_variant && var.deploy_green_variant ? 1 : 0
   name_prefix = "allow_traefik_debug-${var.cluster_name}"
   description = "Allow traefik connection related to debugging a blue/green deployment for ${var.cluster_name}"
   vpc_id      = var.vpc_id
@@ -299,12 +299,12 @@ resource "aws_security_group" "traefik_debug" {
 
 }
 
-resource "aws_security_group_rule" "allow_traefik" {
-  count                    = var.deploy ? 1 : 0
+resource "aws_security_group_rule" "allow_traefik_blue" {
+  count                    = var.deploy_blue_variant ? 1 : 0
   description              = "Ingress on HTTP port for the Traefik blue variant."
   type                     = "ingress"
-  from_port                = var.target_http_port
-  to_port                  = var.target_admin_port
+  from_port                = var.blue_variant_target_http_port
+  to_port                  = var.blue_variant_target_admin_port
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.traefik[0].id
 

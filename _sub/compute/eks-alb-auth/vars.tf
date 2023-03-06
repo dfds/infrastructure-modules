@@ -51,25 +51,25 @@ variable "access_logs_enabled" {
 
 # Blue variant
 
-variable "deploy" {
+variable "deploy_blue_variant" {
   type        = bool
   description = "Whether to deploy a blue variant target group for the listener."
   default     = true
 }
 
-variable "target_http_port" {
+variable "blue_variant_target_http_port" {
   type = number
 }
 
-variable "target_admin_port" {
+variable "blue_variant_target_admin_port" {
   type = number
 }
 
-variable "health_check_path" {
+variable "blue_variant_health_check_path" {
   type = string
 }
 
-variable "weight" {
+variable "blue_variant_weight" {
   type = number
 }
 

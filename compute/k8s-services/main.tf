@@ -102,21 +102,21 @@ module "traefik_alb_s3_access_logs" {
 # destroyed.  This is to avoid downtime or having to reimport resources due to
 # renaming.
 
-module "traefik_flux_manifests" {
+module "traefik_blue_variant_flux_manifests" {
   source                 = "../../_sub/compute/k8s-traefik-flux"
-  count                  = var.traefik_flux_deploy ? 1 : 0
+  count                  = var.traefik_blue_variant_flux_deploy ? 1 : 0
   cluster_name           = var.eks_cluster_name
-  deploy_name            = "traefik"
-  namespace              = "traefik"
-  helm_chart_version     = var.traefik_flux_helm_chart_version
+  deploy_name            = "traefik-blue-variant"
+  namespace              = "traefik-blue-variant"
+  helm_chart_version     = var.traefik_blue_variant_flux_helm_chart_version
   replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
-  http_nodeport          = var.traefik_flux_http_nodeport
-  admin_nodeport         = var.traefik_flux_admin_nodeport
+  http_nodeport          = var.traefik_blue_variant_flux_http_nodeport
+  admin_nodeport         = var.traefik_blue_variant_flux_admin_nodeport
   github_owner           = var.traefik_flux_github_owner
   repo_name              = var.traefik_flux_repo_name
   repo_branch            = var.traefik_flux_repo_branch
-  additional_args        = var.traefik_flux_additional_args
-  dashboard_ingress_host = "traefik.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
+  additional_args        = var.traefik_blue_variant_flux_additional_args
+  dashboard_ingress_host = "traefik-blue-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
   overwrite_on_create    = var.platform_fluxcd_overwrite_on_create
 
   providers = {
@@ -184,11 +184,11 @@ module "traefik_alb_auth" {
   access_logs_bucket    = module.traefik_alb_s3_access_logs.name
 
   # Blue variant
-  deploy            = var.traefik_alb_auth_deploy && var.traefik_flux_deploy
-  target_http_port  = var.traefik_flux_http_nodeport
-  target_admin_port = var.traefik_flux_admin_nodeport
-  health_check_path = "/ping"
-  weight            = var.traefik_flux_weight
+  deploy_blue_variant            = var.traefik_alb_auth_deploy && var.traefik_blue_variant_flux_deploy
+  blue_variant_target_http_port  = var.traefik_blue_variant_flux_http_nodeport
+  blue_variant_target_admin_port = var.traefik_blue_variant_flux_admin_nodeport
+  blue_variant_health_check_path = "/ping"
+  blue_variant_weight            = var.traefik_blue_variant_flux_weight
 
   # Green variant
   deploy_green_variant            = var.traefik_alb_auth_deploy && var.traefik_green_variant_flux_deploy
@@ -200,7 +200,7 @@ module "traefik_alb_auth" {
 
 module "traefik_alb_auth_dns" {
   source       = "../../_sub/network/route53-record"
-  deploy       = (var.traefik_alb_auth_deploy && (var.traefik_flux_deploy || var.traefik_green_variant_flux_deploy)) ? true : false
+  deploy       = (var.traefik_alb_auth_deploy && (var.traefik_blue_variant_flux_deploy || var.traefik_green_variant_flux_deploy)) ? true : false
   zone_id      = local.workload_dns_zone_id
   record_name  = ["internal.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
   record_type  = "CNAME"
@@ -220,7 +220,7 @@ module "traefik_alb_auth_dns_for_grafana" {
 
 module "traefik_alb_auth_dns_for_traefik_blue_variant_dashboard" {
   source       = "../../_sub/network/route53-record"
-  deploy       = (var.traefik_flux_deploy && var.traefik_alb_auth_deploy) ? true : false
+  deploy       = (var.traefik_blue_variant_flux_deploy && var.traefik_alb_auth_deploy) ? true : false
   zone_id      = local.workload_dns_zone_id
   record_name  = ["traefik-blue-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
   record_type  = "CNAME"
@@ -264,11 +264,11 @@ module "traefik_alb_anon" {
   access_logs_bucket    = module.traefik_alb_s3_access_logs.name
 
   # Blue variant
-  deploy            = var.traefik_alb_anon_deploy && var.traefik_flux_deploy
-  target_http_port  = var.traefik_flux_http_nodeport
-  target_admin_port = var.traefik_flux_admin_nodeport
-  health_check_path = "/ping"
-  weight            = var.traefik_flux_weight
+  deploy_blue_variant            = var.traefik_alb_anon_deploy && var.traefik_blue_variant_flux_deploy
+  blue_variant_target_http_port  = var.traefik_blue_variant_flux_http_nodeport
+  blue_variant_target_admin_port = var.traefik_blue_variant_flux_admin_nodeport
+  blue_variant_health_check_path = "/ping"
+  blue_variant_weight            = var.traefik_blue_variant_flux_weight
 
   # Green variant
   deploy_green_variant            = var.traefik_alb_anon_deploy && var.traefik_green_variant_flux_deploy
@@ -514,7 +514,7 @@ module "atlantis_flux_manifests" {
   flux_repo_branch      = var.atlantis_flux_repo_branch
   overwrite_on_create   = var.platform_fluxcd_overwrite_on_create
 
-  depends_on = [module.atlantis, module.traefik_flux_manifests, module.platform_fluxcd]
+  depends_on = [module.atlantis, module.traefik_blue_variant_flux_manifests, module.platform_fluxcd]
 
   providers = {
     github = github.fluxcd

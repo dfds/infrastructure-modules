@@ -87,19 +87,19 @@ locals {
 
 locals {
   traefik_alb_auth_endpoints = concat(
-    var.traefik_flux_deploy || var.traefik_green_variant_flux_deploy ? concat(
+    var.traefik_blue_variant_flux_deploy || var.traefik_green_variant_flux_deploy ? concat(
       [
         "internal.${local.eks_fqdn}",
         "grafana.${local.eks_fqdn}"
       ],
       var.traefik_alb_auth_core_alias
     ) : [],
-    var.traefik_flux_deploy && var.traefik_green_variant_flux_deploy ?
+    var.traefik_blue_variant_flux_deploy && var.traefik_green_variant_flux_deploy ?
     [
       "traefik-blue-variant.${local.eks_fqdn}:8443",
       "traefik-green-variant.${local.eks_fqdn}:9443"
     ] : [],
-    var.traefik_flux_deploy ?
+    var.traefik_blue_variant_flux_deploy ?
     [
       "traefik-blue-variant.${local.eks_fqdn}"
     ] : [],
@@ -234,9 +234,9 @@ locals {
     "module" = "http_2xx"
   }] : []
 
-  blackbox_exporter_monitoring_traefik = var.traefik_flux_deploy ? [{
-    "name"   = "traefik"
-    "url"    = "http://traefik.traefik:9000/ping"
+  blackbox_exporter_monitoring_traefik_blue_variant = var.traefik_blue_variant_flux_deploy ? [{
+    "name"   = "traefik-blue-variant"
+    "url"    = "http://traefik-blue-variant.traefik-blue-variant:9000/ping"
     "module" = "http_2xx"
   }] : []
 
@@ -250,7 +250,7 @@ locals {
   blackbox_exporter_monitoring_targets = concat(
     local.blackbox_exporter_monitoring_atlantis,
     local.blackbox_exporter_monitoring_grafana,
-    local.blackbox_exporter_monitoring_traefik,
+    local.blackbox_exporter_monitoring_traefik_blue_variant,
     local.blackbox_exporter_monitoring_traefik_green_variant,
     var.blackbox_exporter_monitoring_targets
   )
