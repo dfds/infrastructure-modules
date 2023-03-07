@@ -7,9 +7,7 @@ output "alb_arn_suffix" {
 }
 
 output "alb_target_group_arn_suffix" {
-  # value = (var.deploy_blue_variant || var.deploy_green_variant) ? aws_lb_target_group.traefik_blue_variant[*].arn_suffix : []
-
-  value = concat(local.alb_target_group_arn_suffix_blue,local.alb_target_group_arn_suffix_green,[])
+  value = concat(local.alb_target_group_arn_suffix_blue,local.alb_target_group_arn_suffix_green)
 }
 
 locals {
