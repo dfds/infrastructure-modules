@@ -126,6 +126,7 @@ module "traefik_blue_variant_flux_manifests" {
   depends_on = [module.platform_fluxcd]
 }
 
+# TODO(samdi): Rename to traefik_green_variant_flux_manifests so it is consistent with the b/g traefik naming
 module "traefik_variant_flux_manifests" {
   source                 = "../../_sub/compute/k8s-traefik-flux"
   count                  = var.traefik_green_variant_flux_deploy ? 1 : 0
@@ -514,7 +515,7 @@ module "atlantis_flux_manifests" {
   flux_repo_branch      = var.atlantis_flux_repo_branch
   overwrite_on_create   = var.platform_fluxcd_overwrite_on_create
 
-  depends_on = [module.atlantis, module.traefik_blue_variant_flux_manifests, module.platform_fluxcd]
+  depends_on = [module.atlantis, module.platform_fluxcd]
 
   providers = {
     github = github.fluxcd

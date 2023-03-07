@@ -22,11 +22,6 @@ locals {
     }
     "spec" = {
       "interval" = "1m0s"
-      "dependsOn" = [
-        {
-          "name" = "platform-apps-traefik-helm" # This will get reconciled when and if traefik is installed.
-        }
-      ]
       "sourceRef" = {
         "kind" = "GitRepository"
         "name" = "flux-system"
