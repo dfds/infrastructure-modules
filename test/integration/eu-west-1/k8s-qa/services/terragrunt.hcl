@@ -40,11 +40,34 @@ inputs = {
   # --------------------------------------------------
   # Traefik v2
   # --------------------------------------------------
-  traefikv2_test_alb_deploy       = true
-  traefik_flux_helm_chart_version = "20.8.0"
-  traefik_flux_github_owner       = "dfds"
+
+  traefikv2_test_alb_deploy = true
+
+  traefik_flux_github_owner     = "dfds"
   traefik_flux_repo_name          = "platform-manifests-qa"
-  traefik_flux_repo_branch        = "main"
+  traefik_flux_repo_branch      = "main"
+
+  # Blue variant
+  traefik_blue_variant_flux_deploy = true
+  traefik_blue_variant_flux_dashboard_deploy = true
+  traefik_blue_variant_flux_helm_chart_version = "20.8.0"
+  traefik_blue_variant_flux_additional_args = [
+    "--metrics.prometheus",
+    "--providers.kubernetescrd.allowCrossNamespace=true"
+  ]
+  traefik_blue_variant_flux_weight = 1
+
+  # Green variant
+  traefik_green_variant_flux_deploy = false
+  traefik_green_variant_flux_dashboard_deploy = false
+  traefik_green_variant_flux_helm_chart_version = "20.8.0"
+  traefik_green_variant_flux_additional_args = [
+    "--metrics.prometheus",
+    "--providers.kubernetescrd.allowCrossNamespace=true"
+  ]
+  traefik_green_variant_flux_weight = 0
+
+
 
   # --------------------------------------------------
   # Blaster
