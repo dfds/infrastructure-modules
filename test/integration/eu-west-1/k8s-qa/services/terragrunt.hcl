@@ -112,6 +112,9 @@ inputs = {
   monitoring_kube_prometheus_stack_grafana_storage_enabled   = true
   monitoring_kube_prometheus_stack_grafana_storage_size      = "5Gi"
   monitoring_kube_prometheus_stack_grafana_storageclass      = "gp2"
+  # monitoring_kube_prometheus_stack_azure_tenant_id is set as ARM_TENANT_ID in
+  # Azure DevOps Pipeline Library "Infrastructure-Modules QA" in and mapped in the
+  # Azure DevOps pipeline file as TF_VAR_monitoring_kube_prometheus_stack_azure_tenant_id
 
   # --------------------------------------------------
   # Metrics-Server

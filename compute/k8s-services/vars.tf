@@ -252,6 +252,13 @@ variable "monitoring_kube_prometheus_stack_grafana_storage_size" {
   default     = ""
 }
 
+
+variable "monitoring_kube_prometheus_stack_azure_tenant_id" {
+  type        = string
+  default     = ""
+  description = "Azure Tenant ID"
+}
+
 variable "monitoring_kube_prometheus_stack_slack_webhook" {
   type        = string
   description = "Kube-prometheus-stack alert slack webhook"
