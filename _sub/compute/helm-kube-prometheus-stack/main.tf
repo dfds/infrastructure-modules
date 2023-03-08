@@ -45,7 +45,7 @@ resource "helm_release" "kube_prometheus_stack" {
       grafana_storage_size        = var.grafana_storage_size
       grafana_app_id              = azuread_application.grafana[0].application_id
       grafana_app_secret          = azuread_application_password.grafana[0].value
-      azure_tenant_id             = length(data.azuread_client_config.current.tenant_id) == 36 ? data.azuread_client_config.current.tenant_id : ""
+      grafana_azure_tenant_id     = length(var.grafana_azure_tenant_id) == 36 ? var.grafana_azure_tenant_id : ""
       tolerations                 = var.tolerations,
       affinity                    = var.affinity,
     }),
@@ -138,7 +138,7 @@ resource "random_uuid" "viewer" {}
 resource "random_uuid" "editor" {}
 
 resource "azuread_application" "grafana" {
-  count           = length(data.azuread_client_config.current.tenant_id) == 36 ? 1 : 0
+  count           = length(var.grafana_azure_tenant_id) == 36 ? 1 : 0
   display_name    = "Grafana OAuth for ${var.grafana_host}"
   identifier_uris = ["https://${var.grafana_host}"]
   owners          = [data.azuread_client_config.current.object_id]
@@ -177,6 +177,6 @@ resource "azuread_application" "grafana" {
 }
 
 resource "azuread_application_password" "grafana" {
-  count                 = length(data.azuread_client_config.current.tenant_id) == 36 ? 1 : 0
+  count                 = length(var.grafana_azure_tenant_id) == 36 ? 1 : 0
   application_object_id = azuread_application.grafana[0].object_id
 }
