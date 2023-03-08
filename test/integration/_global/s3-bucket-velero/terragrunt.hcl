@@ -12,6 +12,6 @@ dependencies {
 }
 
 inputs = {
-  bucket_name = "dfds-velero-qa"
+  bucket_name      = "dfds-velero-qa"
   eks_cluster_name = "qa"
 }

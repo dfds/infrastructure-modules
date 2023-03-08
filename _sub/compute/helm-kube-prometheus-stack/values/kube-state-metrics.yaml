@@ -8,3 +8,30 @@ kube-state-metrics:
   prometheus:
     monitor:
       enabled: true
+%{ if length(tolerations) > 0 ~}
+  tolerations:
+%{ for t in tolerations ~}
+  - key: ${t.key}
+    operator: ${t.operator}
+%{ if t.value != null ~}
+    value: ${t.value}
+%{ endif ~}
+    effect: ${t.effect}
+%{ endfor ~}
+%{ endif ~}
+%{ if length(affinity) > 0 ~}
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+%{ for a in affinity ~}
+          - key: ${a.key}
+            operator: ${a.operator}
+            values:
+%{ for v in a.values ~}
+            - ${ v }
+%{ endfor ~}
+%{ endfor ~}
+%{ endif ~}

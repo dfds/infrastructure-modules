@@ -44,6 +44,6 @@ INSTANCE_TYPES=(
 
 for INSTANCE_TYPE in "${INSTANCE_TYPES[@]}"
 do
-    OUTPUT=$(./max-pods-calculator.sh --instance-type $INSTANCE_TYPE --cni-version $CNI_VERSION --cni-prefix-delegation-enabled --show-max-allowed)
+    OUTPUT=$(./max-pods-calculator.sh --instance-type $INSTANCE_TYPE --cni-version $CNI_VERSION --cni-prefix-delegation-enabled)
     echo "$INSTANCE_TYPE $OUTPUT"
 done

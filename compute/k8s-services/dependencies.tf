@@ -89,8 +89,7 @@ locals {
   traefik_alb_auth_endpoints = concat(
     var.traefik_blue_variant_flux_deploy || var.traefik_green_variant_flux_deploy ? concat(
       [
-        "internal.${local.eks_fqdn}",
-        "grafana.${local.eks_fqdn}"
+        "internal.${local.eks_fqdn}"
       ],
       var.traefik_alb_auth_core_alias
     ) : [],

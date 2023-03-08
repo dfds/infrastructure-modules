@@ -5,7 +5,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.55.0"
+      version = "~> 4.57.0"
     }
 
     kubernetes = {
@@ -25,7 +25,7 @@ terraform {
 
     azuread = {
       source  = "hashicorp/azuread"
-      version = "~> 2.34.0"
+      version = "~> 2.35.0"
     }
 
     github = {

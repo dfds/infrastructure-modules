@@ -150,6 +150,27 @@ variable "monitoring_namespace_iam_roles" {
   }
 }
 
+variable "monitoring_tolerations" {
+  type = list(object({
+    key      = string,
+    operator = string,
+    value    = optional(string),
+    effect   = string,
+  }))
+  description = "Tolerations to apply to the cluster-wide monitoring workloads."
+  default     = []
+}
+
+variable "monitoring_affinity" {
+  type = list(object({
+    key      = string,
+    operator = string,
+    values   = list(string)
+  }))
+  description = "Affinities to apply to the cluster-wide monitoring workloads."
+  default     = []
+}
+
 # --------------------------------------------------
 # Goldpinger
 # --------------------------------------------------
@@ -216,7 +237,7 @@ variable "monitoring_kube_prometheus_stack_grafana_serviceaccount_name" {
 variable "monitoring_kube_prometheus_stack_grafana_storage_enabled" {
   type        = bool
   description = "Enable persistence in Grafana using Persistent Volume Claims"
-  default = false
+  default     = false
 }
 
 variable "monitoring_kube_prometheus_stack_grafana_storageclass" {
@@ -308,7 +329,6 @@ variable "monitoring_kube_prometheus_stack_prometheus_limit_cpu" {
   description = "Prometheus resource setting for limit cpu"
   default     = "1000m"
 }
-
 
 # --------------------------------------------------
 # Metrics-Server
@@ -981,12 +1001,6 @@ variable "velero_flux_log_level" {
     condition     = contains(["info", "debug", "warning", "error", "fatal", "panic"], var.velero_flux_log_level)
     error_message = "Invalid value for log_level. Valid values: info, debug, warning, error, fatal, panic."
   }
-}
-
-variable "velero_flux_github_owner" {
-  type        = string
-  description = "Name of the Flux repo Github owner (previously: organization)"
-  default     = null
 }
 
 variable "velero_flux_repo_name" {

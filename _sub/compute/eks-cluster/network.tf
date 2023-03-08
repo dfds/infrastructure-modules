@@ -8,7 +8,7 @@ resource "aws_vpc" "eks" {
   cidr_block = "10.0.0.0/16"
 
   tags = {
-    "Name"                                      = "eks-${var.cluster_name}-node"
+    "Name"                                      = "eks-${var.cluster_name}-cluster"
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
   }
 }
@@ -21,7 +21,8 @@ resource "aws_subnet" "eks" {
   vpc_id            = aws_vpc.eks.id
 
   tags = {
-    "Name"                                      = "eks-${var.cluster_name}-node"
+    "Name"                                      = "eks-${var.cluster_name}-control-plane"
+    "Description"                               = "Subnet reserved for the EKS control plane of the ${var.cluster_name} cluster."
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
   }
 }

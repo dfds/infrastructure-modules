@@ -24,12 +24,12 @@ resources:
         TF_VAR_crossplane_provider_confluent_email: $(CROSSPLANE_PROVIDER_CONFLUENT_EMAIL)
         TF_VAR_crossplane_provider_confluent_password: $(CROSSPLANE_PROVIDER_CONFLUENT_PASSWORD)
     - container: aws-nuke
-      image: dfdsdk/aws-nuke:0.0.7
+      image: dfdsdk/aws-nuke:0.0.8
       env:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
     - container: go-build
-      image: golang:1.19.5-bullseye
+      image: golang:1.20.2-bullseye
   repositories:
     - repository: Origin
       type: github
@@ -117,7 +117,7 @@ stages:
           - checkout: Origin
             fetchDepth: 1
             fetchTags: false
-          - task: Cache@2
+          - task: Cache@2.198.0
             inputs:
               key: '"go" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum | $(Build.Repository.LocalPath)/src/qa-test-eks.sh'
               restoreKeys: '"go" | "$(Agent.OS)"'
@@ -128,7 +128,7 @@ stages:
               GOCACHE: $(GO_CACHE_DIR)
             displayName: "Build test binary"
             timeoutInMinutes: 15
-          - task: PublishBuildArtifacts@1
+          - task: PublishBuildArtifacts@1.211.0
             inputs:
               pathToPublish: $(Build.ArtifactStagingDirectory)/test-master.bin
               artifactName: test-master
@@ -144,7 +144,7 @@ stages:
           - checkout: self
             fetchDepth: 1
             fetchTags: false
-          - task: Cache@2
+          - task: Cache@2.198.0
             inputs:
               key: '"go" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum | $(Build.Repository.LocalPath)/src/qa-test-eks.sh'
               restoreKeys: '"go" | "$(Agent.OS)"'
@@ -155,7 +155,7 @@ stages:
               GOCACHE: $(GO_CACHE_DIR)
             displayName: "Build test binary"
             timeoutInMinutes: 15
-          - task: PublishBuildArtifacts@1
+          - task: PublishBuildArtifacts@1.211.0
             inputs:
               pathToPublish: $(Build.ArtifactStagingDirectory)/test-feature.bin
               artifactName: test-feature
