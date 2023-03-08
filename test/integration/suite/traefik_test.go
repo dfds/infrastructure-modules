@@ -19,7 +19,7 @@ func TestTraefikDeployment(t *testing.T) {
 func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 	clientset := NewK8sClientSet(t)
 	AssertFluxReconciliation(t, clientset)
-	AssertK8sDeployment(t, clientset, "traefik", "traefik", 3)
+	AssertK8sDeployment(t, clientset, "traefik-blue-variant", "traefik-blue-variant", 3)
 
 	// The Grafana deployment utilizes the Traefik resources IngressRoute and
 	// Middleware to expose a public endpoint. This public endpoint will be
