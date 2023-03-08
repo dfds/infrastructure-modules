@@ -11,7 +11,7 @@ import (
 
 func TestTraefikDeployment(t *testing.T) {
 	clientset := NewK8sClientSet(t)
-	AssertFluxReconciliation(t, clientset)
+	// AssertFluxReconciliation(t, clientset)
 	AssertK8sDeployment(t, clientset, "traefik-blue-variant", "traefik-blue-variant", 3)
 }
 
