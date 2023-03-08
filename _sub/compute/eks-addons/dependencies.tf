@@ -24,7 +24,7 @@ locals {
     "1.21" = "v1.8.4-eksbuild.1"
     "1.22" = "v1.8.7-eksbuild.1"
     "1.23" = "v1.8.7-eksbuild.3"
-    "1.24" = "v1.9.3-eksbuild.2"
+    "1.24" = "v1.8.7-eksbuild.4"
     "1.25" = "v1.9.3-eksbuild.2"
   }
 
