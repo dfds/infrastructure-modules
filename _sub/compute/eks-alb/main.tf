@@ -30,7 +30,6 @@ resource "aws_lb" "traefik" {
 
 resource "aws_lb_target_group" "traefik_blue_variant" {
   count = var.deploy_blue_variant ? 1 : 0
-  # TODO(emil): prefix this with "b-" for blue after it is destroyed.
   name_prefix          = "b-${substr(var.cluster_name, 0, min(4, length(var.cluster_name)))}"
   port                 = var.blue_variant_target_http_port
   protocol             = "HTTP"
