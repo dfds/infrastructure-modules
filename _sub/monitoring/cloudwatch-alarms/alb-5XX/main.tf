@@ -1,7 +1,7 @@
 resource "aws_cloudwatch_metric_alarm" "alb_5XX" {
-  count = var.deploy ? length(var.alb_arn_suffixes) : 0
+  count = var.deploy ? 1 : 0
 
-  alarm_name                = "alb_5XX ${var.alb_arn_suffixes[count.index]}"
+  alarm_name                = "alb_5XX lb:${var.alb_arn_suffix}"
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = "2"
   metric_name               = "HTTPCode_ELB_5XX_Count"
@@ -17,6 +17,6 @@ resource "aws_cloudwatch_metric_alarm" "alb_5XX" {
   alarm_actions = [var.sns_topic_arn]
   ok_actions    = [var.sns_topic_arn]
 
-  dimensions          = { "LoadBalancer" = var.alb_arn_suffixes[count.index] }
+  dimensions          = { "LoadBalancer" = var.alb_arn_suffix }
   datapoints_to_alarm = 2
 }
