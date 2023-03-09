@@ -3,14 +3,13 @@ output "alb_fqdn" {
 }
 
 output "alb_arn_suffix" {
-  value = (var.deploy_blue_variant || var.deploy_green_variant) ? aws_lb.traefik_auth[*].arn_suffix : [] # output must be a list (even if empty), otherwise concat in k8s-services fails
+  value = (var.deploy_blue_variant || var.deploy_green_variant) ? aws_lb.traefik_auth[0].arn_suffix : ""
 }
 
-output "alb_target_group_arn_suffix" {
-  value = concat(local.alb_target_group_arn_suffix_blue,local.alb_target_group_arn_suffix_green)
+output "alb_target_group_arn_suffix_blue" {
+  value = var.deploy_blue_variant ? aws_lb_target_group.traefik_auth_blue_variant[0].arn_suffix : ""
 }
 
-locals {
-  alb_target_group_arn_suffix_blue = var.deploy_blue_variant ? aws_lb_target_group.traefik_auth_blue_variant[*].arn_suffix : []
-  alb_target_group_arn_suffix_green = var.deploy_green_variant ? aws_lb_target_group.traefik_auth_green_variant[*].arn_suffix : []
+output "alb_target_group_arn_suffix_green" {
+  value = var.deploy_green_variant ? aws_lb_target_group.traefik_auth_green_variant[0].arn_suffix : ""
 }

@@ -331,21 +331,51 @@ module "alarm_notifier" {
   slack_webhook_url = var.slack_webhook_url
 }
 
-module "cloudwatch_alarm_alb_5XX" {
-  source           = "../../_sub/monitoring/cloudwatch-alarms/alb-5XX/"
-  deploy           = var.cloudwatch_alarm_alb_5XX_deploy
-  sns_topic_arn    = module.alarm_notifier.sns_arn
-  alb_arn_suffixes = concat(module.traefik_alb_anon.alb_arn_suffix, module.traefik_alb_auth.alb_arn_suffix)
+module "cloudwatch_alarm_alb_5XX_anon" {
+  source         = "../../_sub/monitoring/cloudwatch-alarms/alb-5XX/"
+  deploy         = var.cloudwatch_alarm_alb_5XX_deploy && var.traefik_alb_anon_deploy && (var.traefik_blue_variant_flux_deploy || var.traefik_green_variant_flux_deploy)
+  sns_topic_arn  = module.alarm_notifier.sns_arn
+  alb_arn_suffix = module.traefik_alb_anon.alb_arn_suffix
 }
 
-module "cloudwatch_alarm_alb_targets_health" {
-  source                        = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
-  deploy                        = var.cloudwatch_alarm_alb_targets_health_deploy
-  sns_topic_arn                 = module.alarm_notifier.sns_arn
-  alb_target_group_arn_suffixes = concat(module.traefik_alb_anon.alb_target_group_arn_suffix, module.traefik_alb_auth.alb_target_group_arn_suffix)
-  alb_arn_suffixes              = concat(module.traefik_alb_anon.alb_arn_suffix, module.traefik_alb_auth.alb_arn_suffix)
+module "cloudwatch_alarm_alb_5XX_auth" {
+  source         = "../../_sub/monitoring/cloudwatch-alarms/alb-5XX/"
+  deploy         = var.cloudwatch_alarm_alb_5XX_deploy && var.traefik_alb_auth_deploy && (var.traefik_blue_variant_flux_deploy || var.traefik_green_variant_flux_deploy)
+  sns_topic_arn  = module.alarm_notifier.sns_arn
+  alb_arn_suffix = module.traefik_alb_auth.alb_arn_suffix
 }
 
+module "cloudwatch_alarm_alb_targets_health_anon_blue" {
+  source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
+  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_alb_anon_deploy && var.traefik_blue_variant_flux_deploy
+  sns_topic_arn               = module.alarm_notifier.sns_arn
+  alb_arn_suffix              = module.traefik_alb_anon.alb_arn_suffix
+  alb_arn_target_group_suffix = module.traefik_alb_anon.alb_target_group_arn_suffix_blue
+}
+
+module "cloudwatch_alarm_alb_targets_health_anon_green" {
+  source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
+  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_alb_anon_deploy && var.traefik_green_variant_flux_deploy
+  sns_topic_arn               = module.alarm_notifier.sns_arn
+  alb_arn_suffix              = module.traefik_alb_anon.alb_arn_suffix
+  alb_arn_target_group_suffix = module.traefik_alb_anon.alb_target_group_arn_suffix_green
+}
+
+module "cloudwatch_alarm_alb_targets_health_auth_blue" {
+  source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
+  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_alb_auth_deploy && var.traefik_blue_variant_flux_deploy
+  sns_topic_arn               = module.alarm_notifier.sns_arn
+  alb_arn_suffix              = module.traefik_alb_auth.alb_arn_suffix
+  alb_arn_target_group_suffix = module.traefik_alb_auth.alb_target_group_arn_suffix_blue
+}
+
+module "cloudwatch_alarm_alb_targets_health_auth_green" {
+  source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
+  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_alb_auth_deploy && var.traefik_green_variant_flux_deploy
+  sns_topic_arn               = module.alarm_notifier.sns_arn
+  alb_arn_suffix              = module.traefik_alb_auth.alb_arn_suffix
+  alb_arn_target_group_suffix = module.traefik_alb_auth.alb_target_group_arn_suffix_green
+}
 
 # --------------------------------------------------
 # Monitoring namespace
