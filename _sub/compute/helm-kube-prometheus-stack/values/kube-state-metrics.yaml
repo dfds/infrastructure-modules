@@ -1,13 +1,37 @@
 kube-state-metrics:
-  extraArgs: ["--metric-annotations-allowlist=namespaces=[iam.amazonaws.com/permitted],pods=[iam.amazonaws.com/role]"]
   resources:
     requests:
       cpu: 20m
       memory: 100Mi
   priorityClassName: ${kube_state_metrics_priorityclass}
-  podSecurityPolicy:
-    enabled: true
   releaseLabel: true
   prometheus:
     monitor:
       enabled: true
+%{ if length(tolerations) > 0 ~}
+  tolerations:
+%{ for t in tolerations ~}
+  - key: ${t.key}
+    operator: ${t.operator}
+%{ if t.value != null ~}
+    value: ${t.value}
+%{ endif ~}
+    effect: ${t.effect}
+%{ endfor ~}
+%{ endif ~}
+%{ if length(affinity) > 0 ~}
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+%{ for a in affinity ~}
+          - key: ${a.key}
+            operator: ${a.operator}
+            values:
+%{ for v in a.values ~}
+            - ${ v }
+%{ endfor ~}
+%{ endfor ~}
+%{ endif ~}

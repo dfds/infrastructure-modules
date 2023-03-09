@@ -1,41 +1,13 @@
 locals {
-  self_service_role     = [element(concat(aws_iam_role.self_service.*.arn, [""]), 0)]
-  permitted_roles       = concat(local.self_service_role, var.extra_permitted_roles)
-  permitted_roles_regex = join("|", local.permitted_roles)
+
 }
 
 resource "kubernetes_namespace" "self_service" {
   count = var.deploy ? 1 : 0
 
   metadata {
-    annotations = {
-      "iam.amazonaws.com/permitted" = local.permitted_roles_regex
-    }
-
     name = "selfservice"
   }
-}
-
-resource "aws_iam_role" "self_service" {
-  count = var.deploy ? 1 : 0
-  name  = "eks-${var.cluster_name}-self-service"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "AWS": "${var.kiam_server_role_arn}"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-
 }
 
 resource "aws_iam_policy" "rolemapperservice" {
@@ -81,12 +53,6 @@ EOF
 
 }
 
-resource "aws_iam_role_policy_attachment" "rolemapperservice" {
-  count      = var.deploy ? 1 : 0
-  role       = element(concat(aws_iam_role.self_service.*.name, [""]), 0)
-  policy_arn = element(concat(aws_iam_policy.rolemapperservice.*.arn, [""]), 0)
-}
-
 resource "aws_iam_policy" "param_store" {
   count       = var.deploy ? 1 : 0
   name        = "eks-${var.cluster_name}-param-store"
@@ -112,12 +78,6 @@ resource "aws_iam_policy" "param_store" {
 }
 EOF
 
-}
-
-resource "aws_iam_role_policy_attachment" "param-store" {
-  count      = var.deploy ? 1 : 0
-  role       = element(concat(aws_iam_role.self_service.*.name, [""]), 0)
-  policy_arn = element(concat(aws_iam_policy.param_store.*.arn, [""]), 0)
 }
 
 # --------------------------------------------------

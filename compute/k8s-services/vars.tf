@@ -18,6 +18,7 @@ variable "aws_region" {
 }
 
 variable "aws_workload_account_id" {
+  type = string
 }
 
 variable "aws_assume_role_arn" {
@@ -25,12 +26,16 @@ variable "aws_assume_role_arn" {
 }
 
 variable "workload_dns_zone_name" {
+  type = string
 }
 
-variable "ssm_param_createdby" {
-  type        = string
-  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
-  default     = null
+# Optional
+# --------------------------------------------------
+
+variable "s3_bucket_additional_tags" {
+  description = "Add additional tags to s3 bucket"
+  type        = map(any)
+  default     = {}
 }
 
 # --------------------------------------------------
@@ -40,18 +45,6 @@ variable "ssm_param_createdby" {
 variable "eks_cluster_name" {
   type = string
 }
-
-
-# --------------------------------------------------
-# KIAM
-# --------------------------------------------------
-
-variable "kiam_chart_version" {
-  type        = string
-  description = "KIAM helm chart version"
-  default     = null
-}
-
 
 # --------------------------------------------------
 # FluentD CloudWatch Logs
@@ -102,25 +95,14 @@ variable "traefik_nlb_deploy" {
   default = false
 }
 
-variable "traefik_nlb_cidr_blocks" {
-  type    = list(string)
-  default = []
-}
-
 # --------------------------------------------------
 # Blaster
 # --------------------------------------------------
 
 variable "blaster_deploy" {
+  type    = bool
   default = false
 }
-
-variable "blaster_namespace_extra_permitted_roles" {
-  type        = list(string)
-  default     = []
-  description = "Additional role names or ARNs that can be assumed from this namespace through KIAM"
-}
-
 
 # --------------------------------------------------
 # Cloudwatch alarms and alarm notifier (Slack)
@@ -166,6 +148,27 @@ variable "monitoring_namespace_iam_roles" {
     )
     error_message = "The value must contain full role ARNs."
   }
+}
+
+variable "monitoring_tolerations" {
+  type = list(object({
+    key      = string,
+    operator = string,
+    value    = optional(string),
+    effect   = string,
+  }))
+  description = "Tolerations to apply to the cluster-wide monitoring workloads."
+  default     = []
+}
+
+variable "monitoring_affinity" {
+  type = list(object({
+    key      = string,
+    operator = string,
+    values   = list(string)
+  }))
+  description = "Affinities to apply to the cluster-wide monitoring workloads."
+  default     = []
 }
 
 # --------------------------------------------------
@@ -216,6 +219,7 @@ variable "monitoring_kube_prometheus_stack_grafana_admin_password" {
   type        = string
   description = "Grafana admin password"
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  sensitive   = true
 }
 
 variable "monitoring_kube_prometheus_stack_grafana_ingress_path" {
@@ -224,16 +228,35 @@ variable "monitoring_kube_prometheus_stack_grafana_ingress_path" {
   default     = "/infrastructure"
 }
 
-variable "monitoring_kube_prometheus_stack_grafana_notifier_name" {
-  type        = string
-  description = "Grafana alert notifier name"
-  default     = "notifier1"
-}
-
 variable "monitoring_kube_prometheus_stack_grafana_serviceaccount_name" {
   type        = string
   description = "Grafana serviceaccount to be used for pod"
   default     = "grafana-cloudwatch"
+}
+
+variable "monitoring_kube_prometheus_stack_grafana_storage_enabled" {
+  type        = bool
+  description = "Enable persistence in Grafana using Persistent Volume Claims"
+  default     = false
+}
+
+variable "monitoring_kube_prometheus_stack_grafana_storageclass" {
+  type        = string
+  description = "Storage class for Grafana Persistent Volume"
+  default     = "csi-gp2"
+}
+
+variable "monitoring_kube_prometheus_stack_grafana_storage_size" {
+  type        = string
+  description = "Storage size for Grafana Persistent Volume"
+  default     = ""
+}
+
+
+variable "monitoring_kube_prometheus_stack_azure_tenant_id" {
+  type        = string
+  default     = ""
+  description = "Azure Tenant ID"
 }
 
 variable "monitoring_kube_prometheus_stack_slack_webhook" {
@@ -274,7 +297,7 @@ variable "monitoring_kube_prometheus_stack_target_namespaces" {
 
 variable "monitoring_kube_prometheus_stack_github_owner" {
   type        = string
-  description = "Name of the Treaefik Flux repo Github owner (previously: organization)"
+  description = "Name of the Traefik Flux repo Github owner (previously: organization)"
   default     = null
 }
 
@@ -314,7 +337,6 @@ variable "monitoring_kube_prometheus_stack_prometheus_limit_cpu" {
   default     = "1000m"
 }
 
-
 # --------------------------------------------------
 # Metrics-Server
 # --------------------------------------------------
@@ -331,52 +353,11 @@ variable "monitoring_metrics_server_chart_version" {
   default     = null
 }
 
-variable "monitoring_metrics_server_chart_namespace" {
-  type        = string
-  description = "Namespace to apply metrics-server in"
-  default     = "monitoring"
-}
-
 variable "monitoring_metrics_server_repo_url" {
   type        = string
   description = "The repository URL for the metrics-server Helm chart"
   default     = "https://kubernetes-sigs.github.io/metrics-server/"
 }
-
-# --------------------------------------------------
-# Unused variables - to provent TF warning/error:
-# Using a variables file to set an undeclared variable is deprecated and will
-# become an error in a future release. If you wish to provide certain "global"
-# settings to all configurations in your organization, use TF_VAR_...
-# environment variables to set these instead.
-# --------------------------------------------------
-
-variable "eks_public_s3_bucket" {
-  type    = string
-  default = ""
-}
-
-variable "eks_is_sandbox" {
-  type    = bool
-  default = false
-}
-
-# --------------------------------------------------
-# AWS EBS CSI Driver
-# --------------------------------------------------
-
-variable "ebs_csi_driver_deploy" {
-  type        = bool
-  description = "Deploy AWS EBS CSI driver Helm chart"
-  default     = true
-}
-
-variable "ebs_csi_driver_chart_version" {
-  type        = string
-  description = "The version of the AWS EBS CSI driver Helm chart to deploy (defaults to latest)"
-  default     = null
-}
-
 
 # --------------------------------------------------
 # Platform Flux CD
@@ -394,19 +375,7 @@ variable "platform_fluxcd_release_tag" {
   description = "The release tag of Flux CD to use."
 }
 
-variable "platform_fluxcd_namespace" {
-  type        = string
-  default     = "platform-flux"
-  description = ""
-}
-
 variable "platform_fluxcd_repo_name" {
-  type        = string
-  default     = ""
-  description = ""
-}
-
-variable "platform_fluxcd_repo_path" {
   type        = string
   default     = ""
   description = ""
@@ -430,14 +399,10 @@ variable "platform_fluxcd_repo_branch" {
   description = ""
 }
 
-# --------------------------------------------------
-# Namespaces
-# --------------------------------------------------
-
-variable "kubesystem_permitted_extra_roles" {
-  type        = list(string)
-  default     = []
-  description = "Defines additional roles that can be assumed from the kube-system namespace"
+variable "platform_fluxcd_overwrite_on_create" {
+  type        = bool
+  default     = true
+  description = "Enable overwriting existing files"
 }
 
 
@@ -452,37 +417,33 @@ variable "atlantis_deploy" {
 }
 
 variable "atlantis_github_token" {
-  description = "Github token that the provider uses to perform Github operations. Leaving unset will fall back to GITHUB_TOKEN environment variable"
+  type        = string
   default     = null
+  description = "Github token that the provider uses to perform Github operations. Leaving unset will fall back to GITHUB_TOKEN environment variable"
 }
 
 variable "atlantis_platform_fluxcd_github_token" {
-  description = "Github token that the provider uses to perform Github operations for Flux."
+  type        = string
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "Github token that the provider uses to perform Github operations for Flux."
 }
 
 variable "atlantis_github_owner" {
-  description = "Github owner(username). Conflicts with github_organization. Leaving unset will use GITHUB_OWNER environment variable if exists"
+  type        = string
   default     = null
+  description = "Github owner(username). Conflicts with github_organization. Leaving unset will use GITHUB_OWNER environment variable if exists"
 }
 
 variable "atlantis_github_username" {
-  description = "Github username of the account that will post Atlantis comments on PR's"
+  type        = string
   default     = null
+  description = "Github username of the account that will post Atlantis comments on PR's"
 }
 
 variable "atlantis_github_repositories" {
   description = "List of repositories to whitelist for Atlantis"
   type        = list(string)
   default     = []
-}
-
-variable "atlantis_webhook_content_type" {
-  default = "application/json"
-}
-
-variable "atlantis_webhook_insecure_ssl" {
-  default = false
 }
 
 variable "atlantis_webhook_events" {
@@ -546,13 +507,15 @@ variable "atlantis_arm_client_secret" {
 }
 
 variable "atlantis_aws_access_key" {
-  description = "AWS Access Key"
+  type        = string
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "AWS Access Key"
 }
 
 variable "atlantis_aws_secret" {
-  description = "AWS Secret"
+  type        = string
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "AWS Secret"
 }
 
 variable "atlantis_access_key_master" {
@@ -787,21 +750,22 @@ variable "crossplane_confluent_clusters_endpoints" {
   description = "Endpoints for each supported supported Confluent clusters"
 }
 
-# -------------
-
-variable "kiam_strict_mode_disabled" {
-  type        = bool
-  description = "Disable default strict namespace regexp when matching roles"
-  default     = false
-}
-
 # --------------------------------------------------
 # Traefik v2 through Flux CD
 # --------------------------------------------------
 
+# Using the variant variables one can perform a blue/green update on Traefik,
+# routing traffic gradually to a new version and then decomissioning an older
+# version without downtime.
+
+# TODO(emil): Rename the original Traefik instance resources and variables to
+# specify that they refer to the "blue" variant after the "blue" instance is
+# destroyed.  This is to avoid downtime or having to reimport resources due to
+# renaming.
+
 variable "traefik_flux_github_owner" {
   type        = string
-  description = "Name of the Treaefik Flux repo Github owner (previously: organization)"
+  description = "Name of the Traefik Flux repo Github owner (previously: organization)"
   default     = null
 }
 
@@ -835,12 +799,6 @@ variable "traefik_flux_admin_nodeport" {
   default     = 31001
 }
 
-variable "traefik_flux_health_check_path" {
-  description = "Which path should the LB call when checking if Traefik v2 service is healthy"
-  type        = string
-  default     = "/ping/"
-}
-
 variable "traefik_flux_additional_args" {
   type        = list(any)
   description = "Pass arguments to the additionalArguments node in the Traefik Helm chart"
@@ -852,10 +810,48 @@ variable "traefik_flux_deploy" {
   default = true
 }
 
-variable "traefik_flux_dashboard_deploy" {
+variable "traefik_flux_weight" {
+  type        = number
+  description = "The weight of the Traefik instance target groups in the load balancers. Only relevant if there is variant instance deployed."
+  default     = 1
+}
+
+# Green variant
+
+variable "traefik_green_variant_flux_helm_chart_version" {
+  type        = string
+  description = "Helm Chart version to be used to deploy the Traefik green variant"
+  default     = null
+}
+
+variable "traefik_green_variant_flux_http_nodeport" {
+  type        = number
+  description = "Nodeport used by ALB's to connect to the Traefik green variant instance"
+  default     = 32000
+}
+
+variable "traefik_green_variant_flux_admin_nodeport" {
+  type        = number
+  description = "Nodeport used by ALB's to connect to the Traefik green variant instance admin page"
+  default     = 32001
+}
+
+variable "traefik_green_variant_flux_additional_args" {
+  type        = list(any)
+  description = "Pass arguments to the additionalArguments node in the Traefik Helm chart for the green variant"
+  default     = ["--metrics.prometheus"]
+}
+
+variable "traefik_green_variant_flux_deploy" {
   type        = bool
-  description = "Deploy ingressroute for external access to Traefik dashboard."
-  default     = true
+  description = "Whether to deploy the Traefik green variant."
+  default     = false
+}
+
+variable "traefik_green_variant_flux_weight" {
+  type        = number
+  description = "The weight of the Traefik green variant instance target groups in the load balancers."
+  default     = 0
 }
 
 # --------------------------------------------------
@@ -899,14 +895,43 @@ variable "blackbox_exporter_monitoring_targets" {
 }
 
 # --------------------------------------------------
-# Podinfo through Flux CD
+# helm Exporter
 # --------------------------------------------------
 
-variable "podinfo_flux_github_owner" {
+variable "helm_exporter_deploy" {
+  type        = bool
+  description = "Should the helm Exporter be deployed through Flux?"
+  default     = false
+}
+
+variable "helm_exporter_helm_chart_version" {
   type        = string
-  description = "Name of the Flux repo Github owner (previously: organization)"
+  description = "Helm Chart version to be used to deploy Helm Exporter"
   default     = null
 }
+
+variable "helm_exporter_github_owner" {
+  type        = string
+  description = "Name of the Flux manifests repo Github owner"
+  default     = null
+}
+
+variable "helm_exporter_repo_name" {
+  type        = string
+  description = "Name of the Github repo to store the Flux manifests in"
+  default     = null
+}
+
+variable "helm_exporter_repo_branch" {
+  type        = string
+  description = "Override the default branch of the Flux manifests repo (optional)"
+  default     = null
+}
+
+
+# --------------------------------------------------
+# Podinfo through Flux CD
+# --------------------------------------------------
 
 variable "podinfo_flux_repo_name" {
   type        = string
@@ -929,12 +954,6 @@ variable "podinfo_flux_deploy" {
 # fluentd-cloudwatch through Flux
 # --------------------------------------------------
 
-variable "fluentd_cloudwatch_flux_github_owner" {
-  type        = string
-  description = "Name of the Flux repo Github owner (previously: organization)"
-  default     = null
-}
-
 variable "fluentd_cloudwatch_flux_repo_name" {
   type        = string
   description = "Name of the Github repo to store the fluentd-cloudwatch Flux manifests in"
@@ -950,12 +969,6 @@ variable "fluentd_cloudwatch_flux_repo_branch" {
 variable "fluentd_cloudwatch_flux_deploy" {
   type    = bool
   default = false
-}
-
-variable "fluentd_cloudwatch_account_id" {
-  type        = string
-  description = "The account id that owns the cloudwatch logs from fluentd."
-  default     = null
 }
 
 variable "fluentd_cloudwatch_retention_in_days" {
@@ -975,12 +988,6 @@ variable "velero_flux_deploy" {
   description = "Should Velero Helm chart be deployed?"
 }
 
-variable "velero_flux_deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "velero"
-}
-
 variable "velero_flux_role_arn" {
   type        = string
   description = "The ARN for the role that is permitted to use Velero backup storage."
@@ -993,13 +1000,6 @@ variable "velero_flux_bucket_name" {
   description = "The name of the S3 bucket that contains the Velero backup"
 }
 
-variable "velero_flux_snapshots_enabled" {
-  type        = bool
-  default     = false
-  description = "Should Velero use snapshot backups?"
-
-}
-
 variable "velero_flux_log_level" {
   type        = string
   default     = "info"
@@ -1008,36 +1008,6 @@ variable "velero_flux_log_level" {
     condition     = contains(["info", "debug", "warning", "error", "fatal", "panic"], var.velero_flux_log_level)
     error_message = "Invalid value for log_level. Valid values: info, debug, warning, error, fatal, panic."
   }
-}
-
-variable "velero_flux_cron_schedule" {
-  type        = string
-  default     = "0 0 * * *"
-  description = "Cron format scheuled time."
-}
-
-variable "velero_flux_schedules_template_ttl" {
-  type        = string
-  default     = "336h"
-  description = "Time to live for the scheduled backup."
-}
-
-variable "velero_flux_schedules_template_snapshot_volumes" {
-  type        = bool
-  default     = false
-  description = "Should Velero use snapshot volumes?"
-}
-
-variable "velero_flux_schedules_template_include_cluster_resources" {
-  type        = bool
-  default     = false
-  description = "Should Velero also backup cluster resources?"
-}
-
-variable "velero_flux_github_owner" {
-  type        = string
-  description = "Name of the Flux repo Github owner (previously: organization)"
-  default     = null
 }
 
 variable "velero_flux_repo_name" {
@@ -1100,4 +1070,15 @@ variable "kyverno_replicas" {
   type        = number
   default     = 3
   description = "Number of replica pods for Kyverno"
+}
+
+
+# --------------------------------------------------
+# Subnet Exporter
+# --------------------------------------------------
+
+variable "subnet_exporter_iam_role_name" {
+  type        = string
+  default     = null
+  description = "The IAM role name used for the AWS Subnet Exporter"
 }

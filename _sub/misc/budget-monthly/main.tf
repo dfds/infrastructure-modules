@@ -2,7 +2,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = "eu-central-1"
+  region = "eu-central-1"
 }
 
 variable "sns_topic_arn" {
@@ -10,6 +10,7 @@ variable "sns_topic_arn" {
 }
 
 variable "budget_limit" {
+  type = number
 }
 
 resource "aws_budgets_budget" "total_monthly_cost" {

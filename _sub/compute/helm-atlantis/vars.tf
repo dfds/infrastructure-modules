@@ -62,28 +62,29 @@ variable "storage_class" {
 
 ## Github ##
 variable "github_token" {
+  type        = string
   description = "Github token that the provider uses to perform Github operations. Leaving unset will fall back to GITHUB_TOKEN environment variable"
 }
 
 variable "platform_fluxcd_github_token" {
+  type        = string
   description = "Github token that the provider uses to perform Github operations for Flux."
 }
 
 
 variable "github_username" {
+  type        = string
   description = "Github username of the account that will post Atlantis comments on PR's"
 }
 
 variable "webhook_url" {
+  type        = string
   description = "URL for the deployed Atlantis endpoint listener"
 }
 
 variable "webhook_content_type" {
+  type    = string
   default = "application/json"
-}
-
-variable "webhook_insecure_ssl" {
-  default = false
 }
 
 variable "webhook_events" {
@@ -95,10 +96,12 @@ variable "webhook_events" {
 ## Kubernetes ##
 
 variable "aws_access_key" {
+  type        = string
   description = "AWS Access Key"
 }
 
 variable "aws_secret" {
+  type        = string
   description = "AWS Secret"
 }
 
@@ -123,13 +126,12 @@ variable "cluster_name" {
   description = "The name of the Kubernetes cluster"
 }
 
-variable "confluent_email" {
-  type = string
-  description = "Email used for Crossplane provider Confluent"
+variable "slack_webhook_url" {
+  type        = string
+  description = "Cloudwatch alarm notifier to Slack"
 }
 
-variable "confluent_password" {
-  type = string
-  description = "Password used for Crossplane provider Confluent"
-  sensitive = true
+variable "monitoring_kube_prometheus_stack_slack_webhook" {
+  type        = string
+  description = "Kube-prometheus-stack alert slack webhook"
 }

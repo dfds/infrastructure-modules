@@ -4,16 +4,16 @@ resource "kubernetes_cluster_role" "role" {
   }
 
   dynamic "rule" {
-    for_each = [for r in var.rules: {
+    for_each = [for r in var.rules : {
       api_groups = r.api_groups
-      resources = r.resources
-      verbs = r.verbs
+      resources  = r.resources
+      verbs      = r.verbs
     }]
 
     content {
       api_groups = rule.value.api_groups
-      resources = rule.value.resources
-      verbs = rule.value.verbs
+      resources  = rule.value.resources
+      verbs      = rule.value.verbs
     }
   }
 }
@@ -24,12 +24,12 @@ resource "kubernetes_cluster_role_binding" "binding" {
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"
-    kind = "ClusterRole"
-    name = kubernetes_cluster_role.role.metadata[0].name
+    kind      = "ClusterRole"
+    name      = kubernetes_cluster_role.role.metadata[0].name
   }
   subject {
     api_group = "rbac.authorization.k8s.io"
-    name = var.name
-    kind = "Group"
+    name      = var.name
+    kind      = "Group"
   }
 }

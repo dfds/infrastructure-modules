@@ -133,22 +133,20 @@ module "ec2_keypair" {
   public_key = var.ec2_public_key
 }
 
-data "template_file" "user_data" {
-  template = file("${path.module}/ec2_user_data")
-  vars = {
-    ado_access_token     = var.ado_access_token
-    ado_org_name         = var.ado_org_name
-    ado_project_name     = var.ado_project_name
-    ado_deployment_group = var.ado_deployment_group
-  }
-}
-
 module "ec2_instance" {
-  source                      = "../../_sub/compute/ec2-instance"
-  instance_type               = var.ec2_instance_type
-  key_name                    = module.ec2_keypair.key_name
-  name                        = "adsync"
-  user_data                   = data.template_file.user_data.rendered
+  source        = "../../_sub/compute/ec2-instance"
+  instance_type = var.ec2_instance_type
+  key_name      = module.ec2_keypair.key_name
+  name          = "adsync"
+  user_data = templatefile(
+    "${path.module}/ec2_user_data",
+    {
+      ado_access_token     = var.ado_access_token
+      ado_org_name         = var.ado_org_name
+      ado_project_name     = var.ado_project_name
+      ado_deployment_group = var.ado_deployment_group
+    }
+  )
   ami_platform_filters        = ["windows"]
   ami_name_filters            = ["*Server-${var.ec2_windows_server_version}-English-Full-Base*"]
   ami_owners                  = ["amazon"]

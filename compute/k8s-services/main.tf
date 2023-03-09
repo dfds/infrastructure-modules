@@ -82,37 +82,32 @@ provider "azuread" {
 }
 
 # --------------------------------------------------
-# AWS EBS CSI Driver (Helm Chart Installation)
-# --------------------------------------------------
-
-module "ebs_csi_driver" {
-  source                          = "../../_sub/compute/helm-ebs-csi-driver"
-  count                           = var.ebs_csi_driver_deploy ? 1 : 0
-  chart_version                   = var.ebs_csi_driver_chart_version
-  cluster_name                    = var.eks_cluster_name
-  kubeconfig_path                 = local.kubeconfig_path
-  eks_openid_connect_provider_url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
-}
-
-# --------------------------------------------------
 # ALB access logs S3 bucket
 # --------------------------------------------------
 
 module "traefik_alb_s3_access_logs" {
-  source         = "../../_sub/storage/s3-bucket-lifecycle"
-  name           = local.alb_access_log_bucket_name
-  retention_days = var.traefik_alb_s3_access_logs_retiontion_days
-  policy         = local.alb_access_log_bucket_policy
+  source          = "../../_sub/storage/s3-bucket-lifecycle"
+  name            = local.alb_access_log_bucket_name
+  retention_days  = var.traefik_alb_s3_access_logs_retiontion_days
+  policy          = local.alb_access_log_bucket_policy
+  additional_tags = var.s3_bucket_additional_tags
 }
 
 # --------------------------------------------------
 # Load Balancers in front of Traefik
 # --------------------------------------------------
 
+# TODO(emil): Rename the original Traefik instance resources and variables to
+# specify that they refer to the "blue" variant after the "blue" instance is
+# destroyed.  This is to avoid downtime or having to reimport resources due to
+# renaming.
+
 module "traefik_flux_manifests" {
   source                 = "../../_sub/compute/k8s-traefik-flux"
   count                  = var.traefik_flux_deploy ? 1 : 0
   cluster_name           = var.eks_cluster_name
+  deploy_name            = "traefik"
+  namespace              = "traefik"
   helm_chart_version     = var.traefik_flux_helm_chart_version
   replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
   http_nodeport          = var.traefik_flux_http_nodeport
@@ -121,14 +116,38 @@ module "traefik_flux_manifests" {
   repo_name              = var.traefik_flux_repo_name
   repo_branch            = var.traefik_flux_repo_branch
   additional_args        = var.traefik_flux_additional_args
-  dashboard_deploy       = var.traefik_flux_dashboard_deploy
-  dashboard_ingress_host = local.traefik_flux_dashboard_ingress_host
-  is_using_alb_auth      = local.traefik_flux_is_using_alb_auth
-  ssm_param_createdby    = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-services"
+  dashboard_ingress_host = "traefik.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
+  overwrite_on_create    = var.platform_fluxcd_overwrite_on_create
 
   providers = {
     github = github.fluxcd
   }
+
+  depends_on = [module.platform_fluxcd]
+}
+
+module "traefik_variant_flux_manifests" {
+  source                 = "../../_sub/compute/k8s-traefik-flux"
+  count                  = var.traefik_green_variant_flux_deploy ? 1 : 0
+  cluster_name           = var.eks_cluster_name
+  deploy_name            = "traefik-green-variant"
+  namespace              = "traefik-green-variant"
+  helm_chart_version     = var.traefik_green_variant_flux_helm_chart_version
+  replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
+  http_nodeport          = var.traefik_green_variant_flux_http_nodeport
+  admin_nodeport         = var.traefik_green_variant_flux_admin_nodeport
+  github_owner           = var.traefik_flux_github_owner
+  repo_name              = var.traefik_flux_repo_name
+  repo_branch            = var.traefik_flux_repo_branch
+  additional_args        = var.traefik_green_variant_flux_additional_args
+  dashboard_ingress_host = "traefik-green-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
+  overwrite_on_create    = var.platform_fluxcd_overwrite_on_create
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
 }
 
 module "traefik_alb_cert" {
@@ -152,7 +171,6 @@ module "traefik_alb_auth_appreg" {
 
 module "traefik_alb_auth" {
   source                = "../../_sub/compute/eks-alb-auth"
-  deploy                = var.traefik_alb_auth_deploy
   name                  = "${var.eks_cluster_name}-traefik-alb-auth"
   cluster_name          = var.eks_cluster_name
   vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
@@ -163,17 +181,48 @@ module "traefik_alb_auth" {
   azure_tenant_id       = try(module.traefik_alb_auth_appreg[0].tenant_id, "")
   azure_client_id       = try(module.traefik_alb_auth_appreg[0].application_id, "")
   azure_client_secret   = try(module.traefik_alb_auth_appreg[0].application_key, "")
-  target_http_port      = var.traefik_flux_http_nodeport
-  target_admin_port     = var.traefik_flux_admin_nodeport
-  health_check_path     = "/ping"
   access_logs_bucket    = module.traefik_alb_s3_access_logs.name
+
+  # Blue variant
+  deploy            = var.traefik_alb_auth_deploy && var.traefik_flux_deploy
+  target_http_port  = var.traefik_flux_http_nodeport
+  target_admin_port = var.traefik_flux_admin_nodeport
+  health_check_path = "/ping"
+  weight            = var.traefik_flux_weight
+
+  # Green variant
+  deploy_green_variant            = var.traefik_alb_auth_deploy && var.traefik_green_variant_flux_deploy
+  green_variant_target_http_port  = var.traefik_green_variant_flux_http_nodeport
+  green_variant_target_admin_port = var.traefik_green_variant_flux_admin_nodeport
+  green_variant_health_check_path = "/ping"
+  green_variant_weight            = var.traefik_green_variant_flux_weight
 }
 
 module "traefik_alb_auth_dns" {
   source       = "../../_sub/network/route53-record"
-  deploy       = var.traefik_alb_auth_deploy
+  deploy       = (var.traefik_alb_auth_deploy && (var.traefik_flux_deploy || var.traefik_green_variant_flux_deploy)) ? true : false
   zone_id      = local.workload_dns_zone_id
-  record_name  = ["internal.${var.eks_cluster_name}"]
+  record_name  = ["internal.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = "${module.traefik_alb_auth.alb_fqdn}."
+}
+
+module "traefik_alb_auth_dns_for_traefik_blue_variant_dashboard" {
+  source       = "../../_sub/network/route53-record"
+  deploy       = (var.traefik_flux_deploy && var.traefik_alb_auth_deploy) ? true : false
+  zone_id      = local.workload_dns_zone_id
+  record_name  = ["traefik-blue-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = "${module.traefik_alb_auth.alb_fqdn}."
+}
+
+module "traefik_alb_auth_dns_for_traefik_green_variant_dashboard" {
+  source       = "../../_sub/network/route53-record"
+  deploy       = (var.traefik_green_variant_flux_deploy && var.traefik_alb_auth_deploy) ? true : false
+  zone_id      = local.workload_dns_zone_id
+  record_name  = ["traefik-green-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
   record_type  = "CNAME"
   record_ttl   = "900"
   record_value = "${module.traefik_alb_auth.alb_fqdn}."
@@ -186,7 +235,7 @@ module "traefik_alb_auth_dns_core_alias" {
   record_name  = var.traefik_alb_auth_core_alias
   record_type  = "CNAME"
   record_ttl   = "900"
-  record_value = "${element(concat(module.traefik_alb_auth_dns.record_name, [""]), 0)}.${var.workload_dns_zone_name}."
+  record_value = "${module.traefik_alb_auth.alb_fqdn}."
 
   providers = {
     aws = aws.core
@@ -195,7 +244,6 @@ module "traefik_alb_auth_dns_core_alias" {
 
 module "traefik_alb_anon" {
   source                = "../../_sub/compute/eks-alb"
-  deploy                = var.traefik_alb_anon_deploy
   name                  = "${var.eks_cluster_name}-traefik-alb"
   cluster_name          = var.eks_cluster_name
   vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
@@ -203,10 +251,21 @@ module "traefik_alb_anon" {
   autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
   alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
   nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
-  target_http_port      = var.traefik_flux_http_nodeport
-  target_admin_port     = var.traefik_flux_admin_nodeport
-  health_check_path     = "/ping"
   access_logs_bucket    = module.traefik_alb_s3_access_logs.name
+
+  # Blue variant
+  deploy            = var.traefik_alb_anon_deploy && var.traefik_flux_deploy
+  target_http_port  = var.traefik_flux_http_nodeport
+  target_admin_port = var.traefik_flux_admin_nodeport
+  health_check_path = "/ping"
+  weight            = var.traefik_flux_weight
+
+  # Green variant
+  deploy_green_variant            = var.traefik_alb_anon_deploy && var.traefik_green_variant_flux_deploy
+  green_variant_target_http_port  = var.traefik_green_variant_flux_http_nodeport
+  green_variant_target_admin_port = var.traefik_green_variant_flux_admin_nodeport
+  green_variant_health_check_path = "/ping"
+  green_variant_weight            = var.traefik_green_variant_flux_weight
 }
 
 module "traefik_alb_anon_dns" {
@@ -234,28 +293,6 @@ module "traefik_alb_anon_dns_core_alias" {
 }
 
 # --------------------------------------------------
-# KIAM
-# --------------------------------------------------
-
-module "kiam_deploy" {
-  source                  = "../../_sub/compute/k8s-kiam"
-  chart_version           = var.kiam_chart_version
-  cluster_name            = var.eks_cluster_name
-  priority_class          = "service-critical"
-  aws_workload_account_id = var.aws_workload_account_id
-  worker_role_id          = data.terraform_remote_state.cluster.outputs.eks_worker_role_id
-  agent_deep_liveness     = true
-  agent_liveness_timeout  = 5
-  server_gateway_timeout  = "5s"
-  servicemonitor_enabled  = var.monitoring_kube_prometheus_stack_deploy
-  strict_mode_disabled    = var.kiam_strict_mode_disabled
-
-  // Depends_on for servicemonitor is ignored if prometheus stack is not deployed but required otherwise
-  depends_on = [module.monitoring_kube_prometheus_stack]
-}
-
-
-# --------------------------------------------------
 # AWS IAM roles
 # --------------------------------------------------
 
@@ -270,33 +307,7 @@ module "aws_cloudwatch_grafana_reader_iam_role" {
 }
 
 # --------------------------------------------------
-# Namespaces
-# --------------------------------------------------
-
-# Annotate the kube-system namespace so that KIAM allows the traffic needed by the EBS CSI Driver
-# This annotation is always applied.  The decision to allow this was taken on the basis that the annotation
-# is a lightweight element with little cost.  If we wished to have it defined based on a feature toggle
-# then it would create additional complexity and require that the toggle variable exist in two places,
-# thus leading to confusion
-locals {
-  kubesystem_permitted_base_role = flatten([
-    try(module.ebs_csi_driver[0].iam_role_name, []),
-  ])
-  kubesystem_permitted_role_list        = concat(local.kubesystem_permitted_base_role, var.kubesystem_permitted_extra_roles)
-  kubesystem_permitted_role_list_sorted = sort(local.kubesystem_permitted_role_list)
-  kubesystem_permitted_role_string      = join("|", local.kubesystem_permitted_role_list_sorted)
-}
-
-module "kube_system_namespace" {
-  source          = "../../_sub/compute/k8s-annotate-namespace"
-  namespace       = "kube-system"
-  kubeconfig_path = local.kubeconfig_path
-  annotations     = { "iam.amazonaws.com/permitted" = local.kubesystem_permitted_role_string }
-}
-
-
-# --------------------------------------------------
-# Blaster - depends on KIAM
+# Blaster
 # --------------------------------------------------
 
 module "blaster_namespace" {
@@ -304,8 +315,6 @@ module "blaster_namespace" {
   deploy                   = var.blaster_deploy
   cluster_name             = var.eks_cluster_name
   blaster_configmap_bucket = data.terraform_remote_state.cluster.outputs.blaster_configmap_bucket
-  kiam_server_role_arn     = module.kiam_deploy.server_role_arn
-  extra_permitted_roles    = var.blaster_namespace_extra_permitted_roles
   oidc_issuer              = local.oidc_issuer
 }
 
@@ -345,6 +354,12 @@ module "monitoring_namespace" {
   source = "../../_sub/compute/k8s-namespace"
   count  = var.monitoring_namespace_deploy ? 1 : 0
   name   = local.monitoring_namespace_name
+
+  # The monitoring namespace has resources that are provisioned and
+  # deprovisioned from it via Flux. If Flux is removed before the monitoring
+  # namespace, the monitoring namespace may be unable to terminated as it will
+  # have resources left in it with Flux finalizers which cannot be finalized.
+  depends_on = [module.platform_fluxcd]
 }
 
 
@@ -379,8 +394,12 @@ module "monitoring_kube_prometheus_stack" {
   grafana_ingress_path        = var.monitoring_kube_prometheus_stack_grafana_ingress_path
   grafana_host                = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
   grafana_notifier_name       = "${var.eks_cluster_name}-alerting"
-  grafana_iam_role_arn        = local.grafana_iam_role_arn # Coming from locals to avoid circular dependency between KIAM and Prometheus
+  grafana_iam_role_arn        = local.grafana_iam_role_arn
   grafana_serviceaccount_name = var.monitoring_kube_prometheus_stack_grafana_serviceaccount_name
+  grafana_storage_enabled     = var.monitoring_kube_prometheus_stack_grafana_storage_enabled
+  grafana_storage_class       = var.monitoring_kube_prometheus_stack_grafana_storageclass
+  grafana_storage_size        = var.monitoring_kube_prometheus_stack_grafana_storage_size
+  grafana_azure_tenant_id     = var.monitoring_kube_prometheus_stack_azure_tenant_id != "" ? var.monitoring_kube_prometheus_stack_azure_tenant_id : var.atlantis_arm_tenant_id
   slack_webhook               = var.monitoring_kube_prometheus_stack_slack_webhook
   prometheus_storageclass     = var.monitoring_kube_prometheus_stack_prometheus_storageclass
   prometheus_storage_size     = var.monitoring_kube_prometheus_stack_prometheus_storage_size
@@ -394,6 +413,9 @@ module "monitoring_kube_prometheus_stack" {
   prometheus_request_cpu      = var.monitoring_kube_prometheus_stack_prometheus_request_cpu
   prometheus_limit_memory     = var.monitoring_kube_prometheus_stack_prometheus_limit_memory
   prometheus_limit_cpu        = var.monitoring_kube_prometheus_stack_prometheus_limit_cpu
+  overwrite_on_create         = var.platform_fluxcd_overwrite_on_create
+  tolerations                 = var.monitoring_tolerations
+  affinity                    = var.monitoring_affinity
 
   providers = {
     github = github.fluxcd
@@ -413,24 +435,25 @@ module "monitoring_metrics_server" {
   helm_chart_version = var.monitoring_metrics_server_chart_version
   helm_repo_url      = var.monitoring_metrics_server_repo_url
   namespace          = module.monitoring_namespace[0].name
+  tolerations        = var.monitoring_tolerations
+  affinity           = var.monitoring_affinity
 }
-
 
 # --------------------------------------------------
 # Flux CD
 # --------------------------------------------------
 
 module "platform_fluxcd" {
-  source          = "../../_sub/compute/k8s-fluxcd"
-  count           = var.platform_fluxcd_deploy ? 1 : 0
-  release_tag     = var.platform_fluxcd_release_tag
-  cluster_name    = var.eks_cluster_name
-  repo_name       = var.platform_fluxcd_repo_name
-  repo_path       = "./clusters/${var.eks_cluster_name}"
-  github_owner    = var.platform_fluxcd_github_owner
-  github_token    = var.platform_fluxcd_github_token
-  kubeconfig_path = local.kubeconfig_path
-  repo_branch     = var.platform_fluxcd_repo_branch
+  source              = "../../_sub/compute/k8s-fluxcd"
+  count               = var.platform_fluxcd_deploy ? 1 : 0
+  release_tag         = var.platform_fluxcd_release_tag
+  cluster_name        = var.eks_cluster_name
+  repo_name           = var.platform_fluxcd_repo_name
+  repo_path           = "./clusters/${var.eks_cluster_name}"
+  github_owner        = var.platform_fluxcd_github_owner
+  kubeconfig_path     = local.kubeconfig_path
+  repo_branch         = var.platform_fluxcd_repo_branch
+  overwrite_on_create = var.platform_fluxcd_overwrite_on_create
 
   providers = {
     github = github.fluxcd
@@ -442,31 +465,31 @@ module "platform_fluxcd" {
 # --------------------------------------------------
 
 module "atlantis" {
-  source                       = "../../_sub/compute/helm-atlantis"
-  count                        = var.atlantis_deploy ? 1 : 0
-  namespace                    = var.atlantis_namespace
-  chart_version                = var.atlantis_chart_version
-  atlantis_image               = var.atlantis_image
-  atlantis_image_tag           = var.atlantis_image_tag
-  atlantis_ingress             = var.atlantis_ingress
-  github_username              = var.atlantis_github_username
-  github_token                 = var.atlantis_github_token
-  github_repositories          = var.atlantis_github_repositories
-  webhook_url                  = var.atlantis_ingress
-  webhook_events               = var.atlantis_webhook_events
-  aws_access_key               = var.atlantis_aws_access_key
-  aws_secret                   = var.atlantis_aws_secret
-  access_key_master            = var.atlantis_access_key_master
-  secret_key_master            = var.atlantis_secret_key_master
-  arm_tenant_id                = var.atlantis_arm_tenant_id
-  arm_subscription_id          = var.atlantis_arm_subscription_id
-  arm_client_id                = var.atlantis_arm_client_id
-  arm_client_secret            = var.atlantis_arm_client_secret
-  platform_fluxcd_github_token = var.atlantis_platform_fluxcd_github_token
-  storage_class                = var.atlantis_storage_class
-  cluster_name                 = var.eks_cluster_name
-  confluent_email              = var.crossplane_provider_confluent_email
-  confluent_password           = var.crossplane_provider_confluent_password
+  source                                         = "../../_sub/compute/helm-atlantis"
+  count                                          = var.atlantis_deploy ? 1 : 0
+  namespace                                      = var.atlantis_namespace
+  chart_version                                  = var.atlantis_chart_version
+  atlantis_image                                 = var.atlantis_image
+  atlantis_image_tag                             = var.atlantis_image_tag
+  atlantis_ingress                               = var.atlantis_ingress
+  github_username                                = var.atlantis_github_username
+  github_token                                   = var.atlantis_github_token
+  github_repositories                            = var.atlantis_github_repositories
+  webhook_url                                    = var.atlantis_ingress
+  webhook_events                                 = var.atlantis_webhook_events
+  aws_access_key                                 = var.atlantis_aws_access_key
+  aws_secret                                     = var.atlantis_aws_secret
+  access_key_master                              = var.atlantis_access_key_master
+  secret_key_master                              = var.atlantis_secret_key_master
+  arm_tenant_id                                  = var.atlantis_arm_tenant_id
+  arm_subscription_id                            = var.atlantis_arm_subscription_id
+  arm_client_id                                  = var.atlantis_arm_client_id
+  arm_client_secret                              = var.atlantis_arm_client_secret
+  platform_fluxcd_github_token                   = var.atlantis_platform_fluxcd_github_token
+  storage_class                                  = var.atlantis_storage_class
+  cluster_name                                   = var.eks_cluster_name
+  slack_webhook_url                              = var.slack_webhook_url
+  monitoring_kube_prometheus_stack_slack_webhook = var.monitoring_kube_prometheus_stack_slack_webhook
 
   providers = {
     github = github.atlantis
@@ -483,8 +506,9 @@ module "atlantis_flux_manifests" {
   flux_repo_owner       = var.atlantis_flux_repo_owner
   flux_repo_name        = var.atlantis_flux_repo_name
   flux_repo_branch      = var.atlantis_flux_repo_branch
+  overwrite_on_create   = var.platform_fluxcd_overwrite_on_create
 
-  depends_on = [module.atlantis, module.traefik_flux_manifests, ]
+  depends_on = [module.atlantis, module.traefik_flux_manifests, module.platform_fluxcd]
 
   providers = {
     github = github.fluxcd
@@ -514,38 +538,40 @@ module "crossplane" {
 }
 
 module "crossplane_operator" {
-  source             = "../../_sub/compute/k8s-crossplane-operator"
-  count              = var.crossplane_operator_deploy ? 1 : 0
-  deploy_name        = var.crossplane_operator_deploy_name
-  helm_chart_version = var.crossplane_operator_helm_chart_version
-  namespace          = var.crossplane_namespace # Same namespace as for the crossplane module
-  repo_owner         = var.crossplane_operator_repo_owner != null ? var.crossplane_operator_repo_owner : var.platform_fluxcd_github_owner
-  repo_name          = var.crossplane_operator_repo_name != null ? var.crossplane_operator_repo_name : var.platform_fluxcd_repo_name
-  repo_branch        = var.crossplane_operator_repo_branch != null ? var.crossplane_operator_repo_branch : var.platform_fluxcd_repo_branch
-  cluster_name       = var.eks_cluster_name
+  source              = "../../_sub/compute/k8s-crossplane-operator"
+  count               = var.crossplane_operator_deploy ? 1 : 0
+  deploy_name         = var.crossplane_operator_deploy_name
+  helm_chart_version  = var.crossplane_operator_helm_chart_version
+  namespace           = var.crossplane_namespace # Same namespace as for the crossplane module
+  repo_owner          = var.crossplane_operator_repo_owner != null ? var.crossplane_operator_repo_owner : var.platform_fluxcd_github_owner
+  repo_name           = var.crossplane_operator_repo_name != null ? var.crossplane_operator_repo_name : var.platform_fluxcd_repo_name
+  repo_branch         = var.crossplane_operator_repo_branch != null ? var.crossplane_operator_repo_branch : var.platform_fluxcd_repo_branch
+  cluster_name        = var.eks_cluster_name
+  overwrite_on_create = var.platform_fluxcd_overwrite_on_create
 
   providers = {
     github = github.fluxcd
   }
 
-  depends_on = [module.crossplane]
+  depends_on = [module.crossplane, module.platform_fluxcd]
 }
 
 module "crossplane_configuration_package" {
-  source       = "../../_sub/compute/k8s-crossplane-cfg-pkg"
-  count        = var.crossplane_cfg_pkg_deploy ? 1 : 0
-  name         = var.crossplane_cfg_pkg_name
-  package      = var.crossplane_cfg_pkg_docker_image
-  repo_owner   = var.crossplane_cfg_pkg_repo_owner != null ? var.crossplane_cfg_pkg_repo_owner : var.platform_fluxcd_github_owner
-  repo_name    = var.crossplane_cfg_pkg_repo_name != null ? var.crossplane_cfg_pkg_repo_name : var.platform_fluxcd_repo_name
-  repo_branch  = var.crossplane_cfg_pkg_repo_branch != null ? var.crossplane_cfg_pkg_repo_branch : var.platform_fluxcd_repo_branch
-  cluster_name = var.eks_cluster_name
+  source              = "../../_sub/compute/k8s-crossplane-cfg-pkg"
+  count               = var.crossplane_cfg_pkg_deploy ? 1 : 0
+  name                = var.crossplane_cfg_pkg_name
+  package             = var.crossplane_cfg_pkg_docker_image
+  repo_owner          = var.crossplane_cfg_pkg_repo_owner != null ? var.crossplane_cfg_pkg_repo_owner : var.platform_fluxcd_github_owner
+  repo_name           = var.crossplane_cfg_pkg_repo_name != null ? var.crossplane_cfg_pkg_repo_name : var.platform_fluxcd_repo_name
+  repo_branch         = var.crossplane_cfg_pkg_repo_branch != null ? var.crossplane_cfg_pkg_repo_branch : var.platform_fluxcd_repo_branch
+  cluster_name        = var.eks_cluster_name
+  overwrite_on_create = var.platform_fluxcd_overwrite_on_create
 
   providers = {
     github = github.fluxcd
   }
 
-  depends_on = [module.crossplane]
+  depends_on = [module.crossplane, module.platform_fluxcd]
 }
 
 locals {
@@ -571,7 +597,7 @@ module "crossplane_provider_confluent_prereqs" {
     github = github.fluxcd
   }
 
-  depends_on = [module.crossplane]
+  depends_on = [module.crossplane, module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -579,20 +605,43 @@ module "crossplane_provider_confluent_prereqs" {
 # --------------------------------------------------
 
 module "blackbox_exporter_flux_manifests" {
-  source             = "../../_sub/monitoring/blackbox-exporter"
-  count              = var.blackbox_exporter_deploy ? 1 : 0
-  cluster_name       = var.eks_cluster_name
-  helm_chart_version = var.blackbox_exporter_helm_chart_version
-  github_owner       = var.blackbox_exporter_github_owner
-  repo_name          = var.blackbox_exporter_repo_name
-  repo_branch        = var.blackbox_exporter_repo_branch
-  monitoring_targets = local.blackbox_exporter_monitoring_targets
+  source              = "../../_sub/monitoring/blackbox-exporter"
+  count               = var.blackbox_exporter_deploy ? 1 : 0
+  cluster_name        = var.eks_cluster_name
+  helm_chart_version  = var.blackbox_exporter_helm_chart_version
+  github_owner        = var.blackbox_exporter_github_owner
+  repo_name           = var.blackbox_exporter_repo_name
+  repo_branch         = var.blackbox_exporter_repo_branch
+  monitoring_targets  = local.blackbox_exporter_monitoring_targets
+  namespace           = module.monitoring_namespace[0].name
+  overwrite_on_create = var.platform_fluxcd_overwrite_on_create
 
   providers = {
     github = github.fluxcd
   }
 
-  depends_on = [module.monitoring_kube_prometheus_stack]
+  depends_on = [module.monitoring_kube_prometheus_stack, module.platform_fluxcd]
+}
+
+# --------------------------------------------------
+# helm Exporter
+# --------------------------------------------------
+
+module "helm_exporter_flux_manifests" {
+  source             = "../../_sub/monitoring/helm-exporter"
+  count              = var.helm_exporter_deploy ? 1 : 0
+  cluster_name       = var.eks_cluster_name
+  helm_chart_version = var.helm_exporter_helm_chart_version
+  github_owner       = var.helm_exporter_github_owner != null ? var.helm_exporter_github_owner : var.platform_fluxcd_github_owner
+  repo_name          = var.helm_exporter_repo_name != null ? var.helm_exporter_repo_name : var.platform_fluxcd_repo_name
+  repo_branch        = var.helm_exporter_repo_branch != null ? var.helm_exporter_repo_branch : var.platform_fluxcd_repo_branch
+  namespace          = module.monitoring_namespace[0].name
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.monitoring_kube_prometheus_stack, module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -603,16 +652,18 @@ module "blackbox_exporter_flux_manifests" {
 # for everything that is using Flux, so we should fallback to using the same values
 # as flux is using.
 module "podinfo_flux_manifests" {
-  source       = "../../_sub/examples/podinfo"
-  count        = var.podinfo_flux_deploy ? 1 : 0
-  cluster_name = var.eks_cluster_name
-  github_owner = var.podinfo_flux_github_owner != null ? var.podinfo_flux_github_owner : var.platform_fluxcd_github_owner
-  repo_name    = var.podinfo_flux_repo_name != null ? var.podinfo_flux_repo_name : var.platform_fluxcd_repo_name
-  repo_branch  = var.podinfo_flux_repo_branch != null ? var.podinfo_flux_repo_branch : var.platform_fluxcd_repo_branch
+  source              = "../../_sub/examples/podinfo"
+  count               = var.podinfo_flux_deploy ? 1 : 0
+  cluster_name        = var.eks_cluster_name
+  repo_name           = var.podinfo_flux_repo_name != null ? var.podinfo_flux_repo_name : var.platform_fluxcd_repo_name
+  repo_branch         = var.podinfo_flux_repo_branch != null ? var.podinfo_flux_repo_branch : var.platform_fluxcd_repo_branch
+  overwrite_on_create = var.platform_fluxcd_overwrite_on_create
 
   providers = {
     github = github.fluxcd
   }
+
+  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -623,20 +674,21 @@ module "fluentd_cloudwatch_flux_manifests" {
   source                          = "../../_sub/monitoring/fluentd-cloudwatch"
   count                           = var.fluentd_cloudwatch_flux_deploy ? 1 : 0
   cluster_name                    = var.eks_cluster_name
+  container_runtime               = contains(data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_container_runtimes, "dockerd") ? "dockerd" : "containerd"
   aws_region                      = var.aws_region
   retention_in_days               = var.fluentd_cloudwatch_retention_in_days
-  account_id                      = var.fluentd_cloudwatch_account_id != null ? var.fluentd_cloudwatch_account_id : var.aws_workload_account_id
-  github_owner                    = var.fluentd_cloudwatch_flux_github_owner != null ? var.fluentd_cloudwatch_flux_github_owner : var.platform_fluxcd_github_owner
   repo_name                       = var.fluentd_cloudwatch_flux_repo_name != null ? var.fluentd_cloudwatch_flux_repo_name : var.platform_fluxcd_repo_name
   repo_branch                     = var.fluentd_cloudwatch_flux_repo_branch != null ? var.fluentd_cloudwatch_flux_repo_branch : var.platform_fluxcd_repo_branch
   deploy_oidc_provider            = var.aws_assume_logs_role_arn != null ? true : false # do not create extra oidc provider if external log account is provided
   eks_openid_connect_provider_url = local.oidc_issuer
+  overwrite_on_create             = var.platform_fluxcd_overwrite_on_create
 
   providers = {
     github = github.fluxcd
     aws    = aws.logs
   }
 
+  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -651,17 +703,19 @@ module "velero_flux_manifests" {
   role_arn               = var.velero_flux_role_arn
   bucket_name            = var.velero_flux_bucket_name
   log_level              = var.velero_flux_log_level
-  github_owner           = var.velero_flux_github_owner != null ? var.velero_flux_github_owner : var.platform_fluxcd_github_owner
   repo_name              = var.velero_flux_repo_name != null ? var.velero_flux_repo_name : var.platform_fluxcd_repo_name
   repo_branch            = var.velero_flux_repo_branch != null ? var.velero_flux_repo_branch : var.platform_fluxcd_repo_branch
   helm_chart_version     = var.velero_helm_chart_version
   image_tag              = var.velero_image_tag
   plugin_for_aws_version = var.velero_plugin_for_aws_version
   plugin_for_csi_version = var.velero_plugin_for_csi_version
+  overwrite_on_create    = var.platform_fluxcd_overwrite_on_create
 
   providers = {
     github = github.fluxcd
   }
+
+  depends_on = [module.platform_fluxcd]
 }
 
 
@@ -677,6 +731,10 @@ module "aws_subnet_exporter" {
   aws_region     = var.aws_region
   image_tag      = "0.3"
   oidc_issuer    = local.oidc_issuer
+  cluster_name   = var.eks_cluster_name
+  iam_role_name  = var.subnet_exporter_iam_role_name
+  tolerations    = var.monitoring_tolerations
+  affinity       = var.monitoring_affinity
 }
 
 # --------------------------------------------------

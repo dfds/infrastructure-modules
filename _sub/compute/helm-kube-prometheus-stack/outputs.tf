@@ -1,4 +1,3 @@
 output "grafana_admin_password" {
-  value     = var.grafana_admin_password != "" ? "<as supplied in terragrunt.hcl>" : random_password.grafana_password.result
-  sensitive = true
+  value = "This value is stored in the AWS SSM Parameter Store at ${aws_ssm_parameter.param_grafana_password.name}"
 }

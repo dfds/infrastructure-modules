@@ -1,6 +1,6 @@
 resource "aws_ecr_repository" "repo" {
   for_each = var.names
-  name = each.key
+  name     = each.key
 
   image_scanning_configuration {
     scan_on_push = var.scan_on_push
@@ -8,7 +8,7 @@ resource "aws_ecr_repository" "repo" {
 }
 
 resource "aws_ecr_repository_policy" "policy" {
-  for_each = var.names
+  for_each   = var.names
   repository = each.key
 
   policy = <<EOF
@@ -31,6 +31,6 @@ resource "aws_ecr_repository_policy" "policy" {
 }
 EOF
 
-depends_on = [aws_ecr_repository.repo]
+  depends_on = [aws_ecr_repository.repo]
 
 }

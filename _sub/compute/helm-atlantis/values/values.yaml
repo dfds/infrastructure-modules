@@ -14,7 +14,8 @@ logLevel: "info"
 disableApply: true
 disableApplyAll: true
 
-storageClassName: ${storage_class}
+volumeClaim:
+  storageClassName: ${storage_class}
 
 github:
   user: ${github_username}
@@ -98,16 +99,16 @@ environmentSecrets:
     secretKeyRef:
       name: gh-credentials
       key: github_token
-  
-  - name: TF_VAR_crossplane_provider_confluent_email
-    secretKeyRef:
-      name: confluent-credentials
-      key: confluent_email
-  - name: TF_VAR_crossplane_provider_confluent_password
-    secretKeyRef:
-      name: confluent-credentials
-      key: confluent_password
 
+  - name: TF_VAR_slack_webhook_url
+    secretKeyRef:
+      name: cloudwatch-credentials
+      key: cloudwatch_webhook
+
+  - name: TF_VAR_monitoring_kube_prometheus_stack_slack_webhook
+    secretKeyRef:
+      name: monitoring-kube-prometheus-stack-credentials
+      key: slack_webhook
 
 ingress:
   host: ${atlantis_ingress}

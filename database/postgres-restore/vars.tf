@@ -28,11 +28,13 @@ variable "environment" {
 }
 
 variable "db_port" {
+  type        = number
   default     = 1433
   description = "The port to use for the database"
 }
 
 variable "skip_final_snapshot" {
+  type        = bool
   description = "Define if the default of creating a backup upon deletion should be skipped. Default is false"
   default     = false
 }

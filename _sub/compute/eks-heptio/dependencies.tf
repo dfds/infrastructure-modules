@@ -10,26 +10,26 @@ data "aws_region" "current" {}
 
 locals {
   temp_kubeconfig_path = "./kube_${var.cluster_name}.config"
-}
-
-data "template_file" "kubeconfig_admin" {
-  template = file("${path.module}/kubeconfig-admin.yaml")
-  vars = {
-    cluster_name = var.cluster_name
-    endpoint     = var.eks_endpoint
-    ca           = var.eks_certificate_authority
-    role_arn     = var.aws_assume_role_arn
-    aws_region   = data.aws_region.current.name
-  }
-}
-
-data "template_file" "kubeconfig_saml" {
-  template = file("${path.module}/kubeconfig-saml.yaml")
-  vars = {
-    cluster_name = var.cluster_name
-    endpoint     = var.eks_endpoint
-    ca           = var.eks_certificate_authority
-  }
+  kubeconfig_admin_template = templatefile(
+    "${path.module}/kubeconfig-admin.yaml",
+    {
+      cluster_name     = var.cluster_name
+      endpoint         = var.eks_endpoint
+      ca               = var.eks_certificate_authority
+      role_arn         = var.aws_assume_role_arn
+      aws_region       = data.aws_region.current.name
+      auth_api_version = var.eks_k8s_auth_api_version
+    }
+  )
+  kubeconfig_saml_template = templatefile(
+    "${path.module}/kubeconfig-saml.yaml",
+    {
+      cluster_name     = var.cluster_name
+      endpoint         = var.eks_endpoint
+      ca               = var.eks_certificate_authority
+      auth_api_version = var.eks_k8s_auth_api_version
+    }
+  )
 }
 
 
@@ -37,9 +37,11 @@ data "template_file" "kubeconfig_saml" {
 # AWS auth configmap
 # --------------------------------------------------
 
-data "template_file" "default_auth_cm" {
-  template = file("${path.module}/default-auth-cm.yaml")
-  vars = {
-    role_arn = var.eks_role_arn
-  }
+locals {
+  default_auth_cm_template = templatefile(
+    "${path.module}/default-auth-cm.yaml",
+    {
+      role_arn = var.eks_role_arn
+    }
+  )
 }

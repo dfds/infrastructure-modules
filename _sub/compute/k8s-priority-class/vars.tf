@@ -1,5 +1,5 @@
 variable "priority_class" {
-  type = list
+  type = list(any)
   default = [
     {
       "name"        = "service-critical"

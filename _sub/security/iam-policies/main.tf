@@ -12,16 +12,6 @@ data "aws_iam_policy_document" "admin" {
   }
 }
 
-# Create Route53 Zone
-data "aws_iam_policy_document" "create_route53_zone" {
-  statement {
-    sid       = "Route53CreateZone"
-    actions   = ["CreateHostedZone"]
-    resources = ["*"]
-    effect    = "Allow"
-  }
-}
-
 # Push to (and pull from) ECR
 data "aws_iam_policy_document" "push_to_ecr" {
   statement {
@@ -35,22 +25,6 @@ data "aws_iam_policy_document" "push_to_ecr" {
       "ecr:InitiateLayerUpload",
       "ecr:UploadLayerPart",
       "ecr:CompleteLayerUpload",
-    ]
-
-    resources = ["*"]
-    effect    = "Allow"
-  }
-}
-
-# Create S3 Bucket
-data "aws_iam_policy_document" "create_s3_bucket" {
-  statement {
-    sid = "S3CreateBucket"
-
-    actions = [
-      "s3:PutBucketPolicy",
-      "s3:CreateBucket",
-      "s3:PutBucketVersioning",
     ]
 
     resources = ["*"]
@@ -180,6 +154,20 @@ data "aws_iam_policy_document" "capability_access_shared" {
   }
 }
 
+# SsoReader
+data "aws_iam_policy_document" "ssoreader" {
+  statement {
+    sid    = "SsoReaderTf"
+    effect = "Allow"
+    actions = [
+      "iam:ListRoles"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+}
+
 # CloudEngineer
 data "aws_iam_policy_document" "cloudengineer" {
   statement {
@@ -191,6 +179,15 @@ data "aws_iam_policy_document" "cloudengineer" {
     resources = [
       "arn:aws:s3:::/test/*"
     ]
+  }
+
+  statement {
+    sid    = "CloudEngineerSSM"
+    effect = "Allow"
+    actions = [
+      "ssm:GetParameter"
+    ]
+    resources = ["*"]
   }
 }
 

@@ -1,16 +1,16 @@
 ## Atlantis ##
 
 variable "namespace" {
-  type = string
+  type        = string
   description = "The namespace where Atlatis is installed"
-  default = "atlantis"
+  default     = "atlantis"
 }
 
 variable "cluster_name" {
   type = string
 }
 variable "ingressroute_hostname" {
-  type = string
+  type        = string
   description = "The hostname to use in an ingressroute rule match"
 }
 
@@ -30,4 +30,10 @@ variable "flux_repo_branch" {
   type        = string
   description = "Override the default branch of the Atlantis Flux repo (optional)"
   default     = "main"
+}
+
+variable "overwrite_on_create" {
+  type        = bool
+  default     = true
+  description = "Enable overwriting existing files"
 }

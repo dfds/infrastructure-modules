@@ -52,26 +52,9 @@ variable "helm_chart_version" {
 }
 
 variable "additional_args" {
-  type        = list
+  type        = list(any)
   description = "Pass arguments to the additionalArguments node in the Traefik Helm chart"
   default     = ["--metrics.prometheus"]
-}
-
-variable "is_using_alb_auth" {
-  type    = bool
-  default = false
-}
-
-variable "dashboard_deploy" {
-  type        = bool
-  description = "Deploy ingressroute for external access to Traefik dashboard."
-  default     = true
-}
-
-variable "dashboard_username" {
-  type        = string
-  description = "Username used for basic authentication."
-  default     = "cloudengineer"
 }
 
 variable "dashboard_ingress_host" {
@@ -79,8 +62,8 @@ variable "dashboard_ingress_host" {
   description = "The alb auth dns name for accessing Traefik."
 }
 
-variable "ssm_param_createdby" {
-  type        = string
-  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
-  default     = null
+variable "overwrite_on_create" {
+  type        = bool
+  default     = true
+  description = "Enable overwriting existing files"
 }

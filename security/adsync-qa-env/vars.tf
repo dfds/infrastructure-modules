@@ -3,10 +3,12 @@ variable "aws_region" {
 }
 
 variable "vpc_cidr_block" {
+  type    = string
   default = "192.168.0.0/16"
 }
 
 variable "subnet_cidr_blocks" {
+  type    = list(string)
   default = ["192.168.0.0/24", "192.168.1.0/24", "192.168.2.0/24"]
 }
 
@@ -28,11 +30,6 @@ variable "ad_edition" {
 
 variable "ec2_public_key" {
   type = string
-}
-
-variable "ec2_private_key_path" {
-  type    = string
-  default = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
 variable "ec2_instance_type" {

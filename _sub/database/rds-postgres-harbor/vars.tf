@@ -13,6 +13,7 @@ variable "db_instance_size" {
 }
 
 variable "db_storage_size" {
+  type = number
 }
 
 variable "ressource_name_prefix" {
@@ -39,10 +40,12 @@ variable "allow_connections_from_security_groups" {
 }
 
 variable "vpc_id" {
+  type        = string
   description = "The id of the VPC in which this DB should be deployed."
 }
 
 variable "port" {
+  type    = number
   default = 1433
 }
 

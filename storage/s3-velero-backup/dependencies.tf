@@ -33,10 +33,6 @@ locals {
 
 data "aws_caller_identity" "current" {}
 
-data "tls_certificate" "oidc_provider" {
-  url = local.oidc_provider_url
-}
-
 locals {
   account_id              = data.aws_caller_identity.current.account_id
   oidc_provider_server_id = trim(local.oidc_provider_url, "https://")

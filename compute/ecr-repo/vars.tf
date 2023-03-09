@@ -7,12 +7,12 @@ variable "names" {
 }
 
 variable "pull_principals" {
-  type = list(string)
+  type        = list(string)
   description = "A list of AWS IAM principals that should be allowed to pull images from this repo"
-  default = []
+  default     = []
 }
 
 variable "scan_on_push" {
-  type = bool
+  type    = bool
   default = true
 }

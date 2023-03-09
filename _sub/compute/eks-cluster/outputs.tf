@@ -7,7 +7,7 @@ output "vpc_id" {
 }
 
 output "subnet_ids" {
-  value = aws_subnet.eks.*.id
+  value = aws_subnet.eks[*].id
 }
 
 output "eks_endpoint" {

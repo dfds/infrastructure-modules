@@ -27,7 +27,7 @@ resource "aws_ssm_parameter" "putPublicKey" {
   description = "Public key of ${var.keypairname} ssh keypair"
   type        = "SecureString"
   value = element(
-    concat(tls_private_key.keypair.*.public_key_openssh, [""]),
+    concat(tls_private_key.keypair[*].public_key_openssh, [""]),
     0,
   )
   overwrite = "true"
@@ -38,7 +38,7 @@ resource "aws_ssm_parameter" "putPrivateKey" {
   name        = "/eks/${var.keypairname}/rsa_private"
   description = "Private key of ${var.keypairname} ssh keypair"
   type        = "SecureString"
-  value       = element(concat(tls_private_key.keypair.*.private_key_pem, [""]), 0)
+  value       = element(concat(tls_private_key.keypair[*].private_key_pem, [""]), 0)
   overwrite   = "true"
 }
 
