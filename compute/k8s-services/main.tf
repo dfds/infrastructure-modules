@@ -97,11 +97,6 @@ module "traefik_alb_s3_access_logs" {
 # Load Balancers in front of Traefik
 # --------------------------------------------------
 
-# TODO(emil): Rename the original Traefik instance resources and variables to
-# specify that they refer to the "blue" variant after the "blue" instance is
-# destroyed.  This is to avoid downtime or having to reimport resources due to
-# renaming.
-
 module "traefik_blue_variant_flux_manifests" {
   source                 = "../../_sub/compute/k8s-traefik-flux"
   count                  = var.traefik_blue_variant_flux_deploy ? 1 : 0

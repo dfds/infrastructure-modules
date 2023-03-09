@@ -2,10 +2,6 @@
 # routing traffic gradually to a new version and then decomissioning an older
 # version without downtime.
 
-# TODO(emil): Rename the original instance resources and variables to specify that
-# they refer to the "blue" variant after the "blue" instance is destroyed.
-# This is to avoid downtime or having to reimport resources due to renaming.
-
 resource "aws_lb" "traefik_auth" {
   count              = var.deploy_blue_variant || var.deploy_green_variant ? 1 : 0
   name               = var.name
@@ -29,7 +25,7 @@ resource "aws_lb" "traefik_auth" {
 }
 
 resource "aws_lb_target_group" "traefik_auth_blue_variant" {
-  count = var.deploy_blue_variant ? 1 : 0
+  count                = var.deploy_blue_variant ? 1 : 0
   name_prefix          = "b-${substr(var.cluster_name, 0, min(4, length(var.cluster_name)))}"
   port                 = var.blue_variant_target_http_port
   protocol             = "HTTP"
@@ -232,24 +228,6 @@ resource "aws_security_group" "traefik_auth" {
     to_port     = 443
     protocol    = "TCP"
     cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sg tfsec:ignore:aws-ec2-no-public-ingress-sgr
-  }
-
-  # TODO(emil): Remove these security group rules after the initial application
-  # to separate these rules into separate security groups.
-  ingress {
-    description = "Ingress on target_admin_port"
-    from_port   = var.blue_variant_target_admin_port
-    to_port     = var.blue_variant_target_admin_port
-    protocol    = "TCP"
-    self        = true
-  }
-
-  egress {
-    description = "Egress from var.blue_variant_target_http_port to var.blue_variant_target_admin_port"
-    from_port   = var.blue_variant_target_http_port
-    to_port     = var.blue_variant_target_admin_port
-    protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg tfsec:ignore:aws-ec2-no-public-ingress-sgr tfsec:ignore:aws-ec2-no-public-egress-sgr
   }
 
   egress {

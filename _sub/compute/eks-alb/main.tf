@@ -2,10 +2,6 @@
 # routing traffic gradually to a new version and then decomissioning an older
 # version without downtime.
 
-# TODO(emil): Rename the original instance resources and variables to specify that
-# they refer to the "blue" variant after the "blue" instance is destroyed.
-# This is to avoid downtime or having to reimport resources due to renaming.
-
 resource "aws_lb" "traefik" {
   count              = var.deploy_blue_variant || var.deploy_green_variant ? 1 : 0
   name               = var.name
@@ -29,7 +25,7 @@ resource "aws_lb" "traefik" {
 }
 
 resource "aws_lb_target_group" "traefik_blue_variant" {
-  count = var.deploy_blue_variant ? 1 : 0
+  count                = var.deploy_blue_variant ? 1 : 0
   name_prefix          = "b-${substr(var.cluster_name, 0, min(4, length(var.cluster_name)))}"
   port                 = var.blue_variant_target_http_port
   protocol             = "HTTP"

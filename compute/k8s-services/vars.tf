@@ -758,11 +758,6 @@ variable "crossplane_confluent_clusters_endpoints" {
 # routing traffic gradually to a new version and then decomissioning an older
 # version without downtime.
 
-# TODO(emil): Rename the original Traefik instance resources and variables to
-# specify that they refer to the "blue" variant after the "blue" instance is
-# destroyed.  This is to avoid downtime or having to reimport resources due to
-# renaming.
-
 variable "traefik_flux_github_owner" {
   type        = string
   description = "Name of the Traefik Flux repo Github owner (previously: organization)"
