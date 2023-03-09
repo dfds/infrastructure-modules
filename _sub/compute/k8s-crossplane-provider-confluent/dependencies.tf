@@ -44,9 +44,9 @@ locals {
     "kind"       = "ConfigMap"
     "metadata" = {
       "name"      = "confluent-environment-id"
-      "namespace" = "${var.namespace}"
+      "namespace" = var.namespace
     }
-    "data" = "${var.confluent_environments}"
+    "data" = var.confluent_environments
   }
 
   config_map_confluent_clusters = {
@@ -54,9 +54,9 @@ locals {
     "kind"       = "ConfigMap"
     "metadata" = {
       "name"      = "confluent-cluster-id"
-      "namespace" = "${var.namespace}"
+      "namespace" = var.namespace
     }
-    "data" = "${var.confluent_clusters}"
+    "data" = var.confluent_clusters
   }
 
   config_map_confluent_clusters_endpoints = {
@@ -64,8 +64,8 @@ locals {
     "kind"       = "ConfigMap"
     "metadata" = {
       "name"      = "confluent-clusters-endpoints"
-      "namespace" = "${var.namespace}"
+      "namespace" = var.namespace
     }
-    "data" = "${var.confluent_clusters_endpoints}"
+    "data" = var.confluent_clusters_endpoints
   }
 }

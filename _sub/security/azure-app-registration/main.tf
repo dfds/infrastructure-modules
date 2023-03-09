@@ -1,6 +1,8 @@
 resource "azuread_application" "app" {
   display_name    = var.name
   identifier_uris = var.identifier_uris
+  owners          = [data.azuread_client_config.current.object_id]
+
   web {
     homepage_url  = var.homepage_url
     redirect_uris = var.redirect_uris
@@ -9,6 +11,7 @@ resource "azuread_application" "app" {
 
 resource "azuread_service_principal" "sp" {
   application_id = azuread_application.app.application_id
+  owners         = [data.azuread_client_config.current.object_id]
 }
 
 resource "random_password" "password" {

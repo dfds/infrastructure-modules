@@ -20,11 +20,6 @@ variable "repo_branch" {
   description = "The git branch."
 }
 
-variable "github_owner" {
-  type        = string
-  description = "The GitHub organization owner."
-}
-
 variable "role_arn" {
   type        = string
   description = "The ARN for the role that is permitted to use Velero backup storage."
@@ -112,4 +107,10 @@ variable "plugin_for_csi_version" {
     condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.plugin_for_csi_version))
     error_message = "Velero plugin for CSI must specify a version. The version must start with the letter v and followed by a semantic version number."
   }
+}
+
+variable "overwrite_on_create" {
+  type        = bool
+  default     = true
+  description = "Enable overwriting existing files"
 }

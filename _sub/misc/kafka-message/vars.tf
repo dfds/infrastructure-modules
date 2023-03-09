@@ -39,6 +39,11 @@ variable "password" {
 }
 
 variable "publish" {
+  type    = bool
   default = true
 }
 
+variable "kafka_cli" {
+  type    = string
+  default = "kcat"
+}

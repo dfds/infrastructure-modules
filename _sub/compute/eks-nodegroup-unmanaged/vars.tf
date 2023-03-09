@@ -32,6 +32,7 @@ variable "subnet_ids" {
 }
 
 variable "disk_size" {
+  type = number
 }
 
 variable "instance_types" {
@@ -55,26 +56,39 @@ variable "ec2_ssh_key" {
   type = string
 }
 
-variable "autoscale_security_group" {
+variable "eks_endpoint" {
+  type = string
 }
 
-variable "eks_endpoint" {
+variable "container_runtime" {
+  type    = string
+  default = "containerd"
+
+  validation {
+    condition     = contains(["dockerd", "containerd"], var.container_runtime)
+    error_message = "Valid values for var.container_runtime are dockerd and containerd."
+  }
 }
 
 variable "eks_certificate_authority" {
+  type = string
 }
 
 variable "cloudwatch_agent_config_bucket" {
+  type = string
 }
 
 variable "cloudwatch_agent_config_file" {
+  type = string
 }
 
 variable "cloudwatch_agent_enabled" {
+  type    = bool
   default = false
 }
 
 variable "worker_inotify_max_user_watches" {
+  type = number
 }
 
 variable "kubelet_extra_args" {
@@ -91,4 +105,10 @@ variable "is_sandbox" {
 variable "scale_to_zero_cron" {
   type        = string
   description = "The time when the ASG will be scaled to zero, specified in Unix cron syntax"
+}
+
+variable "vpc_cni_prefix_delegation_enabled" {
+  type        = bool
+  description = "Configures the maximum pods limit on the nodes assuming that the prefix delegation feature is enabled on the VPC CNI addon."
+  default     = false
 }

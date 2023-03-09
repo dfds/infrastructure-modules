@@ -1,4 +1,6 @@
 grafana:
+  image:
+    tag: 9.4.3 # TODO: Remove when Grafana 9.4.0 or higher is part of kube-prometheus-stack
   resources:
     requests:
       cpu: 50m
@@ -6,13 +8,31 @@ grafana:
   adminPassword: "${grafana_admin_password}"
   priorityClassName: ${grafana_priorityclass}
   grafana.ini:
+    database:
+      wal: true
     auth.anonymous:
+      enabled: false
+%{ if length(grafana_azure_tenant_id) == 36 ~}
+    auth.azuread:
+      name: Azure AD
       enabled: true
+      allow_sign_up: true
+      auto_login: false
+      client_id: ${grafana_app_id}
+      client_secret: ${grafana_app_secret}
+      scopes: openid email profile
+      auth_url: https://login.microsoftonline.com/${grafana_azure_tenant_id}/oauth2/v2.0/authorize
+      token_url: https://login.microsoftonline.com/${grafana_azure_tenant_id}/oauth2/v2.0/token
+      role_attribute_strict: false
+      allow_assign_grafana_admin: false
+      skip_org_role_sync: false
+%{ endif ~}
     metrics:
       enabled: true
     server:
       domain: ${grafana_host}
       root_url: ${grafana_root_url}
+      serve_from_sub_path: true
   ingress:
     enabled: false
     hosts:
@@ -20,11 +40,40 @@ grafana:
     path: ${grafana_ingress_path}
   plugins:
     - grafana-polystat-panel
-  rbac:
-    pspEnabled: true
   serviceAccount:
     name: ${grafana_serviceaccount_name}
     create: true
     annotations:
       eks.amazonaws.com/role-arn: ${grafana_cloudwatch_role}
       eks.amazonaws.com/sts-regional-endpoints: "true"
+  persistence:
+    enabled: ${grafana_storage_enabled}
+    storageClassName: ${grafana_storage_class}
+    size: ${grafana_storage_size}
+%{ if length(tolerations) > 0 ~}
+  tolerations:
+%{ for t in tolerations ~}
+  - key: ${t.key}
+    operator: ${t.operator}
+%{ if t.value != null ~}
+    value: ${t.value}
+%{ endif ~}
+    effect: ${t.effect}
+%{ endfor ~}
+%{ endif ~}
+%{ if length(affinity) > 0 ~}
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+%{ for a in affinity ~}
+          - key: ${a.key}
+            operator: ${a.operator}
+            values:
+%{ for v in a.values ~}
+            - ${ v }
+%{ endfor ~}
+%{ endfor ~}
+%{ endif ~}

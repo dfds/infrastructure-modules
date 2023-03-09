@@ -24,6 +24,7 @@ inputs = {
   # EKS
   # --------------------------------------------------
 
+  eks_is_sandbox   = true
   eks_cluster_name = "qa"
 
   # --------------------------------------------------
@@ -40,14 +41,13 @@ inputs = {
   # Traefik v2
   # --------------------------------------------------
   traefikv2_test_alb_deploy       = true
-  traefik_flux_helm_chart_version = "10.21.1"
+  traefik_flux_helm_chart_version = "20.8.0"
   traefik_flux_github_owner       = "dfds"
   traefik_flux_repo_name          = "platform-manifests-qa"
   traefik_flux_repo_branch        = "main"
 
   # --------------------------------------------------
   # Blaster
-  # Requires: KIAM
   # --------------------------------------------------
 
   blaster_deploy           = true
@@ -69,35 +69,52 @@ inputs = {
   platform_fluxcd_deploy       = true
   platform_fluxcd_repo_name    = "platform-manifests-qa"
   platform_fluxcd_github_owner = "dfds"
-  platform_fluxcd_release_tag  = "v0.30.2"
+  platform_fluxcd_release_tag  = "v0.38.2"
 
   # --------------------------------------------------
-  # KIAM
+  # Monitoring
   # --------------------------------------------------
 
-  kiam_chart_version = "6.1.2" # With KIAM v4
-  kiam_deploy = false
+  monitoring_tolerations = [
+    {
+      key      = "monitoring.dfds",
+      operator = "Exists",
+      effect   = "NoSchedule",
+    }
+  ]
+  monitoring_affinity = [
+    {
+      key      = "dedicated",
+      operator = "In",
+      values   = ["monitoring"],
+    }
+  ]
 
   # --------------------------------------------------
   # Kube-prometheus-stack
   # --------------------------------------------------
 
-  monitoring_kube_prometheus_stack_deploy                     = true
-  monitoring_kube_prometheus_stack_chart_version              = "31.0.0"
-  monitoring_kube_prometheus_stack_target_namespaces          = "kube-system|monitoring"
-  monitoring_kube_prometheus_stack_prometheus_storage_size    = "5Gi"
-  monitoring_kube_prometheus_stack_prometheus_storageclass    = "gp2"
-  monitoring_kube_prometheus_stack_prometheus_retention       = "1d"
-  monitoring_kube_prometheus_stack_slack_webhook              = "https://dummy.slack.webhook"
-  monitoring_kube_prometheus_stack_slack_channel              = "#hellman-alerting"
-  monitoring_kube_prometheus_stack_github_owner               = "dfds"
-  monitoring_kube_prometheus_stack_repo_name                  = "platform-manifests-qa"
-  monitoring_kube_prometheus_stack_repo_branch                = "main"
-  monitoring_kube_prometheus_stack_prometheus_request_memory  = "500Mi"
-  monitoring_kube_prometheus_stack_prometheus_request_cpu     = "500m"
-  monitoring_kube_prometheus_stack_prometheus_limit_memory    = "2Gi"
-  monitoring_kube_prometheus_stack_prometheus_limit_cpu       = "1000m"
-
+  monitoring_kube_prometheus_stack_deploy                    = true
+  monitoring_kube_prometheus_stack_chart_version             = "44.3.0"
+  monitoring_kube_prometheus_stack_target_namespaces         = "kube-system|monitoring"
+  monitoring_kube_prometheus_stack_prometheus_storage_size   = "5Gi"
+  monitoring_kube_prometheus_stack_prometheus_storageclass   = "gp2"
+  monitoring_kube_prometheus_stack_prometheus_retention      = "1d"
+  monitoring_kube_prometheus_stack_slack_webhook             = "https://dummy.slack.webhook"
+  monitoring_kube_prometheus_stack_slack_channel             = "#hellman-alerting"
+  monitoring_kube_prometheus_stack_github_owner              = "dfds"
+  monitoring_kube_prometheus_stack_repo_name                 = "platform-manifests-qa"
+  monitoring_kube_prometheus_stack_repo_branch               = "main"
+  monitoring_kube_prometheus_stack_prometheus_request_memory = "500Mi"
+  monitoring_kube_prometheus_stack_prometheus_request_cpu    = "500m"
+  monitoring_kube_prometheus_stack_prometheus_limit_memory   = "2Gi"
+  monitoring_kube_prometheus_stack_prometheus_limit_cpu      = "1000m"
+  monitoring_kube_prometheus_stack_grafana_storage_enabled   = true
+  monitoring_kube_prometheus_stack_grafana_storage_size      = "5Gi"
+  monitoring_kube_prometheus_stack_grafana_storageclass      = "gp2"
+  # monitoring_kube_prometheus_stack_azure_tenant_id is set as ARM_TENANT_ID in
+  # Azure DevOps Pipeline Library "Infrastructure-Modules QA" in and mapped in the
+  # Azure DevOps pipeline file as TF_VAR_monitoring_kube_prometheus_stack_azure_tenant_id
 
   # --------------------------------------------------
   # Metrics-Server
@@ -119,7 +136,7 @@ inputs = {
   crossplane_deploy        = false
   crossplane_chart_version = "1.6.3-up.1"
   # Do not configure Confluent provider in QA
-  crossplane_providers     = ["crossplane/provider-aws:v0.26.0", "crossplane/provider-kubernetes:v0.3.0"]
+  crossplane_providers = ["crossplane/provider-aws:v0.26.0", "crossplane/provider-kubernetes:v0.3.0"]
   crossplane_admin_service_accounts = [
     {
       serviceaccount = "default"
@@ -131,7 +148,7 @@ inputs = {
   crossplane_cfg_pkg_deploy       = false
   crossplane_cfg_pkg_docker_image = "dfdsdk/dfds-infra:v0.0.1-alpha.28"
 
-  crossplane_operator_deploy  = false
+  crossplane_operator_deploy             = false
   crossplane_operator_helm_chart_version = "0.1.5"
 
   # --------------------------------------------------
@@ -149,25 +166,35 @@ inputs = {
   atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
   atlantis_chart_version       = "4.1.2"
 
-  atlantis_flux_repo_name     = "platform-manifests-qa"
-  atlantis_flux_repo_owner    = "dfds"
-  atlantis_flux_repo_branch   = "main"
+  atlantis_flux_repo_name   = "platform-manifests-qa"
+  atlantis_flux_repo_owner  = "dfds"
+  atlantis_flux_repo_branch = "main"
 
   # --------------------------------------------------
   # Blackbox Exporter
   # --------------------------------------------------
 
-  blackbox_exporter_deploy              = "true"
-  blackbox_exporter_github_owner        = "dfds"
-  blackbox_exporter_repo_name           = "platform-manifests-qa"
-  blackbox_exporter_repo_branch         = "main"
-  blackbox_exporter_monitoring_targets  = [
+  blackbox_exporter_deploy       = "true"
+  blackbox_exporter_github_owner = "dfds"
+  blackbox_exporter_repo_name    = "platform-manifests-qa"
+  blackbox_exporter_repo_branch  = "main"
+  blackbox_exporter_monitoring_targets = [
     {
-      "name"    = "example"
-      "url"     = "https://example.com/"
-      "module"  = "http_2xx"
+      "name"   = "example"
+      "url"    = "https://example.com/"
+      "module" = "http_2xx"
     }
   ]
+
+  # --------------------------------------------------
+  # Helm Exporter
+  # --------------------------------------------------
+
+  helm_exporter_deploy              = "true"
+  helm_exporter_helm_chart_version  = "1.2.4"
+  helm_exporter_github_owner        = "dfds"
+  helm_exporter_repo_name           = "platform-manifests-qa"
+  helm_exporter_repo_branch         = "main"
 
   # --------------------------------------------------
   # Podinfo
@@ -186,9 +213,9 @@ inputs = {
   # is already applied through Terragrunt.
   # --------------------------------------------------
 
-  velero_flux_deploy      = true
-  velero_flux_role_arn    = "arn:aws:iam::266901158286:role/VeleroBackup"
-  velero_flux_bucket_name = "dfds-velero-qa"
+  velero_flux_deploy            = true
+  velero_flux_role_arn          = "arn:aws:iam::266901158286:role/VeleroBackup"
+  velero_flux_bucket_name       = "dfds-velero-qa"
   velero_plugin_for_aws_version = "v1.4.1"
   velero_plugin_for_csi_version = "v0.2.0"
 
@@ -196,7 +223,7 @@ inputs = {
   # kyverno
   # --------------------------------------------------
 
-  kyverno_deploy = false
+  kyverno_deploy        = false
   kyverno_chart_version = "v2.5.2"
 
 }

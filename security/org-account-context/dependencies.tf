@@ -13,7 +13,19 @@ data "aws_iam_policy_document" "assume_role_policy_self" {
   }
 }
 
-data "aws_iam_policy_document" "assume_role_adfs_shared" {
+data "aws_iam_policy_document" "assume_role_policy_selfservice" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.shared_account_id}:role/aad-aws-sync"]
+    }
+  }
+}
+
+// Gives access to role through ADFS as well as the individual Capability account
+data "aws_iam_policy_document" "shared_role_adfs_cap_acc" {
   statement {
     actions = ["sts:AssumeRoleWithSAML"]
 
@@ -31,4 +43,12 @@ data "aws_iam_policy_document" "assume_role_adfs_shared" {
     }
   }
 
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${module.org_account.id}:root"]
+    }
+  }
 }

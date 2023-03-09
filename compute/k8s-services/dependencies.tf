@@ -76,8 +76,8 @@ data "aws_route53_zone" "core" {
 
 # Get DNS zone IDs
 locals {
-  workload_dns_zone_id = element(concat(data.aws_route53_zone.workload.*.zone_id, [""]), 0)
-  core_dns_zone_id     = element(concat(data.aws_route53_zone.core.*.zone_id, [""]), 0)
+  workload_dns_zone_id = element(concat(data.aws_route53_zone.workload[*].zone_id, [""]), 0)
+  core_dns_zone_id     = element(concat(data.aws_route53_zone.core[*].zone_id, [""]), 0)
 }
 
 
@@ -87,8 +87,25 @@ locals {
 
 locals {
   traefik_alb_auth_endpoints = concat(
-    ["internal.${local.eks_fqdn}"],
-    var.traefik_alb_auth_core_alias,
+    var.traefik_flux_deploy || var.traefik_green_variant_flux_deploy ? concat(
+      [
+        "internal.${local.eks_fqdn}"
+      ],
+      var.traefik_alb_auth_core_alias
+    ) : [],
+    var.traefik_flux_deploy && var.traefik_green_variant_flux_deploy ?
+    [
+      "traefik-blue-variant.${local.eks_fqdn}:8443",
+      "traefik-green-variant.${local.eks_fqdn}:9443"
+    ] : [],
+    var.traefik_flux_deploy ?
+    [
+      "traefik-blue-variant.${local.eks_fqdn}"
+    ] : [],
+    var.traefik_green_variant_flux_deploy ?
+    [
+      "traefik-green-variant.${local.eks_fqdn}"
+    ] : [],
   )
   traefik_alb_auth_appreg_reply_join        = "^${join("$,^", local.traefik_alb_auth_endpoints)}$"
   traefik_alb_auth_appreg_reply_replace_pre = replace(local.traefik_alb_auth_appreg_reply_join, "^", "https://")
@@ -165,40 +182,6 @@ data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
   }
 }
 
-# ---------------------------------------------------------------------
-# Traefik dashboard secure access
-#
-# Caution:
-# Each instance of the traefik sub module needs its
-# own locals to calculate the ingress host to use for
-# that instance of Traefik. That is to avoid sending
-# too many irrelevant variables into the sub module.
-#
-# Logic explained:
-# IF traefik_alb_auth_core_alias in services/terragrunt.hcl contains
-#   traefik.dfds.cloud
-# THEN use traefik.dfds.cloud as Traefik dashboard ingress host
-# ELSE use internal.<cluster-name>.<capability-name>.dfds.cloud
-#
-# ---------------------------------------------------------------------
-
-locals {
-  traefik_dashboard_ingress_prod_host = "traefik-legacy.${local.core_dns_zone_name}"
-  traefik_alb_auth_dns_name           = try(module.traefik_alb_auth_dns.record_name["0"], "traefik-legacy.${var.eks_cluster_name}")
-  traefik_dashboard_ingress_host = contains(
-    var.traefik_alb_auth_core_alias,
-    local.traefik_dashboard_ingress_prod_host
-  ) ? local.traefik_dashboard_ingress_prod_host : "${local.traefik_alb_auth_dns_name}.${var.workload_dns_zone_name}"
-
-  traefik_flux_dashboard_ingress_prod_host = "traefik.${local.core_dns_zone_name}"
-  traefik_flux_alb_auth_dns_name           = try(module.traefik_alb_auth_dns.record_name["0"], "traefik.${var.eks_cluster_name}")
-  traefik_flux_dashboard_ingress_host = contains(
-    var.traefik_alb_auth_core_alias,
-    local.traefik_flux_dashboard_ingress_prod_host
-  ) ? local.traefik_flux_dashboard_ingress_prod_host : "${local.traefik_flux_alb_auth_dns_name}.${var.workload_dns_zone_name}"
-  traefik_flux_is_using_alb_auth = length(regexall("^.*traefik.*", join(" ", var.traefik_alb_auth_core_alias))) > 0 ? true : false
-}
-
 # --------------------------------------------------
 # Loadbalancer service account
 # --------------------------------------------------
@@ -256,10 +239,18 @@ locals {
     "module" = "http_2xx"
   }] : []
 
+  blackbox_exporter_monitoring_traefik_green_variant = var.traefik_green_variant_flux_deploy ? [{
+    "name"   = "traefik-green-variant"
+    "url"    = "http://traefik-green-variant.traefik-green-variant:9000/ping"
+    "module" = "http_2xx"
+  }] : []
+
+
   blackbox_exporter_monitoring_targets = concat(
     local.blackbox_exporter_monitoring_atlantis,
     local.blackbox_exporter_monitoring_grafana,
     local.blackbox_exporter_monitoring_traefik,
+    local.blackbox_exporter_monitoring_traefik_green_variant,
     var.blackbox_exporter_monitoring_targets
   )
 }

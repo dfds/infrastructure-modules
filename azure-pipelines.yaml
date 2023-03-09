@@ -5,27 +5,17 @@ trigger:
   - master
 
 pr:
-  autoCancel: false
+  autoCancel: true
   drafts: false
   branches:
     include:
       - "*"
 
-# Run a daily test at midnight
-# TODO(emil): this can be removed later
-schedules:
-  - cron: "0 0 * * *"
-    displayName: Daily midnight test
-    branches:
-      include:
-        - master
-    always: true
-
-# Define resources for container to use
+# Define resources for container to use.
 resources:
   containers:
     - container: prime
-      image: dfdsdk/prime-pipeline:0.6.15
+      image: dfdsdk/prime-pipeline:0.6.24
       env:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
@@ -33,166 +23,263 @@ resources:
         TF_VAR_atlantis_github_token: $(TF_VAR_atlantis_github_token)
         TF_VAR_crossplane_provider_confluent_email: $(CROSSPLANE_PROVIDER_CONFLUENT_EMAIL)
         TF_VAR_crossplane_provider_confluent_password: $(CROSSPLANE_PROVIDER_CONFLUENT_PASSWORD)
+        TF_VAR_monitoring_kube_prometheus_stack_azure_tenant_id: $(ARM_TENANT_ID)
+    - container: aws-nuke
+      image: dfdsdk/aws-nuke:0.0.8
+      env:
+        AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+    - container: go-build
+      image: golang:1.20.2-bullseye
   repositories:
     - repository: Origin
       type: github
       endpoint: "dfds (2)"
       name: dfds/infrastructure-modules
       ref: master
+    - repository: Rollover
+      type: github
+      endpoint: "dfds (2)"
+      name: dfds/node-rollover
+      ref: main
+    - repository: Nuke
+      type: github
+      endpoint: "dfds (2)"
+      name: dfds/qa-nuke-config
+      ref: main
 
 # Define variable group to use
 variables:
   - group: "Infrastructure-Modules QA"
 
 lockBehavior: sequential
+pool:
+  vmImage: "ubuntu-latest"
 stages:
-  # Continuous Integration steps
-  - stage: CI
-    displayName: "Continuous Integration"
-    pool:
-      vmImage: "ubuntu-latest"
-
+  - stage: nuke
+    displayName: "Nuke QA Account"
+    condition: eq(variables['NUKE_QA'], 'true')
     jobs:
-      - deployment: init_shared
-        displayName: Provision shared resources from master branch
+      - deployment: destroy
+        displayName: Destroy resources
+        cancelTimeoutInMinutes: 5
         container: prime
         environment: QA
         strategy:
           runOnce:
             deploy:
               steps:
-                - checkout: Origin
-                - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
-                  displayName: "Provision public S3 bucket"
+                - checkout: origin
+                  fetchDepth: 1
+                  fetchTags: false
+                - bash: ./src/qa-test-eks.sh destroy-velero-bucket eu-west-1 _global/s3-bucket-velero
+                  displayName: "Terraform destroy Velero S3 bucket"
+                  condition: succeededOrFailed()
+                  timeoutInMinutes: 30
+                - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1 qa
+                  displayName: "Terraform destroy cluster & services"
+                  condition: succeededOrFailed()
+                  timeoutInMinutes: 60
+                - bash: ./src/qa-test-eks.sh destroy-public-bucket eu-west-1 _global/eks-public-s3-bucket
+                  displayName: "Terraform destroy shared resources"
+                  condition: succeededOrFailed()
+                  timeoutInMinutes: 30
+
+      - deployment: nuke_account
+        displayName: Nuke QA's AWS account
+        cancelTimeoutInMinutes: 5
+        container: aws-nuke
+        dependsOn: destroy
+        condition: succeededOrFailed()
+        environment: QA
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: Nuke
+                  fetchDepth: 1
+                  fetchTags: false
+                - bash: /usr/local/bin/aws-nuke -c ./nuke-config.yaml --force --force-sleep 5 --no-dry-run
+                  displayName: "Nuke resources in QA account"
+                  timeoutInMinutes: 60
+
+  - stage: test
+    displayName: "Testing"
+    dependsOn: nuke
+    condition: or(succeededOrFailed('nuke'), ne(variables['NUKE_QA'], 'true'))
+    jobs:
+      - job: build_test_master
+        displayName: Build test binary from master branch
+        container: go-build
+        cancelTimeoutInMinutes: 0
+        variables:
+          GO_CACHE_DIR: $(Pipeline.Workspace)/.cache/go-build/
+        steps:
+          - checkout: Origin
+            fetchDepth: 1
+            fetchTags: false
+          - task: Cache@2.198.0
+            inputs:
+              key: '"go" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum | $(Build.Repository.LocalPath)/src/qa-test-eks.sh'
+              restoreKeys: '"go" | "$(Agent.OS)"'
+              path: $(GO_CACHE_DIR)
+            displayName: Restore Go build cache
+          - bash: ./src/qa-test-eks.sh test-build eu-west-1 qa $(Build.ArtifactStagingDirectory)/test-master.bin
+            env:
+              GOCACHE: $(GO_CACHE_DIR)
+            displayName: "Build test binary"
+            timeoutInMinutes: 15
+          - task: PublishBuildArtifacts@1.211.0
+            inputs:
+              pathToPublish: $(Build.ArtifactStagingDirectory)/test-master.bin
+              artifactName: test-master
+
+      - job: build_test_feature
+        displayName: Build test binary from feature branch
+        cancelTimeoutInMinutes: 0
+        condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'master'))
+        container: go-build
+        variables:
+          GO_CACHE_DIR: $(Pipeline.Workspace)/.cache/go-build/
+        steps:
+          - checkout: self
+            fetchDepth: 1
+            fetchTags: false
+          - task: Cache@2.198.0
+            inputs:
+              key: '"go" | "$(Agent.OS)" | $(Build.Repository.LocalPath)/test/integration/suite/go.sum | $(Build.Repository.LocalPath)/src/qa-test-eks.sh'
+              restoreKeys: '"go" | "$(Agent.OS)"'
+              path: $(GO_CACHE_DIR)
+            displayName: Restore Go build cache
+          - bash: ./src/qa-test-eks.sh test-build eu-west-1 qa $(Build.ArtifactStagingDirectory)/test-feature.bin
+            env:
+              GOCACHE: $(GO_CACHE_DIR)
+            displayName: "Build test binary"
+            timeoutInMinutes: 15
+          - task: PublishBuildArtifacts@1.211.0
+            inputs:
+              pathToPublish: $(Build.ArtifactStagingDirectory)/test-feature.bin
+              artifactName: test-feature
 
       - deployment: init
-        displayName: Provision cluster & services from master branch
+        displayName: Provision from master branch
+        cancelTimeoutInMinutes: 5
         container: prime
-        dependsOn: init_shared
-        environment: QA
-        strategy:
-          runOnce:
-            preDeploy:
-              steps:
-                - checkout: Origin
-                - bash: ./src/qa-test-eks.sh cleanup-cluster eu-west-1 qa
-                  displayName: "Pre-apply cleanup"
-                  condition: eq(variables['PRE_CLEANUP'], 'true')
-            deploy:
-              steps:
-                - checkout: Origin
-                - bash: ./src/qa-test-eks.sh apply-cluster eu-west-1 qa
-                  displayName: "Terraform apply"
-                # TODO(emil): Move this to the Docker image after code freeze
-                - bash: sudo apt-get update && sudo apt-get --yes install golang
-                  displayName: "Install Go"
-                  condition: always()
-                - bash: ./src/qa-test-eks.sh test eu-west-1 qa
-                  displayName: "Run tests"
-                  condition: always()
-
-      - deployment: apply_shared
-        condition: ne(variables['Build.SourceBranchName'], 'master')
-        displayName: Apply shared resources from feature branch
-        container: prime
-        dependsOn: init
+        dependsOn: build_test_master
+        condition: succeeded()
         environment: QA
         strategy:
           runOnce:
             deploy:
               steps:
-                - checkout: self
+                - checkout: Origin
+                  fetchDepth: 1
+                  fetchTags: false
+                  path: source
+                - checkout: Rollover
+                  fetchDepth: 1
+                  fetchTags: false
+                  path: rollover
                 - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
-                  displayName: "Provision public S3 bucket"
+                  workingDirectory: $(Agent.BuildDirectory)/source
+                  displayName: "Provision shared EKS S3 bucket"
+                  timeoutInMinutes: 15
+                - bash: ./src/qa-test-eks.sh apply-cluster eu-west-1 qa
+                  workingDirectory: $(Agent.BuildDirectory)/source
+                  displayName: "Provision cluster & services"
+                  timeoutInMinutes: 60
+                - bash: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
+                  workingDirectory: $(Agent.BuildDirectory)/source
+                  displayName: "Provision Velero S3 bucket"
+                  timeoutInMinutes: 15
+                - task: PowerShell@2
+                  displayName: "Rollover nodes"
+                  timeoutInMinutes: 15
+                  inputs:
+                    targetType: filePath
+                    filePath: $(Agent.BuildDirectory)/rollover/asg_k8s_rollover.ps1
+                    arguments: "-ClusterName qa -AwsRegion eu-west-1 -KubeParameterRegion eu-west-1"
+                    pwsh: true
+                - download: current
+                  displayName: "Download test binary"
+                  artifact: test-master
+                - bash: ./src/qa-test-eks.sh test-run eu-west-1 qa $(Pipeline.Workspace)/test-master/test-master.bin
+                  workingDirectory: $(Agent.BuildDirectory)/source
+                  displayName: "Run tests"
+                  timeoutInMinutes: 15
 
       - deployment: apply
-        condition: ne(variables['Build.SourceBranchName'], 'master')
-        displayName: Apply cluster & services from feature branch
+        displayName: Apply from feature branch
+        cancelTimeoutInMinutes: 5
         container: prime
-        dependsOn: apply_shared
+        dependsOn:
+          - init
+          - build_test_feature
+        condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'master'))
         environment: QA
         strategy:
           runOnce:
-            preDeploy:
-              steps:
-                - checkout: self
-                - bash: ./src/qa-test-eks.sh cleanup-cluster eu-west-1 qa
-                  displayName: "Pre-apply cleanup"
-                  condition: eq(variables['PRE_CLEANUP'], 'true')
             deploy:
               steps:
                 - checkout: self
+                  fetchDepth: 1
+                  fetchTags: false
+                  path: source
+                - checkout: Rollover
+                  fetchDepth: 1
+                  fetchTags: false
+                  path: rollover
+                - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
+                  workingDirectory: $(Agent.BuildDirectory)/source
+                  displayName: "Provision shared EKS S3 bucket"
+                  timeoutInMinutes: 15
                 - bash: ./src/qa-test-eks.sh apply-cluster eu-west-1 qa
-                  displayName: "Terraform apply"
-                # TODO(emil): Move this to the Docker image after code freeze
-                - bash: sudo apt-get update && sudo apt-get --yes install golang
-                  displayName: "Install Go"
-                  condition: always()
-                - bash: ./src/qa-test-eks.sh test eu-west-1 qa
-                  displayName: "Run tests"
-                  condition: always()
-
-      - deployment: init_velero
-        displayName: Init Velero S3 bucket
-        container: prime
-        dependsOn:
-          - apply
-        environment: QA
-        strategy:
-          runOnce:
-            preDeploy:
-              steps:
-                - checkout: self
-                - bash: ./src/qa-test-eks.sh cleanup-shared eu-west-1
-                  displayName: "Pre-apply cleanup"
-                  condition: eq(variables['PRE_CLEANUP'], 'true')
-            deploy:
-              steps:
-                - checkout: self
+                  workingDirectory: $(Agent.BuildDirectory)/source
+                  displayName: "Provision cluster & services"
+                  timeoutInMinutes: 60
                 - bash: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
+                  workingDirectory: $(Agent.BuildDirectory)/source
                   displayName: "Provision Velero S3 bucket"
-
-      - deployment: destroy_velero
-        displayName: Destroy Velero S3 bucket
-        container: prime
-        dependsOn:
-          - init_velero
-        condition: ne(variables['NO_DESTROY'], 'true')
-        environment: QA
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - checkout: self
-                - bash: ./src/qa-test-eks.sh destroy-velero-bucket eu-west-1 _global/s3-bucket-velero
-                  displayName: "Terraform destroy Velero S3 bucket (post)"
+                  timeoutInMinutes: 15
+                - task: PowerShell@2
+                  displayName: "Rollover nodes"
+                  timeoutInMinutes: 15
+                  inputs:
+                    targetType: filePath
+                    filePath: $(Agent.BuildDirectory)/rollover/asg_k8s_rollover.ps1
+                    arguments: "-ClusterName qa -AwsRegion eu-west-1 -KubeParameterRegion eu-west-1"
+                    pwsh: true
+                - download: current
+                  displayName: "Download test binary"
+                  artifact: test-feature
+                - bash: ./src/qa-test-eks.sh test-run eu-west-1 qa $(Pipeline.Workspace)/test-feature/test-feature.bin
+                  workingDirectory: $(Agent.BuildDirectory)/source
+                  displayName: "Run tests"
+                  timeoutInMinutes: 15
 
       - deployment: destroy
-        displayName: Destroy cluster & services
+        displayName: Destroy resources
+        cancelTimeoutInMinutes: 5
         container: prime
-        dependsOn:
-          - destroy_velero
-        condition: ne(variables['NO_DESTROY'], 'true')
+        dependsOn: apply
+        condition: and(succeededOrFailed(), eq(variables['TEST_DESTROY'], 'true'))
         environment: QA
         strategy:
           runOnce:
             deploy:
               steps:
                 - checkout: self
+                  fetchDepth: 1
+                  fetchTags: false
+                - bash: ./src/qa-test-eks.sh destroy-velero-bucket eu-west-1 _global/s3-bucket-velero
+                  displayName: "Terraform destroy Velero S3 bucket"
+                  condition: succeededOrFailed()
+                  timeoutInMinutes: 30
                 - bash: ./src/qa-test-eks.sh destroy-cluster eu-west-1 qa
-                  displayName: "Terraform destroy (post)"
-
-      - deployment: destroy_shared
-        displayName: Destroy shared resources
-        container: prime
-        dependsOn:
-          - destroy
-        condition: ne(variables['NO_DESTROY'], 'true')
-        environment: QA
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - checkout: self
+                  displayName: "Terraform destroy cluster & services"
+                  condition: succeededOrFailed()
+                  timeoutInMinutes: 60
                 - bash: ./src/qa-test-eks.sh destroy-public-bucket eu-west-1 _global/eks-public-s3-bucket
-                  displayName: "Terraform destroy public S3 bucket (post)"
+                  displayName: "Terraform destroy shared resources"
+                  condition: succeededOrFailed()
+                  timeoutInMinutes: 30

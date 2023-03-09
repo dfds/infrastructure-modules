@@ -3,7 +3,6 @@
 # --------------------------------------------------
 
 locals {
-  namespace         = "flux-system"
   fluentd_name      = "fluentd-cloudwatch"
   fluentd_namespace = "fluentd"
 }
@@ -11,14 +10,6 @@ locals {
 # --------------------------------------------------
 # Github
 # --------------------------------------------------
-
-locals {
-  known_hosts = "github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg="
-}
-
-data "github_repository" "main" {
-  full_name = "${var.github_owner}/${var.repo_name}"
-}
 
 data "github_branch" "flux_branch" {
   repository = var.repo_name
@@ -69,7 +60,8 @@ locals {
     ]
   }
 
-  config_patch_yaml = <<YAML
+  # TODO(emil): remove once dockershim is removed with move to 1.24
+  config_patch_yaml_dockerd = <<YAML
 ---
 apiVersion: v1
 kind: Namespace
@@ -93,7 +85,6 @@ spec:
               value: "${var.aws_region}"
             - name: RETENTION_IN_DAYS
               value: "${var.retention_in_days}"
-
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -101,6 +92,71 @@ metadata:
   name: ${local.fluentd_name}
   namespace: ${local.fluentd_namespace}
 data:
+  02-tag.conf: |-
+    # Tag with namespace and prefix with clustername
+    <match kubernetes.**>
+      @type rewrite_tag_filter
+      <rule>
+        key $.kubernetes.namespace_name
+        pattern ^(.+)$
+        tag /k8s/${var.cluster_name}/$1
+      </rule>
+    </match>
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ${local.fluentd_name}
+  namespace: ${local.fluentd_namespace}
+  annotations:
+    eks.amazonaws.com/role-arn: ${aws_iam_role.this.arn}
+    eks.amazonaws.com/sts-regional-endpoints: "true"
+YAML
+
+  config_patch_yaml_containerd = <<YAML
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ${local.fluentd_namespace}
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: ${local.fluentd_name}
+  namespace: ${local.fluentd_namespace}
+spec:
+  template:
+    spec:
+      serviceAccountName: ${local.fluentd_name}
+      containers:
+        - name: ${local.fluentd_name}
+          env:
+            - name: AWS_REGION
+              value: "${var.aws_region}"
+            - name: RETENTION_IN_DAYS
+              value: "${var.retention_in_days}"
+            # Override default parser to match containerd's raw log format.
+            - name: FLUENT_CONTAINER_TAIL_PARSER_TYPE
+              value: /^(?<time>.+) (?<stream>stdout|stderr) (?<logtag>[FP]) (?<log>.+)$/
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${local.fluentd_name}
+  namespace: ${local.fluentd_namespace}
+data:
+  01-filter-concat.conf: |-
+    # Concatenate partial log messages together, necessary with containerd container runtime.
+    <filter kubernetes.**>
+      @type concat
+      key log
+      partial_key logtag
+      partial_value P
+      separator ""
+    </filter>
   02-tag.conf: |-
     # Tag with namespace and prefix with clustername
     <match kubernetes.**>
@@ -158,6 +214,7 @@ data "aws_iam_policy_document" "this_trust" {
   }
 }
 
+# tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "this" {
   statement {
     sid    = "ReadLogs"

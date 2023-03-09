@@ -11,12 +11,6 @@ variable "bucket_name" {
   description = "Velero storage bucket name"
 }
 
-variable "versioning" {
-  type        = bool
-  default     = true
-  description = "Enable S3 bucket versioning"
-}
-
 variable "velero_iam_role_name" {
   type        = string
   default     = "VeleroBackup"

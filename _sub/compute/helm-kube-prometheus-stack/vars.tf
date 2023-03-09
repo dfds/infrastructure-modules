@@ -1,6 +1,6 @@
 variable "cluster_name" {
   type        = string
-  description = "Used to set the trust relationship with the correct cluster's kiam-server role"
+  description = "Used to name created items such as stored password in SSM parameter store and flux paths"
 }
 
 variable "chart_version" {
@@ -56,6 +56,27 @@ variable "grafana_serviceaccount_name" {
   description = "Grafana serviceaccount to be used for pod"
 }
 
+variable "grafana_storage_enabled" {
+  type        = bool
+  description = "Enable persistence in Grafana using Persistent Volume Claims"
+}
+
+variable "grafana_storage_class" {
+  type        = string
+  description = "Storage class for Grafana Persistent Volume"
+}
+
+variable "grafana_storage_size" {
+  type        = string
+  description = "Storage size for Grafana Persistent Volume"
+}
+
+variable "grafana_service_port" {
+  type        = number
+  description = "Grafana service port."
+  default     = 80
+}
+
 variable "slack_webhook" {
   type        = string
   description = "Alert Slack webhook"
@@ -86,12 +107,6 @@ variable "slack_channel" {
 variable "target_namespaces" {
   type        = string
   description = "Filter on namespaces"
-}
-
-variable "grafana_service_port" {
-  type        = number
-  description = "Grafana service port. See https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml"
-  default     = 80
 }
 
 variable "github_owner" {
@@ -132,4 +147,35 @@ variable "prometheus_limit_cpu" {
   type        = string
   description = "Prometheus resource setting for limit cpu"
   default     = "1000m"
+}
+
+variable "overwrite_on_create" {
+  type        = bool
+  default     = true
+  description = "Enable overwriting existing files"
+}
+
+variable "tolerations" {
+  type = list(object({
+    key      = string,
+    operator = string,
+    value    = optional(string),
+    effect   = string,
+  }))
+  default = []
+}
+
+variable "affinity" {
+  type = list(object({
+    key      = string,
+    operator = string,
+    values   = list(string)
+  }))
+  default = []
+}
+
+variable "grafana_azure_tenant_id" {
+  type        = string
+  default     = ""
+  description = "Azure Tenant ID"
 }

@@ -4,11 +4,6 @@ variable "aws_region" {
   type = string
 }
 
-# variable "aws_assume_role_arn" {
-#   type = "string"
-#   description = "The ARN of the role to assume, for creating the account"
-# }
-
 variable "master_account_id" {
   type        = string
   description = "The AWS account ID of the Organizations Master account"
@@ -97,6 +92,7 @@ variable "kafka_password" {
 }
 
 variable "publish_message" {
+  type    = bool
   default = true
 }
 
@@ -106,17 +102,10 @@ variable "parent_id" {
   default     = ""
 }
 
-# TODO(emil): remove dependence on Kiam
-variable "kiam_role_arn" {
+variable "assume_role_arn" {
   type        = string
-  description = "Optional: The KIAM role ARN that can assume roles"
+  description = "Optional: The AWS assume role ARN"
   default     = ""
-}
-
-variable "ssm_param_createdby" {
-  type        = string
-  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
-  default     = "not-specified"
 }
 
 variable "oidc_provider_url" {

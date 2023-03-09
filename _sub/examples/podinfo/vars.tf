@@ -14,7 +14,8 @@ variable "repo_branch" {
   description = "The git branch."
 }
 
-variable "github_owner" {
-  type        = string
-  description = "The GitHub organization owner."
+variable "overwrite_on_create" {
+  type        = bool
+  default     = true
+  description = "Enable overwriting existing files"
 }

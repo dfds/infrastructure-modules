@@ -1,7 +1,7 @@
 resource "aws_lb" "nlb" {
   count              = var.deploy ? 1 : 0
   name               = "${var.cluster_name}-nlb"
-  internal           = false #tfsec:ignore:aws-elbv2-alb-not-public
+  internal           = false #tfsec:ignore:aws-elbv2-alb-not-public tfsec:ignore:aws-elb-alb-not-public
   load_balancer_type = "network"
   subnets            = var.subnet_ids
 }
@@ -39,13 +39,13 @@ resource "aws_lb_listener" "nlb" {
   }
 }
 
-# tfsec:ignore:aws-vpc-add-description-to-security-group
 resource "aws_security_group_rule" "allow_argo" {
-  count     = var.deploy ? 1 : 0
-  type      = "ingress"
-  from_port = 30000
-  to_port   = 30001
-  protocol  = "tcp"
+  count       = var.deploy ? 1 : 0
+  type        = "ingress"
+  description = "Allow inbound HTTP traffic"
+  from_port   = 30000
+  to_port     = 30001
+  protocol    = "tcp"
 
   cidr_blocks       = var.cidr_blocks
   security_group_id = var.nodes_sg_id

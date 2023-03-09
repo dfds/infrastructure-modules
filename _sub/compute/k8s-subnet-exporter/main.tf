@@ -1,9 +1,3 @@
-locals {
-  serviceaccount_name = "subnet-exporter"
-  deployment_name     = "aws-subnet-exporter"
-  iam_role_name       = "SubnetExporter"
-}
-
 resource "aws_iam_role" "this" {
   name                 = local.iam_role_name
   path                 = "/"
@@ -58,6 +52,38 @@ resource "kubernetes_deployment" "this" {
       spec {
         service_account_name            = local.serviceaccount_name
         automount_service_account_token = true
+
+        dynamic "toleration" {
+          for_each = var.tolerations
+          content {
+            key      = toleration.value.key
+            operator = toleration.value.operator
+            value    = toleration.value.value
+            effect   = toleration.value.effect
+          }
+        }
+
+        dynamic "affinity" {
+          for_each = length(var.affinity) > 0 ? [var.affinity] : []
+          content {
+            node_affinity {
+              preferred_during_scheduling_ignored_during_execution {
+                weight = 1
+                preference {
+                  dynamic "match_expressions" {
+                    for_each = affinity.value
+                    content {
+                      key      = match_expressions.value.key
+                      operator = match_expressions.value.operator
+                      values   = match_expressions.value.values
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
         container {
           name  = local.deployment_name
           image = "dfdsdk/aws-subnet-exporter:${var.image_tag}"

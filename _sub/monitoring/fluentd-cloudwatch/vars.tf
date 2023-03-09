@@ -3,6 +3,16 @@ variable "cluster_name" {
   description = "The name of the EKS cluster."
 }
 
+variable "container_runtime" {
+  type        = string
+  description = "The container runtime utilized within the EKS cluster."
+
+  validation {
+    condition     = contains(["dockerd", "containerd"], var.container_runtime)
+    error_message = "Valid values for var.container_runtime are dockerd and containerd."
+  }
+}
+
 variable "deploy_name" {
   type        = string
   description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
@@ -20,19 +30,9 @@ variable "repo_branch" {
   description = "The git branch."
 }
 
-variable "github_owner" {
-  type        = string
-  description = "The GitHub organization owner."
-}
-
 variable "aws_region" {
   type        = string
   description = "Which AWS region to store the cloudwatch logs in."
-}
-
-variable "account_id" {
-  type        = string
-  description = "The account id that owns the cloudwatch logs from fluentd."
 }
 
 variable "retention_in_days" {
@@ -49,4 +49,10 @@ variable "eks_openid_connect_provider_url" {
 variable "deploy_oidc_provider" {
   type        = bool
   description = "Create an OIDC provider only if external log account is provided"
+}
+
+variable "overwrite_on_create" {
+  type        = bool
+  default     = true
+  description = "Enable overwriting existing files"
 }

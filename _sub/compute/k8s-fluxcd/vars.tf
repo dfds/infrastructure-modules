@@ -7,11 +7,6 @@ variable "repo_name" {
   description = ""
 }
 
-variable "repo_visibility" {
-  type    = string
-  default = "private"
-}
-
 variable "repo_branch" {
   type        = string
   default     = "main"
@@ -28,11 +23,6 @@ variable "github_owner" {
   description = ""
 }
 
-variable "github_token" {
-  type        = string
-  description = ""
-}
-
 variable "kubeconfig_path" {
   type    = string
   default = null
@@ -41,4 +31,10 @@ variable "kubeconfig_path" {
 variable "release_tag" {
   type    = string
   default = "latest"
+}
+
+variable "overwrite_on_create" {
+  type        = bool
+  default     = true
+  description = "Enable overwriting existing files"
 }

@@ -1,20 +1,23 @@
 resource "github_repository_file" "crossplane_cfg_pkg_path" {
-  repository = var.repo_name
-  branch     = local.repo_branch
-  file       = "${local.cluster_repo_path}/${local.app_install_name}-config.yaml"
-  content    = jsonencode(local.app_config_path)
+  repository          = var.repo_name
+  branch              = local.repo_branch
+  file                = "${local.cluster_repo_path}/${local.app_install_name}-config.yaml"
+  content             = jsonencode(local.app_config_path)
+  overwrite_on_create = var.overwrite_on_create
 }
 
 resource "github_repository_file" "crossplane_cfg_pkg_init" {
-  repository = var.repo_name
-  branch     = local.repo_branch
-  file       = "${local.config_repo_path}/kustomization.yaml"
-  content    = jsonencode(local.config_init)
+  repository          = var.repo_name
+  branch              = local.repo_branch
+  file                = "${local.config_repo_path}/kustomization.yaml"
+  content             = jsonencode(local.config_init)
+  overwrite_on_create = var.overwrite_on_create
 }
 
 resource "github_repository_file" "crossplane_cfg_pkg_deployment" {
-  repository = var.repo_name
-  branch     = local.repo_branch
-  file       = "${local.config_repo_path}/configuration.yaml"
-  content    = jsonencode(local.config_deployment)
+  repository          = var.repo_name
+  branch              = local.repo_branch
+  file                = "${local.config_repo_path}/configuration.yaml"
+  content             = jsonencode(local.config_deployment)
+  overwrite_on_create = var.overwrite_on_create
 }

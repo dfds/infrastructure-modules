@@ -47,6 +47,7 @@ resource "aws_s3_bucket_public_access_block" "veloro_storage_block_public_access
   restrict_public_buckets = true
 }
 
+# tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_policy" "velero_policy" {
   name        = "VeleroPolicy"
   description = "Policy for Velero backups"
@@ -100,7 +101,7 @@ data "aws_iam_policy_document" "assume_role" {
     actions = ["sts:AssumeRoleWithWebIdentity"]
     principals {
       type        = "Federated"
-      identifiers = ["${local.oidc_provider_arn}"]
+      identifiers = [local.oidc_provider_arn]
     }
     condition {
       test     = "StringEquals"
@@ -121,6 +122,7 @@ resource "aws_iam_role_policy_attachment" "velero_policy_attach" {
   policy_arn = aws_iam_policy.velero_policy.arn
 }
 
+# tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_encryption" {
   bucket = aws_s3_bucket.velero_storage.id
 

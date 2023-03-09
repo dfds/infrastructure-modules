@@ -30,9 +30,15 @@ resource "kubernetes_cluster_role_binding" "deploy-user" {
   provider = kubernetes
 }
 
-data "kubernetes_secret" "deploy-token" {
+resource "kubernetes_secret_v1" "deploy-token" {
   metadata {
-    name      = kubernetes_service_account.deploy-user.default_secret_name
-    namespace = kubernetes_service_account.deploy-user.metadata[0].namespace
+    generate_name = "${kubernetes_service_account.deploy-user.metadata[0].name}-token-"
+    namespace     = kubernetes_service_account.deploy-user.metadata[0].namespace
+    annotations = {
+      "kubernetes.io/service-account.name" = kubernetes_service_account.deploy-user.metadata[0].name
+    }
   }
+
+  type                           = "kubernetes.io/service-account-token"
+  wait_for_service_account_token = true
 }

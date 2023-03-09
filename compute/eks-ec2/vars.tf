@@ -1,12 +1,4 @@
 # --------------------------------------------------
-# Terraform
-# --------------------------------------------------
-
-variable "terraform_state_s3_bucket" {
-  type = string
-}
-
-# --------------------------------------------------
 # AWS
 # --------------------------------------------------
 
@@ -18,8 +10,8 @@ variable "aws_assume_role_arn" {
   type = string
 }
 
-variable "aws_workload_account_id" {
-}
+# Optional
+# --------------------------------------------------
 
 variable "ssm_param_createdby" {
   type        = string
@@ -40,6 +32,17 @@ variable "eks_cluster_version" {
   type = string
 }
 
+variable "eks_worker_ssh_public_key" {
+  type = string
+}
+
+variable "eks_worker_ssh_ip_whitelist" {
+  type = list(string)
+}
+
+# Optional
+# --------------------------------------------------
+
 variable "eks_is_sandbox" {
   type        = bool
   description = "Specifies this is a sandbox cluster, which currently just scales ASG to zero every night"
@@ -47,6 +50,7 @@ variable "eks_is_sandbox" {
 }
 
 variable "eks_cluster_zones" {
+  type    = number
   default = 3
 }
 
@@ -62,11 +66,8 @@ variable "eks_cluster_log_retention_days" {
   default     = 90
 }
 
-variable "eks_worker_ssh_public_key" {
-  type = string
-}
-
 variable "eks_worker_inotify_max_user_watches" {
+  type    = number
   default = 131072 # default t3.large is 8192 which is too low
 }
 
@@ -75,8 +76,13 @@ variable "eks_worker_subnets" {
   default = []
 }
 
-variable "eks_worker_ssh_ip_whitelist" {
-  type = list(string)
+variable "eks_managed_worker_subnets" {
+  type = list(object({
+    availability_zone         = string,
+    subnet_cidr               = string,
+    prefix_reservations_cidrs = list(string),
+  }))
+  default = []
 }
 
 variable "eks_worker_scale_to_zero_cron" {
@@ -100,6 +106,12 @@ variable "eks_addon_vpccni_version_override" {
   default = ""
 }
 
+variable "eks_addon_vpccni_prefix_delegation_enabled" {
+  type        = bool
+  description = "Whether to enable the prefix delegation mode on the VPC CNI EKS addon."
+  default     = false
+}
+
 variable "eks_addon_awsebscsidriver_version_override" {
   type    = string
   default = ""
@@ -111,14 +123,26 @@ variable "eks_public_s3_bucket" {
   default     = ""
 }
 
+variable "eks_k8s_auth_api_version" {
+  description = "The fully qualified version of the client authentication API."
+  type        = string
+  default     = "client.authentication.k8s.io/v1beta1"
+}
 
+
+# TODO(emil): remove when unmanaged node groups are removed
 # --------------------------------------------------
-# EKS Nodegroup 1
+# EKS unmanged node group 1
 # --------------------------------------------------
 
 variable "eks_nodegroup1_instance_types" {
   type    = list(string)
   default = ["t3.small"]
+}
+
+variable "eks_nodegroup1_container_runtime" {
+  type    = string
+  default = "containerd"
 }
 
 variable "eks_nodegroup1_disk_size" {
@@ -149,13 +173,19 @@ variable "eks_nodegroup1_desired_size_per_subnet" {
 }
 
 
+# TODO(emil): remove when unmanaged node groups are removed
 # --------------------------------------------------
-# EKS Nodegroup 2
+# EKS unmanged node group 2
 # --------------------------------------------------
 
 variable "eks_nodegroup2_instance_types" {
   type    = list(string)
   default = ["t3.small"]
+}
+
+variable "eks_nodegroup2_container_runtime" {
+  type    = string
+  default = "containerd"
 }
 
 variable "eks_nodegroup2_disk_size" {
@@ -185,6 +215,29 @@ variable "eks_nodegroup2_desired_size_per_subnet" {
   default = 0
 }
 
+# --------------------------------------------------
+# EKS managed node group
+# --------------------------------------------------
+variable "eks_managed_nodegroups" {
+  type = list(object({
+    name                    = string
+    ami_id                  = optional(string, "")
+    instance_types          = optional(list(string), ["t3.small"])
+    container_runtime       = optional(string, "containerd")
+    disk_size               = optional(number, 128)
+    desired_size_per_subnet = optional(number, 0)
+    kubelet_extra_args      = optional(string, "")
+    gpu_ami                 = optional(bool, false)
+    availability_zones      = optional(list(string), [])
+    taints = optional(list(object({
+      key    = string,
+      value  = optional(string),
+      effect = string
+    })), [])
+    labels = optional(map(string), {})
+  }))
+  default = []
+}
 
 # --------------------------------------------------
 # Blaster Configmap
@@ -215,21 +268,12 @@ variable "eks_worker_cloudwatch_agent_config_file" {
   default = "aws-cloudwatch-agent-conf.json"
 }
 
-
 # --------------------------------------------------
-# Unused variables - to provent TF warning/error:
-# Using a variables file to set an undeclared variable is deprecated and will
-# become an error in a future release. If you wish to provide certain "global"
-# settings to all configurations in your organization, use TF_VAR_...
-# environment variables to set these instead.
+# Cost and Usage Report integration
 # --------------------------------------------------
 
-variable "workload_dns_zone_name" {
-  type    = string
-  default = ""
-}
-
-variable "terraform_state_region" {
-  type    = string
-  default = ""
+variable "eks_worker_cur_bucket_arn" {
+  type        = string
+  default     = null
+  description = "S3 ARN for Billing Cost and Usage Report (CUR)"
 }
