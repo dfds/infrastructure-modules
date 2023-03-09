@@ -173,3 +173,9 @@ variable "affinity" {
   }))
   default = []
 }
+
+variable "grafana_azure_tenant_id" {
+  type        = string
+  default     = ""
+  description = "Azure Tenant ID"
+}

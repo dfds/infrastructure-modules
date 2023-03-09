@@ -135,6 +135,9 @@ inputs = {
   monitoring_kube_prometheus_stack_grafana_storage_enabled   = true
   monitoring_kube_prometheus_stack_grafana_storage_size      = "5Gi"
   monitoring_kube_prometheus_stack_grafana_storageclass      = "gp2"
+  # monitoring_kube_prometheus_stack_azure_tenant_id is set as ARM_TENANT_ID in
+  # Azure DevOps Pipeline Library "Infrastructure-Modules QA" in and mapped in the
+  # Azure DevOps pipeline file as TF_VAR_monitoring_kube_prometheus_stack_azure_tenant_id
 
   # --------------------------------------------------
   # Metrics-Server
@@ -210,11 +213,11 @@ inputs = {
   # Helm Exporter
   # --------------------------------------------------
 
-  helm_exporter_deploy             = "true"
-  helm_exporter_helm_chart_version = "1.2.3"
-  helm_exporter_github_owner       = "dfds"
-  helm_exporter_repo_name          = "platform-manifests-qa"
-  helm_exporter_repo_branch        = "main"
+  helm_exporter_deploy              = "true"
+  helm_exporter_helm_chart_version  = "1.2.4"
+  helm_exporter_github_owner        = "dfds"
+  helm_exporter_repo_name           = "platform-manifests-qa"
+  helm_exporter_repo_branch         = "main"
 
   # --------------------------------------------------
   # Podinfo
