@@ -12,8 +12,8 @@ variable "check_threshold" {
   default = "20"
 }
 
-variable "alb_arn_suffixes" {
-  type = list(string)
+variable "alb_arn_suffix" {
+  type = string
 }
 
 variable "deploy" {
