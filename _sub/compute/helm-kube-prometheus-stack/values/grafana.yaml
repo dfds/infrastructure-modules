@@ -12,7 +12,7 @@ grafana:
       wal: true
     auth.anonymous:
       enabled: false
-%{ if length(azure_tenant_id) == 36 ~}
+%{ if length(grafana_azure_tenant_id) == 36 ~}
     auth.azuread:
       name: Azure AD
       enabled: true
@@ -21,8 +21,8 @@ grafana:
       client_id: ${grafana_app_id}
       client_secret: ${grafana_app_secret}
       scopes: openid email profile
-      auth_url: https://login.microsoftonline.com/${azure_tenant_id}/oauth2/v2.0/authorize
-      token_url: https://login.microsoftonline.com/${azure_tenant_id}/oauth2/v2.0/token
+      auth_url: https://login.microsoftonline.com/${grafana_azure_tenant_id}/oauth2/v2.0/authorize
+      token_url: https://login.microsoftonline.com/${grafana_azure_tenant_id}/oauth2/v2.0/token
       role_attribute_strict: false
       allow_assign_grafana_admin: false
       skip_org_role_sync: false
@@ -50,3 +50,30 @@ grafana:
     enabled: ${grafana_storage_enabled}
     storageClassName: ${grafana_storage_class}
     size: ${grafana_storage_size}
+%{ if length(tolerations) > 0 ~}
+  tolerations:
+%{ for t in tolerations ~}
+  - key: ${t.key}
+    operator: ${t.operator}
+%{ if t.value != null ~}
+    value: ${t.value}
+%{ endif ~}
+    effect: ${t.effect}
+%{ endfor ~}
+%{ endif ~}
+%{ if length(affinity) > 0 ~}
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+%{ for a in affinity ~}
+          - key: ${a.key}
+            operator: ${a.operator}
+            values:
+%{ for v in a.values ~}
+            - ${ v }
+%{ endfor ~}
+%{ endfor ~}
+%{ endif ~}

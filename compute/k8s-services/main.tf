@@ -208,16 +208,6 @@ module "traefik_alb_auth_dns" {
   record_value = "${module.traefik_alb_auth.alb_fqdn}."
 }
 
-module "traefik_alb_auth_dns_for_grafana" {
-  source       = "../../_sub/network/route53-record"
-  deploy       = (var.traefik_alb_auth_deploy && var.monitoring_kube_prometheus_stack_deploy) ? true : false
-  zone_id      = local.workload_dns_zone_id
-  record_name  = ["grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
-  record_type  = "CNAME"
-  record_ttl   = "900"
-  record_value = "${module.traefik_alb_auth.alb_fqdn}."
-}
-
 module "traefik_alb_auth_dns_for_traefik_blue_variant_dashboard" {
   source       = "../../_sub/network/route53-record"
   deploy       = (var.traefik_flux_deploy && var.traefik_alb_auth_deploy) ? true : false
@@ -409,6 +399,7 @@ module "monitoring_kube_prometheus_stack" {
   grafana_storage_enabled     = var.monitoring_kube_prometheus_stack_grafana_storage_enabled
   grafana_storage_class       = var.monitoring_kube_prometheus_stack_grafana_storageclass
   grafana_storage_size        = var.monitoring_kube_prometheus_stack_grafana_storage_size
+  grafana_azure_tenant_id     = var.monitoring_kube_prometheus_stack_azure_tenant_id != "" ? var.monitoring_kube_prometheus_stack_azure_tenant_id : var.atlantis_arm_tenant_id
   slack_webhook               = var.monitoring_kube_prometheus_stack_slack_webhook
   prometheus_storageclass     = var.monitoring_kube_prometheus_stack_prometheus_storageclass
   prometheus_storage_size     = var.monitoring_kube_prometheus_stack_prometheus_storage_size
@@ -423,6 +414,8 @@ module "monitoring_kube_prometheus_stack" {
   prometheus_limit_memory     = var.monitoring_kube_prometheus_stack_prometheus_limit_memory
   prometheus_limit_cpu        = var.monitoring_kube_prometheus_stack_prometheus_limit_cpu
   overwrite_on_create         = var.platform_fluxcd_overwrite_on_create
+  tolerations                 = var.monitoring_tolerations
+  affinity                    = var.monitoring_affinity
 
   providers = {
     github = github.fluxcd
@@ -442,8 +435,9 @@ module "monitoring_metrics_server" {
   helm_chart_version = var.monitoring_metrics_server_chart_version
   helm_repo_url      = var.monitoring_metrics_server_repo_url
   namespace          = module.monitoring_namespace[0].name
+  tolerations        = var.monitoring_tolerations
+  affinity           = var.monitoring_affinity
 }
-
 
 # --------------------------------------------------
 # Flux CD
@@ -740,6 +734,8 @@ module "aws_subnet_exporter" {
   oidc_issuer    = local.oidc_issuer
   cluster_name   = var.eks_cluster_name
   iam_role_name  = var.subnet_exporter_iam_role_name
+  tolerations    = var.monitoring_tolerations
+  affinity       = var.monitoring_affinity
 }
 
 # --------------------------------------------------
