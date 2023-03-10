@@ -53,3 +53,13 @@ variable "target_namespaces" {
   description = "Filter on namespaces"
   default     = ""
 }
+
+variable "target_charts" {
+  type = list(object({
+    registry  = object({
+      url = string
+    })
+    charts    = list(string)
+  }))
+  default = []
+}

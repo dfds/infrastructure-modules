@@ -929,6 +929,15 @@ variable "helm_exporter_target_namespaces" {
   default     = ""
 }
 
+variable "helm_exporter_target_charts" {
+  type = list(object({
+    registry  = object({
+      url = string
+    })
+    charts    = list(string)
+  }))
+  default = []
+}
 
 # --------------------------------------------------
 # Podinfo through Flux CD

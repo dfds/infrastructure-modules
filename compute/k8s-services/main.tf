@@ -663,6 +663,7 @@ module "helm_exporter_flux_manifests" {
   repo_branch        = var.helm_exporter_repo_branch != null ? var.helm_exporter_repo_branch : var.platform_fluxcd_repo_branch
   namespace          = module.monitoring_namespace[0].name
   target_namespaces  = var.helm_exporter_target_namespaces
+  target_charts      = var.helm_exporter_target_charts
 
   providers = {
     github = github.fluxcd
