@@ -218,7 +218,7 @@ inputs = {
   helm_exporter_github_owner        = "dfds"
   helm_exporter_repo_name           = "platform-manifests-qa"
   helm_exporter_repo_branch         = "main"
-  helm_exporter_target_namespaces   = "fluentd, flux-system, monitoring, traefik-blue-variant"
+  helm_exporter_target_namespaces   = "fluentd,flux-system,monitoring,traefik-blue-variant"
   helm_exporter_target_charts = [
     {
       registry = {
