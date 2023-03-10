@@ -62,6 +62,36 @@ locals {
         }
         "intervalDuration" = var.interval_duration
         "namespaces"       = var.target_namespaces
+        "config" = {
+          "helmRegistries" = {
+            "override" = [
+              {
+                "registry" = {
+                  "url" = "https://helm.traefik.io/traefik/index.yaml"
+                },
+                "charts" = [
+                  "traefik"
+                ]
+              },
+              {
+                "registry" = {
+                  "url" = "https://kubernetes-sigs.github.io/metrics-server/index.yaml"
+                },
+                "charts" = [
+                  "metrics-server"
+                ]
+              },
+              {
+                "registry" = {
+                  "url" = "https://prometheus-community.github.io/helm-charts/index.yaml"
+                },
+                "charts" = [
+                  "kube-prometheus-stack"
+                ]
+              }
+            ]
+          }
+        }
       }
     }
   }
