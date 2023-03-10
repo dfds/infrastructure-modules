@@ -27,10 +27,11 @@ variable "deploy" {
   default = true
 }
 
-variable "alb_target_group_arn_suffixes" {
-  type = list(string)
+variable "alb_arn_suffix" {
+  type = string
 }
 
-variable "alb_arn_suffixes" {
-  type = list(string)
+variable "alb_arn_target_group_suffix" {
+  type = string
 }
+
