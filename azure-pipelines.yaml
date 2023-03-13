@@ -15,7 +15,7 @@ pr:
 resources:
   containers:
     - container: prime
-      image: dfdsdk/prime-pipeline:0.6.24
+      image: dfdsdk/prime-pipeline:0.6.26
       env:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
@@ -192,6 +192,12 @@ stages:
                   workingDirectory: $(Agent.BuildDirectory)/source
                   displayName: "Provision Velero S3 bucket"
                   timeoutInMinutes: 15
+                - bash: wait-for-ngs.sh qa
+                  displayName: "Wait for managed node groups to become active"
+                  timeoutInMinutes: 15
+                - bash: wait-for-asgs.sh qa
+                  displayName: "Wait for auto scaling groups's instances to be in service"
+                  timeoutInMinutes: 15
                 - task: PowerShell@2
                   displayName: "Rollover nodes"
                   timeoutInMinutes: 15
@@ -241,6 +247,11 @@ stages:
                   workingDirectory: $(Agent.BuildDirectory)/source
                   displayName: "Provision Velero S3 bucket"
                   timeoutInMinutes: 15
+                - bash: wait-for-ngs.sh qa
+                  displayName: "Wait for managed node groups to become active"
+                  timeoutInMinutes: 15
+                - bash: wait-for-asgs.sh qa
+                  displayName: "Wait for auto scaling groups's instances to be in service"
                 - task: PowerShell@2
                   displayName: "Rollover nodes"
                   timeoutInMinutes: 15
