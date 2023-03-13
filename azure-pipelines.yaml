@@ -17,6 +17,7 @@ resources:
     - container: prime
       image: dfdsdk/prime-pipeline:0.6.26
       env:
+        AWS_DEFAULT_REGION: eu-west-1
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
         TF_VAR_platform_fluxcd_github_token: $(TF_VAR_platform_fluxcd_github_token)
@@ -247,10 +248,6 @@ stages:
                   workingDirectory: $(Agent.BuildDirectory)/source
                   displayName: "Provision Velero S3 bucket"
                   timeoutInMinutes: 15
-                - bash: which aws
-                  displayName: "Which AWS?"
-                - bash: aws --version
-                  displayName: "AWS version"
                 - bash: wait-for-ngs.sh qa
                   displayName: "Wait for managed node groups to become active"
                   timeoutInMinutes: 15
