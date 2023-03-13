@@ -100,8 +100,8 @@ inputs = {
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.24-*"]}]
-      # currentImageName=amazon-eks-node-1.24-v20230217
-      ami_id             = "ami-0e6fec55547d24a18"
+      # currentImageName=amazon-eks-node-1.24-v20230304
+      ami_id             = "ami-00805477850d62b8c"
       availability_zones = ["eu-west-1b"]
       kubelet_extra_args = "--max-pods=30 --kube-reserved=memory=585Mi,cpu=80m"
       taints = [
