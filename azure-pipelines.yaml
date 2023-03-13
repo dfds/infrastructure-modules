@@ -247,6 +247,10 @@ stages:
                   workingDirectory: $(Agent.BuildDirectory)/source
                   displayName: "Provision Velero S3 bucket"
                   timeoutInMinutes: 15
+                - bash: which aws
+                  displayName: "Which AWS?"
+                - bash: aws --version
+                  displayName: "AWS version"
                 - bash: wait-for-ngs.sh qa
                   displayName: "Wait for managed node groups to become active"
                   timeoutInMinutes: 15
