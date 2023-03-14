@@ -38,12 +38,28 @@ variable "repo_branch" {
 
 variable "helm_chart_version" {
   type        = string
-  description = "The version of the helm Exporter Helm Chart that should be used"
+  description = "The version of the Helm Exporter Helm Chart that should be used"
   default     = null
 }
 
 variable "interval_duration" {
-  type = string
+  type        = string
   description = "Interval between scrapes of Helm releases"
-  default = "10m"
+  default     = "10m"
+}
+
+variable "target_namespaces" {
+  type        = string
+  description = "Filter on namespaces"
+  default     = ""
+}
+
+variable "target_charts" {
+  type = list(object({
+    registry  = object({
+      url = string
+    })
+    charts    = list(string)
+  }))
+  default = []
 }

@@ -890,7 +890,7 @@ variable "blackbox_exporter_monitoring_targets" {
 }
 
 # --------------------------------------------------
-# helm Exporter
+# Helm Exporter
 # --------------------------------------------------
 
 variable "helm_exporter_deploy" {
@@ -923,6 +923,21 @@ variable "helm_exporter_repo_branch" {
   default     = null
 }
 
+variable "helm_exporter_target_namespaces" {
+  type        = string
+  description = "target namespaces filter"
+  default     = ""
+}
+
+variable "helm_exporter_target_charts" {
+  type = list(object({
+    registry  = object({
+      url = string
+    })
+    charts    = list(string)
+  }))
+  default = []
+}
 
 # --------------------------------------------------
 # Podinfo through Flux CD

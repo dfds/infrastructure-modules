@@ -22,7 +22,7 @@ inputs = {
 
   eks_is_sandbox                             = true
   eks_cluster_name                           = "qa"
-  eks_cluster_version                        = "1.24"
+  eks_cluster_version                        = "1.25"
   eks_addon_vpccni_prefix_delegation_enabled = false
 
   eks_worker_ssh_ip_whitelist = ["193.9.230.100/32"]
@@ -36,9 +36,9 @@ inputs = {
 
   eks_worker_subnets = ["10.0.16.0/21", "10.0.24.0/21", "10.0.32.0/21"]
   # This comment configures the renovate bot to automatically update this variable:
-  # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.24-*"]}]
-  # currentImageName=amazon-eks-node-1.24-v20230304
-  eks_nodegroup2_ami_id                  = "ami-00805477850d62b8c"
+  # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.25-*"]}]
+  # currentImageName=amazon-eks-node-1.25-v20230304
+  eks_nodegroup2_ami_id                  = "ami-04dc8cdc2e948f054"
   eks_nodegroup2_instance_types          = ["m5a.xlarge"]
   eks_nodegroup2_container_runtime       = "containerd"
   eks_nodegroup2_desired_size_per_subnet = 1
@@ -99,9 +99,9 @@ inputs = {
       instance_types          = ["m5a.xlarge"]
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
-      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.24-*"]}]
-      # currentImageName=amazon-eks-node-1.24-v20230304
-      ami_id             = "ami-00805477850d62b8c"
+      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.25-*"]}]
+      # currentImageName=amazon-eks-node-1.25-v20230304
+      ami_id             = "ami-04dc8cdc2e948f054"
       availability_zones = ["eu-west-1b"]
       kubelet_extra_args = "--max-pods=30 --kube-reserved=memory=585Mi,cpu=80m"
       taints = [
