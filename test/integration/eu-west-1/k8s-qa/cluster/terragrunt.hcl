@@ -36,7 +36,7 @@ inputs = {
 
   eks_worker_subnets = ["10.0.16.0/21", "10.0.24.0/21", "10.0.32.0/21"]
   # This comment configures the renovate bot to automatically update this variable:
-  # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.24-*"]}]
+  # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.25-*"]}]
   # currentImageName=amazon-eks-node-1.24-v20230304
   eks_nodegroup2_ami_id                  = "ami-00805477850d62b8c"
   eks_nodegroup2_instance_types          = ["m5a.xlarge"]
@@ -99,7 +99,7 @@ inputs = {
       instance_types          = ["m5a.xlarge"]
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
-      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.24-*"]}]
+      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.25-*"]}]
       # currentImageName=amazon-eks-node-1.24-v20230304
       ami_id             = "ami-00805477850d62b8c"
       availability_zones = ["eu-west-1b"]
