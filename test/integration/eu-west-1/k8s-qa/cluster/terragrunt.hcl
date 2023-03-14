@@ -22,7 +22,7 @@ inputs = {
 
   eks_is_sandbox                             = true
   eks_cluster_name                           = "qa"
-  eks_cluster_version                        = "1.24"
+  eks_cluster_version                        = "1.25"
   eks_addon_vpccni_prefix_delegation_enabled = false
 
   eks_worker_ssh_ip_whitelist = ["193.9.230.100/32"]
