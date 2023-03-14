@@ -61,6 +61,12 @@ locals {
           "replicas" = var.replicas
         }
         "intervalDuration" = var.interval_duration
+        "namespaces"       = var.target_namespaces
+        "config" = {
+          "helmRegistries" = {
+            "override" = var.target_charts
+          }
+        }
       }
     }
   }
