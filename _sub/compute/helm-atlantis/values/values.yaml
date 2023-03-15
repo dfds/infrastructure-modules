@@ -20,6 +20,9 @@ volumeClaim:
 github:
   user: ${github_username}
 
+extraArgs:
+  - --disable-autoplan
+
 environmentSecrets:
   - name: AWS_ACCESS_KEY_ID
     secretKeyRef:
