@@ -271,16 +271,18 @@ module "eks_managed_workers_node_group" {
   cloudwatch_agent_enabled          = var.eks_worker_cloudwatch_agent_config_deploy
 
   # Node group variations
-  nodegroup_name          = each.value.name
-  ami_id                  = each.value.ami_id
-  instance_types          = each.value.instance_types
-  container_runtime       = each.value.container_runtime
-  disk_size               = each.value.disk_size
-  desired_size_per_subnet = each.value.desired_size_per_subnet
-  kubelet_extra_args      = each.value.kubelet_extra_args
-  gpu_ami                 = each.value.gpu_ami
-  taints                  = each.value.taints
-  labels                  = each.value.labels
+  nodegroup_name             = each.value.name
+  ami_id                     = each.value.ami_id
+  instance_types             = each.value.instance_types
+  container_runtime          = each.value.container_runtime
+  disk_size                  = each.value.disk_size
+  desired_size_per_subnet    = each.value.desired_size_per_subnet
+  kubelet_extra_args         = each.value.kubelet_extra_args
+  gpu_ami                    = each.value.gpu_ami
+  taints                     = each.value.taints
+  labels                     = each.value.labels
+  max_unavailable            = each.value.max_unavailable
+  max_unavailable_percentage = each.value.max_unavailable_percentage
   subnet_ids = length(each.value.availability_zones) == 0 ? module.eks_managed_workers_subnet.subnet_ids : [
     for sn in module.eks_managed_workers_subnet.subnets : sn.id if contains(each.value.availability_zones, sn.availability_zone)
   ]

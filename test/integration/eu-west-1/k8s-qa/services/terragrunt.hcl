@@ -43,13 +43,13 @@ inputs = {
 
   traefikv2_test_alb_deploy = true
 
-  traefik_flux_github_owner     = "dfds"
-  traefik_flux_repo_name          = "platform-manifests-qa"
-  traefik_flux_repo_branch      = "main"
+  traefik_flux_github_owner = "dfds"
+  traefik_flux_repo_name    = "platform-manifests-qa"
+  traefik_flux_repo_branch  = "main"
 
   # Blue variant
-  traefik_blue_variant_flux_deploy = true
-  traefik_blue_variant_flux_dashboard_deploy = true
+  traefik_blue_variant_flux_deploy             = true
+  traefik_blue_variant_flux_dashboard_deploy   = true
   traefik_blue_variant_flux_helm_chart_version = "20.8.0"
   traefik_blue_variant_flux_additional_args = [
     "--metrics.prometheus",
@@ -58,8 +58,8 @@ inputs = {
   traefik_blue_variant_flux_weight = 1
 
   # Green variant
-  traefik_green_variant_flux_deploy = false
-  traefik_green_variant_flux_dashboard_deploy = false
+  traefik_green_variant_flux_deploy             = false
+  traefik_green_variant_flux_dashboard_deploy   = false
   traefik_green_variant_flux_helm_chart_version = "20.8.0"
   traefik_green_variant_flux_additional_args = [
     "--metrics.prometheus",
@@ -213,12 +213,12 @@ inputs = {
   # Helm Exporter
   # --------------------------------------------------
 
-  helm_exporter_deploy              = "true"
-  helm_exporter_helm_chart_version  = "1.2.4"
-  helm_exporter_github_owner        = "dfds"
-  helm_exporter_repo_name           = "platform-manifests-qa"
-  helm_exporter_repo_branch         = "main"
-  helm_exporter_target_namespaces   = "fluentd,flux-system,monitoring,traefik-blue-variant"
+  helm_exporter_deploy             = "true"
+  helm_exporter_helm_chart_version = "1.2.4"
+  helm_exporter_github_owner       = "dfds"
+  helm_exporter_repo_name          = "platform-manifests-qa"
+  helm_exporter_repo_branch        = "main"
+  helm_exporter_target_namespaces  = "fluentd,flux-system,monitoring,traefik-blue-variant"
   helm_exporter_target_charts = [
     {
       registry = {

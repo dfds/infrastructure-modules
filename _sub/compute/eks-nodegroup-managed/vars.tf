@@ -122,3 +122,15 @@ variable "vpc_cni_prefix_delegation_enabled" {
   description = "Configures the maximum pods limit on the nodes assuming that the prefix delegation feature is enabled on the VPC CNI addon."
   default     = false
 }
+
+variable "max_unavailable" {
+  type        = number
+  description = "Desired max number of unavailable worker nodes during node group update."
+  default     = null
+}
+
+variable "max_unavailable_percentage" {
+  type        = number
+  description = "Desired max percentage of unavailable worker nodes during node group update."
+  default     = null
+}
