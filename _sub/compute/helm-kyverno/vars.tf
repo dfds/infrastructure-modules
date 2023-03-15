@@ -12,3 +12,8 @@ variable "replicas" {
   type        = number
   description = "Number of replica pods"
 }
+
+variable "namespace_labels" {
+  type    = map(any)
+  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/enforce" = "privileged" }
+}

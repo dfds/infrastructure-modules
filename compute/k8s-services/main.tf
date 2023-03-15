@@ -775,4 +775,5 @@ module "kyverno" {
   chart_version       = var.kyverno_chart_version
   excluded_namespaces = ["traefik"]
   replicas            = var.kyverno_replicas
+  namespace_labels    = var.kyverno_namespace_labels
 }

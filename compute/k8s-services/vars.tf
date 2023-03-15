@@ -1087,6 +1087,11 @@ variable "kyverno_replicas" {
   description = "Number of replica pods for Kyverno"
 }
 
+variable "kyverno_namespace_labels" {
+  type    = map(any)
+  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/enforce" = "privileged" }
+}
+
 
 # --------------------------------------------------
 # Subnet Exporter
