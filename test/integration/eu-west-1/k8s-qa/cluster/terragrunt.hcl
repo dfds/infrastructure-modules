@@ -107,8 +107,8 @@ inputs = {
       # is enabled and the max pods limit has been raised to 110, eventhough without
       # enabling the max pod limit is 58 and the memory reservation would be lower. This
       # override should be removed when prefix delegation is enabled.
-      kubelet_extra_args = "--max-pods=58 --kube-reserved=memory=1465Mi,cpu=80m"
-      max_unavailable_percentage    = 50
+      kubelet_extra_args         = "--max-pods=58 --kube-reserved=memory=1465Mi,cpu=80m"
+      max_unavailable_percentage = 50
     },
     {
       name                    = "monitoring"
