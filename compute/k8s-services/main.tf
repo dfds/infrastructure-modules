@@ -377,9 +377,10 @@ module "cloudwatch_alarm_alb_targets_health_auth_green" {
 # --------------------------------------------------
 
 module "monitoring_namespace" {
-  source = "../../_sub/compute/k8s-namespace"
-  count  = var.monitoring_namespace_deploy ? 1 : 0
-  name   = local.monitoring_namespace_name
+  source           = "../../_sub/compute/k8s-namespace"
+  count            = var.monitoring_namespace_deploy ? 1 : 0
+  name             = local.monitoring_namespace_name
+  namespace_labels = var.monitoring_namespace_labels
 
   # The monitoring namespace has resources that are provisioned and
   # deprovisioned from it via Flux. If Flux is removed before the monitoring

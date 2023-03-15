@@ -138,6 +138,11 @@ variable "monitoring_namespace_deploy" {
   default     = true
 }
 
+variable "monitoring_namespace_labels" {
+  type    = map(any)
+  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/enforce" = "privileged" }
+}
+
 variable "monitoring_namespace_iam_roles" {
   type        = string
   description = "IAM roles allowed to assume"
@@ -931,10 +936,10 @@ variable "helm_exporter_target_namespaces" {
 
 variable "helm_exporter_target_charts" {
   type = list(object({
-    registry  = object({
+    registry = object({
       url = string
     })
-    charts    = list(string)
+    charts = list(string)
   }))
   default = []
 }

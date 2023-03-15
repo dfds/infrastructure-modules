@@ -14,3 +14,8 @@ variable "iam_roles" {
     error_message = "The value must contain full role ARNs."
   }
 }
+
+variable "namespace_labels" {
+  type    = map(any)
+  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/warn" = "baseline" }
+}
