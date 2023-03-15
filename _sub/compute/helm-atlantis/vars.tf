@@ -6,6 +6,11 @@ variable "namespace" {
   default     = "atlantis"
 }
 
+variable "namespace_labels" {
+  type    = map(any)
+  default = {}
+}
+
 variable "chart_version" {
   type        = string
   description = ""

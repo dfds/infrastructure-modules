@@ -495,6 +495,7 @@ module "atlantis" {
   source                                         = "../../_sub/compute/helm-atlantis"
   count                                          = var.atlantis_deploy ? 1 : 0
   namespace                                      = var.atlantis_namespace
+  namespace_labels                               = var.atlantis_namespace_labels
   chart_version                                  = var.atlantis_chart_version
   atlantis_image                                 = var.atlantis_image
   atlantis_image_tag                             = var.atlantis_image_tag

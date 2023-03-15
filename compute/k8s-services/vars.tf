@@ -463,6 +463,11 @@ variable "atlantis_namespace" {
   default     = "atlantis"
 }
 
+variable "atlantis_namespace_labels" {
+  type    = map(any)
+  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/warn" = "baseline" }
+}
+
 variable "atlantis_chart_version" {
   type        = string
   description = "Version of the helm chart to deploy"
