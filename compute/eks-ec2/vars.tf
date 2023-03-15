@@ -220,15 +220,17 @@ variable "eks_nodegroup2_desired_size_per_subnet" {
 # --------------------------------------------------
 variable "eks_managed_nodegroups" {
   type = list(object({
-    name                    = string
-    ami_id                  = optional(string, "")
-    instance_types          = optional(list(string), ["t3.small"])
-    container_runtime       = optional(string, "containerd")
-    disk_size               = optional(number, 128)
-    desired_size_per_subnet = optional(number, 0)
-    kubelet_extra_args      = optional(string, "")
-    gpu_ami                 = optional(bool, false)
-    availability_zones      = optional(list(string), [])
+    name                       = string
+    ami_id                     = optional(string, "")
+    instance_types             = optional(list(string), ["t3.small"])
+    container_runtime          = optional(string, "containerd")
+    disk_size                  = optional(number, 128)
+    desired_size_per_subnet    = optional(number, 0)
+    kubelet_extra_args         = optional(string, "")
+    gpu_ami                    = optional(bool, false)
+    availability_zones         = optional(list(string), [])
+    max_unavailable            = optional(number, null)
+    max_unavailable_percentage = optional(number, null)
     taints = optional(list(object({
       key    = string,
       value  = optional(string),

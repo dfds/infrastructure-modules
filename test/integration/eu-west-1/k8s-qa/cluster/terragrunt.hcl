@@ -104,6 +104,7 @@ inputs = {
       ami_id             = "ami-04dc8cdc2e948f054"
       availability_zones = ["eu-west-1b"]
       kubelet_extra_args = "--max-pods=30 --kube-reserved=memory=585Mi,cpu=80m"
+      max_unavailable    = 1
       taints = [
         {
           key    = "monitoring.dfds"

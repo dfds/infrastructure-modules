@@ -67,6 +67,20 @@ resource "aws_eks_node_group" "group" {
     version = aws_launch_template.eks[0].latest_version
   }
 
+  dynamic "update_config" {
+    for_each = var.max_unavailable != null ? [var.max_unavailable] : []
+    content {
+      max_unavailable = update_config.value
+    }
+  }
+
+  dynamic "update_config" {
+    for_each = var.max_unavailable_percentage != null ? [var.max_unavailable_percentage] : []
+    content {
+      max_unavailable_percentage = update_config.value
+    }
+  }
+
   scaling_config {
     desired_size = local.asg_desired_size
     max_size     = local.asg_max_size
