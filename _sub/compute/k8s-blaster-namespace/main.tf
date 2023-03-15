@@ -6,7 +6,8 @@ resource "kubernetes_namespace" "self_service" {
   count = var.deploy ? 1 : 0
 
   metadata {
-    name = "selfservice"
+    name   = "selfservice"
+    labels = var.namespace_labels
   }
 }
 

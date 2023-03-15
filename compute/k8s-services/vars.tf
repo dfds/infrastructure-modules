@@ -104,6 +104,11 @@ variable "blaster_deploy" {
   default = false
 }
 
+variable "blaster_namespace_labels" {
+  type    = map(any)
+  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/warn" = "baseline" }
+}
+
 # --------------------------------------------------
 # Cloudwatch alarms and alarm notifier (Slack)
 # --------------------------------------------------

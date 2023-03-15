@@ -310,6 +310,7 @@ module "blaster_namespace" {
   source                   = "../../_sub/compute/k8s-blaster-namespace"
   deploy                   = var.blaster_deploy
   cluster_name             = var.eks_cluster_name
+  namespace_labels         = var.blaster_namespace_labels
   blaster_configmap_bucket = data.terraform_remote_state.cluster.outputs.blaster_configmap_bucket
   oidc_issuer              = local.oidc_issuer
 }
