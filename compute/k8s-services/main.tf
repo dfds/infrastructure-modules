@@ -553,6 +553,7 @@ module "crossplane" {
   release_name                      = var.crossplane_release_name
   count                             = var.crossplane_deploy ? 1 : 0
   namespace                         = var.crossplane_namespace
+  namespace_labels                  = var.crossplane_namespace_labels
   chart_version                     = var.crossplane_chart_version
   recreate_pods                     = var.crossplane_recreate_pods
   force_update                      = var.crossplane_force_update

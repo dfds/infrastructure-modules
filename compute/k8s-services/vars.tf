@@ -585,6 +585,11 @@ variable "crossplane_namespace" {
   default     = "upbound-system"
 }
 
+variable "crossplane_namespace_labels" {
+  type    = map(any)
+  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/warn" = "baseline" }
+}
+
 variable "crossplane_release_name" {
   type        = string
   description = "Name of the chart release"
