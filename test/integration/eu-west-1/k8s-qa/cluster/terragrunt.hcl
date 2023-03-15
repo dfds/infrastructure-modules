@@ -95,6 +95,22 @@ inputs = {
 
   eks_managed_nodegroups = [
     {
+      name                    = "general"
+      instance_types          = ["m5a.xlarge"]
+      desired_size_per_subnet = 1
+      # This comment configures the renovate bot to automatically update this variable:
+      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.25-*"]}]
+      # currentImageName=amazon-eks-node-1.25-v20230304
+      ami_id             = "ami-04dc8cdc2e948f054"
+      availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+      # TODO(emil): The kubelet memory reservation here is set as if prefix delegation
+      # is enabled and the max pods limit has been raised to 110, eventhough without
+      # enabling the max pod limit is 58 and the memory reservation would be lower. This
+      # override should be removed when prefix delegation is enabled.
+      kubelet_extra_args = "--max-pods=58 --kube-reserved=memory=1465Mi,cpu=80m"
+      max_unavailable_percentage    = 50
+    },
+    {
       name                    = "monitoring"
       instance_types          = ["m5a.xlarge"]
       desired_size_per_subnet = 1
