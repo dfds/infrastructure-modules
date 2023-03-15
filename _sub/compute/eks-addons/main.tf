@@ -88,7 +88,7 @@ resource "kubernetes_storage_class" "csi-gp2" {
   metadata {
     name = "csi-gp2"
     annotations = {
-      "storageclass.kubernetes.io/is-default-class" = "true"
+      "storageclass.kubernetes.io/is-default-class" = "false"
     }
   }
   storage_provisioner    = "ebs.csi.aws.com"
@@ -97,6 +97,26 @@ resource "kubernetes_storage_class" "csi-gp2" {
   allow_volume_expansion = "true"
   parameters = {
     type = "gp2"
+  }
+
+  depends_on = [
+    aws_eks_addon.aws-ebs-csi-driver
+  ]
+}
+
+resource "kubernetes_storage_class" "csi-gp3" {
+  metadata {
+    name = "csi-gp3"
+    annotations = {
+      "storageclass.kubernetes.io/is-default-class" = "true"
+    }
+  }
+  storage_provisioner    = "ebs.csi.aws.com"
+  reclaim_policy         = "Delete"
+  volume_binding_mode    = "WaitForFirstConsumer"
+  allow_volume_expansion = "true"
+  parameters = {
+    type = "gp3"
   }
 
   depends_on = [
