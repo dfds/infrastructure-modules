@@ -29,21 +29,6 @@ inputs = {
   eks_worker_ssh_public_key   = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDS85QojLMO8eI5ArwburDpVthEZmW3IVs4/nmv7YnDMgs+ucJmW/etm7MlkRDvWphH4X/6mSGGmylJq7vUIn5rHMG0KTFxg06G2ZJ0zS6ryQ89tDLA9LXhD3q//TzXDFJ4ztjcSyxL1fSW44Lpmt7l7wWHdgrMaP3db2TRYOKY2/0iC22TwQKjTSGku59sFmv3XkLVBehO3fFOXcbLChZ4+maPMmgJDUyYMVSVZNJ2YsjFHHeaYClaN0az0Agcab2HIZMZh0Vv08ro0Se5ZBUjyfoPuDe3WjutkivePajG710k10vSOx6X5CHO3bZvQEBA8klCY58Xp2XrzSChNZhP eks-deploy-hellman"
   eks_k8s_auth_api_version    = "client.authentication.k8s.io/v1beta1"
 
-
-  # --------------------------------------------------
-  # Unmanaged nodes
-  # --------------------------------------------------
-
-  eks_worker_subnets = ["10.0.16.0/21", "10.0.24.0/21", "10.0.32.0/21"]
-  # This comment configures the renovate bot to automatically update this variable:
-  # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.25-*"]}]
-  # currentImageName=amazon-eks-node-1.25-v20230304
-  eks_nodegroup2_ami_id                  = "ami-04dc8cdc2e948f054"
-  eks_nodegroup2_instance_types          = ["m5a.xlarge"]
-  eks_nodegroup2_container_runtime       = "containerd"
-  eks_nodegroup2_desired_size_per_subnet = 1
-  eks_nodegroup2_kubelet_extra_args      = "--node-labels=nodegroup=ng2"
-
   # --------------------------------------------------
   # Managed nodes
   # --------------------------------------------------
