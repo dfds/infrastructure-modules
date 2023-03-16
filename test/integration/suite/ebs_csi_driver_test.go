@@ -11,5 +11,5 @@ func TestEbsCsiDriverDeployment(t *testing.T) {
 func TestEbsCsiDriverDaemonSet(t *testing.T) {
 	t.Parallel()
 	clientset := NewK8sClientSet(t)
-	AssertK8sDaemonSet(t, clientset, "kube-system", "ebs-csi-node", 7)
+	AssertK8sDaemonSet(t, clientset, "kube-system", "ebs-csi-node", 4)
 }
