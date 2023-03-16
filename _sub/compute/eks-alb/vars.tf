@@ -15,7 +15,7 @@ variable "vpc_id" {
 }
 
 variable "autoscaling_group_ids" {
-  type = list(string)
+  type = set(string)
 }
 
 # variable "traefik_k8s_name" {}
