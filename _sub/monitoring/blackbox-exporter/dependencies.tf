@@ -36,7 +36,7 @@ locals {
     "apiVersion" = "kustomize.config.k8s.io/v1beta1"
     "kind"       = "Kustomization"
     "resources" = [
-      "https://github.com/dfds/platform-apps/apps/${var.deploy_name}"
+      "${var.gitops_apps_repo_url}/apps/${var.deploy_name}?ref=${var.gitops_apps_repo_branch}"
     ]
     "patchesStrategicMerge" = [
       "patch.yaml"

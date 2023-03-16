@@ -52,3 +52,15 @@ variable "overwrite_on_create" {
   default     = true
   description = "Enable overwriting existing files"
 }
+
+variable "gitops_apps_repo_url" {
+  type        = string
+  default     = ""
+  description = "The https url for your GitOps manifests"
+}
+
+variable "gitops_apps_repo_branch" {
+  type        = string
+  default     = "main"
+  description = "The default branch for your GitOps manifests"
+}

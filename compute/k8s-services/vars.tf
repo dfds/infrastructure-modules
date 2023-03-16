@@ -407,6 +407,23 @@ variable "platform_fluxcd_overwrite_on_create" {
 
 
 # --------------------------------------------------
+# GitOps apps used by Flux CD
+# --------------------------------------------------
+
+variable "fluxcd_gitops_apps_repo_url" {
+  type        = string
+  default     = "https://github.com/dfds/platform-apps"
+  description = "The https url for your GitOps manifests"
+}
+
+variable "fluxcd_gitops_apps_repo_branch" {
+  type        = string
+  default     = "main"
+  description = "The default branch for your GitOps manifests"
+}
+
+
+# --------------------------------------------------
 # Atlantis
 # --------------------------------------------------
 
@@ -931,10 +948,10 @@ variable "helm_exporter_target_namespaces" {
 
 variable "helm_exporter_target_charts" {
   type = list(object({
-    registry  = object({
+    registry = object({
       url = string
     })
-    charts    = list(string)
+    charts = list(string)
   }))
   default = []
 }
