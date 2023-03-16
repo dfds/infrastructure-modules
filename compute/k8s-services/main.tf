@@ -98,21 +98,23 @@ module "traefik_alb_s3_access_logs" {
 # --------------------------------------------------
 
 module "traefik_blue_variant_flux_manifests" {
-  source                 = "../../_sub/compute/k8s-traefik-flux"
-  count                  = var.traefik_blue_variant_flux_deploy ? 1 : 0
-  cluster_name           = var.eks_cluster_name
-  deploy_name            = "traefik-blue-variant"
-  namespace              = "traefik-blue-variant"
-  helm_chart_version     = var.traefik_blue_variant_flux_helm_chart_version
-  replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
-  http_nodeport          = var.traefik_blue_variant_flux_http_nodeport
-  admin_nodeport         = var.traefik_blue_variant_flux_admin_nodeport
-  github_owner           = var.traefik_flux_github_owner
-  repo_name              = var.traefik_flux_repo_name
-  repo_branch            = var.traefik_flux_repo_branch
-  additional_args        = var.traefik_blue_variant_flux_additional_args
-  dashboard_ingress_host = "traefik-blue-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
-  overwrite_on_create    = var.platform_fluxcd_overwrite_on_create
+  source                  = "../../_sub/compute/k8s-traefik-flux"
+  count                   = var.traefik_blue_variant_flux_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  deploy_name             = "traefik-blue-variant"
+  namespace               = "traefik-blue-variant"
+  helm_chart_version      = var.traefik_blue_variant_flux_helm_chart_version
+  replicas                = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
+  http_nodeport           = var.traefik_blue_variant_flux_http_nodeport
+  admin_nodeport          = var.traefik_blue_variant_flux_admin_nodeport
+  github_owner            = var.traefik_flux_github_owner
+  repo_name               = var.traefik_flux_repo_name
+  repo_branch             = var.traefik_flux_repo_branch
+  additional_args         = var.traefik_blue_variant_flux_additional_args
+  dashboard_ingress_host  = "traefik-blue-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
+  overwrite_on_create     = var.platform_fluxcd_overwrite_on_create
+  gitops_apps_repo_url    = var.fluxcd_gitops_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_gitops_apps_repo_branch
 
   providers = {
     github = github.fluxcd
@@ -123,21 +125,23 @@ module "traefik_blue_variant_flux_manifests" {
 
 # TODO(samdi): Rename to traefik_green_variant_flux_manifests so it is consistent with the b/g traefik naming
 module "traefik_variant_flux_manifests" {
-  source                 = "../../_sub/compute/k8s-traefik-flux"
-  count                  = var.traefik_green_variant_flux_deploy ? 1 : 0
-  cluster_name           = var.eks_cluster_name
-  deploy_name            = "traefik-green-variant"
-  namespace              = "traefik-green-variant"
-  helm_chart_version     = var.traefik_green_variant_flux_helm_chart_version
-  replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
-  http_nodeport          = var.traefik_green_variant_flux_http_nodeport
-  admin_nodeport         = var.traefik_green_variant_flux_admin_nodeport
-  github_owner           = var.traefik_flux_github_owner
-  repo_name              = var.traefik_flux_repo_name
-  repo_branch            = var.traefik_flux_repo_branch
-  additional_args        = var.traefik_green_variant_flux_additional_args
-  dashboard_ingress_host = "traefik-green-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
-  overwrite_on_create    = var.platform_fluxcd_overwrite_on_create
+  source                  = "../../_sub/compute/k8s-traefik-flux"
+  count                   = var.traefik_green_variant_flux_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  deploy_name             = "traefik-green-variant"
+  namespace               = "traefik-green-variant"
+  helm_chart_version      = var.traefik_green_variant_flux_helm_chart_version
+  replicas                = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
+  http_nodeport           = var.traefik_green_variant_flux_http_nodeport
+  admin_nodeport          = var.traefik_green_variant_flux_admin_nodeport
+  github_owner            = var.traefik_flux_github_owner
+  repo_name               = var.traefik_flux_repo_name
+  repo_branch             = var.traefik_flux_repo_branch
+  additional_args         = var.traefik_green_variant_flux_additional_args
+  dashboard_ingress_host  = "traefik-green-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
+  overwrite_on_create     = var.platform_fluxcd_overwrite_on_create
+  gitops_apps_repo_url    = var.fluxcd_gitops_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_gitops_apps_repo_branch
 
   providers = {
     github = github.fluxcd
@@ -470,16 +474,18 @@ module "monitoring_metrics_server" {
 # --------------------------------------------------
 
 module "platform_fluxcd" {
-  source              = "../../_sub/compute/k8s-fluxcd"
-  count               = var.platform_fluxcd_deploy ? 1 : 0
-  release_tag         = var.platform_fluxcd_release_tag
-  cluster_name        = var.eks_cluster_name
-  repo_name           = var.platform_fluxcd_repo_name
-  repo_path           = "./clusters/${var.eks_cluster_name}"
-  github_owner        = var.platform_fluxcd_github_owner
-  kubeconfig_path     = local.kubeconfig_path
-  repo_branch         = var.platform_fluxcd_repo_branch
-  overwrite_on_create = var.platform_fluxcd_overwrite_on_create
+  source                  = "../../_sub/compute/k8s-fluxcd"
+  count                   = var.platform_fluxcd_deploy ? 1 : 0
+  release_tag             = var.platform_fluxcd_release_tag
+  cluster_name            = var.eks_cluster_name
+  repo_name               = var.platform_fluxcd_repo_name
+  repo_path               = "./clusters/${var.eks_cluster_name}"
+  github_owner            = var.platform_fluxcd_github_owner
+  kubeconfig_path         = local.kubeconfig_path
+  repo_branch             = var.platform_fluxcd_repo_branch
+  overwrite_on_create     = var.platform_fluxcd_overwrite_on_create
+  gitops_apps_repo_url    = var.fluxcd_gitops_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_gitops_apps_repo_branch
 
   providers = {
     github = github.fluxcd
@@ -631,16 +637,18 @@ module "crossplane_provider_confluent_prereqs" {
 # --------------------------------------------------
 
 module "blackbox_exporter_flux_manifests" {
-  source              = "../../_sub/monitoring/blackbox-exporter"
-  count               = var.blackbox_exporter_deploy ? 1 : 0
-  cluster_name        = var.eks_cluster_name
-  helm_chart_version  = var.blackbox_exporter_helm_chart_version
-  github_owner        = var.blackbox_exporter_github_owner
-  repo_name           = var.blackbox_exporter_repo_name
-  repo_branch         = var.blackbox_exporter_repo_branch
-  monitoring_targets  = local.blackbox_exporter_monitoring_targets
-  namespace           = module.monitoring_namespace[0].name
-  overwrite_on_create = var.platform_fluxcd_overwrite_on_create
+  source                  = "../../_sub/monitoring/blackbox-exporter"
+  count                   = var.blackbox_exporter_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  helm_chart_version      = var.blackbox_exporter_helm_chart_version
+  github_owner            = var.blackbox_exporter_github_owner
+  repo_name               = var.blackbox_exporter_repo_name
+  repo_branch             = var.blackbox_exporter_repo_branch
+  monitoring_targets      = local.blackbox_exporter_monitoring_targets
+  namespace               = module.monitoring_namespace[0].name
+  overwrite_on_create     = var.platform_fluxcd_overwrite_on_create
+  gitops_apps_repo_url    = var.fluxcd_gitops_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_gitops_apps_repo_branch
 
   providers = {
     github = github.fluxcd
@@ -654,16 +662,19 @@ module "blackbox_exporter_flux_manifests" {
 # --------------------------------------------------
 
 module "helm_exporter_flux_manifests" {
-  source             = "../../_sub/monitoring/helm-exporter"
-  count              = var.helm_exporter_deploy ? 1 : 0
-  cluster_name       = var.eks_cluster_name
-  helm_chart_version = var.helm_exporter_helm_chart_version
-  github_owner       = var.helm_exporter_github_owner != null ? var.helm_exporter_github_owner : var.platform_fluxcd_github_owner
-  repo_name          = var.helm_exporter_repo_name != null ? var.helm_exporter_repo_name : var.platform_fluxcd_repo_name
-  repo_branch        = var.helm_exporter_repo_branch != null ? var.helm_exporter_repo_branch : var.platform_fluxcd_repo_branch
-  namespace          = module.monitoring_namespace[0].name
-  target_namespaces  = var.helm_exporter_target_namespaces
-  target_charts      = var.helm_exporter_target_charts
+  source                  = "../../_sub/monitoring/helm-exporter"
+  count                   = var.helm_exporter_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  helm_chart_version      = var.helm_exporter_helm_chart_version
+  github_owner            = var.helm_exporter_github_owner != null ? var.helm_exporter_github_owner : var.platform_fluxcd_github_owner
+  repo_name               = var.helm_exporter_repo_name != null ? var.helm_exporter_repo_name : var.platform_fluxcd_repo_name
+  repo_branch             = var.helm_exporter_repo_branch != null ? var.helm_exporter_repo_branch : var.platform_fluxcd_repo_branch
+  namespace               = module.monitoring_namespace[0].name
+  target_namespaces       = var.helm_exporter_target_namespaces
+  target_charts           = var.helm_exporter_target_charts
+  overwrite_on_create     = var.platform_fluxcd_overwrite_on_create
+  gitops_apps_repo_url    = var.fluxcd_gitops_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_gitops_apps_repo_branch
 
   providers = {
     github = github.fluxcd
@@ -710,6 +721,8 @@ module "fluentd_cloudwatch_flux_manifests" {
   deploy_oidc_provider            = var.aws_assume_logs_role_arn != null ? true : false # do not create extra oidc provider if external log account is provided
   eks_openid_connect_provider_url = local.oidc_issuer
   overwrite_on_create             = var.platform_fluxcd_overwrite_on_create
+  gitops_apps_repo_url            = var.fluxcd_gitops_apps_repo_url
+  gitops_apps_repo_branch         = var.fluxcd_gitops_apps_repo_branch
 
   providers = {
     github = github.fluxcd
@@ -725,19 +738,21 @@ module "fluentd_cloudwatch_flux_manifests" {
 # --------------------------------------------------
 
 module "velero_flux_manifests" {
-  source                 = "../../_sub/storage/velero-flux"
-  count                  = var.velero_flux_deploy ? 1 : 0
-  cluster_name           = var.eks_cluster_name
-  role_arn               = var.velero_flux_role_arn
-  bucket_name            = var.velero_flux_bucket_name
-  log_level              = var.velero_flux_log_level
-  repo_name              = var.velero_flux_repo_name != null ? var.velero_flux_repo_name : var.platform_fluxcd_repo_name
-  repo_branch            = var.velero_flux_repo_branch != null ? var.velero_flux_repo_branch : var.platform_fluxcd_repo_branch
-  helm_chart_version     = var.velero_helm_chart_version
-  image_tag              = var.velero_image_tag
-  plugin_for_aws_version = var.velero_plugin_for_aws_version
-  plugin_for_csi_version = var.velero_plugin_for_csi_version
-  overwrite_on_create    = var.platform_fluxcd_overwrite_on_create
+  source                  = "../../_sub/storage/velero-flux"
+  count                   = var.velero_flux_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  role_arn                = var.velero_flux_role_arn
+  bucket_name             = var.velero_flux_bucket_name
+  log_level               = var.velero_flux_log_level
+  repo_name               = var.velero_flux_repo_name != null ? var.velero_flux_repo_name : var.platform_fluxcd_repo_name
+  repo_branch             = var.velero_flux_repo_branch != null ? var.velero_flux_repo_branch : var.platform_fluxcd_repo_branch
+  helm_chart_version      = var.velero_helm_chart_version
+  image_tag               = var.velero_image_tag
+  plugin_for_aws_version  = var.velero_plugin_for_aws_version
+  plugin_for_csi_version  = var.velero_plugin_for_csi_version
+  overwrite_on_create     = var.platform_fluxcd_overwrite_on_create
+  gitops_apps_repo_url    = var.fluxcd_gitops_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_gitops_apps_repo_branch
 
   providers = {
     github = github.fluxcd
