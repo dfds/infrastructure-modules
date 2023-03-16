@@ -45,8 +45,8 @@ resource "aws_lb_target_group" "traefik_auth_blue_variant" {
 }
 
 resource "aws_autoscaling_attachment" "traefik_auth_blue_variant" {
-  count                  = var.deploy_blue_variant ? length(var.autoscaling_group_ids) : 0
-  autoscaling_group_name = var.autoscaling_group_ids[count.index]
+  for_each               = var.deploy_blue_variant ? var.autoscaling_group_ids : []
+  autoscaling_group_name = each.key
   lb_target_group_arn    = aws_lb_target_group.traefik_auth_blue_variant[0].arn
 }
 
@@ -71,8 +71,8 @@ resource "aws_lb_target_group" "traefik_auth_green_variant" {
 }
 
 resource "aws_autoscaling_attachment" "traefik_auth_green_variant" {
-  count                  = var.deploy_green_variant ? length(var.autoscaling_group_ids) : 0
-  autoscaling_group_name = var.autoscaling_group_ids[count.index]
+  for_each               = var.deploy_green_variant ? var.autoscaling_group_ids : []
+  autoscaling_group_name = each.key
   lb_target_group_arn    = aws_lb_target_group.traefik_auth_green_variant[0].arn
 }
 
