@@ -88,31 +88,34 @@ resource "aws_lb_listener" "traefik" {
     type  = "forward"
     order = 1
 
-    forward {
+    target_group_arn = var.deploy_blue_variant && var.deploy_green_variant ? null : (var.deploy_blue_variant ? var.deploy_blue_variant : var.deploy_green_variant)
+    
+    dynamic "forward" {
+      for_each = var.deploy_blue_variant && var.deploy_green_variant ? [
+        {
+          arn    = aws_lb_target_group.traefik_blue_variant[0].arn
+          weight = var.blue_variant_weight
+        },
+        {
+          arn    = aws_lb_target_group.traefik_green_variant[0].arn
+          weight = var.green_variant_weight
+        }
+      ] : []
+      content {
+        forward {
 
-      stickiness {
-        enabled  = true
-        duration = 10
-      }
+          stickiness {
+            enabled  = true
+            duration = 10
+          }
 
-      dynamic "target_group" {
-        for_each = concat(
-          var.deploy_blue_variant ? [
-            {
-              arn    = aws_lb_target_group.traefik_blue_variant[0].arn
-              weight = var.blue_variant_weight
+          dynamic "target_group" {
+            for_each = each.value
+            content {
+              arn    = target_group.value["arn"]
+              weight = target_group.value["weight"]
             }
-          ] : [],
-          var.deploy_green_variant ? [
-            {
-              arn    = aws_lb_target_group.traefik_green_variant[0].arn
-              weight = var.green_variant_weight
-            }
-          ] : []
-        )
-        content {
-          arn    = target_group.value["arn"]
-          weight = target_group.value["weight"]
+          }
         }
       }
     }
