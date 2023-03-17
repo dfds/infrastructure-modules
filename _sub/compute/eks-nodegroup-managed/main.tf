@@ -8,7 +8,6 @@ resource "aws_launch_template" "eks" {
   # `src/produce-eni-max-pods.sh` when updating the EKS VPC CNI addon.
   user_data = base64encode(templatefile("${path.module}/user-data.sh.tftpl", {
     eks_endpoint : var.eks_endpoint,
-    container_runtime : var.container_runtime,
     eks_certificate_authority : var.eks_certificate_authority,
     cluster_name : var.cluster_name,
     bootstrap_extra_args : local.bootstrap_extra_args,

@@ -140,11 +140,6 @@ variable "eks_nodegroup1_instance_types" {
   default = ["t3.small"]
 }
 
-variable "eks_nodegroup1_container_runtime" {
-  type    = string
-  default = "containerd"
-}
-
 variable "eks_nodegroup1_disk_size" {
   type    = number
   default = 128
@@ -183,11 +178,6 @@ variable "eks_nodegroup2_instance_types" {
   default = ["t3.small"]
 }
 
-variable "eks_nodegroup2_container_runtime" {
-  type    = string
-  default = "containerd"
-}
-
 variable "eks_nodegroup2_disk_size" {
   type    = number
   default = 128
@@ -223,7 +213,6 @@ variable "eks_managed_nodegroups" {
     name                       = string
     ami_id                     = optional(string, "")
     instance_types             = optional(list(string), ["t3.small"])
-    container_runtime          = optional(string, "containerd")
     disk_size                  = optional(number, 128)
     desired_size_per_subnet    = optional(number, 0)
     kubelet_extra_args         = optional(string, "")
