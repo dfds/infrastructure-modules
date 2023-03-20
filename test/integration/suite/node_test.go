@@ -9,13 +9,13 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func TestUnmanagedNodeMaxPod(t *testing.T) {
+func TestGeneralNodeMaxPod(t *testing.T) {
 	t.Parallel()
 	clientset := NewK8sClientSet(t)
 
 	resp, err := clientset.CoreV1().Nodes().List(context.Background(),
 		metav1.ListOptions{
-			LabelSelector: "nodegroup in (ng2)",
+			LabelSelector: "eks.amazonaws.com/nodegroup in (general)",
 		})
 	if err != nil {
 		t.Log(err.Error())
@@ -26,7 +26,7 @@ func TestUnmanagedNodeMaxPod(t *testing.T) {
 		assert.EqualValues(t,
 			// Asssuming a m5a.xlarge instance and prefix delegation enabled the
 			// limit should be 110, if disabled it should be 58.
-			58, node.Status.Capacity.Pods().Value(), "unmanaged node %q pods limit does not match", node.Name)
+			110, node.Status.Capacity.Pods().Value(), "unmanaged node %q pods limit does not match", node.Name)
 	}
 }
 
