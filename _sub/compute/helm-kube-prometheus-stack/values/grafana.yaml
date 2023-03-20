@@ -1,3 +1,5 @@
+kubeApiServer:
+  enabled: false
 grafana:
   image:
     tag: 9.4.3 # TODO: Remove when Grafana 9.4.0 or higher is part of kube-prometheus-stack
