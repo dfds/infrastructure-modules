@@ -24,7 +24,7 @@ inputs = {
   eks_cluster_name                           = "qa"
   eks_cluster_version                        = "1.25"
   eks_cluster_zones                          = 2
-  eks_addon_vpccni_prefix_delegation_enabled = false
+  eks_addon_vpccni_prefix_delegation_enabled = true
 
   eks_worker_ssh_ip_whitelist = ["193.9.230.100/32"]
   eks_worker_ssh_public_key   = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDS85QojLMO8eI5ArwburDpVthEZmW3IVs4/nmv7YnDMgs+ucJmW/etm7MlkRDvWphH4X/6mSGGmylJq7vUIn5rHMG0KTFxg06G2ZJ0zS6ryQ89tDLA9LXhD3q//TzXDFJ4ztjcSyxL1fSW44Lpmt7l7wWHdgrMaP3db2TRYOKY2/0iC22TwQKjTSGku59sFmv3XkLVBehO3fFOXcbLChZ4+maPMmgJDUyYMVSVZNJ2YsjFHHeaYClaN0az0Agcab2HIZMZh0Vv08ro0Se5ZBUjyfoPuDe3WjutkivePajG710k10vSOx6X5CHO3bZvQEBA8klCY58Xp2XrzSChNZhP eks-deploy-hellman"
