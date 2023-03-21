@@ -191,7 +191,6 @@ module "eks_nodegroup1_workers" {
   subnet_ids              = module.eks_workers_subnet.subnet_ids
   disk_size               = var.eks_nodegroup1_disk_size
   instance_types          = var.eks_nodegroup1_instance_types
-  container_runtime       = var.eks_nodegroup1_container_runtime
   ami_id                  = var.eks_nodegroup1_ami_id
   gpu_ami                 = var.eks_nodegroup1_gpu_ami
   ec2_ssh_key             = module.eks_workers_keypair.key_name
@@ -229,7 +228,6 @@ module "eks_nodegroup2_workers" {
   subnet_ids              = module.eks_workers_subnet.subnet_ids
   disk_size               = var.eks_nodegroup2_disk_size
   instance_types          = var.eks_nodegroup2_instance_types
-  container_runtime       = var.eks_nodegroup2_container_runtime
   ami_id                  = var.eks_nodegroup2_ami_id
   gpu_ami                 = var.eks_nodegroup2_gpu_ami
   ec2_ssh_key             = module.eks_workers_keypair.key_name
@@ -274,7 +272,6 @@ module "eks_managed_workers_node_group" {
   nodegroup_name             = each.value.name
   ami_id                     = each.value.ami_id
   instance_types             = each.value.instance_types
-  container_runtime          = each.value.container_runtime
   disk_size                  = each.value.disk_size
   desired_size_per_subnet    = each.value.desired_size_per_subnet
   kubelet_extra_args         = each.value.kubelet_extra_args

@@ -60,60 +60,6 @@ locals {
     ]
   }
 
-  # TODO(emil): remove once dockershim is removed with move to 1.24
-  config_patch_yaml_dockerd = <<YAML
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: ${local.fluentd_namespace}
-
----
-apiVersion: apps/v1
-kind: DaemonSet
-metadata:
-  name: ${local.fluentd_name}
-  namespace: ${local.fluentd_namespace}
-spec:
-  template:
-    spec:
-      serviceAccountName: ${local.fluentd_name}
-      containers:
-        - name: ${local.fluentd_name}
-          env:
-            - name: AWS_REGION
-              value: "${var.aws_region}"
-            - name: RETENTION_IN_DAYS
-              value: "${var.retention_in_days}"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: ${local.fluentd_name}
-  namespace: ${local.fluentd_namespace}
-data:
-  02-tag.conf: |-
-    # Tag with namespace and prefix with clustername
-    <match kubernetes.**>
-      @type rewrite_tag_filter
-      <rule>
-        key $.kubernetes.namespace_name
-        pattern ^(.+)$
-        tag /k8s/${var.cluster_name}/$1
-      </rule>
-    </match>
-
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: ${local.fluentd_name}
-  namespace: ${local.fluentd_namespace}
-  annotations:
-    eks.amazonaws.com/role-arn: ${aws_iam_role.this.arn}
-    eks.amazonaws.com/sts-regional-endpoints: "true"
-YAML
-
   config_patch_yaml_containerd = <<YAML
 ---
 apiVersion: v1
@@ -179,7 +125,6 @@ metadata:
     eks.amazonaws.com/sts-regional-endpoints: "true"
 YAML
 }
-
 
 # --------------------------------------------------
 # AWS

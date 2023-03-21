@@ -50,14 +50,6 @@ output "eks_cluster_nodes_sg_id" {
   value = module.eks_workers_security_group.id
 }
 
-output "eks_worker_autoscaling_group_container_runtimes" {
-  value = flatten([
-    module.eks_nodegroup1_workers.container_runtime,
-    module.eks_nodegroup2_workers.container_runtime,
-    [for m in module.eks_managed_workers_node_group : m.container_runtime],
-  ])
-}
-
 # --------------------------------------------------
 # Misc
 # --------------------------------------------------

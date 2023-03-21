@@ -70,16 +70,6 @@ variable "eks_endpoint" {
   type = string
 }
 
-variable "container_runtime" {
-  type    = string
-  default = "containerd"
-
-  validation {
-    condition     = contains(["dockerd", "containerd"], var.container_runtime)
-    error_message = "Valid values for var.container_runtime are dockerd and containerd."
-  }
-}
-
 variable "eks_certificate_authority" {
   type = string
 }

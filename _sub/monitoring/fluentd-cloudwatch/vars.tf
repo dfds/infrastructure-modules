@@ -3,16 +3,6 @@ variable "cluster_name" {
   description = "The name of the EKS cluster."
 }
 
-variable "container_runtime" {
-  type        = string
-  description = "The container runtime utilized within the EKS cluster."
-
-  validation {
-    condition     = contains(["dockerd", "containerd"], var.container_runtime)
-    error_message = "Valid values for var.container_runtime are dockerd and containerd."
-  }
-}
-
 variable "deploy_name" {
   type        = string
   description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
