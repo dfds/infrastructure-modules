@@ -337,6 +337,12 @@ variable "monitoring_kube_prometheus_stack_prometheus_limit_cpu" {
   default     = "1000m"
 }
 
+variable "monitoring_kube_prometheus_stack_prometheus_enable_features" {
+  type        = list(string)
+  description = "Promtheus feature flags to enable."
+  default     = []
+}
+
 # --------------------------------------------------
 # Metrics-Server
 # --------------------------------------------------

@@ -155,6 +155,11 @@ variable "overwrite_on_create" {
   description = "Enable overwriting existing files"
 }
 
+variable "enable_features" {
+  type    = list(string)
+  default = []
+}
+
 variable "tolerations" {
   type = list(object({
     key      = string,
