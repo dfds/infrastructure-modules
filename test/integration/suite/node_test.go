@@ -26,7 +26,7 @@ func TestGeneralNodeMaxPod(t *testing.T) {
 		assert.EqualValues(t,
 			// Asssuming a m5a.xlarge instance and prefix delegation enabled the
 			// limit should be 110, if disabled it should be 58.
-			110, node.Status.Capacity.Pods().Value(), "unmanaged node %q pods limit does not match", node.Name)
+			110, node.Status.Capacity.Pods().Value(), "general node group %q pods limit does not match", node.Name)
 	}
 }
 

@@ -21,13 +21,12 @@ output "eks_openid_connect_provider_url" {
   value = module.eks_cluster.eks_openid_connect_provider_url
 }
 
-
 # --------------------------------------------------
 # Node groups/Workers
 # --------------------------------------------------
 
 output "eks_worker_subnet_ids" {
-  value = length(module.eks_workers_subnet.subnet_ids) > 0 ? module.eks_workers_subnet.subnet_ids : module.eks_managed_workers_subnet.subnet_ids
+  value = module.eks_managed_workers_subnet.subnet_ids
 }
 
 output "eks_workers_security_group_id" {
@@ -39,11 +38,7 @@ output "eks_worker_role_id" {
 }
 
 output "eks_worker_autoscaling_group_ids" {
-  value = flatten([
-    module.eks_nodegroup1_workers.autoscaling_group_id,
-    module.eks_nodegroup2_workers.autoscaling_group_id,
-    [for m in module.eks_managed_workers_node_group : m.autoscaling_group_id],
-  ])
+  value = flatten([for m in module.eks_managed_workers_node_group : m.autoscaling_group_id])
 }
 
 output "eks_cluster_nodes_sg_id" {

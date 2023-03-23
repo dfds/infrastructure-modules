@@ -86,23 +86,6 @@ data "aws_availability_zones" "available" {
   }
 }
 
-# TODO(emil): remove when unmanaged nodes are removed
-module "eks_workers_subnet" {
-  source       = "../../_sub/network/vpc-subnet-eks"
-  deploy       = length(var.eks_worker_subnets) >= 1 ? true : false
-  name         = "eks-${var.eks_cluster_name}-nodes"
-  cluster_name = var.eks_cluster_name
-  vpc_id       = module.eks_cluster.vpc_id
-  # To keep this variable backward compatible we do the
-  # transformation here.
-  subnets = [
-    for index, cidr in var.eks_worker_subnets : {
-      availability_zone : data.aws_availability_zones.available.names[index],
-      subnet_cidr : cidr
-    }
-  ]
-}
-
 module "eks_managed_workers_subnet" {
   source       = "../../_sub/network/vpc-subnet-eks"
   deploy       = length(var.eks_managed_worker_subnets) >= 1 ? true : false
@@ -117,10 +100,6 @@ module "eks_workers_keypair" {
   name       = "eks-${var.eks_cluster_name}-workers"
   public_key = var.eks_worker_ssh_public_key
 }
-
-# module "eks_workers_iam_role" {
-#   source = "../../_sub/security/iam-role"
-# }
 
 module "eks_workers_security_group" {
   source                   = "../../_sub/network/security-group-eks-node"
@@ -141,18 +120,7 @@ module "eks_workers" {
 module "eks_workers_route_table_assoc" {
   source = "../../_sub/network/route-table-assoc"
 
-  # count_assoc          = "${length(var.eks_cluster_zones)}"    # need to pass count explicitly, otherwise: value of 'count' cannot be computed
   subnet_ids     = module.eks_cluster.subnet_ids
-  route_table_id = module.eks_route_table.id
-}
-
-# TODO(emil): remove this when unmanaged nodes are removed
-# Misleading - is actually for all node groups. Might even not need both this, and eks_workers_route_table_assoc?
-module "eks_nodegroup1_route_table_assoc" {
-  source = "../../_sub/network/route-table-assoc"
-
-  # count          = "${length(var.eks_worker_subnets)}"       # need to pass count explicitly, otherwise: value of 'count' cannot be computed
-  subnet_ids     = module.eks_workers_subnet.subnet_ids
   route_table_id = module.eks_route_table.id
 }
 
@@ -161,86 +129,6 @@ module "eks_managed_workers_route_table_assoc" {
 
   subnet_ids     = module.eks_managed_workers_subnet.subnet_ids
   route_table_id = module.eks_route_table.id
-}
-
-/*
-TO DO:
-Move worker/node IAM role (currently in workers) to separate sub
-Feature toggle nodegroups
- - Test 0, 1, more-subnets-than-AZs
-*/
-
-# TODO(emil): remove  when unmanaged nodes are removed
-# --------------------------------------------------
-# UNMANGED NODE GROUP 1
-# --------------------------------------------------
-
-module "eks_nodegroup1_workers" {
-  source = "../../_sub/compute/eks-nodegroup-unmanaged"
-
-  cluster_name    = var.eks_cluster_name
-  cluster_version = var.eks_cluster_version
-  is_sandbox      = var.eks_is_sandbox
-  nodegroup_name  = "ng1"
-
-  # node_role_arn           = "${module.eks_workers_iam_role.arn}"
-  iam_instance_profile    = module.eks_workers.iam_instance_profile_name
-  security_groups         = [module.eks_workers_security_group.id]
-  desired_size_per_subnet = var.eks_nodegroup1_desired_size_per_subnet
-  scale_to_zero_cron      = var.eks_worker_scale_to_zero_cron
-  subnet_ids              = module.eks_workers_subnet.subnet_ids
-  disk_size               = var.eks_nodegroup1_disk_size
-  instance_types          = var.eks_nodegroup1_instance_types
-  ami_id                  = var.eks_nodegroup1_ami_id
-  gpu_ami                 = var.eks_nodegroup1_gpu_ami
-  ec2_ssh_key             = module.eks_workers_keypair.key_name
-
-  kubelet_extra_args = var.eks_nodegroup1_kubelet_extra_args
-
-  cloudwatch_agent_config_bucket    = var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"
-  cloudwatch_agent_config_file      = var.eks_worker_cloudwatch_agent_config_file
-  cloudwatch_agent_enabled          = var.eks_worker_cloudwatch_agent_config_deploy
-  vpc_cni_prefix_delegation_enabled = var.eks_addon_vpccni_prefix_delegation_enabled
-  eks_endpoint                      = module.eks_cluster.eks_endpoint
-  eks_certificate_authority         = module.eks_cluster.eks_certificate_authority
-  worker_inotify_max_user_watches   = var.eks_worker_inotify_max_user_watches
-}
-
-
-# TODO(emil): remove  when unmanaged nodes are removed
-# --------------------------------------------------
-# UNMANAGED NODE GROUP 2
-# --------------------------------------------------
-
-module "eks_nodegroup2_workers" {
-  source = "../../_sub/compute/eks-nodegroup-unmanaged"
-
-  cluster_name    = var.eks_cluster_name
-  cluster_version = var.eks_cluster_version
-  is_sandbox      = var.eks_is_sandbox
-  nodegroup_name  = "ng2"
-
-  # node_role_arn           = "${module.eks_workers_iam_role.arn}"
-  iam_instance_profile    = module.eks_workers.iam_instance_profile_name
-  security_groups         = [module.eks_workers_security_group.id]
-  desired_size_per_subnet = var.eks_nodegroup2_desired_size_per_subnet
-  scale_to_zero_cron      = var.eks_worker_scale_to_zero_cron
-  subnet_ids              = module.eks_workers_subnet.subnet_ids
-  disk_size               = var.eks_nodegroup2_disk_size
-  instance_types          = var.eks_nodegroup2_instance_types
-  ami_id                  = var.eks_nodegroup2_ami_id
-  gpu_ami                 = var.eks_nodegroup2_gpu_ami
-  ec2_ssh_key             = module.eks_workers_keypair.key_name
-
-  kubelet_extra_args = var.eks_nodegroup2_kubelet_extra_args
-
-  cloudwatch_agent_config_bucket    = var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"
-  cloudwatch_agent_config_file      = var.eks_worker_cloudwatch_agent_config_file
-  cloudwatch_agent_enabled          = var.eks_worker_cloudwatch_agent_config_deploy
-  vpc_cni_prefix_delegation_enabled = var.eks_addon_vpccni_prefix_delegation_enabled
-  eks_endpoint                      = module.eks_cluster.eks_endpoint
-  eks_certificate_authority         = module.eks_cluster.eks_certificate_authority
-  worker_inotify_max_user_watches   = var.eks_worker_inotify_max_user_watches
 }
 
 # --------------------------------------------------

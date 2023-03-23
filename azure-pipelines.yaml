@@ -10,6 +10,9 @@ pr:
   branches:
     include:
       - "*"
+  paths:
+    exclude:
+    - ".github/workflows/*"
 
 # Define resources for container to use.
 resources:
@@ -38,11 +41,6 @@ resources:
       endpoint: "dfds (2)"
       name: dfds/infrastructure-modules
       ref: master
-    - repository: Rollover
-      type: github
-      endpoint: "dfds (2)"
-      name: dfds/node-rollover
-      ref: main
     - repository: Nuke
       type: github
       endpoint: "dfds (2)"
@@ -177,10 +175,6 @@ stages:
                   fetchDepth: 1
                   fetchTags: false
                   path: source
-                - checkout: Rollover
-                  fetchDepth: 1
-                  fetchTags: false
-                  path: rollover
                 - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
                   workingDirectory: $(Agent.BuildDirectory)/source
                   displayName: "Provision shared EKS S3 bucket"
@@ -199,14 +193,6 @@ stages:
                 - bash: wait-for-asgs.sh qa
                   displayName: "Wait for auto scaling groups's instances to be in service"
                   timeoutInMinutes: 15
-                - task: PowerShell@2
-                  displayName: "Rollover nodes"
-                  timeoutInMinutes: 15
-                  inputs:
-                    targetType: filePath
-                    filePath: $(Agent.BuildDirectory)/rollover/asg_k8s_rollover.ps1
-                    arguments: "-ClusterName qa -AwsRegion eu-west-1 -KubeParameterRegion eu-west-1"
-                    pwsh: true
                 - download: current
                   displayName: "Download test binary"
                   artifact: test-master
@@ -232,10 +218,6 @@ stages:
                   fetchDepth: 1
                   fetchTags: false
                   path: source
-                - checkout: Rollover
-                  fetchDepth: 1
-                  fetchTags: false
-                  path: rollover
                 - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
                   workingDirectory: $(Agent.BuildDirectory)/source
                   displayName: "Provision shared EKS S3 bucket"
@@ -253,14 +235,6 @@ stages:
                   timeoutInMinutes: 15
                 - bash: wait-for-asgs.sh qa
                   displayName: "Wait for auto scaling groups's instances to be in service"
-                - task: PowerShell@2
-                  displayName: "Rollover nodes"
-                  timeoutInMinutes: 15
-                  inputs:
-                    targetType: filePath
-                    filePath: $(Agent.BuildDirectory)/rollover/asg_k8s_rollover.ps1
-                    arguments: "-ClusterName qa -AwsRegion eu-west-1 -KubeParameterRegion eu-west-1"
-                    pwsh: true
                 - download: current
                   displayName: "Download test binary"
                   artifact: test-feature

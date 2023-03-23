@@ -18,6 +18,12 @@ prometheus:
           port: http
   prometheusSpec:
     enableAdminAPI: false
+%{ if length(enable_features) > 0 ~}
+    enableFeatures:
+%{ for f in enable_features ~}
+    - ${f}
+%{ endfor ~}
+%{ endif ~}
     resources:
       requests:
         memory: ${prometheus_request_memory}

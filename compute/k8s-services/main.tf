@@ -443,6 +443,7 @@ module "monitoring_kube_prometheus_stack" {
   prometheus_request_cpu      = var.monitoring_kube_prometheus_stack_prometheus_request_cpu
   prometheus_limit_memory     = var.monitoring_kube_prometheus_stack_prometheus_limit_memory
   prometheus_limit_cpu        = var.monitoring_kube_prometheus_stack_prometheus_limit_cpu
+  enable_features             = var.monitoring_kube_prometheus_stack_prometheus_enable_features
   overwrite_on_create         = var.platform_fluxcd_overwrite_on_create
   tolerations                 = var.monitoring_tolerations
   affinity                    = var.monitoring_affinity
