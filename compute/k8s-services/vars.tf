@@ -252,7 +252,6 @@ variable "monitoring_kube_prometheus_stack_grafana_storage_size" {
   default     = ""
 }
 
-
 variable "monitoring_kube_prometheus_stack_azure_tenant_id" {
   type        = string
   default     = ""
@@ -339,7 +338,7 @@ variable "monitoring_kube_prometheus_stack_prometheus_limit_cpu" {
 
 variable "monitoring_kube_prometheus_stack_prometheus_enable_features" {
   type        = list(string)
-  description = "Promtheus feature flags to enable."
+  description = "Prometheus feature flags to enable."
   default     = []
 }
 
