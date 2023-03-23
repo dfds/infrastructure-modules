@@ -10,6 +10,9 @@ pr:
   branches:
     include:
       - "*"
+  paths:
+    exclude:
+    - ".github/workflows"
 
 # Define resources for container to use.
 resources:
