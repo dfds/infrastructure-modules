@@ -2,14 +2,33 @@
 # Namespace
 # --------------------------------------------------
 
-resource "null_resource" "flux_namespace" {
-  triggers = {
-    namespace = local.namespace
+resource "local_sensitive_file" "kubeconfig" {
+  source               = var.kubeconfig_path
+  filename             = "./auth/kubeconfig"
+  file_permission      = "0600"
+  directory_permission = "0755"
+}
+
+resource "kubernetes_namespace" "flux_system" {
+  metadata {
+    name = "flux-system"
   }
 
   provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${var.kubeconfig_path} create namespace ${self.triggers.namespace}"
+    when    = destroy
+    command = <<EOH
+curl -s https://fluxcd.io/install.sh | /bin/bash
+flux --kubeconfig=./auth/kubeconfig uninstall --namespace=flux-system --silent --keep-namespace --verbose
+EOH
   }
+
+  lifecycle {
+    ignore_changes = [
+      metadata[0].labels,
+    ]
+  }
+
+  depends_on = [local_sensitive_file.kubeconfig]
 }
 
 
@@ -32,7 +51,7 @@ locals {
 
 resource "kubectl_manifest" "install" {
   for_each   = { for v in local.install : lower(join("/", compact([v.data.apiVersion, v.data.kind, lookup(v.data.metadata, "namespace", ""), v.data.metadata.name]))) => v.content }
-  depends_on = [null_resource.flux_namespace]
+  depends_on = [kubernetes_namespace.flux_system]
   yaml_body  = each.value
 }
 
