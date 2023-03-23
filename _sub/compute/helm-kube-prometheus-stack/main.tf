@@ -65,6 +65,7 @@ resource "helm_release" "kube_prometheus_stack" {
       prometheus_request_cpu    = var.prometheus_request_cpu
       prometheus_limit_memory   = var.prometheus_limit_memory
       prometheus_limit_cpu      = var.prometheus_limit_cpu
+      enable_features           = var.enable_features
       tolerations               = var.tolerations,
       affinity                  = var.affinity,
     }),
