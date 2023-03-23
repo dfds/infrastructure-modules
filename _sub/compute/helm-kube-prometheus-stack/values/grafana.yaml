@@ -1,5 +1,3 @@
-kubeApiServer:
-  enabled: false # Disable built-in dashboard
 etcd:
   enabled: true
 grafana:
