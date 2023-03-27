@@ -45,6 +45,15 @@ variable "disk_size" {
   type = number
 }
 
+variable "disk_type" {
+  type = string
+
+  validation {
+    condition     = contains(["gp2", "gp3"], var.disk_type)
+    error_message = "Allowed types for the disk are gp2 or gp3."
+  }
+}
+
 variable "instance_types" {
   type    = list(string)
   default = []
