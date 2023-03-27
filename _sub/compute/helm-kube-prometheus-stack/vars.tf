@@ -12,11 +12,11 @@ variable "chart_version" {
 variable "namespace" {
   type        = string
   description = "Namespace to apply Kube-prometheus-stack in"
+
   validation {
     condition     = can(regex("[a-z]+", var.namespace))
     error_message = "Namespace must contain at least one letter."
   }
-
 }
 
 variable "priority_class" {
@@ -153,6 +153,12 @@ variable "overwrite_on_create" {
   type        = bool
   default     = true
   description = "Enable overwriting existing files"
+}
+
+variable "query_log_file_enabled" {
+  type        = bool
+  default     = false
+  description = "Whether to to enable the Prometheus query loggging."
 }
 
 variable "enable_features" {

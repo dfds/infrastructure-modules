@@ -336,6 +336,12 @@ variable "monitoring_kube_prometheus_stack_prometheus_limit_cpu" {
   default     = "1000m"
 }
 
+variable "monitoring_kube_prometheus_stack_prometheus_query_log_file_enabled" {
+  type        = bool
+  description = "Whether to enable the query logging in Prometheus."
+  default     = false
+}
+
 variable "monitoring_kube_prometheus_stack_prometheus_enable_features" {
   type        = list(string)
   description = "Prometheus feature flags to enable."
