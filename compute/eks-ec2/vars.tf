@@ -138,6 +138,7 @@ variable "eks_managed_nodegroups" {
     ami_id                     = optional(string, "")
     instance_types             = optional(list(string), ["t3.small"])
     disk_size                  = optional(number, 128)
+    disk_type                  = optional(string, "gp2")
     desired_size_per_subnet    = optional(number, 0)
     kubelet_extra_args         = optional(string, "")
     gpu_ami                    = optional(bool, false)
