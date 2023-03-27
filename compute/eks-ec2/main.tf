@@ -161,6 +161,7 @@ module "eks_managed_workers_node_group" {
   ami_id                     = each.value.ami_id
   instance_types             = each.value.instance_types
   disk_size                  = each.value.disk_size
+  disk_type                  = each.value.disk_type
   desired_size_per_subnet    = each.value.desired_size_per_subnet
   kubelet_extra_args         = each.value.kubelet_extra_args
   gpu_ami                    = each.value.gpu_ami
