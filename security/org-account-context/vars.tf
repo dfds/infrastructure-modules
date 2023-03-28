@@ -49,11 +49,6 @@ variable "email" {
   type = string
 }
 
-variable "adfs_fqdn" {
-  type        = string
-  description = "The fully-qualified domain name of the ADFS server, e.g. adfs.company.tld"
-}
-
 variable "context_id" {
   type        = string
   description = "The ID of the context, for which to create and AWS account"
