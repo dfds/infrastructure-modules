@@ -1,6 +1,6 @@
 
 terraform {
-  required_version = "~> 1.3.0"
+  required_version = ">= 1.3.0, < 2.0.0"
 
   /*
   Hashicorp-managed providers can be loaded implicitly
@@ -19,7 +19,7 @@ terraform {
     }
     flux = {
       source  = "fluxcd/flux"
-      version = "~> 0.24.0"
+      version = "~> 0.25.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"

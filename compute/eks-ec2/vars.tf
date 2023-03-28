@@ -129,106 +129,23 @@ variable "eks_k8s_auth_api_version" {
   default     = "client.authentication.k8s.io/v1beta1"
 }
 
-
-# TODO(emil): remove when unmanaged node groups are removed
-# --------------------------------------------------
-# EKS unmanged node group 1
-# --------------------------------------------------
-
-variable "eks_nodegroup1_instance_types" {
-  type    = list(string)
-  default = ["t3.small"]
-}
-
-variable "eks_nodegroup1_container_runtime" {
-  type    = string
-  default = "containerd"
-}
-
-variable "eks_nodegroup1_disk_size" {
-  type    = number
-  default = 128
-}
-
-variable "eks_nodegroup1_ami_id" {
-  type        = string
-  default     = ""
-  description = "Pins the AMI ID of the nodes to the specified AMI, bypassing AMI updates."
-}
-
-variable "eks_nodegroup1_gpu_ami" {
-  type        = bool
-  default     = false
-  description = "Deploys the latest amazon-eks-gpu-node. Note, this field is ignored if eks_nodegroup1_ami_id is set."
-}
-
-variable "eks_nodegroup1_kubelet_extra_args" {
-  type    = string
-  default = ""
-}
-
-variable "eks_nodegroup1_desired_size_per_subnet" {
-  type    = number
-  default = 0
-}
-
-
-# TODO(emil): remove when unmanaged node groups are removed
-# --------------------------------------------------
-# EKS unmanged node group 2
-# --------------------------------------------------
-
-variable "eks_nodegroup2_instance_types" {
-  type    = list(string)
-  default = ["t3.small"]
-}
-
-variable "eks_nodegroup2_container_runtime" {
-  type    = string
-  default = "containerd"
-}
-
-variable "eks_nodegroup2_disk_size" {
-  type    = number
-  default = 128
-}
-
-variable "eks_nodegroup2_ami_id" {
-  type        = string
-  default     = ""
-  description = "Pins the AMI ID of the nodes to the specified AMI, bypassing AMI updates."
-}
-
-variable "eks_nodegroup2_gpu_ami" {
-  type        = bool
-  default     = false
-  description = "Deploys the latest amazon-eks-gpu-node. Note, this field is ignored if eks_nodegroup2_ami_id is set."
-}
-
-variable "eks_nodegroup2_kubelet_extra_args" {
-  type    = string
-  default = ""
-}
-
-variable "eks_nodegroup2_desired_size_per_subnet" {
-  type    = number
-  default = 0
-}
-
 # --------------------------------------------------
 # EKS managed node group
 # --------------------------------------------------
 variable "eks_managed_nodegroups" {
   type = list(object({
-    name                    = string
-    ami_id                  = optional(string, "")
-    instance_types          = optional(list(string), ["t3.small"])
-    container_runtime       = optional(string, "containerd")
-    disk_size               = optional(number, 128)
-    desired_size_per_subnet = optional(number, 0)
-    kubelet_extra_args      = optional(string, "")
-    gpu_ami                 = optional(bool, false)
-    availability_zones      = optional(list(string), [])
+    name                       = string
+    ami_id                     = optional(string, "")
+    instance_types             = optional(list(string), ["t3.small"])
+    use_spot_instances         = optional(bool, false)
+    disk_size                  = optional(number, 128)
+    disk_type                  = optional(string, "gp2")
+    desired_size_per_subnet    = optional(number, 0)
+    kubelet_extra_args         = optional(string, "")
+    gpu_ami                    = optional(bool, false)
+    availability_zones         = optional(list(string), [])
+    max_unavailable            = optional(number, null)
+    max_unavailable_percentage = optional(number, null)
     taints = optional(list(object({
       key    = string,
       value  = optional(string),

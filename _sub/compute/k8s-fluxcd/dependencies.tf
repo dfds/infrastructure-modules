@@ -89,8 +89,8 @@ metadata:
 spec:
   interval: 1m0s
   ref:
-    branch: main
-  url: https://github.com/dfds/platform-apps
+    branch: ${var.gitops_apps_repo_branch}
+  url: ${var.gitops_apps_repo_url}
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization

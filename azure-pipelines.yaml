@@ -10,13 +10,17 @@ pr:
   branches:
     include:
       - "*"
+  paths:
+    exclude:
+    - ".github/workflows/*"
 
 # Define resources for container to use.
 resources:
   containers:
     - container: prime
-      image: dfdsdk/prime-pipeline:0.6.24
+      image: dfdsdk/prime-pipeline:0.6.27
       env:
+        AWS_DEFAULT_REGION: eu-west-1
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
         TF_VAR_platform_fluxcd_github_token: $(TF_VAR_platform_fluxcd_github_token)
@@ -25,7 +29,7 @@ resources:
         TF_VAR_crossplane_provider_confluent_password: $(CROSSPLANE_PROVIDER_CONFLUENT_PASSWORD)
         TF_VAR_monitoring_kube_prometheus_stack_azure_tenant_id: $(ARM_TENANT_ID)
     - container: aws-nuke
-      image: dfdsdk/aws-nuke:0.0.8
+      image: dfdsdk/aws-nuke:0.0.9
       env:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
@@ -37,11 +41,6 @@ resources:
       endpoint: "dfds (2)"
       name: dfds/infrastructure-modules
       ref: master
-    - repository: Rollover
-      type: github
-      endpoint: "dfds (2)"
-      name: dfds/node-rollover
-      ref: main
     - repository: Nuke
       type: github
       endpoint: "dfds (2)"
@@ -176,10 +175,6 @@ stages:
                   fetchDepth: 1
                   fetchTags: false
                   path: source
-                - checkout: Rollover
-                  fetchDepth: 1
-                  fetchTags: false
-                  path: rollover
                 - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
                   workingDirectory: $(Agent.BuildDirectory)/source
                   displayName: "Provision shared EKS S3 bucket"
@@ -192,14 +187,12 @@ stages:
                   workingDirectory: $(Agent.BuildDirectory)/source
                   displayName: "Provision Velero S3 bucket"
                   timeoutInMinutes: 15
-                - task: PowerShell@2
-                  displayName: "Rollover nodes"
+                - bash: wait-for-ngs.sh qa
+                  displayName: "Wait for managed node groups to become active"
                   timeoutInMinutes: 15
-                  inputs:
-                    targetType: filePath
-                    filePath: $(Agent.BuildDirectory)/rollover/asg_k8s_rollover.ps1
-                    arguments: "-ClusterName qa -AwsRegion eu-west-1 -KubeParameterRegion eu-west-1"
-                    pwsh: true
+                - bash: wait-for-asgs.sh qa
+                  displayName: "Wait for auto scaling groups's instances to be in service"
+                  timeoutInMinutes: 15
                 - download: current
                   displayName: "Download test binary"
                   artifact: test-master
@@ -225,10 +218,6 @@ stages:
                   fetchDepth: 1
                   fetchTags: false
                   path: source
-                - checkout: Rollover
-                  fetchDepth: 1
-                  fetchTags: false
-                  path: rollover
                 - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
                   workingDirectory: $(Agent.BuildDirectory)/source
                   displayName: "Provision shared EKS S3 bucket"
@@ -241,14 +230,11 @@ stages:
                   workingDirectory: $(Agent.BuildDirectory)/source
                   displayName: "Provision Velero S3 bucket"
                   timeoutInMinutes: 15
-                - task: PowerShell@2
-                  displayName: "Rollover nodes"
+                - bash: wait-for-ngs.sh qa
+                  displayName: "Wait for managed node groups to become active"
                   timeoutInMinutes: 15
-                  inputs:
-                    targetType: filePath
-                    filePath: $(Agent.BuildDirectory)/rollover/asg_k8s_rollover.ps1
-                    arguments: "-ClusterName qa -AwsRegion eu-west-1 -KubeParameterRegion eu-west-1"
-                    pwsh: true
+                - bash: wait-for-asgs.sh qa
+                  displayName: "Wait for auto scaling groups's instances to be in service"
                 - download: current
                   displayName: "Download test binary"
                   artifact: test-feature

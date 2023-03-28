@@ -1,6 +1,3 @@
-# This module depends on you using Flux CD 2, and have added https://github.com/dfds/platform-apps in your
-# flux-system as instructed in https://github.com/dfds/platform-apps/blob/main/README.md
-
 # --------------------------------------------------
 # Create JSON files to be picked up by Flux CD
 # --------------------------------------------------
