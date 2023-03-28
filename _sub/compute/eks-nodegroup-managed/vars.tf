@@ -41,6 +41,12 @@ variable "subnet_ids" {
   type = list(string)
 }
 
+variable "use_spot_instances" {
+  type        = bool
+  default     = false
+  description = "Whether the node group should attempt to utilize spot instances."
+}
+
 variable "disk_size" {
   type = number
 }
