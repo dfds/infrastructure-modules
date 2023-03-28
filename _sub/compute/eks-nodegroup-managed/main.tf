@@ -49,6 +49,7 @@ resource "aws_eks_node_group" "group" {
   node_group_name = var.nodegroup_name
   node_role_arn   = var.node_role_arn
   subnet_ids      = var.subnet_ids
+  capacity_type   = var.use_spot_instances ? "SPOT" : "ON_DEMAND"
 
   dynamic "taint" {
     for_each = var.taints
