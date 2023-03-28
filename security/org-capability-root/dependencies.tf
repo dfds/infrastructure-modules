@@ -44,7 +44,15 @@ locals {
                 "waf-regional:*",
                 "wafv2:*",
                 "waf:*",
-                "deepracer:*"
+                "deepracer:*",
+		"logs:DescribeLogGroups",
+		"logs:DescribeLogStreams",
+		"logs:DescribeMetricFilters",
+		"logs:DescribeQueries",
+		"logs:DescribeQueryDefinitions",
+		"logs:GetLogEvents",
+		"logs:GetLogGroupFields",
+		"logs:GetLogRecord"
             ],
             "Resource": "*",
             "Condition": {
@@ -224,4 +232,3 @@ POLICY
 POLICY
 
 }
-
