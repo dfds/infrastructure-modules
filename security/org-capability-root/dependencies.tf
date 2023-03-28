@@ -19,6 +19,8 @@ locals {
                 "ce:Get*",
                 "ce:List*",
                 "cloudfront:*",
+                "cloudwatch:Get*",
+                "cloudwatch:List*",
                 "dynamoDB:DescribeTable",
                 "ecr:BatchGetImage",
                 "ecr:Describe*",
@@ -42,7 +44,15 @@ locals {
                 "waf-regional:*",
                 "wafv2:*",
                 "waf:*",
-                "deepracer:*"
+                "deepracer:*",
+				"logs:DescribeLogGroups",
+				"logs:DescribeLogStreams",
+				"logs:DescribeMetricFilters",
+				"logs:DescribeQueries",
+				"logs:DescribeQueryDefinitions",
+				"logs:GetLogEvents",
+				"logs:GetLogGroupFields",
+				"logs:GetLogRecord"
             ],
             "Resource": "*",
             "Condition": {
@@ -222,4 +232,3 @@ POLICY
 POLICY
 
 }
-
