@@ -45,14 +45,14 @@ locals {
                 "wafv2:*",
                 "waf:*",
                 "deepracer:*",
-				"logs:DescribeLogGroups",
-				"logs:DescribeLogStreams",
-				"logs:DescribeMetricFilters",
-				"logs:DescribeQueries",
-				"logs:DescribeQueryDefinitions",
-				"logs:GetLogEvents",
-				"logs:GetLogGroupFields",
-				"logs:GetLogRecord"
+		"logs:DescribeLogGroups",
+		"logs:DescribeLogStreams",
+		"logs:DescribeMetricFilters",
+		"logs:DescribeQueries",
+		"logs:DescribeQueryDefinitions",
+		"logs:GetLogEvents",
+		"logs:GetLogGroupFields",
+		"logs:GetLogRecord"
             ],
             "Resource": "*",
             "Condition": {
