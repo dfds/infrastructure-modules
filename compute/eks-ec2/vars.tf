@@ -137,6 +137,7 @@ variable "eks_managed_nodegroups" {
     name                       = string
     ami_id                     = optional(string, "")
     instance_types             = optional(list(string), ["t3.small"])
+    use_spot_instances         = optional(bool, false)
     disk_size                  = optional(number, 128)
     disk_type                  = optional(string, "gp2")
     desired_size_per_subnet    = optional(number, 0)
