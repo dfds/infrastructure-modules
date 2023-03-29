@@ -53,16 +53,6 @@ module "iam_account_alias" {
   }
 }
 
-module "iam_idp" {
-  source        = "../../_sub/security/iam-idp"
-  provider_name = "ADFS"
-  adfs_fqdn     = var.adfs_fqdn
-
-  providers = {
-    aws = aws.workload
-  }
-}
-
 module "cloudtrail_s3_local" {
   source           = "../../_sub/storage/s3-cloudtrail-bucket"
   create_s3_bucket = var.cloudtrail_local_s3_bucket != "" ? true : false
@@ -100,56 +90,3 @@ resource "aws_iam_role_policy" "prime-admin" {
   provider = aws.workload
 }
 
-# Create cloud-engineer role for the workload account
-resource "aws_iam_role" "cloudengineer_role" {
-  name                 = var.cloudengineer_iam_role_name
-  description          = "Cloud-engineer role"
-  assume_role_policy   = module.iam_idp.adfs_assume_policy
-  max_session_duration = 28800
-
-  provider = aws.workload
-}
-
-# Policy inline to cloud-engineer role
-resource "aws_iam_role_policy" "cloudengineer" {
-  name   = "CloudEngineer"
-  role   = aws_iam_role.cloudengineer_role.id
-  policy = module.iam_policies.cloudengineer
-
-  provider = aws.workload
-}
-
-# Policy attachment for cloud-engineer roles
-resource "aws_iam_role_policy_attachment" "cloudengineer_viewonlyaccess" {
-  role       = aws_iam_role.cloudengineer_role.name
-  policy_arn = "arn:aws:iam::aws:policy/job-function/ViewOnlyAccess"
-
-  provider = aws.workload
-}
-
-resource "aws_iam_role_policy_attachment" "cloudengineer_supportuser" {
-  role       = aws_iam_role.cloudengineer_role.name
-  policy_arn = "arn:aws:iam::aws:policy/job-function/SupportUser"
-
-  provider = aws.workload
-}
-
-
-# Create cloud-admin role for the workload account
-resource "aws_iam_role" "cloudadmin_role" {
-  name                 = var.cloudadmin_iam_role_name
-  description          = "Cloud-admin role"
-  assume_role_policy   = module.iam_idp.adfs_assume_policy
-  max_session_duration = 28800
-
-  provider = aws.workload
-}
-
-# Policy inline to cloud-admin role
-resource "aws_iam_role_policy" "cloudadmin_role_policy" {
-  name   = "CloudAdmin"
-  role   = aws_iam_role.cloudadmin_role.id
-  policy = module.iam_policies.admin
-
-  provider = aws.workload
-}
