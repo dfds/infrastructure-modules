@@ -128,11 +128,27 @@ POLICY
       "Sid": "DenyDeletingVPCFlowLogs",
       "Effect": "Deny",
       "Action": [
-        "ec2:DeleteFlowLogs",
+        "ec2:DeleteFlowLogs"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DenyDeletingCloudWatchLogs",
+      "Effect": "Deny",
+      "Action": [
         "logs:DeleteLogGroup",
         "logs:DeleteLogStream"
       ],
-      "Resource": "*"
+      "Resource": "*",
+      "Condition":
+      {
+        "StringNotLike": {
+          "aws:PrincipalArn": [
+            "arn:aws:iam::*:role/EKSAdmin",
+            "arn:aws:iam::*:role/OrgRole"
+          ]
+        }
+      }
     },
     {
       "Sid": "DenyDisablingCloudTrail",
