@@ -201,7 +201,8 @@ module "eks_heptio" {
 }
 
 module "eks_addons" {
-  source                           = "../../_sub/compute/eks-addons"
+  source = "../../_sub/compute/eks-addons"
+  # TODO pass the kubeconfig_path
   depends_on                       = [module.eks_cluster]
   cluster_name                     = var.eks_cluster_name
   kubeproxy_version_override       = var.eks_addon_kubeproxy_version_override
@@ -299,4 +300,39 @@ module "aws_iam_oidc_provider" {
   source                          = "../../_sub/security/iam-oidc-provider"
   eks_openid_connect_provider_url = module.eks_cluster.eks_openid_connect_provider_url
   eks_cluster_name                = var.eks_cluster_name
+}
+
+
+# --------------------------------------------------
+# Inactivity based clean up for sandboxes
+# --------------------------------------------------
+
+resource "aws_cloudwatch_metric_alarm" "inactivity" {
+  count               = var.eks_is_sandbox && !var.disable_inactivity_cleanup ? 1 : 0
+  alarm_name          = "inactivity"
+  comparison_operator = "LessThanOrEqualToThreshold"
+  evaluation_periods  = 24
+  datapoints_to_alarm = 24
+  metric_name         = "ResourceCount"
+  namespace           = "AWS/Usage"
+  dimensions = {
+    Type     = "Resource"
+    Resource = "TargetsPerTargetGroupPerRegion"
+    Service  = "Elastic Load Balancing"
+    Class    = "None"
+  }
+  period            = 3600 # an hour
+  statistic         = "Average"
+  threshold         = 0
+  alarm_description = "Detects whether the account has any targets in its target groups. If not, the cluster is deemed inactive and some resources maybe automatically cleaned up to avoid excess charges."
+  actions_enabled   = true
+  alarm_actions     = []
+}
+
+module "eks_inactivity_cleanup" {
+  count                = var.eks_is_sandbox && !var.disable_inactivity_cleanup ? 1 : 0
+  source               = "../../_sub/compute/eks-inactivity-cleanup"
+  eks_cluster_name     = var.eks_cluster_name
+  eks_cluster_arn      = module.eks_cluster.eks_cluster_arn
+  inactivity_alarm_arn = aws_cloudwatch_metric_alarm.inactivity[0].arn
 }
