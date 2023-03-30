@@ -333,7 +333,51 @@ POLICY
           ]
         }
       }
-    }
+    },
+    {
+            "Sid": "DenyCostManagement",
+            "Effect": "Deny",
+            "Action": [
+                "ce:*",
+                "savingsplans:*"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Condition": {
+                "StringNotLike": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/OrgRole",
+                        "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
+                        "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_Billing_*"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "DenyBillingLegacyRemoveAfterJuly2023",
+            "Effect": "Deny",
+            "Action": [
+                "aws-portal:ViewBilling",
+                "aws-portal:ViewPaymentMethods",
+                "aws-portal:ViewUsage",
+                "aws-portal:ModifyAccount",
+                "aws-portal:ModifyBilling",
+                "aws-portal:ModifyPaymentMethods"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Condition": {
+                "StringNotLike": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/OrgRole",
+                        "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
+                        "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_Billing_*"
+                    ]
+                }
+            }
+        }
   ]
 }
 POLICY
