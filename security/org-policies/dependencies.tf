@@ -138,7 +138,8 @@ POLICY
       "Sid": "DenyDisablingCloudTrail",
       "Action": [
         "cloudtrail:StopLogging",
-        "cloudtrail:DeleteTrail"
+        "cloudtrail:DeleteTrail",
+        "cloudtrail:UpdateTrail"
       ],
       "Resource": "*",
       "Effect": "Deny"
@@ -157,7 +158,8 @@ POLICY
         "config:DeleteConfigRule",
         "config:DeleteConfigurationRecorder",
         "config:DeleteDeliveryChannel",
-        "config:StopConfigurationRecorder"
+        "config:StopConfigurationRecorder",
+        "config:PutConfigRule"
       ],
       "Resource": "*",
       "Effect": "Deny"
@@ -323,7 +325,15 @@ POLICY
         "waf-regional:*",
         "wafv2:*",
         "waf:*",
-        "deepracer:*"
+        "deepracer:*",
+        "logs:DescribeLogGroups",
+        "logs:DescribeLogStreams",
+        "logs:DescribeMetricFilters",
+        "logs:DescribeQueries",
+        "logs:DescribeQueryDefinitions",
+        "logs:GetLogEvents",
+        "logs:GetLogGroupFields",
+        "logs:GetLogRecord"
       ],
       "Resource": "*",
       "Condition": {
@@ -381,5 +391,7 @@ POLICY
   ]
 }
 POLICY
+
+  # TODO: Issue https://github.com/dfds/cloudplatform/issues/1504 is scheduled for August to remove DenyBillingLegacyRemoveAfterJuly2023
 
 }
