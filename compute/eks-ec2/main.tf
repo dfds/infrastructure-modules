@@ -201,8 +201,7 @@ module "eks_heptio" {
 }
 
 module "eks_addons" {
-  source = "../../_sub/compute/eks-addons"
-  # TODO pass the kubeconfig_path
+  source                           = "../../_sub/compute/eks-addons"
   depends_on                       = [module.eks_cluster]
   cluster_name                     = var.eks_cluster_name
   kubeproxy_version_override       = var.eks_addon_kubeproxy_version_override
