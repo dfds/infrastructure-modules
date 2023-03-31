@@ -120,7 +120,7 @@ mainSteps:
     isCritical: true
     timeoutSeconds: 600
     description: |
-      ##DeleteEKSCluster
+      ## DeleteEKSCluster
       Delete EKS Cluster
       ## Outputs
       * EKSClusterStatus
