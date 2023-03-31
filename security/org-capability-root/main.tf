@@ -22,7 +22,7 @@ module "capability_ou" {
 }
 
 # --------------------------------------------------
-# Service Control (Organization) Policies
+# Service Control (Organization) Policies - legacy
 # --------------------------------------------------
 
 module "org_policy_denynoneuregions" {
@@ -56,4 +56,3 @@ module "org_policy_denyvpncreation" {
   policy           = local.denyvpncreation_policy
   attach_target_id = module.capability_ou.id
 }
-
