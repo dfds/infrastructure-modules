@@ -1120,3 +1120,13 @@ variable "subnet_exporter_iam_role_name" {
   default     = null
   description = "The IAM role name used for the AWS Subnet Exporter"
 }
+
+# --------------------------------------------------
+# Inactivity based clean up for sandboxes
+# --------------------------------------------------
+
+variable "disable_inactivity_cleanup" {
+  type        = bool
+  default     = false
+  description = "Disables automated clean up of ELB resources based on inactivity. Only applicable to sandboxes."
+}
