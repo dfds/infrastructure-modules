@@ -312,20 +312,38 @@ resource "aws_cloudwatch_metric_alarm" "inactivity" {
   comparison_operator = "LessThanOrEqualToThreshold"
   evaluation_periods  = 24
   datapoints_to_alarm = 24
-  metric_name         = "ResourceCount"
-  namespace           = "AWS/Usage"
-  dimensions = {
-    Type     = "Resource"
-    Resource = "TargetsPerTargetGroupPerRegion"
-    Service  = "Elastic Load Balancing"
-    Class    = "None"
+  threshold           = 0
+  alarm_description   = "Detects whether the account has any targets in its target groups. If not, the cluster is deemed inactive and some resources maybe automatically cleaned up to avoid excess charges."
+  actions_enabled     = true
+  alarm_actions       = []
+
+  # Ideally, we would like to detect inactivity over a longer range of time,
+  # but CloudWatch's evaluation period is limited to 1 day. We use this
+  # workaround to avoid cleaning up resources based on normal inactivity over a
+  # weekend.
+  metric_query {
+    id          = "e1"
+    expression  = "IF(DAY(m1) < 6, m1, 10)"
+    label       = "Inactivity excluding weekend"
+    return_data = "true"
   }
-  period            = 3600 # an hour
-  statistic         = "Average"
-  threshold         = 0
-  alarm_description = "Detects whether the account has any targets in its target groups. If not, the cluster is deemed inactive and some resources maybe automatically cleaned up to avoid excess charges."
-  actions_enabled   = true
-  alarm_actions     = []
+
+  metric_query {
+    id = "m1"
+
+    metric {
+      metric_name = "ResourceCount"
+      namespace   = "AWS/Usage"
+      period      = 3600 # an hour
+      stat        = "Average"
+      dimensions = {
+        Type     = "Resource"
+        Resource = "TargetsPerTargetGroupPerRegion"
+        Service  = "Elastic Load Balancing"
+        Class    = "None"
+      }
+    }
+  }
 }
 
 module "eks_inactivity_cleanup" {
