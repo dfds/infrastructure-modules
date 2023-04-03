@@ -32,7 +32,7 @@ inputs = {
   eks_is_sandbox = true
   # Since rebooting the cluster after inactivity at the moment requires first
   # running `terragrunt apply -target=module.eks_cluster` the QA cluster is
-  # exluded from the inactivity clean up on this step.
+  # excluded from the inactivity clean up on this step.
   disable_inactivity_cleanup = true
 
   # --------------------------------------------------

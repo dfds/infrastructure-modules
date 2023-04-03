@@ -307,7 +307,7 @@ module "aws_iam_oidc_provider" {
 # --------------------------------------------------
 
 resource "aws_cloudwatch_metric_alarm" "inactivity" {
-  count               = var.eks_is_sandbox && !var.disable_inactivity_cleanup ? 1 : 0
+  count               = var.eks_is_sandbox ? 1 : 0
   alarm_name          = "inactivity"
   comparison_operator = "LessThanOrEqualToThreshold"
   evaluation_periods  = 24
