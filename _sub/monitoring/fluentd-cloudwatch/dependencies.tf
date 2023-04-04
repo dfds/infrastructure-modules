@@ -52,7 +52,7 @@ locals {
     "images" = [
       {
         "name"   = "fluent/fluentd-kubernetes-daemonset",
-        "newTag" = "v1.11-debian-cloudwatch-1"
+        "newTag" = "v1.15-debian-cloudwatch-1"
       }
     ]
     "patchesStrategicMerge" = [
