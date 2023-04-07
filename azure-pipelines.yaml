@@ -29,7 +29,7 @@ resources:
         TF_VAR_crossplane_provider_confluent_password: $(CROSSPLANE_PROVIDER_CONFLUENT_PASSWORD)
         TF_VAR_monitoring_kube_prometheus_stack_azure_tenant_id: $(ARM_TENANT_ID)
     - container: aws-nuke
-      image: dfdsdk/aws-nuke:0.0.9
+      image: dfdsdk/aws-nuke:0.0.10
       env:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
