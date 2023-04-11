@@ -10,9 +10,3 @@ variable "description" {
 variable "policy" {
   type = string
 }
-
-variable "attach_target_id" {
-  type    = string
-  default = ""
-}
-
