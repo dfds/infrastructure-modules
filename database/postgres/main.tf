@@ -26,6 +26,7 @@ module "postgres" {
   engine_version              = var.engine_version
   db_instance_class           = var.db_instance_class
   db_allocated_storage        = var.db_allocated_storage
+  db_max_allocated_storage    = var.db_max_allocated_storage
   allow_major_version_upgrade = var.allow_major_version_upgrade
   ssl_mode                    = var.ssl_mode
 }

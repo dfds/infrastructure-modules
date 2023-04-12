@@ -15,4 +15,5 @@ The connection strings, passwords etc can be found in parameter store in the sam
 - engine_version = 14 (Must be major version. Cannot be downgraded. Optional, but defaults to 14)
 - db_instance_class - "db.t3.nano" RDS (database instance class. Optional, but defaults to "db.t3.micro")
 - db_allocated_storage - 10 (The amount of space, in GB, to allocate for the database. Optional, but defaults to 20)
+- db_max_allocated_storage - 30 (The space limit, in GB, which autoscaling can scale up to. Optional, default to 0 - autoscaling disabled)
 - allow_major_version_upgrade = true (Define if major version upgrades to the Postgres engine are allowed. Optional, but defaults to true)

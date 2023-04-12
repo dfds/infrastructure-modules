@@ -53,6 +53,12 @@ variable "db_allocated_storage" {
   description = "The amount of space, in GB, to allocate for the database"
 }
 
+variable "db_max_allocated_storage" {
+  type        = number
+  description = "The space limit, in GB, which autoscaling can scale up to"
+  default     = 0 # Autoscaling disabled
+}
+
 variable "allow_major_version_upgrade" {
   type        = bool
   description = "Define if major version upgrades to the Postgres engine are allowed"
