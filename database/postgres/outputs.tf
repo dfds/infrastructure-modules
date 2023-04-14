@@ -4,6 +4,7 @@ output "host" {
 
 output "connection_string" {
   value = module.postgres.connection_string
+  sensitive = true
 }
 
 output "port" {
