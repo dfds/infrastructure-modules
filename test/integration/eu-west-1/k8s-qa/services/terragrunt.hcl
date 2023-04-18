@@ -145,7 +145,7 @@ inputs = {
   # Metrics-Server
   # --------------------------------------------------
 
-  monitoring_metrics_server_chart_version = "3.8.4"
+  monitoring_metrics_server_chart_version = "3.10.0"
 
 
   # --------------------------------------------------
