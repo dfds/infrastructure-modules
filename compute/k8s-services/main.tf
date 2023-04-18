@@ -26,7 +26,7 @@ provider "aws" {
 }
 
 locals {
-  aws_assume_logs_role_arn = var.aws_assume_logs_role_arn != null ? var.aws_assume_logs_role_arn : var.aws_assume_role_arn
+  aws_assume_logs_role_arn = var.aws_assume_logs_role_arn == null || length(var.aws_assume_logs_role_arn) == 0 ? var.aws_assume_role_arn : var.aws_assume_logs_role_arn
 }
 
 provider "aws" {
@@ -719,7 +719,7 @@ module "fluentd_cloudwatch_flux_manifests" {
   retention_in_days               = var.fluentd_cloudwatch_retention_in_days
   repo_name                       = var.fluentd_cloudwatch_flux_repo_name != null ? var.fluentd_cloudwatch_flux_repo_name : var.platform_fluxcd_repo_name
   repo_branch                     = var.fluentd_cloudwatch_flux_repo_branch != null ? var.fluentd_cloudwatch_flux_repo_branch : var.platform_fluxcd_repo_branch
-  deploy_oidc_provider            = var.aws_assume_logs_role_arn != null ? true : false # do not create extra oidc provider if external log account is provided
+  deploy_oidc_provider            = var.aws_assume_logs_role_arn == null || length(var.aws_assume_logs_role_arn) == 0 ? false : true # do not create extra oidc provider if external log account is provided
   eks_openid_connect_provider_url = local.oidc_issuer
   overwrite_on_create             = var.platform_fluxcd_overwrite_on_create
   gitops_apps_repo_url            = var.fluxcd_gitops_apps_repo_url
