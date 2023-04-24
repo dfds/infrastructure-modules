@@ -45,8 +45,8 @@ resource "aws_lb_target_group" "traefik_blue_variant" {
 }
 
 resource "aws_autoscaling_attachment" "traefik_blue_variant" {
-  count                  = var.deploy_blue_variant ? length(var.autoscaling_group_ids) : 0
-  autoscaling_group_name = var.autoscaling_group_ids[count.index]
+  for_each               = var.deploy_blue_variant ? var.autoscaling_group_ids : []
+  autoscaling_group_name = each.key
   lb_target_group_arn    = aws_lb_target_group.traefik_blue_variant[0].arn
 }
 
@@ -71,8 +71,8 @@ resource "aws_lb_target_group" "traefik_green_variant" {
 }
 
 resource "aws_autoscaling_attachment" "traefik_green_variant" {
-  count                  = var.deploy_green_variant ? length(var.autoscaling_group_ids) : 0
-  autoscaling_group_name = var.autoscaling_group_ids[count.index]
+  for_each               = var.deploy_green_variant ? var.autoscaling_group_ids : []
+  autoscaling_group_name = each.key
   lb_target_group_arn    = aws_lb_target_group.traefik_green_variant[0].arn
 }
 
@@ -88,31 +88,34 @@ resource "aws_lb_listener" "traefik" {
     type  = "forward"
     order = 1
 
-    forward {
+    target_group_arn = var.deploy_blue_variant && var.deploy_green_variant ? null : try(
+      aws_lb_target_group.traefik_blue_variant[0].arn,
+      aws_lb_target_group.traefik_green_variant[0].arn
+    )
+    
+    dynamic "forward" {
+      for_each = var.deploy_blue_variant && var.deploy_green_variant ? [
+        {
+          arn    = aws_lb_target_group.traefik_blue_variant[0].arn
+          weight = var.blue_variant_weight
+        },
+        {
+          arn    = aws_lb_target_group.traefik_green_variant[0].arn
+          weight = var.green_variant_weight
+        }
+      ] : []
+      content {
+        stickiness {
+          enabled  = true
+          duration = 10
+        }
 
-      stickiness {
-        enabled  = true
-        duration = 10
-      }
-
-      dynamic "target_group" {
-        for_each = concat(
-          var.deploy_blue_variant ? [
-            {
-              arn    = aws_lb_target_group.traefik_blue_variant[0].arn
-              weight = var.blue_variant_weight
-            }
-          ] : [],
-          var.deploy_green_variant ? [
-            {
-              arn    = aws_lb_target_group.traefik_green_variant[0].arn
-              weight = var.green_variant_weight
-            }
-          ] : []
-        )
-        content {
-          arn    = target_group.value["arn"]
-          weight = target_group.value["weight"]
+        dynamic "target_group" {
+          for_each = forward.value
+          content {
+            arn    = target_group.value["arn"]
+            weight = target_group.value["weight"]
+          }
         }
       }
     }

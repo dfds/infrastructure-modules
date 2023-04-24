@@ -10,6 +10,10 @@ output "subnet_ids" {
   value = aws_subnet.eks[*].id
 }
 
+output "eks_cluster_arn" {
+  value = aws_eks_cluster.eks.arn
+}
+
 output "eks_endpoint" {
   value = aws_eks_cluster.eks.endpoint
 }

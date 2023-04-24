@@ -1,5 +1,5 @@
 terraform {
-  required_version = "~> 1.3.0"
+  required_version = ">= 1.3.0, < 2.0.0"
 
   /*
   Hashicorp-managed providers can be loaded implicitly
@@ -10,11 +10,11 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.57.0"
+      version = "~> 4.64.0"
     }
     github = {
       source  = "integrations/github"
-      version = "~> 5.18.0"
+      version = "~> 5.23.0"
     }
     htpasswd = {
       source  = "loafoe/htpasswd"
@@ -22,7 +22,7 @@ terraform {
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "~> 2.18.0"
+      version = "~> 2.20.0"
     }
     helm = {
       source  = "hashicorp/helm"
@@ -30,7 +30,7 @@ terraform {
     }
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.4.0"
+      version = "~> 3.5.0"
     }
   }
 }

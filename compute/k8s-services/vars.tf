@@ -262,7 +262,6 @@ variable "monitoring_kube_prometheus_stack_grafana_storage_size" {
   default     = ""
 }
 
-
 variable "monitoring_kube_prometheus_stack_azure_tenant_id" {
   type        = string
   default     = ""
@@ -347,6 +346,18 @@ variable "monitoring_kube_prometheus_stack_prometheus_limit_cpu" {
   default     = "1000m"
 }
 
+variable "monitoring_kube_prometheus_stack_prometheus_query_log_file_enabled" {
+  type        = bool
+  description = "Whether to enable the query logging in Prometheus."
+  default     = false
+}
+
+variable "monitoring_kube_prometheus_stack_prometheus_enable_features" {
+  type        = list(string)
+  description = "Prometheus feature flags to enable."
+  default     = []
+}
+
 # --------------------------------------------------
 # Metrics-Server
 # --------------------------------------------------
@@ -413,6 +424,23 @@ variable "platform_fluxcd_overwrite_on_create" {
   type        = bool
   default     = true
   description = "Enable overwriting existing files"
+}
+
+
+# --------------------------------------------------
+# GitOps apps used by Flux CD
+# --------------------------------------------------
+
+variable "fluxcd_gitops_apps_repo_url" {
+  type        = string
+  default     = "https://github.com/dfds/platform-apps"
+  description = "The https url for your GitOps manifests"
+}
+
+variable "fluxcd_gitops_apps_repo_branch" {
+  type        = string
+  default     = "main"
+  description = "The default branch for your GitOps manifests"
 }
 
 
@@ -1116,4 +1144,14 @@ variable "subnet_exporter_iam_role_name" {
   type        = string
   default     = null
   description = "The IAM role name used for the AWS Subnet Exporter"
+}
+
+# --------------------------------------------------
+# Inactivity based clean up for sandboxes
+# --------------------------------------------------
+
+variable "disable_inactivity_cleanup" {
+  type        = bool
+  default     = false
+  description = "Disables automated clean up of ELB resources based on inactivity. Only applicable to sandboxes."
 }

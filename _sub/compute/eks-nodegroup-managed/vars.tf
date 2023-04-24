@@ -41,8 +41,23 @@ variable "subnet_ids" {
   type = list(string)
 }
 
+variable "use_spot_instances" {
+  type        = bool
+  default     = false
+  description = "Whether the node group should attempt to utilize spot instances."
+}
+
 variable "disk_size" {
   type = number
+}
+
+variable "disk_type" {
+  type = string
+
+  validation {
+    condition     = contains(["gp2", "gp3"], var.disk_type)
+    error_message = "Allowed types for the disk are gp2 or gp3."
+  }
 }
 
 variable "instance_types" {
@@ -68,16 +83,6 @@ variable "ec2_ssh_key" {
 
 variable "eks_endpoint" {
   type = string
-}
-
-variable "container_runtime" {
-  type    = string
-  default = "containerd"
-
-  validation {
-    condition     = contains(["dockerd", "containerd"], var.container_runtime)
-    error_message = "Valid values for var.container_runtime are dockerd and containerd."
-  }
 }
 
 variable "eks_certificate_authority" {
@@ -121,4 +126,16 @@ variable "vpc_cni_prefix_delegation_enabled" {
   type        = bool
   description = "Configures the maximum pods limit on the nodes assuming that the prefix delegation feature is enabled on the VPC CNI addon."
   default     = false
+}
+
+variable "max_unavailable" {
+  type        = number
+  description = "Desired max number of unavailable worker nodes during node group update."
+  default     = null
+}
+
+variable "max_unavailable_percentage" {
+  type        = number
+  description = "Desired max percentage of unavailable worker nodes during node group update."
+  default     = null
 }

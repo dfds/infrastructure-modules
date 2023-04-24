@@ -8,7 +8,6 @@ resource "aws_launch_template" "eks" {
   # `src/produce-eni-max-pods.sh` when updating the EKS VPC CNI addon.
   user_data = base64encode(templatefile("${path.module}/user-data.sh.tftpl", {
     eks_endpoint : var.eks_endpoint,
-    container_runtime : var.container_runtime,
     eks_certificate_authority : var.eks_certificate_authority,
     cluster_name : var.cluster_name,
     bootstrap_extra_args : local.bootstrap_extra_args,
@@ -35,7 +34,7 @@ resource "aws_launch_template" "eks" {
     device_name = "/dev/xvda"
     ebs {
       volume_size           = var.disk_size
-      volume_type           = "gp2"
+      volume_type           = var.disk_type
       delete_on_termination = true
     }
   }
@@ -50,6 +49,7 @@ resource "aws_eks_node_group" "group" {
   node_group_name = var.nodegroup_name
   node_role_arn   = var.node_role_arn
   subnet_ids      = var.subnet_ids
+  capacity_type   = var.use_spot_instances ? "SPOT" : "ON_DEMAND"
 
   dynamic "taint" {
     for_each = var.taints
@@ -65,6 +65,20 @@ resource "aws_eks_node_group" "group" {
   launch_template {
     id      = aws_launch_template.eks[0].id
     version = aws_launch_template.eks[0].latest_version
+  }
+
+  dynamic "update_config" {
+    for_each = var.max_unavailable != null ? [var.max_unavailable] : []
+    content {
+      max_unavailable = update_config.value
+    }
+  }
+
+  dynamic "update_config" {
+    for_each = var.max_unavailable_percentage != null ? [var.max_unavailable_percentage] : []
+    content {
+      max_unavailable_percentage = update_config.value
+    }
   }
 
   scaling_config {

@@ -23,6 +23,18 @@ variable "github_owner" {
   description = ""
 }
 
+variable "gitops_apps_repo_url" {
+  type        = string
+  default     = ""
+  description = "The https url for your GitOps manifests"
+}
+
+variable "gitops_apps_repo_branch" {
+  type        = string
+  default     = "main"
+  description = "The default branch for your GitOps manifests"
+}
+
 variable "kubeconfig_path" {
   type    = string
   default = null

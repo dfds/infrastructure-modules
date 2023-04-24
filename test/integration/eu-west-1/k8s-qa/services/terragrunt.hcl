@@ -43,13 +43,13 @@ inputs = {
 
   traefikv2_test_alb_deploy = true
 
-  traefik_flux_github_owner     = "dfds"
-  traefik_flux_repo_name          = "platform-manifests-qa"
-  traefik_flux_repo_branch      = "main"
+  traefik_flux_github_owner = "dfds"
+  traefik_flux_repo_name    = "platform-manifests-qa"
+  traefik_flux_repo_branch  = "main"
 
   # Blue variant
-  traefik_blue_variant_flux_deploy = true
-  traefik_blue_variant_flux_dashboard_deploy = true
+  traefik_blue_variant_flux_deploy             = true
+  traefik_blue_variant_flux_dashboard_deploy   = true
   traefik_blue_variant_flux_helm_chart_version = "20.8.0"
   traefik_blue_variant_flux_additional_args = [
     "--metrics.prometheus",
@@ -58,8 +58,8 @@ inputs = {
   traefik_blue_variant_flux_weight = 1
 
   # Green variant
-  traefik_green_variant_flux_deploy = false
-  traefik_green_variant_flux_dashboard_deploy = false
+  traefik_green_variant_flux_deploy             = false
+  traefik_green_variant_flux_dashboard_deploy   = false
   traefik_green_variant_flux_helm_chart_version = "20.8.0"
   traefik_green_variant_flux_additional_args = [
     "--metrics.prometheus",
@@ -117,24 +117,26 @@ inputs = {
   # Kube-prometheus-stack
   # --------------------------------------------------
 
-  monitoring_kube_prometheus_stack_deploy                    = true
-  monitoring_kube_prometheus_stack_chart_version             = "44.3.0"
-  monitoring_kube_prometheus_stack_target_namespaces         = "kube-system|monitoring"
-  monitoring_kube_prometheus_stack_prometheus_storage_size   = "5Gi"
-  monitoring_kube_prometheus_stack_prometheus_storageclass   = "gp2"
-  monitoring_kube_prometheus_stack_prometheus_retention      = "1d"
-  monitoring_kube_prometheus_stack_slack_webhook             = "https://dummy.slack.webhook"
-  monitoring_kube_prometheus_stack_slack_channel             = "#hellman-alerting"
-  monitoring_kube_prometheus_stack_github_owner              = "dfds"
-  monitoring_kube_prometheus_stack_repo_name                 = "platform-manifests-qa"
-  monitoring_kube_prometheus_stack_repo_branch               = "main"
-  monitoring_kube_prometheus_stack_prometheus_request_memory = "500Mi"
-  monitoring_kube_prometheus_stack_prometheus_request_cpu    = "500m"
-  monitoring_kube_prometheus_stack_prometheus_limit_memory   = "2Gi"
-  monitoring_kube_prometheus_stack_prometheus_limit_cpu      = "1000m"
-  monitoring_kube_prometheus_stack_grafana_storage_enabled   = true
-  monitoring_kube_prometheus_stack_grafana_storage_size      = "5Gi"
-  monitoring_kube_prometheus_stack_grafana_storageclass      = "gp2"
+  monitoring_kube_prometheus_stack_deploy                            = true
+  monitoring_kube_prometheus_stack_chart_version                     = "44.3.0"
+  monitoring_kube_prometheus_stack_target_namespaces                 = "kube-system|monitoring"
+  monitoring_kube_prometheus_stack_prometheus_storage_size           = "5Gi"
+  monitoring_kube_prometheus_stack_prometheus_storageclass           = "gp2"
+  monitoring_kube_prometheus_stack_prometheus_retention              = "1d"
+  monitoring_kube_prometheus_stack_slack_webhook                     = "https://dummy.slack.webhook"
+  monitoring_kube_prometheus_stack_slack_channel                     = "#hellman-alerting"
+  monitoring_kube_prometheus_stack_github_owner                      = "dfds"
+  monitoring_kube_prometheus_stack_repo_name                         = "platform-manifests-qa"
+  monitoring_kube_prometheus_stack_repo_branch                       = "main"
+  monitoring_kube_prometheus_stack_prometheus_request_memory         = "500Mi"
+  monitoring_kube_prometheus_stack_prometheus_request_cpu            = "500m"
+  monitoring_kube_prometheus_stack_prometheus_limit_memory           = "2Gi"
+  monitoring_kube_prometheus_stack_prometheus_limit_cpu              = "1000m"
+  monitoring_kube_prometheus_stack_grafana_storage_enabled           = true
+  monitoring_kube_prometheus_stack_grafana_storage_size              = "5Gi"
+  monitoring_kube_prometheus_stack_grafana_storageclass              = "gp2"
+  monitoring_kube_prometheus_stack_prometheus_query_log_file_enabled = true
+  monitoring_kube_prometheus_stack_prometheus_enable_features        = ["memory-snapshot-on-shutdown"]
   # monitoring_kube_prometheus_stack_azure_tenant_id is set as ARM_TENANT_ID in
   # Azure DevOps Pipeline Library "Infrastructure-Modules QA" in and mapped in the
   # Azure DevOps pipeline file as TF_VAR_monitoring_kube_prometheus_stack_azure_tenant_id
@@ -143,7 +145,7 @@ inputs = {
   # Metrics-Server
   # --------------------------------------------------
 
-  monitoring_metrics_server_chart_version = "3.8.2"
+  monitoring_metrics_server_chart_version = "3.10.0"
 
 
   # --------------------------------------------------
@@ -213,12 +215,12 @@ inputs = {
   # Helm Exporter
   # --------------------------------------------------
 
-  helm_exporter_deploy              = "true"
-  helm_exporter_helm_chart_version  = "1.2.4"
-  helm_exporter_github_owner        = "dfds"
-  helm_exporter_repo_name           = "platform-manifests-qa"
-  helm_exporter_repo_branch         = "main"
-  helm_exporter_target_namespaces   = "fluentd,flux-system,monitoring,traefik-blue-variant"
+  helm_exporter_deploy             = "true"
+  helm_exporter_helm_chart_version = "1.2.4"
+  helm_exporter_github_owner       = "dfds"
+  helm_exporter_repo_name          = "platform-manifests-qa"
+  helm_exporter_repo_branch        = "main"
+  helm_exporter_target_namespaces  = "fluentd,flux-system,monitoring,traefik-blue-variant"
   helm_exporter_target_charts = [
     {
       registry = {
