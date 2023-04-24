@@ -41,17 +41,21 @@ resource "kubernetes_secret" "secret" {
 # --------------------------------------------------
 # Save password in AWS Parameter Store
 # --------------------------------------------------
-resource "aws_ssm_parameter" "param_atlantis_ui_auth" {
-  name        = "/eks/${var.cluster_name}/${local.auth_secret_name}"
-  description = "Credentials for accessing the Atlantis UI"
+
+resource "aws_ssm_parameter" "param_atlantis_ui_auth_username" {
+  name        = "/eks/${var.cluster_name}/${local.auth_secret_name}-username"
+  description = "Username for accessing the Atlantis UI"
   type        = "SecureString"
-  value = jsonencode(
-    {
-      "Username" = var.auth_username
-      "Password" = random_password.password.result
-    }
-  )
-  overwrite = true
+  value       = var.auth_username
+  overwrite   = true
+}
+
+resource "aws_ssm_parameter" "param_atlantis_ui_auth_password" {
+  name        = "/eks/${var.cluster_name}/${local.auth_secret_name}-password"
+  description = "Password for accessing the Atlantis UI"
+  type        = "SecureString"
+  value       = random_password.password.result
+  overwrite   = true
 }
 
 resource "random_password" "webhook_password" {
@@ -80,6 +84,10 @@ resource "helm_release" "atlantis" {
     value = random_password.webhook_password.result
   }
 
+  # TODO(emil): don't hard code environment variables just pass in a map of environment variables for atlantis
+  # TODO(emil): don't need multiple workflows
+  # TODO(emil): need to disable the other commands (i.e. import)
+  # TODO(emil): don't need to do run-all in the command
   values = [
     templatefile("${path.module}/values/values.yaml", {
       atlantis_ingress   = var.atlantis_ingress,

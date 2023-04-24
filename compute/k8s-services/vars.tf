@@ -454,6 +454,8 @@ variable "atlantis_deploy" {
   default     = false
 }
 
+# TODO(emil): can remove all these extra variables, just passing variables around
+
 variable "atlantis_github_token" {
   type        = string
   default     = null
