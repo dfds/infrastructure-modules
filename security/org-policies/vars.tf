@@ -13,3 +13,7 @@ variable "ou_ids_for_integrity_policy" {
 variable "ou_ids_for_restrictive_policy" {
   type = list(string)
 }
+
+variable "ou_ids_for_reservation_policy" {
+  type = list(string)
+}
