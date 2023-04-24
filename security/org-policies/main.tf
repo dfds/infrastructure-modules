@@ -39,3 +39,11 @@ module "org_policy_restrictive_policy" {
   policy         = jsonencode(jsondecode(file("${path.module}/policies/RestrictivePolicy.json")))
   attach_targets = var.ou_ids_for_restrictive_policy
 }
+
+module "org_policy_reservation_policy" {
+  source         = "../../_sub/security/org-service-control-policy"
+  name           = "ReservationPolicy"
+  description    = "Enables us to limit teams from committing us to long term reservations"
+  policy         = jsonencode(jsondecode(file("${path.module}/policies/IntegrityPolicy.json")))
+  attach_targets = var.ou_ids_for_reservation_policy
+}
