@@ -128,6 +128,11 @@ variable "cloudwatch_alarm_alb_5XX_deploy" {
   default = false
 }
 
+variable "cloudwatch_alarm_log_anomaly_deploy" {
+  type    = bool
+  default = false
+}
+
 # --------------------------------------------------
 # Monitoring namespace
 # --------------------------------------------------
