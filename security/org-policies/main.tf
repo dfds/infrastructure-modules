@@ -36,7 +36,7 @@ module "org_policy_restrictive_policy" {
   source         = "../../_sub/security/org-service-control-policy"
   name           = "RestrictivePolicy"
   description    = "Used to stop bad practices in the teams, either when there is an alternative or it has been judged to pose a risk"
-  policy         = jsonencode(jsondecode(file("${path.module}/policies/RestrictivePolicy.json")))
+  policy         = jsonencode(jsondecode(file("${path.module}/policies/ReservationPolicy.json")))
   attach_targets = var.ou_ids_for_restrictive_policy
 }
 
