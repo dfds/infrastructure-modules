@@ -314,6 +314,7 @@ module "blaster_namespace" {
   source                   = "../../_sub/compute/k8s-blaster-namespace"
   deploy                   = var.blaster_deploy
   cluster_name             = var.eks_cluster_name
+  namespace_labels         = var.blaster_namespace_labels
   blaster_configmap_bucket = data.terraform_remote_state.cluster.outputs.blaster_configmap_bucket
   oidc_issuer              = local.oidc_issuer
 }
@@ -381,14 +382,16 @@ module "cloudwatch_alarm_alb_targets_health_auth_green" {
 # --------------------------------------------------
 
 module "monitoring_namespace" {
-  source = "../../_sub/compute/k8s-namespace"
-  count  = var.monitoring_namespace_deploy ? 1 : 0
-  name   = local.monitoring_namespace_name
+  source           = "../../_sub/compute/k8s-namespace"
+  count            = var.monitoring_namespace_deploy ? 1 : 0
+  name             = local.monitoring_namespace_name
+  namespace_labels = var.monitoring_namespace_labels
 
   # The monitoring namespace has resources that are provisioned and
   # deprovisioned from it via Flux. If Flux is removed before the monitoring
   # namespace, the monitoring namespace may be unable to terminated as it will
   # have resources left in it with Flux finalizers which cannot be finalized.
+
   depends_on = [module.platform_fluxcd]
 }
 
@@ -502,6 +505,7 @@ module "atlantis" {
   source                                         = "../../_sub/compute/helm-atlantis"
   count                                          = var.atlantis_deploy ? 1 : 0
   namespace                                      = var.atlantis_namespace
+  namespace_labels                               = var.atlantis_namespace_labels
   chart_version                                  = var.atlantis_chart_version
   atlantis_image                                 = var.atlantis_image
   atlantis_image_tag                             = var.atlantis_image_tag
@@ -558,6 +562,7 @@ module "crossplane" {
   release_name                      = var.crossplane_release_name
   count                             = var.crossplane_deploy ? 1 : 0
   namespace                         = var.crossplane_namespace
+  namespace_labels                  = var.crossplane_namespace_labels
   chart_version                     = var.crossplane_chart_version
   recreate_pods                     = var.crossplane_recreate_pods
   force_update                      = var.crossplane_force_update
@@ -790,6 +795,7 @@ module "kyverno" {
   chart_version       = var.kyverno_chart_version
   excluded_namespaces = ["traefik"]
   replicas            = var.kyverno_replicas
+  namespace_labels    = var.kyverno_namespace_labels
 }
 
 # --------------------------------------------------

@@ -104,6 +104,11 @@ variable "blaster_deploy" {
   default = false
 }
 
+variable "blaster_namespace_labels" {
+  type    = map(any)
+  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/warn" = "baseline" }
+}
+
 # --------------------------------------------------
 # Cloudwatch alarms and alarm notifier (Slack)
 # --------------------------------------------------
@@ -136,6 +141,11 @@ variable "monitoring_namespace_deploy" {
   type        = bool
   description = "Deploy monitoring namespace"
   default     = true
+}
+
+variable "monitoring_namespace_labels" {
+  type    = map(any)
+  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/enforce" = "privileged" }
 }
 
 variable "monitoring_namespace_iam_roles" {
@@ -486,6 +496,11 @@ variable "atlantis_namespace" {
   default     = "atlantis"
 }
 
+variable "atlantis_namespace_labels" {
+  type    = map(any)
+  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/warn" = "baseline" }
+}
+
 variable "atlantis_chart_version" {
   type        = string
   description = "Version of the helm chart to deploy"
@@ -596,6 +611,11 @@ variable "crossplane_namespace" {
   type        = string
   description = "Namespace in which to install Crossplane"
   default     = "upbound-system"
+}
+
+variable "crossplane_namespace_labels" {
+  type    = map(any)
+  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/warn" = "baseline" }
 }
 
 variable "crossplane_release_name" {
@@ -1108,6 +1128,11 @@ variable "kyverno_replicas" {
   type        = number
   default     = 3
   description = "Number of replica pods for Kyverno"
+}
+
+variable "kyverno_namespace_labels" {
+  type    = map(any)
+  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/enforce" = "privileged" }
 }
 
 
