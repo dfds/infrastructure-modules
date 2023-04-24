@@ -8,9 +8,7 @@
                 "iam:AttachUserPolicy",
                 "iam:DeleteUserPolicy",
                 "iam:DetachUserPolicy",
-                "iam:PutUserPolicy",
-                "iam:TagUser",
-                "iam:UntagUser"
+                "iam:PutUserPolicy"
             ],
             "Resource": [
                 "arn:aws:iam::*:user/Deploy",
