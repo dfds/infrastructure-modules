@@ -391,6 +391,7 @@ module "monitoring_namespace" {
   # deprovisioned from it via Flux. If Flux is removed before the monitoring
   # namespace, the monitoring namespace may be unable to terminated as it will
   # have resources left in it with Flux finalizers which cannot be finalized.
+
   depends_on = [module.platform_fluxcd]
 }
 
