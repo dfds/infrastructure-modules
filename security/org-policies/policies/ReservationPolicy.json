@@ -2,7 +2,7 @@
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "DenyAccessToRIECS",
+            "Sid": "ECSDenyAccessToRI",
             "Effect": "Deny",
             "Action": [
                 "ec2:PurchaseReservedInstancesOffering",
@@ -26,7 +26,7 @@
             }
         },
         {
-          "Sid": "DenyAccessToRIRDS",
+          "Sid": "RDSDenyAccessToRI",
               "Effect": "Deny",
               "Action": [
                   "rds:DescribeReservedDBInstancesOfferings",
@@ -46,7 +46,7 @@
              }
         },
         {
-          "Sid": "DenyAccessToRIElastiCache",
+          "Sid": "ElastiCacheDenyAccessToRI",
               "Effect": "Deny",
               "Action": [
                   "elasticache:DescribeReservedCacheNodesOfferings",
@@ -66,7 +66,7 @@
               }
         },
         {
-          "Sid": "DenyAccessToRIES",
+          "Sid": "ESDenyAccessToRI",
               "Effect": "Deny",
               "Action": [
                   "es:DescribeReservedElasticsearchInstanceOfferings",
@@ -88,7 +88,7 @@
               }
         },
         {
-          "Sid": "DenyAccessToRIRedShift",
+          "Sid": "RedShiftDenyAccessToRI",
               "Effect": "Deny",
               "Action": [
                   "redshift:DescribeReservedNodeOfferings",
@@ -108,7 +108,7 @@
               }
         },
         {
-          "Sid": "DenyAccessToRIDynamoDb",
+          "Sid": "DynamoDbDenyAccessToRI",
               "Effect": "Deny",
               "Action": [
                   "dynamodb:DescribeReservedCapacityOfferings",
