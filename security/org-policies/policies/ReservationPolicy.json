@@ -1,0 +1,131 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "DenyAccessToRIECS",
+            "Effect": "Deny",
+            "Action": [
+                "ec2:PurchaseReservedInstancesOffering",
+                "ec2:AcceptReservedInstancesExchangeQuote",
+                "ec2:CancelCapacityReservation",
+                "ec2:CancelReservedInstancesListing",
+                "ec2:CreateCapacityReservation",
+                "ec2:CreateReservedInstancesListing"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Condition": {
+                "StringNotLike": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/OrgRole",
+                        "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
+                        "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_Billing_*"
+                    ]
+                }
+            }
+        },
+        {
+          "Sid": "DenyAccessToRIRDS",
+              "Effect": "Deny",
+              "Action": [
+                  "rds:DescribeReservedDBInstancesOfferings",
+                  "rds:PurchaseReservedDBInstancesOffering"
+              ],
+              "Resource": [
+                  "*"
+              ],
+              "Condition": {
+                  "StringNotLike": {
+                      "aws:PrincipalArn": [
+                          "arn:aws:iam::*:role/OrgRole",
+                          "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
+                          "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_Billing_*"
+                      ]
+                  }
+             }
+        },
+        {
+          "Sid": "DenyAccessToRIElastiCache",
+              "Effect": "Deny",
+              "Action": [
+                  "elasticache:DescribeReservedCacheNodesOfferings",
+                  "elasticache:PurchaseReservedCacheNodesOffering"
+              ],
+              "Resource": [
+                  "*"
+              ],
+              "Condition": {
+                  "StringNotLike": {
+                      "aws:PrincipalArn": [
+                          "arn:aws:iam::*:role/OrgRole",
+                          "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
+                          "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_Billing_*"
+                      ]
+                  }
+              }
+        },
+        {
+          "Sid": "DenyAccessToRIES",
+              "Effect": "Deny",
+              "Action": [
+                  "es:DescribeReservedElasticsearchInstanceOfferings",
+                  "es:DescribeReservedInstanceOfferings",
+                  "es:PurchaseReservedElasticsearchInstanceOffering",
+                  "es:PurchaseReservedInstanceOffering"
+              ],
+              "Resource": [
+                  "*"
+              ],
+              "Condition": {
+                  "StringNotLike": {
+                      "aws:PrincipalArn": [
+                          "arn:aws:iam::*:role/OrgRole",
+                          "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
+                          "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_Billing_*"
+                      ]
+                  }
+              }
+        },
+        {
+          "Sid": "DenyAccessToRIRedShift",
+              "Effect": "Deny",
+              "Action": [
+                  "redshift:DescribeReservedNodeOfferings",
+                  "redshift:PurchaseReservedNodeOffering"
+              ],
+              "Resource": [
+                  "*"
+              ],
+              "Condition": {
+                  "StringNotLike": {
+                      "aws:PrincipalArn": [
+                          "arn:aws:iam::*:role/OrgRole",
+                          "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
+                          "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_Billing_*"
+                      ]
+                  }
+              }
+        },
+        {
+          "Sid": "DenyAccessToRIDynamoDb",
+              "Effect": "Deny",
+              "Action": [
+                  "dynamodb:DescribeReservedCapacityOfferings",
+                  "dynamodb:PurchaseReservedCapacityOfferings"
+              ],
+              "Resource": [
+                  "*"
+              ],
+              "Condition": {
+                  "StringNotLike": {
+                      "aws:PrincipalArn": [
+                          "arn:aws:iam::*:role/OrgRole",
+                          "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
+                          "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_Billing_*"
+                      ]
+                  }
+              }
+        }
+    ]
+}
