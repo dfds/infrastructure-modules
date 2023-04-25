@@ -99,9 +99,21 @@ resource "helm_release" "atlantis" {
       github_username    = var.github_username,
       github_repos       = join(",", local.full_github_repo_names)
       storage_class      = var.storage_class
-  })]
+    }),
+    yamlencode({
+      environmentSecrets = [
+        for key, value in var.environment_variables : {
+          name : upper(key)
+          secretKeyRef : {
+            name : "env-secrets",
+            key : key,
+          }
+        }
+      ]
+    })
+  ]
 
-  depends_on = [kubernetes_secret.aws]
+  depends_on = [kubernetes_secret.env]
 }
 
 ## Github ##
@@ -127,49 +139,6 @@ resource "github_repository_webhook" "hook" {
 
 ## Kubernetes ##
 
-resource "kubernetes_secret" "aws" {
-  metadata {
-    name      = "aws-credentials"
-    namespace = var.namespace
-  }
-
-  data = {
-    aws_access_key    = var.aws_access_key
-    aws_secret        = var.aws_secret
-    access_key_master = var.access_key_master
-    secret_key_master = var.secret_key_master
-  }
-  depends_on = [kubernetes_namespace.namespace]
-}
-
-resource "kubernetes_secret" "az" {
-  metadata {
-    name      = "az-credentials"
-    namespace = var.namespace
-  }
-
-  data = {
-    arm_tenant_id       = var.arm_tenant_id
-    arm_subscription_id = var.arm_subscription_id
-    arm_client_id       = var.arm_client_id
-    arm_client_secret   = var.arm_client_secret
-  }
-  depends_on = [kubernetes_namespace.namespace]
-}
-
-resource "kubernetes_secret" "gh" {
-  metadata {
-    name      = "gh-credentials"
-    namespace = var.namespace
-  }
-
-  data = {
-    github_token      = var.github_token
-    github_token_flux = var.platform_fluxcd_github_token
-  }
-  depends_on = [kubernetes_namespace.namespace]
-}
-
 resource "kubernetes_namespace" "namespace" {
   metadata {
     name   = var.namespace
@@ -177,26 +146,14 @@ resource "kubernetes_namespace" "namespace" {
   }
 }
 
-resource "kubernetes_secret" "monitoring_kube_prometheus_stack" {
+## Secrets ##
+
+resource "kubernetes_secret" "env" {
   metadata {
-    name      = "monitoring-kube-prometheus-stack-credentials"
+    name      = "env-secrets"
     namespace = var.namespace
   }
 
-  data = {
-    slack_webhook = var.monitoring_kube_prometheus_stack_slack_webhook
-  }
-  depends_on = [kubernetes_namespace.namespace]
-}
-
-resource "kubernetes_secret" "cloudwatch" {
-  metadata {
-    name      = "cloudwatch-credentials"
-    namespace = var.namespace
-  }
-
-  data = {
-    cloudwatch_webhook = var.slack_webhook_url
-  }
+  data       = var.environment_variables
   depends_on = [kubernetes_namespace.namespace]
 }
