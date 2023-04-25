@@ -84,10 +84,6 @@ resource "helm_release" "atlantis" {
     value = random_password.webhook_password.result
   }
 
-  # TODO(emil): don't hard code environment variables just pass in a map of environment variables for atlantis
-  # TODO(emil): don't need multiple workflows
-  # TODO(emil): need to disable the other commands (i.e. import)
-  # TODO(emil): don't need to do run-all in the command
   values = [
     templatefile("${path.module}/values/values.yaml", {
       atlantis_ingress   = var.atlantis_ingress,
