@@ -40,21 +40,5 @@ repoConfig: |
   ---
   repos:
   - id: "/.*/"
-    workflow: terragrunt
     allowed_overrides: [workflow]
-  workflows:
-    terragrunt:
-      plan:
-        steps:
-        - run: env | awk -F'=' '{print $1"="substr($2, 1, 3)"***"}'
-        - run: terragrunt run-all plan -no-color --terragrunt-non-interactive -input=false
-      apply:
-        steps:
-        - run: exit 1
-    eks-pipeline:
-      plan:
-        steps:
-        - run: terragrunt run-all plan -no-color --terragrunt-non-interactive -input=false
-      apply:
-        steps:
-        - run: exit 1
+    allow_custom_workflows: true

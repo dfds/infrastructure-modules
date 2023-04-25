@@ -103,7 +103,7 @@ resource "helm_release" "atlantis" {
     yamlencode({
       environmentSecrets = [
         for key, value in var.environment_variables : {
-          name : upper(key)
+          name : key
           secretKeyRef : {
             name : "env-secrets",
             key : key,

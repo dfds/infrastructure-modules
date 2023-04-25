@@ -523,23 +523,24 @@ module "atlantis" {
   # Environment variables
   # TODO(emil): review naming of these variables
   # TODO(emil): add variables for staging
+  # TODO(emil): what's with all the github tokens?
   environment_variables = {
-
-    # Production
-    aws_access_key_id                                     = var.atlantis_aws_access_key
-    aws_secret_access_key                                 = var.atlantis_aws_secret
-    tf_var_slack_webhook_url                              = var.slack_webhook_url
-    tf_var_monitoring_kube_prometheus_stack_slack_webhook = var.monitoring_kube_prometheus_stack_slack_webhook
-
-    # Common
-    arm_tenant_id                                           = var.atlantis_arm_tenant_id
-    arm_subscription_id                                     = var.atlantis_arm_subscription_id
-    arm_client_id                                           = var.atlantis_arm_client_id
-    arm_client_secret                                       = var.atlantis_arm_client_secret
-    tf_var_monitoring_kube_prometheus_stack_azure_tenant_id = var.monitoring_kube_prometheus_stack_azure_tenant_id
-    tf_var_platform_fluxcd_github_token                     = var.atlantis_platform_fluxcd_github_token
-    tf_var_atlantis_github_token                            = var.atlantis_github_token
-    tf_var_atlantis_platform_fluxcd_github_token            = var.atlantis_platform_fluxcd_github_token
+    PRODUCTION_AWS_ACCESS_KEY_ID                                     = var.atlantis_aws_access_key
+    PRODUCTION_AWS_SECRET_ACCESS_KEY                                 = var.atlantis_aws_secret
+    PRODUCTION_TF_VAR_slack_webhook_url                              = var.slack_webhook_url
+    PRODUCTION_TF_VAR_monitoring_kube_prometheus_stack_slack_webhook = var.monitoring_kube_prometheus_stack_slack_webhook
+    STAGING_AWS_ACCESS_KEY_ID                                        = var.atlantis_staging_aws_access_key
+    STAGING_AWS_SECRET_ACCESS_KEY                                    = var.atlantis_staging_aws_secret
+    STAGING_TF_VAR_slack_webhook_url                                 = var.staging_slack_webhook_url
+    STAGING_TF_VAR_monitoring_kube_prometheus_stack_slack_webhook    = var.monitoring_kube_prometheus_stack_staging_slack_webhook
+    SHARED_ARM_TENANT_ID                                             = var.atlantis_arm_tenant_id
+    SHARED_ARM_SUBSCRIPTION_ID                                       = var.atlantis_arm_subscription_id
+    SHARED_ARM_CLIENT_ID                                             = var.atlantis_arm_client_id
+    SHARED_ARM_CLIENT_SECRET                                         = var.atlantis_arm_client_secret
+    SHARED_TF_VAR_monitoring_kube_prometheus_stack_azure_tenant_id   = var.monitoring_kube_prometheus_stack_azure_tenant_id
+    SHARED_TF_VAR_platform_fluxcd_github_token                       = var.atlantis_platform_fluxcd_github_token
+    SHARED_TF_VAR_atlantis_github_token                              = var.atlantis_github_token
+    SHARED_TF_VAR_atlantis_platform_fluxcd_github_token              = var.atlantis_platform_fluxcd_github_token
   }
 
   providers = {
