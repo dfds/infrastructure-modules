@@ -537,6 +537,7 @@ module "atlantis" {
     arm_client_id                                           = var.atlantis_arm_client_id
     arm_client_secret                                       = var.atlantis_arm_client_secret
     tf_var_monitoring_kube_prometheus_stack_azure_tenant_id = var.monitoring_kube_prometheus_stack_azure_tenant_id
+    tf_var_platform_fluxcd_github_token                     = var.atlantis_platform_fluxcd_github_token
     tf_var_atlantis_github_token                            = var.atlantis_github_token
     tf_var_atlantis_platform_fluxcd_github_token            = var.atlantis_platform_fluxcd_github_token
   }
