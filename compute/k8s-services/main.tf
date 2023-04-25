@@ -518,7 +518,6 @@ module "atlantis" {
   webhook_url         = var.atlantis_ingress
   webhook_events      = var.atlantis_webhook_events
 
-  # Environment variables
   environment_variables = {
     PRODUCTION_AWS_ACCESS_KEY_ID                                     = var.atlantis_aws_access_key
     PRODUCTION_AWS_SECRET_ACCESS_KEY                                 = var.atlantis_aws_secret
