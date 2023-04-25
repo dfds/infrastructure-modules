@@ -471,12 +471,6 @@ variable "atlantis_github_token" {
   description = "Github token that the provider uses to perform Github operations. Leaving unset will fall back to GITHUB_TOKEN environment variable"
 }
 
-variable "atlantis_platform_fluxcd_github_token" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "Github token that the provider uses to perform Github operations for Flux."
-}
-
 variable "atlantis_github_owner" {
   type        = string
   default     = null

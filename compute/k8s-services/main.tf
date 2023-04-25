@@ -502,28 +502,23 @@ module "platform_fluxcd" {
 # --------------------------------------------------
 
 module "atlantis" {
-  source       = "../../_sub/compute/helm-atlantis"
-  count        = var.atlantis_deploy ? 1 : 0
-  cluster_name = var.eks_cluster_name
-  # TODO(emil): is this variable really necessary?
-  platform_fluxcd_github_token = var.atlantis_platform_fluxcd_github_token
-  namespace                    = var.atlantis_namespace
-  namespace_labels             = var.atlantis_namespace_labels
-  chart_version                = var.atlantis_chart_version
-  atlantis_image               = var.atlantis_image
-  atlantis_image_tag           = var.atlantis_image_tag
-  atlantis_ingress             = var.atlantis_ingress
-  storage_class                = var.atlantis_storage_class
-  github_username              = var.atlantis_github_username
-  github_token                 = var.atlantis_github_token
-  github_repositories          = var.atlantis_github_repositories
-  webhook_url                  = var.atlantis_ingress
-  webhook_events               = var.atlantis_webhook_events
+  source              = "../../_sub/compute/helm-atlantis"
+  count               = var.atlantis_deploy ? 1 : 0
+  cluster_name        = var.eks_cluster_name
+  namespace           = var.atlantis_namespace
+  namespace_labels    = var.atlantis_namespace_labels
+  chart_version       = var.atlantis_chart_version
+  atlantis_image      = var.atlantis_image
+  atlantis_image_tag  = var.atlantis_image_tag
+  atlantis_ingress    = var.atlantis_ingress
+  storage_class       = var.atlantis_storage_class
+  github_username     = var.atlantis_github_username
+  github_token        = var.atlantis_github_token
+  github_repositories = var.atlantis_github_repositories
+  webhook_url         = var.atlantis_ingress
+  webhook_events      = var.atlantis_webhook_events
 
   # Environment variables
-  # TODO(emil): review naming of these variables
-  # TODO(emil): add variables for staging
-  # TODO(emil): what's with all the github tokens?
   environment_variables = {
     PRODUCTION_AWS_ACCESS_KEY_ID                                     = var.atlantis_aws_access_key
     PRODUCTION_AWS_SECRET_ACCESS_KEY                                 = var.atlantis_aws_secret
@@ -538,13 +533,11 @@ module "atlantis" {
     SHARED_ARM_CLIENT_ID                                             = var.atlantis_arm_client_id
     SHARED_ARM_CLIENT_SECRET                                         = var.atlantis_arm_client_secret
     SHARED_TF_VAR_monitoring_kube_prometheus_stack_azure_tenant_id   = var.monitoring_kube_prometheus_stack_azure_tenant_id
-    SHARED_TF_VAR_platform_fluxcd_github_token                       = var.atlantis_platform_fluxcd_github_token
+    SHARED_TF_VAR_platform_fluxcd_github_token                       = var.platform_fluxcd_github_token
     SHARED_TF_VAR_atlantis_github_token                              = var.atlantis_github_token
-    SHARED_TF_VAR_atlantis_platform_fluxcd_github_token              = var.atlantis_platform_fluxcd_github_token
   }
 
   providers = {
-    # TODO(emil): why is there a different provider?
     github = github.atlantis
   }
 }

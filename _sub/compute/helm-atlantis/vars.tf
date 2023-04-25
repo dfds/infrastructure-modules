@@ -51,12 +51,6 @@ variable "storage_class" {
   description = "Storage class to use for the persistent volume"
 }
 
-## Flux ##
-variable "platform_fluxcd_github_token" {
-  type        = string
-  description = "Github token that the provider uses to perform Github operations for Flux."
-}
-
 ## Github ##
 variable "github_token" {
   type        = string
