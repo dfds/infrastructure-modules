@@ -377,6 +377,12 @@ module "cloudwatch_alarm_alb_targets_health_auth_green" {
   alb_arn_target_group_suffix = module.traefik_alb_auth.alb_target_group_arn_suffix_green
 }
 
+module "cloudwatch_alarm_log_anomaly" {
+  source         = "../../_sub/monitoring/cloudwatch-alarms/log-anomaly/"
+  deploy         = var.cloudwatch_alarm_log_anomaly_deploy
+  sns_topic_arn  = module.alarm_notifier.sns_arn
+}
+
 # --------------------------------------------------
 # Monitoring namespace
 # --------------------------------------------------
