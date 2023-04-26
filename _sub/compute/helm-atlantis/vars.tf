@@ -40,24 +40,10 @@ variable "github_repositories" {
   default     = []
 }
 
-variable "arm_tenant_id" {
-  type        = string
-  description = ""
-}
-
-variable "arm_subscription_id" {
-  type        = string
-  description = ""
-}
-
-variable "arm_client_id" {
-  type        = string
-  description = ""
-}
-
-variable "arm_client_secret" {
-  type        = string
-  description = ""
+variable "environment_variables" {
+  description = "Map of environment variables that will be exported for the Atlantis process"
+  type        = map(string)
+  default     = {}
 }
 
 variable "storage_class" {
@@ -70,12 +56,6 @@ variable "github_token" {
   type        = string
   description = "Github token that the provider uses to perform Github operations. Leaving unset will fall back to GITHUB_TOKEN environment variable"
 }
-
-variable "platform_fluxcd_github_token" {
-  type        = string
-  description = "Github token that the provider uses to perform Github operations for Flux."
-}
-
 
 variable "github_username" {
   type        = string
@@ -98,28 +78,7 @@ variable "webhook_events" {
   type        = list(string)
 }
 
-## Kubernetes ##
-
-variable "aws_access_key" {
-  type        = string
-  description = "AWS Access Key"
-}
-
-variable "aws_secret" {
-  type        = string
-  description = "AWS Secret"
-}
-
-variable "access_key_master" {
-  type        = string
-  description = "Access Key for Core account"
-}
-
-variable "secret_key_master" {
-  type        = string
-  description = "Secret for Core account"
-}
-
+## SSM ##
 variable "auth_username" {
   type        = string
   description = "Username used for basic authentication."
@@ -129,14 +88,4 @@ variable "auth_username" {
 variable "cluster_name" {
   type        = string
   description = "The name of the Kubernetes cluster"
-}
-
-variable "slack_webhook_url" {
-  type        = string
-  description = "Cloudwatch alarm notifier to Slack"
-}
-
-variable "monitoring_kube_prometheus_stack_slack_webhook" {
-  type        = string
-  description = "Kube-prometheus-stack alert slack webhook"
 }

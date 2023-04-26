@@ -508,37 +508,43 @@ module "platform_fluxcd" {
 # --------------------------------------------------
 
 module "atlantis" {
-  source                                         = "../../_sub/compute/helm-atlantis"
-  count                                          = var.atlantis_deploy ? 1 : 0
-  namespace                                      = var.atlantis_namespace
-  namespace_labels                               = var.atlantis_namespace_labels
-  chart_version                                  = var.atlantis_chart_version
-  atlantis_image                                 = var.atlantis_image
-  atlantis_image_tag                             = var.atlantis_image_tag
-  atlantis_ingress                               = var.atlantis_ingress
-  github_username                                = var.atlantis_github_username
-  github_token                                   = var.atlantis_github_token
-  github_repositories                            = var.atlantis_github_repositories
-  webhook_url                                    = var.atlantis_ingress
-  webhook_events                                 = var.atlantis_webhook_events
-  aws_access_key                                 = var.atlantis_aws_access_key
-  aws_secret                                     = var.atlantis_aws_secret
-  access_key_master                              = var.atlantis_access_key_master
-  secret_key_master                              = var.atlantis_secret_key_master
-  arm_tenant_id                                  = var.atlantis_arm_tenant_id
-  arm_subscription_id                            = var.atlantis_arm_subscription_id
-  arm_client_id                                  = var.atlantis_arm_client_id
-  arm_client_secret                              = var.atlantis_arm_client_secret
-  platform_fluxcd_github_token                   = var.atlantis_platform_fluxcd_github_token
-  storage_class                                  = var.atlantis_storage_class
-  cluster_name                                   = var.eks_cluster_name
-  slack_webhook_url                              = var.slack_webhook_url
-  monitoring_kube_prometheus_stack_slack_webhook = var.monitoring_kube_prometheus_stack_slack_webhook
+  source              = "../../_sub/compute/helm-atlantis"
+  count               = var.atlantis_deploy ? 1 : 0
+  cluster_name        = var.eks_cluster_name
+  namespace           = var.atlantis_namespace
+  namespace_labels    = var.atlantis_namespace_labels
+  chart_version       = var.atlantis_chart_version
+  atlantis_image      = var.atlantis_image
+  atlantis_image_tag  = var.atlantis_image_tag
+  atlantis_ingress    = var.atlantis_ingress
+  storage_class       = var.atlantis_storage_class
+  github_username     = var.atlantis_github_username
+  github_token        = var.atlantis_github_token
+  github_repositories = var.atlantis_github_repositories
+  webhook_url         = var.atlantis_ingress
+  webhook_events      = var.atlantis_webhook_events
+
+  environment_variables = {
+    PRODUCTION_AWS_ACCESS_KEY_ID                                     = var.atlantis_aws_access_key
+    PRODUCTION_AWS_SECRET_ACCESS_KEY                                 = var.atlantis_aws_secret
+    PRODUCTION_TF_VAR_slack_webhook_url                              = var.slack_webhook_url
+    PRODUCTION_TF_VAR_monitoring_kube_prometheus_stack_slack_webhook = var.monitoring_kube_prometheus_stack_slack_webhook
+    STAGING_AWS_ACCESS_KEY_ID                                        = var.atlantis_staging_aws_access_key
+    STAGING_AWS_SECRET_ACCESS_KEY                                    = var.atlantis_staging_aws_secret
+    STAGING_TF_VAR_slack_webhook_url                                 = var.staging_slack_webhook_url
+    STAGING_TF_VAR_monitoring_kube_prometheus_stack_slack_webhook    = var.monitoring_kube_prometheus_stack_staging_slack_webhook
+    SHARED_ARM_TENANT_ID                                             = var.atlantis_arm_tenant_id
+    SHARED_ARM_SUBSCRIPTION_ID                                       = var.atlantis_arm_subscription_id
+    SHARED_ARM_CLIENT_ID                                             = var.atlantis_arm_client_id
+    SHARED_ARM_CLIENT_SECRET                                         = var.atlantis_arm_client_secret
+    SHARED_TF_VAR_monitoring_kube_prometheus_stack_azure_tenant_id   = var.monitoring_kube_prometheus_stack_azure_tenant_id
+    SHARED_TF_VAR_platform_fluxcd_github_token                       = var.platform_fluxcd_github_token
+    SHARED_TF_VAR_atlantis_github_token                              = var.atlantis_github_token
+  }
 
   providers = {
     github = github.atlantis
   }
-
 }
 
 module "atlantis_flux_manifests" {

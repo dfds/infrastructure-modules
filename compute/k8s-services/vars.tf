@@ -118,6 +118,11 @@ variable "slack_webhook_url" {
   default = ""
 }
 
+variable "staging_slack_webhook_url" {
+  type    = string
+  default = ""
+}
+
 variable "alarm_notifier_deploy" {
   type    = bool
   default = false
@@ -276,6 +281,12 @@ variable "monitoring_kube_prometheus_stack_azure_tenant_id" {
 variable "monitoring_kube_prometheus_stack_slack_webhook" {
   type        = string
   description = "Kube-prometheus-stack alert slack webhook"
+  default     = ""
+}
+
+variable "monitoring_kube_prometheus_stack_staging_slack_webhook" {
+  type        = string
+  description = "Kube-prometheus-stack alert slack webhook for the staging environment"
   default     = ""
 }
 
@@ -465,12 +476,6 @@ variable "atlantis_github_token" {
   description = "Github token that the provider uses to perform Github operations. Leaving unset will fall back to GITHUB_TOKEN environment variable"
 }
 
-variable "atlantis_platform_fluxcd_github_token" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "Github token that the provider uses to perform Github operations for Flux."
-}
-
 variable "atlantis_github_owner" {
   type        = string
   default     = null
@@ -530,6 +535,36 @@ variable "atlantis_image_tag" {
   default     = "latest"
 }
 
+variable "atlantis_storage_class" {
+  type        = string
+  description = "Storage class to use for persistent volume"
+  default     = "csi-gp3"
+}
+
+variable "atlantis_flux_repo_name" {
+  type        = string
+  description = "Name of the Github repo to store the Atlantis Flux manifests in"
+  default     = null
+}
+
+variable "atlantis_flux_repo_owner" {
+  type        = string
+  description = "Github username or organization that owns the repo to store the Atlantis Flux manifests in"
+  default     = null
+}
+
+variable "atlantis_flux_repo_branch" {
+  type        = string
+  description = "Override the default branch of the Atlantis Flux repo (optional)"
+  default     = "main"
+}
+
+
+# --------------------------------------------------
+# Atlantis variables
+# --------------------------------------------------
+# Used as env variables within the Atlantis process.
+
 variable "atlantis_arm_tenant_id" {
   type        = string
   description = "Used to set environment variable for ARM tenant ID"
@@ -566,41 +601,18 @@ variable "atlantis_aws_secret" {
   description = "AWS Secret"
 }
 
-variable "atlantis_access_key_master" {
+variable "atlantis_staging_aws_access_key" {
   type        = string
-  description = "Access Key for Core account"
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "AWS Access Key for staging environment"
 }
 
-variable "atlantis_secret_key_master" {
+variable "atlantis_staging_aws_secret" {
   type        = string
-  description = "Secret for Core account"
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "AWS Secret for staging environment"
 }
 
-variable "atlantis_storage_class" {
-  type        = string
-  description = "Storage class to use for persistent volume"
-  default     = "csi-gp2"
-}
-
-variable "atlantis_flux_repo_name" {
-  type        = string
-  description = "Name of the Github repo to store the Atlantis Flux manifests in"
-  default     = null
-}
-
-variable "atlantis_flux_repo_owner" {
-  type        = string
-  description = "Github username or organization that owns the repo to store the Atlantis Flux manifests in"
-  default     = null
-}
-
-variable "atlantis_flux_repo_branch" {
-  type        = string
-  description = "Override the default branch of the Atlantis Flux repo (optional)"
-  default     = "main"
-}
 
 # --------------------------------------------------
 # Crossplane
