@@ -86,13 +86,20 @@ inputs = {
   cloudwatch_alarm_alb_5XX_deploy            = true
 
   # --------------------------------------------------
-  # Platform Flux CD
+  # Flux CD
   # --------------------------------------------------
 
-  platform_fluxcd_deploy       = true
-  platform_fluxcd_repo_name    = "platform-manifests-qa"
-  platform_fluxcd_github_owner = "dfds"
-  platform_fluxcd_release_tag  = "v0.38.2"
+  fluxcd_deploy                 = true
+  fluxcd_version                = "v0.38.2"
+
+  fluxcd_bootstrap_repo_name    = "platform-manifests-qa"
+  fluxcd_bootstrap_repo_branch  = "main"
+  fluxcd_bootstrap_repo_owner   = "dfds"
+
+  fluxcd_apps_repo_name    = "platform-apps"
+  fluxcd_apps_repo_branch  = "main"
+  fluxcd_apps_repo_owner   = "dfds"
+
 
   # --------------------------------------------------
   # Monitoring

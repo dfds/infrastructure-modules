@@ -397,46 +397,40 @@ variable "monitoring_metrics_server_repo_url" {
 }
 
 # --------------------------------------------------
-# Platform Flux CD
+# Flux CD
 # --------------------------------------------------
 
-variable "platform_fluxcd_deploy" {
-  type        = bool
-  default     = false
-  description = ""
+variable "fluxcd_deploy" {
+  type    = bool
+  default = false
 }
 
-variable "platform_fluxcd_release_tag" {
-  type        = string
-  default     = null
-  description = "The release tag of Flux CD to use."
+variable "fluxcd_version" {
+  type    = string
+  default = null
 }
 
-variable "platform_fluxcd_repo_name" {
-  type        = string
-  default     = ""
-  description = ""
+variable "fluxcd_bootstrap_repo_name" {
+  type    = string
+  default = ""
 }
 
-variable "platform_fluxcd_github_owner" {
-  type        = string
-  default     = ""
-  description = ""
+variable "fluxcd_bootstrap_repo_branch" {
+  type    = string
+  default = "main"
 }
 
-variable "platform_fluxcd_github_token" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = ""
+variable "fluxcd_bootstrap_repo_owner" {
+  type    = string
+  default = ""
 }
 
-variable "platform_fluxcd_repo_branch" {
-  type        = string
-  default     = "main"
-  description = ""
+variable "fluxcd_bootstrap_repo_owner_token" {
+  type    = string
+  default = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
-variable "platform_fluxcd_overwrite_on_create" {
+variable "fluxcd_bootstrap_overwrite_on_create" {
   type        = bool
   default     = true
   description = "Enable overwriting existing files"
@@ -447,16 +441,28 @@ variable "platform_fluxcd_overwrite_on_create" {
 # GitOps apps used by Flux CD
 # --------------------------------------------------
 
-variable "fluxcd_gitops_apps_repo_url" {
+variable "fluxcd_apps_git_provider_url" {
   type        = string
-  default     = "https://github.com/dfds/platform-apps"
-  description = "The https url for your GitOps manifests"
+  default     = "https://github.com/"
+  description = "The URL to your Git server."
 }
 
-variable "fluxcd_gitops_apps_repo_branch" {
+variable "fluxcd_apps_repo_name" {
+  type        = string
+  default     = ""
+  description = "The repo name for your GitOps manifests"
+}
+
+variable "fluxcd_apps_repo_branch" {
   type        = string
   default     = "main"
   description = "The default branch for your GitOps manifests"
+}
+
+variable "fluxcd_apps_repo_owner" {
+  type        = string
+  default     = "main"
+  description = "The repo owner for your GitOps manifests"
 }
 
 

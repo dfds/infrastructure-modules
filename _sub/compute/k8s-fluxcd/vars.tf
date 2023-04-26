@@ -18,7 +18,7 @@ variable "repo_path" {
   description = ""
 }
 
-variable "github_owner" {
+variable "repo_owner" {
   type        = string
   description = ""
 }

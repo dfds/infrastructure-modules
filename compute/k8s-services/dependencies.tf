@@ -254,3 +254,11 @@ locals {
     var.blackbox_exporter_monitoring_targets
   )
 }
+
+# --------------------------------------------------
+# Flux CD
+# --------------------------------------------------
+
+locals {
+  fluxcd_apps_repo_url = "${var.fluxcd_apps_git_provider_url}${var.fluxcd_apps_repo_owner}/${var.fluxcd_apps_repo_name}"
+}
