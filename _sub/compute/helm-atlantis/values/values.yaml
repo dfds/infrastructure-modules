@@ -11,7 +11,7 @@ resources:
     memory: 1536Mi
     cpu: null
 
-orgWhitelist: ${github_repos}
+orgAllowlist: ${github_repos}
 logLevel: "info"
 
 disableApply: true
