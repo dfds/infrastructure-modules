@@ -191,15 +191,12 @@
             }
         },
         {
-            "Sid": "DenyBillingLegacyRemoveAfterJuly2023",
+            "Sid": "ReadOnlyBillingLegacyRemoveAfterJuly2023",
             "Effect": "Deny",
             "Action": [
-                "aws-portal:ViewBilling",
-                "aws-portal:ViewPaymentMethods",
-                "aws-portal:ViewUsage",
                 "aws-portal:ModifyAccount",
                 "aws-portal:ModifyBilling",
-                "aws-portal:ModifyPaymentMethods"
+                "aws-portal:ModifyPaymentMethods"            
             ],
             "Resource": [
                 "*"
