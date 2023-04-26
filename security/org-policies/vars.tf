@@ -2,18 +2,18 @@ variable "aws_region" {
   type = string
 }
 
-variable "ou_ids_for_preventive_policy" {
+variable "preventive_policy_attach_targets" {
   type = list(string)
 }
 
-variable "ou_ids_for_integrity_policy" {
+variable "integrity_policy_attach_targets" {
   type = list(string)
 }
 
-variable "ou_ids_for_restrictive_policy" {
+variable "restrictive_policy_attach_targets" {
   type = list(string)
 }
 
-variable "ou_ids_for_reservation_policy" {
+variable "reservation_policy_attach_targets" {
   type = list(string)
 }
