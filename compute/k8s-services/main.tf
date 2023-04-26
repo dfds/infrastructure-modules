@@ -107,9 +107,9 @@ module "traefik_blue_variant_flux_manifests" {
   replicas                = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
   http_nodeport           = var.traefik_blue_variant_flux_http_nodeport
   admin_nodeport          = var.traefik_blue_variant_flux_admin_nodeport
-  github_owner            = var.traefik_flux_github_owner
-  repo_name               = var.traefik_flux_repo_name
-  repo_branch             = var.traefik_flux_repo_branch
+  github_owner            = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
   additional_args         = var.traefik_blue_variant_flux_additional_args
   dashboard_ingress_host  = "traefik-blue-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
   overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
@@ -134,9 +134,9 @@ module "traefik_variant_flux_manifests" {
   replicas                = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
   http_nodeport           = var.traefik_green_variant_flux_http_nodeport
   admin_nodeport          = var.traefik_green_variant_flux_admin_nodeport
-  github_owner            = var.traefik_flux_github_owner
-  repo_name               = var.traefik_flux_repo_name
-  repo_branch             = var.traefik_flux_repo_branch
+  github_owner            = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
   additional_args         = var.traefik_green_variant_flux_additional_args
   dashboard_ingress_host  = "traefik-green-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
   overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
@@ -445,9 +445,9 @@ module "monitoring_kube_prometheus_stack" {
   prometheus_retention        = var.monitoring_kube_prometheus_stack_prometheus_retention
   slack_channel               = var.monitoring_kube_prometheus_stack_slack_channel
   target_namespaces           = var.monitoring_kube_prometheus_stack_target_namespaces
-  github_owner                = var.monitoring_kube_prometheus_stack_github_owner
-  repo_name                   = var.monitoring_kube_prometheus_stack_repo_name
-  repo_branch                 = var.monitoring_kube_prometheus_stack_repo_branch
+  github_owner                = var.fluxcd_bootstrap_repo_owner
+  repo_name                   = var.fluxcd_bootstrap_repo_name
+  repo_branch                 = var.fluxcd_bootstrap_repo_branch
   prometheus_request_memory   = var.monitoring_kube_prometheus_stack_prometheus_request_memory
   prometheus_request_cpu      = var.monitoring_kube_prometheus_stack_prometheus_request_cpu
   prometheus_limit_memory     = var.monitoring_kube_prometheus_stack_prometheus_limit_memory
@@ -553,9 +553,9 @@ module "atlantis_flux_manifests" {
   namespace             = var.atlantis_namespace
   ingressroute_hostname = var.atlantis_ingress
   cluster_name          = var.eks_cluster_name
-  flux_repo_owner       = var.atlantis_flux_repo_owner
-  flux_repo_name        = var.atlantis_flux_repo_name
-  flux_repo_branch      = var.atlantis_flux_repo_branch
+  flux_repo_owner       = var.fluxcd_bootstrap_repo_owner
+  flux_repo_name        = var.fluxcd_bootstrap_repo_name
+  flux_repo_branch      = var.fluxcd_bootstrap_repo_branch
   overwrite_on_create   = var.fluxcd_bootstrap_overwrite_on_create
 
   depends_on = [module.atlantis, module.platform_fluxcd]
@@ -594,9 +594,9 @@ module "crossplane_operator" {
   deploy_name         = var.crossplane_operator_deploy_name
   helm_chart_version  = var.crossplane_operator_helm_chart_version
   namespace           = var.crossplane_namespace # Same namespace as for the crossplane module
-  repo_owner          = var.crossplane_operator_repo_owner != null ? var.crossplane_operator_repo_owner : var.fluxcd_bootstrap_repo_owner
-  repo_name           = var.crossplane_operator_repo_name != null ? var.crossplane_operator_repo_name : var.fluxcd_bootstrap_repo_name
-  repo_branch         = var.crossplane_operator_repo_branch != null ? var.crossplane_operator_repo_branch : var.fluxcd_bootstrap_repo_branch
+  repo_owner          = var.fluxcd_bootstrap_repo_owner
+  repo_name           = var.fluxcd_bootstrap_repo_name
+  repo_branch         = var.fluxcd_bootstrap_repo_branch
   cluster_name        = var.eks_cluster_name
   overwrite_on_create = var.fluxcd_bootstrap_overwrite_on_create
 
@@ -612,9 +612,9 @@ module "crossplane_configuration_package" {
   count               = var.crossplane_cfg_pkg_deploy ? 1 : 0
   name                = var.crossplane_cfg_pkg_name
   package             = var.crossplane_cfg_pkg_docker_image
-  repo_owner          = var.crossplane_cfg_pkg_repo_owner != null ? var.crossplane_cfg_pkg_repo_owner : var.fluxcd_bootstrap_repo_owner
-  repo_name           = var.crossplane_cfg_pkg_repo_name != null ? var.crossplane_cfg_pkg_repo_name : var.fluxcd_bootstrap_repo_name
-  repo_branch         = var.crossplane_cfg_pkg_repo_branch != null ? var.crossplane_cfg_pkg_repo_branch : var.fluxcd_bootstrap_repo_branch
+  repo_owner          = var.fluxcd_bootstrap_repo_owner
+  repo_name           = var.fluxcd_bootstrap_repo_name
+  repo_branch         = var.fluxcd_bootstrap_repo_branch
   cluster_name        = var.eks_cluster_name
   overwrite_on_create = var.fluxcd_bootstrap_overwrite_on_create
 
@@ -635,9 +635,9 @@ module "crossplane_provider_confluent_prereqs" {
   namespace    = var.crossplane_namespace
   email        = var.crossplane_provider_confluent_email
   password     = var.crossplane_provider_confluent_password
-  repo_owner   = var.crossplane_cfg_pkg_repo_owner != null ? var.crossplane_cfg_pkg_repo_owner : var.fluxcd_bootstrap_repo_owner
-  repo_name    = var.crossplane_cfg_pkg_repo_name != null ? var.crossplane_cfg_pkg_repo_name : var.fluxcd_bootstrap_repo_name
-  repo_branch  = var.crossplane_cfg_pkg_repo_branch != null ? var.crossplane_cfg_pkg_repo_branch : var.fluxcd_bootstrap_repo_branch
+  repo_owner   = var.fluxcd_bootstrap_repo_owner
+  repo_name    = var.fluxcd_bootstrap_repo_name
+  repo_branch  = var.fluxcd_bootstrap_repo_branch
   cluster_name = var.eks_cluster_name
 
   confluent_environments       = var.crossplane_confluent_environments
@@ -660,9 +660,9 @@ module "blackbox_exporter_flux_manifests" {
   count                   = var.blackbox_exporter_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
   helm_chart_version      = var.blackbox_exporter_helm_chart_version
-  github_owner            = var.blackbox_exporter_github_owner
-  repo_name               = var.blackbox_exporter_repo_name
-  repo_branch             = var.blackbox_exporter_repo_branch
+  github_owner            = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
   monitoring_targets      = local.blackbox_exporter_monitoring_targets
   namespace               = module.monitoring_namespace[0].name
   overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
@@ -685,9 +685,9 @@ module "helm_exporter_flux_manifests" {
   count                   = var.helm_exporter_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
   helm_chart_version      = var.helm_exporter_helm_chart_version
-  github_owner            = var.helm_exporter_github_owner != null ? var.helm_exporter_github_owner : var.fluxcd_bootstrap_repo_owner
-  repo_name               = var.helm_exporter_repo_name != null ? var.helm_exporter_repo_name : var.fluxcd_bootstrap_repo_name
-  repo_branch             = var.helm_exporter_repo_branch != null ? var.helm_exporter_repo_branch : var.fluxcd_bootstrap_repo_branch
+  github_owner            = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
   namespace               = module.monitoring_namespace[0].name
   target_namespaces       = var.helm_exporter_target_namespaces
   target_charts           = var.helm_exporter_target_charts
@@ -713,8 +713,8 @@ module "podinfo_flux_manifests" {
   source              = "../../_sub/examples/podinfo"
   count               = var.podinfo_flux_deploy ? 1 : 0
   cluster_name        = var.eks_cluster_name
-  repo_name           = var.podinfo_flux_repo_name != null ? var.podinfo_flux_repo_name : var.fluxcd_bootstrap_repo_name
-  repo_branch         = var.podinfo_flux_repo_branch != null ? var.podinfo_flux_repo_branch : var.fluxcd_bootstrap_repo_branch
+  repo_name           = var.fluxcd_bootstrap_repo_name
+  repo_branch         = var.fluxcd_bootstrap_repo_branch
   overwrite_on_create = var.fluxcd_bootstrap_overwrite_on_create
 
   providers = {
@@ -734,8 +734,8 @@ module "fluentd_cloudwatch_flux_manifests" {
   cluster_name                    = var.eks_cluster_name
   aws_region                      = var.aws_region
   retention_in_days               = var.fluentd_cloudwatch_retention_in_days
-  repo_name                       = var.fluentd_cloudwatch_flux_repo_name != null ? var.fluentd_cloudwatch_flux_repo_name : var.fluxcd_bootstrap_repo_name
-  repo_branch                     = var.fluentd_cloudwatch_flux_repo_branch != null ? var.fluentd_cloudwatch_flux_repo_branch : var.fluxcd_bootstrap_repo_branch
+  repo_name                       = var.fluxcd_bootstrap_repo_name
+  repo_branch                     = var.fluxcd_bootstrap_repo_branch
   deploy_oidc_provider            = var.aws_assume_logs_role_arn == null || var.aws_assume_logs_role_arn == "" ? false : true # do not create extra oidc provider if external log account is provided
   eks_openid_connect_provider_url = local.oidc_issuer
   overwrite_on_create             = var.fluxcd_bootstrap_overwrite_on_create
@@ -762,8 +762,8 @@ module "velero_flux_manifests" {
   role_arn                = var.velero_flux_role_arn
   bucket_name             = var.velero_flux_bucket_name
   log_level               = var.velero_flux_log_level
-  repo_name               = var.velero_flux_repo_name != null ? var.velero_flux_repo_name : var.fluxcd_bootstrap_repo_name
-  repo_branch             = var.velero_flux_repo_branch != null ? var.velero_flux_repo_branch : var.fluxcd_bootstrap_repo_branch
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
   helm_chart_version      = var.velero_helm_chart_version
   image_tag               = var.velero_image_tag
   plugin_for_aws_version  = var.velero_plugin_for_aws_version

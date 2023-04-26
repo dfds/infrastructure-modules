@@ -43,10 +43,6 @@ inputs = {
 
   traefikv2_test_alb_deploy = true
 
-  traefik_flux_github_owner = "dfds"
-  traefik_flux_repo_name    = "platform-manifests-qa"
-  traefik_flux_repo_branch  = "main"
-
   # Blue variant
   traefik_blue_variant_flux_deploy             = true
   traefik_blue_variant_flux_dashboard_deploy   = true
@@ -132,9 +128,6 @@ inputs = {
   monitoring_kube_prometheus_stack_prometheus_retention              = "1d"
   monitoring_kube_prometheus_stack_slack_webhook                     = "https://dummy.slack.webhook"
   monitoring_kube_prometheus_stack_slack_channel                     = "#hellman-alerting"
-  monitoring_kube_prometheus_stack_github_owner                      = "dfds"
-  monitoring_kube_prometheus_stack_repo_name                         = "platform-manifests-qa"
-  monitoring_kube_prometheus_stack_repo_branch                       = "main"
   monitoring_kube_prometheus_stack_prometheus_request_memory         = "500Mi"
   monitoring_kube_prometheus_stack_prometheus_request_cpu            = "500m"
   monitoring_kube_prometheus_stack_prometheus_limit_memory           = "2Gi"
@@ -198,18 +191,11 @@ inputs = {
   atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
   atlantis_chart_version       = "4.1.2"
 
-  atlantis_flux_repo_name   = "platform-manifests-qa"
-  atlantis_flux_repo_owner  = "dfds"
-  atlantis_flux_repo_branch = "main"
-
   # --------------------------------------------------
   # Blackbox Exporter
   # --------------------------------------------------
 
   blackbox_exporter_deploy       = "true"
-  blackbox_exporter_github_owner = "dfds"
-  blackbox_exporter_repo_name    = "platform-manifests-qa"
-  blackbox_exporter_repo_branch  = "main"
   blackbox_exporter_monitoring_targets = [
     {
       "name"   = "example"
@@ -224,9 +210,6 @@ inputs = {
 
   helm_exporter_deploy             = "true"
   helm_exporter_helm_chart_version = "1.2.4"
-  helm_exporter_github_owner       = "dfds"
-  helm_exporter_repo_name          = "platform-manifests-qa"
-  helm_exporter_repo_branch        = "main"
   helm_exporter_target_namespaces  = "fluentd,flux-system,monitoring,traefik-blue-variant"
   helm_exporter_target_charts = [
     {
