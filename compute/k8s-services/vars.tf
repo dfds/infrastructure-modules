@@ -533,7 +533,7 @@ variable "atlantis_image_tag" {
 variable "atlantis_storage_class" {
   type        = string
   description = "Storage class to use for persistent volume"
-  default     = "csi-gp2"
+  default     = "csi-gp3"
 }
 
 variable "atlantis_flux_repo_name" {
