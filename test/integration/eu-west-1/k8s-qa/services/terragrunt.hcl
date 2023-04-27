@@ -44,24 +44,24 @@ inputs = {
   traefikv2_test_alb_deploy = true
 
   # Blue variant
-  traefik_blue_variant_flux_deploy             = true
-  traefik_blue_variant_flux_dashboard_deploy   = true
-  traefik_blue_variant_flux_helm_chart_version = "20.8.0"
-  traefik_blue_variant_flux_additional_args = [
+  traefik_blue_variant_deploy             = true
+  traefik_blue_variant_dashboard_deploy   = true
+  traefik_blue_variant_helm_chart_version = "20.8.0"
+  traefik_blue_variant_additional_args = [
     "--metrics.prometheus",
     "--providers.kubernetescrd.allowCrossNamespace=true"
   ]
-  traefik_blue_variant_flux_weight = 1
+  traefik_blue_variant_weight = 1
 
   # Green variant
-  traefik_green_variant_flux_deploy             = false
-  traefik_green_variant_flux_dashboard_deploy   = false
-  traefik_green_variant_flux_helm_chart_version = "20.8.0"
-  traefik_green_variant_flux_additional_args = [
+  traefik_green_variant_deploy             = false
+  traefik_green_variant_dashboard_deploy   = false
+  traefik_green_variant_helm_chart_version = "20.8.0"
+  traefik_green_variant_additional_args = [
     "--metrics.prometheus",
     "--providers.kubernetescrd.allowCrossNamespace=true"
   ]
-  traefik_green_variant_flux_weight = 0
+  traefik_green_variant_weight = 0
 
 
 
@@ -249,22 +249,22 @@ inputs = {
   # Podinfo
   # --------------------------------------------------
 
-  podinfo_flux_deploy = true
+  podinfo_deploy = true
 
   # --------------------------------------------------
   # fluent-cloudwatch
   # --------------------------------------------------
 
-  fluentd_cloudwatch_flux_deploy = true
+  fluentd_cloudwatch_deploy = true
 
   # --------------------------------------------------
   # Velero - requires that s3-bucket-velero module
   # is already applied through Terragrunt.
   # --------------------------------------------------
 
-  velero_flux_deploy            = true
-  velero_flux_role_arn          = "arn:aws:iam::266901158286:role/VeleroBackup"
-  velero_flux_bucket_name       = "dfds-velero-qa"
+  velero_deploy            = true
+  velero_role_arn          = "arn:aws:iam::266901158286:role/VeleroBackup"
+  velero_bucket_name       = "dfds-velero-qa"
   velero_plugin_for_aws_version = "v1.4.1"
   velero_plugin_for_csi_version = "v0.2.0"
 

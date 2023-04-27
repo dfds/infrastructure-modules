@@ -87,22 +87,22 @@ locals {
 
 locals {
   traefik_alb_auth_endpoints = concat(
-    var.traefik_blue_variant_flux_deploy || var.traefik_green_variant_flux_deploy ? concat(
+    var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy ? concat(
       [
         "internal.${local.eks_fqdn}"
       ],
       var.traefik_alb_auth_core_alias
     ) : [],
-    var.traefik_blue_variant_flux_deploy && var.traefik_green_variant_flux_deploy ?
+    var.traefik_blue_variant_deploy && var.traefik_green_variant_deploy ?
     [
       "traefik-blue-variant.${local.eks_fqdn}:8443",
       "traefik-green-variant.${local.eks_fqdn}:9443"
     ] : [],
-    var.traefik_blue_variant_flux_deploy ?
+    var.traefik_blue_variant_deploy ?
     [
       "traefik-blue-variant.${local.eks_fqdn}"
     ] : [],
-    var.traefik_green_variant_flux_deploy ?
+    var.traefik_green_variant_deploy ?
     [
       "traefik-green-variant.${local.eks_fqdn}"
     ] : [],
@@ -233,13 +233,13 @@ locals {
     "module" = "http_2xx"
   }] : []
 
-  blackbox_exporter_monitoring_traefik_blue_variant = var.traefik_blue_variant_flux_deploy ? [{
+  blackbox_exporter_monitoring_traefik_blue_variant = var.traefik_blue_variant_deploy ? [{
     "name"   = "traefik-blue-variant"
     "url"    = "http://traefik-blue-variant.traefik-blue-variant:9000/ping"
     "module" = "http_2xx"
   }] : []
 
-  blackbox_exporter_monitoring_traefik_green_variant = var.traefik_green_variant_flux_deploy ? [{
+  blackbox_exporter_monitoring_traefik_green_variant = var.traefik_green_variant_deploy ? [{
     "name"   = "traefik-green-variant"
     "url"    = "http://traefik-green-variant.traefik-green-variant:9000/ping"
     "module" = "http_2xx"

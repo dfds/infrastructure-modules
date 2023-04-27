@@ -756,36 +756,36 @@ variable "crossplane_confluent_clusters_endpoints" {
 # routing traffic gradually to a new version and then decomissioning an older
 # version without downtime.
 
-variable "traefik_blue_variant_flux_helm_chart_version" {
+variable "traefik_blue_variant_helm_chart_version" {
   type        = string
   description = "Helm Chart version to be used to deploy Traefik"
   default     = null
 }
 
-variable "traefik_blue_variant_flux_http_nodeport" {
+variable "traefik_blue_variant_http_nodeport" {
   type        = number
   description = "Nodeport used by ALB's to connect to the Traefik instance"
   default     = 31000
 }
 
-variable "traefik_blue_variant_flux_admin_nodeport" {
+variable "traefik_blue_variant_admin_nodeport" {
   type        = number
   description = "Nodeport used by ALB's to connect to the Traefik instance admin page"
   default     = 31001
 }
 
-variable "traefik_blue_variant_flux_additional_args" {
+variable "traefik_blue_variant_additional_args" {
   type        = list(any)
   description = "Pass arguments to the additionalArguments node in the Traefik Helm chart"
   default     = ["--metrics.prometheus"]
 }
 
-variable "traefik_blue_variant_flux_deploy" {
+variable "traefik_blue_variant_deploy" {
   type    = bool
   default = true
 }
 
-variable "traefik_blue_variant_flux_weight" {
+variable "traefik_blue_variant_weight" {
   type        = number
   description = "The weight of the Traefik instance target groups in the load balancers. Only relevant if there is variant instance deployed."
   default     = 1
@@ -793,37 +793,37 @@ variable "traefik_blue_variant_flux_weight" {
 
 # Green variant
 
-variable "traefik_green_variant_flux_helm_chart_version" {
+variable "traefik_green_variant_helm_chart_version" {
   type        = string
   description = "Helm Chart version to be used to deploy the Traefik green variant"
   default     = null
 }
 
-variable "traefik_green_variant_flux_http_nodeport" {
+variable "traefik_green_variant_http_nodeport" {
   type        = number
   description = "Nodeport used by ALB's to connect to the Traefik green variant instance"
   default     = 32000
 }
 
-variable "traefik_green_variant_flux_admin_nodeport" {
+variable "traefik_green_variant_admin_nodeport" {
   type        = number
   description = "Nodeport used by ALB's to connect to the Traefik green variant instance admin page"
   default     = 32001
 }
 
-variable "traefik_green_variant_flux_additional_args" {
+variable "traefik_green_variant_additional_args" {
   type        = list(any)
   description = "Pass arguments to the additionalArguments node in the Traefik Helm chart for the green variant"
   default     = ["--metrics.prometheus"]
 }
 
-variable "traefik_green_variant_flux_deploy" {
+variable "traefik_green_variant_deploy" {
   type        = bool
   description = "Whether to deploy the Traefik green variant."
   default     = false
 }
 
-variable "traefik_green_variant_flux_weight" {
+variable "traefik_green_variant_weight" {
   type        = number
   description = "The weight of the Traefik green variant instance target groups in the load balancers."
   default     = 0
@@ -887,7 +887,7 @@ variable "helm_exporter_target_charts" {
 # Podinfo through Flux CD
 # --------------------------------------------------
 
-variable "podinfo_flux_deploy" {
+variable "podinfo_deploy" {
   type    = bool
   default = false
 }
@@ -896,7 +896,7 @@ variable "podinfo_flux_deploy" {
 # fluentd-cloudwatch through Flux
 # --------------------------------------------------
 
-variable "fluentd_cloudwatch_flux_deploy" {
+variable "fluentd_cloudwatch_deploy" {
   type    = bool
   default = false
 }
@@ -912,30 +912,30 @@ variable "fluentd_cloudwatch_retention_in_days" {
 # is already applied through Terragrunt.
 # --------------------------------------------------
 
-variable "velero_flux_deploy" {
+variable "velero_deploy" {
   type        = bool
   default     = false
   description = "Should Velero Helm chart be deployed?"
 }
 
-variable "velero_flux_role_arn" {
+variable "velero_role_arn" {
   type        = string
   description = "The ARN for the role that is permitted to use Velero backup storage."
   default     = null
 }
 
-variable "velero_flux_bucket_name" {
+variable "velero_bucket_name" {
   type        = string
   default     = null
   description = "The name of the S3 bucket that contains the Velero backup"
 }
 
-variable "velero_flux_log_level" {
+variable "velero_log_level" {
   type        = string
   default     = "info"
   description = "Velero log level."
   validation {
-    condition     = contains(["info", "debug", "warning", "error", "fatal", "panic"], var.velero_flux_log_level)
+    condition     = contains(["info", "debug", "warning", "error", "fatal", "panic"], var.velero_log_level)
     error_message = "Invalid value for log_level. Valid values: info, debug, warning, error, fatal, panic."
   }
 }
