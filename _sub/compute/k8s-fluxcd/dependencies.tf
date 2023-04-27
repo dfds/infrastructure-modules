@@ -22,7 +22,7 @@ data "kubectl_file_documents" "install" {
 
 data "flux_sync" "main" {
   target_path = var.repo_path
-  url         = "ssh://git@github.com/${var.github_owner}/${var.repo_name}.git"
+  url         = "ssh://git@github.com/${var.repo_owner}/${var.repo_name}.git"
   branch      = var.repo_branch
   namespace   = local.namespace
 }
@@ -41,7 +41,7 @@ locals {
 }
 
 data "github_repository" "main" {
-  full_name = "${var.github_owner}/${var.repo_name}"
+  full_name = "${var.repo_owner}/${var.repo_name}"
 }
 
 data "github_branch" "flux_branch" {

@@ -320,24 +320,6 @@ variable "monitoring_kube_prometheus_stack_target_namespaces" {
   default     = ".*"
 }
 
-variable "monitoring_kube_prometheus_stack_github_owner" {
-  type        = string
-  description = "Name of the Traefik Flux repo Github owner (previously: organization)"
-  default     = null
-}
-
-variable "monitoring_kube_prometheus_stack_repo_name" {
-  type        = string
-  description = "Name of the Github repo to store the Traefik Flux manifests in"
-  default     = null
-}
-
-variable "monitoring_kube_prometheus_stack_repo_branch" {
-  type        = string
-  description = "Override the default branch of the Traefik Flux repo (optional)"
-  default     = null
-}
-
 variable "monitoring_kube_prometheus_stack_prometheus_request_memory" {
   type        = string
   description = "Prometheus resource setting for memory request"
@@ -397,46 +379,40 @@ variable "monitoring_metrics_server_repo_url" {
 }
 
 # --------------------------------------------------
-# Platform Flux CD
+# Flux CD
 # --------------------------------------------------
 
-variable "platform_fluxcd_deploy" {
-  type        = bool
-  default     = false
-  description = ""
+variable "fluxcd_deploy" {
+  type    = bool
+  default = false
 }
 
-variable "platform_fluxcd_release_tag" {
-  type        = string
-  default     = null
-  description = "The release tag of Flux CD to use."
+variable "fluxcd_version" {
+  type    = string
+  default = null
 }
 
-variable "platform_fluxcd_repo_name" {
-  type        = string
-  default     = ""
-  description = ""
+variable "fluxcd_bootstrap_repo_name" {
+  type    = string
+  default = ""
 }
 
-variable "platform_fluxcd_github_owner" {
-  type        = string
-  default     = ""
-  description = ""
+variable "fluxcd_bootstrap_repo_branch" {
+  type    = string
+  default = "main"
 }
 
-variable "platform_fluxcd_github_token" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = ""
+variable "fluxcd_bootstrap_repo_owner" {
+  type    = string
+  default = ""
 }
 
-variable "platform_fluxcd_repo_branch" {
-  type        = string
-  default     = "main"
-  description = ""
+variable "fluxcd_bootstrap_repo_owner_token" {
+  type    = string
+  default = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
-variable "platform_fluxcd_overwrite_on_create" {
+variable "fluxcd_bootstrap_overwrite_on_create" {
   type        = bool
   default     = true
   description = "Enable overwriting existing files"
@@ -447,16 +423,28 @@ variable "platform_fluxcd_overwrite_on_create" {
 # GitOps apps used by Flux CD
 # --------------------------------------------------
 
-variable "fluxcd_gitops_apps_repo_url" {
+variable "fluxcd_apps_git_provider_url" {
   type        = string
-  default     = "https://github.com/dfds/platform-apps"
-  description = "The https url for your GitOps manifests"
+  default     = "https://github.com/"
+  description = "The URL to your Git server."
 }
 
-variable "fluxcd_gitops_apps_repo_branch" {
+variable "fluxcd_apps_repo_name" {
+  type        = string
+  default     = ""
+  description = "The repo name for your GitOps manifests"
+}
+
+variable "fluxcd_apps_repo_branch" {
   type        = string
   default     = "main"
   description = "The default branch for your GitOps manifests"
+}
+
+variable "fluxcd_apps_repo_owner" {
+  type        = string
+  default     = "main"
+  description = "The repo owner for your GitOps manifests"
 }
 
 
@@ -540,25 +528,6 @@ variable "atlantis_storage_class" {
   description = "Storage class to use for persistent volume"
   default     = "csi-gp3"
 }
-
-variable "atlantis_flux_repo_name" {
-  type        = string
-  description = "Name of the Github repo to store the Atlantis Flux manifests in"
-  default     = null
-}
-
-variable "atlantis_flux_repo_owner" {
-  type        = string
-  description = "Github username or organization that owns the repo to store the Atlantis Flux manifests in"
-  default     = null
-}
-
-variable "atlantis_flux_repo_branch" {
-  type        = string
-  description = "Override the default branch of the Atlantis Flux repo (optional)"
-  default     = "main"
-}
-
 
 # --------------------------------------------------
 # Atlantis variables
@@ -718,24 +687,6 @@ variable "crossplane_cfg_pkg_deploy" {
   default     = false
 }
 
-variable "crossplane_cfg_pkg_repo_owner" {
-  type        = string
-  description = "Name of the Flux manifests repo Github owner"
-  default     = null
-}
-
-variable "crossplane_cfg_pkg_repo_name" {
-  type        = string
-  description = "Name of the Github repo to store the Flux manifests in"
-  default     = null
-}
-
-variable "crossplane_cfg_pkg_repo_branch" {
-  type        = string
-  description = "Override the default branch of the Flux manifests repo (optional)"
-  default     = null
-}
-
 variable "crossplane_cfg_pkg_name" {
   type        = string
   description = "The unique Crossplane configuration name in Kubernetes"
@@ -752,24 +703,6 @@ variable "crossplane_operator_deploy" {
   type        = bool
   description = "Deploy Crossplane configuration package"
   default     = false
-}
-
-variable "crossplane_operator_repo_owner" {
-  type        = string
-  description = "Name of the Flux manifests repo Github owner"
-  default     = null
-}
-
-variable "crossplane_operator_repo_name" {
-  type        = string
-  description = "Name of the Github repo to store the Flux manifests in"
-  default     = null
-}
-
-variable "crossplane_operator_repo_branch" {
-  type        = string
-  description = "Override the default branch of the Flux manifests repo (optional)"
-  default     = null
 }
 
 variable "crossplane_operator_deploy_name" {
@@ -823,54 +756,36 @@ variable "crossplane_confluent_clusters_endpoints" {
 # routing traffic gradually to a new version and then decomissioning an older
 # version without downtime.
 
-variable "traefik_flux_github_owner" {
-  type        = string
-  description = "Name of the Traefik Flux repo Github owner (previously: organization)"
-  default     = null
-}
-
-variable "traefik_flux_repo_name" {
-  type        = string
-  description = "Name of the Github repo to store the Traefik Flux manifests in"
-  default     = null
-}
-
-variable "traefik_flux_repo_branch" {
-  type        = string
-  description = "Override the default branch of the Traefik Flux repo (optional)"
-  default     = null
-}
-
-variable "traefik_blue_variant_flux_helm_chart_version" {
+variable "traefik_blue_variant_helm_chart_version" {
   type        = string
   description = "Helm Chart version to be used to deploy Traefik"
   default     = null
 }
 
-variable "traefik_blue_variant_flux_http_nodeport" {
+variable "traefik_blue_variant_http_nodeport" {
   type        = number
   description = "Nodeport used by ALB's to connect to the Traefik instance"
   default     = 31000
 }
 
-variable "traefik_blue_variant_flux_admin_nodeport" {
+variable "traefik_blue_variant_admin_nodeport" {
   type        = number
   description = "Nodeport used by ALB's to connect to the Traefik instance admin page"
   default     = 31001
 }
 
-variable "traefik_blue_variant_flux_additional_args" {
+variable "traefik_blue_variant_additional_args" {
   type        = list(any)
   description = "Pass arguments to the additionalArguments node in the Traefik Helm chart"
   default     = ["--metrics.prometheus"]
 }
 
-variable "traefik_blue_variant_flux_deploy" {
+variable "traefik_blue_variant_deploy" {
   type    = bool
   default = true
 }
 
-variable "traefik_blue_variant_flux_weight" {
+variable "traefik_blue_variant_weight" {
   type        = number
   description = "The weight of the Traefik instance target groups in the load balancers. Only relevant if there is variant instance deployed."
   default     = 1
@@ -878,37 +793,37 @@ variable "traefik_blue_variant_flux_weight" {
 
 # Green variant
 
-variable "traefik_green_variant_flux_helm_chart_version" {
+variable "traefik_green_variant_helm_chart_version" {
   type        = string
   description = "Helm Chart version to be used to deploy the Traefik green variant"
   default     = null
 }
 
-variable "traefik_green_variant_flux_http_nodeport" {
+variable "traefik_green_variant_http_nodeport" {
   type        = number
   description = "Nodeport used by ALB's to connect to the Traefik green variant instance"
   default     = 32000
 }
 
-variable "traefik_green_variant_flux_admin_nodeport" {
+variable "traefik_green_variant_admin_nodeport" {
   type        = number
   description = "Nodeport used by ALB's to connect to the Traefik green variant instance admin page"
   default     = 32001
 }
 
-variable "traefik_green_variant_flux_additional_args" {
+variable "traefik_green_variant_additional_args" {
   type        = list(any)
   description = "Pass arguments to the additionalArguments node in the Traefik Helm chart for the green variant"
   default     = ["--metrics.prometheus"]
 }
 
-variable "traefik_green_variant_flux_deploy" {
+variable "traefik_green_variant_deploy" {
   type        = bool
   description = "Whether to deploy the Traefik green variant."
   default     = false
 }
 
-variable "traefik_green_variant_flux_weight" {
+variable "traefik_green_variant_weight" {
   type        = number
   description = "The weight of the Traefik green variant instance target groups in the load balancers."
   default     = 0
@@ -927,24 +842,6 @@ variable "blackbox_exporter_deploy" {
 variable "blackbox_exporter_helm_chart_version" {
   type        = string
   description = "Helm Chart version to be used to deploy Traefik"
-  default     = null
-}
-
-variable "blackbox_exporter_github_owner" {
-  type        = string
-  description = "Name of the Flux manifests repo Github owner"
-  default     = null
-}
-
-variable "blackbox_exporter_repo_name" {
-  type        = string
-  description = "Name of the Github repo to store the Flux manifests in"
-  default     = null
-}
-
-variable "blackbox_exporter_repo_branch" {
-  type        = string
-  description = "Override the default branch of the Flux manifests repo (optional)"
   default     = null
 }
 
@@ -970,24 +867,6 @@ variable "helm_exporter_helm_chart_version" {
   default     = null
 }
 
-variable "helm_exporter_github_owner" {
-  type        = string
-  description = "Name of the Flux manifests repo Github owner"
-  default     = null
-}
-
-variable "helm_exporter_repo_name" {
-  type        = string
-  description = "Name of the Github repo to store the Flux manifests in"
-  default     = null
-}
-
-variable "helm_exporter_repo_branch" {
-  type        = string
-  description = "Override the default branch of the Flux manifests repo (optional)"
-  default     = null
-}
-
 variable "helm_exporter_target_namespaces" {
   type        = string
   description = "target namespaces filter"
@@ -1008,19 +887,7 @@ variable "helm_exporter_target_charts" {
 # Podinfo through Flux CD
 # --------------------------------------------------
 
-variable "podinfo_flux_repo_name" {
-  type        = string
-  description = "Name of the Github repo to store the podinfo Flux manifests in"
-  default     = null
-}
-
-variable "podinfo_flux_repo_branch" {
-  type        = string
-  description = "Override the default branch of the podinfo Flux repo (optional)"
-  default     = null
-}
-
-variable "podinfo_flux_deploy" {
+variable "podinfo_deploy" {
   type    = bool
   default = false
 }
@@ -1029,19 +896,7 @@ variable "podinfo_flux_deploy" {
 # fluentd-cloudwatch through Flux
 # --------------------------------------------------
 
-variable "fluentd_cloudwatch_flux_repo_name" {
-  type        = string
-  description = "Name of the Github repo to store the fluentd-cloudwatch Flux manifests in"
-  default     = null
-}
-
-variable "fluentd_cloudwatch_flux_repo_branch" {
-  type        = string
-  description = "Override the default branch of the fluentd-cloudwatch Flux repo (optional)"
-  default     = null
-}
-
-variable "fluentd_cloudwatch_flux_deploy" {
+variable "fluentd_cloudwatch_deploy" {
   type    = bool
   default = false
 }
@@ -1057,44 +912,32 @@ variable "fluentd_cloudwatch_retention_in_days" {
 # is already applied through Terragrunt.
 # --------------------------------------------------
 
-variable "velero_flux_deploy" {
+variable "velero_deploy" {
   type        = bool
   default     = false
   description = "Should Velero Helm chart be deployed?"
 }
 
-variable "velero_flux_role_arn" {
+variable "velero_role_arn" {
   type        = string
   description = "The ARN for the role that is permitted to use Velero backup storage."
   default     = null
 }
 
-variable "velero_flux_bucket_name" {
+variable "velero_bucket_name" {
   type        = string
   default     = null
   description = "The name of the S3 bucket that contains the Velero backup"
 }
 
-variable "velero_flux_log_level" {
+variable "velero_log_level" {
   type        = string
   default     = "info"
   description = "Velero log level."
   validation {
-    condition     = contains(["info", "debug", "warning", "error", "fatal", "panic"], var.velero_flux_log_level)
+    condition     = contains(["info", "debug", "warning", "error", "fatal", "panic"], var.velero_log_level)
     error_message = "Invalid value for log_level. Valid values: info, debug, warning, error, fatal, panic."
   }
-}
-
-variable "velero_flux_repo_name" {
-  type        = string
-  description = "Name of the Github repo to store the Flux manifests in"
-  default     = null
-}
-
-variable "velero_flux_repo_branch" {
-  type        = string
-  description = "Override the default branch of the Flux repo (optional)"
-  default     = null
 }
 
 variable "velero_helm_chart_version" {

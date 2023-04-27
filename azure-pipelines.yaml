@@ -12,7 +12,7 @@ pr:
       - "*"
   paths:
     exclude:
-    - ".github/workflows/*"
+      - ".github/workflows/*"
 
 # Define resources for container to use.
 resources:
@@ -24,6 +24,7 @@ resources:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
         TF_VAR_platform_fluxcd_github_token: $(TF_VAR_platform_fluxcd_github_token)
+        TF_VAR_fluxcd_bootstrap_repo_owner_token: $(TF_VAR_fluxcd_bootstrap_repo_owner_token)
         TF_VAR_atlantis_github_token: $(TF_VAR_atlantis_github_token)
         TF_VAR_crossplane_provider_confluent_email: $(CROSSPLANE_PROVIDER_CONFLUENT_EMAIL)
         TF_VAR_crossplane_provider_confluent_password: $(CROSSPLANE_PROVIDER_CONFLUENT_PASSWORD)
