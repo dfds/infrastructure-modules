@@ -932,7 +932,7 @@ variable "velero_bucket_name" {
 
 variable "velero_cron_schedule" {
   type        = string
-  default     = null
+  default     = "0 0 * * *"
   description = "Cron-formatted scheduled time for the Velero backup."
 }
 
