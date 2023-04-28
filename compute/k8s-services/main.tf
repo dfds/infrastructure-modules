@@ -761,6 +761,7 @@ module "velero_flux_manifests" {
   cluster_name            = var.eks_cluster_name
   role_arn                = var.velero_role_arn
   bucket_name             = var.velero_bucket_name
+  cron_schedule           = var.velero_cron_schedule
   log_level               = var.velero_log_level
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch

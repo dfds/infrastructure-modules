@@ -930,6 +930,12 @@ variable "velero_bucket_name" {
   description = "The name of the S3 bucket that contains the Velero backup"
 }
 
+variable "velero_cron_schedule" {
+  type        = string
+  default     = "0 0 * * *"
+  description = "Cron-formatted scheduled time for the Velero backup."
+}
+
 variable "velero_log_level" {
   type        = string
   default     = "info"
