@@ -19,10 +19,6 @@ resource "aws_iam_user" "master_user" {
   name = var.iam_user_name
 }
 
-resource "aws_iam_access_key" "master_user_key" {
-  user = aws_iam_user.master_user.name
-}
-
 resource "aws_iam_user_policy" "assume_noncore_accounts" {
   name   = var.assume_noncore_accounts_iam_policy_name
   user   = aws_iam_user.master_user.id
