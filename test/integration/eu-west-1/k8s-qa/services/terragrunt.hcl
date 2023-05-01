@@ -209,7 +209,7 @@ inputs = {
   # --------------------------------------------------
 
   helm_exporter_deploy             = "true"
-  helm_exporter_helm_chart_version = "1.2.4"
+  helm_exporter_helm_chart_version = "1.2.5"
   helm_exporter_target_namespaces  = "fluentd,flux-system,monitoring,traefik-blue-variant"
   helm_exporter_target_charts = [
     {
