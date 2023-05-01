@@ -12,7 +12,7 @@ terraform {
 }
 
 # --------------------------------------------------
-# Service Control (Organization) Policies
+# Service Control Policies (SCP)
 # --------------------------------------------------
 
 module "org_policy_preventive_policy" {
