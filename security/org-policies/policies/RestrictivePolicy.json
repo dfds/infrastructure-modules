@@ -196,7 +196,7 @@
             "Action": [
                 "aws-portal:ModifyAccount",
                 "aws-portal:ModifyBilling",
-                "aws-portal:ModifyPaymentMethods"            
+                "aws-portal:ModifyPaymentMethods"
             ],
             "Resource": [
                 "*"
@@ -207,6 +207,36 @@
                         "arn:aws:iam::*:role/OrgRole",
                         "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
                         "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_Billing_*"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "DenyDisallowedServices",
+            "Effect": "Deny",
+            "Action": [
+                "codestar:*",
+                "codecommit:*",
+                "codeartifact:*",
+                "codebuild:*",
+                "codedeploy:*",
+                "codepipeline:*",
+                "codewhisperer:*",
+                "codecatalyst:*",
+                "gamelift:*",
+                "gamesparks:*",
+                "groundstation:*",
+                "cloudhsm:*",
+                "cloud9:*",
+                "managedblockchain:*"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Condition": {
+                "StringNotLike": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/OrgRole"
                     ]
                 }
             }

@@ -12,7 +12,7 @@ terraform {
 }
 
 # --------------------------------------------------
-# Service Control (Organization) Policies
+# Service Control Policies (SCP)
 # --------------------------------------------------
 
 module "org_policy_preventive_policy" {
@@ -20,7 +20,7 @@ module "org_policy_preventive_policy" {
   name           = "PreventivePolicy"
   description    = "Enables best practices for keeping accounts secure and limits when a breach occurs"
   policy         = jsonencode(jsondecode(file("${path.module}/policies/PreventivePolicy.json")))
-  attach_targets = var.ou_ids_for_preventive_policy
+  attach_targets = var.preventive_policy_attach_targets
 }
 
 module "org_policy_integrity_policy" {
@@ -28,7 +28,7 @@ module "org_policy_integrity_policy" {
   name           = "IntegrityPolicy"
   description    = "Enables us to have better confidence in the information, logs and auditing provided by AWS"
   policy         = jsonencode(jsondecode(file("${path.module}/policies/IntegrityPolicy.json")))
-  attach_targets = var.ou_ids_for_integrity_policy
+  attach_targets = var.integrity_policy_attach_targets
 }
 
 # TODO: Issue https://github.com/dfds/cloudplatform/issues/1504 is scheduled for August to remove DenyBillingLegacyRemoveAfterJuly2023
@@ -37,7 +37,7 @@ module "org_policy_restrictive_policy" {
   name           = "RestrictivePolicy"
   description    = "Used to stop bad practices in the teams, either when there is an alternative or it has been judged to pose a risk"
   policy         = jsonencode(jsondecode(file("${path.module}/policies/RestrictivePolicy.json")))
-  attach_targets = var.ou_ids_for_restrictive_policy
+  attach_targets = var.restrictive_policy_attach_targets
 }
 
 module "org_policy_reservation_policy" {
@@ -45,5 +45,5 @@ module "org_policy_reservation_policy" {
   name           = "ReservationPolicy"
   description    = "Enables us to limit teams from committing us to long term reservations"
   policy         = jsonencode(jsondecode(file("${path.module}/policies/ReservationPolicy.json")))
-  attach_targets = var.ou_ids_for_reservation_policy
+  attach_targets = var.reservation_policy_attach_targets
 }
