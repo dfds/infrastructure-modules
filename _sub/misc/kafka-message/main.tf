@@ -1,9 +1,12 @@
+resource "random_uuid" "uuid" {
+}
+
 locals {
 
   message_map = {
     "version"         = var.message_version
     "eventName"       = var.event_name
-    "x-correlationId" = var.correlation_id
+    "x-correlationId" = (var.correlation_id == null || var.correlation_id == "") ? random_uuid.uuid.result : var.correlation_id
     "x-sender"        = var.sender
     "payload"         = jsondecode(var.payload)
   }
