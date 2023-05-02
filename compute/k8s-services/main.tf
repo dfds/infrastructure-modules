@@ -381,6 +381,10 @@ module "cloudwatch_alarm_log_anomaly" {
   source        = "../../_sub/monitoring/cloudwatch-alarms/log-anomaly/"
   deploy        = var.cloudwatch_alarm_log_anomaly_deploy
   sns_topic_arn = module.alarm_notifier.sns_arn
+
+  providers = {
+    aws = aws.logs
+  }
 }
 
 # --------------------------------------------------
