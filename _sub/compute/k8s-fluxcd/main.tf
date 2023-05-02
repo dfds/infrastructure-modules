@@ -8,7 +8,10 @@ resource "null_resource" "flux_namespace" {
   }
 
   provisioner "local-exec" {
-    command = "kubectl --kubeconfig ${var.kubeconfig_path} create namespace ${self.triggers.namespace}"
+    command = <<-EOT
+    kubectl --kubeconfig ${var.kubeconfig_path} create namespace ${self.triggers.namespace}
+    kubectl --kubeconfig ${var.kubeconfig_path} label --overwrite namespace ${self.triggers.namespace} pod-security.kubernetes.io/audit=baseline pod-security.kubernetes.io/warn=baseline
+    EOT
   }
 }
 

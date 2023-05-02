@@ -65,6 +65,7 @@ resource "aws_db_instance" "postgres" {
   storage_type                = var.db_storage_type
   instance_class              = var.db_instance_class
   allocated_storage           = var.db_allocated_storage
+  max_allocated_storage       = var.db_max_allocated_storage
   port                        = var.db_port
   db_name                     = var.db_name
   username                    = var.db_master_username

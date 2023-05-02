@@ -43,29 +43,25 @@ inputs = {
 
   traefikv2_test_alb_deploy = true
 
-  traefik_flux_github_owner = "dfds"
-  traefik_flux_repo_name    = "platform-manifests-qa"
-  traefik_flux_repo_branch  = "main"
-
   # Blue variant
-  traefik_blue_variant_flux_deploy             = true
-  traefik_blue_variant_flux_dashboard_deploy   = true
-  traefik_blue_variant_flux_helm_chart_version = "20.8.0"
-  traefik_blue_variant_flux_additional_args = [
+  traefik_blue_variant_deploy             = true
+  traefik_blue_variant_dashboard_deploy   = true
+  traefik_blue_variant_helm_chart_version = "20.8.0"
+  traefik_blue_variant_additional_args = [
     "--metrics.prometheus",
     "--providers.kubernetescrd.allowCrossNamespace=true"
   ]
-  traefik_blue_variant_flux_weight = 1
+  traefik_blue_variant_weight = 1
 
   # Green variant
-  traefik_green_variant_flux_deploy             = false
-  traefik_green_variant_flux_dashboard_deploy   = false
-  traefik_green_variant_flux_helm_chart_version = "20.8.0"
-  traefik_green_variant_flux_additional_args = [
+  traefik_green_variant_deploy             = false
+  traefik_green_variant_dashboard_deploy   = false
+  traefik_green_variant_helm_chart_version = "20.8.0"
+  traefik_green_variant_additional_args = [
     "--metrics.prometheus",
     "--providers.kubernetescrd.allowCrossNamespace=true"
   ]
-  traefik_green_variant_flux_weight = 0
+  traefik_green_variant_weight = 0
 
 
 
@@ -86,13 +82,20 @@ inputs = {
   cloudwatch_alarm_alb_5XX_deploy            = true
 
   # --------------------------------------------------
-  # Platform Flux CD
+  # Flux CD
   # --------------------------------------------------
 
-  platform_fluxcd_deploy       = true
-  platform_fluxcd_repo_name    = "platform-manifests-qa"
-  platform_fluxcd_github_owner = "dfds"
-  platform_fluxcd_release_tag  = "v0.38.2"
+  fluxcd_deploy                 = true
+  fluxcd_version                = "v0.38.2"
+
+  fluxcd_bootstrap_repo_name    = "platform-manifests-qa"
+  fluxcd_bootstrap_repo_branch  = "main"
+  fluxcd_bootstrap_repo_owner   = "dfds"
+
+  fluxcd_apps_repo_name    = "platform-apps"
+  fluxcd_apps_repo_branch  = "main"
+  fluxcd_apps_repo_owner   = "dfds"
+
 
   # --------------------------------------------------
   # Monitoring
@@ -125,9 +128,6 @@ inputs = {
   monitoring_kube_prometheus_stack_prometheus_retention              = "1d"
   monitoring_kube_prometheus_stack_slack_webhook                     = "https://dummy.slack.webhook"
   monitoring_kube_prometheus_stack_slack_channel                     = "#hellman-alerting"
-  monitoring_kube_prometheus_stack_github_owner                      = "dfds"
-  monitoring_kube_prometheus_stack_repo_name                         = "platform-manifests-qa"
-  monitoring_kube_prometheus_stack_repo_branch                       = "main"
   monitoring_kube_prometheus_stack_prometheus_request_memory         = "500Mi"
   monitoring_kube_prometheus_stack_prometheus_request_cpu            = "500m"
   monitoring_kube_prometheus_stack_prometheus_limit_memory           = "2Gi"
@@ -145,7 +145,7 @@ inputs = {
   # Metrics-Server
   # --------------------------------------------------
 
-  monitoring_metrics_server_chart_version = "3.8.4"
+  monitoring_metrics_server_chart_version = "3.10.0"
 
 
   # --------------------------------------------------
@@ -182,7 +182,7 @@ inputs = {
 
   atlantis_deploy        = true
   atlantis_ingress       = "atlantis.qa-alias1.dfds.cloud"
-  atlantis_image_tag     = "0.0.23"
+  atlantis_image_tag     = "0.0.33"
   atlantis_storage_class = "gp2"
 
   atlantis_github_username     = "devex-sa"
@@ -191,18 +191,11 @@ inputs = {
   atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
   atlantis_chart_version       = "4.1.2"
 
-  atlantis_flux_repo_name   = "platform-manifests-qa"
-  atlantis_flux_repo_owner  = "dfds"
-  atlantis_flux_repo_branch = "main"
-
   # --------------------------------------------------
   # Blackbox Exporter
   # --------------------------------------------------
 
   blackbox_exporter_deploy       = "true"
-  blackbox_exporter_github_owner = "dfds"
-  blackbox_exporter_repo_name    = "platform-manifests-qa"
-  blackbox_exporter_repo_branch  = "main"
   blackbox_exporter_monitoring_targets = [
     {
       "name"   = "example"
@@ -216,10 +209,7 @@ inputs = {
   # --------------------------------------------------
 
   helm_exporter_deploy             = "true"
-  helm_exporter_helm_chart_version = "1.2.4"
-  helm_exporter_github_owner       = "dfds"
-  helm_exporter_repo_name          = "platform-manifests-qa"
-  helm_exporter_repo_branch        = "main"
+  helm_exporter_helm_chart_version = "1.2.5"
   helm_exporter_target_namespaces  = "fluentd,flux-system,monitoring,traefik-blue-variant"
   helm_exporter_target_charts = [
     {
@@ -259,22 +249,22 @@ inputs = {
   # Podinfo
   # --------------------------------------------------
 
-  podinfo_flux_deploy = true
+  podinfo_deploy = true
 
   # --------------------------------------------------
   # fluent-cloudwatch
   # --------------------------------------------------
 
-  fluentd_cloudwatch_flux_deploy = true
+  fluentd_cloudwatch_deploy = true
 
   # --------------------------------------------------
   # Velero - requires that s3-bucket-velero module
   # is already applied through Terragrunt.
   # --------------------------------------------------
 
-  velero_flux_deploy            = true
-  velero_flux_role_arn          = "arn:aws:iam::266901158286:role/VeleroBackup"
-  velero_flux_bucket_name       = "dfds-velero-qa"
+  velero_deploy            = true
+  velero_role_arn          = "arn:aws:iam::266901158286:role/VeleroBackup"
+  velero_bucket_name       = "dfds-velero-qa"
   velero_plugin_for_aws_version = "v1.4.1"
   velero_plugin_for_csi_version = "v0.2.0"
 

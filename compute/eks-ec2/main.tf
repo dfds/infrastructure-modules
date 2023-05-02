@@ -300,3 +300,56 @@ module "aws_iam_oidc_provider" {
   eks_openid_connect_provider_url = module.eks_cluster.eks_openid_connect_provider_url
   eks_cluster_name                = var.eks_cluster_name
 }
+
+
+# --------------------------------------------------
+# Inactivity based clean up for sandboxes
+# --------------------------------------------------
+
+resource "aws_cloudwatch_metric_alarm" "inactivity" {
+  count               = var.eks_is_sandbox ? 1 : 0
+  alarm_name          = "inactivity"
+  comparison_operator = "LessThanOrEqualToThreshold"
+  evaluation_periods  = 24
+  datapoints_to_alarm = 24
+  threshold           = 0
+  alarm_description   = "Detects whether the account has any targets in its target groups. If not, the cluster is deemed inactive and some resources maybe automatically cleaned up to avoid excess charges."
+  actions_enabled     = true
+  alarm_actions       = []
+
+  # Ideally, we would like to detect inactivity over a longer range of time,
+  # but CloudWatch's evaluation period is limited to 1 day. We use this
+  # workaround to avoid cleaning up resources based on normal inactivity over a
+  # weekend.
+  metric_query {
+    id          = "e1"
+    expression  = "IF(DAY(m1) < 6, m1, 10)"
+    label       = "Inactivity excluding weekend"
+    return_data = "true"
+  }
+
+  metric_query {
+    id = "m1"
+
+    metric {
+      metric_name = "ResourceCount"
+      namespace   = "AWS/Usage"
+      period      = 3600 # an hour
+      stat        = "Average"
+      dimensions = {
+        Type     = "Resource"
+        Resource = "TargetsPerTargetGroupPerRegion"
+        Service  = "Elastic Load Balancing"
+        Class    = "None"
+      }
+    }
+  }
+}
+
+module "eks_inactivity_cleanup" {
+  count                = var.eks_is_sandbox && !var.disable_inactivity_cleanup ? 1 : 0
+  source               = "../../_sub/compute/eks-inactivity-cleanup"
+  eks_cluster_name     = var.eks_cluster_name
+  eks_cluster_arn      = module.eks_cluster.eks_cluster_arn
+  inactivity_alarm_arn = aws_cloudwatch_metric_alarm.inactivity[0].arn
+}

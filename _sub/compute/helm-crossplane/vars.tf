@@ -3,6 +3,11 @@ variable "namespace" {
   description = "Namespace in which to install Crossplane"
 }
 
+variable "namespace_labels" {
+  type    = map(any)
+  default = {}
+}
+
 variable "chart_version" {
   type        = string
   description = "Specify a version of the Helm chart"

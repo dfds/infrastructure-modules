@@ -2,6 +2,14 @@ output "alb_fqdn" {
   value = element(concat(aws_lb.traefik[*].dns_name, [""]), 0)
 }
 
+output "alb_name" {
+  value = (var.deploy_blue_variant || var.deploy_green_variant) ? aws_lb.traefik[0].name : ""
+}
+
+output "alb_arn" {
+  value = (var.deploy_blue_variant || var.deploy_green_variant) ? aws_lb.traefik[0].arn : ""
+}
+
 output "alb_arn_suffix" {
   value = (var.deploy_blue_variant || var.deploy_green_variant) ? aws_lb.traefik[0].arn_suffix : ""
 }
