@@ -9,6 +9,9 @@ grafana:
       memory: 200Mi
   adminPassword: "${grafana_admin_password}"
   priorityClassName: ${grafana_priorityclass}
+  sidecar:
+    datasources:
+      searchNamespace: monitoring
   grafana.ini:
     database:
       wal: true
