@@ -1,6 +1,7 @@
 resource "kubernetes_namespace" "namespace" {
   metadata {
-    name = "kyverno"
+    name   = "kyverno"
+    labels = var.namespace_labels
   }
 }
 

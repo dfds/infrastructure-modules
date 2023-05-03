@@ -1,11 +1,11 @@
 data "github_repository" "flux_repo" {
-  full_name = "${var.flux_repo_owner}/${var.flux_repo_name}"
+  full_name = "${var.repo_owner}/${var.repo_name}"
 }
 
 locals {
   deploy_name                             = "atlantis"
-  default_flux_repo_branch                = data.github_repository.flux_repo.default_branch
-  flux_repo_branch                        = length(var.flux_repo_branch) > 0 ? var.flux_repo_branch : local.default_flux_repo_branch
+  default_repo_branch                     = data.github_repository.flux_repo.default_branch
+  repo_branch                             = length(var.repo_branch) > 0 ? var.repo_branch : local.default_repo_branch
   cluster_repo_path                       = "clusters/${var.cluster_name}"
   config_repo_path                        = "platform-apps/${var.cluster_name}/${local.deploy_name}/config"
   app_install_name                        = "platform-apps-${local.deploy_name}"

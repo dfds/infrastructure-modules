@@ -42,6 +42,7 @@ module "org_account" {
   name          = var.name
   org_role_name = var.org_role_name
   email         = var.email
+  parent_id     = var.parent_id
 }
 
 module "iam_account_alias" {

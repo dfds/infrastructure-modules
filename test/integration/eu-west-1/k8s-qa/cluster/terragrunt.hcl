@@ -20,7 +20,6 @@ inputs = {
   # EKS
   # --------------------------------------------------
 
-  eks_is_sandbox                             = true
   eks_cluster_name                           = "qa"
   eks_cluster_version                        = "1.25"
   eks_cluster_zones                          = 2
@@ -29,6 +28,12 @@ inputs = {
   eks_worker_ssh_ip_whitelist = ["193.9.230.100/32"]
   eks_worker_ssh_public_key   = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDS85QojLMO8eI5ArwburDpVthEZmW3IVs4/nmv7YnDMgs+ucJmW/etm7MlkRDvWphH4X/6mSGGmylJq7vUIn5rHMG0KTFxg06G2ZJ0zS6ryQ89tDLA9LXhD3q//TzXDFJ4ztjcSyxL1fSW44Lpmt7l7wWHdgrMaP3db2TRYOKY2/0iC22TwQKjTSGku59sFmv3XkLVBehO3fFOXcbLChZ4+maPMmgJDUyYMVSVZNJ2YsjFHHeaYClaN0az0Agcab2HIZMZh0Vv08ro0Se5ZBUjyfoPuDe3WjutkivePajG710k10vSOx6X5CHO3bZvQEBA8klCY58Xp2XrzSChNZhP eks-deploy-hellman"
   eks_k8s_auth_api_version    = "client.authentication.k8s.io/v1beta1"
+
+  eks_is_sandbox = true
+  # Since rebooting the cluster after inactivity at the moment requires first
+  # running `terragrunt apply -target=module.eks_cluster` the QA cluster is
+  # excluded from the inactivity clean up on this step.
+  disable_inactivity_cleanup = true
 
   # --------------------------------------------------
   # Managed nodes
@@ -87,8 +92,8 @@ inputs = {
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.25-*"]}]
-      # currentImageName=amazon-eks-node-1.25-v20230304
-      ami_id                     = "ami-04dc8cdc2e948f054"
+      # currentImageName=amazon-eks-node-1.25-v20230411
+      ami_id                     = "ami-0357203b3e27dd612"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
     },
@@ -99,8 +104,8 @@ inputs = {
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.25-*"]}]
-      # currentImageName=amazon-eks-node-1.25-v20230304
-      ami_id             = "ami-04dc8cdc2e948f054"
+      # currentImageName=amazon-eks-node-1.25-v20230411
+      ami_id             = "ami-0357203b3e27dd612"
       availability_zones = ["eu-west-1b"]
       kubelet_extra_args = "--max-pods=30 --kube-reserved=memory=585Mi,cpu=80m"
       max_unavailable    = 1

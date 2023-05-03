@@ -194,3 +194,13 @@ variable "eks_worker_cur_bucket_arn" {
   default     = null
   description = "S3 ARN for Billing Cost and Usage Report (CUR)"
 }
+
+# --------------------------------------------------
+# Inactivity based clean up for sandboxes
+# --------------------------------------------------
+
+variable "disable_inactivity_cleanup" {
+  type        = bool
+  default     = false
+  description = "Disables automated clean up of EKS resources based on inactivity. Only applicable to sandboxes."
+}

@@ -79,18 +79,6 @@ module "iam_account_alias" {
   }
 }
 
-module "iam_idp" {
-  source           = "../../_sub/security/iam-idp"
-  provider_name    = "ADFS"
-  adfs_fqdn        = var.adfs_fqdn
-  assume_role_arns = var.assume_role_arn != "" ? [var.assume_role_arn] : []
-
-  providers = {
-    aws = aws.workload
-  }
-}
-
-
 # --------------------------------------------------
 # IAM roles - Shared
 # --------------------------------------------------
@@ -113,20 +101,6 @@ module "iam_role_shared" {
 # --------------------------------------------------
 # IAM roles - Workload (capability context)
 # --------------------------------------------------
-
-module "iam_role_capability" {
-  source               = "../../_sub/security/iam-role"
-  role_name            = "Capability"
-  role_description     = ""
-  max_session_duration = 28800 # 8 hours
-  assume_role_policy   = module.iam_idp.adfs_role_assume_policy
-  role_policy_name     = "Admin"
-  role_policy_document = module.iam_policies.admin
-
-  providers = {
-    aws = aws.workload
-  }
-}
 
 module "iam_role_sso_reader" {
   source               = "../../_sub/security/iam-role"
@@ -195,7 +169,6 @@ locals {
   account_created_payload_map = {
     "contextId"        = var.context_id
     "accountId"        = module.org_account.id
-    "roleArn"          = module.iam_role_capability.arn
     "roleEmail"        = module.org_account.email
     "capabilityRootId" = var.capability_root_id
     "capabilityName"   = var.capability_name

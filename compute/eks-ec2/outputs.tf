@@ -16,9 +16,20 @@ output "kubeconfig_path" {
   value = local.kubeconfig_path
 }
 
-
 output "eks_openid_connect_provider_url" {
   value = module.eks_cluster.eks_openid_connect_provider_url
+}
+
+output "eks_cluster_arn" {
+  value = module.eks_cluster.eks_cluster_arn
+}
+
+output "eks_is_sandbox" {
+  value = var.eks_is_sandbox
+}
+
+output "eks_inactivity_alarm_arn" {
+  value = try(aws_cloudwatch_metric_alarm.inactivity[0].arn, null)
 }
 
 # --------------------------------------------------

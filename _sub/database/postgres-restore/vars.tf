@@ -48,6 +48,12 @@ variable "db_allocated_storage" {
   default     = 20
 }
 
+variable "db_max_allocated_storage" {
+  type        = number
+  description = "The space limit, in GB, which autoscaling can scale up to"
+  default     = 0 # Autoscaling disabled
+}
+
 variable "db_snapshot" {
   type        = string
   description = "Name of the snapshot to restore from"
