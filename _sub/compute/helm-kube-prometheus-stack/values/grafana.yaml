@@ -10,7 +10,7 @@ grafana:
   adminPassword: "${grafana_admin_password}"
   priorityClassName: ${grafana_priorityclass}
   sidecar:
-    datasources:
+    dashboards:
       searchNamespace: monitoring
   grafana.ini:
     database:
