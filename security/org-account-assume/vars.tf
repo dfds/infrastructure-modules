@@ -42,16 +42,6 @@ variable "cloudtrail_local_s3_bucket" {
   default = ""
 }
 
-variable "cloudengineer_iam_role_name" {
-  description = "Name of IAM role"
-  type        = string
-}
-
-variable "cloudadmin_iam_role_name" {
-  description = "Name of IAM role"
-  type        = string
-}
-
 variable "parent_id" {
   type        = string
   description = "The ID of the parent AWS Organization OU. Defaults to the root."
