@@ -117,7 +117,7 @@
             "Sid": "DenyAllOutsideEU",
             "Effect": "Deny",
             "NotAction": [
-                "access-analyzer:ValidatePolicy",
+                "access-analyzer:*",
                 "acm:*",
                 "aws-marketplace:*",
                 "aws-portal:*",
