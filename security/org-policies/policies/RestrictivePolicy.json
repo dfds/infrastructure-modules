@@ -159,7 +159,9 @@
                 "logs:DescribeQueryDefinitions",
                 "logs:GetLogEvents",
                 "logs:GetLogGroupFields",
-                "logs:GetLogRecord"
+                "logs:GetLogRecord",
+                "notifications:Get*",
+                "notifications:List*"
             ],
             "Resource": "*",
             "Condition": {
