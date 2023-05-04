@@ -176,7 +176,6 @@
             "Sid": "DenyCostManagement",
             "Effect": "Deny",
             "Action": [
-                "ce:*",
                 "savingsplans:*"
             ],
             "Resource": [
