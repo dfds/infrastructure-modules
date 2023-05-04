@@ -12,3 +12,8 @@ variable "replicas" {
   type        = number
   description = "Number of replica pods"
 }
+
+variable "namespace_labels" {
+  type    = map(any)
+  default = {}
+}

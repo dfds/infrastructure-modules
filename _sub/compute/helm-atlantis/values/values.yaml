@@ -5,12 +5,13 @@ image:
 
 resources:
   requests:
-    memory: 100Mi
-    cpu: 50m
+    memory: 1536Mi
+    cpu: 100m
   limits:
-    memory: 100Mi
+    memory: 1536Mi
+    cpu: null
 
-orgWhitelist: ${github_repos}
+orgAllowlist: ${github_repos}
 logLevel: "info"
 
 disableApply: true
@@ -24,96 +25,6 @@ github:
 
 extraArgs:
   - --disable-autoplan
-
-environmentSecrets:
-  - name: AWS_ACCESS_KEY_ID
-    secretKeyRef:
-      name: aws-credentials
-      key: aws_access_key
-  - name: AWS_SECRET_ACCESS_KEY
-    secretKeyRef:
-      name: aws-credentials
-      key: aws_secret
-  - name: access_key_master
-    secretKeyRef:
-      name: aws-credentials
-      key: access_key_master
-  - name: secret_key_master
-    secretKeyRef:
-      name: aws-credentials
-      key: secret_key_master
-  - name: ARM_TENANT_ID
-    secretKeyRef:
-      name: az-credentials
-      key: arm_tenant_id
-  - name: ARM_SUBSCRIPTION_ID
-    secretKeyRef:
-      name: az-credentials
-      key: arm_subscription_id
-  - name: ARM_CLIENT_ID
-    secretKeyRef:
-      name: az-credentials
-      key: arm_client_id
-  - name: ARM_CLIENT_SECRET
-    secretKeyRef:
-      name: az-credentials
-      key: arm_client_secret
-  - name: TF_VAR_platform_fluxcd_github_token
-    secretKeyRef:
-      name: gh-credentials
-      key: github_token_flux
-
-  - name: TF_VAR_atlantis_aws_access_key
-    secretKeyRef:
-      name: aws-credentials
-      key: aws_access_key
-  - name: TF_VAR_atlantis_aws_secret
-    secretKeyRef:
-      name: aws-credentials
-      key: aws_secret
-  - name: TF_VAR_atlantis_access_key_master
-    secretKeyRef:
-      name: aws-credentials
-      key: access_key_master
-  - name: TF_VAR_atlantis_secret_key_master
-    secretKeyRef:
-      name: aws-credentials
-      key: secret_key_master
-  - name: TF_VAR_atlantis_arm_tenant_id
-    secretKeyRef:
-      name: az-credentials
-      key: arm_tenant_id
-  - name: TF_VAR_atlantis_arm_subscription_id
-    secretKeyRef:
-      name: az-credentials
-      key: arm_subscription_id
-  - name: TF_VAR_atlantis_arm_client_id
-    secretKeyRef:
-      name: az-credentials
-      key: arm_client_id
-  - name: TF_VAR_atlantis_arm_client_secret
-    secretKeyRef:
-      name: az-credentials
-      key: arm_client_secret
-  - name: TF_VAR_atlantis_platform_fluxcd_github_token
-    secretKeyRef:
-      name: gh-credentials
-      key: github_token_flux
-
-  - name: TF_VAR_atlantis_github_token
-    secretKeyRef:
-      name: gh-credentials
-      key: github_token
-
-  - name: TF_VAR_slack_webhook_url
-    secretKeyRef:
-      name: cloudwatch-credentials
-      key: cloudwatch_webhook
-
-  - name: TF_VAR_monitoring_kube_prometheus_stack_slack_webhook
-    secretKeyRef:
-      name: monitoring-kube-prometheus-stack-credentials
-      key: slack_webhook
 
 ingress:
   host: ${atlantis_ingress}
@@ -129,20 +40,5 @@ repoConfig: |
   ---
   repos:
   - id: "/.*/"
-    workflow: terragrunt
     allowed_overrides: [workflow]
-  workflows:
-    terragrunt:
-      plan:
-        steps:
-        - run: terragrunt run-all plan -no-color --terragrunt-non-interactive -input=false
-      apply:
-        steps:
-        - run: exit 1
-    eks-pipeline:
-      plan:
-        steps:
-        - run: terragrunt run-all plan -no-color --terragrunt-non-interactive -input=false
-      apply:
-        steps:
-        - run: exit 1
+    allow_custom_workflows: true
