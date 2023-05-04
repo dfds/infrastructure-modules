@@ -1,0 +1,247 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "DenyIAMUpdatesManagedUsers",
+            "Effect": "Deny",
+            "Action": [
+                "iam:AttachUserPolicy",
+                "iam:DeleteUserPolicy",
+                "iam:DetachUserPolicy",
+                "iam:PutUserPolicy"
+            ],
+            "Resource": [
+                "arn:aws:iam::*:user/Deploy",
+                "arn:aws:iam::*:user/managed/*"
+            ],
+            "Condition": {
+                "StringNotLike": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/OrgRole"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "DenyMFA",
+            "Effect": "Deny",
+            "Action": [
+                "iam:CreateVirtualMFADevice",
+                "iam:DeactivateMFADevice",
+                "iam:DeleteVirtualMFADevice",
+                "iam:EnableMFADevice",
+                "iam:ResyncMFADevice"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Condition": {
+                "StringNotLike": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/OrgRole",
+                        "arn:aws:iam::*:root"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "DenyIAM",
+            "Effect": "Deny",
+            "Action": [
+                "iam:AddUserToGroup",
+                "iam:AttachGroupPolicy",
+                "iam:ChangePassword",
+                "iam:CreateAccountAlias",
+                "iam:CreateGroup",
+                "iam:CreateLoginProfile",
+                "iam:CreateSAMLProvider",
+                "iam:CreateUser",
+                "iam:DeleteAccountAlias",
+                "iam:DeleteAccountPasswordPolicy",
+                "iam:DeleteGroup",
+                "iam:DeleteGroupPolicy",
+                "iam:DeleteSAMLProvider",
+                "iam:DetachGroupPolicy",
+                "iam:PutGroupPolicy",
+                "iam:PutUserPermissionsBoundary",
+                "iam:RemoveUserFromGroup",
+                "iam:UpdateAccountPasswordPolicy",
+                "iam:UpdateGroup",
+                "iam:UpdateLoginProfile",
+                "iam:UpdateSAMLProvider",
+                "iam:UpdateUser"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Condition": {
+                "StringNotLike": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/OrgRole"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "DenyIAMDeploy",
+            "Effect": "Deny",
+            "Action": [
+                "iam:DeleteUser",
+                "iam:DeleteUserPermissionsBoundary",
+                "iam:DeleteUserPolicy",
+                "iam:DeleteLoginProfile"
+            ],
+            "Resource": [
+                "arn:aws:iam::*:user/Deploy",
+                "arn:aws:iam::*:user/managed/*"
+            ],
+            "Condition": {
+                "StringNotLike": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/OrgRole"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "DenyOrgRoleModification",
+            "Effect": "Deny",
+            "Action": [
+                "iam:*"
+            ],
+            "Resource": [
+                "arn:aws:iam::*:role/OrgRole"
+            ]
+        },
+        {
+            "Sid": "DenyAllOutsideEU",
+            "Effect": "Deny",
+            "NotAction": [
+                "access-analyzer:ValidatePolicy",
+                "acm:*",
+                "aws-marketplace:*",
+                "aws-portal:*",
+                "budgets:*",
+                "ce:Describe*",
+                "ce:Get*",
+                "ce:List*",
+                "cloudfront:*",
+                "cloudwatch:Get*",
+                "cloudwatch:List*",
+                "dynamoDB:DescribeTable",
+                "ecr:BatchGetImage",
+                "ecr:Describe*",
+                "ecr:Get*",
+                "ecr:List*",
+                "ecr-public:*",
+                "globalaccelerator:*",
+                "iam:*",
+                "importexport:*",
+                "kms:*",
+                "lambda:*",
+                "organizations:*",
+                "route53:*",
+                "s3:List*",
+                "shield:*",
+                "sts:*",
+                "support:*",
+                "elasticloadbalancing:*",
+                "apigateway:*",
+                "appsync:*",
+                "waf-regional:*",
+                "wafv2:*",
+                "waf:*",
+                "deepracer:*",
+                "logs:DescribeLogGroups",
+                "logs:DescribeLogStreams",
+                "logs:DescribeMetricFilters",
+                "logs:DescribeQueries",
+                "logs:DescribeQueryDefinitions",
+                "logs:GetLogEvents",
+                "logs:GetLogGroupFields",
+                "logs:GetLogRecord",
+                "notifications:Get*",
+                "notifications:List*"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringNotLike": {
+                    "aws:RequestedRegion": [
+                        "eu-*"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "DenyCostManagement",
+            "Effect": "Deny",
+            "Action": [
+                "ce:*",
+                "savingsplans:*"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Condition": {
+                "StringNotLike": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/OrgRole",
+                        "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
+                        "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_Billing_*"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "ReadOnlyBillingLegacyRemoveAfterJuly2023",
+            "Effect": "Deny",
+            "Action": [
+                "aws-portal:ModifyAccount",
+                "aws-portal:ModifyBilling",
+                "aws-portal:ModifyPaymentMethods"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Condition": {
+                "StringNotLike": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/OrgRole",
+                        "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
+                        "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_Billing_*"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "DenyDisallowedServices",
+            "Effect": "Deny",
+            "Action": [
+                "codestar:*",
+                "codecommit:*",
+                "codeartifact:*",
+                "codebuild:*",
+                "codedeploy:*",
+                "codepipeline:*",
+                "codewhisperer:*",
+                "codecatalyst:*",
+                "gamelift:*",
+                "gamesparks:*",
+                "groundstation:*",
+                "cloudhsm:*",
+                "cloud9:*",
+                "managedblockchain:*"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Condition": {
+                "StringNotLike": {
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/OrgRole"
+                    ]
+                }
+            }
+        }
+    ]
+}

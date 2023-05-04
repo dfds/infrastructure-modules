@@ -52,7 +52,7 @@ variable "log_level" {
 variable "cron_schedule" {
   type        = string
   default     = "0 0 * * *"
-  description = "Cron format scheuled time."
+  description = "Cron-formatted scheduled time."
 }
 
 variable "schedules_template_ttl" {

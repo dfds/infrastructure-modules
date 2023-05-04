@@ -42,17 +42,8 @@ variable "cloudtrail_local_s3_bucket" {
   default = ""
 }
 
-variable "adfs_fqdn" {
+variable "parent_id" {
   type        = string
-  description = "The fully-qualified domain name of the ADFS server, e.g. adfs.company.tld"
-}
-
-variable "cloudengineer_iam_role_name" {
-  description = "Name of IAM role"
-  type        = string
-}
-
-variable "cloudadmin_iam_role_name" {
-  description = "Name of IAM role"
-  type        = string
+  description = "The ID of the parent AWS Organization OU. Defaults to the root."
+  default     = "r-65k1"
 }

@@ -20,3 +20,7 @@ variable "oidc_issuer" {
   }
 }
 
+variable "namespace_labels" {
+  type    = map(any)
+  default = {}
+}

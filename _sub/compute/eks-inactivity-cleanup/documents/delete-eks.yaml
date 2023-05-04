@@ -1,0 +1,193 @@
+---
+description: |
+  ### Delete EKS cluster
+
+  This document is based on the AWS-managed document `AWS-DeleteEKSCluster`, but has been modified somewhat.
+
+schemaVersion: "0.3"
+assumeRole: "{{AutomationAssumeRole}}"
+parameters:
+  EKSClusterName:
+    type: String
+    description: (Required) The name of the Amazon EKS Cluster to be deleted.
+    allowedPattern: "^[A-Za-z0-9_-]*$"
+  AutomationAssumeRole:
+    type: String
+    description: (Optional) The ARN of the role that allows Automation to perform the actions on your behalf.
+    default: ""
+    allowedPattern: "^arn:aws(-cn|-us-gov)?:iam::\\d{12}:role/[\\w+=,.@-]+|^$"
+
+outputs:
+  - DeleteEKSCluster.output
+  - DeleteNodeGroups.output
+mainSteps:
+  - name: DeleteNodeGroups
+    action: aws:executeScript
+    onFailure: Abort
+    isCritical: true
+    timeoutSeconds: 600
+    description: |
+      ## DeleteNodeGroups
+      Find and delete all node groups in the EKS cluster.
+      ## Outputs
+      * DeletedNodeGroups
+      * RemainingNodeGroups
+    inputs:
+      Runtime: python3.7
+      Handler: delete_node_groups_handler
+      InputPayload:
+        EKSClusterName: "{{EKSClusterName}}"
+      Script: |
+        import json
+        import boto3
+        import time
+
+        eks = boto3.client('eks')
+        DEFAULT_SLEEP_TIME=10
+
+        def delete_nodegroups(eks_cluster_name):
+            nodegroups = []
+            remaining_nodegroups = []
+            temp_remaining_nodegroups = []
+            nodegroups_response = eks.list_nodegroups(
+                clusterName=eks_cluster_name,
+                maxResults=100
+            )
+            nodegroups = nodegroups_response['nodegroups']
+            if "nextToken" in nodegroups_response:
+                while "nextToken" in nodegroups_response:
+                    nodegroups_response = eks.list_nodegroups(
+                    clusterName=eks_cluster_name,
+                    maxResults=100,
+                    nextToken=nodegroups_response['nextToken']
+                    )
+                    nodegroups += nodegroups_response['nodegroups']
+
+            for count,node in enumerate(nodegroups):
+                delete_nodegroup_response = eks.delete_nodegroup(
+                clusterName=eks_cluster_name,
+                nodegroupName=node
+                )
+                if delete_nodegroup_response['nodegroup']['status'] != "DELETING":
+                    remaining_nodegroups.append(node)
+
+            for x in range(2):
+                if not remaining_nodegroups:
+                    break
+                time.sleep(DEFAULT_SLEEP_TIME)
+                for count,node in enumerate(remaining_nodegroups):
+                    delete_nodegroup_response = eks.delete_nodegroup(
+                    clusterName=eks_cluster_name,
+                    nodegroupName=node
+                    )
+                    if delete_nodegroup_response['nodegroup']['status'] == "DELETING":
+                        temp_remaining_nodegroups.append(node)
+                remaining_nodegroups = temp_remaining_nodegroups
+                temp_remaining_nodegroups  =[]
+            return nodegroups,remaining_nodegroups
+
+        def delete_node_groups_handler(event, context):
+                eks_cluster_name = event['EKSClusterName']
+                successful = True
+                deleted_nodegroups = []
+                remaining_nodegroups =[]
+                msg= ''
+                try:
+                    deleted_nodegroups,remaining_nodegroups = delete_nodegroups(eks_cluster_name)
+                except Exception as e:
+                    successful= False
+                    msg= str(e)
+
+                out ={
+                    "DeletedNodeGroups": deleted_nodegroups,
+                    "RemainingNodeGroups": remaining_nodegroups
+                    }
+
+                if not successful:
+                    raise Exception(msg,out)
+
+                return {
+                'output': json.dumps(out)
+                }
+    outputs:
+      - Name: output
+        Selector: $.Payload.output
+        Type: String
+
+  - name: DeleteEKSCluster
+    action: aws:executeScript
+    onFailure: Abort
+    isCritical: true
+    timeoutSeconds: 600
+    description: |
+      ## DeleteEKSCluster
+      Delete EKS Cluster
+      ## Outputs
+      * EKSClusterStatus
+          * EKSClusterName: Deleted EKS Cluster name.
+          * DeleteStatus: 'DELETING'
+    inputs:
+      Runtime: python3.7
+      Handler: delete_eks_cluster_handler
+      InputPayload:
+        EKSClusterName: "{{EKSClusterName}}"
+      Script: |
+        import json
+        import boto3
+        import time
+        eks = boto3.client('eks')
+
+        delete_eks_cluster_retrials = 0
+        eks_delete_status = "Failed"
+        MAX_RETRIALS_NUM= 10
+        DEFAULT_SLEEP_TIME=30
+
+        def delete_eks_cluster(eks_cluster_name):
+            global delete_eks_cluster_retrials
+            global eks_delete_status
+            try:
+                response = eks.delete_cluster(
+                    name=eks_cluster_name
+                )
+                eks_delete_status = response['cluster']['status']
+            except Exception as e:
+                time.sleep(DEFAULT_SLEEP_TIME)
+                if delete_eks_cluster_retrials < MAX_RETRIALS_NUM:
+                    delete_eks_cluster_retrials += 1
+                    delete_eks_cluster(eks_cluster_name)
+                else:
+                    raise e
+
+        def delete_eks_cluster_handler(event, context):
+                eks_cluster_name = event['EKSClusterName']
+                error_msg=''
+
+                eks_cluster_status ={
+                    "Name":eks_cluster_name,
+                    "DeleteStatus" : "Undefined"
+                }
+                successful = True
+
+                try:
+                    delete_eks_cluster(eks_cluster_name)
+                    eks_cluster_status["DeleteStatus"] = eks_delete_status
+                except Exception as e:
+                    successful= False
+                    eks_cluster_status["DeleteStatus"] = "Failed"
+                    error_msg= str(e)
+
+
+                out ={
+                    "EKSClusterStatus": eks_cluster_status
+                    }
+
+                if not successful:
+                    raise Exception(error_msg,out)
+
+                return {
+                'output': json.dumps(out)
+                }
+    outputs:
+      - Name: output
+        Selector: $.Payload.output
+        Type: String
