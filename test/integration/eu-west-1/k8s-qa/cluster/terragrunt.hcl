@@ -21,7 +21,7 @@ inputs = {
   # --------------------------------------------------
 
   eks_cluster_name                           = "qa"
-  eks_cluster_version                        = "1.25"
+  eks_cluster_version                        = "1.26"
   eks_cluster_zones                          = 2
   eks_addon_vpccni_prefix_delegation_enabled = true
 
