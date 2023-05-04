@@ -168,44 +168,6 @@ data "aws_iam_policy_document" "ssoreader" {
   }
 }
 
-# CloudEngineer
-data "aws_iam_policy_document" "cloudengineer" {
-  statement {
-    sid    = "CloudEngineerPlaceholder"
-    effect = "Allow"
-    actions = [
-      "s3:ListBucket"
-    ]
-    resources = [
-      "arn:aws:s3:::/test/*"
-    ]
-  }
-
-  statement {
-    sid    = "CloudEngineerSSM"
-    effect = "Allow"
-    actions = [
-      "ssm:GetParameter"
-    ]
-    resources = ["*"]
-  }
-}
-
-# Auditor
-data "aws_iam_policy_document" "auditor" {
-  statement {
-    sid    = "Auditor"
-    effect = "Allow"
-    actions = [
-      "s3:ListBucket"
-    ]
-    resources = [
-      "arn:aws:s3:::/dfds-audit/*"
-    ]
-  }
-}
-
-
 # ------------------------------------------------------------------------------
 # Trusted Account
 # ------------------------------------------------------------------------------
