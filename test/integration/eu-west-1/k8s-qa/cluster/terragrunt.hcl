@@ -105,7 +105,7 @@ inputs = {
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.25-*"]}]
       # currentImageName=amazon-eks-node-1.25-v20230501
-      ami_id             = "ami-00313eae2f5c20b18"
+      ami_id             = "ami-04ffe0600deb5c715"
       availability_zones = ["eu-west-1b"]
       kubelet_extra_args = "--max-pods=30 --kube-reserved=memory=585Mi,cpu=80m"
       max_unavailable    = 1
