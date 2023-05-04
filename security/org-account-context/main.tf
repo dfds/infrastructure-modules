@@ -89,7 +89,7 @@ module "iam_role_shared" {
   role_path            = var.shared_role_path
   role_description     = "Namespaced access to resources in shared account, e.g. Parameter Store, CloudWatch Logs etc."
   max_session_duration = 28800 # 8 hours
-  assume_role_policy   = data.aws_iam_policy_document.shared_role_adfs_cap_acc.json
+  assume_role_policy   = data.aws_iam_policy_document.shared_role_cap_acc.json
   role_policy_name     = "NamespacedAccessInSharedAccount"
   role_policy_document = module.iam_policies_shared.capability_access_shared
 
