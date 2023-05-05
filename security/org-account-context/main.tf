@@ -160,6 +160,33 @@ module "aws_iam_oidc_provider" {
 }
 
 # --------------------------------------------------
+# Account hardening
+# --------------------------------------------------
+
+module "cloudtrail_s3_local" {
+  source           = "../../_sub/storage/s3-cloudtrail-bucket"
+  create_s3_bucket = var.harden
+  s3_bucket        = "cloudtrail-local-${var.capability_root_id}"
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "cloudtrail_local" {
+  source     = "../../_sub/security/cloudtrail-config"
+  s3_bucket  = module.cloudtrail_s3_local.bucket_name
+  deploy     = var.harden
+  trail_name = "cloudtrail-local-${var.capability_root_id}"
+
+  # TODO(emil): add log group
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+# --------------------------------------------------
 # aws_context_account_created event
 # --------------------------------------------------
 

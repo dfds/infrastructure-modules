@@ -119,3 +119,8 @@ variable "create_aws_iam_access_key" {
   type    = bool
   default = false
 }
+
+variable "harden" {
+  type    = bool
+  default = false
+}
