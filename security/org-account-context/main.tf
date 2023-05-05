@@ -174,16 +174,71 @@ module "cloudtrail_s3_local" {
 }
 
 module "cloudtrail_local" {
-  source     = "../../_sub/security/cloudtrail-config"
-  s3_bucket  = module.cloudtrail_s3_local.bucket_name
-  deploy     = var.harden
-  trail_name = "cloudtrail-local-${var.capability_root_id}"
-
-  # TODO(emil): add log group
+  source           = "../../_sub/security/cloudtrail-config"
+  s3_bucket        = module.cloudtrail_s3_local.bucket_name
+  deploy           = var.harden
+  trail_name       = "cloudtrail-local-${var.capability_root_id}"
+  create_log_group = var.harden
 
   providers = {
     aws = aws.workload
   }
+}
+
+# TODO create a metric filter
+
+# [CloudWatch.1] A log metric filter and alarm should exist for usage of the
+# "root" user
+# https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-1
+
+resource "aws_cloudwatch_log_metric_filter" "root_usage" {
+  count          = var.harden ? 1 : 0
+  name           = "RootUsage"
+  pattern        = "{$.userIdentity.type=\"Root\" && $.userIdentity.invokedBy NOT EXISTS && $.eventType !=\"AwsServiceEvent\"}"
+  log_group_name = module.cloudtrail_local.cloud_watch_logs_group_name
+
+  metric_transformation {
+    name      = "RootUsageCount"
+    namespace = "LogMetrics"
+    value     = "1"
+  }
+
+  provider = aws.workload
+}
+
+resource "aws_sns_topic" "root_usage" {
+  count = var.harden ? 1 : 0
+  name  = "harden-root-usage"
+
+  provider = aws.workload
+}
+
+resource "aws_sns_topic_subscription" "root_usage" {
+  count     = var.harden ? 1 : 0
+  topic_arn = aws_sns_topic.root_usage[count.index].arn
+  protocol  = "email"
+  endpoint  = var.hardened_monitoring_email
+
+  provider = aws.workload
+}
+
+resource "aws_cloudwatch_metric_alarm" "root_usage" {
+  count                     = var.harden ? 1 : 0
+  alarm_name                = "harden-root-usage"
+  comparison_operator       = "GreaterThanOrEqualToThreshold"
+  evaluation_periods        = 1
+  metric_name               = "RootUsageCount"
+  namespace                 = "LogMetrics"
+  period                    = 300
+  statistic                 = "Sum"
+  threshold                 = 1
+  alarm_description         = "This alarm monitors root usage events."
+  insufficient_data_actions = []
+  alarm_actions             = [aws_sns_topic.root_usage[count.index].arn]
+
+  depends_on = [aws_cloudwatch_log_metric_filter.root_usage]
+
+  provider = aws.workload
 }
 
 # --------------------------------------------------

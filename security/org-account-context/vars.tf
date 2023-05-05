@@ -124,3 +124,8 @@ variable "harden" {
   type    = bool
   default = false
 }
+
+variable "hardened_monitoring_email" {
+  type    = string
+  default = null
+}
