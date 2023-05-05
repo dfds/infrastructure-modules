@@ -185,8 +185,6 @@ module "cloudtrail_local" {
   }
 }
 
-# TODO create a metric filter
-
 # [CloudWatch.1] A log metric filter and alarm should exist for usage of the
 # "root" user
 # https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-1
