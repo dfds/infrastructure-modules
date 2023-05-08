@@ -19,3 +19,9 @@ variable "is_organization_trail" {
   description = "Specifies whether the trail is an AWS Organizations trail. Organization trails log events for the master account and all member accounts"
   default     = false
 }
+
+variable "create_log_group" {
+  type        = bool
+  description = "Specifies whether a CloudWatch log group should be created for the logs to be forwarded to."
+  default     = false
+}

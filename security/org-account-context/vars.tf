@@ -119,3 +119,13 @@ variable "create_aws_iam_access_key" {
   type    = bool
   default = false
 }
+
+variable "harden" {
+  type    = bool
+  default = false
+}
+
+variable "hardened_monitoring_email" {
+  type    = string
+  default = null
+}

@@ -160,6 +160,91 @@ module "aws_iam_oidc_provider" {
 }
 
 # --------------------------------------------------
+# Account hardening
+# --------------------------------------------------
+
+module "cloudtrail_s3_local" {
+  source           = "../../_sub/storage/s3-cloudtrail-bucket"
+  create_s3_bucket = var.harden
+  s3_bucket        = "cloudtrail-local-${var.capability_root_id}"
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "cloudtrail_local" {
+  source           = "../../_sub/security/cloudtrail-config"
+  s3_bucket        = module.cloudtrail_s3_local.bucket_name
+  deploy           = var.harden
+  trail_name       = "cloudtrail-local-${var.capability_root_id}"
+  create_log_group = var.harden
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+resource "aws_sns_topic" "cis_controls" {
+  count = var.harden ? 1 : 0
+  name  = "cis-control-alarms"
+
+  provider = aws.workload
+}
+
+resource "aws_sns_topic_subscription" "cis_controls" {
+  count     = var.harden ? 1 : 0
+  topic_arn = aws_sns_topic.cis_controls[count.index].arn
+  protocol  = "email"
+  endpoint  = var.hardened_monitoring_email
+
+  provider = aws.workload
+}
+
+# --------------------------------------------------
+# CloudWatch controls
+# --------------------------------------------------
+# https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html
+
+module "cis_control_cloudwatch_1" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "RootUsage"
+  metric_filter_pattern = "{$.userIdentity.type=\"Root\" && $.userIdentity.invokedBy NOT EXISTS && $.eventType !=\"AwsServiceEvent\"}"
+  metric_name           = "RootUsageCount"
+  alarm_name            = "cis-control-root-usage"
+  alarm_description     = <<EOT
+  [CloudWatch.1] A log metric filter and alarm should exist for usage of the "root" user:
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-1
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "cis_control_cloudwatch_2" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "UnauthorizedApiCalls"
+  metric_filter_pattern = "{($.errorCode=\"*UnauthorizedOperation\") || ($.errorCode=\"AccessDenied*\")}"
+  metric_name           = "UnauthorizedApiCallsCount"
+  alarm_name            = "cis-control-unauthorize-api-calls"
+  alarm_description     = <<EOT
+  [CloudWatch.2] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. It is recommended that a metric filter and alarm be established for unauthorized API calls.
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-2
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+# --------------------------------------------------
 # aws_context_account_created event
 # --------------------------------------------------
 
