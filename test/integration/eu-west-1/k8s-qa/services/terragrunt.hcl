@@ -86,7 +86,7 @@ inputs = {
   # --------------------------------------------------
 
   fluxcd_deploy                 = true
-  fluxcd_version                = "v0.38.2"
+  fluxcd_version                = "v0.41.2"
 
   fluxcd_bootstrap_repo_name    = "platform-manifests-qa"
   fluxcd_bootstrap_repo_branch  = "main"
