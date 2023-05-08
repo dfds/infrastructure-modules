@@ -185,58 +185,43 @@ module "cloudtrail_local" {
   }
 }
 
-# [CloudWatch.1] A log metric filter and alarm should exist for usage of the
-# "root" user
-# https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-1
-
-resource "aws_cloudwatch_log_metric_filter" "root_usage" {
-  count          = var.harden ? 1 : 0
-  name           = "RootUsage"
-  pattern        = "{$.userIdentity.type=\"Root\" && $.userIdentity.invokedBy NOT EXISTS && $.eventType !=\"AwsServiceEvent\"}"
-  log_group_name = module.cloudtrail_local.cloud_watch_logs_group_name
-
-  metric_transformation {
-    name      = "RootUsageCount"
-    namespace = "LogMetrics"
-    value     = "1"
-  }
-
-  provider = aws.workload
-}
-
-resource "aws_sns_topic" "root_usage" {
+resource "aws_sns_topic" "cis_controls" {
   count = var.harden ? 1 : 0
-  name  = "harden-root-usage"
+  name  = "cis-control-alarms"
 
   provider = aws.workload
 }
 
-resource "aws_sns_topic_subscription" "root_usage" {
+resource "aws_sns_topic_subscription" "cis_controls" {
   count     = var.harden ? 1 : 0
-  topic_arn = aws_sns_topic.root_usage[count.index].arn
+  topic_arn = aws_sns_topic.cis_controls[count.index].arn
   protocol  = "email"
   endpoint  = var.hardened_monitoring_email
 
   provider = aws.workload
 }
 
-resource "aws_cloudwatch_metric_alarm" "root_usage" {
-  count                     = var.harden ? 1 : 0
-  alarm_name                = "harden-root-usage"
-  comparison_operator       = "GreaterThanOrEqualToThreshold"
-  evaluation_periods        = 1
-  metric_name               = "RootUsageCount"
-  namespace                 = "LogMetrics"
-  period                    = 300
-  statistic                 = "Sum"
-  threshold                 = 1
-  alarm_description         = "This alarm monitors root usage events."
-  insufficient_data_actions = []
-  alarm_actions             = [aws_sns_topic.root_usage[count.index].arn]
+# [CloudWatch.1] A log metric filter and alarm should exist for usage of the
+# "root" user
+# https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-1
 
-  depends_on = [aws_cloudwatch_log_metric_filter.root_usage]
+module "cis_control_cloudwatch_1" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloud_watch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "RootUsage"
+  metric_filter_pattern = "{$.userIdentity.type=\"Root\" && $.userIdentity.invokedBy NOT EXISTS && $.eventType !=\"AwsServiceEvent\"}"
+  metric_name           = "RootUsageCount"
+  alarm_name            = "cis-control-root-usage"
+  alarm_description     = <<EOT
+  [CloudWatch.1] A log metric filter and alarm should exist for usage of the "root" user:
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-1
+EOT
 
-  provider = aws.workload
+  providers = {
+    aws = aws.workload
+  }
 }
 
 # --------------------------------------------------
