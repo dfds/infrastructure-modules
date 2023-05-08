@@ -201,7 +201,6 @@ resource "aws_sns_topic_subscription" "cis_controls" {
   provider = aws.workload
 }
 
-
 # --------------------------------------------------
 # CloudWatch controls
 # --------------------------------------------------
@@ -244,7 +243,6 @@ EOT
     aws = aws.workload
   }
 }
-
 
 # --------------------------------------------------
 # aws_context_account_created event
