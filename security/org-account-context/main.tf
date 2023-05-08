@@ -209,7 +209,7 @@ resource "aws_sns_topic_subscription" "cis_controls" {
 module "cis_control_cloudwatch_1" {
   source                = "../../_sub/security/cloudtrail-alarm"
   deploy                = var.harden
-  logs_group_name       = module.cloudtrail_local.cloud_watch_logs_group_name
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
   alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
   metric_filter_name    = "RootUsage"
   metric_filter_pattern = "{$.userIdentity.type=\"Root\" && $.userIdentity.invokedBy NOT EXISTS && $.eventType !=\"AwsServiceEvent\"}"
@@ -228,7 +228,7 @@ EOT
 module "cis_control_cloudwatch_2" {
   source                = "../../_sub/security/cloudtrail-alarm"
   deploy                = var.harden
-  logs_group_name       = module.cloudtrail_local.cloud_watch_logs_group_name
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
   alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
   metric_filter_name    = "UnauthorizedApiCalls"
   metric_filter_pattern = "{($.errorCode=\"*UnauthorizedOperation\") || ($.errorCode=\"AccessDenied*\")}"
