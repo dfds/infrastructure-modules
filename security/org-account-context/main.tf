@@ -201,9 +201,11 @@ resource "aws_sns_topic_subscription" "cis_controls" {
   provider = aws.workload
 }
 
-# [CloudWatch.1] A log metric filter and alarm should exist for usage of the
-# "root" user
-# https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-1
+
+# --------------------------------------------------
+# CloudWatch controls
+# --------------------------------------------------
+# https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html
 
 module "cis_control_cloudwatch_1" {
   source                = "../../_sub/security/cloudtrail-alarm"
@@ -223,6 +225,26 @@ EOT
     aws = aws.workload
   }
 }
+
+module "cis_control_cloudwatch_2" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloud_watch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "UnauthorizedApiCalls"
+  metric_filter_pattern = "{($.errorCode=\"*UnauthorizedOperation\") || ($.errorCode=\"AccessDenied*\")}"
+  metric_name           = "UnauthorizedApiCallsCount"
+  alarm_name            = "cis-control-unauthorize-api-calls"
+  alarm_description     = <<EOT
+  [CloudWatch.2] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. It is recommended that a metric filter and alarm be established for unauthorized API calls.
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-2
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
 
 # --------------------------------------------------
 # aws_context_account_created event
