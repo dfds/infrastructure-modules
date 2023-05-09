@@ -301,6 +301,24 @@ EOT
   }
 }
 
+module "cis_control_cloudwatch_6" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "FailedConsoleAuthentication"
+  metric_filter_pattern = "{($.eventName=ConsoleLogin) && ($.errorMessage=\"Failed authentication\")}"
+  metric_name           = "FailedConsoleAuthenticationCount"
+  alarm_name            = "cis-control-failed-console-authentication"
+  alarm_description     = <<EOT
+  [CloudWatch.6] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. It is recommended that a metric filter and alarm be established for failed console authentication attempts.
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-6
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
 
 # --------------------------------------------------
 # aws_context_account_created event
