@@ -282,6 +282,26 @@ EOT
   }
 }
 
+module "cis_control_cloudwatch_5" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "CloudTrailChanges"
+  metric_filter_pattern = "{($.eventName=CreateTrail) || ($.eventName=UpdateTrail) || ($.eventName=DeleteTrail) || ($.eventName=StartLogging) || ($.eventName=StopLogging)}"
+  metric_name           = "CloudTrailChangesCount"
+  alarm_name            = "cis-control-cloudtrail-changes"
+  alarm_description     = <<EOT
+  [CloudWatch.5] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. It is recommended that a metric filter and alarm be established for detecting changes to CloudTrail's configurations.
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-5
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+
 # --------------------------------------------------
 # aws_context_account_created event
 # --------------------------------------------------
