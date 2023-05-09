@@ -320,6 +320,26 @@ EOT
   }
 }
 
+module "cis_control_cloudwatch_7" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "CmkStateChange"
+  metric_filter_pattern = "{($.eventSource=kms.amazonaws.com) && (($.eventName=DisableKey) || ($.eventName=ScheduleKeyDeletion))}"
+  metric_name           = "CmkStateChangeCount"
+  alarm_name            = "cis-control-cmk-state-change"
+  alarm_description     = <<EOT
+  [CloudWatch.7] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. It is recommended that a metric filter and alarm be established for customer created CMKs which have changed state to disabled or scheduled deletion.
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-7
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+
 # --------------------------------------------------
 # aws_context_account_created event
 # --------------------------------------------------
