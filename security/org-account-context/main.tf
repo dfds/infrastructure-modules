@@ -377,6 +377,25 @@ EOT
   }
 }
 
+module "cis_control_cloudwatch_10" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "SecurityGroupChange"
+  metric_filter_pattern = "{($.eventName=AuthorizeSecurityGroupIngress) || ($.eventName=AuthorizeSecurityGroupEgress) || ($.eventName=RevokeSecurityGroupIngress) || ($.eventName=RevokeSecurityGroupEgress) || ($.eventName=CreateSecurityGroup) || ($.eventName=DeleteSecurityGroup)}"
+  metric_name           = "SecurityGroupChangeCount"
+  alarm_name            = "cis-control-security-group-change"
+  alarm_description     = <<EOT
+  [CloudWatch.10] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. Security Groups are a stateful packet filter that controls ingress and egress traffic within a VPC. It is recommended that a metric filter and alarm be established changes to Security Groups.
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-10
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
 # --------------------------------------------------
 # aws_context_account_created event
 # --------------------------------------------------
