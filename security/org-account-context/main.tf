@@ -244,6 +244,234 @@ EOT
   }
 }
 
+module "cis_control_cloudwatch_3" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "NonMfaSignIn"
+  metric_filter_pattern = "{ ($.eventName = \"ConsoleLogin\") && ($.additionalEventData.MFAUsed != \"Yes\") && ($.userIdentity.type = \"IAMUser\") && ($.responseElements.ConsoleLogin = \"Success\") }"
+  metric_name           = "NonMfaSignInCount"
+  alarm_name            = "cis-control-non-mfa-sign-in"
+  alarm_description     = <<EOT
+   [CloudWatch.3] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. It is recommended that a metric filter and alarm be established for console logins that are not protected by multi-factor authentication (MFA).
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-3
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "cis_control_cloudwatch_4" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "IamPolicyChanges"
+  metric_filter_pattern = "{($.eventSource=iam.amazonaws.com) && (($.eventName=DeleteGroupPolicy) || ($.eventName=DeleteRolePolicy) || ($.eventName=DeleteUserPolicy) || ($.eventName=PutGroupPolicy) || ($.eventName=PutRolePolicy) || ($.eventName=PutUserPolicy) || ($.eventName=CreatePolicy) || ($.eventName=DeletePolicy) || ($.eventName=CreatePolicyVersion) || ($.eventName=DeletePolicyVersion) || ($.eventName=AttachRolePolicy) || ($.eventName=DetachRolePolicy) || ($.eventName=AttachUserPolicy) || ($.eventName=DetachUserPolicy) || ($.eventName=AttachGroupPolicy) || ($.eventName=DetachGroupPolicy))}"
+  metric_name           = "IamPolicyChangesCount"
+  alarm_name            = "cis-control-iam-policy-changes"
+  alarm_description     = <<EOT
+  [CloudWatch.4] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. It is recommended that a metric filter and alarm be established changes made to Identity and Access Management (IAM) policies.
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-4
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "cis_control_cloudwatch_5" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "CloudTrailChanges"
+  metric_filter_pattern = "{($.eventName=CreateTrail) || ($.eventName=UpdateTrail) || ($.eventName=DeleteTrail) || ($.eventName=StartLogging) || ($.eventName=StopLogging)}"
+  metric_name           = "CloudTrailChangesCount"
+  alarm_name            = "cis-control-cloudtrail-changes"
+  alarm_description     = <<EOT
+  [CloudWatch.5] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. It is recommended that a metric filter and alarm be established for detecting changes to CloudTrail's configurations.
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-5
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "cis_control_cloudwatch_6" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "FailedConsoleAuthentication"
+  metric_filter_pattern = "{($.eventName=ConsoleLogin) && ($.errorMessage=\"Failed authentication\")}"
+  metric_name           = "FailedConsoleAuthenticationCount"
+  alarm_name            = "cis-control-failed-console-authentication"
+  alarm_description     = <<EOT
+  [CloudWatch.6] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. It is recommended that a metric filter and alarm be established for failed console authentication attempts.
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-6
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "cis_control_cloudwatch_7" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "CmkStateChange"
+  metric_filter_pattern = "{($.eventSource=kms.amazonaws.com) && (($.eventName=DisableKey) || ($.eventName=ScheduleKeyDeletion))}"
+  metric_name           = "CmkStateChangeCount"
+  alarm_name            = "cis-control-cmk-state-change"
+  alarm_description     = <<EOT
+  [CloudWatch.7] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. It is recommended that a metric filter and alarm be established for customer created CMKs which have changed state to disabled or scheduled deletion.
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-7
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "cis_control_cloudwatch_8" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "S3PolicyChange"
+  metric_filter_pattern = "{($.eventSource=s3.amazonaws.com) && (($.eventName=PutBucketAcl) || ($.eventName=PutBucketPolicy) || ($.eventName=PutBucketCors) || ($.eventName=PutBucketLifecycle) || ($.eventName=PutBucketReplication) || ($.eventName=DeleteBucketPolicy) || ($.eventName=DeleteBucketCors) || ($.eventName=DeleteBucketLifecycle) || ($.eventName=DeleteBucketReplication))}"
+  metric_name           = "S3PolicyChangeCount"
+  alarm_name            = "cis-control-s3-policy-change"
+  alarm_description     = <<EOT
+  [CloudWatch.8] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. It is recommended that a metric filter and alarm be established for changes to S3 bucket policies.
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-8
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "cis_control_cloudwatch_9" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "AwsConfigChange"
+  metric_filter_pattern = "{($.eventSource=config.amazonaws.com) && (($.eventName=StopConfigurationRecorder) || ($.eventName=DeleteDeliveryChannel) || ($.eventName=PutDeliveryChannel) || ($.eventName=PutConfigurationRecorder))}"
+  metric_name           = "AwsConfigChangeCount"
+  alarm_name            = "cis-control-aws-config-change"
+  alarm_description     = <<EOT
+  [CloudWatch.9] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. It is recommended that a metric filter and alarm be established for detecting changes to CloudTrail's configurations.
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-9
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "cis_control_cloudwatch_10" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "SecurityGroupChange"
+  metric_filter_pattern = "{($.eventName=AuthorizeSecurityGroupIngress) || ($.eventName=AuthorizeSecurityGroupEgress) || ($.eventName=RevokeSecurityGroupIngress) || ($.eventName=RevokeSecurityGroupEgress) || ($.eventName=CreateSecurityGroup) || ($.eventName=DeleteSecurityGroup)}"
+  metric_name           = "SecurityGroupChangeCount"
+  alarm_name            = "cis-control-security-group-change"
+  alarm_description     = <<EOT
+  [CloudWatch.10] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. Security Groups are a stateful packet filter that controls ingress and egress traffic within a VPC. It is recommended that a metric filter and alarm be established changes to Security Groups.
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-10
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "cis_control_cloudwatch_11" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "NaclChange"
+  metric_filter_pattern = "{($.eventName=CreateNetworkAcl) || ($.eventName=CreateNetworkAclEntry) || ($.eventName=DeleteNetworkAcl) || ($.eventName=DeleteNetworkAclEntry) || ($.eventName=ReplaceNetworkAclEntry) || ($.eventName=ReplaceNetworkAclAssociation)}"
+  metric_name           = "NaclChangeCount"
+  alarm_name            = "cis-control-nacl-change"
+  alarm_description     = <<EOT
+  [CloudWatch.11] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. NACLs are used as a stateless packet filter to control ingress and egress traffic for subnets within a VPC. It is recommended that a metric filter and alarm be established for changes made to NACLs.
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-11
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "cis_control_cloudwatch_12" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "NetworkGatewayChange"
+  metric_filter_pattern = "{($.eventName=CreateCustomerGateway) || ($.eventName=DeleteCustomerGateway) || ($.eventName=AttachInternetGateway) || ($.eventName=CreateInternetGateway) || ($.eventName=DeleteInternetGateway) || ($.eventName=DetachInternetGateway)}"
+  metric_name           = "NetworkGatewayChangeCount"
+  alarm_name            = "cis-control-network-gateway-change"
+  alarm_description     = <<EOT
+  [CloudWatch.12] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. Network gateways are required to send/receive traffic to a destination outside of a VPC. It is recommended that a metric filter and alarm be established for changes to network gateways.
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-12
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "cis_control_cloudwatch_13" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "RouteTableChange"
+  metric_filter_pattern = "{($.eventSource=ec2.amazonaws.com) && (($.eventName=CreateRoute) || ($.eventName=CreateRouteTable) || ($.eventName=ReplaceRoute) || ($.eventName=ReplaceRouteTableAssociation) || ($.eventName=DeleteRouteTable) || ($.eventName=DeleteRoute) || ($.eventName=DisassociateRouteTable))}"
+  metric_name           = "RouteTableChangeCount"
+  alarm_name            = "cis-control-route-table-change"
+  alarm_description     = <<EOT
+  [CloudWatch.13] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. Routing tables are used to route network traffic between subnets and to network gateways. It is recommended that a metric filter and alarm be established for changes to route tables.
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-13
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "cis_control_cloudwatch_14" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "VpcChange"
+  metric_filter_pattern = "{($.eventName=CreateVpc) || ($.eventName=DeleteVpc) || ($.eventName=ModifyVpcAttribute) || ($.eventName=AcceptVpcPeeringConnection) || ($.eventName=CreateVpcPeeringConnection) || ($.eventName=DeleteVpcPeeringConnection) || ($.eventName=RejectVpcPeeringConnection) || ($.eventName=AttachClassicLinkVpc) || ($.eventName=DetachClassicLinkVpc) || ($.eventName=DisableVpcClassicLink) || ($.eventName=EnableVpcClassicLink)}"
+  metric_name           = "VpcChangeCount"
+  alarm_name            = "cis-control-vpc-change"
+  alarm_description     = <<EOT
+  [CloudWatch.14] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. It is possible to have more than 1 VPC within an account, in addition it is also possible to create a peer connection between 2 VPCs enabling network traffic to route between VPCs. It is recommended that a metric filter and alarm be established for changes made to VPCs.
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-14
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
 # --------------------------------------------------
 # aws_context_account_created event
 # --------------------------------------------------
