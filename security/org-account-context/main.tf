@@ -244,6 +244,25 @@ EOT
   }
 }
 
+module "cis_control_cloudwatch_3" {
+  source                = "../../_sub/security/cloudtrail-alarm"
+  deploy                = var.harden
+  logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
+  alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
+  metric_filter_name    = "NonMfaSignIn"
+  metric_filter_pattern = "{ ($.eventName = \"ConsoleLogin\") && ($.additionalEventData.MFAUsed != \"Yes\") && ($.userIdentity.type = \"IAMUser\") && ($.responseElements.ConsoleLogin = \"Success\") }"
+  metric_name           = "NonMfaSignInCount"
+  alarm_name            = "cis-control-non-mfa-sign-in"
+  alarm_description     = <<EOT
+   [CloudWatch.3] Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs and establishing corresponding metric filters and alarms. It is recommended that a metric filter and alarm be established for console logins that are not protected by multi-factor authentication (MFA).
+  https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html#cloudwatch-3
+EOT
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
 # --------------------------------------------------
 # aws_context_account_created event
 # --------------------------------------------------
