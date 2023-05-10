@@ -163,6 +163,23 @@ module "aws_iam_oidc_provider" {
 # Account hardening
 # --------------------------------------------------
 
+resource "aws_sns_topic" "cis_controls" {
+  count = var.harden ? 1 : 0
+  name  = "cis-control-alarms"
+
+  provider = aws.workload
+}
+
+resource "aws_sns_topic_subscription" "cis_controls" {
+  count     = var.harden ? 1 : 0
+  topic_arn = aws_sns_topic.cis_controls[count.index].arn
+  protocol  = "email"
+  endpoint  = var.hardened_monitoring_email
+
+  provider = aws.workload
+}
+
+
 module "cloudtrail_s3_local" {
   source           = "../../_sub/storage/s3-cloudtrail-bucket"
   create_s3_bucket = var.harden
@@ -185,21 +202,19 @@ module "cloudtrail_local" {
   }
 }
 
-resource "aws_sns_topic" "cis_controls" {
-  count = var.harden ? 1 : 0
-  name  = "cis-control-alarms"
+module "config_s3_local" {
+  source           = "../../_sub/storage/s3-config-bucket"
+  create_s3_bucket = var.harden
+  s3_bucket        = "config-local-${var.capability_root_id}"
 
-  provider = aws.workload
+  providers = {
+    aws = aws.workload
+  }
 }
 
-resource "aws_sns_topic_subscription" "cis_controls" {
-  count     = var.harden ? 1 : 0
-  topic_arn = aws_sns_topic.cis_controls[count.index].arn
-  protocol  = "email"
-  endpoint  = var.hardened_monitoring_email
+# TODO(emil): enable aws config
 
-  provider = aws.workload
-}
+# TODO(emil): deploy conformance pack
 
 # --------------------------------------------------
 # CloudWatch controls
