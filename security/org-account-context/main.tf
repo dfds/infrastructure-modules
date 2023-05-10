@@ -212,9 +212,18 @@ module "config_s3_local" {
   }
 }
 
-# TODO(emil): enable aws config
+module "config_local" {
+  source         = "../../_sub/security/config-config"
+  s3_bucket_name = module.config_s3_local.bucket_name
+  s3_bucket_arn  = module.config_s3_local.bucket_arn
+  deploy         = var.harden
 
-# TODO(emil): deploy conformance pack
+  # TODO(emil): deploy conformance pack as a variable to this module
+
+  providers = {
+    aws = aws.workload
+  }
+}
 
 # --------------------------------------------------
 # CloudWatch controls
