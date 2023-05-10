@@ -213,12 +213,11 @@ module "config_s3_local" {
 }
 
 module "config_local" {
-  source         = "../../_sub/security/config-config"
-  s3_bucket_name = module.config_s3_local.bucket_name
-  s3_bucket_arn  = module.config_s3_local.bucket_arn
-  deploy         = var.harden
-
-  # TODO(emil): deploy conformance pack as a variable to this module
+  source            = "../../_sub/security/config-config"
+  deploy            = var.harden
+  s3_bucket_name    = module.config_s3_local.bucket_name
+  s3_bucket_arn     = module.config_s3_local.bucket_arn
+  conformance_packs = ["Operational-Best-Practices-for-CIS-AWS-v1.4-Level2"]
 
   providers = {
     aws = aws.workload

@@ -57,3 +57,16 @@ resource "aws_config_configuration_recorder_status" "this" {
   is_enabled = true
   depends_on = [aws_config_delivery_channel.this]
 }
+
+# Conformance packs
+
+resource "aws_config_conformance_pack" "pack" {
+  for_each = var.conformance_packs
+  name     = replace(lower(each.value), "/[^a-z0-9-]/", "-")
+
+  # Conformance packs can be imported from this repository:
+  # https://github.com/awslabs/aws-config-rules/tree/master/aws-config-conformance-packs
+  template_body = file("${path.module}/conformance-packs/${each.value}.yaml")
+
+  depends_on = [aws_config_configuration_recorder.this]
+}
