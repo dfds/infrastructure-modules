@@ -128,9 +128,9 @@ resource "github_repository_file" "kustomize" {
 # --------------------------------------------------
 
 resource "github_repository_file" "flux_monitoring_config_path" {
-  repository          = var.repo_name
+  repository          = var.repository_name
   branch              = data.github_branch.flux_branch.branch
-  file                = "${local.cluster_repo_path}/${local.app_install_name}.yaml"
+  file                = "${local.cluster_target_path}/${local.app_install_name}.yaml"
   content             = jsonencode(local.app_config_path)
   overwrite_on_create = var.overwrite_on_create
 }
@@ -140,9 +140,9 @@ resource "github_repository_file" "flux_monitoring_config_path" {
 # --------------------------------------------------
 
 resource "github_repository_file" "platform_apps_init" {
-  repository          = var.repo_name
+  repository          = var.repository_name
   branch              = data.github_branch.flux_branch.branch
-  file                = "${local.cluster_repo_path}/platform-apps.yaml"
+  file                = "${local.cluster_target_path}/platform-apps.yaml"
   content             = local.platform_apps_yaml
   overwrite_on_create = var.overwrite_on_create
 }

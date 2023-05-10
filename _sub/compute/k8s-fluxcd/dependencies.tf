@@ -12,7 +12,7 @@ locals {
 # --------------------------------------------------
 
 data "flux_install" "main" {
-  target_path = var.repo_path
+  target_path = var.target_path
   version     = var.release_tag
 }
 
@@ -21,9 +21,9 @@ data "kubectl_file_documents" "install" {
 }
 
 data "flux_sync" "main" {
-  target_path = var.repo_path
-  url         = "ssh://git@github.com/${var.repo_owner}/${var.repo_name}.git"
-  branch      = var.repo_branch
+  target_path = var.target_path
+  url         = "ssh://git@github.com/${var.github_owner}/${var.repository_name}.git"
+  branch      = var.branch
   namespace   = local.namespace
 }
 
@@ -41,12 +41,12 @@ locals {
 }
 
 data "github_repository" "main" {
-  full_name = "${var.repo_owner}/${var.repo_name}"
+  full_name = "${var.github_owner}/${var.repository_name}"
 }
 
 data "github_branch" "flux_branch" {
-  repository = var.repo_name
-  branch     = var.repo_branch
+  repository = var.repository_name
+  branch     = var.branch
 }
 
 # --------------------------------------------------
@@ -54,8 +54,8 @@ data "github_branch" "flux_branch" {
 # --------------------------------------------------
 
 locals {
-  cluster_repo_path = "clusters/${var.cluster_name}"
-  app_install_name  = "platform-apps-flux-monitoring"
+  cluster_target_path = "clusters/${var.cluster_name}"
+  app_install_name    = "platform-apps-flux-monitoring"
   app_config_path = {
     "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
     "kind"       = "Kustomization"

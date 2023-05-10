@@ -1,26 +1,30 @@
-variable "cluster_name" {
+# --------------------------------------------------
+# Flux CD bootstrap variables
+# --------------------------------------------------
+
+variable "github_owner" {
   type = string
 }
 
-variable "repo_name" {
-  type        = string
-  description = ""
+variable "repository_name" {
+  type = string
 }
 
-variable "repo_branch" {
-  type        = string
-  default     = "main"
-  description = ""
+variable "branch" {
+  type    = string
+  default = "main"
 }
 
-variable "repo_path" {
-  type        = string
-  description = ""
+variable "target_path" {
+  type = string
 }
 
-variable "repo_owner" {
-  type        = string
-  description = ""
+# --------------------------------------------------
+# Custom variables
+# --------------------------------------------------
+
+variable "cluster_name" {
+  type = string
 }
 
 variable "gitops_apps_repo_url" {
