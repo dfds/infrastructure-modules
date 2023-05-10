@@ -235,6 +235,11 @@ stages:
                   timeoutInMinutes: 15
                 - bash: wait-for-asgs.sh qa
                   displayName: "Wait for auto scaling groups's instances to be in service"
+                - bash: ./src/qa-test-eks.sh test-k8s-service-migration eu-west-1 qa
+                  workingDirectory: $(Agent.BuildDirectory)/source
+                  displayName: "Test service migration in Kubernetes"
+                  condition: eq(variables['TEST_K8S_SERVICE_MIGRATION'], 'true')
+                  timeoutInMinutes: 15
                 - download: current
                   displayName: "Download test binary"
                   artifact: test-feature
