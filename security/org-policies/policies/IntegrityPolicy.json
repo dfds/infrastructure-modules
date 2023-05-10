@@ -46,6 +46,7 @@
         },
         {
             "Sid": "DenyDisablingEditingAWSConfig",
+            "Effect": "Deny",
             "Action": [
                 "config:DeleteConfigRule",
                 "config:DeleteConfigurationRecorder",
@@ -54,7 +55,11 @@
                 "config:PutConfigRule"
             ],
             "Resource": "*",
-            "Effect": "Deny"
+            "Condition": {
+                "StringNotLike": {
+                    "aws:PrincipalArn": ["arn:aws:iam::*:role/OrgRole"]
+                }
+            }
         }
     ]
 }
