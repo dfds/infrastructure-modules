@@ -54,6 +54,27 @@ data "aws_iam_policy_document" "create_org_account" {
     resources = ["*"]
     effect    = "Allow"
   }
+
+  statement {
+    sid = "AssignPermissionSet"
+
+    actions = [
+      "sso:ListInstances",
+      "identitystore:GetGroupId",
+      "identitystore:DescribeGroup",
+      "sso:ListPermissionSets",
+      "sso:CreateAccountAssignment",
+      "sso:DeleteAccountAssignment",
+      "sso:DescribePermissionSet",
+      "sso:ListTagsForResource",
+      "sso:ListPermissionSetsProvisionedToAccount",
+      "sso:ListAccountAssignments",
+      "sso:DescribeAccountAssignmentCreationStatus",
+    ]
+
+    resources = ["*"]
+    effect    = "Allow"
+  }
 }
 
 # Assume Non-core Accounts
