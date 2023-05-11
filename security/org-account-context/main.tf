@@ -163,6 +163,23 @@ module "aws_iam_oidc_provider" {
 # Account hardening
 # --------------------------------------------------
 
+resource "aws_sns_topic" "cis_controls" {
+  count = var.harden ? 1 : 0
+  name  = "cis-control-alarms"
+
+  provider = aws.workload
+}
+
+resource "aws_sns_topic_subscription" "cis_controls" {
+  count     = var.harden ? 1 : 0
+  topic_arn = aws_sns_topic.cis_controls[count.index].arn
+  protocol  = "email"
+  endpoint  = var.hardened_monitoring_email
+
+  provider = aws.workload
+}
+
+
 module "cloudtrail_s3_local" {
   source           = "../../_sub/storage/s3-cloudtrail-bucket"
   create_s3_bucket = var.harden
@@ -185,20 +202,26 @@ module "cloudtrail_local" {
   }
 }
 
-resource "aws_sns_topic" "cis_controls" {
-  count = var.harden ? 1 : 0
-  name  = "cis-control-alarms"
+module "config_s3_local" {
+  source           = "../../_sub/storage/s3-config-bucket"
+  create_s3_bucket = var.harden
+  s3_bucket        = "config-local-${var.capability_root_id}"
 
-  provider = aws.workload
+  providers = {
+    aws = aws.workload
+  }
 }
 
-resource "aws_sns_topic_subscription" "cis_controls" {
-  count     = var.harden ? 1 : 0
-  topic_arn = aws_sns_topic.cis_controls[count.index].arn
-  protocol  = "email"
-  endpoint  = var.hardened_monitoring_email
+module "config_local" {
+  source            = "../../_sub/security/config-config"
+  deploy            = var.harden
+  s3_bucket_name    = module.config_s3_local.bucket_name
+  s3_bucket_arn     = module.config_s3_local.bucket_arn
+  conformance_packs = ["Operational-Best-Practices-for-CIS-AWS-v1.4-Level2"]
 
-  provider = aws.workload
+  providers = {
+    aws = aws.workload
+  }
 }
 
 # --------------------------------------------------
