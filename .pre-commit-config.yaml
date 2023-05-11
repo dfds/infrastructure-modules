@@ -8,6 +8,10 @@ repos:
       exclude: test/integration/suite/vendor/.*
       files: (\.tf|\.tfvars)$
     - id: terraform_docs
+      args:
+        - --hook-config=--path-to-file=docs/README.md
+        - --hook-config=--add-to-existing-file=true     # Boolean. true or false
+        - --hook-config=--create-file-if-not-exist=true # Boolean. true or false
       exclude: test/.*
 - repo: https://github.com/Yelp/detect-secrets
   rev: v1.4.0
