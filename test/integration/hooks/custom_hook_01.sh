@@ -7,7 +7,7 @@ echo "WORKDIR=$WORKDIR"
 
 echo "PARENT_DIR=$PARENT_DIR"
 
-cd "$PARENT_DIR/k8s-qa/cluster" || return
+cd "$PARENT_DIR/eu-west-1/k8s-qa/cluster" || return
 
 echo "Finding KUBECONFIG..."
 
@@ -17,7 +17,7 @@ export KUBECONFIG
 
 echo "KUBECONFIG=$KUBECONFIG"
 
-cd "$PARENT_DIR/k8s-qa/services" || return
+cd "$PARENT_DIR/eu-west-1/k8s-qa/services" || return
 
 IS_FLUXCD_MIGRATED=$(terragrunt state list | grep -c module.platform_fluxcd.flux_bootstrap_git.this)
 
