@@ -47,3 +47,16 @@ variable "parent_id" {
   description = "The ID of the parent AWS Organization OU. Defaults to the root."
   default     = "r-65k1"
 }
+
+variable "aws_region_sso" {
+  type = string
+  default = "eu-west-1"
+}
+
+variable "sso_admin_permission_set_name" {
+    type = string
+}
+
+variable "sso_admin_group_name" {
+    type = string
+}
