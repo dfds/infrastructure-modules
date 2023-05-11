@@ -15,7 +15,7 @@ variable "branch" {
   default = "main"
 }
 
-variable "target_path" {
+variable "release_tag" {
   type = string
 }
 
@@ -42,11 +42,6 @@ variable "gitops_apps_repo_branch" {
 variable "kubeconfig_path" {
   type    = string
   default = null
-}
-
-variable "release_tag" {
-  type    = string
-  default = "latest"
 }
 
 variable "overwrite_on_create" {

@@ -491,7 +491,6 @@ module "monitoring_metrics_server" {
 module "platform_fluxcd" {
   source                  = "../../_sub/compute/k8s-fluxcd"
   release_tag             = var.fluxcd_version
-  target_path             = "./clusters/${var.eks_cluster_name}"
   repository_name         = var.fluxcd_bootstrap_repo_name
   branch                  = var.fluxcd_bootstrap_repo_branch
   github_owner            = var.fluxcd_bootstrap_repo_owner

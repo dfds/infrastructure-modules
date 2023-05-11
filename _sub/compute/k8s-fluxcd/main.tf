@@ -39,6 +39,7 @@ resource "github_repository_deploy_key" "main" {
 resource "flux_bootstrap_git" "this" {
   depends_on = [github_repository_deploy_key.main]
   path       = local.cluster_target_path
+  version    = var.release_tag
 }
 
 
