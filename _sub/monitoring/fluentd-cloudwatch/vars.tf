@@ -58,3 +58,9 @@ variable "gitops_apps_repo_branch" {
   default     = "main"
   description = "The default branch for your GitOps manifests"
 }
+
+variable "docker_image_tag" {
+  type        = string
+  description = "The new tag for the fluentd-kubernetes-daemonset image"
+  default     = "v1.16-debian-cloudwatch-1"
+}
