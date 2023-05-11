@@ -28,13 +28,18 @@
         },
         {
             "Sid": "DenyDisablingCloudTrail",
+            "Effect": "Deny",
             "Action": [
                 "cloudtrail:StopLogging",
                 "cloudtrail:DeleteTrail",
                 "cloudtrail:UpdateTrail"
             ],
             "Resource": "*",
-            "Effect": "Deny"
+            "Condition": {
+                "StringNotLike": {
+                    "aws:PrincipalArn": ["arn:aws:iam::*:role/OrgRole"]
+                }
+            }
         },
         {
             "Sid": "DenyDisablingAccessAnalyzer",

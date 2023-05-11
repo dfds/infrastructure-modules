@@ -27,6 +27,16 @@ provider "aws" {
   alias = "workload"
 }
 
+provider "aws" {
+  region = var.aws_region_sso
+  alias = "sso"
+
+  # Assume role in Master account
+  assume_role {
+    role_arn = "arn:aws:iam::${var.master_account_id}:role/${var.prime_role_name}"
+  }
+}
+
 terraform {
   backend "s3" {
   }
@@ -75,6 +85,18 @@ module "cloudtrail_local" {
   }
 }
 
+module "iam_identity_center_assignment" {
+  source = "../../_sub/security/iam-identity-center-assignment"
+
+  permission_set_name = var.sso_admin_permission_set_name
+  group_name = var.sso_admin_group_name
+  aws_account_id = module.org_account.id
+
+  providers = {
+    aws = aws.sso
+  }
+}
+
 resource "aws_iam_role" "prime" {
   name                 = var.prime_role_name
   description          = "Admin role to be assumed by Prime"
@@ -90,4 +112,3 @@ resource "aws_iam_role_policy" "prime-admin" {
   policy   = module.iam_policies.admin
   provider = aws.workload
 }
-
