@@ -2,6 +2,11 @@
 # working directory, into a temporary folder, and execute your Terraform commands in that folder.
 terraform {
   source = "../../../../..//compute/k8s-services"
+
+  before_hook "custom_hook_01" {
+    commands     = ["apply"]
+    execute      = ["${get_parent_terragrunt_dir()}/hooks/custom_hook_01.sh", "${get_parent_terragrunt_dir()}"]
+  }
 }
 
 # Include all settings from the root terraform.tfvars file

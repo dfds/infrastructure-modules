@@ -47,19 +47,6 @@ if [ "$ACTION" = "test-run" ]; then
 	exec $TEST_BINARY_PATH -test.v -test.parallel 30
 fi
 
-if [ "$ACTION" = "test-k8s-service-migration" ]; then
-	# Get kubeconfig path
-	REGION=$2
-	CLUSTERNAME=$3
-	CLUSTER_DIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}/cluster"
-	export KUBECONFIG=$(terragrunt output --raw kubeconfig_path --terragrunt-working-dir "$CLUSTER_DIR")
-
-	SERVICES_DIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}/services"
-
-	./src/test-k8s-service-migration.sh "$SERVICES_DIR"
-
-fi
-
 if [ "$ACTION" = "destroy-cluster" ]; then
 	REGION=$2
 	CLUSTERNAME=$3
