@@ -179,11 +179,11 @@ resource "aws_sns_topic_subscription" "cis_controls" {
   provider = aws.workload
 }
 
-
 module "cloudtrail_s3_local" {
   source           = "../../_sub/storage/s3-cloudtrail-bucket"
   create_s3_bucket = var.harden
   s3_bucket        = "cloudtrail-local-${var.capability_root_id}"
+  s3_log_bucket    = "cloudtrail-local-log-${var.capability_root_id}"
 
   providers = {
     aws = aws.workload
