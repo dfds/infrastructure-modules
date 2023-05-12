@@ -225,6 +225,22 @@ module "config_local" {
 }
 
 # --------------------------------------------------
+# Password policy
+# --------------------------------------------------
+
+resource "aws_iam_account_password_policy" "hardened" {
+  count                          = var.harden ? 1 : 0
+  minimum_password_length        = 14
+  require_lowercase_characters   = true
+  require_numbers                = true
+  require_uppercase_characters   = true
+  require_symbols                = true
+  allow_users_to_change_password = true
+
+  provider = aws.workload
+}
+
+# --------------------------------------------------
 # CloudWatch controls
 # --------------------------------------------------
 # https://docs.aws.amazon.com/securityhub/latest/userguide/cloudwatch-controls.html
