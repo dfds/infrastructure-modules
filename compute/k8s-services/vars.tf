@@ -907,6 +907,12 @@ variable "fluentd_cloudwatch_retention_in_days" {
   description = "How many days to keep the logs?"
 }
 
+variable "fluentd_cloudwatch_docker_image_tag" {
+  type        = string
+  default     = "v1.16-debian-cloudwatch-1"
+  description = "The new tag for the fluentd-kubernetes-daemonset image"
+}
+
 # --------------------------------------------------
 # Velero - requires that s3-bucket-velero module
 # is already applied through Terragrunt.
