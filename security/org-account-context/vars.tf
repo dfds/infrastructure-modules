@@ -129,3 +129,8 @@ variable "hardened_monitoring_email" {
   type    = string
   default = null
 }
+
+variable "enforce_dynamodb_pitr_setting" {
+  type    = bool
+  default = false
+}

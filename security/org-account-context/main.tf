@@ -545,3 +545,13 @@ module "kafka_produce_account_created" {
   username        = var.kafka_username
   password        = var.kafka_password
 }
+
+
+module "config_dynamodb-pitr-policy" {
+  source            = "../../_sub/security/dynamodb-pitr-policy"
+  deploy            = var.enforce_dynamodb_pitr_setting
+
+  providers = {
+    aws = aws.workload
+  }
+}
