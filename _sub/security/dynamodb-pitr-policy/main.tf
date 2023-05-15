@@ -1,50 +1,3 @@
-# AWS Config
-
-resource "aws_config_configuration_recorder" "this" {
-  count    = var.deploy ? 1 : 0
-  name     = "aws-config-recorder"
-  role_arn = aws_iam_role.recorder[count.index].arn
-}
-
-
-# Enable Recorder in the account
-
-data "aws_iam_policy_document" "assume_recorder_role" {
-  count = var.deploy ? 1 : 0
-
-  statement {
-    effect = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["config.amazonaws.com"]
-    }
-
-    actions = ["sts:AssumeRole"]
-  }
-}
-
-resource "aws_iam_role" "recorder" {
-  count              = var.deploy ? 1 : 0
-  name               = "aws-config-recorder"
-  assume_role_policy = data.aws_iam_policy_document.assume_recorder_role[count.index].json
-}
-
-resource "aws_iam_role_policy" "recorder" {
-  count  = var.deploy ? 1 : 0
-  name   = "aws-config-recorder"
-  role   = aws_iam_role.recorder[count.index].id
-  policy = data.aws_iam_policy_document.awsconfig_dynamodb_pitr_settings[count.index].json
-}
-
-resource "aws_iam_role_policy_attachment" "recorder" {
-  count      = var.deploy ? 1 : 0
-  role       = aws_iam_role.recorder[count.index].name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWS_ConfigRole"
-}
-
-
-
 # Allow trigger AWSConfig Remediation for Dynamodb
 data "aws_iam_policy_document" "awsconfig_dynamodb_pitr_settings" {
   count = var.deploy ? 1 : 0
@@ -124,4 +77,50 @@ resource "aws_config_remediation_configuration" "this" {
       error_percentage                     = 5
     }
   }
+}
+
+
+
+# Enable Recorder in the account
+
+data "aws_iam_policy_document" "assume_recorder_role" {
+  count = var.deploy ? 1 : 0
+
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["config.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role" "recorder" {
+  count              = var.deploy ? 1 : 0
+  name               = "aws-config-recorder"
+  assume_role_policy = data.aws_iam_policy_document.assume_recorder_role[count.index].json
+}
+
+resource "aws_iam_role_policy" "recorder" {
+  count  = var.deploy ? 1 : 0
+  name   = "aws-config-recorder"
+  role   = aws_iam_role.recorder[count.index].id
+  policy = data.aws_iam_policy_document.awsconfig_dynamodb_pitr_settings[count.index].json
+}
+
+resource "aws_iam_role_policy_attachment" "recorder" {
+  count      = var.deploy ? 1 : 0
+  role       = aws_iam_role.recorder[count.index].name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWS_ConfigRole"
+}
+
+# AWS Config
+
+resource "aws_config_configuration_recorder" "this" {
+  count    = var.deploy ? 1 : 0
+  name     = "aws-config-recorder"
+  role_arn = aws_iam_role.recorder[count.index].arn
 }
