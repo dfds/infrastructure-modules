@@ -196,6 +196,7 @@ module "cloudtrail_local" {
   deploy           = var.harden
   trail_name       = "cloudtrail-local-${var.capability_root_id}"
   create_log_group = var.harden
+  create_kms_key   = var.harden
 
   providers = {
     aws = aws.workload

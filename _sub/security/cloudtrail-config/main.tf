@@ -1,3 +1,131 @@
+data "aws_caller_identity" "current" {}
+
+data "aws_region" "current" {}
+
+data "aws_iam_policy_document" "key_policy" {
+  count = var.deploy && var.create_kms_key ? 1 : 0
+
+  statement {
+    sid       = "AllowCloudTrailEncryption"
+    effect    = "Allow"
+    actions   = ["kms:GenerateDataKey*"]
+    resources = ["*"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = ["arn:aws:cloudtrail:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:trail/${var.trail_name}"]
+    }
+
+    condition {
+      test     = "StringLike"
+      variable = "kms:EncryptionContext:aws:cloudtrail:arn"
+      values   = ["arn:aws:cloudtrail:*:${data.aws_caller_identity.current.account_id}:trail/*"]
+    }
+  }
+
+  statement {
+    sid       = "AllowCloudTrailDecryption"
+    effect    = "Allow"
+    actions   = ["kms:Decrypt"]
+    resources = ["*"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+  }
+
+  statement {
+    sid       = "AllowCloudTrailAccess"
+    effect    = "Allow"
+    actions   = ["kms:DescribeKey"]
+    resources = [aws_kms_key.key[count.index].arn]
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = ["arn:aws:cloudtrail:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:trail/${var.trail_name}"]
+    }
+  }
+
+  statement {
+    sid    = "AllowCloudTrailUserAccess"
+    effect = "Allow"
+    actions = [
+      "kms:DescribeKey",
+      "kms:GetKeyPolicy",
+      "kms:ListResourceTags",
+      "kms:GetKeyRotationStatus",
+    ]
+    resources = ["*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+  }
+
+  statement {
+    sid    = "AllowCloudTrailAdminAccess"
+    effect = "Allow"
+    actions = [
+      "kms:Create*",
+      "kms:Describe*",
+      "kms:Enable*",
+      "kms:List*",
+      "kms:Put*",
+      "kms:Update*",
+      "kms:Revoke*",
+      "kms:Disable*",
+      "kms:Get*",
+      "kms:Delete*",
+      "kms:TagResource",
+      "kms:UntagResource",
+      "kms:ScheduleKeyDeletion",
+      "kms:CancelKeyDeletion"
+    ]
+    resources = ["*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/OrgRole"]
+    }
+  }
+
+}
+
+resource "aws_kms_key" "key" {
+  count                    = var.deploy && var.create_kms_key ? 1 : 0
+  description              = "CloudTrail SSE"
+  key_usage                = "ENCRYPT_DECRYPT"
+  customer_master_key_spec = "SYMMETRIC_DEFAULT"
+  deletion_window_in_days  = 30
+  is_enabled               = true
+}
+
+resource "aws_kms_key_policy" "policy" {
+  count  = var.deploy && var.create_kms_key ? 1 : 0
+  key_id = aws_kms_key.key[count.index].key_id
+  policy = data.aws_iam_policy_document.key_policy[count.index].json
+}
+
+resource "aws_kms_alias" "alias" {
+  count         = var.deploy && var.create_kms_key ? 1 : 0
+  name          = "alias/cloudtrail/${var.trail_name}"
+  target_key_id = aws_kms_key.key[count.index].key_id
+}
+
 resource "aws_cloudwatch_log_group" "log_group" {
   count = var.deploy && var.create_log_group ? 1 : 0
   name  = "/cloudtrail/${var.trail_name}"
@@ -60,4 +188,5 @@ resource "aws_cloudtrail" "cloudtrail" {
   enable_log_file_validation    = true
   cloud_watch_logs_role_arn     = try(aws_iam_role.cloudtrail_to_cloudwatch[0].arn, null)
   cloud_watch_logs_group_arn    = try("${aws_cloudwatch_log_group.log_group[0].arn}:*", null)
+  kms_key_id                    = try(aws_kms_key.key[0].arn, null)
 }
