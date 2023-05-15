@@ -97,12 +97,6 @@ variable "parent_id" {
   default     = ""
 }
 
-variable "assume_role_arn" {
-  type        = string
-  description = "Optional: The AWS assume role ARN"
-  default     = ""
-}
-
 variable "oidc_provider_url" {
   type        = string
   description = "The IAM OpenID Connect Provider url from the EKS production account"
@@ -113,11 +107,6 @@ variable "oidc_provider_tag" {
   type        = string
   description = "Used for tagging the IAM OpenID Connect Provider for the capability account"
   default     = ""
-}
-
-variable "create_aws_iam_access_key" {
-  type    = bool
-  default = false
 }
 
 variable "harden" {
