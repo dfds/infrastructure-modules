@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "log_bucket" {
-  count  = var.create_s3_bucket ? 1 : 0
+  count  = var.create_s3_bucket && var.s3_log_bucket != null ? 1 : 0
   bucket = var.s3_log_bucket
   tags = {
     "Managed by" = "Terraform"
@@ -9,7 +9,7 @@ resource "aws_s3_bucket" "log_bucket" {
 }
 
 resource "aws_s3_bucket_ownership_controls" "log_bucket_ownership_controls" {
-  count  = var.create_s3_bucket ? 1 : 0
+  count  = var.create_s3_bucket && var.s3_log_bucket != null ? 1 : 0
   bucket = aws_s3_bucket.log_bucket[count.index].id
   rule {
     object_ownership = "BucketOwnerPreferred"
@@ -17,7 +17,7 @@ resource "aws_s3_bucket_ownership_controls" "log_bucket_ownership_controls" {
 }
 
 resource "aws_s3_bucket_acl" "log_bucket_acl" {
-  count  = var.create_s3_bucket ? 1 : 0
+  count  = var.create_s3_bucket && var.s3_log_bucket != null ? 1 : 0
   bucket = aws_s3_bucket.log_bucket[count.index].id
   acl    = "log-delivery-write"
 
@@ -35,7 +35,7 @@ resource "aws_s3_bucket" "bucket" {
 }
 
 resource "aws_s3_bucket_logging" "bucket" {
-  count         = var.create_s3_bucket ? 1 : 0
+  count         = var.create_s3_bucket && var.s3_log_bucket != null ? 1 : 0
   bucket        = aws_s3_bucket.bucket[count.index].id
   target_bucket = aws_s3_bucket.log_bucket[count.index].id
   target_prefix = "log/"
