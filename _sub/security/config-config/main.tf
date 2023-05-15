@@ -1,6 +1,8 @@
 # Policies
 
 data "aws_iam_policy_document" "recorder" {
+  count = var.deploy ? 1 : 0
+
   statement {
     effect  = "Allow"
     actions = ["s3:*"]
@@ -12,6 +14,8 @@ data "aws_iam_policy_document" "recorder" {
 }
 
 data "aws_iam_policy_document" "assume_recorder_role" {
+  count = var.deploy ? 1 : 0
+
   statement {
     effect = "Allow"
 
@@ -25,35 +29,41 @@ data "aws_iam_policy_document" "assume_recorder_role" {
 }
 
 resource "aws_iam_role" "recorder" {
+  count              = var.deploy ? 1 : 0
   name               = "aws-config-recorder"
-  assume_role_policy = data.aws_iam_policy_document.assume_recorder_role.json
+  assume_role_policy = data.aws_iam_policy_document.assume_recorder_role[count.index].json
 }
 
 resource "aws_iam_role_policy" "recorder" {
+  count  = var.deploy ? 1 : 0
   name   = "aws-config-recorder"
-  role   = aws_iam_role.recorder.id
-  policy = data.aws_iam_policy_document.recorder.json
+  role   = aws_iam_role.recorder[count.index].id
+  policy = data.aws_iam_policy_document.recorder[count.index].json
 }
 
 resource "aws_iam_role_policy_attachment" "recorder" {
-  role       = aws_iam_role.recorder.name
+  count      = var.deploy ? 1 : 0
+  role       = aws_iam_role.recorder[count.index].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWS_ConfigRole"
 }
 
 # AWS Config
 
 resource "aws_config_configuration_recorder" "this" {
+  count    = var.deploy ? 1 : 0
   name     = "aws-config-recorder"
-  role_arn = aws_iam_role.recorder.arn
+  role_arn = aws_iam_role.recorder[count.index].arn
 }
 
 resource "aws_config_delivery_channel" "this" {
+  count          = var.deploy ? 1 : 0
   name           = "aws-config-delivery-channel"
   s3_bucket_name = var.s3_bucket_name
 }
 
 resource "aws_config_configuration_recorder_status" "this" {
-  name       = aws_config_configuration_recorder.this.name
+  count      = var.deploy ? 1 : 0
+  name       = aws_config_configuration_recorder.this[count.index].name
   is_enabled = true
   depends_on = [aws_config_delivery_channel.this]
 }
@@ -61,7 +71,7 @@ resource "aws_config_configuration_recorder_status" "this" {
 # Conformance packs
 
 resource "aws_config_conformance_pack" "pack" {
-  for_each = var.conformance_packs
+  for_each = var.deploy ? var.conformance_packs : []
   name     = replace(lower(each.value), "/[^a-z0-9-]/", "-")
 
   # Conformance packs can be imported from this repository:
