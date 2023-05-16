@@ -118,3 +118,18 @@ variable "hardened_monitoring_email" {
   type    = string
   default = null
 }
+
+variable "aws_region_sso" {
+  type    = string
+  default = "eu-west-1"
+}
+
+variable "sso_support_permission_set_name" {
+  type    = string
+  default = null
+}
+
+variable "sso_support_group_name" {
+  type    = string
+  default = null
+}
