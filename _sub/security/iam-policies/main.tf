@@ -213,3 +213,26 @@ data "aws_iam_policy_document" "trusted_account" {
     }
   }
 }
+
+
+# ------------------------------------------------------------------------------
+# Certero
+# ------------------------------------------------------------------------------
+
+data "aws_iam_policy_document" "certero_endpoint" {
+  statement {
+    sid       = "CerteroEndpoint"
+    effect    = "Allow"
+    resources = ["*"]
+    actions   = local.certero_actions_for_org_accounts
+  }
+}
+
+data "aws_iam_policy_document" "certero_endpoint_for_master_account" {
+  statement {
+    sid       = "CerteroEndpoint"
+    effect    = "Allow"
+    resources = ["*"]
+    actions   = local.certero_actions_for_master_accounts
+  }
+}

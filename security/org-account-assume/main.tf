@@ -29,7 +29,7 @@ provider "aws" {
 
 provider "aws" {
   region = var.aws_region_sso
-  alias = "sso"
+  alias  = "sso"
 
   # Assume role in Master account
   assume_role {
@@ -89,8 +89,8 @@ module "iam_identity_center_assignment" {
   source = "../../_sub/security/iam-identity-center-assignment"
 
   permission_set_name = var.sso_admin_permission_set_name
-  group_name = var.sso_admin_group_name
-  aws_account_id = module.org_account.id
+  group_name          = var.sso_admin_group_name
+  aws_account_id      = module.org_account.id
 
   providers = {
     aws = aws.sso
@@ -111,4 +111,18 @@ resource "aws_iam_role_policy" "prime-admin" {
   role     = aws_iam_role.prime.id
   policy   = module.iam_policies.admin
   provider = aws.workload
+}
+
+module "iam_role_certero" {
+  source               = "../../_sub/security/iam-role"
+  role_name            = "CerteroRole"
+  role_description     = ""
+  max_session_duration = 3600
+  assume_role_policy   = data.aws_iam_policy_document.assume_role_policy_master_account.json
+  role_policy_name     = "CerteroEndpoint"
+  role_policy_document = module.iam_policies.certero_endpoint
+
+  providers = {
+    aws = aws.workload
+  }
 }
