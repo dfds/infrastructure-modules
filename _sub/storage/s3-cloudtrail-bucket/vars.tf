@@ -13,4 +13,3 @@ variable "create_s3_bucket" {
   type    = bool
   default = false
 }
-

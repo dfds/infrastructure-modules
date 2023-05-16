@@ -25,3 +25,9 @@ variable "create_log_group" {
   description = "Specifies whether a CloudWatch log group should be created for the logs to be forwarded to."
   default     = false
 }
+
+variable "create_kms_key" {
+  type        = bool
+  description = "Specifies whether a KMS customer-managed key should be created for the enabling server side encryption on the CloudTrail logs."
+  default     = false
+}
