@@ -42,7 +42,7 @@ data "aws_iam_policy_document" "assume_role_policy_master_account" {
 
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${var.master_account_id}:root"]
+      identifiers = ["arn:aws:iam::${var.master_account_id}:user/CerteroEndpointUser"]
     }
   }
 }
