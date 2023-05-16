@@ -40,3 +40,7 @@ output "capability_access_shared" {
 output "certero_endpoint" {
   value = data.aws_iam_policy_document.certero_endpoint.json
 }
+
+output "certero_endpoint_for_master_account" {
+  value = data.aws_iam_policy_document.certero_endpoint_for_master_account.json
+}
