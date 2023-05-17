@@ -4,7 +4,7 @@ data "aws_iam_policy_document" "awsconfig_dynamodb_pitr_settings" {
   statement {
     sid       = "UpdatePitrSettings"
     effect    = "Allow"
-    resources = ["arn:aws:dynamodb:eu-central-1:*:table/*"]
+    resources = ["arn:aws:dynamodb:*:*:table/*"]
 
     actions = [
       "dynamodb:DescribeContinuousBackups",
