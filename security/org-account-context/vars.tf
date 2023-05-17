@@ -133,3 +133,9 @@ variable "sso_support_group_name" {
   type    = string
   default = null
 }
+
+variable "aws_region_2" {
+  type        = string
+  description = "Terraform has limitations that prevent us from dynamically creating AWS providers for each region, so instead of providing a list of regions we will specifiy an incremented set of variables to deploy resources across multiple regions."
+  default     = "eu-west-1"
+}
