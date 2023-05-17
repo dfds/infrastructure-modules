@@ -7,3 +7,5 @@ terraform_state_s3_bucket = "dfds-qa-terraform-state"
 terraform_state_region    = "eu-central-1"
 
 eks_public_s3_bucket = "dfds-qa-k8s-public"
+
+eks_is_sandbox = true
