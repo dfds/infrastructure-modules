@@ -240,7 +240,7 @@ module "eks_s3_public_kubeconfig" {
   bucket  = var.eks_public_s3_bucket
   key     = "kubeconfig/${var.eks_cluster_name}-saml.config"
   content = module.eks_heptio.kubeconfig_saml
-  acl     = "public-read"
+  acl     = var.eks_is_sandbox ? "private" : "public-read"
 }
 
 # The primary motivation behind this service account is to provide an
