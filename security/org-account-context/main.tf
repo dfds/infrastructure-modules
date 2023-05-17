@@ -40,6 +40,16 @@ provider "aws" {
   }
 }
 
+provider "aws" {
+  region = var.aws_region_sso
+  alias  = "sso"
+
+  # Assume role in Master account
+  assume_role {
+    role_arn = "arn:aws:iam::${var.master_account_id}:role/${var.prime_role_name}"
+  }
+}
+
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "s3" {
@@ -254,6 +264,23 @@ resource "aws_iam_account_password_policy" "hardened" {
   max_password_age               = 90
 
   provider = aws.workload
+}
+
+# --------------------------------------------------
+# Support role
+# --------------------------------------------------
+
+module "iam_identity_center_assignment" {
+  count  = var.harden && var.sso_support_permission_set_name != null && var.sso_support_group_name != null ? 1 : 0
+  source = "../../_sub/security/iam-identity-center-assignment"
+
+  permission_set_name = var.sso_support_permission_set_name
+  group_name          = var.sso_support_group_name
+  aws_account_id      = module.org_account.id
+
+  providers = {
+    aws = aws.sso
+  }
 }
 
 # --------------------------------------------------
