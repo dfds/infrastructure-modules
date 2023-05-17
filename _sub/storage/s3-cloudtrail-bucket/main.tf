@@ -34,6 +34,15 @@ resource "aws_s3_bucket" "bucket" {
   force_destroy = true
 }
 
+resource "aws_s3_bucket_server_side_encryption_configuration" "bucket" {
+  count  = var.create_s3_bucket ? 1 : 0
+  bucket = aws_s3_bucket.bucket[count.index].id
+
+  rule {
+    bucket_key_enabled = true
+  }
+}
+
 resource "aws_s3_bucket_logging" "bucket" {
   count         = var.create_s3_bucket && var.s3_log_bucket != null ? 1 : 0
   bucket        = aws_s3_bucket.bucket[count.index].id
