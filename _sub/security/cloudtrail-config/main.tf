@@ -110,8 +110,9 @@ resource "aws_kms_key" "key" {
   description              = "CloudTrail SSE"
   key_usage                = "ENCRYPT_DECRYPT"
   customer_master_key_spec = "SYMMETRIC_DEFAULT"
-  deletion_window_in_days  = 30
   is_enabled               = true
+  deletion_window_in_days  = 30
+  enable_key_rotation      = true
 }
 
 resource "aws_kms_key_policy" "policy" {
