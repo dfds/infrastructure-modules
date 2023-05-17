@@ -41,6 +41,20 @@ provider "aws" {
 }
 
 provider "aws" {
+  region = var.aws_region_2
+  alias  = "workload_2"
+
+  # Need explicit credentials in Master, to be able to assume Organizational Role in Workload account
+  access_key = var.access_key_master
+  secret_key = var.secret_key_master
+
+  # Assume the Organizational role in Workload account
+  assume_role {
+    role_arn = module.org_account.org_role_arn
+  }
+}
+
+provider "aws" {
   region = var.aws_region_sso
   alias  = "sso"
 
@@ -245,6 +259,18 @@ module "config_local" {
 
   providers = {
     aws = aws.workload
+  }
+}
+
+module "config_local_2" {
+  source            = "../../_sub/security/config-config"
+  deploy            = var.harden
+  s3_bucket_name    = module.config_s3_local.bucket_name
+  s3_bucket_arn     = module.config_s3_local.bucket_arn
+  conformance_packs = ["Operational-Best-Practices-for-CIS-AWS-v1.4-Level2"]
+
+  providers = {
+    aws = aws.workload_2
   }
 }
 

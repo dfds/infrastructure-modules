@@ -30,15 +30,15 @@ data "aws_iam_policy_document" "assume_recorder_role" {
 
 resource "aws_iam_role" "recorder" {
   count              = var.deploy ? 1 : 0
-  name               = "aws-config-recorder"
+  name_prefix        = "aws-config-recorder"
   assume_role_policy = data.aws_iam_policy_document.assume_recorder_role[count.index].json
 }
 
 resource "aws_iam_role_policy" "recorder" {
-  count  = var.deploy ? 1 : 0
-  name   = "aws-config-recorder"
-  role   = aws_iam_role.recorder[count.index].id
-  policy = data.aws_iam_policy_document.recorder[count.index].json
+  count       = var.deploy ? 1 : 0
+  name_prefix = "aws-config-recorder"
+  role        = aws_iam_role.recorder[count.index].id
+  policy      = data.aws_iam_policy_document.recorder[count.index].json
 }
 
 resource "aws_iam_role_policy_attachment" "recorder" {
@@ -53,12 +53,17 @@ resource "aws_config_configuration_recorder" "this" {
   count    = var.deploy ? 1 : 0
   name     = "aws-config-recorder"
   role_arn = aws_iam_role.recorder[count.index].arn
+  recording_group {
+    all_supported                 = true
+    include_global_resource_types = true
+  }
 }
 
 resource "aws_config_delivery_channel" "this" {
   count          = var.deploy ? 1 : 0
   name           = "aws-config-delivery-channel"
   s3_bucket_name = var.s3_bucket_name
+  depends_on     = [aws_config_configuration_recorder.this]
 }
 
 resource "aws_config_configuration_recorder_status" "this" {
