@@ -40,6 +40,30 @@ provider "aws" {
   }
 }
 
+provider "aws" {
+  region = var.aws_region_2
+  alias  = "workload_2"
+
+  # Need explicit credentials in Master, to be able to assume Organizational Role in Workload account
+  access_key = var.access_key_master
+  secret_key = var.secret_key_master
+
+  # Assume the Organizational role in Workload account
+  assume_role {
+    role_arn = module.org_account.org_role_arn
+  }
+}
+
+provider "aws" {
+  region = var.aws_region_sso
+  alias  = "sso"
+
+  # Assume role in Master account
+  assume_role {
+    role_arn = "arn:aws:iam::${var.master_account_id}:role/${var.prime_role_name}"
+  }
+}
+
 provider "datadog" {
   api_key  = var.datadog_api_key
   app_key  = var.datadog_app_key
@@ -199,11 +223,11 @@ resource "aws_sns_topic_subscription" "cis_controls" {
   provider = aws.workload
 }
 
-
 module "cloudtrail_s3_local" {
   source           = "../../_sub/storage/s3-cloudtrail-bucket"
   create_s3_bucket = var.harden
   s3_bucket        = "cloudtrail-local-${var.capability_root_id}"
+  s3_log_bucket    = "cloudtrail-local-log-${var.capability_root_id}"
 
   providers = {
     aws = aws.workload
@@ -245,6 +269,18 @@ module "config_local" {
   }
 }
 
+module "config_local_2" {
+  source            = "../../_sub/security/config-config"
+  deploy            = var.harden
+  s3_bucket_name    = module.config_s3_local.bucket_name
+  s3_bucket_arn     = module.config_s3_local.bucket_arn
+  conformance_packs = ["Operational-Best-Practices-for-CIS-AWS-v1.4-Level2"]
+
+  providers = {
+    aws = aws.workload_2
+  }
+}
+
 # --------------------------------------------------
 # Password policy
 # --------------------------------------------------
@@ -261,6 +297,23 @@ resource "aws_iam_account_password_policy" "hardened" {
   max_password_age               = 90
 
   provider = aws.workload
+}
+
+# --------------------------------------------------
+# Support role
+# --------------------------------------------------
+
+module "iam_identity_center_assignment" {
+  count  = var.harden && var.sso_support_permission_set_name != null && var.sso_support_group_name != null ? 1 : 0
+  source = "../../_sub/security/iam-identity-center-assignment"
+
+  permission_set_name = var.sso_support_permission_set_name
+  group_name          = var.sso_support_group_name
+  aws_account_id      = module.org_account.id
+
+  providers = {
+    aws = aws.sso
+  }
 }
 
 # --------------------------------------------------

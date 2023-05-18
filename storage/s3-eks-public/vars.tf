@@ -31,3 +31,19 @@ variable "additional_tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "acl" {
+  description = "The ACL is the S3 bucket security settings"
+  type        = string
+  default     = "public-read"
+
+  validation {
+    condition     = (var.acl == "public-read" || var.acl == "private")
+    error_message = "Bucket ACL must be either public-read private. Defaults to public-read. Should be private for sandboxes."
+  }
+}
+
+variable "eks_is_sandbox" {
+  type    = bool
+  default = false
+}
