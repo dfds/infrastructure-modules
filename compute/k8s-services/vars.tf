@@ -382,11 +382,6 @@ variable "monitoring_metrics_server_repo_url" {
 # Flux CD
 # --------------------------------------------------
 
-variable "fluxcd_deploy" {
-  type    = bool
-  default = false
-}
-
 variable "fluxcd_version" {
   type    = string
   default = null

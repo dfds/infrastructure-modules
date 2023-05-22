@@ -490,12 +490,10 @@ module "monitoring_metrics_server" {
 
 module "platform_fluxcd" {
   source                  = "../../_sub/compute/k8s-fluxcd"
-  count                   = var.fluxcd_deploy ? 1 : 0
   release_tag             = var.fluxcd_version
-  repo_path               = "./clusters/${var.eks_cluster_name}"
-  repo_name               = var.fluxcd_bootstrap_repo_name
-  repo_branch             = var.fluxcd_bootstrap_repo_branch
-  repo_owner              = var.fluxcd_bootstrap_repo_owner
+  repository_name         = var.fluxcd_bootstrap_repo_name
+  branch                  = var.fluxcd_bootstrap_repo_branch
+  github_owner            = var.fluxcd_bootstrap_repo_owner
   overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
