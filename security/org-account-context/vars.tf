@@ -97,12 +97,6 @@ variable "parent_id" {
   default     = ""
 }
 
-variable "assume_role_arn" {
-  type        = string
-  description = "Optional: The AWS assume role ARN"
-  default     = ""
-}
-
 variable "oidc_provider_url" {
   type        = string
   description = "The IAM OpenID Connect Provider url from the EKS production account"
@@ -115,11 +109,6 @@ variable "oidc_provider_tag" {
   default     = ""
 }
 
-variable "create_aws_iam_access_key" {
-  type    = bool
-  default = false
-}
-
 variable "harden" {
   type    = bool
   default = false
@@ -128,4 +117,25 @@ variable "harden" {
 variable "hardened_monitoring_email" {
   type    = string
   default = null
+}
+
+variable "aws_region_sso" {
+  type    = string
+  default = "eu-west-1"
+}
+
+variable "sso_support_permission_set_name" {
+  type    = string
+  default = null
+}
+
+variable "sso_support_group_name" {
+  type    = string
+  default = null
+}
+
+variable "aws_region_2" {
+  type        = string
+  description = "Terraform has limitations that prevent us from dynamically creating AWS providers for each region, so instead of providing a list of regions we will specifiy an incremented set of variables to deploy resources across multiple regions."
+  default     = "eu-west-1"
 }

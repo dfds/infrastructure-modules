@@ -40,6 +40,30 @@ provider "aws" {
   }
 }
 
+provider "aws" {
+  region = var.aws_region_2
+  alias  = "workload_2"
+
+  # Need explicit credentials in Master, to be able to assume Organizational Role in Workload account
+  access_key = var.access_key_master
+  secret_key = var.secret_key_master
+
+  # Assume the Organizational role in Workload account
+  assume_role {
+    role_arn = module.org_account.org_role_arn
+  }
+}
+
+provider "aws" {
+  region = var.aws_region_sso
+  alias  = "sso"
+
+  # Assume role in Master account
+  assume_role {
+    role_arn = "arn:aws:iam::${var.master_account_id}:role/${var.prime_role_name}"
+  }
+}
+
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "s3" {
@@ -130,16 +154,29 @@ module "iam_role_ecr_push" {
   }
 }
 
+module "iam_role_certero" {
+  source               = "../../_sub/security/iam-role"
+  role_name            = "CerteroRole"
+  role_description     = ""
+  max_session_duration = 3600
+  assume_role_policy   = data.aws_iam_policy_document.assume_role_policy_master_account.json
+  role_policy_name     = "CerteroEndpoint"
+  role_policy_document = module.iam_policies.certero_endpoint
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
 # --------------------------------------------------
 # IAM deployment user
 # --------------------------------------------------
 
 module "iam_user_deploy" {
-  source                    = "../../_sub/security/iam-user"
-  user_name                 = "Deploy"
-  user_policy_name          = "Admin"
-  user_policy_document      = module.iam_policies.admin
-  create_aws_iam_access_key = var.create_aws_iam_access_key
+  source               = "../../_sub/security/iam-user"
+  user_name            = "Deploy"
+  user_policy_name     = "Admin"
+  user_policy_document = module.iam_policies.admin
   providers = {
     aws = aws.workload
   }
@@ -179,11 +216,11 @@ resource "aws_sns_topic_subscription" "cis_controls" {
   provider = aws.workload
 }
 
-
 module "cloudtrail_s3_local" {
   source           = "../../_sub/storage/s3-cloudtrail-bucket"
   create_s3_bucket = var.harden
   s3_bucket        = "cloudtrail-local-${var.capability_root_id}"
+  s3_log_bucket    = "cloudtrail-local-log-${var.capability_root_id}"
 
   providers = {
     aws = aws.workload
@@ -196,6 +233,7 @@ module "cloudtrail_local" {
   deploy           = var.harden
   trail_name       = "cloudtrail-local-${var.capability_root_id}"
   create_log_group = var.harden
+  create_kms_key   = var.harden
 
   providers = {
     aws = aws.workload
@@ -224,6 +262,18 @@ module "config_local" {
   }
 }
 
+module "config_local_2" {
+  source            = "../../_sub/security/config-config"
+  deploy            = var.harden
+  s3_bucket_name    = module.config_s3_local.bucket_name
+  s3_bucket_arn     = module.config_s3_local.bucket_arn
+  conformance_packs = ["Operational-Best-Practices-for-CIS-AWS-v1.4-Level2"]
+
+  providers = {
+    aws = aws.workload_2
+  }
+}
+
 # --------------------------------------------------
 # Password policy
 # --------------------------------------------------
@@ -236,8 +286,27 @@ resource "aws_iam_account_password_policy" "hardened" {
   require_uppercase_characters   = true
   require_symbols                = true
   allow_users_to_change_password = true
+  password_reuse_prevention      = 24
+  max_password_age               = 90
 
   provider = aws.workload
+}
+
+# --------------------------------------------------
+# Support role
+# --------------------------------------------------
+
+module "iam_identity_center_assignment" {
+  count  = var.harden && var.sso_support_permission_set_name != null && var.sso_support_group_name != null ? 1 : 0
+  source = "../../_sub/security/iam-identity-center-assignment"
+
+  permission_set_name = var.sso_support_permission_set_name
+  group_name          = var.sso_support_group_name
+  aws_account_id      = module.org_account.id
+
+  providers = {
+    aws = aws.sso
+  }
 }
 
 # --------------------------------------------------
@@ -308,7 +377,7 @@ module "cis_control_cloudwatch_4" {
   logs_group_name       = module.cloudtrail_local.cloudwatch_logs_group_name
   alarm_sns_topic_arn   = var.harden ? aws_sns_topic.cis_controls[0].arn : null
   metric_filter_name    = "IamPolicyChanges"
-  metric_filter_pattern = "{($.eventSource=iam.amazonaws.com) && (($.eventName=DeleteGroupPolicy) || ($.eventName=DeleteRolePolicy) || ($.eventName=DeleteUserPolicy) || ($.eventName=PutGroupPolicy) || ($.eventName=PutRolePolicy) || ($.eventName=PutUserPolicy) || ($.eventName=CreatePolicy) || ($.eventName=DeletePolicy) || ($.eventName=CreatePolicyVersion) || ($.eventName=DeletePolicyVersion) || ($.eventName=AttachRolePolicy) || ($.eventName=DetachRolePolicy) || ($.eventName=AttachUserPolicy) || ($.eventName=DetachUserPolicy) || ($.eventName=AttachGroupPolicy) || ($.eventName=DetachGroupPolicy))}"
+  metric_filter_pattern = "{($.eventName=DeleteGroupPolicy) || ($.eventName=DeleteRolePolicy) || ($.eventName=DeleteUserPolicy) || ($.eventName=PutGroupPolicy) || ($.eventName=PutRolePolicy) || ($.eventName=PutUserPolicy) || ($.eventName=CreatePolicy) || ($.eventName=DeletePolicy) || ($.eventName=CreatePolicyVersion) || ($.eventName=DeletePolicyVersion) || ($.eventName=AttachRolePolicy) || ($.eventName=DetachRolePolicy) || ($.eventName=AttachUserPolicy) || ($.eventName=DetachUserPolicy) || ($.eventName=AttachGroupPolicy) || ($.eventName=DetachGroupPolicy)}"
   metric_name           = "IamPolicyChangesCount"
   alarm_name            = "cis-control-iam-policy-changes"
   alarm_description     = <<EOT

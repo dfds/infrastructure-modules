@@ -49,14 +49,14 @@ variable "parent_id" {
 }
 
 variable "aws_region_sso" {
-  type = string
+  type    = string
   default = "eu-west-1"
 }
 
 variable "sso_admin_permission_set_name" {
-    type = string
+  type = string
 }
 
 variable "sso_admin_group_name" {
-    type = string
+  type = string
 }

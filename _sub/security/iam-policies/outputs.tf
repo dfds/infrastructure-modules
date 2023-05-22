@@ -36,3 +36,11 @@ output "access_cloudwatchlogs_devops" {
 output "capability_access_shared" {
   value = data.aws_iam_policy_document.capability_access_shared.json
 }
+
+output "certero_endpoint" {
+  value = data.aws_iam_policy_document.certero_endpoint.json
+}
+
+output "certero_endpoint_for_master_account" {
+  value = data.aws_iam_policy_document.certero_endpoint_for_master_account.json
+}
