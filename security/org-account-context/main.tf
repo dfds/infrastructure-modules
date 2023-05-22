@@ -172,11 +172,23 @@ module "iam_role_certero" {
 # IAM deployment user
 # --------------------------------------------------
 
+resource "aws_iam_group" "admin" {
+  name     = "Admins"
+  provider = aws.workload
+}
+
+resource "aws_iam_group_policy" "admin" {
+  name     = "Admin"
+  group    = aws_iam_group.admin.name
+  policy   = module.iam_policies.admin
+  provider = aws.workload
+}
+
 module "iam_user_deploy" {
-  source               = "../../_sub/security/iam-user"
-  user_name            = "Deploy"
-  user_policy_name     = "Admin"
-  user_policy_document = module.iam_policies.admin
+  source            = "../../_sub/security/iam-user"
+  user_name         = "Deploy"
+  group_memberships = [aws_iam_group.admin.name]
+
   providers = {
     aws = aws.workload
   }
