@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/fluxcd/pkg/apis/meta v1.0.0
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.3
 	k8s.io/api v0.27.2
 	k8s.io/apimachinery v0.27.2
 	k8s.io/client-go v0.27.2
