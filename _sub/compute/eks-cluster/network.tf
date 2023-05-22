@@ -12,6 +12,11 @@ resource "aws_vpc" "eks" {
   }
 }
 
+# Disable ingress/egress in the default security group in the VPC
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.eks.id
+}
+
 module "flow_log" {
   source   = "../../../_sub/network/vpc-flow-log"
   log_name = "eks-${var.cluster_name}-cluster"
