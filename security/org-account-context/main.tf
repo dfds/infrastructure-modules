@@ -275,6 +275,42 @@ module "config_local_2" {
 }
 
 # --------------------------------------------------
+# Default VPC flow logging
+# --------------------------------------------------
+
+resource "aws_default_vpc" "default" {
+  count    = var.harden ? 1 : 0
+  provider = aws.workload
+}
+
+module "default_vpc_flow_log" {
+  count    = var.harden ? 1 : 0
+  source   = "../../_sub/network/vpc-flow-log"
+  log_name = "default-vpc-${var.aws_region}"
+  vpc_id   = aws_default_vpc.default[count.index].id
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+resource "aws_default_vpc" "default_2" {
+  count    = var.harden ? 1 : 0
+  provider = aws.workload_2
+}
+
+module "default_vpc_flow_log_2" {
+  count    = var.harden ? 1 : 0
+  source   = "../../_sub/network/vpc-flow-log"
+  log_name = "default-vpc-${var.aws_region_2}"
+  vpc_id   = aws_default_vpc.default_2[count.index].id
+
+  providers = {
+    aws = aws.workload_2
+  }
+}
+
+# --------------------------------------------------
 # Password policy
 # --------------------------------------------------
 
