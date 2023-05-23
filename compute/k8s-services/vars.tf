@@ -1022,3 +1022,19 @@ variable "disable_inactivity_cleanup" {
   default     = false
   description = "Disables automated clean up of ELB resources based on inactivity. Only applicable to sandboxes."
 }
+
+# --------------------------------------------------
+# DataDog Agent
+# --------------------------------------------------
+
+variable "datadog_agent_kubernetes_deploy" {
+  type        = bool
+  description = "Deploy the DataDog agent"
+  default     = false
+}
+
+variable "datadog_agent_helm_chart_version" {
+  type        = string
+  description = "Helm Chart version to be used to deploy DataDog Operator"
+  default     = null
+}
