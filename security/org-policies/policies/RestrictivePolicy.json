@@ -163,7 +163,8 @@
                 "logs:GetLogGroupFields",
                 "logs:GetLogRecord",
                 "notifications:Get*",
-                "notifications:List*"
+                "notifications:List*",
+                "sns:*"
             ],
             "Resource": "*",
             "Condition": {
