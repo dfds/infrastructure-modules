@@ -106,12 +106,8 @@
         {
             "Sid": "DenyOrgRoleModification",
             "Effect": "Deny",
-            "Action": [
-                "iam:*"
-            ],
-            "Resource": [
-                "arn:aws:iam::*:role/OrgRole"
-            ]
+            "NotAction": ["iam:GetRole"],
+            "Resource": ["arn:aws:iam::*:role/OrgRole"]
         },
         {
             "Sid": "CoreRegionOnly",
