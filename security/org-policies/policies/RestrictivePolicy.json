@@ -114,7 +114,7 @@
             ]
         },
         {
-            "Sid": "DenyAllOutsideEU",
+            "Sid": "CoreRegionOnly",
             "Effect": "Deny",
             "NotAction": [
                 "access-analyzer:*",
@@ -167,7 +167,8 @@
             "Condition": {
                 "StringNotLike": {
                     "aws:RequestedRegion": [
-                        "eu-*"
+                        "eu-central-1",
+                        "eu-west-1"
                     ]
                 }
             }
