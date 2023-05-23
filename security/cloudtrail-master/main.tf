@@ -12,4 +12,6 @@ module "cloudtrail_central" {
   trail_name            = "org-audit"
   is_organization_trail = true
   deploy                = var.deploy
+  create_log_group      = true
+  create_kms_key        = true
 }
