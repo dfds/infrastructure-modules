@@ -114,7 +114,7 @@
             ]
         },
         {
-            "Sid": "DenyAllOutsideEU",
+            "Sid": "CoreRegionOnly",
             "Effect": "Deny",
             "NotAction": [
                 "access-analyzer:*",
@@ -128,6 +128,8 @@
                 "cloudfront:*",
                 "cloudwatch:Get*",
                 "cloudwatch:List*",
+                "cloudwatch:PutMetricAlarm",
+                "cloudwatch:DescribeAlarm*",
                 "dynamoDB:DescribeTable",
                 "ecr:BatchGetImage",
                 "ecr:Describe*",
@@ -161,13 +163,15 @@
                 "logs:GetLogGroupFields",
                 "logs:GetLogRecord",
                 "notifications:Get*",
-                "notifications:List*"
+                "notifications:List*",
+                "sns:*"
             ],
             "Resource": "*",
             "Condition": {
                 "StringNotLike": {
                     "aws:RequestedRegion": [
-                        "eu-*"
+                        "eu-central-1",
+                        "eu-west-1"
                     ]
                 }
             }
