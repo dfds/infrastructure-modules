@@ -27,7 +27,7 @@ resource "aws_s3_bucket_acl" "log_bucket_acl" {
 resource "aws_s3_bucket_policy" "log_bucket_policy" {
   count  = var.create_s3_bucket && var.s3_log_bucket != null ? 1 : 0
   bucket = aws_s3_bucket.log_bucket[count.index].bucket
-  policy = data.aws_iam_policy_document.log_bucket.json
+  policy = data.aws_iam_policy_document.log_bucket[count.index].json
 }
 
 resource "aws_s3_bucket" "bucket" {
