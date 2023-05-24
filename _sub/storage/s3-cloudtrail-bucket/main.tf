@@ -24,6 +24,12 @@ resource "aws_s3_bucket_acl" "log_bucket_acl" {
   depends_on = [aws_s3_bucket_ownership_controls.log_bucket_ownership_controls]
 }
 
+resource "aws_s3_bucket_policy" "log_bucket_policy" {
+  count  = var.create_s3_bucket && var.s3_log_bucket != null ? 1 : 0
+  bucket = aws_s3_bucket.log_bucket[count.index].bucket
+  policy = data.aws_iam_policy_document.log_bucket.json
+}
+
 resource "aws_s3_bucket" "bucket" {
   count  = var.create_s3_bucket ? 1 : 0
   bucket = var.s3_bucket
@@ -56,7 +62,7 @@ resource "aws_s3_bucket_logging" "bucket" {
 resource "aws_s3_bucket_policy" "this" {
   count  = var.create_s3_bucket ? 1 : 0
   bucket = aws_s3_bucket.bucket[count.index].bucket
-  policy = data.aws_iam_policy_document.this.json
+  policy = data.aws_iam_policy_document.bucket.json
 }
 
 resource "aws_s3_bucket_ownership_controls" "bucket_ownership_controls" {
