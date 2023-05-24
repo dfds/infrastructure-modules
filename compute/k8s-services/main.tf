@@ -485,6 +485,16 @@ module "monitoring_metrics_server" {
 }
 
 # --------------------------------------------------
+# Scrape Prometheus metrics for aws-node Daemonset
+# --------------------------------------------------
+
+module "aws_node_service" {
+  source     = "../../_sub/monitoring/aws-node"
+  count      = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
+  depends_on = [module.monitoring_kube_prometheus_stack]
+}
+
+# --------------------------------------------------
 # Flux CD
 # --------------------------------------------------
 
