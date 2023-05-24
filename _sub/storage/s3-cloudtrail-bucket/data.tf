@@ -61,6 +61,7 @@ data "aws_iam_policy_document" "bucket" {
 }
 
 data "aws_iam_policy_document" "log_bucket" {
+  count = var.create_s3_bucket && var.s3_log_bucket != null ? 1 : 0
   statement {
     sid     = "AllowSSLRequestsOnly"
     effect  = "Deny"
