@@ -179,11 +179,23 @@ module "iam_role_certero" {
 # IAM deployment user
 # --------------------------------------------------
 
+resource "aws_iam_group" "admin" {
+  name     = "Admins"
+  provider = aws.workload
+}
+
+resource "aws_iam_group_policy" "admin" {
+  name     = "Admin"
+  group    = aws_iam_group.admin.name
+  policy   = module.iam_policies.admin
+  provider = aws.workload
+}
+
 module "iam_user_deploy" {
-  source               = "../../_sub/security/iam-user"
-  user_name            = "Deploy"
-  user_policy_name     = "Admin"
-  user_policy_document = module.iam_policies.admin
+  source            = "../../_sub/security/iam-user"
+  user_name         = "Deploy"
+  group_memberships = [aws_iam_group.admin.name]
+
   providers = {
     aws = aws.workload
   }
@@ -279,6 +291,58 @@ module "config_local_2" {
   providers = {
     aws = aws.workload_2
   }
+}
+
+# --------------------------------------------------
+# Default VPC flow logging
+# --------------------------------------------------
+
+resource "aws_default_vpc" "default" {
+  count    = var.harden ? 1 : 0
+  provider = aws.workload
+}
+
+module "default_vpc_flow_log" {
+  count    = var.harden ? 1 : 0
+  source   = "../../_sub/network/vpc-flow-log"
+  log_name = "default-vpc-${var.aws_region}"
+  vpc_id   = aws_default_vpc.default[count.index].id
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+resource "aws_default_vpc" "default_2" {
+  count    = var.harden ? 1 : 0
+  provider = aws.workload_2
+}
+
+module "default_vpc_flow_log_2" {
+  count    = var.harden ? 1 : 0
+  source   = "../../_sub/network/vpc-flow-log"
+  log_name = "default-vpc-${var.aws_region_2}"
+  vpc_id   = aws_default_vpc.default_2[count.index].id
+
+  providers = {
+    aws = aws.workload_2
+  }
+}
+
+# --------------------------------------------------
+# Default security groups
+# --------------------------------------------------
+
+resource "aws_default_security_group" "default" {
+  count    = var.harden ? 1 : 0
+  vpc_id   = aws_default_vpc.default[count.index].id
+  provider = aws.workload
+}
+
+resource "aws_default_security_group" "default_2" {
+  count    = var.harden ? 1 : 0
+  vpc_id   = aws_default_vpc.default_2[count.index].id
+  provider = aws.workload_2
 }
 
 # --------------------------------------------------

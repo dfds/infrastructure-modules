@@ -33,7 +33,6 @@ data "aws_iam_policy_document" "this" {
     ]
   }
 
-
   statement {
     sid    = "AWSConfigWrite"
     effect = "Allow"
@@ -55,4 +54,26 @@ data "aws_iam_policy_document" "this" {
       variable = "s3:x-amz-acl"
     }
   }
+
+  statement {
+    sid     = "AllowSSLRequestsOnly"
+    effect  = "Deny"
+    actions = ["s3:*"]
+    principals {
+      identifiers = [
+        "*"
+      ]
+      type = "*"
+    }
+    resources = [
+      "arn:aws:s3:::${var.s3_bucket}",
+      "arn:aws:s3:::${var.s3_bucket}/*"
+    ]
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+  }
+
 }

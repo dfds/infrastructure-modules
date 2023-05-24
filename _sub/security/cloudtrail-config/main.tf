@@ -1,5 +1,9 @@
 data "aws_caller_identity" "current" {}
 
+data "aws_iam_session_context" "current" {
+  arn = data.aws_caller_identity.current.arn
+}
+
 data "aws_region" "current" {}
 
 data "aws_iam_policy_document" "key_policy" {
@@ -99,7 +103,7 @@ data "aws_iam_policy_document" "key_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/OrgRole"]
+      identifiers = [data.aws_iam_session_context.current.issuer_arn]
     }
   }
 

@@ -382,11 +382,6 @@ variable "monitoring_metrics_server_repo_url" {
 # Flux CD
 # --------------------------------------------------
 
-variable "fluxcd_deploy" {
-  type    = bool
-  default = false
-}
-
 variable "fluxcd_version" {
   type    = string
   default = null
@@ -1026,4 +1021,20 @@ variable "disable_inactivity_cleanup" {
   type        = bool
   default     = false
   description = "Disables automated clean up of ELB resources based on inactivity. Only applicable to sandboxes."
+}
+
+# --------------------------------------------------
+# DataDog Agent
+# --------------------------------------------------
+
+variable "datadog_agent_kubernetes_deploy" {
+  type        = bool
+  description = "Deploy the DataDog agent"
+  default     = false
+}
+
+variable "datadog_agent_helm_chart_version" {
+  type        = string
+  description = "Helm Chart version to be used to deploy DataDog Operator"
+  default     = null
 }

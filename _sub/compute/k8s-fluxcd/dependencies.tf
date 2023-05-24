@@ -1,67 +1,24 @@
 # --------------------------------------------------
-# Namespace
+# Local variables
 # --------------------------------------------------
 
 locals {
-  namespace = "flux-system"
+  cluster_target_path = "clusters/${var.cluster_name}"
+  app_install_name    = "platform-apps-flux-monitoring"
 }
 
 
 # --------------------------------------------------
-# Bootstrap Kubernetes manifests
-# --------------------------------------------------
-
-data "flux_install" "main" {
-  target_path = var.repo_path
-  version     = var.release_tag
-}
-
-data "kubectl_file_documents" "install" {
-  content = data.flux_install.main.content
-}
-
-data "flux_sync" "main" {
-  target_path = var.repo_path
-  url         = "ssh://git@github.com/${var.repo_owner}/${var.repo_name}.git"
-  branch      = var.repo_branch
-  namespace   = local.namespace
-}
-
-data "kubectl_file_documents" "sync" {
-  content = data.flux_sync.main.content
-}
-
-
-# --------------------------------------------------
-# Github
+# Flux CD Monitoring
 # --------------------------------------------------
 
 locals {
-  known_hosts = "github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg="
-}
-
-data "github_repository" "main" {
-  full_name = "${var.repo_owner}/${var.repo_name}"
-}
-
-data "github_branch" "flux_branch" {
-  repository = var.repo_name
-  branch     = var.repo_branch
-}
-
-# --------------------------------------------------
-# Monitoring
-# --------------------------------------------------
-
-locals {
-  cluster_repo_path = "clusters/${var.cluster_name}"
-  app_install_name  = "platform-apps-flux-monitoring"
-  app_config_path = {
+  flux_monitoring = {
     "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
     "kind"       = "Kustomization"
     "metadata" = {
       "name"      = local.app_install_name
-      "namespace" = local.namespace
+      "namespace" = "flux-system"
     }
     "spec" = {
       "dependsOn" = [
@@ -78,6 +35,13 @@ locals {
       }
     }
   }
+}
+
+# --------------------------------------------------
+# Flux CD Apps
+# --------------------------------------------------
+
+locals {
 
   platform_apps_yaml = <<YAML
 ---

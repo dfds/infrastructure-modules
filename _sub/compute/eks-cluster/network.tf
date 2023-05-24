@@ -3,7 +3,6 @@
 data "aws_availability_zones" "available" {
 }
 
-# tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs
 resource "aws_vpc" "eks" {
   cidr_block = "10.0.0.0/16"
 
@@ -11,6 +10,17 @@ resource "aws_vpc" "eks" {
     "Name"                                      = "eks-${var.cluster_name}-cluster"
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
   }
+}
+
+# Disable ingress/egress in the default security group in the VPC
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.eks.id
+}
+
+module "flow_log" {
+  source   = "../../../_sub/network/vpc-flow-log"
+  log_name = "eks-${var.cluster_name}-cluster"
+  vpc_id   = aws_vpc.eks.id
 }
 
 resource "aws_subnet" "eks" {
@@ -26,4 +36,3 @@ resource "aws_subnet" "eks" {
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
   }
 }
-

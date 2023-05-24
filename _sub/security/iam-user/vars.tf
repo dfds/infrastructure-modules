@@ -2,10 +2,8 @@ variable "user_name" {
   type = string
 }
 
-variable "user_policy_name" {
-  type = string
-}
-
-variable "user_policy_document" {
-  type = string
+variable "group_memberships" {
+  type        = list(string)
+  description = "The list of group names the user belongs to."
+  default     = []
 }
