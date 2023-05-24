@@ -13,6 +13,13 @@ provider "aws" {
   alias = "workload"
 }
 
+provider "datadog" {
+  api_key  = var.datadog_api_key
+  app_key  = var.datadog_app_key
+  api_url  = var.datadog_api_url
+  validate = var.datadog_enabled
+}
+
 terraform {
   # The configuration for this backend will be filled in by Terragrunt
   backend "s3" {
@@ -65,6 +72,22 @@ module "cloudtrail_local" {
   s3_bucket  = module.cloudtrail_s3_local.bucket_name
   deploy     = var.cloudtrail_local_s3_bucket != "" ? true : false
   trail_name = "local-audit"
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "datadog" {
+  deploy                           = var.datadog_enabled
+  source                           = "../../_sub/monitoring/datadog-integration-aws"
+  aws_account_id                   = module.org_account.id
+  datadog_aws_account_id           = var.datadog_aws_account_id
+  filter_tags                      = var.datadog_filter_tags
+  host_tags                        = var.datadog_host_tags
+  account_specific_namespace_rules = var.datadog_account_specific_namespace_rules
+  metrics_collection_enabled       = var.datadog_metrics_collection_enabled
+  resource_collection_enabled      = var.datadog_resource_collection_enabled
 
   providers = {
     aws = aws.workload
