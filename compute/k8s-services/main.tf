@@ -552,10 +552,10 @@ module "atlantis" {
     SHARED_TF_VAR_monitoring_kube_prometheus_stack_azure_tenant_id   = var.monitoring_kube_prometheus_stack_azure_tenant_id
     SHARED_TF_VAR_fluxcd_bootstrap_repo_owner_token                  = var.fluxcd_bootstrap_repo_owner_token
     SHARED_TF_VAR_atlantis_github_token                              = var.atlantis_github_token
-    PRIME_AWS_ACCESS_KEY_ID                                          = var.prime_aws_access_key
-    PRIME_AWS_SECRET_ACCESS_KEY                                      = var.prime_aws_secret
-    PRIME_DATADOG_API_KEY                                            = var.prime_datadog_api_key
-    PRIME_DATADOG_APP_KEY                                            = var.prime_datadog_app_key
+    PRODUCTION_PRIME_AWS_ACCESS_KEY_ID                               = var.prime_aws_access_key
+    PRODUCTION_PRIME_AWS_SECRET_ACCESS_KEY                           = var.prime_aws_secret
+    PRODUCTION_PRIME_DATADOG_API_KEY                                 = var.prime_datadog_api_key
+    PRODUCTION_PRIME_DATADOG_APP_KEY                                 = var.prime_datadog_app_key
   }
 
   providers = {
