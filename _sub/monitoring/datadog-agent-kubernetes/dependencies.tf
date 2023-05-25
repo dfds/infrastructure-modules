@@ -108,6 +108,12 @@ spec:
         secretName: ${var.app_secret_name}
         keyName: ${var.app_secret_key}
     site: ${var.site}
+  override:
+    nodeAgent:
+      tolerations:
+        - key: monitoring.dfds
+          operator: Exists
+          effect: NoSchedule
   features:
     apm:
       enabled: true
