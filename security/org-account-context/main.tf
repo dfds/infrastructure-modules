@@ -346,6 +346,22 @@ resource "aws_default_security_group" "default_2" {
 }
 
 # --------------------------------------------------
+# EBS encryption by default
+# --------------------------------------------------
+
+resource "aws_ebs_encryption_by_default" "default" {
+  count    = var.harden ? 1 : 0
+  enabled  = true
+  provider = aws.workload
+}
+
+resource "aws_ebs_encryption_by_default" "default_2" {
+  count    = var.harden ? 1 : 0
+  enabled  = true
+  provider = aws.workload_2
+}
+
+# --------------------------------------------------
 # Password policy
 # --------------------------------------------------
 
