@@ -121,8 +121,7 @@ spec:
     liveContainerCollection:
       enabled: true
     admissionController:
-      enabled: true
-      mutateUnlabelled: false
+      enabled: false
     externalMetricsServer:
       enabled: false
       useDatadogMetrics: false
