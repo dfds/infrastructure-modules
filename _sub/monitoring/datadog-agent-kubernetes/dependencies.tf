@@ -121,11 +121,16 @@ spec:
     liveContainerCollection:
       enabled: true
     admissionController:
-      enabled: false
+      enabled: true
+      mutateUnlabelled: false
     externalMetricsServer:
       enabled: false
       useDatadogMetrics: false
     clusterChecks:
+      enabled: true
+    npm:
+      enabled: true
+    usm:
       enabled: true
   YAML
 
