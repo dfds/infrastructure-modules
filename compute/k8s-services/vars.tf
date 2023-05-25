@@ -565,6 +565,30 @@ variable "atlantis_aws_secret" {
   description = "AWS Secret"
 }
 
+variable "prime_aws_access_key" {
+  type        = string
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "AWS Access Key for prime pipeline. Used by Atlantis."
+}
+
+variable "prime_aws_secret" {
+  type        = string
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "AWS Secret for prime pipeline. Used by Atlantis."
+}
+
+variable "prime_datadog_api_key" {
+  type        = string
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "Datadog API key for prime pipeline. Used by Atlantis."
+}
+
+variable "prime_datadog_app_key" {
+  type        = string
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "Datadog APP key for prime pipeline. Used by Atlantis."
+}
+
 variable "atlantis_staging_aws_access_key" {
   type        = string
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
