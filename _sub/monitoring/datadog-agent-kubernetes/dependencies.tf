@@ -127,6 +127,10 @@ spec:
       useDatadogMetrics: false
     clusterChecks:
       enabled: true
+    npm:
+      enabled: true
+    usm:
+      enabled: true
   YAML
 
 }
