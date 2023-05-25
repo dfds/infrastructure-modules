@@ -164,7 +164,8 @@ locals {
     "ec2:DescribeTransitGatewayVpcAttachments",
     "ec2:GetTransitGatewayMulticastDomainAssociations",
     "ec2:DescribeConversionTasks",
-    "iam:ListUserTags"
+    "iam:ListUserTags",
+    "ce:GetRightsizingRecommendation"
   ]
 
   certero_actions_for_master_accounts = concat(local.certero_actions_for_org_accounts, ["sts:AssumeRole"])
