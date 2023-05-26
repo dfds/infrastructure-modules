@@ -26,6 +26,7 @@ github:
 
 extraArgs:
   - --disable-autoplan
+  - --parallel-pool-size=${parallel_pool_size}
 
 ingress:
   host: ${atlantis_ingress}
@@ -43,6 +44,3 @@ repoConfig: |
   - id: "/.*/"
     allowed_overrides: [workflow]
     allow_custom_workflows: true
-
-environment:
-  ATLANTIS_PARALLEL_POOL_SIZE: ${parallel_pool_size}
