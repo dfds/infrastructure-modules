@@ -96,7 +96,7 @@ EOF
 
 data "aws_iam_policy_document" "assume_role" {
   statement {
-    sid     = ""
+    sid     = "AssumeRoleWithWebIdentity"
     effect  = "Allow"
     actions = ["sts:AssumeRoleWithWebIdentity"]
     principals {
