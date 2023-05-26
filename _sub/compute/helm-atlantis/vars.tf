@@ -51,6 +51,12 @@ variable "storage_class" {
   description = "Storage class to use for the persistent volume"
 }
 
+variable "data_storage" {
+  type        = string
+  default     = "5Gi"
+  description = "Size of the persistent volume"
+}
+
 ## Github ##
 variable "github_token" {
   type        = string
