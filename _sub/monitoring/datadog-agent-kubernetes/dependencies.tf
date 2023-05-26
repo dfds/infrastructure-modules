@@ -108,6 +108,19 @@ spec:
         secretName: ${var.app_secret_name}
         keyName: ${var.app_secret_key}
     site: ${var.site}
+  override:
+    nodeAgent:
+%{ if length(var.tolerations) > 0 ~}
+      tolerations:
+%{ for t in var.tolerations ~}
+      - key: ${t.key}
+        operator: ${t.operator}
+%{ if t.value != null ~}
+        value: ${t.value}
+%{ endif ~}
+        effect: ${t.effect}
+%{ endfor ~}
+%{ endif ~}
   features:
     apm:
       enabled: true

@@ -864,6 +864,7 @@ module "datadog_operator_flux_manifests" {
   overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  tolerations             = var.monitoring_tolerations
 
   providers = {
     github = github.fluxcd

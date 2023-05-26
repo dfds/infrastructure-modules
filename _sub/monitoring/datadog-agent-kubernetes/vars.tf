@@ -93,3 +93,13 @@ variable "site" {
     type = string
     default = "datadoghq.eu"
 }
+
+variable "tolerations" {
+    type = list(object({
+    key      = string,
+    operator = string,
+    value    = optional(string),
+    effect   = string,
+  }))
+    default = []
+}
