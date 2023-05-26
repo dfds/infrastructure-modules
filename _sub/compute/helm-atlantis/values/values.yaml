@@ -18,6 +18,7 @@ disableApply: true
 disableApplyAll: true
 
 volumeClaim:
+  dataStorage: ${data_storage}
   storageClassName: ${storage_class}
 
 github:

@@ -530,6 +530,7 @@ module "atlantis" {
   atlantis_image_tag  = var.atlantis_image_tag
   atlantis_ingress    = var.atlantis_ingress
   storage_class       = var.atlantis_storage_class
+  data_storage        = var.atlantis_data_storage
   github_username     = var.atlantis_github_username
   github_token        = var.atlantis_github_token
   github_repositories = var.atlantis_github_repositories

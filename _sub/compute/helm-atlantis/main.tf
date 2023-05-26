@@ -95,6 +95,7 @@ resource "helm_release" "atlantis" {
       github_username    = var.github_username,
       github_repos       = join(",", local.full_github_repo_names)
       storage_class      = var.storage_class
+      data_storage       = var.data_storage
     }),
     yamlencode({
       environmentSecrets = [

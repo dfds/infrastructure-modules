@@ -524,6 +524,12 @@ variable "atlantis_storage_class" {
   default     = "csi-gp3"
 }
 
+variable "atlantis_data_storage" {
+  type        = string
+  description = "Size of the persistent volume"
+  default     = "5Gi"
+}
+
 # --------------------------------------------------
 # Atlantis variables
 # --------------------------------------------------
