@@ -8,7 +8,6 @@ resource "aws_ssm_parameter" "param_grafana_password" {
   description = "Password for accessing the Grafana dashboard"
   type        = "SecureString"
   value       = var.grafana_admin_password != "" ? var.grafana_admin_password : random_password.grafana_password.result
-  overwrite   = true
 }
 
 resource "aws_ssm_parameter" "param_grafana_username" {
@@ -16,7 +15,6 @@ resource "aws_ssm_parameter" "param_grafana_username" {
   description = "Username for accessing the Grafana dashboard"
   type        = "String"
   value       = "admin"
-  overwrite   = true
 }
 
 resource "helm_release" "kube_prometheus_stack" {

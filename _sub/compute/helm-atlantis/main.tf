@@ -47,7 +47,6 @@ resource "aws_ssm_parameter" "param_atlantis_ui_auth_username" {
   description = "Username for accessing the Atlantis UI"
   type        = "SecureString"
   value       = var.auth_username
-  overwrite   = true
 }
 
 resource "aws_ssm_parameter" "param_atlantis_ui_auth_password" {
@@ -55,7 +54,6 @@ resource "aws_ssm_parameter" "param_atlantis_ui_auth_password" {
   description = "Password for accessing the Atlantis UI"
   type        = "SecureString"
   value       = random_password.password.result
-  overwrite   = true
 }
 
 resource "random_password" "webhook_password" {
@@ -95,6 +93,8 @@ resource "helm_release" "atlantis" {
       github_username    = var.github_username,
       github_repos       = join(",", local.full_github_repo_names)
       storage_class      = var.storage_class
+      data_storage       = var.data_storage
+      parallel_pool_size = var.parallel_pool_size
     }),
     yamlencode({
       environmentSecrets = [
