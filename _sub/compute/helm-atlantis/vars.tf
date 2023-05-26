@@ -95,3 +95,9 @@ variable "cluster_name" {
   type        = string
   description = "The name of the Kubernetes cluster"
 }
+
+variable "parallel_pool_size" {
+  type        = number
+  default     = 50
+  description = "The number of concurrent go-routines when running terraform plan"
+}

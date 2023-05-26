@@ -26,6 +26,7 @@ github:
 
 extraArgs:
   - --disable-autoplan
+  - --parallel-pool-size=${parallel_pool_size}
 
 ingress:
   host: ${atlantis_ingress}
