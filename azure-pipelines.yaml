@@ -18,7 +18,7 @@ pr:
 resources:
   containers:
     - container: prime
-      image: dfdsdk/prime-pipeline:0.6.31
+      image: dfdsdk/prime-pipeline:0.6.32
       env:
         AWS_DEFAULT_REGION: eu-west-1
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
