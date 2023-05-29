@@ -7,4 +7,10 @@ resource "aws_ssm_parameter" "putSecureString" {
   tags = {
     createdBy = var.tag_createdby != null ? var.tag_createdby : "ssm-parameter-store"
   }
+
+  lifecycle {
+    ignore_changes = [
+      overwrite,
+    ]
+  }
 }
