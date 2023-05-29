@@ -47,6 +47,12 @@ resource "aws_ssm_parameter" "param_atlantis_ui_auth_username" {
   description = "Username for accessing the Atlantis UI"
   type        = "SecureString"
   value       = var.auth_username
+
+  lifecycle {
+    ignore_changes = [
+      overwrite,
+    ]
+  }
 }
 
 resource "aws_ssm_parameter" "param_atlantis_ui_auth_password" {
@@ -54,6 +60,12 @@ resource "aws_ssm_parameter" "param_atlantis_ui_auth_password" {
   description = "Password for accessing the Atlantis UI"
   type        = "SecureString"
   value       = random_password.password.result
+
+  lifecycle {
+    ignore_changes = [
+      overwrite,
+    ]
+  }
 }
 
 resource "random_password" "webhook_password" {

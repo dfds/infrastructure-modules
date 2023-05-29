@@ -30,6 +30,12 @@ resource "aws_ssm_parameter" "putPublicKey" {
     concat(tls_private_key.keypair[*].public_key_openssh, [""]),
     0,
   )
+
+  lifecycle {
+    ignore_changes = [
+      overwrite,
+    ]
+  }
 }
 
 resource "aws_ssm_parameter" "putPrivateKey" {
@@ -38,5 +44,11 @@ resource "aws_ssm_parameter" "putPrivateKey" {
   description = "Private key of ${var.keypairname} ssh keypair"
   type        = "SecureString"
   value       = element(concat(tls_private_key.keypair[*].private_key_pem, [""]), 0)
+
+  lifecycle {
+    ignore_changes = [
+      overwrite,
+    ]
+  }
 }
 
