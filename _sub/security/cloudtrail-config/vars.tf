@@ -26,6 +26,12 @@ variable "create_log_group" {
   default     = false
 }
 
+variable "log_group_retention_in_days" {
+  type        = number
+  description = "Number of days to retain records within the CloudWatch log group."
+  default     = 7
+}
+
 variable "create_kms_key" {
   type        = bool
   description = "Specifies whether a KMS customer-managed key should be created for the enabling server side encryption on the CloudTrail logs."

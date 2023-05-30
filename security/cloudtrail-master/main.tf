@@ -7,11 +7,12 @@ terraform {
 }
 
 module "cloudtrail_central" {
-  source                = "../../_sub/security/cloudtrail-config"
-  s3_bucket             = var.cloudtrail_central_s3_bucket
-  trail_name            = "org-audit"
-  is_organization_trail = true
-  deploy                = var.deploy
-  create_log_group      = true
-  create_kms_key        = true
+  source                      = "../../_sub/security/cloudtrail-config"
+  s3_bucket                   = var.cloudtrail_central_s3_bucket
+  trail_name                  = "org-audit"
+  is_organization_trail       = true
+  deploy                      = var.deploy
+  create_log_group            = true
+  log_group_retention_in_days = var.log_group_retention_in_days
+  create_kms_key              = true
 }
