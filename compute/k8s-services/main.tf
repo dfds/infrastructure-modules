@@ -557,6 +557,8 @@ module "atlantis" {
     PRODUCTION_PRIME_AWS_SECRET_ACCESS_KEY                           = var.prime_aws_secret
     PRODUCTION_PRIME_DATADOG_API_KEY                                 = var.prime_datadog_api_key
     PRODUCTION_PRIME_DATADOG_APP_KEY                                 = var.prime_datadog_app_key
+    PRODUCTION_PREPRIME_AWS_ACCESS_KEY_ID                            = var.preprime_aws_access_key
+    PRODUCTION_PREPRIME_AWS_SECRET_ACCESS_KEY                        = var.preprime_aws_secret
   }
 
   providers = {
