@@ -57,6 +57,24 @@ variable "data_storage" {
   description = "Size of the persistent volume"
 }
 
+variable "resources_requests_cpu" {
+  type        = string
+  default     = "100m"
+  description = "CPU resources request size"
+}
+
+variable "resources_requests_memory" {
+  type        = string
+  default     = "1536Mi"
+  description = "Memory resources requests size"
+}
+
+variable "resources_limits_memory" {
+  type        = string
+  default     = null
+  description = "Memory resources limits size"
+}
+
 ## Github ##
 variable "github_token" {
   type        = string

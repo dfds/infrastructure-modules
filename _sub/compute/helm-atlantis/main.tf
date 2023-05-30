@@ -96,17 +96,20 @@ resource "helm_release" "atlantis" {
 
   values = [
     templatefile("${path.module}/values/values.yaml", {
-      atlantis_ingress   = var.atlantis_ingress,
-      ingress_class      = local.ingress_class,
-      ingress_auth_type  = local.ingress_auth_type,
-      auth_secret_name   = local.auth_secret_name,
-      atlantis_image     = var.atlantis_image,
-      atlantis_image_tag = var.atlantis_image_tag,
-      github_username    = var.github_username,
-      github_repos       = join(",", local.full_github_repo_names)
-      storage_class      = var.storage_class
-      data_storage       = var.data_storage
-      parallel_pool_size = var.parallel_pool_size
+      atlantis_ingress          = var.atlantis_ingress,
+      ingress_class             = local.ingress_class,
+      ingress_auth_type         = local.ingress_auth_type,
+      auth_secret_name          = local.auth_secret_name,
+      atlantis_image            = var.atlantis_image,
+      atlantis_image_tag        = var.atlantis_image_tag,
+      github_username           = var.github_username,
+      github_repos              = join(",", local.full_github_repo_names)
+      storage_class             = var.storage_class
+      data_storage              = var.data_storage
+      parallel_pool_size        = var.parallel_pool_size
+      resources_requests_cpu    = var.resources_requests_cpu
+      resources_requests_memory = var.resources_requests_memory
+      resources_limits_memory   = local.resources_limits_memory
     }),
     yamlencode({
       environmentSecrets = [

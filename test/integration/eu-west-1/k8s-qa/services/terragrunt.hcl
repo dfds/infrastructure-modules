@@ -189,6 +189,9 @@ inputs = {
   atlantis_image_tag     = "0.0.38"
   atlantis_data_storage  = "1Gi"
 
+  atlantis_resources_requests_cpu    = "10m"
+  atlantis_resources_requests_memory = "512Mi"
+
   atlantis_github_username     = "devex-sa"
   atlantis_github_repositories = ["dfds/qa-dummy-atlantis"]
   atlantis_github_owner        = "dfds"

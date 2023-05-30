@@ -619,6 +619,23 @@ variable "atlantis_staging_aws_secret" {
   description = "AWS Secret for staging environment"
 }
 
+variable "atlantis_resources_requests_cpu" {
+  type        = string
+  default     = "100m"
+  description = "CPU resources request size"
+}
+
+variable "atlantis_resources_requests_memory" {
+  type        = string
+  default     = "1536Mi"
+  description = "Memory resources requests size"
+}
+
+variable "atlantis_resources_limits_memory" {
+  type        = string
+  default     = null
+  description = "Memory resources limits size"
+}
 
 # --------------------------------------------------
 # Crossplane
