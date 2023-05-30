@@ -186,7 +186,7 @@ inputs = {
 
   atlantis_deploy        = true
   atlantis_ingress       = "atlantis.qa-alias1.dfds.cloud"
-  atlantis_image_tag     = "0.0.33"
+  atlantis_image_tag     = "0.0.38"
   atlantis_data_storage  = "1Gi"
 
   atlantis_github_username     = "devex-sa"
