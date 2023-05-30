@@ -5,10 +5,10 @@ image:
 
 resources:
   requests:
-    memory: 1536Mi
-    cpu: 100m
+    memory: ${resources_requests_memory}
+    cpu: ${resources_requests_cpu}
   limits:
-    memory: 1536Mi
+    memory: ${resources_limits_memory}
     cpu: null
 
 orgAllowlist: ${github_repos}

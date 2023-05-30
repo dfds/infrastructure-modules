@@ -520,22 +520,25 @@ module "platform_fluxcd" {
 # --------------------------------------------------
 
 module "atlantis" {
-  source              = "../../_sub/compute/helm-atlantis"
-  count               = var.atlantis_deploy ? 1 : 0
-  cluster_name        = var.eks_cluster_name
-  namespace           = var.atlantis_namespace
-  namespace_labels    = var.atlantis_namespace_labels
-  chart_version       = var.atlantis_chart_version
-  atlantis_image      = var.atlantis_image
-  atlantis_image_tag  = var.atlantis_image_tag
-  atlantis_ingress    = var.atlantis_ingress
-  storage_class       = var.atlantis_storage_class
-  data_storage        = var.atlantis_data_storage
-  github_username     = var.atlantis_github_username
-  github_token        = var.atlantis_github_token
-  github_repositories = var.atlantis_github_repositories
-  webhook_url         = var.atlantis_ingress
-  webhook_events      = var.atlantis_webhook_events
+  source                    = "../../_sub/compute/helm-atlantis"
+  count                     = var.atlantis_deploy ? 1 : 0
+  cluster_name              = var.eks_cluster_name
+  namespace                 = var.atlantis_namespace
+  namespace_labels          = var.atlantis_namespace_labels
+  chart_version             = var.atlantis_chart_version
+  atlantis_image            = var.atlantis_image
+  atlantis_image_tag        = var.atlantis_image_tag
+  atlantis_ingress          = var.atlantis_ingress
+  storage_class             = var.atlantis_storage_class
+  data_storage              = var.atlantis_data_storage
+  resources_requests_cpu    = var.atlantis_resources_requests_cpu
+  resources_requests_memory = var.atlantis_resources_requests_memory
+  resources_limits_memory   = var.atlantis_resources_limits_memory
+  github_username           = var.atlantis_github_username
+  github_token              = var.atlantis_github_token
+  github_repositories       = var.atlantis_github_repositories
+  webhook_url               = var.atlantis_ingress
+  webhook_events            = var.atlantis_webhook_events
 
   environment_variables = {
     PRODUCTION_AWS_ACCESS_KEY_ID                                     = var.atlantis_aws_access_key
