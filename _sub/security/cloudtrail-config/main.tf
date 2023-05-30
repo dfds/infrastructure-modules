@@ -132,8 +132,9 @@ resource "aws_kms_alias" "alias" {
 }
 
 resource "aws_cloudwatch_log_group" "log_group" {
-  count = var.deploy && var.create_log_group ? 1 : 0
-  name  = "/cloudtrail/${var.trail_name}"
+  count             = var.deploy && var.create_log_group ? 1 : 0
+  name              = "/aws/cloudtrail/${var.trail_name}"
+  retention_in_days = var.log_group_retention_in_days
 }
 
 data "aws_iam_policy_document" "trust" {
