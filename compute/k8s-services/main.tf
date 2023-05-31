@@ -533,6 +533,7 @@ module "atlantis" {
   data_storage              = var.atlantis_data_storage
   resources_requests_cpu    = var.atlantis_resources_requests_cpu
   resources_requests_memory = var.atlantis_resources_requests_memory
+  resources_limits_cpu      = var.atlantis_resources_limits_cpu
   resources_limits_memory   = var.atlantis_resources_limits_memory
   github_username           = var.atlantis_github_username
   github_token              = var.atlantis_github_token

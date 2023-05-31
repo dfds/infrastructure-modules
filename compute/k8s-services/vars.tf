@@ -631,6 +631,12 @@ variable "atlantis_resources_requests_memory" {
   description = "Memory resources requests size"
 }
 
+variable "atlantis_resources_limits_cpu" {
+  type        = string
+  default     = null
+  description = "CPU resources limits size"
+}
+
 variable "atlantis_resources_limits_memory" {
   type        = string
   default     = null

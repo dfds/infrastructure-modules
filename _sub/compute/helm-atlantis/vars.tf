@@ -69,6 +69,12 @@ variable "resources_requests_memory" {
   description = "Memory resources requests size"
 }
 
+variable "resources_limits_cpu" {
+  type        = string
+  default     = null
+  description = "CPU resources limits size"
+}
+
 variable "resources_limits_memory" {
   type        = string
   default     = null
