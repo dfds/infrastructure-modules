@@ -4,18 +4,18 @@
         {
             "Sid": "DenyDeletingVPCFlowLogs",
             "Effect": "Deny",
-            "Action": [
-                "ec2:DeleteFlowLogs"
-            ],
-            "Resource": "*"
+            "Action": ["ec2:DeleteFlowLogs"],
+            "Resource": "*",
+            "Condition": {
+                "StringNotLike": {
+                    "aws:PrincipalArn": ["arn:aws:iam::*:role/OrgRole"]
+                }
+            }
         },
         {
             "Sid": "DenyDeletingCloudWatchLogs",
             "Effect": "Deny",
-            "Action": [
-                "logs:DeleteLogGroup",
-                "logs:DeleteLogStream"
-            ],
+            "Action": ["logs:DeleteLogGroup", "logs:DeleteLogStream"],
             "Resource": "*",
             "Condition": {
                 "StringNotLike": {
@@ -43,9 +43,7 @@
         },
         {
             "Sid": "DenyDisablingAccessAnalyzer",
-            "Action": [
-                "access-analyzer:DeleteAnalyzer"
-            ],
+            "Action": ["access-analyzer:DeleteAnalyzer"],
             "Resource": "*",
             "Effect": "Deny"
         },
