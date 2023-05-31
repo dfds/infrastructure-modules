@@ -93,7 +93,8 @@
                 "securityhub:DisassociateFromMasterAccount",
                 "securityhub:DeleteMembers",
                 "securityhub:DisassociateMembers",
-                "securityhub:UpdateStandardsControl"
+                "securityhub:UpdateStandardsControl",
+                "securityhub:BatchUpdateStandardsControlAssociations"
             ],
             "Resource": "*",
             "Effect": "Deny"
