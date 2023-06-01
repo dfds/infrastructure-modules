@@ -93,3 +93,31 @@ module "datadog" {
     aws = aws.workload
   }
 }
+
+# --------------------------------------------------
+# AWS Resource Explorer Feature
+# --------------------------------------------------
+
+resource "aws_resourceexplorer2_index" "aggregator" {
+  type = "AGGREGATOR"
+
+  provider = aws.workload
+}
+
+resource "aws_resourceexplorer2_index" "eu_west_1" {
+  type = "LOCAL"
+
+  provider = aws.workload_2
+}
+
+resource "aws_resourceexplorer2_view" "aggregator_view" {
+  name = "all-resources"
+  default_view = true
+
+  included_property {
+    name = "tags"
+  }
+
+  depends_on = [aws_resourceexplorer2_index.aggregator]
+  provider = aws.workload
+}
