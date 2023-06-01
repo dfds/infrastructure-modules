@@ -84,6 +84,8 @@ inputs = {
     }
   ]
 
+  # Find compatible AMI
+  # aws ssm get-parameter --name /aws/service/eks/optimized-ami/1.27/amazon-linux-2/recommended/image_id --region eu-west-1 --query "Parameter.Value" --output text
   eks_managed_nodegroups = [
     {
       name                    = "general"
