@@ -5,8 +5,11 @@
 # Kube-proxy:       https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html
 # EBS CSI driver:   https://docs.aws.amazon.com/eks/latest/userguide/managing-ebs-csi.html
 
-# Get current default build of an add-on (e.g. 'coredns'):
-# aws eks describe-addon-versions --kubernetes-version 1.18 --addon-name coredns | jq -r '.addons[].addonVersions[] | select(.compatibilities[].defaultVersion == true) | .addonVersion'
+# Get current default build of an add-on:
+# aws eks describe-addon-versions --kubernetes-version 1.27 --addon-name vpc-cni | jq -r '.addons[].addonVersions[] | select(.compatibilities[].defaultVersion == true) | .addonVersion'
+# aws eks describe-addon-versions --kubernetes-version 1.27 --addon-name coredns | jq -r '.addons[].addonVersions[] | select(.compatibilities[].defaultVersion == true) | .addonVersion'
+# aws eks describe-addon-versions --kubernetes-version 1.27 --addon-name kube-proxy | jq -r '.addons[].addonVersions[] | select(.compatibilities[].defaultVersion == true) | .addonVersion'
+# aws eks describe-addon-versions --kubernetes-version 1.27 --addon-name aws-ebs-csi-driver | jq -r '.addons[].addonVersions[] | select(.compatibilities[].defaultVersion == true) | .addonVersion'
 
 locals {
   vpccni_version_map = {
@@ -18,6 +21,7 @@ locals {
     "1.24" = "v1.12.2-eksbuild.1"
     "1.25" = "v1.12.2-eksbuild.1"
     "1.26" = "v1.12.6-eksbuild.1"
+    "1.27" = "v1.12.6-eksbuild.2"
    }
 
   coredns_version_map = {
@@ -29,6 +33,7 @@ locals {
     "1.24" = "v1.8.7-eksbuild.4"
     "1.25" = "v1.9.3-eksbuild.2"
     "1.26" = "v1.9.3-eksbuild.3"
+    "1.27" = "v1.10.1-eksbuild.1"
   }
 
   kubeproxy_version_map = {
@@ -40,6 +45,7 @@ locals {
     "1.24" = "v1.24.7-eksbuild.2"
     "1.25" = "v1.25.6-eksbuild.1"
     "1.26" = "v1.26.2-eksbuild.1"
+    "1.27" = "v1.27.1-eksbuild.1"
   }
 
   awsebscsidriver_version_map = {
@@ -48,6 +54,7 @@ locals {
     "1.24" = "v1.16.1-eksbuild.1"
     "1.25" = "v1.16.1-eksbuild.1"
     "1.26" = "v1.18.0-eksbuild.1"
+    "1.27" = "v1.19.0-eksbuild.1"
   }
 }
 
