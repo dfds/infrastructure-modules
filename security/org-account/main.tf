@@ -13,6 +13,17 @@ provider "aws" {
   alias = "workload"
 }
 
+provider "aws" {
+  region = var.aws_region_2
+
+  # Assume the Organizational role in Workload account
+  assume_role {
+    role_arn = module.org_account.org_role_arn
+  }
+
+  alias = "workload_2"
+}
+
 provider "datadog" {
   api_key  = var.datadog_api_key
   app_key  = var.datadog_app_key
