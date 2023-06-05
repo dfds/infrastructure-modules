@@ -1,4 +1,10 @@
 # --------------------------------------------------
+# Account ID
+# --------------------------------------------------
+
+data "aws_caller_identity" "current" {}
+
+# --------------------------------------------------
 # Region
 # --------------------------------------------------
 
@@ -37,11 +43,22 @@ locals {
 # AWS auth configmap
 # --------------------------------------------------
 
+data "aws_iam_roles" "capability_access" {
+  name_regex  = "AWSReservedSSO_CapabilityAccess_.*"
+  path_prefix = "/aws-reserved/sso.amazonaws.com/"
+}
+
 locals {
   default_auth_cm_template = templatefile(
     "${path.module}/default-auth-cm.yaml",
     {
-      role_arn = var.eks_role_arn
+      role_arn = var.eks_role_arn,
+      # Note that the ARN must be specified in this format for the AWS console
+      # to work instead of the format provided by the `.arns` attribute from
+      # the `aws_iam_roles` data provider.
+      capability_access_arns = [
+        for role in data.aws_iam_roles.capability_access.names : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${role}"
+      ]
     }
   )
 }
