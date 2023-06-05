@@ -139,6 +139,7 @@
                 "ecr:List*",
                 "ecr-public:*",
                 "globalaccelerator:*",
+                "health:Describe*",
                 "iam:*",
                 "importexport:*",
                 "kms:*",
