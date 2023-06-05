@@ -236,7 +236,10 @@
             "Resource": ["*"],
             "Condition": {
                 "StringNotLike": {
-                    "aws:PrincipalArn": ["arn:aws:iam::*:role/OrgRole"]
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/OrgRole",
+                        "arn:aws:iam::*:role/aws-config-recorder*"
+                    ]
                 }
             }
         }
