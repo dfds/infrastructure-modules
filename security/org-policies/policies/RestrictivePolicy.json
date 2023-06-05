@@ -120,6 +120,7 @@
             "Effect": "Deny",
             "NotAction": [
                 "access-analyzer:*",
+                "account:Get*",
                 "acm:*",
                 "aws-marketplace:*",
                 "aws-portal:*",
