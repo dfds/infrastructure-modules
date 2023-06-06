@@ -559,8 +559,6 @@ module "atlantis" {
     SHARED_TF_VAR_atlantis_github_token                              = var.atlantis_github_token
     PRODUCTION_PRIME_AWS_ACCESS_KEY_ID                               = var.prime_aws_access_key
     PRODUCTION_PRIME_AWS_SECRET_ACCESS_KEY                           = var.prime_aws_secret
-    PRODUCTION_PRIME_DATADOG_API_KEY                                 = var.prime_datadog_api_key
-    PRODUCTION_PRIME_DATADOG_APP_KEY                                 = var.prime_datadog_app_key
     PRODUCTION_PREPRIME_AWS_ACCESS_KEY_ID                            = var.preprime_aws_access_key
     PRODUCTION_PREPRIME_AWS_SECRET_ACCESS_KEY                        = var.preprime_aws_secret
     PRODUCTION_AWS_ACCOUNT_MANIFESTS_KAFKA_BROKER                    = var.aws_account_manifests_kafka_broker
@@ -856,28 +854,4 @@ module "elb_inactivity_cleanup_auth" {
   inactivity_alarm_arn = data.terraform_remote_state.cluster.outputs.eks_inactivity_alarm_arn
   elb_name             = module.traefik_alb_auth.alb_name
   elb_arn              = module.traefik_alb_auth.alb_arn
-}
-
-# --------------------------------------------------
-# DataDog Operator
-# --------------------------------------------------
-
-module "datadog_operator_flux_manifests" {
-  source                  = "../../_sub/monitoring/datadog-agent-kubernetes"
-  count                   = var.datadog_agent_kubernetes_deploy ? 1 : 0
-  cluster_name            = var.eks_cluster_name
-  helm_chart_version      = var.datadog_agent_helm_chart_version
-  github_owner            = var.fluxcd_bootstrap_repo_owner
-  repo_name               = var.fluxcd_bootstrap_repo_name
-  repo_branch             = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
-  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
-  tolerations             = var.monitoring_tolerations
-
-  providers = {
-    github = github.fluxcd
-  }
-
-  depends_on = [module.platform_fluxcd]
 }

@@ -583,18 +583,6 @@ variable "prime_aws_secret" {
   description = "AWS Secret for prime pipeline. Used by Atlantis."
 }
 
-variable "prime_datadog_api_key" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "Datadog API key for prime pipeline. Used by Atlantis."
-}
-
-variable "prime_datadog_app_key" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "Datadog APP key for prime pipeline. Used by Atlantis."
-}
-
 variable "preprime_aws_access_key" {
   type        = string
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
@@ -1104,20 +1092,4 @@ variable "disable_inactivity_cleanup" {
   type        = bool
   default     = false
   description = "Disables automated clean up of ELB resources based on inactivity. Only applicable to sandboxes."
-}
-
-# --------------------------------------------------
-# DataDog Agent
-# --------------------------------------------------
-
-variable "datadog_agent_kubernetes_deploy" {
-  type        = bool
-  description = "Deploy the DataDog agent"
-  default     = false
-}
-
-variable "datadog_agent_helm_chart_version" {
-  type        = string
-  description = "Helm Chart version to be used to deploy DataDog Operator"
-  default     = null
 }
