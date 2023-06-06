@@ -561,6 +561,9 @@ module "atlantis" {
     PRODUCTION_PRIME_AWS_SECRET_ACCESS_KEY                           = var.prime_aws_secret
     PRODUCTION_PREPRIME_AWS_ACCESS_KEY_ID                            = var.preprime_aws_access_key
     PRODUCTION_PREPRIME_AWS_SECRET_ACCESS_KEY                        = var.preprime_aws_secret
+    PRODUCTION_AWS_ACCOUNT_MANIFESTS_KAFKA_BROKER                    = var.aws_account_manifests_kafka_broker
+    PRODUCTION_AWS_ACCOUNT_MANIFESTS_KAFKA_USERNAME                  = var.aws_account_manifests_kafka_username
+    PRODUCTION_AWS_ACCOUNT_MANIFESTS_KAFKA_PASSWORD                  = var.aws_account_manifests_kafka_password
   }
 
   providers = {
