@@ -607,6 +607,24 @@ variable "preprime_aws_secret" {
   description = "AWS Secret for pre-prime pipeline. Used by Atlantis."
 }
 
+variable "aws_account_manifests_kafka_broker" {
+  type = string
+  default = ""
+  description = "Used by Atlantis for the AWS Account Manifests pipeline"
+}
+
+variable "aws_account_manifests_kafka_username" {
+  type = string
+  default = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "Used by Atlantis for the AWS Account Manifests pipeline"
+}
+
+variable "aws_account_manifests_kafka_password" {
+  type = string
+  default = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "Used by Atlantis for the AWS Account Manifests pipeline"
+}
+
 variable "atlantis_staging_aws_access_key" {
   type        = string
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
