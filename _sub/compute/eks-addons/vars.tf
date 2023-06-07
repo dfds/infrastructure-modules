@@ -35,3 +35,9 @@ variable "vpccni_prefix_delegation_enabled" {
   description = "Whether to enable prefix delegation mode on the VPC CNI addon."
   default     = false
 }
+
+variable "most_recent" {
+  type        = bool
+  default     = false
+  description = "Should we use the latest version of an EKS add-on?"
+}
