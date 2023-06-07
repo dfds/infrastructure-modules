@@ -7,29 +7,33 @@ resource "aws_eks_addon" "vpc-cni" {
       "ENABLE_PREFIX_DELEGATION" = tostring(var.vpccni_prefix_delegation_enabled)
     }
   })
-  resolve_conflicts = "OVERWRITE"
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
 }
 
 resource "aws_eks_addon" "coredns" {
-  cluster_name      = var.cluster_name
-  addon_name        = "coredns"
-  addon_version     = local.coredns_version
-  resolve_conflicts = "OVERWRITE"
+  cluster_name                = var.cluster_name
+  addon_name                  = "coredns"
+  addon_version               = local.coredns_version
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
 }
 
 resource "aws_eks_addon" "kube-proxy" {
-  cluster_name      = var.cluster_name
-  addon_name        = "kube-proxy"
-  addon_version     = local.kubeproxy_version
-  resolve_conflicts = "OVERWRITE"
+  cluster_name                = var.cluster_name
+  addon_name                  = "kube-proxy"
+  addon_version               = local.kubeproxy_version
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
 }
 
 resource "aws_eks_addon" "aws-ebs-csi-driver" {
-  cluster_name             = var.cluster_name
-  addon_name               = "aws-ebs-csi-driver"
-  addon_version            = local.awsebscsidriver_version
-  resolve_conflicts        = "OVERWRITE"
-  service_account_role_arn = aws_iam_role.ebs-csi-driver-role.arn
+  cluster_name                = var.cluster_name
+  addon_name                  = "aws-ebs-csi-driver"
+  addon_version               = local.awsebscsidriver_version
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
+  service_account_role_arn    = aws_iam_role.ebs-csi-driver-role.arn
 
   depends_on = [
     aws_iam_role_policy_attachment.managed-ebs-csi-driver-policy

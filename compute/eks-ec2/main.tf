@@ -209,6 +209,7 @@ module "eks_addons" {
   vpccni_version_override          = var.eks_addon_vpccni_version_override
   vpccni_prefix_delegation_enabled = var.eks_addon_vpccni_prefix_delegation_enabled
   awsebscsidriver_version_override = var.eks_addon_awsebscsidriver_version_override
+  most_recent                      = var.eks_addon_most_recent
   cluster_version                  = var.eks_cluster_version
   eks_openid_connect_provider_url  = module.eks_cluster.eks_openid_connect_provider_url
 }
