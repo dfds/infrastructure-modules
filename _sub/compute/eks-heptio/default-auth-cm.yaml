@@ -10,3 +10,9 @@ data:
       groups:
         - system:bootstrappers
         - system:nodes
+%{ for arn in capability_access_arns ~}
+    - rolearn: ${arn}
+      username: aws:capabilityaccess
+      groups:
+        - system:masters
+%{ endfor ~}
