@@ -51,8 +51,9 @@ locals {
     ]
     "images" = [
       {
-        "name"   = "fluent/fluentd-kubernetes-daemonset",
-        "newTag" = var.docker_image_tag
+        "name"    = "fluent/fluentd-kubernetes-daemonset",
+        "newName" = var.docker_image_name,
+        "newTag"  = var.docker_image_tag
       }
     ]
     "patchesStrategicMerge" = [
