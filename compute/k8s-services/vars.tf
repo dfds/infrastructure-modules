@@ -596,20 +596,20 @@ variable "preprime_aws_secret" {
 }
 
 variable "aws_account_manifests_kafka_broker" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "Used by Atlantis for the AWS Account Manifests pipeline"
 }
 
 variable "aws_account_manifests_kafka_username" {
-  type = string
-  default = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  type        = string
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
   description = "Used by Atlantis for the AWS Account Manifests pipeline"
 }
 
 variable "aws_account_manifests_kafka_password" {
-  type = string
-  default = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  type        = string
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
   description = "Used by Atlantis for the AWS Account Manifests pipeline"
 }
 
@@ -973,10 +973,16 @@ variable "fluentd_cloudwatch_retention_in_days" {
   description = "How many days to keep the logs?"
 }
 
+variable "fluentd_cloudwatch_docker_image_name" {
+  type        = string
+  default     = "fluent/fluentd-kubernetes-daemonset"
+  description = "The repo/name for the fluentd-kubernetes-daemonset image"
+}
+
 variable "fluentd_cloudwatch_docker_image_tag" {
   type        = string
   default     = "v1.16-debian-cloudwatch-1"
-  description = "The new tag for the fluentd-kubernetes-daemonset image"
+  description = "The tag for the fluentd-kubernetes-daemonset image"
 }
 
 # --------------------------------------------------
