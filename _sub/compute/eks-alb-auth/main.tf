@@ -108,7 +108,7 @@ resource "aws_lb_listener" "traefik_auth" {
     )
 
     dynamic "forward" {
-      for_each = var.deploy_blue_variant && var.deploy_green_variant ? [
+      for_each = var.deploy_blue_variant && var.deploy_green_variant ? [[
         {
           arn    = aws_lb_target_group.traefik_auth_blue_variant[0].arn
           weight = var.blue_variant_weight
@@ -117,7 +117,7 @@ resource "aws_lb_listener" "traefik_auth" {
           arn    = aws_lb_target_group.traefik_auth_green_variant[0].arn
           weight = var.green_variant_weight
         }
-      ] : []
+      ]] : []
       content {
         stickiness {
           enabled  = true
