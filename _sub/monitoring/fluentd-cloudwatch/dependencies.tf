@@ -95,15 +95,6 @@ metadata:
   name: ${local.fluentd_name}
   namespace: ${local.fluentd_namespace}
 data:
-  01-filter-concat.conf: |-
-    # Concatenate partial log messages together, necessary with containerd container runtime.
-    <filter kubernetes.**>
-      @type concat
-      key log
-      partial_key logtag
-      partial_value P
-      separator ""
-    </filter>
   02-tag.conf: |-
     # Tag with namespace and prefix with clustername
     <match kubernetes.**>
