@@ -922,14 +922,6 @@ resource "aws_resourceexplorer2_index" "aggregator" {
   provider = aws.workload
 }
 
-# # TODO: Remove and re-add using specific provider with naming
-# resource "aws_resourceexplorer2_index" "eu_west_1" {
-#   type = "LOCAL"
-
-#   provider = aws.workload_2
-# }
-
-
 resource "aws_resourceexplorer2_view" "aggregator_view" {
   name         = "all-resources"
   default_view = true
