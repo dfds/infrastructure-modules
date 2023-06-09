@@ -76,7 +76,7 @@ data "aws_availability_zones" "available" {
 
     precondition {
       condition = alltrue(flatten([
-        for ng in var.eks_managed_nodegroups : [
+        for name, ng in var.eks_managed_nodegroups : [
           for az in ng.availability_zones : startswith(az, var.aws_region)
         ]
       ]))
@@ -138,7 +138,7 @@ module "eks_managed_workers_route_table_assoc" {
 module "eks_managed_workers_node_group" {
   source = "../../_sub/compute/eks-nodegroup-managed"
 
-  for_each = { for ng in var.eks_managed_nodegroups : ng.name => ng }
+  for_each = var.eks_managed_nodegroups
 
   cluster_name    = var.eks_cluster_name
   cluster_version = var.eks_cluster_version
@@ -157,7 +157,7 @@ module "eks_managed_workers_node_group" {
   cloudwatch_agent_enabled          = var.eks_worker_cloudwatch_agent_config_deploy
 
   # Node group variations
-  nodegroup_name             = each.value.name
+  nodegroup_name             = each.key
   ami_id                     = each.value.ami_id
   instance_types             = each.value.instance_types
   use_spot_instances         = each.value.use_spot_instances

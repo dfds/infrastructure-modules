@@ -87,9 +87,8 @@ inputs = {
 
   # Find compatible AMI
   # aws ssm get-parameter --name /aws/service/eks/optimized-ami/1.27/amazon-linux-2/recommended/image_id --region eu-west-1 --query "Parameter.Value" --output text
-  eks_managed_nodegroups = [
-    {
-      name                    = "general"
+  eks_managed_nodegroups = {
+    "general" = {
       instance_types          = ["m5a.xlarge"]
       disk_type               = "gp3"
       desired_size_per_subnet = 1
@@ -99,9 +98,8 @@ inputs = {
       ami_id                     = "ami-0a77eba010cc51cb7"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
-    },
-    {
-      name                    = "monitoring"
+    }
+    "monitoring" = {
       instance_types          = ["m5a.xlarge"]
       disk_type               = "gp3"
       desired_size_per_subnet = 1
@@ -122,7 +120,7 @@ inputs = {
         dedicated = "monitoring"
       }
     },
-  ]
+  }
 
   # --------------------------------------------------
   # Restore Blaster Configmap
