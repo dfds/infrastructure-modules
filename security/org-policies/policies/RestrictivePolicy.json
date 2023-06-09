@@ -16,9 +16,7 @@
             ],
             "Condition": {
                 "StringNotLike": {
-                    "aws:PrincipalArn": [
-                        "arn:aws:iam::*:role/OrgRole"
-                    ]
+                    "aws:PrincipalArn": ["arn:aws:iam::*:role/OrgRole"]
                 }
             }
         },
@@ -32,9 +30,7 @@
                 "iam:EnableMFADevice",
                 "iam:ResyncMFADevice"
             ],
-            "Resource": [
-                "*"
-            ],
+            "Resource": ["*"],
             "Condition": {
                 "StringNotLike": {
                     "aws:PrincipalArn": [
@@ -71,14 +67,10 @@
                 "iam:UpdateSAMLProvider",
                 "iam:UpdateUser"
             ],
-            "Resource": [
-                "*"
-            ],
+            "Resource": ["*"],
             "Condition": {
                 "StringNotLike": {
-                    "aws:PrincipalArn": [
-                        "arn:aws:iam::*:role/OrgRole"
-                    ]
+                    "aws:PrincipalArn": ["arn:aws:iam::*:role/OrgRole"]
                 }
             }
         },
@@ -97,9 +89,7 @@
             ],
             "Condition": {
                 "StringNotLike": {
-                    "aws:PrincipalArn": [
-                        "arn:aws:iam::*:role/OrgRole"
-                    ]
+                    "aws:PrincipalArn": ["arn:aws:iam::*:role/OrgRole"]
                 }
             }
         },
@@ -123,9 +113,7 @@
                 "iam:UpdateRole",
                 "iam:UpdateRoleDescription"
             ],
-            "Resource": [
-                "arn:aws:iam::*:role/OrgRole"
-            ]
+            "Resource": ["arn:aws:iam::*:role/OrgRole"]
         },
         {
             "Sid": "CoreRegionOnly",
@@ -189,10 +177,7 @@
             "Resource": "*",
             "Condition": {
                 "StringNotLike": {
-                    "aws:RequestedRegion": [
-                        "eu-central-1",
-                        "eu-west-1"
-                    ]
+                    "aws:RequestedRegion": ["eu-central-1", "eu-west-1"]
                 }
             }
         },
@@ -200,11 +185,15 @@
             "Sid": "DenyResourceExplorer",
             "Effect": "Deny",
             "Action": [
-                "resource-explorer-2:*"
+                "resource-explorer-2:Create*",
+                "resource-explorer-2:Delete*",
+                "resource-explorer-2:Update*",
+                "resource-explorer-2:Tag*",
+                "resource-explorer-2:Untag*",
+                "resource-explorer-2:Associate*",
+                "resource-explorer-2:Disassociate*"
             ],
-            "Resource": [
-                "*"
-            ],
+            "Resource": ["*"],
             "Condition": {
                 "StringNotLike": {
                     "aws:PrincipalArn": [
@@ -217,12 +206,8 @@
         {
             "Sid": "DenyCostManagement",
             "Effect": "Deny",
-            "Action": [
-                "savingsplans:*"
-            ],
-            "Resource": [
-                "*"
-            ],
+            "Action": ["savingsplans:*"],
+            "Resource": ["*"],
             "Condition": {
                 "StringNotLike": {
                     "aws:PrincipalArn": [
@@ -241,9 +226,7 @@
                 "aws-portal:ModifyBilling",
                 "aws-portal:ModifyPaymentMethods"
             ],
-            "Resource": [
-                "*"
-            ],
+            "Resource": ["*"],
             "Condition": {
                 "StringNotLike": {
                     "aws:PrincipalArn": [
@@ -273,9 +256,7 @@
                 "cloud9:*",
                 "managedblockchain:*"
             ],
-            "Resource": [
-                "*"
-            ],
+            "Resource": ["*"],
             "Condition": {
                 "StringNotLike": {
                     "aws:PrincipalArn": [
