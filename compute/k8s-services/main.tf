@@ -377,10 +377,21 @@ module "cloudwatch_alarm_alb_targets_health_auth_green" {
   alb_arn_target_group_suffix = module.traefik_alb_auth.alb_target_group_arn_suffix_green
 }
 
+module "alarm_notifier_log_account" {
+  source            = "../../_sub/monitoring/alarm-notifier/"
+  deploy            = var.cloudwatch_alarm_log_anomaly_deploy
+  name              = "eks-${var.eks_cluster_name}-cloudwatch-alarms"
+  slack_webhook_url = var.slack_webhook_url
+
+  providers = {
+    aws = aws.logs
+  }
+}
+
 module "cloudwatch_alarm_log_anomaly" {
   source        = "../../_sub/monitoring/cloudwatch-alarms/log-anomaly/"
   deploy        = var.cloudwatch_alarm_log_anomaly_deploy
-  sns_topic_arn = module.alarm_notifier.sns_arn
+  sns_topic_arn = module.alarm_notifier_log_account.sns_arn
 
   providers = {
     aws = aws.logs
