@@ -139,8 +139,7 @@ variable "eks_k8s_auth_api_version" {
 # EKS managed node group
 # --------------------------------------------------
 variable "eks_managed_nodegroups" {
-  type = list(object({
-    name                       = string
+  type = map(object({
     ami_id                     = optional(string, "")
     instance_types             = optional(list(string), ["t3.small"])
     use_spot_instances         = optional(bool, false)
@@ -159,7 +158,7 @@ variable "eks_managed_nodegroups" {
     })), [])
     labels = optional(map(string), {})
   }))
-  default = []
+  default = {}
 }
 
 # --------------------------------------------------

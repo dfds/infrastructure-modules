@@ -4,8 +4,8 @@ terraform {
   source = "../../../../..//compute/k8s-services"
 
   before_hook "custom_hook_01" {
-    commands     = ["apply"]
-    execute      = ["${get_parent_terragrunt_dir()}/hooks/custom_hook_01.sh", "${get_parent_terragrunt_dir()}"]
+    commands = ["apply"]
+    execute  = ["${get_parent_terragrunt_dir()}/hooks/custom_hook_01.sh", "${get_parent_terragrunt_dir()}"]
   }
 }
 
@@ -90,15 +90,15 @@ inputs = {
   # Flux CD
   # --------------------------------------------------
 
-  fluxcd_version                = "v0.41.2"
+  fluxcd_version = "v0.41.2"
 
-  fluxcd_bootstrap_repo_name    = "platform-manifests-qa"
-  fluxcd_bootstrap_repo_branch  = "main"
-  fluxcd_bootstrap_repo_owner   = "dfds"
+  fluxcd_bootstrap_repo_name   = "platform-manifests-qa"
+  fluxcd_bootstrap_repo_branch = "main"
+  fluxcd_bootstrap_repo_owner  = "dfds"
 
-  fluxcd_apps_repo_name    = "platform-apps"
-  fluxcd_apps_repo_branch  = "main"
-  fluxcd_apps_repo_owner   = "dfds"
+  fluxcd_apps_repo_name   = "platform-apps"
+  fluxcd_apps_repo_branch = "main"
+  fluxcd_apps_repo_owner  = "dfds"
 
 
   # --------------------------------------------------
@@ -184,10 +184,10 @@ inputs = {
   # Atlantis
   # --------------------------------------------------
 
-  atlantis_deploy        = true
-  atlantis_ingress       = "atlantis.qa-alias1.dfds.cloud"
-  atlantis_image_tag     = "0.0.38"
-  atlantis_data_storage  = "1Gi"
+  atlantis_deploy       = true
+  atlantis_ingress      = "atlantis.qa-alias1.dfds.cloud"
+  atlantis_image_tag    = "0.0.38"
+  atlantis_data_storage = "1Gi"
 
   atlantis_resources_requests_cpu    = "10m"
   atlantis_resources_requests_memory = "512Mi"
@@ -202,7 +202,7 @@ inputs = {
   # Blackbox Exporter
   # --------------------------------------------------
 
-  blackbox_exporter_deploy       = "true"
+  blackbox_exporter_deploy = "true"
   blackbox_exporter_monitoring_targets = [
     {
       "name"   = "example"
@@ -269,9 +269,9 @@ inputs = {
   # is already applied through Terragrunt.
   # --------------------------------------------------
 
-  velero_deploy            = true
-  velero_role_arn          = "arn:aws:iam::266901158286:role/VeleroBackup"
-  velero_bucket_name       = "dfds-velero-qa"
+  velero_deploy                 = true
+  velero_role_arn               = "arn:aws:iam::266901158286:role/VeleroBackup"
+  velero_bucket_name            = "dfds-velero-qa"
   velero_plugin_for_aws_version = "v1.4.1"
   velero_plugin_for_csi_version = "v0.2.0"
 

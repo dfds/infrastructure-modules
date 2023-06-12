@@ -147,6 +147,7 @@
                 "lambda:*",
                 "organizations:*",
                 "route53:*",
+                "s3:GetStorageLens*",
                 "s3:List*",
                 "shield:*",
                 "sts:*",
