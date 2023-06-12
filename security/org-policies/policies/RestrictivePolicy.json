@@ -185,7 +185,15 @@
         {
             "Sid": "DenyResourceExplorer",
             "Effect": "Deny",
-            "Action": ["resource-explorer-2:*"],
+            "Action": [
+                "resource-explorer-2:Create*",
+                "resource-explorer-2:Delete*",
+                "resource-explorer-2:Update*",
+                "resource-explorer-2:Tag*",
+                "resource-explorer-2:Untag*",
+                "resource-explorer-2:Associate*",
+                "resource-explorer-2:Disassociate*"
+            ],
             "Resource": ["*"],
             "Condition": {
                 "StringNotLike": {
