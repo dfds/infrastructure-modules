@@ -4,7 +4,7 @@ resource "aws_cloudwatch_metric_alarm" "log_anomaly" {
   alarm_name          = "log-anomaly"
   comparison_operator = "LessThanLowerThreshold"
   evaluation_periods  = "5"
-  datapoints_to_alarm = "2"
+  datapoints_to_alarm = "5"
 
   metric_query {
     id = "m1"
