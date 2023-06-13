@@ -29,7 +29,6 @@ github:
   user: ${github_username}
 
 extraArgs:
-  - --disable-autoplan
   - --parallel-pool-size=${parallel_pool_size}
 
 ingress:
