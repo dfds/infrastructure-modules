@@ -338,11 +338,12 @@ resource "aws_resourceexplorer2_index" "ca-central-1" {
   provider = aws.workload_ca-central-1
 }
 
-# resource "aws_resourceexplorer2_index" "eu_west_1" {
-#   type = "LOCAL"
+resource "aws_resourceexplorer2_index" "eu-west-1" {
+  type = "LOCAL"
 
-#   provider = aws.workload_2 # aws.workload_eu-west-1
-# }
+  provider = aws.workload_eu-west-1
+}
+
 resource "aws_resourceexplorer2_index" "eu-west-2" {
   type = "LOCAL"
 
