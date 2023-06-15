@@ -475,7 +475,7 @@ module "security-bot" {
   name                      = "security-bot"
   slack_token               = var.hardened_monitoring_slack_token
   slack_channel             = var.hardened_monitoring_slack_channel
-  alarm_sns_topic_arn       = aws_sns_topic.cis_controls[0].arn
+  alarm_sns_topic_arn       = try(aws_sns_topic.cis_controls[0].arn, null)
   cloudwatch_logs_group_arn = module.cloudtrail_local.cloudwatch_logs_group_arn
   capability_root_id        = var.capability_root_id
 
