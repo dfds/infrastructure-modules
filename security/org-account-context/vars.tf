@@ -119,6 +119,17 @@ variable "hardened_monitoring_email" {
   default = null
 }
 
+variable "hardened_monitoring_slack_channel" {
+  type    = string
+  default = null
+}
+
+variable "hardened_monitoring_slack_token" {
+  type      = string
+  sensitive = true
+  default   = null
+}
+
 variable "aws_region_sso" {
   type    = string
   default = "eu-west-1"
