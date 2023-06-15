@@ -249,100 +249,100 @@ module "iam_role_certero" {
 # AWS Resource Explorer
 # --------------------------------------------------
 
-# resource "aws_resourceexplorer2_index" "aggregator" {
-#   type = "AGGREGATOR"
+resource "aws_resourceexplorer2_index" "aggregator" {
+  type = "AGGREGATOR"
 
-#   provider = aws.workload
-# }
+  provider = aws.workload
+}
 
-# resource "aws_resourceexplorer2_view" "aggregator_view" {
-#   name         = "all-resources"
-#   default_view = true
+resource "aws_resourceexplorer2_view" "aggregator_view" {
+  name         = "all-resources"
+  default_view = true
 
-#   included_property {
-#     name = "tags"
-#   }
+  included_property {
+    name = "tags"
+  }
 
-#   depends_on = [aws_resourceexplorer2_index.aggregator]
-#   provider   = aws.workload
-# }
+  depends_on = [aws_resourceexplorer2_index.aggregator]
+  provider   = aws.workload
+}
 
-# resource "aws_resourceexplorer2_index" "us-east-1" {
-#   type     = "LOCAL"
-#   provider = aws.workload_us-east-1
-# }
+resource "aws_resourceexplorer2_index" "us-east-1" {
+  type     = "LOCAL"
+  provider = aws.workload_us-east-1
+}
 
-# resource "aws_resourceexplorer2_index" "us-east-2" {
-#   type     = "LOCAL"
-#   provider = aws.workload_us-east-2
-# }
+resource "aws_resourceexplorer2_index" "us-east-2" {
+  type     = "LOCAL"
+  provider = aws.workload_us-east-2
+}
 
-# resource "aws_resourceexplorer2_index" "us-west-1" {
-#   type     = "LOCAL"
-#   provider = aws.workload_us-west-1
-# }
+resource "aws_resourceexplorer2_index" "us-west-1" {
+  type     = "LOCAL"
+  provider = aws.workload_us-west-1
+}
 
-# resource "aws_resourceexplorer2_index" "us-west-2" {
-#   type     = "LOCAL"
-#   provider = aws.workload_us-west-2
-# }
+resource "aws_resourceexplorer2_index" "us-west-2" {
+  type     = "LOCAL"
+  provider = aws.workload_us-west-2
+}
 
-# resource "aws_resourceexplorer2_index" "ap-south-1" {
-#   type     = "LOCAL"
-#   provider = aws.workload_ap-south-1
-# }
+resource "aws_resourceexplorer2_index" "ap-south-1" {
+  type     = "LOCAL"
+  provider = aws.workload_ap-south-1
+}
 
-# resource "aws_resourceexplorer2_index" "ap-northeast-3" {
-#   type     = "LOCAL"
-#   provider = aws.workload_ap-northeast-3
-# }
+resource "aws_resourceexplorer2_index" "ap-northeast-3" {
+  type     = "LOCAL"
+  provider = aws.workload_ap-northeast-3
+}
 
-# resource "aws_resourceexplorer2_index" "ap-northeast-2" {
-#   type     = "LOCAL"
-#   provider = aws.workload_ap-northeast-2
-# }
+resource "aws_resourceexplorer2_index" "ap-northeast-2" {
+  type     = "LOCAL"
+  provider = aws.workload_ap-northeast-2
+}
 
-# resource "aws_resourceexplorer2_index" "ap-southeast-1" {
-#   type     = "LOCAL"
-#   provider = aws.workload_ap-southeast-1
-# }
+resource "aws_resourceexplorer2_index" "ap-southeast-1" {
+  type     = "LOCAL"
+  provider = aws.workload_ap-southeast-1
+}
 
-# resource "aws_resourceexplorer2_index" "ap-southeast-2" {
-#   type     = "LOCAL"
-#   provider = aws.workload_ap-southeast-2
-# }
+resource "aws_resourceexplorer2_index" "ap-southeast-2" {
+  type     = "LOCAL"
+  provider = aws.workload_ap-southeast-2
+}
 
-# resource "aws_resourceexplorer2_index" "ap-northeast-1" {
-#   type     = "LOCAL"
-#   provider = aws.workload_ap-northeast-1
-# }
+resource "aws_resourceexplorer2_index" "ap-northeast-1" {
+  type     = "LOCAL"
+  provider = aws.workload_ap-northeast-1
+}
 
-# resource "aws_resourceexplorer2_index" "ca-central-1" {
-#   type     = "LOCAL"
-#   provider = aws.workload_ca-central-1
-# }
+resource "aws_resourceexplorer2_index" "ca-central-1" {
+  type     = "LOCAL"
+  provider = aws.workload_ca-central-1
+}
 
-# resource "aws_resourceexplorer2_index" "eu-west-1" {
-#   type     = "LOCAL"
-#   provider = aws.workload_eu-west-1
-# }
+resource "aws_resourceexplorer2_index" "eu-west-1" {
+  type     = "LOCAL"
+  provider = aws.workload_eu-west-1
+}
 
-# resource "aws_resourceexplorer2_index" "eu-west-2" {
-#   type     = "LOCAL"
-#   provider = aws.workload_eu-west-2
-# }
+resource "aws_resourceexplorer2_index" "eu-west-2" {
+  type     = "LOCAL"
+  provider = aws.workload_eu-west-2
+}
 
-# resource "aws_resourceexplorer2_index" "eu-west-3" {
-#   type     = "LOCAL"
-#   provider = aws.workload_eu-west-3
-# }
+resource "aws_resourceexplorer2_index" "eu-west-3" {
+  type     = "LOCAL"
+  provider = aws.workload_eu-west-3
+}
 
-# resource "aws_resourceexplorer2_index" "eu-north-1" {
-#   type     = "LOCAL"
-#   provider = aws.workload_eu-north-1
-# }
+resource "aws_resourceexplorer2_index" "eu-north-1" {
+  type     = "LOCAL"
+  provider = aws.workload_eu-north-1
+}
 
-# resource "aws_resourceexplorer2_index" "sa-east-1" {
-#   type     = "LOCAL"
-#   provider = aws.workload_sa-east-1
-# }
+resource "aws_resourceexplorer2_index" "sa-east-1" {
+  type     = "LOCAL"
+  provider = aws.workload_sa-east-1
+}
