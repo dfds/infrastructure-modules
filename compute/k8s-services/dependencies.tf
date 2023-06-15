@@ -296,7 +296,8 @@ locals {
     PRODUCTION_AWS_ACCOUNT_MANIFESTS_KAFKA_BROKER                    = var.aws_account_manifests_kafka_broker
     PRODUCTION_AWS_ACCOUNT_MANIFESTS_KAFKA_USERNAME                  = var.aws_account_manifests_kafka_username
     PRODUCTION_AWS_ACCOUNT_MANIFESTS_KAFKA_PASSWORD                  = var.aws_account_manifests_kafka_password
+    PRODUCTION_AWS_ACCOUNT_MANIFESTS_HARDENED_MONITORING_SLACK_TOKEN = var.aws_account_manifests_hardened_monitoring_slack_token
   }
 
-  atlantis_env_vars = var.crossplane_deploy ? merge(local.atlantis_env_vars_default, local.confluent_env_vars_for_atlantis): local.atlantis_env_vars_default
+  atlantis_env_vars = var.crossplane_deploy ? merge(local.atlantis_env_vars_default, local.confluent_env_vars_for_atlantis) : local.atlantis_env_vars_default
 }
