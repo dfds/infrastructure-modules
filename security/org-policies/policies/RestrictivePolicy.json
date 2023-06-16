@@ -121,6 +121,7 @@
             "NotAction": [
                 "access-analyzer:*",
                 "account:Get*",
+                "account:ListRegions",
                 "account:PutAlternateContact",
                 "account:DeleteAlternateContact",
                 "acm:*",
