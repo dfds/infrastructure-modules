@@ -130,6 +130,22 @@ variable "hardened_monitoring_slack_token" {
   default   = null
 }
 
+variable "hardened_security_contact_name" {
+  type = string
+}
+
+variable "hardened_security_contact_title" {
+  type = string
+}
+
+variable "hardened_security_contact_email" {
+  type = string
+}
+
+variable "hardened_security_contact_phone_number" {
+  type = string
+}
+
 variable "aws_region_sso" {
   type    = string
   default = "eu-west-1"
