@@ -121,6 +121,7 @@
             "NotAction": [
                 "access-analyzer:*",
                 "account:Get*",
+                "account:PutAlternateContact",
                 "acm:*",
                 "aws-marketplace:*",
                 "aws-portal:*",

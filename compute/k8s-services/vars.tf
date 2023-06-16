@@ -613,6 +613,12 @@ variable "aws_account_manifests_kafka_password" {
   description = "Used by Atlantis for the AWS Account Manifests pipeline"
 }
 
+variable "aws_account_manifests_hardened_monitoring_slack_token" {
+  type        = string
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "Used by Atlantis for the AWS Account Manifests pipeline"
+}
+
 variable "atlantis_staging_aws_access_key" {
   type        = string
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable

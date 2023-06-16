@@ -15,6 +15,6 @@ output "org_role_name" {
 }
 
 output "org_role_arn" {
-  value = "arn:aws:iam::${aws_organizations_account.org_account.id}:role/${aws_organizations_account.org_account.role_name}"
+  value = "arn:aws:iam::${aws_organizations_account.org_account.id}:role/${var.org_role_name}"
 }
 

@@ -8,6 +8,10 @@ resource "aws_organizations_account" "org_account" {
   provisioner "local-exec" {
     command = "sleep ${var.sleep_after}"
   }
+
+  lifecycle {
+    ignore_changes = [role_name, iam_user_access_to_billing]
+  }
 }
 
 resource "null_resource" "ubsubscribe_spam" {

@@ -437,7 +437,7 @@ resource "aws_sns_topic" "cis_controls" {
 }
 
 resource "aws_sns_topic_subscription" "cis_controls" {
-  count     = var.harden ? 1 : 0
+  count     = var.harden && var.hardened_monitoring_email != null ? 1 : 0
   topic_arn = aws_sns_topic.cis_controls[count.index].arn
   protocol  = "email"
   endpoint  = var.hardened_monitoring_email
@@ -463,6 +463,21 @@ module "cloudtrail_local" {
   trail_name       = "cloudtrail-local-${var.capability_root_id}"
   create_log_group = var.harden
   create_kms_key   = var.harden
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "security-bot" {
+  source                    = "../../_sub/security/security-bot"
+  deploy                    = var.harden && var.hardened_monitoring_slack_channel != null && var.hardened_monitoring_slack_token != null
+  name                      = "security-bot"
+  slack_token               = var.hardened_monitoring_slack_token
+  slack_channel             = var.hardened_monitoring_slack_channel
+  alarm_sns_topic_arn       = try(aws_sns_topic.cis_controls[0].arn, null)
+  cloudwatch_logs_group_arn = module.cloudtrail_local.cloudwatch_logs_group_arn
+  capability_root_id        = var.capability_root_id
 
   providers = {
     aws = aws.workload
