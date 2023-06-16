@@ -112,6 +112,24 @@ data "aws_iam_policy_document" "key_policy" {
     }
   }
 
+  # This statement is primarily to allow the AWS Config recorder
+  # to be able to record monitor the configuration of this key.
+  statement {
+    sid    = "AllowMetadataAccess"
+    effect = "Allow"
+    actions = [
+      "kms:DescribeKey",
+      "kms:GetKeyPolicy",
+      "kms:GetKeyRotationStatus",
+    ]
+    resources = ["*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+  }
+
   statement {
     sid    = "AllowAdminAccess"
     effect = "Allow"
