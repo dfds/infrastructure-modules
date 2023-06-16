@@ -137,6 +137,7 @@
                 "cloudwatch:PutMetricAlarm",
                 "cloudwatch:DescribeAlarm*",
                 "dynamoDB:DescribeTable",
+                "ec2:DescribeRegions",
                 "ecr:BatchGetImage",
                 "ecr:Describe*",
                 "ecr:Get*",
