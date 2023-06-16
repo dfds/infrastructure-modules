@@ -518,6 +518,17 @@ module "config_local_2" {
   }
 }
 
+resource "aws_account_alternate_contact" "security" {
+  count                  = var.harden ? 1 : 0
+  alternate_contact_type = "SECURITY"
+  name                   = var.hardened_security_contact_name
+  title                  = var.hardened_security_contact_title
+  email_address          = join("+${var.name}@", split("@", var.hardened_security_contact_email))
+  phone_number           = var.hardened_security_contact_phone_number
+
+  provider = aws.workload
+}
+
 # --------------------------------------------------
 # Default VPC flow logging
 # --------------------------------------------------
