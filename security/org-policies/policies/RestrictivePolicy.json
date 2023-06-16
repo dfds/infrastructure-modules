@@ -122,6 +122,7 @@
                 "access-analyzer:*",
                 "account:Get*",
                 "account:PutAlternateContact",
+                "account:DeleteAlternateContact",
                 "acm:*",
                 "aws-marketplace:*",
                 "aws-portal:*",
