@@ -121,7 +121,9 @@
             "NotAction": [
                 "access-analyzer:*",
                 "account:Get*",
+                "account:ListRegions",
                 "account:PutAlternateContact",
+                "account:DeleteAlternateContact",
                 "acm:*",
                 "aws-marketplace:*",
                 "aws-portal:*",
