@@ -154,6 +154,7 @@
                 "s3:List*",
                 "shield:*",
                 "sts:*",
+                "ssm:DescribeParameters",
                 "support:*",
                 "elasticloadbalancing:*",
                 "apigateway:*",
