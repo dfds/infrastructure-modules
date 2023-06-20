@@ -343,6 +343,114 @@ resource "aws_sns_topic_subscription" "cis_controls" {
   provider = aws.workload
 }
 
+resource "aws_sns_topic" "compliance_changes" {
+  count = var.harden ? 1 : 0
+  name  = "compliance-change-alarms"
+
+  provider = aws.workload
+}
+
+resource "aws_sns_topic_subscription" "compliance_changes" {
+  count     = var.harden && var.hardened_monitoring_email != null ? 1 : 0
+  topic_arn = aws_sns_topic.compliance_changes[count.index].arn
+  protocol  = "email"
+  endpoint  = var.hardened_monitoring_email
+
+  provider = aws.workload
+}
+
+resource "aws_cloudwatch_event_rule" "compliance_changes" {
+  count       = var.harden ? 1 : 0
+  name_prefix = "compliance-changes"
+  description = "Config Rules Compliance Change"
+
+  event_pattern = jsonencode({
+    "source" : ["aws.config"],
+    "detail-type" : ["Config Rules Compliance Change"],
+    "detail" : {
+      "configRuleName" : [
+        # Checks whether the active access keys are rotated within the number
+        # of days specified in maxAccessKeyAge. The rule is non-compliant if
+        # the access keys have not been rotated for more than maxAccessKeyAge
+        # number of days.
+        { "prefix" : "access-keys-rotated-conformance-pack" },
+        # Checks whether your AWS Identity and Access Management (IAM) users
+        # have passwords or active access keys that have not been used within
+        # the specified number of days you provided.
+        { "prefix" : "iam-user-unused-credentials-check-conformance-pack" }
+      ]
+    }
+  })
+  provider = aws.workload
+}
+
+data "aws_iam_policy_document" "sns_compliance_changes_access" {
+  count = var.harden ? 1 : 0
+
+  statement {
+    sid    = "Default"
+    effect = "Allow"
+    actions = [
+      "SNS:Subscribe",
+      "SNS:SetTopicAttributes",
+      "SNS:RemovePermission",
+      "SNS:Receive",
+      "SNS:Publish",
+      "SNS:ListSubscriptionsByTopic",
+      "SNS:GetTopicAttributes",
+      "SNS:DeleteTopic",
+      "SNS:AddPermission",
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceOwner"
+
+      values = [module.org_account.id]
+    }
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    resources = [
+      aws_sns_topic.compliance_changes[count.index].arn,
+    ]
+  }
+
+  statement {
+    sid    = "PublishEvents"
+    effect = "Allow"
+    actions = [
+      "SNS:Publish",
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
+    }
+
+    resources = [
+      aws_sns_topic.compliance_changes[count.index].arn,
+    ]
+  }
+}
+
+resource "aws_sns_topic_policy" "compliance_changes" {
+  count    = var.harden ? 1 : 0
+  arn      = aws_sns_topic.compliance_changes[count.index].arn
+  policy   = data.aws_iam_policy_document.sns_compliance_changes_access[count.index].json
+  provider = aws.workload
+}
+
+resource "aws_cloudwatch_event_target" "compliance_changes" {
+  count    = var.harden ? 1 : 0
+  rule     = aws_cloudwatch_event_rule.compliance_changes[count.index].name
+  arn      = aws_sns_topic.compliance_changes[count.index].arn
+  provider = aws.workload
+}
+
 module "cloudtrail_s3_local" {
   source           = "../../_sub/storage/s3-cloudtrail-bucket"
   create_s3_bucket = var.harden
@@ -368,14 +476,15 @@ module "cloudtrail_local" {
 }
 
 module "security-bot" {
-  source                    = "../../_sub/security/security-bot"
-  deploy                    = var.harden && var.hardened_monitoring_slack_channel != null && var.hardened_monitoring_slack_token != null
-  name                      = "security-bot"
-  slack_token               = var.hardened_monitoring_slack_token
-  slack_channel             = var.hardened_monitoring_slack_channel
-  alarm_sns_topic_arn       = try(aws_sns_topic.cis_controls[0].arn, null)
-  cloudwatch_logs_group_arn = module.cloudtrail_local.cloudwatch_logs_group_arn
-  capability_root_id        = var.capability_root_id
+  source                           = "../../_sub/security/security-bot"
+  deploy                           = var.harden && var.hardened_monitoring_slack_channel != null && var.hardened_monitoring_slack_token != null
+  name                             = "security-bot"
+  slack_token                      = var.hardened_monitoring_slack_token
+  slack_channel                    = var.hardened_monitoring_slack_channel
+  capability_root_id               = var.capability_root_id
+  cloudwatch_logs_group_arn        = module.cloudtrail_local.cloudwatch_logs_group_arn
+  sns_topic_arn_cis_controls       = try(aws_sns_topic.cis_controls[0].arn, null)
+  sns_topic_arn_compliance_changes = try(aws_sns_topic.compliance_changes[0].arn, null)
 
   providers = {
     aws = aws.workload
