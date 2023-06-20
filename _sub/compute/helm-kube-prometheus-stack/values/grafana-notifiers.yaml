@@ -17,8 +17,3 @@ grafana:
             uploadImage: true
             url: ${grafana_slack_webhook}
             username: alertbot
-  grafana.ini:
-    unified_alerting:
-      enabled: false
-    alerting:
-      enabled: true
