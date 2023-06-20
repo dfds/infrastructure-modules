@@ -15,4 +15,5 @@ module "cloudtrail_central" {
   create_log_group            = true
   log_group_retention_in_days = var.log_group_retention_in_days
   create_kms_key              = true
+  kms_key_user_accounts       = var.kms_key_user_accounts
 }
