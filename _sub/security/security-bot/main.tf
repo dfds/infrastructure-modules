@@ -131,6 +131,7 @@ data "aws_iam_policy_document" "key_policy" {
       "kms:DescribeKey",
       "kms:GetKeyPolicy",
       "kms:GetKeyRotationStatus",
+      "kms:ListResourceTags"
     ]
     resources = ["*"]
 
