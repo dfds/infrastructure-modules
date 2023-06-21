@@ -223,6 +223,18 @@ data "aws_iam_policy_document" "lambda" {
 
     resources = [aws_kms_key.key[0].arn]
   }
+
+  statement {
+    sid    = "ReadIam"
+    effect = "Allow"
+    actions = [
+      "iam:ListUsers",
+      "iam:ListAccessKeys",
+      "iam:GetAccessKeyLastUsed"
+    ]
+
+    resources = ["*"]
+  }
 }
 
 resource "aws_iam_policy" "lambda_policy" {
