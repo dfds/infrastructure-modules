@@ -37,3 +37,8 @@ variable "create_kms_key" {
   description = "Specifies whether a KMS customer-managed key should be created for the enabling server side encryption on the CloudTrail logs."
   default     = false
 }
+
+variable "kms_key_user_accounts" {
+  type = list(string)
+  default = []
+}

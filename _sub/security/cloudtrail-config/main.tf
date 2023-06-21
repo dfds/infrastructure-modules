@@ -80,6 +80,24 @@ data "aws_iam_policy_document" "key_policy" {
     }
   }
 
+  dynamic "statement" {
+    for_each = var.kms_key_user_accounts
+    content {
+      sid    = "AllowCloudTrailUserAccess${statement.value}"
+      effect = "Allow"
+      actions = [
+        "kms:Describe*",
+        "kms:Decrypt",
+      ]
+      resources = [aws_kms_key.key[count.index].arn]
+
+      principals {
+        type        = "AWS"
+        identifiers = ["arn:aws:iam::${statement.value}:root"]
+      }
+    }
+  }
+
   statement {
     sid    = "AllowCloudTrailAdminAccess"
     effect = "Allow"
