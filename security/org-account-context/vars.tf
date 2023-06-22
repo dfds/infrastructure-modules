@@ -166,3 +166,21 @@ variable "aws_region_2" {
   description = "Terraform has limitations that prevent us from dynamically creating AWS providers for each region, so instead of providing a list of regions we will specifiy an incremented set of variables to deploy resources across multiple regions."
   default     = "eu-west-1"
 }
+
+variable "repositories" {
+  type = list(object({
+    repository_name = string
+    branches        = list(string)
+  }))
+  description = "List of repositories to authenticate to AWS from. Each object contains repository name and list of branches that should be allowed to deploy from"
+  default     = []
+}
+
+variable "oidc_role_access" {
+  type = list(object({
+    actions   = list(string)
+    resources = list(string)
+  }))
+  description = "List of allowed actions for the oidc-role"
+  default     = []
+}
