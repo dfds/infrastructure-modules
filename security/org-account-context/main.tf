@@ -369,15 +369,14 @@ resource "aws_cloudwatch_event_rule" "compliance_changes" {
     "detail-type" : ["Config Rules Compliance Change"],
     "detail" : {
       "configRuleName" : [
-        # Checks whether the active access keys are rotated within the number
-        # of days specified in maxAccessKeyAge. The rule is non-compliant if
-        # the access keys have not been rotated for more than maxAccessKeyAge
-        # number of days.
         { "prefix" : "access-keys-rotated-conformance-pack" },
-        # Checks whether your AWS Identity and Access Management (IAM) users
-        # have passwords or active access keys that have not been used within
-        # the specified number of days you provided.
-        { "prefix" : "iam-user-unused-credentials-check-conformance-pack" }
+        { "prefix" : "iam-user-unused-credentials-check-conformance-pack" },
+        { "prefix" : "securityhub-nacl-no-unrestricted-ssh-rdp" },
+        { "prefix" : "securityhub-s3-bucket-level-public-access-prohibited" },
+        { "prefix" : "securityhub-vpc-flow-logs-enabled" },
+        { "prefix" : "securityhub-cmk-backing-key-rotation-enabled" },
+        { "prefix" : "securityhub-rds-storage-encrypted" },
+        { "prefix" : "securityhub-s3-bucket-server-side-encryption-enabled" },
       ]
     }
   })
