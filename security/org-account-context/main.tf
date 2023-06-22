@@ -997,3 +997,15 @@ resource "aws_resourceexplorer2_index" "eu-west-1" {
 
   provider = aws.workload_eu-west-1
 }
+
+# --------------------------------------------------
+# Github OIDC provider
+# --------------------------------------------------
+
+module "github_oidc_provider" {
+  count  = length(var.repositories) > 0 && length(var.oidc_role_access) > 0 ? 1 : 0
+  source = "../../_sub/security/iam-github-oidc-provider"
+
+  repositories     = var.repositories
+  oidc_role_access = var.oidc_role_access
+}
