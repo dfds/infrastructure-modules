@@ -271,6 +271,7 @@ resource "aws_lambda_function" "bot" {
   role          = aws_iam_role.lambda[0].arn
   handler       = "bootstrap"
   runtime       = "go1.x"
+  timeout       = 10
 
   # Source can be found at https://github.com/dfds/security-bot
   source_code_hash = filebase64sha256("${path.module}/lambda/security-bot.zip")
