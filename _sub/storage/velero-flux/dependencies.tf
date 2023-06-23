@@ -85,7 +85,11 @@ spec:
     configuration:
       logLevel: ${var.log_level}
       backupStorageLocation:
+      - name: velero-storage
+        provider: aws
         bucket: ${var.bucket_name}
+        config:
+          region: eu-west-1
     serviceAccount:
       server:
         create: true
