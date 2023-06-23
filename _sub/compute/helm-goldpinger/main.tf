@@ -1,7 +1,7 @@
 resource "helm_release" "goldpinger" {
   name          = "goldpinger"
   chart         = "goldpinger"
-  repository    = "https://charts.helm.sh/stable"
+  repository    = "https://okgolove.github.io/helm-charts/"
   version       = var.chart_version
   namespace     = var.namespace
   recreate_pods = true

@@ -204,7 +204,7 @@ variable "monitoring_goldpinger_deploy" {
 variable "monitoring_goldpinger_chart_version" {
   type        = string
   description = "Goldpinger helm chart version"
-  default     = null
+  default     = "6.0.1"
 }
 
 variable "monitoring_goldpinger_priority_class" {

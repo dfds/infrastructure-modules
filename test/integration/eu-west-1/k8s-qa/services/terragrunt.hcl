@@ -156,7 +156,8 @@ inputs = {
   # Goldpinger
   # --------------------------------------------------
 
-  monitoring_goldpinger_deploy = true
+  monitoring_goldpinger_deploy        = true
+  monitoring_goldpinger_chart_version = "6.0.1"
 
   # --------------------------------------------------
   # Crossplane
