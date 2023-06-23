@@ -85,7 +85,10 @@ spec:
     configuration:
       logLevel: ${var.log_level}
       backupStorageLocation:
+      - provider: aws
         bucket: ${var.bucket_name}
+        config:
+          region: eu-west-1
     serviceAccount:
       server:
         create: true
