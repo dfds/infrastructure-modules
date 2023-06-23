@@ -3,11 +3,11 @@
 WORKDIR=$(pwd)
 PARENT_DIR="${1:-$WORKDIR}"
 
-echo "WORKDIR=$WORKDIR"
+echo "WORKDIR=${WORKDIR}"
 
-echo "PARENT_DIR=$PARENT_DIR"
+echo "PARENT_DIR=${PARENT_DIR}"
 
-cd "$PARENT_DIR/eu-west-1/k8s-qa/cluster" || return
+cd "${PARENT_DIR}/eu-west-1/k8s-qa/cluster" || return
 
 echo "Finding KUBECONFIG..."
 
@@ -15,15 +15,21 @@ unset KUBECONFIG
 KUBECONFIG=$(terragrunt output --raw kubeconfig_path)
 export KUBECONFIG
 
-echo "KUBECONFIG=$KUBECONFIG"
+echo "KUBECONFIG=${KUBECONFIG}"
 
-cd "$PARENT_DIR/eu-west-1/k8s-qa/services" || return
+cd "${PARENT_DIR}/eu-west-1/k8s-qa/services" || return
 
-MUTE_ME=$(kubectl get crd ingressroutes.traefik.io --output=custom-columns=NAME:.metadata.name --no-headers)
+MAJOR_VERSION=$(kubectl get deployment monitoring-kube-prometheus-operator -n monitoring -o custom-columns=VERSION:.metadata.labels.chart --no-headers | cut -d '-' -f4 | cut -d '.' -f1)
 
-if [[ $? -ne 0 ]]; then
-	curl -LO --silent https://github.com/traefik/traefik-helm-chart/releases/download/v23.1.0/traefik.yaml
-	if [[ -f "./traefik.yaml" ]]; then
-		kubectl apply -f ./traefik.yaml || true
-	fi
+if [[ ${MAJOR_VERSION} -eq 46 ]]; then
+	kubectl apply --server-side --force-conflicts -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagerconfigs.yaml
+	kubectl apply --server-side --force-conflicts -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml
+	kubectl apply --server-side --force-conflicts -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
+	kubectl apply --server-side --force-conflicts -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_probes.yaml
+	kubectl apply --server-side --force-conflicts -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusagents.yaml
+	kubectl apply --server-side --force-conflicts -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml
+	kubectl apply --server-side --force-conflicts -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml
+	kubectl apply --server-side --force-conflicts -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_scrapeconfigs.yaml
+	kubectl apply --server-side --force-conflicts -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
+	kubectl apply --server-side --force-conflicts -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml
 fi
