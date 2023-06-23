@@ -85,8 +85,7 @@ spec:
     configuration:
       logLevel: ${var.log_level}
       backupStorageLocation:
-      - name: velero-storage
-        provider: velero.io/aws
+      - provider: velero.io/aws
         bucket: ${var.bucket_name}
         config:
           region: eu-west-1
