@@ -156,6 +156,7 @@
                 "shield:*",
                 "sts:*",
                 "ssm:DescribeParameters",
+                "sso:DescribeRegisteredRegions",
                 "support:*",
                 "elasticloadbalancing:*",
                 "apigateway:*",
