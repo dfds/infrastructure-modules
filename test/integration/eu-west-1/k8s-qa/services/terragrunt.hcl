@@ -187,7 +187,7 @@ inputs = {
 
   atlantis_deploy       = true
   atlantis_ingress      = "atlantis.qa-alias1.dfds.cloud"
-  atlantis_image_tag    = "0.0.38"
+  atlantis_image_tag    = "0.0.43"
   atlantis_data_storage = "1Gi"
 
   atlantis_resources_requests_cpu    = "10m"
@@ -197,7 +197,7 @@ inputs = {
   atlantis_github_repositories = ["dfds/qa-dummy-atlantis"]
   atlantis_github_owner        = "dfds"
   atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
-  atlantis_chart_version       = "4.1.2"
+  atlantis_chart_version       = "4.13.1"
 
   # --------------------------------------------------
   # Blackbox Exporter
