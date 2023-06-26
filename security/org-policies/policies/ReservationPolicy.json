@@ -26,10 +26,7 @@
         {
             "Sid": "RDSDenyAccessToRI",
             "Effect": "Deny",
-            "Action": [
-                "rds:DescribeReservedDBInstancesOfferings",
-                "rds:PurchaseReservedDBInstancesOffering"
-            ],
+            "Action": ["rds:PurchaseReservedDBInstancesOffering"],
             "Resource": ["*"],
             "Condition": {
                 "StringNotLike": {
@@ -44,10 +41,7 @@
         {
             "Sid": "ElastiCacheDenyAccessToRI",
             "Effect": "Deny",
-            "Action": [
-                "elasticache:DescribeReservedCacheNodesOfferings",
-                "elasticache:PurchaseReservedCacheNodesOffering"
-            ],
+            "Action": ["elasticache:PurchaseReservedCacheNodesOffering"],
             "Resource": ["*"],
             "Condition": {
                 "StringNotLike": {
@@ -63,8 +57,6 @@
             "Sid": "ESDenyAccessToRI",
             "Effect": "Deny",
             "Action": [
-                "es:DescribeReservedElasticsearchInstanceOfferings",
-                "es:DescribeReservedInstanceOfferings",
                 "es:PurchaseReservedElasticsearchInstanceOffering",
                 "es:PurchaseReservedInstanceOffering"
             ],
@@ -82,10 +74,7 @@
         {
             "Sid": "RedShiftDenyAccessToRI",
             "Effect": "Deny",
-            "Action": [
-                "redshift:DescribeReservedNodeOfferings",
-                "redshift:PurchaseReservedNodeOffering"
-            ],
+            "Action": ["redshift:PurchaseReservedNodeOffering"],
             "Resource": ["*"],
             "Condition": {
                 "StringNotLike": {
@@ -100,10 +89,7 @@
         {
             "Sid": "DynamoDbDenyAccessToRI",
             "Effect": "Deny",
-            "Action": [
-                "dynamodb:DescribeReservedCapacityOfferings",
-                "dynamodb:PurchaseReservedCapacityOfferings"
-            ],
+            "Action": ["dynamodb:PurchaseReservedCapacityOfferings"],
             "Resource": ["*"],
             "Condition": {
                 "StringNotLike": {
