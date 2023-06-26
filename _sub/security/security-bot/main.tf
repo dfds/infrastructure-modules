@@ -193,6 +193,16 @@ data "aws_iam_policy_document" "lambda" {
   }
 
   statement {
+    sid    = "PublishMessages"
+    effect = "Allow"
+    actions = [
+      "sqs:SendMessage",
+    ]
+
+    resources = [aws_sqs_queue.queue[0].arn]
+  }
+
+  statement {
     sid    = "CloudTrailLogs"
     effect = "Allow"
     actions = [
@@ -232,6 +242,16 @@ data "aws_iam_policy_document" "lambda" {
       "iam:ListUsers",
       "iam:ListAccessKeys",
       "iam:GetAccessKeyLastUsed"
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "CheckConfigControlComplianceStatus"
+    effect = "Allow"
+    actions = [
+      "config:GetComplianceDetailsByConfigRule",
     ]
 
     resources = ["*"]
@@ -283,6 +303,7 @@ resource "aws_lambda_function" "bot" {
       CAPABILITY_ROOT_ID               = var.capability_root_id
       SNS_TOPIC_ARN_CIS_CONTROLS       = var.sns_topic_arn_cis_controls
       SNS_TOPIC_ARN_COMPLIANCE_CHANGES = var.sns_topic_arn_compliance_changes
+      SQS_FOLLOW_UP_QUEUE_URL          = aws_sqs_queue.queue[0].id # `id` provides the URL
     }
   }
 }
