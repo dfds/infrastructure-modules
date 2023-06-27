@@ -16,7 +16,9 @@
             ],
             "Condition": {
                 "StringNotLike": {
-                    "aws:PrincipalArn": ["arn:aws:iam::*:role/OrgRole"]
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/OrgRole"
+                    ]
                 }
             }
         },
@@ -30,7 +32,9 @@
                 "iam:EnableMFADevice",
                 "iam:ResyncMFADevice"
             ],
-            "Resource": ["*"],
+            "Resource": [
+                "*"
+            ],
             "Condition": {
                 "StringNotLike": {
                     "aws:PrincipalArn": [
@@ -67,10 +71,14 @@
                 "iam:UpdateSAMLProvider",
                 "iam:UpdateUser"
             ],
-            "Resource": ["*"],
+            "Resource": [
+                "*"
+            ],
             "Condition": {
                 "StringNotLike": {
-                    "aws:PrincipalArn": ["arn:aws:iam::*:role/OrgRole"]
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/OrgRole"
+                    ]
                 }
             }
         },
@@ -89,7 +97,9 @@
             ],
             "Condition": {
                 "StringNotLike": {
-                    "aws:PrincipalArn": ["arn:aws:iam::*:role/OrgRole"]
+                    "aws:PrincipalArn": [
+                        "arn:aws:iam::*:role/OrgRole"
+                    ]
                 }
             }
         },
@@ -113,7 +123,9 @@
                 "iam:UpdateRole",
                 "iam:UpdateRoleDescription"
             ],
-            "Resource": ["arn:aws:iam::*:role/OrgRole"]
+            "Resource": [
+                "arn:aws:iam::*:role/OrgRole"
+            ]
         },
         {
             "Sid": "CoreRegionOnly",
@@ -121,13 +133,15 @@
             "NotAction": [
                 "access-analyzer:*",
                 "account:Get*",
-                "account:ListRegions",
+                "account:List*",
                 "account:PutAlternateContact",
                 "account:DeleteAlternateContact",
                 "acm:*",
                 "aws-marketplace:*",
-                "aws-portal:*",
+                "billing:Get*",
+                "billing:List*",
                 "budgets:*",
+                "ce:CreateReport",
                 "ce:Describe*",
                 "ce:Get*",
                 "ce:List*",
@@ -136,20 +150,26 @@
                 "cloudwatch:List*",
                 "cloudwatch:PutMetricAlarm",
                 "cloudwatch:DescribeAlarm*",
-                "dynamoDB:DescribeTable",
-                "ec2:DescribeRegions",
+                "cur:Get*",
+                "dynamoDB:Describe*",
+                "ec2:Describe*",
                 "ecr:BatchGetImage",
                 "ecr:Describe*",
                 "ecr:Get*",
                 "ecr:List*",
                 "ecr-public:*",
+                "freetier:Get*",
                 "globalaccelerator:*",
                 "health:Describe*",
                 "iam:*",
                 "importexport:*",
+                "invoicing:Get*",
+                "invoicing:List*",
                 "kms:*",
                 "lambda:*",
                 "organizations:*",
+                "payments:Get*",
+                "payments:List*",
                 "route53:*",
                 "rds:Describe*",
                 "s3:GetStorageLens*",
@@ -159,6 +179,8 @@
                 "ssm:DescribeParameters",
                 "sso:DescribeRegisteredRegions",
                 "support:*",
+                "tax:Get*",
+                "tax:List*",
                 "elasticloadbalancing:*",
                 "apigateway:*",
                 "appsync:*",
@@ -166,16 +188,9 @@
                 "wafv2:*",
                 "waf:*",
                 "deepracer:*",
-                "logs:DescribeLogGroups",
-                "logs:DescribeLogStreams",
-                "logs:DescribeMetricFilters",
-                "logs:DescribeQueries",
-                "logs:DescribeQueryDefinitions",
-                "logs:GetLogEvents",
-                "logs:GetLogGroupFields",
-                "logs:GetLogRecord",
-                "logs:ListTagsLogGroup",
-                "logs:ListTagsForResource",
+                "logs:Describe*",
+                "logs:GetLog*",
+                "logs:ListTags*",
                 "logs:DescribeSubscriptionFilters",
                 "notifications:Get*",
                 "notifications:List*",
@@ -185,7 +200,10 @@
             "Resource": "*",
             "Condition": {
                 "StringNotLike": {
-                    "aws:RequestedRegion": ["eu-central-1", "eu-west-1"]
+                    "aws:RequestedRegion": [
+                        "eu-central-1",
+                        "eu-west-1"
+                    ]
                 }
             }
         },
@@ -201,7 +219,9 @@
                 "resource-explorer-2:Associate*",
                 "resource-explorer-2:Disassociate*"
             ],
-            "Resource": ["*"],
+            "Resource": [
+                "*"
+            ],
             "Condition": {
                 "StringNotLike": {
                     "aws:PrincipalArn": [
@@ -214,27 +234,12 @@
         {
             "Sid": "DenyCostManagement",
             "Effect": "Deny",
-            "Action": ["savingsplans:*"],
-            "Resource": ["*"],
-            "Condition": {
-                "StringNotLike": {
-                    "aws:PrincipalArn": [
-                        "arn:aws:iam::*:role/OrgRole",
-                        "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
-                        "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_Billing_*"
-                    ]
-                }
-            }
-        },
-        {
-            "Sid": "ReadOnlyBillingLegacyRemoveAfterJuly2023",
-            "Effect": "Deny",
             "Action": [
-                "aws-portal:ModifyAccount",
-                "aws-portal:ModifyBilling",
-                "aws-portal:ModifyPaymentMethods"
+                "savingsplans:*"
             ],
-            "Resource": ["*"],
+            "Resource": [
+                "*"
+            ],
             "Condition": {
                 "StringNotLike": {
                     "aws:PrincipalArn": [
@@ -264,7 +269,9 @@
                 "cloud9:*",
                 "managedblockchain:*"
             ],
-            "Resource": ["*"],
+            "Resource": [
+                "*"
+            ],
             "Condition": {
                 "StringNotLike": {
                     "aws:PrincipalArn": [
