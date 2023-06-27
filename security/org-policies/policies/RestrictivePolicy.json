@@ -251,27 +251,6 @@
             }
         },
         {
-            "Sid": "ReadOnlyBillingLegacyRemoveAfterJuly2023",
-            "Effect": "Deny",
-            "Action": [
-                "aws-portal:ModifyAccount",
-                "aws-portal:ModifyBilling",
-                "aws-portal:ModifyPaymentMethods"
-            ],
-            "Resource": [
-                "*"
-            ],
-            "Condition": {
-                "StringNotLike": {
-                    "aws:PrincipalArn": [
-                        "arn:aws:iam::*:role/OrgRole",
-                        "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
-                        "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_Billing_*"
-                    ]
-                }
-            }
-        },
-        {
             "Sid": "DenyDisallowedServices",
             "Effect": "Deny",
             "Action": [
