@@ -171,7 +171,9 @@
                 "payments:Get*",
                 "payments:List*",
                 "route53:*",
+                "route53domains:ListDomains",
                 "rds:Describe*",
+                "s3:GetBucketLocation",
                 "s3:GetStorageLens*",
                 "s3:List*",
                 "shield:*",
@@ -276,7 +278,8 @@
                 "StringNotLike": {
                     "aws:PrincipalArn": [
                         "arn:aws:iam::*:role/OrgRole",
-                        "arn:aws:iam::*:role/aws-config-recorder*"
+                        "arn:aws:iam::*:role/aws-config-recorder*",
+                        "arn:aws:iam::*:role/inventory"
                     ]
                 }
             }

@@ -122,8 +122,8 @@ data "aws_iam_policy_document" "key_policy" {
     }
   }
 
-  # This statement is primarily to allow the AWS Config recorder
-  # to be able to record monitor the configuration of this key.
+  # This statement is primarily to allow the AWS Config recorder and AWS Recon
+  # to be able to record/monitor the configuration of this key.
   statement {
     sid    = "AllowMetadataAccess"
     effect = "Allow"
@@ -131,6 +131,7 @@ data "aws_iam_policy_document" "key_policy" {
       "kms:DescribeKey",
       "kms:GetKeyPolicy",
       "kms:GetKeyRotationStatus",
+      "kms:ListGrants",
       "kms:ListResourceTags"
     ]
     resources = ["*"]
