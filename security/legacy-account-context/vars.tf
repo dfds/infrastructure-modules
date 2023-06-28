@@ -2,6 +2,12 @@ variable "aws_region" {
   type = string
 }
 
+variable "aws_session_name" {
+  type        = string
+  description = "An identifier for the AWS session name. This can be useful in identifiying which pipeline executed the Terraform."
+  default     = null
+}
+
 variable "master_account_id" {
   type        = string
   description = "The AWS account ID of the Organizations Master account"

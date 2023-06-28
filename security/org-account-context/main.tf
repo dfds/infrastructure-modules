@@ -7,7 +7,8 @@ provider "aws" {
 
   # Assume role in Master account
   assume_role {
-    role_arn = "arn:aws:iam::${var.master_account_id}:role/${var.prime_role_name}"
+    role_arn     = "arn:aws:iam::${var.master_account_id}:role/${var.prime_role_name}"
+    session_name = var.aws_session_name
   }
 }
 
@@ -22,7 +23,8 @@ provider "aws" {
 
   # Assume role in Shared account
   assume_role {
-    role_arn = "arn:aws:iam::${var.shared_account_id}:role/${var.prime_role_name}"
+    role_arn     = "arn:aws:iam::${var.shared_account_id}:role/${var.prime_role_name}"
+    session_name = var.aws_session_name
   }
 }
 
@@ -36,7 +38,8 @@ provider "aws" {
 
   # Assume the Organizational role in Workload account
   assume_role {
-    role_arn = module.org_account.org_role_arn
+    role_arn     = module.org_account.org_role_arn
+    session_name = var.aws_session_name
   }
 }
 
@@ -50,7 +53,8 @@ provider "aws" {
 
   # Assume the Organizational role in Workload account
   assume_role {
-    role_arn = module.org_account.org_role_arn
+    role_arn     = module.org_account.org_role_arn
+    session_name = var.aws_session_name
   }
 }
 
@@ -60,7 +64,8 @@ provider "aws" {
 
   # Assume role in Master account
   assume_role {
-    role_arn = "arn:aws:iam::${var.master_account_id}:role/${var.prime_role_name}"
+    role_arn     = "arn:aws:iam::${var.master_account_id}:role/${var.prime_role_name}"
+    session_name = var.aws_session_name
   }
 }
 
@@ -78,7 +83,8 @@ provider "aws" {
 
   # Assume the Organizational role in Workload account
   assume_role {
-    role_arn = module.org_account.org_role_arn
+    role_arn     = module.org_account.org_role_arn
+    session_name = var.aws_session_name
   }
 }
 provider "aws" {
@@ -91,7 +97,8 @@ provider "aws" {
 
   # Assume the Organizational role in Workload account
   assume_role {
-    role_arn = module.org_account.org_role_arn
+    role_arn     = module.org_account.org_role_arn
+    session_name = var.aws_session_name
   }
 }
 provider "aws" {
@@ -104,7 +111,8 @@ provider "aws" {
 
   # Assume the Organizational role in Workload account
   assume_role {
-    role_arn = module.org_account.org_role_arn
+    role_arn     = module.org_account.org_role_arn
+    session_name = var.aws_session_name
   }
 }
 
@@ -119,7 +127,8 @@ provider "aws" {
 
   # Assume the Organizational role in Workload account
   assume_role {
-    role_arn = module.org_account.org_role_arn
+    role_arn     = module.org_account.org_role_arn
+    session_name = var.aws_session_name
   }
 }
 provider "aws" {
@@ -132,7 +141,8 @@ provider "aws" {
 
   # Assume the Organizational role in Workload account
   assume_role {
-    role_arn = module.org_account.org_role_arn
+    role_arn     = module.org_account.org_role_arn
+    session_name = var.aws_session_name
   }
 }
 provider "aws" {
@@ -145,7 +155,8 @@ provider "aws" {
 
   # Assume the Organizational role in Workload account
   assume_role {
-    role_arn = module.org_account.org_role_arn
+    role_arn     = module.org_account.org_role_arn
+    session_name = var.aws_session_name
   }
 }
 provider "aws" {
@@ -158,7 +169,8 @@ provider "aws" {
 
   # Assume the Organizational role in Workload account
   assume_role {
-    role_arn = module.org_account.org_role_arn
+    role_arn     = module.org_account.org_role_arn
+    session_name = var.aws_session_name
   }
 }
 
@@ -988,7 +1000,7 @@ resource "aws_resourceexplorer2_index" "eu-west-1" {
 # --------------------------------------------------
 
 module "github_oidc_provider" {
-  count  = length(var.repositories) > 0 && length(var.oidc_role_access) > 0 ? 1 : 0
+  count = length(var.repositories) > 0 && length(var.oidc_role_access) > 0 ? 1 : 0
   providers = {
     aws = aws.workload
   }
