@@ -71,17 +71,6 @@ provider "aws" {
   }
 }
 
-provider "aws" {
-  region     = "eu-north-1"
-  alias      = "workload_eu-north-1"
-  access_key = var.access_key_master
-  secret_key = var.secret_key_master
-  assume_role {
-    role_arn     = module.org_account.org_role_arn
-    session_name = var.aws_session_name
-  }
-}
-
 # USA
 provider "aws" {
   region     = "us-east-1"
@@ -119,97 +108,6 @@ provider "aws" {
 provider "aws" {
   region     = "us-west-2"
   alias      = "workload_us-west-2"
-  access_key = var.access_key_master
-  secret_key = var.secret_key_master
-  assume_role {
-    role_arn     = module.org_account.org_role_arn
-    session_name = var.aws_session_name
-  }
-}
-# Asia Pacific
-provider "aws" {
-  region     = "ap-south-1"
-  alias      = "workload_ap-south-1"
-  access_key = var.access_key_master
-  secret_key = var.secret_key_master
-  assume_role {
-    role_arn     = module.org_account.org_role_arn
-    session_name = var.aws_session_name
-  }
-}
-
-provider "aws" {
-  region     = "ap-northeast-3"
-  alias      = "workload_ap-northeast-3"
-  access_key = var.access_key_master
-  secret_key = var.secret_key_master
-  assume_role {
-    role_arn     = module.org_account.org_role_arn
-    session_name = var.aws_session_name
-  }
-}
-
-provider "aws" {
-  region     = "ap-northeast-2"
-  alias      = "workload_ap-northeast-2"
-  access_key = var.access_key_master
-  secret_key = var.secret_key_master
-  assume_role {
-    role_arn     = module.org_account.org_role_arn
-    session_name = var.aws_session_name
-  }
-}
-
-
-provider "aws" {
-  region     = "ap-southeast-1"
-  alias      = "workload_ap-southeast-1"
-  access_key = var.access_key_master
-  secret_key = var.secret_key_master
-  assume_role {
-    role_arn     = module.org_account.org_role_arn
-    session_name = var.aws_session_name
-  }
-}
-
-provider "aws" {
-  region     = "ap-southeast-2"
-  alias      = "workload_ap-southeast-2"
-  access_key = var.access_key_master
-  secret_key = var.secret_key_master
-  assume_role {
-    role_arn     = module.org_account.org_role_arn
-    session_name = var.aws_session_name
-  }
-}
-
-provider "aws" {
-  region     = "ap-northeast-1"
-  alias      = "workload_ap-northeast-1"
-  access_key = var.access_key_master
-  secret_key = var.secret_key_master
-  assume_role {
-    role_arn     = module.org_account.org_role_arn
-    session_name = var.aws_session_name
-  }
-}
-
-# Canada
-provider "aws" {
-  region     = "ca-central-1"
-  alias      = "workload_ca-central-1"
-  access_key = var.access_key_master
-  secret_key = var.secret_key_master
-  assume_role {
-    role_arn     = module.org_account.org_role_arn
-    session_name = var.aws_session_name
-  }
-}
-
-# South America
-provider "aws" {
-  region     = "sa-east-1"
-  alias      = "workload_sa-east-1"
   access_key = var.access_key_master
   secret_key = var.secret_key_master
   assume_role {
@@ -305,41 +203,6 @@ resource "aws_resourceexplorer2_index" "us-west-2" {
   provider = aws.workload_us-west-2
 }
 
-# resource "aws_resourceexplorer2_index" "ap-south-1" {
-#   type     = "LOCAL"
-#   provider = aws.workload_ap-south-1
-# }
-
-# resource "aws_resourceexplorer2_index" "ap-northeast-3" {
-#   type     = "LOCAL"
-#   provider = aws.workload_ap-northeast-3
-# }
-
-# resource "aws_resourceexplorer2_index" "ap-northeast-2" {
-#   type     = "LOCAL"
-#   provider = aws.workload_ap-northeast-2
-# }
-
-# resource "aws_resourceexplorer2_index" "ap-southeast-1" {
-#   type     = "LOCAL"
-#   provider = aws.workload_ap-southeast-1
-# }
-
-# resource "aws_resourceexplorer2_index" "ap-southeast-2" {
-#   type     = "LOCAL"
-#   provider = aws.workload_ap-southeast-2
-# }
-
-# resource "aws_resourceexplorer2_index" "ap-northeast-1" {
-#   type     = "LOCAL"
-#   provider = aws.workload_ap-northeast-1
-# }
-
-# resource "aws_resourceexplorer2_index" "ca-central-1" {
-#   type     = "LOCAL"
-#   provider = aws.workload_ca-central-1
-# }
-
 resource "aws_resourceexplorer2_index" "eu-west-1" {
   type     = "LOCAL"
   provider = aws.workload_eu-west-1
@@ -354,13 +217,3 @@ resource "aws_resourceexplorer2_index" "eu-west-3" {
   type     = "LOCAL"
   provider = aws.workload_eu-west-3
 }
-
-# resource "aws_resourceexplorer2_index" "eu-north-1" {
-#   type     = "LOCAL"
-#   provider = aws.workload_eu-north-1
-# }
-
-# resource "aws_resourceexplorer2_index" "sa-east-1" {
-#   type     = "LOCAL"
-#   provider = aws.workload_sa-east-1
-# }
