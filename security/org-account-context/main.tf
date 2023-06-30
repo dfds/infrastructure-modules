@@ -448,6 +448,120 @@ resource "aws_cloudwatch_event_target" "compliance_changes" {
   provider = aws.workload
 }
 
+resource "aws_sns_topic" "guard_duty_findings" {
+  count = var.harden ? 1 : 0
+  name  = "guard-duty-finding-alarms"
+
+  provider = aws.workload
+}
+
+resource "aws_sns_topic_subscription" "guard_duty_findings" {
+  count     = var.harden && var.hardened_monitoring_email != null ? 1 : 0
+  topic_arn = aws_sns_topic.guard_duty_findings[count.index].arn
+  protocol  = "email"
+  endpoint  = var.hardened_monitoring_email
+
+  provider = aws.workload
+}
+
+resource "aws_cloudwatch_event_rule" "guard_duty_findings" {
+  count       = var.harden ? 1 : 0
+  name_prefix = "guard-duty-findings"
+  description = "Guard Duty Findings"
+
+  event_pattern = jsonencode({
+    "source" : ["aws.guardduty"],
+    "detail-type" : ["GuardDuty Finding"]
+  })
+  provider = aws.workload
+}
+
+resource "aws_cloudwatch_event_rule" "guard_duty_findings_2" {
+  count       = var.harden ? 1 : 0
+  name_prefix = "guard-duty-findings"
+  description = "Guard Duty Findings"
+
+  event_pattern = jsonencode({
+    "source" : ["aws.guardduty"],
+    "detail-type" : ["GuardDuty Finding"]
+  })
+  provider = aws.workload_2
+}
+
+data "aws_iam_policy_document" "sns_guard_duty_findings_access" {
+  count = var.harden ? 1 : 0
+
+  statement {
+    sid    = "Default"
+    effect = "Allow"
+    actions = [
+      "SNS:Subscribe",
+      "SNS:SetTopicAttributes",
+      "SNS:RemovePermission",
+      "SNS:Receive",
+      "SNS:Publish",
+      "SNS:ListSubscriptionsByTopic",
+      "SNS:GetTopicAttributes",
+      "SNS:DeleteTopic",
+      "SNS:AddPermission",
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceOwner"
+
+      values = [module.org_account.id]
+    }
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    resources = [
+      aws_sns_topic.guard_duty_findings[count.index].arn,
+    ]
+  }
+
+  statement {
+    sid    = "PublishEvents"
+    effect = "Allow"
+    actions = [
+      "SNS:Publish",
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
+    }
+
+    resources = [
+      aws_sns_topic.guard_duty_findings[count.index].arn,
+    ]
+  }
+}
+
+resource "aws_sns_topic_policy" "guard_duty_findings" {
+  count    = var.harden ? 1 : 0
+  arn      = aws_sns_topic.guard_duty_findings[count.index].arn
+  policy   = data.aws_iam_policy_document.sns_guard_duty_findings_access[count.index].json
+  provider = aws.workload
+}
+
+resource "aws_cloudwatch_event_target" "guard_duty_findings" {
+  count    = var.harden ? 1 : 0
+  rule     = aws_cloudwatch_event_rule.guard_duty_findings[count.index].name
+  arn      = aws_sns_topic.guard_duty_findings[count.index].arn
+  provider = aws.workload
+}
+
+resource "aws_cloudwatch_event_target" "guard_duty_findings_2" {
+  count    = var.harden ? 1 : 0
+  rule     = aws_cloudwatch_event_rule.guard_duty_findings_2[count.index].name
+  arn      = aws_sns_topic.guard_duty_findings[count.index].arn
+  provider = aws.workload_2
+}
+
 module "cloudtrail_s3_local" {
   source           = "../../_sub/storage/s3-cloudtrail-bucket"
   create_s3_bucket = var.harden
@@ -473,15 +587,16 @@ module "cloudtrail_local" {
 }
 
 module "security-bot" {
-  source                           = "../../_sub/security/security-bot"
-  deploy                           = var.harden && var.hardened_monitoring_slack_channel != null && var.hardened_monitoring_slack_token != null
-  name                             = "security-bot"
-  slack_token                      = var.hardened_monitoring_slack_token
-  slack_channel                    = var.hardened_monitoring_slack_channel
-  capability_root_id               = var.capability_root_id
-  cloudwatch_logs_group_arn        = module.cloudtrail_local.cloudwatch_logs_group_arn
-  sns_topic_arn_cis_controls       = try(aws_sns_topic.cis_controls[0].arn, null)
-  sns_topic_arn_compliance_changes = try(aws_sns_topic.compliance_changes[0].arn, null)
+  source                            = "../../_sub/security/security-bot"
+  deploy                            = var.harden && var.hardened_monitoring_slack_channel != null && var.hardened_monitoring_slack_token != null
+  name                              = "security-bot"
+  slack_token                       = var.hardened_monitoring_slack_token
+  slack_channel                     = var.hardened_monitoring_slack_channel
+  capability_root_id                = var.capability_root_id
+  cloudwatch_logs_group_arn         = module.cloudtrail_local.cloudwatch_logs_group_arn
+  sns_topic_arn_cis_controls        = try(aws_sns_topic.cis_controls[0].arn, null)
+  sns_topic_arn_compliance_changes  = try(aws_sns_topic.compliance_changes[0].arn, null)
+  sns_topic_arn_guard_duty_findings = try(aws_sns_topic.guard_duty_findings[0].arn, null)
 
   providers = {
     aws = aws.workload

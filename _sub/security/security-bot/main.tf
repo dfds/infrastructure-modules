@@ -42,6 +42,7 @@ data "aws_iam_policy_document" "sqs_policy" {
       values = [
         var.sns_topic_arn_cis_controls,
         var.sns_topic_arn_compliance_changes,
+        var.sns_topic_arn_guard_duty_findings,
       ]
     }
   }
@@ -67,6 +68,14 @@ resource "aws_sns_topic_subscription" "compliance_changes" {
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.queue[0].arn
 }
+
+resource "aws_sns_topic_subscription" "guard_duty_findings" {
+  count     = var.deploy ? 1 : 0
+  topic_arn = var.sns_topic_arn_guard_duty_findings
+  protocol  = "sqs"
+  endpoint  = aws_sqs_queue.queue[0].arn
+}
+
 
 data "aws_iam_policy_document" "trust" {
   count = var.deploy ? 1 : 0
@@ -299,12 +308,13 @@ resource "aws_lambda_function" "bot" {
 
   environment {
     variables = {
-      SLACK_TOKEN                      = aws_ssm_parameter.slack_token[0].name
-      SLACK_CHANNEL                    = var.slack_channel
-      CAPABILITY_ROOT_ID               = var.capability_root_id
-      SNS_TOPIC_ARN_CIS_CONTROLS       = var.sns_topic_arn_cis_controls
-      SNS_TOPIC_ARN_COMPLIANCE_CHANGES = var.sns_topic_arn_compliance_changes
-      SQS_FOLLOW_UP_QUEUE_URL          = aws_sqs_queue.queue[0].id # `id` provides the URL
+      SLACK_TOKEN                       = aws_ssm_parameter.slack_token[0].name
+      SLACK_CHANNEL                     = var.slack_channel
+      CAPABILITY_ROOT_ID                = var.capability_root_id
+      SNS_TOPIC_ARN_CIS_CONTROLS        = var.sns_topic_arn_cis_controls
+      SNS_TOPIC_ARN_COMPLIANCE_CHANGES  = var.sns_topic_arn_compliance_changes
+      SNS_TOPIC_ARN_GUARD_DUTY_FINDINGS = var.sns_topic_arn_guard_duty_findings
+      SQS_FOLLOW_UP_QUEUE_URL           = aws_sqs_queue.queue[0].id # `id` provides the URL
     }
   }
 }
