@@ -35,3 +35,8 @@ variable "sns_topic_arn_compliance_changes" {
   type        = string
   description = "The SNS topic where changes to AWS Config resource compliance are published."
 }
+
+variable "sns_topic_arn_guard_duty_findings" {
+  type        = string
+  description = "The SNS topic where GuardDuty findings are published."
+}
