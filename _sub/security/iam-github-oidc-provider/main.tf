@@ -27,7 +27,7 @@ data "aws_iam_policy_document" "trust" {
     }
     condition {
       test     = "StringLike"
-      values   = flatten([for k, v in { for repo in var.repositories : repo.repository_name => repo.branches } : formatlist("repo:%s:ref:refs/heads/%s", k, v)])
+      values   = flatten([for k, v in { for repo in var.repositories : repo.repository_name => repo.refs } : formatlist("repo:%s:ref:%s", k, v)])
       variable = "token.actions.githubusercontent.com:sub"
     }
   }
