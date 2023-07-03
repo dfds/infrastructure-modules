@@ -1,19 +1,67 @@
+variable "deploy_vault" {
+  type    = bool
+  default = true
+}
+
 variable "vault_name" {
-  description = "The name of the AWS Vault"
-  type        = string
+  type    = string
+  default = ""
+}
+
+variable "deploy_kms_key" {
+  type    = bool
+  default = true
+}
+
+variable "kms_key_arn" {
+  type    = string
+  default = ""
+}
+
+variable "deploy_backup_selection" {
+  type    = bool
+  default = true
+}
+
+variable "backup_selection_name" {
+  type    = string
+  default = ""
+}
+
+variable "backup_resources" {
+  type    = list(string)
+  default = []
+}
+
+variable "backup_rules" {
+  type = map(object({
+    schedule      = string
+    delete_after  = number
+  }))
+  default = {
+    "BackupRule" = {
+      schedule     = "cron(0 12 * * ? *)"
+      delete_after = 14
+    }
+  }
 }
 
 variable "iam_role_name" {
-  description = "The name of the IAM role for backup"
-  type        = string
-}
-
-variable "kms_key_alias" {
-  description = "The alias of the KMS key for encryption"
-  type        = string
+  type    = string
+  default = "aws-backup"
 }
 
 variable "backup_plan_name" {
-  description = "The name of the backup plan"
-  type        = string
+  type    = string
+  default = "backup-rds"
+}
+
+variable "tags" {
+  type    = map(string)
+  default = {}
+}
+
+variable "additional_tags" {
+  type    = map(string)
+  default = {}
 }
