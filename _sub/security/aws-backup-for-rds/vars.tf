@@ -1,4 +1,4 @@
-variable "deploy_vault" {
+variable "deploy" {
   type    = bool
   default = true
 }
@@ -51,17 +51,16 @@ variable "iam_role_name" {
   default = "aws-backup"
 }
 
+variable "iam_role_arn" {
+  type    = string
+}
+
 variable "backup_plan_name" {
   type    = string
   default = "backup-rds"
 }
 
 variable "tags" {
-  type    = map(string)
-  default = {}
-}
-
-variable "additional_tags" {
   type    = map(string)
   default = {}
 }
