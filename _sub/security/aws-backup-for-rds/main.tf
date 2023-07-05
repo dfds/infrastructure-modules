@@ -71,5 +71,14 @@ resource "aws_backup_selection" "selection" {
   iam_role_arn    = var.iam_role_arn
   plan_id         = aws_backup_plan.plan.id
   resources       = var.backup_resources
+  
+  dynamic "selection_tag" {
+    for_each = var.selection_tags
+    content {
+        type  = selection_tag.value.tag
+        key   = selection_tag.value.key
+        value = selection_tag.value.value
+    }
+  }
 }
 

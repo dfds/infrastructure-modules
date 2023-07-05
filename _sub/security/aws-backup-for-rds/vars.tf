@@ -64,3 +64,12 @@ variable "tags" {
   type    = map(string)
   default = {}
 }
+
+variable selection_tags {
+  type    = list(object({
+    type    = string
+    key     = string
+    value   = string
+  }))
+  default = []
+}
