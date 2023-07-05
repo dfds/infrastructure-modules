@@ -1061,6 +1061,16 @@ module "kafka_produce_account_created" {
 # AWS Resource Explorer Feature
 # --------------------------------------------------
 
+module "aws_resource_explorer-metrics" {
+  source = "../../_sub/monitoring/aws-resource-explorer-metrics"
+
+  allowed_assume_arn = "arn:aws:iam::${var.master_account_id}:role/aws-resource-exporter"
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
 resource "aws_resourceexplorer2_index" "aggregator" {
   type = "AGGREGATOR"
 
