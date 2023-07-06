@@ -70,6 +70,5 @@ spec:
     name: platform-apps-git
   path: ./sources
   prune: true
-  validation: client
   YAML
 }
