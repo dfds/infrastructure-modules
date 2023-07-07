@@ -120,6 +120,15 @@ variable "harden" {
   default = false
 }
 
+variable "security_bot_lambda_version" {
+  type = string
+}
+
+variable "security_bot_lambda_s3_bucket" {
+  type        = string
+  description = "The S3 bucket where the Security Bot Lambda package is stored."
+}
+
 variable "hardened_monitoring_email" {
   type    = string
   default = null

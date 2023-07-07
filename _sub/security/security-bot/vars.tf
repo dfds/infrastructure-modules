@@ -7,6 +7,15 @@ variable "name" {
   type = string
 }
 
+variable "lambda_version" {
+  type = string
+}
+
+variable "lambda_s3_bucket" {
+  type        = string
+  description = "The S3 bucket where the Lambda package is stored."
+}
+
 variable "slack_token" {
   type      = string
   sensitive = true
