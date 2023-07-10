@@ -375,6 +375,7 @@ resource "aws_cloudwatch_event_rule" "compliance_changes" {
         { "prefix" : "securityhub-cmk-backing-key-rotation-enabled" },
         { "prefix" : "securityhub-rds-storage-encrypted" },
         { "prefix" : "securityhub-s3-bucket-server-side-encryption-enabled" },
+        { "prefix" : "securityhub-vpc-default-security-group-closed" },
       ]
     }
   })
@@ -684,22 +685,6 @@ module "default_vpc_flow_log_2" {
   providers = {
     aws = aws.workload_2
   }
-}
-
-# --------------------------------------------------
-# Default security groups
-# --------------------------------------------------
-
-resource "aws_default_security_group" "default" {
-  count    = var.harden ? 1 : 0
-  vpc_id   = aws_default_vpc.default[count.index].id
-  provider = aws.workload
-}
-
-resource "aws_default_security_group" "default_2" {
-  count    = var.harden ? 1 : 0
-  vpc_id   = aws_default_vpc.default_2[count.index].id
-  provider = aws.workload_2
 }
 
 # --------------------------------------------------
