@@ -5,8 +5,9 @@ data "aws_iam_session_context" "current" {
 }
 
 resource "aws_sqs_queue" "queue" {
-  count       = var.deploy ? 1 : 0
-  name_prefix = var.name
+  count                      = var.deploy ? 1 : 0
+  name_prefix                = var.name
+  visibility_timeout_seconds = 330
 }
 
 data "aws_iam_policy_document" "sqs_policy" {
@@ -309,7 +310,7 @@ resource "aws_lambda_function" "bot" {
     variables = {
       SLACK_TOKEN                       = aws_ssm_parameter.slack_token[0].name
       SLACK_CHANNEL                     = var.slack_channel
-      CAPABILITY_ROOT_ID                = var.capability_root_id
+      CLOUD_WATCH_LOGS_GROUP_NAME       = var.cloudwatch_logs_group_name
       SNS_TOPIC_ARN_CIS_CONTROLS        = var.sns_topic_arn_cis_controls
       SNS_TOPIC_ARN_COMPLIANCE_CHANGES  = var.sns_topic_arn_compliance_changes
       SNS_TOPIC_ARN_GUARD_DUTY_FINDINGS = var.sns_topic_arn_guard_duty_findings
