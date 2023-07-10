@@ -375,6 +375,7 @@ resource "aws_cloudwatch_event_rule" "compliance_changes" {
         { "prefix" : "securityhub-cmk-backing-key-rotation-enabled" },
         { "prefix" : "securityhub-rds-storage-encrypted" },
         { "prefix" : "securityhub-s3-bucket-server-side-encryption-enabled" },
+        { "prefix" : "securityhub-vpc-default-security-group-closed" },
       ]
     }
   })
