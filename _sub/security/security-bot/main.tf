@@ -303,7 +303,7 @@ resource "aws_lambda_function" "bot" {
   role          = aws_iam_role.lambda[0].arn
   handler       = "bootstrap"
   runtime       = "go1.x"
-  timeout       = 10
+  timeout       = 300
 
   environment {
     variables = {
