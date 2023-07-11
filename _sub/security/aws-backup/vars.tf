@@ -35,19 +35,31 @@ variable "backup_resources" {
 }
 
 variable "backup_rules" {
-  type        = list(object({
-    name         = string
-    schedule     = string
-    delete_after = number
-  }))
-  description = "The list of backup rules."
-  default = [
-    {
-      name         = "BackupRule"
-      schedule     = "cron(0 12 * * ? *)"
-      delete_after = 14
+  type = list(object({
+    name                     = string
+    schedule                 = optional(string)
+    enable_continuous_backup = optional(bool)
+    start_window             = optional(string)
+    completion_window        = optional(string)
+    recovery_point_tags      = optional(any)
+    copy_action = list(object({
+      destination_vault_arn = optional(string)
+      lifecycle = object({
+        cold_storage_after = optional(number)
+        delete_after       = optional(number)
+        }
+      )
+    }))
+
+    lifecycle = object({
+      cold_storage_after = optional(number)
+      delete_after       = optional(number)
+    })
     }
-  ]
+  ))
+
+  description = "The list of backup rules."
+  default     = []
 }
 
 variable "iam_role_arn" {
@@ -58,7 +70,7 @@ variable "iam_role_arn" {
 variable "backup_plan_name" {
   type        = string
   description = "The name of the backup plan."
-  default     = "backup-rds"
+  default     = ""
 }
 
 variable "tags" {
@@ -67,24 +79,51 @@ variable "tags" {
   default     = {}
 }
 
-variable "selection_tags" {
-  type        = list(object({
-    type  = string
-    key   = string
-    value = string
+#variable "selection_tags" {
+#  type    = list(object({
+#    type  = string
+#    key   = string
+#    value = string
+#  }))
+#  description = "The list of selection tags."
+#  default     = []
+#}
+
+variable "backup_selections" {
+  type = list(object({
+    name      = string
+    resources = optional(list(string))
+    conditions = optional(list(object({
+      string_equals = optional(list(object({
+        key   = optional(string)
+        value = optional(string)
+      })))
+      string_like = optional(list(object({
+        key   = optional(string)
+        value = optional(string)
+      })))
+      string_not_equals = optional(list(object({
+        key   = optional(string)
+        value = optional(string)
+      })))
+      string_not_like = optional(list(object({
+        key   = optional(string)
+        value = optional(string)
+      })))
+
+    })))
+    not_resources = optional(list(string))
+    selection_tags = optional(list(object({
+      tag   = string
+      key   = string
+      value = string
+    })))
   }))
-  description = "The list of selection tags."
+  description = "A list of resources that will be backed up."
   default     = []
 }
 
-variable "advanced_backup_setting_resource_type" {
-  type        = string
-  description = "The resource type for advanced backup settings."
-  default     = "RDS"
-}
-
-variable "advanced_backup_settings" {
-  type        = map(object({
-    windows_vss = bool
-  }))
+variable "kms_key_admins" {
+  type        = list(string)
+  description = "List of IAM Roles ARNs administrator access of the KMS Key."
 }
