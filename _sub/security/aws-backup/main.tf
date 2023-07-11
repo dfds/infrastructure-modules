@@ -1,7 +1,3 @@
-provider "aws" {
-  region = "eu-west-1"
-}
-
 # AWS Vault Creation
 resource "aws_backup_vault" "vault" {
   name        = var.vault_name
