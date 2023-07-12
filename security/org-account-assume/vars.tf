@@ -22,6 +22,12 @@ variable "secret_key_master" {
   type = string
 }
 
+variable "aws_session_name" {
+  type        = string
+  description = "An identifier for the AWS session name. This can be useful in identifiying which pipeline executed the Terraform."
+  default     = null
+}
+
 variable "name" {
   type = string
 }

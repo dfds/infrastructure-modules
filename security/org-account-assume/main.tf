@@ -3,7 +3,8 @@ provider "aws" {
 
   # Assume role in Master account
   assume_role {
-    role_arn = "arn:aws:iam::${var.master_account_id}:role/${var.prime_role_name}"
+    role_arn     = "arn:aws:iam::${var.master_account_id}:role/${var.prime_role_name}"
+    session_name = var.aws_session_name
   }
 }
 
@@ -21,7 +22,8 @@ provider "aws" {
 
   # Assume the Organizational role in Workload account
   assume_role {
-    role_arn = module.org_account.org_role_arn
+    role_arn     = module.org_account.org_role_arn
+    session_name = var.aws_session_name
   }
 
   alias = "workload"
@@ -36,7 +38,8 @@ provider "aws" {
 
   # Assume the Organizational role in Workload account
   assume_role {
-    role_arn = module.org_account.org_role_arn
+    role_arn     = module.org_account.org_role_arn
+    session_name = var.aws_session_name
   }
 
   alias = "workload_2"
@@ -48,7 +51,8 @@ provider "aws" {
 
   # Assume role in Master account
   assume_role {
-    role_arn = "arn:aws:iam::${var.master_account_id}:role/${var.prime_role_name}"
+    role_arn     = "arn:aws:iam::${var.master_account_id}:role/${var.prime_role_name}"
+    session_name = var.aws_session_name
   }
 }
 
