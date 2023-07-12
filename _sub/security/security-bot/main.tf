@@ -308,6 +308,7 @@ resource "aws_lambda_function" "bot" {
 
   environment {
     variables = {
+      AWS_ACCOUNT_NAME                  = var.account_name
       SLACK_TOKEN                       = aws_ssm_parameter.slack_token[0].name
       SLACK_CHANNEL                     = var.slack_channel
       CLOUD_WATCH_LOGS_GROUP_NAME       = var.cloudwatch_logs_group_name
