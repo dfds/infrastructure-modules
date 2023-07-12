@@ -22,18 +22,6 @@ variable "deploy_backup_selection" {
   default     = true
 }
 
-variable "backup_selection_name" {
-  type        = string
-  description = "The name of the backup selection."
-  default     = ""
-}
-
-variable "backup_resources" {
-  type        = list(string)
-  description = "The list of resources to be backed up."
-  default     = []
-}
-
 variable "backup_rules" {
   type = list(object({
     name                     = string
@@ -42,14 +30,14 @@ variable "backup_rules" {
     start_window             = optional(string)
     completion_window        = optional(string)
     recovery_point_tags      = optional(any)
-    copy_action = list(object({
+    copy_action = optional(list(object({
       destination_vault_arn = optional(string)
       lifecycle = object({
         cold_storage_after = optional(number)
         delete_after       = optional(number)
         }
       )
-    }))
+    })))
 
     lifecycle = object({
       cold_storage_after = optional(number)
@@ -78,16 +66,6 @@ variable "tags" {
   description = "A set of key-value pairs as tags for the resources."
   default     = {}
 }
-
-#variable "selection_tags" {
-#  type    = list(object({
-#    type  = string
-#    key   = string
-#    value = string
-#  }))
-#  description = "The list of selection tags."
-#  default     = []
-#}
 
 variable "backup_selections" {
   type = list(object({
