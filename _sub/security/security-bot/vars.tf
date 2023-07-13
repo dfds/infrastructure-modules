@@ -7,6 +7,10 @@ variable "name" {
   type = string
 }
 
+variable "account_name" {
+  type = string
+}
+
 variable "lambda_version" {
   type = string
 }

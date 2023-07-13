@@ -284,6 +284,7 @@ module "security-bot" {
   source                            = "../../../_sub/security/security-bot"
   deploy                            = var.harden && var.monitoring_slack_channel != null && var.monitoring_slack_token != null
   name                              = "security-bot"
+  account_name                      = var.account_name
   lambda_version                    = var.security_bot_lambda_version
   lambda_s3_bucket                  = var.security_bot_lambda_s3_bucket
   slack_token                       = var.monitoring_slack_token
