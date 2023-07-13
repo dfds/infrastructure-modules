@@ -105,3 +105,26 @@ variable "kms_key_admins" {
   type        = list(string)
   description = "List of IAM Roles ARNs administrator access of the KMS Key."
 }
+
+
+variable "settings_resource_type_opt_in_preference" {
+  description = "(Required) A map of services along with the opt-in preferences for the Region."
+  default = {
+    "Aurora"                 = true
+    "CloudFormation"         = true
+    "DocumentDB"             = true
+    "DynamoDB"               = true
+    "EBS"                    = true
+    "EC2"                    = true
+    "EFS"                    = true
+    "FSx"                    = true
+    "Neptune"                = true
+    "RDS"                    = true
+    "Redshift"               = true
+    "S3"                     = true
+    "SAP HANA on Amazon EC2" = true
+    "Storage Gateway"        = true
+    "Timestream"             = true
+    "VirtualMachine"         = true
+  }
+}

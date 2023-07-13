@@ -5,6 +5,33 @@ resource "aws_backup_vault" "vault" {
   tags        = var.tags
 }
 
+#AWS Region Settings
+resource "aws_backup_region_settings" "test" {
+  resource_type_opt_in_preference = {
+    "Aurora"                 = true
+    "CloudFormation"         = true
+    "DocumentDB"             = true
+    "DynamoDB"               = true
+    "EBS"                    = true
+    "EC2"                    = true
+    "EFS"                    = true
+    "FSx"                    = true
+    "Neptune"                = true
+    "RDS"                    = true
+    "Redshift"               = true
+    "S3"                     = true
+    "SAP HANA on Amazon EC2" = true
+    "Storage Gateway"        = true
+    "Timestream"             = true
+    "VirtualMachine"         = true
+  }
+
+  resource_type_management_preference = {
+    "DynamoDB" = true
+    "EFS"      = true
+  }
+}
+
 # KMS Key for Encryption
 resource "aws_kms_key" "this" {
   count               = var.deploy_kms_key ? 1 : 0
@@ -67,6 +94,8 @@ data "aws_iam_policy_document" "backup" {
 }
 
 data "aws_region" "current" {}
+
+
 
 # Backup Plan
 resource "aws_backup_plan" "this" {
