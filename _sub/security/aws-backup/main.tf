@@ -8,7 +8,7 @@ resource "aws_backup_region_settings" "this" {
   resource_type_management_preference = var.resource_type_management_preference
 }
 
-resource "aws_backup_vault" "vault" {
+resource "aws_backup_vault" "this" {
   name        = var.vault_name
   kms_key_arn = var.deploy_kms_key ? aws_kms_key.this[0].arn : var.kms_key_arn
   tags        = var.tags
@@ -84,7 +84,7 @@ resource "aws_backup_plan" "this" {
 
     content {
       rule_name                = rule.value.name
-      target_vault_name        = aws_backup_vault.vault.name
+      target_vault_name        = aws_backup_vault.this.name
       schedule                 = lookup(rule.value, "schedule", null)
       enable_continuous_backup = lookup(rule.value, "enable_continous_backup", null)
       start_window             = lookup(rule.value, "start_window", null)
