@@ -201,7 +201,7 @@ variable "oidc_role_access" {
 }
 
 variable "deploy_backup" {
-  type = bool
+  type        = bool
   description = "Whether to deploy AWS Backup"
-  default = false
+  default     = false
 }

@@ -283,28 +283,28 @@ module "github_oidc_provider" {
 
 locals {
   settings_resource_type_opt_in_preference = {
-    "Aurora" = true
-    "CloudFormation" = false
-    "DocumentDB" = true
-    "DynamoDB" = true
-    "EBS" = true
-    "EC2" = true
-    "EFS" = true
-    "FSx" = false
-    "Neptune" = false
-    "RDS" = true
-    "Redshift" = true
-    "S3" = true
+    "Aurora"                 = true
+    "CloudFormation"         = false
+    "DocumentDB"             = true
+    "DynamoDB"               = true
+    "EBS"                    = true
+    "EC2"                    = true
+    "EFS"                    = true
+    "FSx"                    = false
+    "Neptune"                = false
+    "RDS"                    = true
+    "Redshift"               = true
+    "S3"                     = true
     "SAP HANA on Amazon EC2" = false
-    "Storage Gateway" = false
-    "Timestream" = true
-    "VirtualMachine" = false
+    "Storage Gateway"        = false
+    "Timestream"             = true
+    "VirtualMachine"         = false
   }
   resource_type_management_preference = {
     "DynamoDB" = true
-    "EFS" = true
+    "EFS"      = true
   }
-  vault_name = "dfds-vault"
+  vault_name     = "dfds-vault"
   deploy_kms_key = true
   kms_key_admins = [module.org_account.org_role_arn]
 
@@ -313,8 +313,8 @@ locals {
       plan_name = "default-retention"
       rules = [
         {
-          name = "daily-30-days-retention"
-          schedule = "cron(0 1 * * ? *)"
+          name                     = "daily-30-days-retention"
+          schedule                 = "cron(0 1 * * ? *)"
           enable_continuous_backup = true
           lifecycle = {
             delete_after = 30
@@ -323,16 +323,16 @@ locals {
       ]
       selections = [
         {
-          name = "select-env"
+          name      = "select-env"
           resources = ["*"]
           conditions = {
             string_equals = [
               {
-                key = "dfds.env"
+                key   = "dfds.env"
                 value = "prod"
               },
               {
-                key = "dfds.data.backup"
+                key   = "dfds.data.backup"
                 value = "true"
               }
             ]
@@ -344,8 +344,8 @@ locals {
       plan_name = "60-days-retention"
       rules = [
         {
-          name = "daily-30-days-retention"
-          schedule = "cron(0 1 * * ? *)"
+          name                     = "daily-30-days-retention"
+          schedule                 = "cron(0 1 * * ? *)"
           enable_continuous_backup = true
           lifecycle = {
             delete_after = 60
@@ -354,20 +354,20 @@ locals {
       ]
       selections = [
         {
-          name = "select-env"
+          name      = "select-env"
           resources = ["*"]
           conditions = {
             string_equals = [
               {
-                key = "dfds.env"
+                key   = "dfds.env"
                 value = "prod"
               },
               {
-                key = "dfds.data.backup"
+                key   = "dfds.data.backup"
                 value = "true"
               },
               {
-                key = "dfds.data.backup_retention"
+                key   = "dfds.data.backup_retention"
                 value = "60days"
               }
             ]
@@ -380,10 +380,10 @@ locals {
 
 resource "aws_iam_role" "backup" {
   provider = aws.workload
-  count = var.deploy_backup ? 1 : 0
+  count    = var.deploy_backup ? 1 : 0
 
-  name                = "backup-role"
-  assume_role_policy  = data.aws_iam_policy_document.backup_trust.json
+  name               = "backup-role"
+  assume_role_policy = data.aws_iam_policy_document.backup_trust.json
   managed_policy_arns = [
     "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup",
     "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForRestores"
@@ -392,7 +392,7 @@ resource "aws_iam_role" "backup" {
 
 data "aws_iam_policy_document" "backup_trust" {
   statement {
-    actions   = ["sts:AssumeRole"]
+    actions = ["sts:AssumeRole"]
     principals {
       type        = "Service"
       identifiers = ["backup.amazonaws.com"]
@@ -404,32 +404,32 @@ module "backup_eu_central_1" {
   providers = {
     aws = aws.workload
   }
-  count = var.deploy_backup ? 1 : 0
+  count  = var.deploy_backup ? 1 : 0
   source = "../../_sub/security/aws-backup"
 
   settings_resource_type_opt_in_preference = local.settings_resource_type_opt_in_preference
-  resource_type_management_preference = local.resource_type_management_preference
+  resource_type_management_preference      = local.resource_type_management_preference
 
-  vault_name = local.vault_name
+  vault_name     = local.vault_name
   deploy_kms_key = local.deploy_kms_key
   kms_key_admins = local.kms_key_admins
-  backup_plans = local.backup_plans
-  iam_role_arn = aws_iam_role.backup.arn
+  backup_plans   = local.backup_plans
+  iam_role_arn   = aws_iam_role.backup.arn
 }
 
 module "backup_eu_west_1" {
   providers = {
     aws = aws.workload_2
   }
-  count = var.deploy_backup ? 1 : 0
+  count  = var.deploy_backup ? 1 : 0
   source = "../../_sub/security/aws-backup"
 
   settings_resource_type_opt_in_preference = local.settings_resource_type_opt_in_preference
-  resource_type_management_preference = local.resource_type_management_preference
+  resource_type_management_preference      = local.resource_type_management_preference
 
-  vault_name = local.vault_name
+  vault_name     = local.vault_name
   deploy_kms_key = local.deploy_kms_key
   kms_key_admins = local.kms_key_admins
-  backup_plans = local.backup_plans
-  iam_role_arn = aws_iam_role.backup.arn
+  backup_plans   = local.backup_plans
+  iam_role_arn   = aws_iam_role.backup.arn
 }
