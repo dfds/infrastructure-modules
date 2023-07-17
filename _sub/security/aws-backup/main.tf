@@ -1,38 +1,19 @@
-# AWS Vault Creation
+data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
+
+resource "aws_backup_region_settings" "this" {
+  count = length(var.settings_resource_type_opt_in_preference) > 0 ? 1 : 0
+
+  resource_type_opt_in_preference = var.settings_resource_type_opt_in_preference
+  resource_type_management_preference = var.resource_type_management_preference
+}
+
 resource "aws_backup_vault" "vault" {
   name        = var.vault_name
   kms_key_arn = var.deploy_kms_key ? aws_kms_key.this[0].arn : var.kms_key_arn
   tags        = var.tags
 }
 
-#AWS Region Settings
-resource "aws_backup_region_settings" "test" {
-  resource_type_opt_in_preference = {
-    "Aurora"                 = true
-    "CloudFormation"         = true
-    "DocumentDB"             = true
-    "DynamoDB"               = true
-    "EBS"                    = true
-    "EC2"                    = true
-    "EFS"                    = true
-    "FSx"                    = true
-    "Neptune"                = true
-    "RDS"                    = true
-    "Redshift"               = true
-    "S3"                     = true
-    "SAP HANA on Amazon EC2" = true
-    "Storage Gateway"        = true
-    "Timestream"             = true
-    "VirtualMachine"         = true
-  }
-
-  resource_type_management_preference = {
-    "DynamoDB" = true
-    "EFS"      = true
-  }
-}
-
-# KMS Key for Encryption
 resource "aws_kms_key" "this" {
   count               = var.deploy_kms_key ? 1 : 0
   description         = "KMS key for backup encryption"
@@ -67,6 +48,7 @@ data "aws_iam_policy_document" "backup" {
       identifiers = var.kms_key_admins
     }
   }
+
   statement {
     sid = "Allow access through Backup for all principals in the account that are authorized to use Backup Storage"
     actions = [
@@ -93,17 +75,13 @@ data "aws_iam_policy_document" "backup" {
   }
 }
 
-data "aws_region" "current" {}
-
-
-
-# Backup Plan
 resource "aws_backup_plan" "this" {
-  count = var.backup_plan_name != "" ? 1 : 0
-  name  = var.backup_plan_name
+  for_each = { for config in var.backup_plans : config.plan_name => config }
+  name  = each.value.plan_name
 
   dynamic "rule" {
-    for_each = var.backup_rules
+    for_each = each.value.rules != null ? each.value.rules : []
+
     content {
       rule_name                = rule.value.name
       target_vault_name        = aws_backup_vault.vault.name
@@ -112,6 +90,14 @@ resource "aws_backup_plan" "this" {
       start_window             = lookup(rule.value, "start_window", null)
       completion_window        = lookup(rule.value, "completion_window", null)
       recovery_point_tags      = lookup(rule.value, "recovery_point_tags", {})
+
+      dynamic "lifecycle" {
+        for_each = length(lookup(rule.value, "lifecycle", {})) > 0 ? ["OK"] : []
+        content {
+          cold_storage_after = lookup(rule.value.lifecycle, "cold_storage_after", 0)
+          delete_after       = lookup(rule.value.lifecycle, "delete_after", 30)
+        }
+      }
 
       dynamic "copy_action" {
         for_each = lookup(rule.value, "copy_action", []) != null ? rule.value.copy_action : []
@@ -123,17 +109,7 @@ resource "aws_backup_plan" "this" {
               cold_storage_after = lookup(lifecycle.value, "cold_storage_after", 0)
               delete_after       = lookup(lifecycle.value, "delete_after", 30)
             }
-
           }
-        }
-      }
-
-
-      dynamic "lifecycle" {
-        for_each = length(lookup(rule.value, "lifecycle", {})) > 0 ? ["OK"] : []
-        content {
-          cold_storage_after = lookup(rule.value.lifecycle, "cold_storage_after", 0)
-          delete_after       = lookup(rule.value.lifecycle, "delete_after", 30)
         }
       }
     }
@@ -142,17 +118,19 @@ resource "aws_backup_plan" "this" {
   tags = var.tags
 }
 
-
-data "aws_caller_identity" "current" {}
-
-# Backup Selection
 resource "aws_backup_selection" "this" {
-  for_each      = { for backup_selection in var.backup_selections : backup_selection.name => backup_selection }
+  for_each      = merge([
+    for config in var.backup_plans : {
+      for selection in config.selections : "${config.plan_name}-${selection.name}" => merge(selection, {backup_plan_name = config.plan_name})
+    }
+  ]...)
+
   name          = each.value.name
   iam_role_arn  = var.iam_role_arn
-  plan_id       = aws_backup_plan.this[0].id
+  plan_id       = aws_backup_plan.this[each.value.backup_plan_name].id
   resources     = lookup(each.value, "resources", [])
   not_resources = lookup(each.value, "not_resources", [])
+
   dynamic "condition" {
     for_each = lookup(each.value, "conditions", [])
     content {
