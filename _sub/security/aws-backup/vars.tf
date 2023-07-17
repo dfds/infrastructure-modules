@@ -45,7 +45,7 @@ variable "backup_plans" {
     selections = list(object({
       name      = string
       resources = optional(list(string))
-      conditions = optional(list(object({
+      conditions = optional(object({
         string_equals = optional(list(object({
           key   = optional(string)
           value = optional(string)
@@ -62,8 +62,7 @@ variable "backup_plans" {
           key   = optional(string)
           value = optional(string)
         })))
-
-      })))
+      }))
       not_resources = optional(list(string))
       selection_tags = optional(list(object({
         tag   = string
@@ -95,13 +94,13 @@ variable "kms_key_admins" {
 
 variable "settings_resource_type_opt_in_preference" {
   description = "A map of services along with the opt-in preferences for the Region."
-  type = object({})
-  default = {}
+  type        = object({})
+  default     = {}
 }
 
 variable "resource_type_management_preference" {
-  type = object({})
+  type        = object({})
   description = "A map of services along with the management preferences for the Region"
-  default = {}
+  default     = {}
 }
 

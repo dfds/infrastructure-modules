@@ -4,7 +4,7 @@ data "aws_caller_identity" "current" {}
 resource "aws_backup_region_settings" "this" {
   count = length(var.settings_resource_type_opt_in_preference) > 0 ? 1 : 0
 
-  resource_type_opt_in_preference = var.settings_resource_type_opt_in_preference
+  resource_type_opt_in_preference     = var.settings_resource_type_opt_in_preference
   resource_type_management_preference = var.resource_type_management_preference
 }
 
@@ -77,7 +77,7 @@ data "aws_iam_policy_document" "backup" {
 
 resource "aws_backup_plan" "this" {
   for_each = { for config in var.backup_plans : config.plan_name => config }
-  name  = each.value.plan_name
+  name     = each.value.plan_name
 
   dynamic "rule" {
     for_each = each.value.rules != null ? each.value.rules : []
@@ -119,9 +119,9 @@ resource "aws_backup_plan" "this" {
 }
 
 resource "aws_backup_selection" "this" {
-  for_each      = merge([
+  for_each = merge([
     for config in var.backup_plans : {
-      for selection in config.selections : "${config.plan_name}-${selection.name}" => merge(selection, {backup_plan_name = config.plan_name})
+      for selection in config.selections : "${config.plan_name}-${selection.name}" => merge(selection, { backup_plan_name = config.plan_name })
     }
   ]...)
 
@@ -132,7 +132,7 @@ resource "aws_backup_selection" "this" {
   not_resources = lookup(each.value, "not_resources", [])
 
   dynamic "condition" {
-    for_each = lookup(each.value, "conditions", [])
+    for_each = length(lookup(each.value, "conditions", {})) > 0 ? [each.value.conditions] : []
     content {
       dynamic "string_equals" {
         for_each = lookup(condition.value, "string_equals", []) != null ? condition.value.string_equals : []
@@ -174,4 +174,3 @@ resource "aws_backup_selection" "this" {
     }
   }
 }
-  
