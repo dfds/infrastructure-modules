@@ -199,3 +199,9 @@ variable "oidc_role_access" {
   description = "List of allowed actions for the oidc-role"
   default     = []
 }
+
+variable "deploy_backup" {
+  type = bool
+  description = "Whether to deploy AWS Backup"
+  default = false
+}
