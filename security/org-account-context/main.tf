@@ -344,7 +344,7 @@ locals {
       plan_name = "60-days-retention"
       rules = [
         {
-          name                     = "daily-30-days-retention"
+          name                     = "daily-60-days-retention"
           schedule                 = "cron(0 1 * * ? *)"
           enable_continuous_backup = true
           lifecycle = {
