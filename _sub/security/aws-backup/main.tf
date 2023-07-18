@@ -86,7 +86,7 @@ resource "aws_backup_plan" "this" {
       rule_name                = rule.value.name
       target_vault_name        = aws_backup_vault.this.name
       schedule                 = lookup(rule.value, "schedule", null)
-      enable_continuous_backup = lookup(rule.value, "enable_continous_backup", null)
+      enable_continuous_backup = lookup(rule.value, "enable_continous_backup", false)
       start_window             = lookup(rule.value, "start_window", null)
       completion_window        = lookup(rule.value, "completion_window", null)
       recovery_point_tags      = lookup(rule.value, "recovery_point_tags", {})
