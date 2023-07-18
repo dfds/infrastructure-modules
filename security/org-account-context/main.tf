@@ -565,7 +565,7 @@ module "backup_eu_central_1" {
   deploy_kms_key = local.deploy_kms_key
   kms_key_admins = local.kms_key_admins
   backup_plans   = local.backup_plans
-  iam_role_arn   = aws_iam_role.backup.arn
+  iam_role_arn   = aws_iam_role.backup[0].arn
 }
 
 module "backup_eu_west_1" {
@@ -582,5 +582,5 @@ module "backup_eu_west_1" {
   deploy_kms_key = local.deploy_kms_key
   kms_key_admins = local.kms_key_admins
   backup_plans   = local.backup_plans
-  iam_role_arn   = aws_iam_role.backup.arn
+  iam_role_arn   = aws_iam_role.backup[0].arn
 }
