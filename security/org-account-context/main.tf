@@ -336,15 +336,15 @@ locals {
           conditions = {
             string_equals = [
               {
-                key   = "dfds.env"
+                key   = "aws:ResourceTag/dfds.env"
                 value = "prod"
               },
               {
-                key   = "dfds.data.backup"
+                key   = "aws:ResourceTag/dfds.data.backup"
                 value = "true"
               },
               {
-                key   = "dfds.data.backup_retention"
+                key   = "aws:ResourceTag/dfds.data.backup_retention"
                 value = "30days"
               }
             ]
@@ -371,15 +371,15 @@ locals {
           conditions = {
             string_equals = [
               {
-                key   = "dfds.env"
+                key   = "aws:ResourceTag/dfds.env"
                 value = "prod"
               },
               {
-                key   = "dfds.data.backup"
+                key   = "aws:ResourceTag/dfds.data.backup"
                 value = "true"
               },
               {
-                key   = "dfds.data.backup_retention"
+                key   = "aws:ResourceTag/dfds.data.backup_retention"
                 value = "60days"
               }
             ]
@@ -407,15 +407,15 @@ locals {
           conditions = {
             string_equals = [
               {
-                key   = "dfds.env"
+                key   = "aws:ResourceTag/dfds.env"
                 value = "prod"
               },
               {
-                key   = "dfds.data.backup"
+                key   = "aws:ResourceTag/dfds.data.backup"
                 value = "true"
               },
               {
-                key   = "dfds.data.backup_retention"
+                key   = "aws:ResourceTag/dfds.data.backup_retention"
                 value = "180days"
               }
             ]
@@ -443,15 +443,15 @@ locals {
           conditions = {
             string_equals = [
               {
-                key   = "dfds.env"
+                key   = "aws:ResourceTag/dfds.env"
                 value = "prod"
               },
               {
-                key   = "dfds.data.backup"
+                key   = "aws:ResourceTag/dfds.data.backup"
                 value = "true"
               },
               {
-                key   = "dfds.data.backup_retention"
+                key   = "aws:ResourceTag/dfds.data.backup_retention"
                 value = "1year"
               }
             ]
@@ -479,15 +479,15 @@ locals {
           conditions = {
             string_equals = [
               {
-                key   = "dfds.env"
+                key   = "aws:ResourceTag/dfds.env"
                 value = "prod"
               },
               {
-                key   = "dfds.data.backup"
+                key   = "aws:ResourceTag/dfds.data.backup"
                 value = "true"
               },
               {
-                key   = "dfds.data.backup_retention"
+                key   = "aws:ResourceTag/dfds.data.backup_retention"
                 value = "10years"
               }
             ]
@@ -514,15 +514,15 @@ locals {
           conditions = {
             string_equals = [
               {
-                key = "dfds.env"
+                key = "aws:ResourceTag/dfds.env"
                 value = "staging"
               },
               {
-                key   = "dfds.data.backup"
+                key   = "aws:ResourceTag/dfds.data.backup"
                 value = "true"
               },
               {
-                key   = "dfds.data.backup_retention"
+                key   = "aws:ResourceTag/dfds.data.backup_retention"
                 value = "30days"
               }
             ]
@@ -534,15 +534,15 @@ locals {
           conditions = {
             string_equals = [
               {
-                key = "dfds.env"
+                key = "aws:ResourceTag/dfds.env"
                 value = "uat"
               },
               {
-                key   = "dfds.data.backup"
+                key   = "aws:ResourceTag/dfds.data.backup"
                 value = "true"
               },
               {
-                key   = "dfds.data.backup_retention"
+                key   = "aws:ResourceTag/dfds.data.backup_retention"
                 value = "30days"
               }
             ]
