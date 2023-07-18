@@ -310,12 +310,20 @@ locals {
 
   backup_plans = [
     {
-      plan_name = "default-retention"
+      plan_name = "30-days-retention"
       rules = [
+        {
+          name                     = "daily-30-days-retention-continuous-backup"
+          schedule                 = "cron(0 1 * * ? *)"
+          enable_continuous_backup = true
+          lifecycle = {
+            delete_after = 30
+          }
+        },
         {
           name                     = "daily-30-days-retention"
           schedule                 = "cron(0 1 * * ? *)"
-          enable_continuous_backup = true
+          enable_continuous_backup = false
           lifecycle = {
             delete_after = 30
           }
@@ -323,7 +331,7 @@ locals {
       ]
       selections = [
         {
-          name      = "select-env"
+          name      = "select-30-days"
           resources = ["*"]
           conditions = {
             string_equals = [
@@ -334,6 +342,10 @@ locals {
               {
                 key   = "dfds.data.backup"
                 value = "true"
+              },
+              {
+                key   = "dfds.data.backup_retention"
+                value = "30days"
               }
             ]
           }
@@ -346,7 +358,7 @@ locals {
         {
           name                     = "daily-60-days-retention"
           schedule                 = "cron(0 1 * * ? *)"
-          enable_continuous_backup = true
+          enable_continuous_backup = false
           lifecycle = {
             delete_after = 60
           }
@@ -354,7 +366,7 @@ locals {
       ]
       selections = [
         {
-          name      = "select-env"
+          name      = "select-60-days"
           resources = ["*"]
           conditions = {
             string_equals = [
@@ -369,6 +381,145 @@ locals {
               {
                 key   = "dfds.data.backup_retention"
                 value = "60days"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      plan_name = "180-days-retention"
+      rules = [
+        {
+          name                     = "daily-180-days-retention"
+          schedule                 = "cron(0 1 * * ? *)"
+          enable_continuous_backup = false
+          lifecycle = {
+            delete_after = 180
+            cold_storage_after = 90
+          }
+        }
+      ]
+      selections = [
+        {
+          name      = "select-180-days"
+          resources = ["*"]
+          conditions = {
+            string_equals = [
+              {
+                key   = "dfds.env"
+                value = "prod"
+              },
+              {
+                key   = "dfds.data.backup"
+                value = "true"
+              },
+              {
+                key   = "dfds.data.backup_retention"
+                value = "180days"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      plan_name = "1-year-retention"
+      rules = [
+        {
+          name                     = "daily-1-year-retention"
+          schedule                 = "cron(0 1 * * ? *)"
+          enable_continuous_backup = false
+          lifecycle = {
+            delete_after = 365
+            cold_storage_after = 90
+          }
+        }
+      ]
+      selections = [
+        {
+          name      = "select-1-year"
+          resources = ["*"]
+          conditions = {
+            string_equals = [
+              {
+                key   = "dfds.env"
+                value = "prod"
+              },
+              {
+                key   = "dfds.data.backup"
+                value = "true"
+              },
+              {
+                key   = "dfds.data.backup_retention"
+                value = "1year"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      plan_name = "10-years-retention"
+      rules = [
+        {
+          name                     = "daily-10-years-retention"
+          schedule                 = "cron(0 1 * * ? *)"
+          enable_continuous_backup = false
+          lifecycle = {
+            delete_after = 3650
+            cold_storage_after = 90
+          }
+        }
+      ]
+      selections = [
+        {
+          name      = "select-10-years"
+          resources = ["*"]
+          conditions = {
+            string_equals = [
+              {
+                key   = "dfds.env"
+                value = "prod"
+              },
+              {
+                key   = "dfds.data.backup"
+                value = "true"
+              },
+              {
+                key   = "dfds.data.backup_retention"
+                value = "10years"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      plan_name = "nonprod-30-days-retention"
+      rules = [
+        {
+          name                     = "daily-30-days-retention-nonprod"
+          schedule                 = "cron(0 1 * * ? *)"
+          enable_continuous_backup = false
+          lifecycle = {
+            delete_after = 14
+          }
+        }
+      ]
+      selections = [
+        {
+          name      = "select-nonprod-30-days"
+          resources = ["*"]
+          conditions = {
+            string_equals = [
+              {
+                key   = "dfds.data.backup"
+                value = "true"
+              },
+              {
+                key   = "dfds.data.backup_retention"
+                value = "30days"
               }
             ]
           }
