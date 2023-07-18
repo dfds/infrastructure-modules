@@ -509,10 +509,34 @@ locals {
       ]
       selections = [
         {
-          name      = "select-nonprod-30-days"
+          name      = "select-staging-30-days"
           resources = ["*"]
           conditions = {
             string_equals = [
+              {
+                key = "dfds.env"
+                value = "staging"
+              },
+              {
+                key   = "dfds.data.backup"
+                value = "true"
+              },
+              {
+                key   = "dfds.data.backup_retention"
+                value = "30days"
+              }
+            ]
+          }
+        },
+        {
+          name      = "select-uat-30-days"
+          resources = ["*"]
+          conditions = {
+            string_equals = [
+              {
+                key = "dfds.env"
+                value = "uat"
+              },
               {
                 key   = "dfds.data.backup"
                 value = "true"
