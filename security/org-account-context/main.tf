@@ -503,7 +503,7 @@ locals {
           schedule                 = "cron(0 1 * * ? *)"
           enable_continuous_backup = false
           lifecycle = {
-            delete_after = 14
+            delete_after = 30
           }
         }
       ]
