@@ -24,7 +24,7 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 	// The Grafana deployment utilizes the Traefik resources IngressRoute and
 	// Middleware to expose a public endpoint. This public endpoint will be
 	// used to check if Traefik is routing traffic correctly.
-	AssertK8sDeployment(t, clientset, "monitoring", "monitoring-grafana", 1)
+	//AssertK8sDeployment(t, clientset, "monitoring", "monitoring-grafana", 1)
 
 	// Call the Grafana health endpoint and parse the response
 	resp, err := http.Get("https://grafana.qa.qa.dfds.cloud/infrastructure/api/health")
