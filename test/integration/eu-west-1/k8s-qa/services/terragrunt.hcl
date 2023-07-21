@@ -124,7 +124,7 @@ inputs = {
   # Kube-prometheus-stack
   # --------------------------------------------------
 
-  monitoring_kube_prometheus_stack_deploy                            = true
+  monitoring_kube_prometheus_stack_deploy                            = false
   monitoring_kube_prometheus_stack_chart_version                     = "47.0.0"
   monitoring_kube_prometheus_stack_target_namespaces                 = "kube-system|monitoring"
   monitoring_kube_prometheus_stack_prometheus_storage_size           = "5Gi"
