@@ -310,16 +310,35 @@ locals {
 
   backup_plans = [
     {
-      plan_name = "30-days-retention"
+      plan_name = "30-days-retention-continuous-backup"
       rules = [
         {
-          name                     = "daily-30-days-retention-continuous-backup"
+          name                     = "30-days-retention-continuous-backup"
           schedule                 = "cron(0 1 * * ? *)"
           enable_continuous_backup = true
           lifecycle = {
             delete_after = 30
           }
-        },
+        }
+      ]
+      selections = [
+        {
+          name      = "select-rds-cont-backup"
+          resources = ["arn:aws:rds:*:*:db:*"]
+          conditions = {
+            string_equals = [
+              {
+                key   = "aws:ResourceTag/dfds.data.backup"
+                value = "true"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      plan_name = "30-days-retention"
+      rules = [
         {
           name                     = "daily-30-days-retention"
           schedule                 = "cron(0 1 * * ? *)"
@@ -331,13 +350,62 @@ locals {
       ]
       selections = [
         {
-          name      = "select-30-days"
-          resources = ["*"]
+          name = "select-prod-30-days"
+          resources = [
+            "arn:aws:dynamodb:*:*:*",
+            "arn:aws:rds:*:*:db:*"
+          ]
           conditions = {
             string_equals = [
               {
                 key   = "aws:ResourceTag/dfds.env"
                 value = "prod"
+              },
+              {
+                key   = "aws:ResourceTag/dfds.data.backup"
+                value = "true"
+              },
+              {
+                key   = "aws:ResourceTag/dfds.data.backup_retention"
+                value = "30days"
+              }
+            ]
+          }
+        },
+        {
+          name = "select-staging-30-days"
+          resources = [
+            "arn:aws:dynamodb:*:*:*",
+            "arn:aws:rds:*:*:db:*"
+          ]
+          conditions = {
+            string_equals = [
+              {
+                key   = "aws:ResourceTag/dfds.env"
+                value = "staging"
+              },
+              {
+                key   = "aws:ResourceTag/dfds.data.backup"
+                value = "true"
+              },
+              {
+                key   = "aws:ResourceTag/dfds.data.backup_retention"
+                value = "30days"
+              }
+            ]
+          }
+        },
+        {
+          name = "select-uat-30-days"
+          resources = [
+            "arn:aws:dynamodb:*:*:*",
+            "arn:aws:rds:*:*:db:*"
+          ]
+          conditions = {
+            string_equals = [
+              {
+                key   = "aws:ResourceTag/dfds.env"
+                value = "uat"
               },
               {
                 key   = "aws:ResourceTag/dfds.data.backup"
@@ -356,8 +424,8 @@ locals {
       plan_name = "60-days-retention"
       rules = [
         {
-          name                     = "daily-60-days-retention"
-          schedule                 = "cron(0 1 * * ? *)"
+          name = "weekly-60-days-retention"
+          schedule = "cron(0 3 ? * L *)"
           enable_continuous_backup = false
           lifecycle = {
             delete_after = 60
@@ -366,8 +434,11 @@ locals {
       ]
       selections = [
         {
-          name      = "select-60-days"
-          resources = ["*"]
+          name = "select-prod-60-days"
+          resources = [
+            "arn:aws:rds:*:*:db:*",
+            "arn:aws:dynamodb:*:*:*"
+          ]
           conditions = {
             string_equals = [
               {
@@ -391,8 +462,8 @@ locals {
       plan_name = "180-days-retention"
       rules = [
         {
-          name                     = "daily-180-days-retention"
-          schedule                 = "cron(0 1 * * ? *)"
+          name                     = "monthly-180-days-retention"
+          schedule                 = "cron(0 3 L * ? *)"
           enable_continuous_backup = false
           lifecycle = {
             delete_after = 180
@@ -402,8 +473,11 @@ locals {
       ]
       selections = [
         {
-          name      = "select-180-days"
-          resources = ["*"]
+          name      = "select-prod-180-days"
+          resources = [
+            "arn:aws:rds:*:*:db:*",
+            "arn:aws:dynamodb:*:*:*"
+          ]
           conditions = {
             string_equals = [
               {
@@ -427,8 +501,8 @@ locals {
       plan_name = "1-year-retention"
       rules = [
         {
-          name                     = "daily-1-year-retention"
-          schedule                 = "cron(0 1 * * ? *)"
+          name                     = "monthly-1-year-retention"
+          schedule                 = "cron(0 3 L * ? *)"
           enable_continuous_backup = false
           lifecycle = {
             delete_after = 365
@@ -438,8 +512,11 @@ locals {
       ]
       selections = [
         {
-          name      = "select-1-year"
-          resources = ["*"]
+          name      = "select-prod-1-year"
+          resources = [
+            "arn:aws:rds:*:*:db:*",
+            "arn:aws:dynamodb:*:*:*"
+          ]
           conditions = {
             string_equals = [
               {
@@ -463,8 +540,8 @@ locals {
       plan_name = "10-years-retention"
       rules = [
         {
-          name                     = "daily-10-years-retention"
-          schedule                 = "cron(0 1 * * ? *)"
+          name                     = "monthly-10-years-retention"
+          schedule                 = "cron(0 3 L * ? *)"
           enable_continuous_backup = false
           lifecycle = {
             delete_after = 3650
@@ -475,7 +552,10 @@ locals {
       selections = [
         {
           name      = "select-10-years"
-          resources = ["*"]
+          resources = [
+            "arn:aws:rds:*:*:db:*",
+            "arn:aws:dynamodb:*:*:*"
+          ]
           conditions = {
             string_equals = [
               {
@@ -489,61 +569,6 @@ locals {
               {
                 key   = "aws:ResourceTag/dfds.data.backup_retention"
                 value = "10years"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      plan_name = "nonprod-30-days-retention"
-      rules = [
-        {
-          name                     = "daily-30-days-retention-nonprod"
-          schedule                 = "cron(0 1 * * ? *)"
-          enable_continuous_backup = false
-          lifecycle = {
-            delete_after = 30
-          }
-        }
-      ]
-      selections = [
-        {
-          name      = "select-staging-30-days"
-          resources = ["*"]
-          conditions = {
-            string_equals = [
-              {
-                key = "aws:ResourceTag/dfds.env"
-                value = "staging"
-              },
-              {
-                key   = "aws:ResourceTag/dfds.data.backup"
-                value = "true"
-              },
-              {
-                key   = "aws:ResourceTag/dfds.data.backup_retention"
-                value = "30days"
-              }
-            ]
-          }
-        },
-        {
-          name      = "select-uat-30-days"
-          resources = ["*"]
-          conditions = {
-            string_equals = [
-              {
-                key = "aws:ResourceTag/dfds.env"
-                value = "uat"
-              },
-              {
-                key   = "aws:ResourceTag/dfds.data.backup"
-                value = "true"
-              },
-              {
-                key   = "aws:ResourceTag/dfds.data.backup_retention"
-                value = "30days"
               }
             ]
           }
