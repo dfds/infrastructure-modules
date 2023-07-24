@@ -18,6 +18,7 @@ grafana:
             url: ${grafana_slack_webhook}
             username: alertbot
   grafana.ini:
+    force_migration: true
     unified_alerting:
       enabled: false
     alerting:
