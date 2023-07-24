@@ -10,6 +10,8 @@ grafana:
   sidecar:
     dashboards:
       searchNamespace: monitoring
+    alerts:
+      enabled: true
   grafana.ini:
     database:
       wal: true
