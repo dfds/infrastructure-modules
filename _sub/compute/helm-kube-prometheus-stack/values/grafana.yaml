@@ -1,6 +1,21 @@
 etcd:
   enabled: true
 grafana:
+  alerting:
+    contactpoints.yaml:
+      apiVersion: 1
+      contactPoints:
+        - orgId: 1
+          name: samdi-alerting-test-cp
+          receivers:
+            - uid: samdi-alerting-test
+              type: slack
+              is_default: true
+              settings:
+                url: "https://hooks.slack.com/services/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"
+                text: '{{ `{{ template "slack.default.text" . }}` }}'
+                title: '{{ `{{ template "slack.default.title" . }}` }}'
+                username: modern alertbot
   resources:
     requests:
       cpu: 50m

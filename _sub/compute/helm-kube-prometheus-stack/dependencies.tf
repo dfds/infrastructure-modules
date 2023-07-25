@@ -11,6 +11,7 @@ locals {
   grafana_service_name       = "${var.namespace}-grafana"
   grafana_ingressroute_name  = "${var.namespace}-grafana"
   grafana_middleware_name    = "${local.grafana_ingressroute_name}-mw"
+  grafana_alerts_config_name    = "${var.namespace}-grafana-alerts-config"
 
   grafana_config_path = {
     "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
@@ -77,12 +78,40 @@ locals {
     }
   }
 
+  grafana_config_alert_config = {
+    "data" = {
+      "policies.yaml" = <<-EOT
+      apiVersion: 1
+      policies:
+        - orgId: 1
+          receiver: grafana-default-email
+          routes:
+            - receiver: slack_channel_sandbox
+              group_wait: 60s
+              group_interval: 5m
+              repeat_interval: 4h
+              matchers:
+                - environment = sandbox
+              continue: false
+      EOT
+    }
+    "kind" = "ConfigMap"
+    "metadata" = {
+      "labels" = {
+        "grafana_alert" = "1"
+      }
+      "name"      = local.grafana_alerts_config_name
+      "namespace" = var.namespace
+    }
+  }
+
   grafana_config_init = {
     "apiVersion" = "kustomize.config.k8s.io/v1beta1"
     "kind"       = "Kustomization"
     "resources" = [
       "ingressroute.yaml",
-      "middleware.yaml"
+      "middleware.yaml",
+      "alert-config.yaml"
     ]
   }
 }
