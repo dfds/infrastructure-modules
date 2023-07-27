@@ -78,6 +78,7 @@ locals {
     }
   }
 
+
   grafana_config_alert_config = {
     "apiVersion" = "v1"
     "kind" = "ConfigMap"
@@ -96,11 +97,18 @@ locals {
           receiver: "${var.grafana_notifier_name}"
           group_wait: 30s
           group_interval: 5m
-          repeat_interval: 4h
           continue: false
           group_by:
           - grafana_folder
           - alertname
+          routes:
+          - match:
+            grafana_folder: "Kubernetes / Compute"
+            receiver: "${var.grafana_notifier_name}"
+            group_wait: 30s
+            group_interval: 5m
+            object_matchers:
+            - ['__contacts__', '=~', '.*"${var.grafana_notifier_name}".*']
       EOT
     }
   }
