@@ -1,6 +1,19 @@
 etcd:
   enabled: true
 grafana:
+  alerting:
+    contactpoints.yaml:
+      apiVersion: 1
+      contactPoints:
+        - orgId: 1
+          name: "${grafana_notifier_name}"
+          receivers:
+            - uid: slack-notifications
+              type: slack
+              is_default: true
+              settings:
+                url: "${grafana_slack_webhook}"
+                username: alertbot
   resources:
     requests:
       cpu: 50m
@@ -10,6 +23,8 @@ grafana:
   sidecar:
     dashboards:
       searchNamespace: monitoring
+    alerts:
+      enabled: true
   grafana.ini:
     database:
       wal: true
