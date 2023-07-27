@@ -103,7 +103,6 @@ locals {
           - alertname
           routes:
           - match:
-            grafana_folder: "Kubernetes / Compute"
             receiver: "${var.grafana_notifier_name}"
             group_wait: 30s
             group_interval: 5m
