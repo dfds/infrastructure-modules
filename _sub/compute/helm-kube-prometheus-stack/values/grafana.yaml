@@ -13,9 +13,7 @@ grafana:
               is_default: true
               settings:
                 url: "${grafana_slack_webhook}"
-                text: '{{ `{{ template "slack.default.text" . }}` }}'
-                title: '{{ `{{ template "slack.default.title" . }}` }}'
-                username: modern alertbot
+                username: alertbot
   resources:
     requests:
       cpu: 50m
