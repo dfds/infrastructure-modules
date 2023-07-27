@@ -6,13 +6,13 @@ grafana:
       apiVersion: 1
       contactPoints:
         - orgId: 1
-          name: samdi-alerting-test-cp
+          name: "${grafana_notifier_name}"
           receivers:
-            - uid: samdi-alerting-test
+            - uid: slack-notifications
               type: slack
               is_default: true
               settings:
-                url: "https://hooks.slack.com/services/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"
+                url: "${grafana_slack_webhook}"
                 text: '{{ `{{ template "slack.default.text" . }}` }}'
                 title: '{{ `{{ template "slack.default.title" . }}` }}'
                 username: modern alertbot
