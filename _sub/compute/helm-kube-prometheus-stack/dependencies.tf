@@ -94,7 +94,7 @@ locals {
       policies:
         - orgId: 1
           receiver: "${var.grafana_notifier_name}"
-          group_wait: 60s
+          group_wait: 30s
           group_interval: 5m
           repeat_interval: 4h
           continue: false
