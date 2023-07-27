@@ -58,13 +58,9 @@ resource "helm_release" "kube_prometheus_stack" {
       grafana_azure_tenant_id     = length(var.grafana_azure_tenant_id) == 36 ? var.grafana_azure_tenant_id : ""
       tolerations                 = var.tolerations,
       affinity                    = var.affinity,
+      grafana_slack_webhook       = var.slack_webhook,
+      grafana_notifier_name       = var.grafana_notifier_name
     }),
-
-    length(var.slack_webhook) > 0 ? templatefile("${path.module}/values/grafana-notifiers.yaml", {
-      grafana_notifier_name          = var.grafana_notifier_name
-      grafana_slack_notifier_channel = var.slack_channel
-      grafana_slack_webhook          = var.slack_webhook
-    }) : "",
 
     templatefile("${path.module}/values/prometheus.yaml", {
       prometheus_priorityclass  = var.priority_class
@@ -130,6 +126,14 @@ resource "github_repository_file" "grafana_config_ingressroute" {
   branch              = local.repo_branch
   file                = "${local.config_repo_path}/ingressroute.yaml"
   content             = jsonencode(local.grafana_config_ingressroute)
+  overwrite_on_create = var.overwrite_on_create
+}
+
+resource "github_repository_file" "grafana_config_alert_config" {
+repository          = var.repo_name
+  branch              = local.repo_branch
+  file                = "${local.config_repo_path}/alert-config.yaml"
+  content             = jsonencode(local.grafana_config_alert_config)
   overwrite_on_create = var.overwrite_on_create
 }
 
