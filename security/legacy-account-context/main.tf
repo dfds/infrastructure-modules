@@ -32,6 +32,29 @@ provider "aws" {
   }
 }
 
+provider "aws" {
+  region     = var.aws_region_2
+  alias      = "workload_2"
+  access_key = var.access_key_master
+  secret_key = var.secret_key_master
+
+  # Assume the Organizational role in Workload account
+  assume_role {
+    role_arn     = "arn:aws:iam::${var.account_id}:role/${var.org_role_name}"
+    session_name = var.aws_session_name
+  }
+}
+
+provider "aws" {
+  region = var.aws_region_sso
+  alias  = "sso"
+
+  # Assume role in Master account
+  assume_role {
+    role_arn     = "arn:aws:iam::${var.master_account_id}:role/${var.prime_role_name}"
+    session_name = var.aws_session_name
+  }
+}
 
 # --------------------------------------------------
 # Resource Explorer providers in all enabled regions
@@ -136,6 +159,34 @@ module "iam_account_alias" {
   providers = {
     aws = aws.workload
   }
+}
+
+# --------------------------------------------------
+# Account hardening
+# --------------------------------------------------
+module "hardened-account" {
+  count = var.harden ? 1 : 0
+  providers = {
+    aws.workload   = aws.workload
+    aws.workload_2 = aws.workload_2
+    aws.sso        = aws.sso
+  }
+  source = "../../_sub/security/hardened-account"
+
+  harden                          = var.harden
+  account_id                      = module.org_account.id
+  account_name                    = var.name
+  security_bot_lambda_version     = var.security_bot_lambda_version
+  security_bot_lambda_s3_bucket   = var.security_bot_lambda_s3_bucket
+  monitoring_email                = var.hardened_monitoring_email
+  monitoring_slack_channel        = var.hardened_monitoring_slack_channel
+  monitoring_slack_token          = var.hardened_monitoring_slack_token
+  security_contact_name           = var.hardened_security_contact_name
+  security_contact_title          = var.hardened_security_contact_title
+  security_contact_email          = var.hardened_security_contact_email
+  security_contact_phone_number   = var.hardened_security_contact_phone_number
+  sso_support_permission_set_name = var.sso_support_permission_set_name
+  sso_support_group_name          = var.sso_support_group_name
 }
 
 # --------------------------------------------------

@@ -18,7 +18,7 @@ pr:
 resources:
   containers:
     - container: prime
-      image: dfdsdk/prime-pipeline:0.6.35
+      image: dfdsdk/prime-pipeline:0.6.36
       env:
         AWS_DEFAULT_REGION: eu-west-1
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
@@ -34,7 +34,7 @@ resources:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
     - container: go-build
-      image: golang:1.20.5-bullseye
+      image: golang:1.20.6-bullseye
   repositories:
     - repository: Origin
       type: github

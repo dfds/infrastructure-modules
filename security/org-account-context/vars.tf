@@ -120,6 +120,15 @@ variable "harden" {
   default = false
 }
 
+variable "security_bot_lambda_version" {
+  type = string
+}
+
+variable "security_bot_lambda_s3_bucket" {
+  type        = string
+  description = "The S3 bucket where the Security Bot Lambda package is stored."
+}
+
 variable "hardened_monitoring_email" {
   type    = string
   default = null
@@ -176,9 +185,9 @@ variable "aws_region_2" {
 variable "repositories" {
   type = list(object({
     repository_name = string
-    branches        = list(string)
+    refs            = list(string)
   }))
-  description = "List of repositories to authenticate to AWS from. Each object contains repository name and list of branches that should be allowed to deploy from"
+  description = "List of repositories to authenticate to AWS from. Each object contains repository name and list of refs that should be allowed to deploy from"
   default     = []
 }
 

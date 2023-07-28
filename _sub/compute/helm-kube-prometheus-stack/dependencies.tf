@@ -11,6 +11,7 @@ locals {
   grafana_service_name       = "${var.namespace}-grafana"
   grafana_ingressroute_name  = "${var.namespace}-grafana"
   grafana_middleware_name    = "${local.grafana_ingressroute_name}-mw"
+  grafana_alert_config_name  = "${var.namespace}-grafana-alert-config"
 
   grafana_config_path = {
     "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
@@ -77,12 +78,47 @@ locals {
     }
   }
 
+
+  grafana_config_alert_config = {
+    "apiVersion" = "v1"
+    "kind" = "ConfigMap"
+    "metadata" = {
+      "labels" = {
+        "grafana_alert" = "1"
+      }
+      "name"      = local.grafana_alert_config_name
+      "namespace" = var.namespace
+    }
+    "data" = {
+      "policies.yaml" = <<-EOT
+      apiVersion: 1
+      policies:
+        - orgId: 1
+          receiver: "${var.grafana_notifier_name}"
+          group_wait: 30s
+          group_interval: 5m
+          continue: false
+          group_by:
+          - grafana_folder
+          - alertname
+          routes:
+          - match:
+            receiver: "${var.grafana_notifier_name}"
+            group_wait: 30s
+            group_interval: 5m
+            object_matchers:
+            - ['__contacts__', '=~', '.*"${var.grafana_notifier_name}".*']
+      EOT
+    }
+  }
+
   grafana_config_init = {
     "apiVersion" = "kustomize.config.k8s.io/v1beta1"
     "kind"       = "Kustomization"
     "resources" = [
       "ingressroute.yaml",
-      "middleware.yaml"
+      "middleware.yaml",
+      "alert-config.yaml"
     ]
   }
 }

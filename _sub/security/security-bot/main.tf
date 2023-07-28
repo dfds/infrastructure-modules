@@ -5,8 +5,9 @@ data "aws_iam_session_context" "current" {
 }
 
 resource "aws_sqs_queue" "queue" {
-  count       = var.deploy ? 1 : 0
-  name_prefix = var.name
+  count                      = var.deploy ? 1 : 0
+  name_prefix                = var.name
+  visibility_timeout_seconds = 330
 }
 
 data "aws_iam_policy_document" "sqs_policy" {
@@ -42,6 +43,7 @@ data "aws_iam_policy_document" "sqs_policy" {
       values = [
         var.sns_topic_arn_cis_controls,
         var.sns_topic_arn_compliance_changes,
+        var.sns_topic_arn_guard_duty_findings,
       ]
     }
   }
@@ -67,6 +69,14 @@ resource "aws_sns_topic_subscription" "compliance_changes" {
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.queue[0].arn
 }
+
+resource "aws_sns_topic_subscription" "guard_duty_findings" {
+  count     = var.deploy ? 1 : 0
+  topic_arn = var.sns_topic_arn_guard_duty_findings
+  protocol  = "sqs"
+  endpoint  = aws_sqs_queue.queue[0].arn
+}
+
 
 data "aws_iam_policy_document" "trust" {
   count = var.deploy ? 1 : 0
@@ -285,26 +295,27 @@ resource "aws_iam_role_policy_attachment" "exec" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+# Source can be found at https://github.com/dfds/security-bot
 resource "aws_lambda_function" "bot" {
   count         = var.deploy ? 1 : 0
-  filename      = "${path.module}/lambda/security-bot.zip"
+  s3_bucket     = var.lambda_s3_bucket
+  s3_key        = "security-bot/security-bot-${var.lambda_version}.zip"
   function_name = aws_iam_role.lambda[0].name
   role          = aws_iam_role.lambda[0].arn
   handler       = "bootstrap"
   runtime       = "go1.x"
-  timeout       = 10
-
-  # Source can be found at https://github.com/dfds/security-bot
-  source_code_hash = filebase64sha256("${path.module}/lambda/security-bot.zip")
+  timeout       = 300
 
   environment {
     variables = {
-      SLACK_TOKEN                      = aws_ssm_parameter.slack_token[0].name
-      SLACK_CHANNEL                    = var.slack_channel
-      CAPABILITY_ROOT_ID               = var.capability_root_id
-      SNS_TOPIC_ARN_CIS_CONTROLS       = var.sns_topic_arn_cis_controls
-      SNS_TOPIC_ARN_COMPLIANCE_CHANGES = var.sns_topic_arn_compliance_changes
-      SQS_FOLLOW_UP_QUEUE_URL          = aws_sqs_queue.queue[0].id # `id` provides the URL
+      AWS_ACCOUNT_NAME                  = var.account_name
+      SLACK_TOKEN                       = aws_ssm_parameter.slack_token[0].name
+      SLACK_CHANNEL                     = var.slack_channel
+      CLOUD_WATCH_LOGS_GROUP_NAME       = var.cloudwatch_logs_group_name
+      SNS_TOPIC_ARN_CIS_CONTROLS        = var.sns_topic_arn_cis_controls
+      SNS_TOPIC_ARN_COMPLIANCE_CHANGES  = var.sns_topic_arn_compliance_changes
+      SNS_TOPIC_ARN_GUARD_DUTY_FINDINGS = var.sns_topic_arn_guard_duty_findings
+      SQS_FOLLOW_UP_QUEUE_URL           = aws_sqs_queue.queue[0].id # `id` provides the URL
     }
   }
 }
