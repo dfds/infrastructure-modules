@@ -35,7 +35,7 @@ terraform {
 
     flux = {
       source  = "fluxcd/flux"
-      version = "~> 0.25.0"
+      version = "~> 1.0.1"
     }
 
     random = {
