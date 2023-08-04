@@ -1,17 +1,4 @@
 # --------------------------------------------------
-# Init
-# --------------------------------------------------
-
-provider "aws" {
-  region = var.aws_region
-}
-
-terraform {
-  backend "s3" {
-  }
-}
-
-# --------------------------------------------------
 # Service Control Policies (SCP)
 # --------------------------------------------------
 
@@ -31,7 +18,6 @@ module "org_policy_integrity_policy" {
   attach_targets = var.integrity_policy_attach_targets
 }
 
-# TODO: Issue https://github.com/dfds/cloudplatform/issues/1504 is scheduled for August to remove DenyBillingLegacyRemoveAfterJuly2023
 module "org_policy_restrictive_policy" {
   source         = "../../_sub/security/org-service-control-policy"
   name           = "RestrictivePolicy"

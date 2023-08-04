@@ -1,20 +1,3 @@
-provider "aws" {
-  region = var.aws_region
-}
-
-provider "aws" {
-  region = var.aws_region
-  alias  = "workload"
-
-  assume_role {
-    role_arn = "arn:aws:iam::${var.aws_workload_account_id}:role/${var.prime_role_name}"
-  }
-}
-
-terraform {
-  backend "s3" {}
-}
-
 # Create zone in workload account
 module "route53_zone" {
   source        = "../../_sub/network/route53-zone"
