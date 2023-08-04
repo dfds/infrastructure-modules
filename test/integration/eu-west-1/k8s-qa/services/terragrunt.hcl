@@ -141,15 +141,6 @@ inputs = {
   monitoring_kube_prometheus_stack_grafana_storageclass              = "gp2"
   monitoring_kube_prometheus_stack_prometheus_query_log_file_enabled = true
   monitoring_kube_prometheus_stack_prometheus_enable_features        = ["memory-snapshot-on-shutdown"]
-  # monitoring_kube_prometheus_stack_azure_tenant_id is set as ARM_TENANT_ID in
-  # Azure DevOps Pipeline Library "Infrastructure-Modules QA" in and mapped in the
-  # Azure DevOps pipeline file as TF_VAR_monitoring_kube_prometheus_stack_azure_tenant_id
-
-  # --------------------------------------------------
-  # Metrics-Server
-  # --------------------------------------------------
-
-  monitoring_metrics_server_chart_version = "3.10.0"
 
 
   # --------------------------------------------------
@@ -187,7 +178,7 @@ inputs = {
 
   atlantis_deploy       = true
   atlantis_ingress      = "atlantis.qa-alias1.dfds.cloud"
-  atlantis_image_tag    = "0.0.43"
+  atlantis_image_tag    = "0.0.44"
   atlantis_data_storage = "1Gi"
 
   atlantis_resources_requests_cpu    = "10m"
@@ -197,7 +188,7 @@ inputs = {
   atlantis_github_repositories = ["dfds/qa-dummy-atlantis"]
   atlantis_github_owner        = "dfds"
   atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
-  atlantis_chart_version       = "4.13.1"
+  atlantis_chart_version       = "4.14.1"
 
   # --------------------------------------------------
   # Blackbox Exporter
@@ -275,12 +266,5 @@ inputs = {
   velero_bucket_name            = "dfds-velero-qa"
   velero_plugin_for_aws_version = "v1.4.1"
   velero_plugin_for_csi_version = "v0.2.0"
-
-  # --------------------------------------------------
-  # kyverno
-  # --------------------------------------------------
-
-  kyverno_deploy        = false
-  kyverno_chart_version = "v2.5.2"
 
 }
