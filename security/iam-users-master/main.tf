@@ -1,12 +1,3 @@
-provider "aws" {
-  region = var.aws_region
-}
-
-terraform {
-  backend "s3" {
-  }
-}
-
 # Load IAM policy documents from module
 module "iam_policies" {
   source                 = "../../_sub/security/iam-policies"
