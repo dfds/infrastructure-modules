@@ -3,7 +3,7 @@ module go.dfds.cloud/infrastructure-modules/test/integration/suite
 go 1.19
 
 require (
-	github.com/fluxcd/pkg/apis/meta v1.1.1
+	github.com/fluxcd/pkg/apis/meta v1.1.2
 	github.com/stretchr/testify v1.8.4
 	k8s.io/api v0.27.4
 	k8s.io/apimachinery v0.27.4
