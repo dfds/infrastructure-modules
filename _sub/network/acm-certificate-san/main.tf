@@ -2,20 +2,6 @@
 # Workarounds to https://github.com/hashicorp/terraform/issues/21416
 # --------------------------------------------------
 
-provider "aws" {
-  region = var.aws_region
-
-  assume_role {
-    role_arn = var.aws_assume_role_arn
-  }
-}
-
-provider "aws" {
-  region = var.aws_region
-  alias  = "core"
-}
-
-
 # --------------------------------------------------
 # Request certificate
 # --------------------------------------------------
