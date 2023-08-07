@@ -60,6 +60,7 @@ resource "helm_release" "kube_prometheus_stack" {
       affinity                    = var.affinity,
       grafana_slack_webhook       = var.slack_webhook,
       grafana_notifier_name       = var.grafana_notifier_name
+      grafana_serve_from_sub_path = var.grafana_serve_from_sub_path
     }),
 
     templatefile("${path.module}/values/prometheus.yaml", {
