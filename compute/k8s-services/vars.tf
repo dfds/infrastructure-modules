@@ -1070,7 +1070,7 @@ variable "kyverno_chart_version" {
 
 variable "kyverno_deploy" {
   type        = string
-  default     = true
+  default     = false
   description = "Feature toggle for Kyverno module"
 }
 
