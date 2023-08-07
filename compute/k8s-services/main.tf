@@ -370,6 +370,7 @@ module "monitoring_kube_prometheus_stack" {
   grafana_storage_enabled     = var.monitoring_kube_prometheus_stack_grafana_storage_enabled
   grafana_storage_class       = var.monitoring_kube_prometheus_stack_grafana_storageclass
   grafana_storage_size        = var.monitoring_kube_prometheus_stack_grafana_storage_size
+  grafana_serve_from_sub_path = var.monitoring_kube_prometheus_stack_grafana_serve_from_sub_path
   grafana_azure_tenant_id     = var.monitoring_kube_prometheus_stack_azure_tenant_id != "" ? var.monitoring_kube_prometheus_stack_azure_tenant_id : var.atlantis_arm_tenant_id
   slack_webhook               = var.monitoring_kube_prometheus_stack_slack_webhook
   prometheus_storageclass     = var.monitoring_kube_prometheus_stack_prometheus_storageclass

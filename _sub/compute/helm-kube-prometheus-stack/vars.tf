@@ -190,3 +190,9 @@ variable "grafana_azure_tenant_id" {
   default     = ""
   description = "Azure Tenant ID"
 }
+
+variable "grafana_serve_from_sub_path" {
+  type        = bool
+  default     = false
+  description = "Serve Grafana from subpath specified in root_url setting. By default it is set to false for compatibility reasons"
+}
