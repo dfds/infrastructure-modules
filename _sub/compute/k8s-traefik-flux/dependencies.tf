@@ -13,7 +13,7 @@ locals {
 
 locals {
   app_helm_path = {
-    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
+    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1"
     "kind"       = "Kustomization"
     "metadata" = {
       "name"      = "${local.app_install_name}-helm"
@@ -36,7 +36,7 @@ locals {
   }
 
   app_config_path = {
-    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
+    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1"
     "kind"       = "Kustomization"
     "metadata" = {
       "name"      = "${local.app_install_name}-config"
