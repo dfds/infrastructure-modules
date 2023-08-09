@@ -14,7 +14,7 @@ locals {
   grafana_alert_config_name  = "${var.namespace}-grafana-alert-config"
 
   grafana_config_path = {
-    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
+    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1"
     "kind"       = "Kustomization"
     "metadata" = {
       "name"      = "${local.grafana_platform_apps_name}-config"

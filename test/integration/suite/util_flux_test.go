@@ -30,7 +30,7 @@ func AssertFluxReconciliation(t *testing.T, clientset *kubernetes.Clientset) {
 func TriggerFluxReconcillation(resource, namespace, name string) (time.Time, error) {
 	gvr := schema.GroupVersionResource{
 		Group:    "kustomize.toolkit.fluxcd.io",
-		Version:  "v1beta2",
+		Version:  "v1",
 		Resource: resource,
 	}
 

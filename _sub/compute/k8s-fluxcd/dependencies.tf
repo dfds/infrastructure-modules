@@ -14,7 +14,7 @@ locals {
 
 locals {
   flux_monitoring = {
-    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
+    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1"
     "kind"       = "Kustomization"
     "metadata" = {
       "name"      = local.app_install_name
@@ -45,7 +45,7 @@ locals {
 
   platform_apps_yaml = <<YAML
 ---
-apiVersion: source.toolkit.fluxcd.io/v1beta1
+apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
   name: platform-apps-git
@@ -56,7 +56,7 @@ spec:
     branch: ${var.gitops_apps_repo_branch}
   url: ${var.gitops_apps_repo_url}
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: platform-apps-sources

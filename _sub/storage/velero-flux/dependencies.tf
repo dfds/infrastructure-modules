@@ -16,7 +16,7 @@ locals {
   app_install_name  = "platform-apps-${var.deploy_name}"
 
   app_helm_path = {
-    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1beta2"
+    "apiVersion" = "kustomize.toolkit.fluxcd.io/v1"
     "kind"       = "Kustomization"
     "metadata" = {
       "name"      = "${local.app_install_name}-helm"
