@@ -1,0 +1,3 @@
+norelease:
+- all: ["!**/*.tf"]
+- all: ["test/**"]

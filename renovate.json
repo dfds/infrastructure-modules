@@ -23,30 +23,46 @@
                 "pin",
                 "digest",
                 "patch",
-                "lockFileMaintenance"
+                "lockFileMaintenance",
+                "minor",
+                "major"
             ],
-            "stabilityDays": 1,
-            "automerge": true,
-            "matchCurrentVersion": "!/^0/",
-            "ignoreTests": true,
+            "ignoreTests": false,
             "dependencyDashboard": true,
             "dependencyDashboardApproval": false
+        },
+        {
+            "matchUpdateTypes": [
+                "pin",
+                "digest",
+                "patch",
+                "lockFileMaintenance",
+                "minor"
+            ],
+            "matchCurrentVersion": "!/^0/"
+        },
+        {
+            "matchUpdateTypes": [
+                "pin",
+                "digest",
+                "patch",
+                "lockFileMaintenance"
+            ],
+            "addLabels": ["release:patch"],
+            "stabilityDays": 1,
+            "automerge": true
         },
         {
             "matchUpdateTypes": ["minor"],
+            "addLabels": ["release:minor"],
             "stabilityDays": 7,
-            "automerge": true,
-            "matchCurrentVersion": "!/^0/",
-            "ignoreTests": true,
-            "dependencyDashboard": true,
-            "dependencyDashboardApproval": false
+            "automerge": false
         },
         {
             "matchUpdateTypes": ["major"],
+            "addLabels": ["release:major"],
             "stabilityDays": 14,
-            "automerge": false,
-            "dependencyDashboard": true,
-            "dependencyDashboardApproval": false
+            "automerge": false
         }
     ],
     "azure-pipelines": {
