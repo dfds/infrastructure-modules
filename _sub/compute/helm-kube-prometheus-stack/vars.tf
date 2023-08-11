@@ -196,3 +196,9 @@ variable "grafana_serve_from_sub_path" {
   default     = false
   description = "Serve Grafana from subpath specified in root_url setting. By default it is set to false for compatibility reasons"
 }
+
+variable "prune" {
+  type        = bool
+  default     = true
+  description = "Enable Garbage collection"
+}

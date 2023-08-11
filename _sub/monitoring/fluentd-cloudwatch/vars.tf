@@ -70,3 +70,9 @@ variable "docker_image_tag" {
   description = "The tag for the fluentd-kubernetes-daemonset image"
   default     = "v1.16-debian-cloudwatch-1"
 }
+
+variable "prune" {
+  type        = bool
+  default     = true
+  description = "Enable Garbage collection"
+}

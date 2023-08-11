@@ -61,45 +61,51 @@ variable "gitops_apps_repo_branch" {
 }
 
 variable "api_secret_name" {
-    type = string
-    default = "datadog-secret"
+  type    = string
+  default = "datadog-secret"
 }
 
 variable "api_secret_key" {
-    type = string
-    default = "api-key"
+  type    = string
+  default = "api-key"
 }
 
 variable "app_secret_name" {
-    type = string
-    default = "datadog-secret"
+  type    = string
+  default = "datadog-secret"
 }
 
 variable "app_secret_key" {
-    type = string
-    default = "app-key"
+  type    = string
+  default = "app-key"
 }
 
 variable "cluster_agent_image_version" {
-    type = string
-    default = "latest"
+  type    = string
+  default = "latest"
 }
 variable "node_agent_image_version" {
-    type = string
-    default = "latest"
+  type    = string
+  default = "latest"
 }
 
 variable "site" {
-    type = string
-    default = "datadoghq.eu"
+  type    = string
+  default = "datadoghq.eu"
 }
 
 variable "tolerations" {
-    type = list(object({
+  type = list(object({
     key      = string,
     operator = string,
     value    = optional(string),
     effect   = string,
   }))
-    default = []
+  default = []
+}
+
+variable "prune" {
+  type        = bool
+  default     = true
+  description = "Enable Garbage collection"
 }

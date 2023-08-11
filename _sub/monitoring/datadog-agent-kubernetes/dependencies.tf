@@ -29,7 +29,7 @@ locals {
         "name" = "flux-system"
       }
       "path"  = "./${local.helm_repo_path}"
-      "prune" = true
+      "prune" = var.prune
     }
   }
 
@@ -52,7 +52,7 @@ locals {
         "name" = "flux-system"
       }
       "path"  = "./${local.config_repo_path}"
-      "prune" = true
+      "prune" = var.prune
     }
   }
 
@@ -91,7 +91,7 @@ locals {
     ]
   }
 
-    config_agent = <<YAML
+  config_agent = <<YAML
 apiVersion: datadoghq.com/v2alpha1
 kind: DatadogAgent
 metadata:
@@ -110,17 +110,17 @@ spec:
     site: ${var.site}
   override:
     nodeAgent:
-%{ if length(var.tolerations) > 0 ~}
+%{if length(var.tolerations) > 0~}
       tolerations:
-%{ for t in var.tolerations ~}
+%{for t in var.tolerations~}
       - key: ${t.key}
         operator: ${t.operator}
-%{ if t.value != null ~}
+%{if t.value != null~}
         value: ${t.value}
-%{ endif ~}
+%{endif~}
         effect: ${t.effect}
-%{ endfor ~}
-%{ endif ~}
+%{endfor~}
+%{endif~}
   features:
     apm:
       enabled: true

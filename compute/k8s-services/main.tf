@@ -32,6 +32,7 @@ module "traefik_blue_variant_flux_manifests" {
   overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  prune                   = var.fluxcd_prune
 
   providers = {
     github = github.fluxcd
@@ -59,6 +60,7 @@ module "traefik_variant_flux_manifests" {
   overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  prune                   = var.fluxcd_prune
 
   providers = {
     github = github.fluxcd
@@ -390,6 +392,7 @@ module "monitoring_kube_prometheus_stack" {
   overwrite_on_create         = var.fluxcd_bootstrap_overwrite_on_create
   tolerations                 = var.monitoring_tolerations
   affinity                    = var.monitoring_affinity
+  prune                       = var.fluxcd_prune
 
   providers = {
     github = github.fluxcd
@@ -438,6 +441,7 @@ module "platform_fluxcd" {
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   cluster_name            = var.eks_cluster_name
   kubeconfig_path         = local.kubeconfig_path
+  prune                   = var.fluxcd_prune
 
   providers = {
     github = github.fluxcd
@@ -598,6 +602,7 @@ module "blackbox_exporter_flux_manifests" {
   overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  prune                   = var.fluxcd_prune
 
   providers = {
     github = github.fluxcd
@@ -624,6 +629,7 @@ module "helm_exporter_flux_manifests" {
   overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  prune                   = var.fluxcd_prune
 
   providers = {
     github = github.fluxcd
@@ -673,6 +679,7 @@ module "fluentd_cloudwatch_flux_manifests" {
   gitops_apps_repo_branch         = var.fluxcd_apps_repo_branch
   docker_image_name               = var.fluentd_cloudwatch_docker_image_name
   docker_image_tag                = var.fluentd_cloudwatch_docker_image_tag
+  prune                           = var.fluxcd_prune
 
   providers = {
     github = github.fluxcd
@@ -704,6 +711,7 @@ module "velero_flux_manifests" {
   overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  prune                   = var.fluxcd_prune
 
   providers = {
     github = github.fluxcd
