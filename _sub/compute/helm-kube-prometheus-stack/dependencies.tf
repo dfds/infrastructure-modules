@@ -6,8 +6,8 @@ locals {
   default_repo_branch        = data.github_repository.main.default_branch
   repo_branch                = length(var.repo_branch) > 0 ? var.repo_branch : local.default_repo_branch
   cluster_repo_path          = "clusters/${var.cluster_name}"
-  config_repo_path           = "platform-apps/${var.cluster_name}/grafana/config"
-  grafana_platform_apps_name = "platform-apps-grafana"
+  config_repo_path           = "apps/${var.cluster_name}/grafana/config"
+  grafana_platform_apps_name = "grafana"
   grafana_service_name       = "${var.namespace}-grafana"
   grafana_ingressroute_name  = "${var.namespace}-grafana"
   grafana_middleware_name    = "${local.grafana_ingressroute_name}-mw"

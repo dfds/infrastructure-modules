@@ -6,7 +6,7 @@
 resource "github_repository_file" "velero_flux_helm_path" {
   repository          = var.repo_name
   branch              = data.github_branch.flux_branch.branch
-  file                = "${local.cluster_repo_path}/${local.app_install_name}-helm.yaml"
+  file                = "${local.cluster_repo_path}/${var.deploy_name}.yaml"
   content             = jsonencode(local.app_helm_path)
   overwrite_on_create = var.overwrite_on_create
 }

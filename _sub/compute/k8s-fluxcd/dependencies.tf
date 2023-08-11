@@ -4,7 +4,7 @@
 
 locals {
   cluster_target_path = "clusters/${var.cluster_name}"
-  app_install_name    = "platform-apps-flux-monitoring"
+  app_install_name    = "flux-monitoring"
 }
 
 

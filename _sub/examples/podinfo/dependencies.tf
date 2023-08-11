@@ -21,7 +21,7 @@ data "github_branch" "flux_branch" {
 
 locals {
   cluster_repo_path = "clusters/${var.cluster_name}"
-  app_install_name  = "platform-apps-podinfo"
+  app_install_name  = "podinfo"
   app_config_path = {
     "apiVersion" = "kustomize.toolkit.fluxcd.io/v1"
     "kind"       = "Kustomization"

@@ -12,14 +12,13 @@ data "github_branch" "flux_branch" {
 # --------------------------------------------------
 locals {
   cluster_repo_path = "clusters/${var.cluster_name}"
-  helm_repo_path    = "platform-apps/${var.cluster_name}/${var.deploy_name}/helm"
-  app_install_name  = "platform-apps-${var.deploy_name}"
+  helm_repo_path    = "apps/${var.cluster_name}/${var.deploy_name}"
 
   app_helm_path = {
     "apiVersion" = "kustomize.toolkit.fluxcd.io/v1"
     "kind"       = "Kustomization"
     "metadata" = {
-      "name"      = "${local.app_install_name}-helm"
+      "name"      = var.deploy_name
       "namespace" = "flux-system"
     }
     "spec" = {
