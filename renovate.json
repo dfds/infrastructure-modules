@@ -27,7 +27,6 @@
                 "minor",
                 "major"
             ],
-            "automerge": false,
             "ignoreTests": false,
             "dependencyDashboard": true,
             "dependencyDashboardApproval": false
@@ -50,17 +49,20 @@
                 "lockFileMaintenance"
             ],
             "addLabels": ["release:patch"],
-            "stabilityDays": 1
+            "stabilityDays": 1,
+            "automerge": true
         },
         {
             "matchUpdateTypes": ["minor"],
             "addLabels": ["release:minor"],
-            "stabilityDays": 7
+            "stabilityDays": 7,
+            "automerge": false
         },
         {
             "matchUpdateTypes": ["major"],
             "addLabels": ["release:major"],
-            "stabilityDays": 14
+            "stabilityDays": 14,
+            "automerge": false
         }
     ],
     "azure-pipelines": {
