@@ -71,7 +71,7 @@ variable "backup_plans" {
       })))
     }))
   }))
-
+  description = "A list of backup plans."
   default = []
 }
 
@@ -103,4 +103,3 @@ variable "resource_type_management_preference" {
   description = "A map of services along with the management preferences for the Region"
   default     = {}
 }
-
