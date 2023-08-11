@@ -36,7 +36,7 @@ locals {
         }
       ]
       "interval" = "1m0s"
-      "path"     = "./apps/podinfo"
+      "path"     = "./apps/base/podinfo"
       "prune"    = var.prune
       "sourceRef" = {
         "kind" = "GitRepository"

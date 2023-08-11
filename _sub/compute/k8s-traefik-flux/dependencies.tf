@@ -62,7 +62,7 @@ locals {
     "apiVersion" = "kustomize.config.k8s.io/v1beta1"
     "kind"       = "Kustomization"
     "resources" = [
-      "${var.gitops_apps_repo_url}/apps/${var.deploy_name}?ref=${var.gitops_apps_repo_branch}"
+      "${var.gitops_apps_repo_url}/apps/base/${var.deploy_name}?ref=${var.gitops_apps_repo_branch}"
     ]
     "patchesStrategicMerge" = [
       "patch.yaml"

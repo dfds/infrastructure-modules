@@ -27,7 +27,7 @@ locals {
         }
       ]
       "interval" = "1m0s"
-      "path"     = "./apps/flux-monitoring"
+      "path"     = "./apps/base/flux-monitoring"
       "prune"    = var.prune
       "sourceRef" = {
         "kind" = "GitRepository"
