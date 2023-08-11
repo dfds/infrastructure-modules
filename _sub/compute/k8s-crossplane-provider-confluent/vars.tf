@@ -53,3 +53,9 @@ variable "repo_branch" {
 variable "cluster_name" {
   type = string
 }
+
+variable "prune" {
+  type        = bool
+  default     = true
+  description = "Enable Garbage collection"
+}

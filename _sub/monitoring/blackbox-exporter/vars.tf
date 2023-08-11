@@ -64,3 +64,9 @@ variable "gitops_apps_repo_branch" {
   default     = "main"
   description = "The default branch for your GitOps manifests"
 }
+
+variable "prune" {
+  type        = bool
+  default     = true
+  description = "Enable Garbage collection"
+}

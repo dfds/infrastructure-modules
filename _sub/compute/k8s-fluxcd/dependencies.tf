@@ -28,7 +28,7 @@ locals {
       ]
       "interval" = "1m0s"
       "path"     = "./apps/flux-monitoring"
-      "prune"    = true
+      "prune"    = var.prune
       "sourceRef" = {
         "kind" = "GitRepository"
         "name" = "platform-apps-git"
@@ -69,6 +69,6 @@ spec:
     kind: GitRepository
     name: platform-apps-git
   path: ./sources
-  prune: true
+  prune: ${var.prune}
   YAML
 }

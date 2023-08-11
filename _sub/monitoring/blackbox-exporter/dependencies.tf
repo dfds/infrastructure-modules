@@ -28,7 +28,7 @@ locals {
         "name" = "flux-system"
       }
       "path"  = "./${local.helm_repo_path}"
-      "prune" = true
+      "prune" = var.prune
     }
   }
 

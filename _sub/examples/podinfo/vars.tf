@@ -19,3 +19,9 @@ variable "overwrite_on_create" {
   default     = true
   description = "Enable overwriting existing files"
 }
+
+variable "prune" {
+  type        = bool
+  default     = true
+  description = "Enable Garbage collection"
+}

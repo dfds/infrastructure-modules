@@ -393,6 +393,12 @@ variable "fluxcd_version" {
   default = null
 }
 
+variable "fluxcd_prune" {
+  type        = bool
+  default     = true
+  description = "Enable Garbage collection"
+}
+
 variable "fluxcd_bootstrap_repo_name" {
   type    = string
   default = ""

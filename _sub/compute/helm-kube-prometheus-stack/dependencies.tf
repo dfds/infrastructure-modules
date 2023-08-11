@@ -27,7 +27,7 @@ locals {
         "name" = "flux-system"
       }
       "path"  = "./${local.config_repo_path}"
-      "prune" = true
+      "prune" = var.prune
     }
   }
 
@@ -81,7 +81,7 @@ locals {
 
   grafana_config_alert_config = {
     "apiVersion" = "v1"
-    "kind" = "ConfigMap"
+    "kind"       = "ConfigMap"
     "metadata" = {
       "labels" = {
         "grafana_alert" = "1"

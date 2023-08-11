@@ -27,7 +27,7 @@ locals {
         "name" = "flux-system"
       }
       "path"  = "./${local.config_repo_path}"
-      "prune" = true
+      "prune" = var.prune
     }
   }
 
