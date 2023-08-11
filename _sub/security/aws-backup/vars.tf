@@ -1,7 +1,7 @@
 variable "vault_name" {
   type        = string
   description = "The name of the Vault."
-  default     = ""
+  default     = null
 }
 
 variable "deploy_kms_key" {
@@ -13,7 +13,7 @@ variable "deploy_kms_key" {
 variable "kms_key_arn" {
   type        = string
   description = "The ARN of a the KMS key."
-  default     = ""
+  default     = null
 }
 
 variable "backup_plans" {
