@@ -282,301 +282,9 @@ module "github_oidc_provider" {
 # --------------------------------------------------
 
 locals {
-  settings_resource_type_opt_in_preference = {
-    "Aurora"                 = true
-    "CloudFormation"         = false
-    "DocumentDB"             = true
-    "DynamoDB"               = true
-    "EBS"                    = true
-    "EC2"                    = true
-    "EFS"                    = true
-    "FSx"                    = false
-    "Neptune"                = false
-    "RDS"                    = true
-    "Redshift"               = true
-    "S3"                     = true
-    "SAP HANA on Amazon EC2" = false
-    "Storage Gateway"        = false
-    "Timestream"             = true
-    "VirtualMachine"         = false
-  }
-  resource_type_management_preference = {
-    "DynamoDB" = true
-    "EFS"      = true
-  }
-  vault_name     = "dfds-vault"
   deploy_kms_key = true
   kms_key_admins = [module.org_account.org_role_arn]
-
-  backup_plans = [
-    {
-      plan_name = "30-days-retention-continuous-backup"
-      rules = [
-        {
-          name                     = "30-days-retention-continuous-backup"
-          schedule                 = "cron(0 1 * * ? *)"
-          enable_continuous_backup = true
-          lifecycle = {
-            delete_after = 30
-          }
-        }
-      ]
-      selections = [
-        {
-          name      = "select-rds-cont-backup"
-          resources = ["arn:aws:rds:*:*:db:*"]
-          conditions = {
-            string_equals = [
-              {
-                key   = "aws:ResourceTag/dfds.data.backup"
-                value = "true"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      plan_name = "30-days-retention"
-      rules = [
-        {
-          name                     = "daily-30-days-retention"
-          schedule                 = "cron(0 1 * * ? *)"
-          enable_continuous_backup = false
-          lifecycle = {
-            delete_after = 30
-          }
-        }
-      ]
-      selections = [
-        {
-          name = "select-prod-30-days"
-          resources = [
-            "arn:aws:dynamodb:*:*:*",
-            "arn:aws:rds:*:*:db:*"
-          ]
-          conditions = {
-            string_equals = [
-              {
-                key   = "aws:ResourceTag/dfds.env"
-                value = "prod"
-              },
-              {
-                key   = "aws:ResourceTag/dfds.data.backup"
-                value = "true"
-              },
-              {
-                key   = "aws:ResourceTag/dfds.data.backup_retention"
-                value = "30days"
-              }
-            ]
-          }
-        },
-        {
-          name = "select-staging-30-days"
-          resources = [
-            "arn:aws:dynamodb:*:*:*",
-            "arn:aws:rds:*:*:db:*"
-          ]
-          conditions = {
-            string_equals = [
-              {
-                key   = "aws:ResourceTag/dfds.env"
-                value = "staging"
-              },
-              {
-                key   = "aws:ResourceTag/dfds.data.backup"
-                value = "true"
-              },
-              {
-                key   = "aws:ResourceTag/dfds.data.backup_retention"
-                value = "30days"
-              }
-            ]
-          }
-        },
-        {
-          name = "select-uat-30-days"
-          resources = [
-            "arn:aws:dynamodb:*:*:*",
-            "arn:aws:rds:*:*:db:*"
-          ]
-          conditions = {
-            string_equals = [
-              {
-                key   = "aws:ResourceTag/dfds.env"
-                value = "uat"
-              },
-              {
-                key   = "aws:ResourceTag/dfds.data.backup"
-                value = "true"
-              },
-              {
-                key   = "aws:ResourceTag/dfds.data.backup_retention"
-                value = "30days"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      plan_name = "60-days-retention"
-      rules = [
-        {
-          name = "weekly-60-days-retention"
-          schedule = "cron(0 3 ? * L *)"
-          enable_continuous_backup = false
-          lifecycle = {
-            delete_after = 60
-          }
-        }
-      ]
-      selections = [
-        {
-          name = "select-prod-60-days"
-          resources = [
-            "arn:aws:rds:*:*:db:*",
-            "arn:aws:dynamodb:*:*:*"
-          ]
-          conditions = {
-            string_equals = [
-              {
-                key   = "aws:ResourceTag/dfds.env"
-                value = "prod"
-              },
-              {
-                key   = "aws:ResourceTag/dfds.data.backup"
-                value = "true"
-              },
-              {
-                key   = "aws:ResourceTag/dfds.data.backup_retention"
-                value = "60days"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      plan_name = "180-days-retention"
-      rules = [
-        {
-          name                     = "monthly-180-days-retention"
-          schedule                 = "cron(0 3 L * ? *)"
-          enable_continuous_backup = false
-          lifecycle = {
-            delete_after = 180
-            cold_storage_after = 90
-          }
-        }
-      ]
-      selections = [
-        {
-          name      = "select-prod-180-days"
-          resources = [
-            "arn:aws:rds:*:*:db:*",
-            "arn:aws:dynamodb:*:*:*"
-          ]
-          conditions = {
-            string_equals = [
-              {
-                key   = "aws:ResourceTag/dfds.env"
-                value = "prod"
-              },
-              {
-                key   = "aws:ResourceTag/dfds.data.backup"
-                value = "true"
-              },
-              {
-                key   = "aws:ResourceTag/dfds.data.backup_retention"
-                value = "180days"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      plan_name = "1-year-retention"
-      rules = [
-        {
-          name                     = "monthly-1-year-retention"
-          schedule                 = "cron(0 3 L * ? *)"
-          enable_continuous_backup = false
-          lifecycle = {
-            delete_after = 365
-            cold_storage_after = 90
-          }
-        }
-      ]
-      selections = [
-        {
-          name      = "select-prod-1-year"
-          resources = [
-            "arn:aws:rds:*:*:db:*",
-            "arn:aws:dynamodb:*:*:*"
-          ]
-          conditions = {
-            string_equals = [
-              {
-                key   = "aws:ResourceTag/dfds.env"
-                value = "prod"
-              },
-              {
-                key   = "aws:ResourceTag/dfds.data.backup"
-                value = "true"
-              },
-              {
-                key   = "aws:ResourceTag/dfds.data.backup_retention"
-                value = "1year"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      plan_name = "10-years-retention"
-      rules = [
-        {
-          name                     = "monthly-10-years-retention"
-          schedule                 = "cron(0 3 L * ? *)"
-          enable_continuous_backup = false
-          lifecycle = {
-            delete_after = 3650
-            cold_storage_after = 90
-          }
-        }
-      ]
-      selections = [
-        {
-          name      = "select-10-years"
-          resources = [
-            "arn:aws:rds:*:*:db:*",
-            "arn:aws:dynamodb:*:*:*"
-          ]
-          conditions = {
-            string_equals = [
-              {
-                key   = "aws:ResourceTag/dfds.env"
-                value = "prod"
-              },
-              {
-                key   = "aws:ResourceTag/dfds.data.backup"
-                value = "true"
-              },
-              {
-                key   = "aws:ResourceTag/dfds.data.backup_retention"
-                value = "10years"
-              }
-            ]
-          }
-        }
-      ]
-    }
-  ]
-}
+  }
 
 resource "aws_iam_role" "backup" {
   provider = aws.workload
@@ -607,14 +315,15 @@ module "backup_eu_central_1" {
   count  = var.deploy_backup ? 1 : 0
   source = "../../_sub/security/aws-backup"
 
-  settings_resource_type_opt_in_preference = local.settings_resource_type_opt_in_preference
-  resource_type_management_preference      = local.resource_type_management_preference
+  settings_resource_type_opt_in_preference = var.aws_backup_settings_resource_type_opt_in_preference
+  resource_type_management_preference      = var.aws_backup_resource_type_management_preference
 
-  vault_name     = local.vault_name
+  vault_name     = var.aws_backup_vault_name
   deploy_kms_key = local.deploy_kms_key
   kms_key_admins = local.kms_key_admins
-  backup_plans   = local.backup_plans
+  backup_plans   = var.aws_backup_plans
   iam_role_arn   = aws_iam_role.backup[0].arn
+  tags = var.aws_backup_tags
 }
 
 module "backup_eu_west_1" {
@@ -624,12 +333,13 @@ module "backup_eu_west_1" {
   count  = var.deploy_backup ? 1 : 0
   source = "../../_sub/security/aws-backup"
 
-  settings_resource_type_opt_in_preference = local.settings_resource_type_opt_in_preference
-  resource_type_management_preference      = local.resource_type_management_preference
+  settings_resource_type_opt_in_preference = var.aws_backup_settings_resource_type_opt_in_preference
+  resource_type_management_preference      = var.aws_backup_resource_type_management_preference
 
-  vault_name     = local.vault_name
+  vault_name     = var.aws_backup_vault_name
   deploy_kms_key = local.deploy_kms_key
   kms_key_admins = local.kms_key_admins
-  backup_plans   = local.backup_plans
+  backup_plans   = var.aws_backup_plans
   iam_role_arn   = aws_iam_role.backup[0].arn
+  tags = var.aws_backup_tags
 }
