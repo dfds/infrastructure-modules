@@ -23,13 +23,12 @@ data "github_branch" "flux_branch" {
 locals {
   cluster_repo_path = "clusters/${var.cluster_name}"
   config_repo_path  = "apps/${var.cluster_name}/${var.deploy_name}/config"
-  app_install_name  = var.deploy_name
 
   app_config_path = {
     "apiVersion" = "kustomize.toolkit.fluxcd.io/v1"
     "kind"       = "Kustomization"
     "metadata" = {
-      "name"      = "${local.app_install_name}-config"
+      "name"      = "${var.deploy_name}-config"
       "namespace" = "flux-system"
     }
     "spec" = {

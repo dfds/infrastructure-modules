@@ -8,7 +8,6 @@ locals {
   cluster_repo_path   = "clusters/${var.cluster_name}"
   helm_repo_path      = "apps/${var.cluster_name}/${var.deploy_name}/helm"
   config_repo_path    = "apps/${var.cluster_name}/${var.deploy_name}/config"
-  app_install_name    = var.deploy_name
 }
 
 locals {
@@ -16,7 +15,7 @@ locals {
     "apiVersion" = "kustomize.toolkit.fluxcd.io/v1"
     "kind"       = "Kustomization"
     "metadata" = {
-      "name"      = local.app_install_name
+      "name"      = var.deploy_name
       "namespace" = "flux-system"
     }
     "spec" = {
@@ -39,14 +38,14 @@ locals {
     "apiVersion" = "kustomize.toolkit.fluxcd.io/v1"
     "kind"       = "Kustomization"
     "metadata" = {
-      "name"      = "${local.app_install_name}-config"
+      "name"      = "${var.deploy_name}-config"
       "namespace" = "flux-system"
     }
     "spec" = {
       "interval" = "1m0s"
       "dependsOn" = [
         {
-          "name" = local.app_install_name
+          "name" = var.deploy_name
         }
       ]
       "sourceRef" = {
