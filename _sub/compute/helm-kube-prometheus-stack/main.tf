@@ -131,7 +131,7 @@ resource "github_repository_file" "grafana_config_ingressroute" {
 }
 
 resource "github_repository_file" "grafana_config_alert_config" {
-repository          = var.repo_name
+  repository          = var.repo_name
   branch              = local.repo_branch
   file                = "${local.config_repo_path}/alert-config.yaml"
   content             = jsonencode(local.grafana_config_alert_config)

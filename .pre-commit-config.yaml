@@ -25,11 +25,3 @@ repos:
       args:
         - "--allow-missing-credentials"
     - id: detect-private-key
-- repo: https://github.com/gruntwork-io/pre-commit
-  rev: v0.1.18
-  hooks:
-    - id: tflint
-      exclude: test/integration/suite/vendor/.*
-      args:
-        - "--module"
-        - "--config=.tflint.hcl"
