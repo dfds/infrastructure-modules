@@ -127,3 +127,70 @@ resource "aws_resourceexplorer2_index" "eu-west-3" {
   type     = "LOCAL"
   provider = aws.workload_eu-west-3
 }
+
+# --------------------------------------------------
+# AWS Backup
+# --------------------------------------------------
+
+locals {
+  deploy_kms_key = true
+  kms_key_admins = [module.org_account.org_role_arn]
+}
+
+resource "aws_iam_role" "backup" {
+  provider = aws.workload
+  count    = var.deploy_backup ? 1 : 0
+
+  name               = "backup-role"
+  assume_role_policy = data.aws_iam_policy_document.backup_trust.json
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup",
+    "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForRestores"
+  ]
+}
+
+data "aws_iam_policy_document" "backup_trust" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["backup.amazonaws.com"]
+    }
+  }
+}
+
+module "backup_eu_central_1" {
+  providers = {
+    aws = aws.workload
+  }
+  count  = var.deploy_backup ? 1 : 0
+  source = "../../_sub/security/aws-backup"
+
+  settings_resource_type_opt_in_preference = var.aws_backup_settings_resource_type_opt_in_preference
+  resource_type_management_preference      = var.aws_backup_resource_type_management_preference
+
+  vault_name     = var.aws_backup_vault_name
+  deploy_kms_key = local.deploy_kms_key
+  kms_key_admins = local.kms_key_admins
+  backup_plans   = var.aws_backup_plans
+  iam_role_arn   = aws_iam_role.backup[0].arn
+  tags = var.aws_backup_tags
+}
+
+module "backup_eu_west_1" {
+  providers = {
+    aws = aws.workload_2
+  }
+  count  = var.deploy_backup ? 1 : 0
+  source = "../../_sub/security/aws-backup"
+
+  settings_resource_type_opt_in_preference = var.aws_backup_settings_resource_type_opt_in_preference
+  resource_type_management_preference      = var.aws_backup_resource_type_management_preference
+
+  vault_name     = var.aws_backup_vault_name
+  deploy_kms_key = local.deploy_kms_key
+  kms_key_admins = local.kms_key_admins
+  backup_plans   = var.aws_backup_plans
+  iam_role_arn   = aws_iam_role.backup[0].arn
+  tags = var.aws_backup_tags
+}
