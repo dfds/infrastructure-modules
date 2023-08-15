@@ -607,6 +607,12 @@ variable "preprime_aws_secret" {
   description = "AWS Secret for pre-prime pipeline. Used by Atlantis."
 }
 
+variable "preprime_backup_reports_slack_webhook_url" {
+  type        = string
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "Webhook token for backup reports used in pre-prime pipeline. Used by Atlantis."
+}
+
 variable "aws_account_manifests_kafka_broker" {
   type        = string
   default     = ""
