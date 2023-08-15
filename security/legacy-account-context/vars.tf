@@ -117,3 +117,93 @@ variable "hardened_security_contact_email" {
 variable "hardened_security_contact_phone_number" {
   type = string
 }
+
+variable "deploy_backup" {
+  type        = bool
+  description = "Whether to deploy AWS Backup"
+  default     = false
+}
+
+variable "aws_backup_settings_resource_type_opt_in_preference" {
+  type = object({})
+  description = "A map of services along with the opt-in preferences for the Region"
+  default = {}
+}
+
+variable "aws_backup_resource_type_management_preference" {
+  type = object({})
+  description = "A map of services along with the management preferences for the Region"
+  default = {}
+}
+
+variable "aws_backup_vault_name" {
+  type = string
+  description = "Name of the AWS Backup vault"
+  default = null
+}
+
+variable "aws_backup_plans" {
+  type = list(object({
+    plan_name = string
+
+    rules = list(object({
+      name                     = string
+      schedule                 = optional(string)
+      enable_continuous_backup = optional(bool)
+      start_window             = optional(string)
+      completion_window        = optional(string)
+      recovery_point_tags      = optional(any)
+      copy_action = optional(list(object({
+        destination_vault_arn = optional(string)
+        lifecycle = object({
+          cold_storage_after = optional(number)
+          delete_after       = optional(number)
+        }
+        )
+      })))
+
+      lifecycle = object({
+        cold_storage_after = optional(number)
+        delete_after       = optional(number)
+      })
+    }))
+
+    selections = list(object({
+      name      = string
+      resources = optional(list(string))
+      conditions = optional(object({
+        string_equals = optional(list(object({
+          key   = optional(string)
+          value = optional(string)
+        })))
+        string_like = optional(list(object({
+          key   = optional(string)
+          value = optional(string)
+        })))
+        string_not_equals = optional(list(object({
+          key   = optional(string)
+          value = optional(string)
+        })))
+        string_not_like = optional(list(object({
+          key   = optional(string)
+          value = optional(string)
+        })))
+      }))
+      not_resources = optional(list(string))
+      selection_tags = optional(list(object({
+        tag   = string
+        key   = string
+        value = string
+      })))
+    }))
+  }))
+  description = "A list of backup plans."
+  default = []
+}
+
+variable "aws_backup_tags" {
+  type = object({})
+  description = "A map of tags to apply to the backup components"
+  default = {}
+}
+
