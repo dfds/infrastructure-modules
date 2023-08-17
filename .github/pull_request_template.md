@@ -13,4 +13,4 @@
 - [ ] Terraform Plan looks good
 
 ## Is the change just for staging or also for production?
-- [ ] Apply tag `staging` or `production`
+- [ ] Apply a release tag `release:(major|minor|patch)` or `norelease` if there is no changes to the Terraform code
