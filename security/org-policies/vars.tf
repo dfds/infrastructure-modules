@@ -19,5 +19,5 @@ variable "reservation_policy_attach_targets" {
 }
 
 variable "resource_owner_tag_value" {
-  type = list(string)
+  type = string
 }
