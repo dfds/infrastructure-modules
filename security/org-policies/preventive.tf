@@ -109,6 +109,7 @@ data "aws_iam_policy_document" "preventive" {
     ]
     resources = ["*"]
   }
+  
   statement {
     sid    = "DenyAWSBackuponSpecificTag"
     effect = "Deny"
