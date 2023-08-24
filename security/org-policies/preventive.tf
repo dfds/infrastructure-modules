@@ -109,4 +109,65 @@ data "aws_iam_policy_document" "preventive" {
     ]
     resources = ["*"]
   }
+  
+  statement {
+    sid    = "DenyAWSBackuponSpecificTag"
+    effect = "Deny"
+    actions = [
+      "backup:CreateBackupPlan",
+      "backup:CreateBackupSelection",
+      "backup:CreateBackupVault",
+      "backup:CreateFramework",
+      "backup:CreateLegalHold",
+      "backup:CreateReportPlan",
+      "backup:DeleteBackupPlan",
+      "backup:DeleteBackupSelection",
+      "backup:DeleteBackupVault",
+      "backup:DeleteBackupVaultLockConfiguration",
+      "backup:DeleteBackupVaultNotifications",
+      "backup:DeleteFramework",
+      "backup:DeleteRecoveryPoint",
+      "backup:DeleteReportPlan",
+      "backup:DeleteBackupVaultAccessPolicy",
+      "backup:DisassociateRecoveryPoint",
+      "backup:DisassociateRecoveryPointFromParent",
+      "backup:PutBackupVaultAccessPolicy",
+      "backup:UpdateBackupPlan",
+      "backup:UpdateFramework",
+      "backup:UpdateRecoveryPointLifecycle",
+      "backup:UpdateReportPlan",
+    ]
+    resources = ["*"]
+
+    condition {
+      test     = "StringLike"
+      variable = "aws:ResourceTag/dfds.owner"
+      values   = [var.resource_owner_tag_value]
+    }
+    condition {
+      test     = "StringNotLike"
+      variable = "aws:PrincipalArn"
+      values   = ["arn:aws:iam::*:role/OrgRole"]
+    }
+  }
+
+  statement {
+    sid    = "DenyTagOperations"
+    effect = "Deny"
+    actions = [
+      "backup:UntagResource",
+    ]
+    resources = ["*"]
+
+    condition {
+      test     = "StringLike"
+      variable = "aws:ResourceTag/dfds.owner"
+      values   = [var.resource_owner_tag_value]
+    }
+    condition {
+      test     = "StringNotLike"
+      variable = "aws:PrincipalArn"
+      values   = ["arn:aws:iam::*:role/OrgRole"]
+    }
+  }
 }
