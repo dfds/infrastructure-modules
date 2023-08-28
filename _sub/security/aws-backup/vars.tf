@@ -83,7 +83,6 @@ variable "iam_role_arn" {
 variable "tags" {
   type        = map(string)
   description = "A set of key-value pairs as tags for the resources."
-  default     = {}
 }
 
 variable "kms_key_admins" {
@@ -94,12 +93,12 @@ variable "kms_key_admins" {
 
 variable "settings_resource_type_opt_in_preference" {
   description = "A map of services along with the opt-in preferences for the Region."
-  type        = object({})
+  type        = map(any)
   default     = {}
 }
 
 variable "resource_type_management_preference" {
-  type        = object({})
+  type        = map(any)
   description = "A map of services along with the management preferences for the Region"
   default     = {}
 }

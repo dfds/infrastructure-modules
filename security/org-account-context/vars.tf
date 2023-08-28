@@ -207,13 +207,13 @@ variable "deploy_backup" {
 }
 
 variable "aws_backup_settings_resource_type_opt_in_preference" {
-  type = object({})
+  type = map(any)
   description = "A map of services along with the opt-in preferences for the Region"
   default = {}
 }
 
 variable "aws_backup_resource_type_management_preference" {
-  type = object({})
+  type = map(any)
   description = "A map of services along with the management preferences for the Region"
   default = {}
 }
@@ -284,7 +284,6 @@ variable "aws_backup_plans" {
 }
 
 variable "aws_backup_tags" {
-  type = object({})
+  type = map(string)
   description = "A map of tags to apply to the backup components"
-  default = {}
 }
