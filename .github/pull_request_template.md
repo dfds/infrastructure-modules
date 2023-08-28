@@ -13,5 +13,5 @@
 - [ ] Run `atlantis plan`
 - [ ] Terraform Plan looks good
 
-## Is the change just for staging or also for production?
-- [ ] Apply a release tag `release:(major|minor|patch)` or `norelease` if there is no changes to the Terraform code
+## Is it a new release?
+- [ ] Apply a release tag `release:(major|minor|patch)`, following semantic versioning in [this guide](https://semver.org/) or `norelease` if there is no changes to the Terraform code
