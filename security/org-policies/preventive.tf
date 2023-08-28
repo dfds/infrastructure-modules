@@ -111,7 +111,7 @@ data "aws_iam_policy_document" "preventive" {
   }
   
   statement {
-    sid    = "DenyAWSBackuponSpecificTag"
+    sid    = "DenyAWSBackupOnSpecificTag"
     effect = "Deny"
     actions = [
       "backup:CreateBackupPlan",
