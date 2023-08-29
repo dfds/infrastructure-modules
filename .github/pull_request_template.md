@@ -10,8 +10,9 @@
 - [ ] I have rebased the code to master (or merged in the latest from master)
 
 ## Checklist before approving the PR
-- [ ] Run `atlantis plan`
-- [ ] Terraform Plan looks good
+- When applicable:
+  - [ ] Run `atlantis plan` on one of the pipelines that consumes the new changes
+  - [ ] Verify Terraform Plan looks good
 
 ## Is it a new release?
 - [ ] Apply a release tag `release:(major|minor|patch)`, following semantic versioning in [this guide](https://semver.org/) or `norelease` if there is no changes to the Terraform code
