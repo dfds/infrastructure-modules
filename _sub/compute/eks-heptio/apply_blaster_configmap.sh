@@ -44,9 +44,9 @@ if [[ -n ${AWS_ASSUMED_CREDS[0]} ]]; then
 	AWS_ACCESS_KEY_ID=${AWS_ASSUMED_ACCESS_KEY_ID} \
 		AWS_SECRET_ACCESS_KEY=${AWS_ASSUMED_SECRET_ACCESS_KEY} \
 		AWS_SESSION_TOKEN=${AWS_ASSUMED_SESSION_TOKEN} \
-		aws --region "${REGION}" s3 ls "${CONFIGMAP_PATH_S3}" >/dev/null && APPLY_S3_CONFIGMAP=1
+		aws --region "${REGION}" s3 ls "${CONFIGMAP_PATH_S3}" &>/dev/null && APPLY_S3_CONFIGMAP=1
 else
-	aws --region "${REGION}" s3 ls "${CONFIGMAP_PATH_S3}" >/dev/null && APPLY_S3_CONFIGMAP=1
+	aws --region "${REGION}" s3 ls "${CONFIGMAP_PATH_S3}" &>/dev/null && APPLY_S3_CONFIGMAP=1
 fi
 
 # Apply configmap
