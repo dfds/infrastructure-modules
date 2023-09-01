@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Exit if any of the intermediate steps fail
-set -ex
+set -e
 
 # Prints commands if debug mode is enabled
 # [ "$DEBUG" == 'true' ] && set -x
