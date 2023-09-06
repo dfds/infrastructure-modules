@@ -56,6 +56,51 @@ provider "aws" {
   }
 }
 
+# USA
+provider "aws" {
+  region = "us-east-1"
+  alias  = "workload_us-east-1"
+
+  # Assume the Organizational role in Workload account
+  assume_role {
+    role_arn = module.org_account.org_role_arn
+    session_name = var.aws_session_name
+  }
+}
+
+provider "aws" {
+  region = "us-east-2"
+  alias  = "workload_us-east-2"
+
+  # Assume the Organizational role in Workload account
+  assume_role {
+    role_arn = module.org_account.org_role_arn
+    session_name = var.aws_session_name
+  }
+}
+
+provider "aws" {
+  region = "us-west-1"
+  alias  = "workload_us-west-1"
+
+  # Assume the Organizational role in Workload account
+  assume_role {
+    role_arn = module.org_account.org_role_arn
+    session_name = var.aws_session_name
+  }
+}
+
+provider "aws" {
+  region = "us-west-2"
+  alias  = "workload_us-west-2"
+
+  # Assume the Organizational role in Workload account
+  assume_role {
+    role_arn = module.org_account.org_role_arn
+    session_name = var.aws_session_name
+  }
+}
+
 terraform {
   backend "s3" {
   }
