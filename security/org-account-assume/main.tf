@@ -170,5 +170,5 @@ resource "aws_resourceexplorer2_index" "us-west-2" {
 resource "aws_resourceexplorer2_index" "eu-west-1" {
   type = "LOCAL"
 
-  provider = aws.workload_eu-west-1
+  provider = aws.aws_region_2
 }
