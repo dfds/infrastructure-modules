@@ -110,3 +110,65 @@ module "hardened-account" {
   sso_support_permission_set_name = var.sso_support_permission_set_name
   sso_support_group_name          = var.sso_support_group_name
 }
+
+# --------------------------------------------------
+# AWS Resource Explorer Feature
+# --------------------------------------------------
+
+module "aws_resource_explorer_metrics" {
+  source = "../../_sub/monitoring/aws-resource-explorer-metrics"
+
+  allowed_assume_arn = "arn:aws:iam::${var.master_account_id}:role/aws-resource-exporter"
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+resource "aws_resourceexplorer2_index" "aggregator" {
+  type = "AGGREGATOR"
+
+  provider = aws.workload
+}
+
+resource "aws_resourceexplorer2_view" "aggregator_view" {
+  name         = "all-resources"
+  default_view = true
+
+  included_property {
+    name = "tags"
+  }
+
+  depends_on = [aws_resourceexplorer2_index.aggregator]
+  provider   = aws.workload
+}
+
+
+resource "aws_resourceexplorer2_index" "us-east-1" {
+  type = "LOCAL"
+
+  provider = aws.workload_us-east-1
+}
+
+resource "aws_resourceexplorer2_index" "us-east-2" {
+  type = "LOCAL"
+
+  provider = aws.workload_us-east-2
+}
+resource "aws_resourceexplorer2_index" "us-west-1" {
+  type = "LOCAL"
+
+  provider = aws.workload_us-west-1
+}
+
+resource "aws_resourceexplorer2_index" "us-west-2" {
+  type = "LOCAL"
+
+  provider = aws.workload_us-west-2
+}
+
+resource "aws_resourceexplorer2_index" "eu-west-1" {
+  type = "LOCAL"
+
+  provider = aws.workload_eu-west-1
+}
