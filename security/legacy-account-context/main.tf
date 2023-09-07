@@ -75,6 +75,16 @@ module "iam_role_certero" {
 # AWS Resource Explorer
 # --------------------------------------------------
 
+module "aws_resource_explorer_metrics" {
+  source = "../../_sub/monitoring/aws-resource-explorer-metrics"
+
+  allowed_assume_arn = "arn:aws:iam::${var.master_account_id}:role/aws-resource-exporter"
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
 resource "aws_resourceexplorer2_index" "aggregator" {
   type = "AGGREGATOR"
 
@@ -116,16 +126,6 @@ resource "aws_resourceexplorer2_index" "us-west-2" {
 resource "aws_resourceexplorer2_index" "eu-west-1" {
   type     = "LOCAL"
   provider = aws.workload_eu-west-1
-}
-
-resource "aws_resourceexplorer2_index" "eu-west-2" {
-  type     = "LOCAL"
-  provider = aws.workload_eu-west-2
-}
-
-resource "aws_resourceexplorer2_index" "eu-west-3" {
-  type     = "LOCAL"
-  provider = aws.workload_eu-west-3
 }
 
 # --------------------------------------------------
