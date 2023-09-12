@@ -1,0 +1,22 @@
+name: Security release on merge
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - security/**
+      - _sub/security/**
+
+  # On very rare occasions, a security feature is turned on in different directories than defined in 'paths'. Then a manual release is possible.
+  workflow_dispatch:
+
+jobs:
+  auto-release:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: rymndhng/release-on-push-action@master
+        with:
+          bump_version_scheme: patch
+          tag_prefix: security-
