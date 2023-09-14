@@ -209,3 +209,34 @@ variable "disable_inactivity_cleanup" {
   default     = false
   description = "Disables automated clean up of EKS resources based on inactivity. Only applicable to sandboxes."
 }
+
+# --------------------------------------------------
+# GPU workloads
+# --------------------------------------------------
+
+variable "deploy_nvidia_device_plugin" {
+  type        = bool
+  default     = false
+  description = "Whether to deploy NVIDIA device plugin. This needs to be set to `true` when GPU based workloads needs to be enabled."
+}
+
+variable "nvidia_device_plugin_tolerations" {
+  type = list(object({
+    key = string
+    operator = string
+    value = optional(string)
+    effect = string
+  }))
+  description = "A list of tolerations to apply to the nvidia device plugin deployment"
+  default = []
+}
+
+variable "nvidia_device_plugin_affinity" {
+  type = list(object({
+    key = string
+    operator = string
+    values = list(string)
+  }))
+  description = "A list of affinities to apply to the nvidia device plugin deployment"
+  default = []
+}

@@ -317,3 +317,19 @@ module "eks_inactivity_cleanup" {
   eks_cluster_arn      = module.eks_cluster.eks_cluster_arn
   inactivity_alarm_arn = aws_cloudwatch_metric_alarm.inactivity[0].arn
 }
+
+# --------------------------------------------------
+# GPU workloads
+# --------------------------------------------------
+
+module "eks_nvidia_device_plugin" {
+  count      = var.deploy_nvidia_device_plugin ? 1 : 0
+  source     = "../../_sub/compute/helm-nvidia-device-plugin"
+  depends_on = [module.eks_managed_workers_node_group]
+
+  chart_version = "0.14.1"
+  namespace     = "nvidia-device-plugin"
+  create_namespace = true
+  tolerations = var.nvidia_device_plugin_tolerations
+  affinity = var.nvidia_device_plugin_affinity
+}
