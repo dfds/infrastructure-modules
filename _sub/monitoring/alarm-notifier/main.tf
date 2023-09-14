@@ -38,8 +38,8 @@ resource "aws_lambda_function" "slack_alarm_notifier" {
   filename      = "${path.module}/lambda/slack-alarm-notifier.zip"
   function_name = aws_iam_role.iam_for_lambda[0].name
   role          = aws_iam_role.iam_for_lambda[0].arn
-  handler       = "main"
-  runtime       = "go1.x"
+  handler       = "bootstrap"
+  runtime       = "provided.al2"
 
   source_code_hash = filebase64sha256("${path.module}/lambda/slack-alarm-notifier.zip")
 
