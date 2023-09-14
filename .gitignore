@@ -48,3 +48,5 @@ validate.json
 
 #Mac OS files
 .DS_Store
+
+_sub/monitoring/alarm-notifier/lambda/bootstrap

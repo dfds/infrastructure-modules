@@ -8,8 +8,8 @@ import (
 
 	"context"
 
-	"slack-alarm-notifier/pkg/format"
-	"slack-alarm-notifier/pkg/model"
+	"github.com/dfds/infrastructure-modules/slack-alarm-notifier/pkg/format"
+	"github.com/dfds/infrastructure-modules/slack-alarm-notifier/pkg/model"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/google/uuid"
