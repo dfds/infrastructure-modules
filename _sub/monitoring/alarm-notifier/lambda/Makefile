@@ -1,9 +1,9 @@
 build:
 	# Compile go code
-	GOOS=linux go build -ldflags="-s -w" main.go
+	GOARCH=amd64 GOOS=linux go build -tags lambda.norpc -o bootstrap main.go
 
 	# Create deployment packasge for Lambda
-	zip slack-alarm-notifier.zip main
+	zip slack-alarm-notifier.zip bootstrap
 
 test:
 	go test ./...
