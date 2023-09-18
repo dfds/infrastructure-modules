@@ -17,3 +17,4 @@ The connection strings, passwords etc can be found in parameter store in the sam
 - db_allocated_storage - 10 (The amount of space, in GB, to allocate for the database. Optional, but defaults to 20)
 - db_max_allocated_storage - 30 (The space limit, in GB, which autoscaling can scale up to. Optional, default to 0 - autoscaling disabled)
 - allow_major_version_upgrade = true (Define if major version upgrades to the Postgres engine are allowed. Optional, but defaults to true)
+- db_backup_retention_period - 30 (The number of days to retain backups for. Optional, but defaults to 10)

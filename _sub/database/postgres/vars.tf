@@ -87,3 +87,9 @@ variable "deletion_protection" {
   default     = true
   description = "Protect database against deletion?"
 }
+
+variable "db_backup_retention_period" {
+  type        = number
+  description = "The days to retain database backups for"
+  default     = 10
+}

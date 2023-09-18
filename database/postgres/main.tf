@@ -17,6 +17,7 @@ module "postgres" {
   db_max_allocated_storage    = var.db_max_allocated_storage
   allow_major_version_upgrade = var.allow_major_version_upgrade
   ssl_mode                    = var.ssl_mode
+  db_backup_retention_period  = var.db_backup_retention_period
 }
 
 module "param_store_pghost" {
