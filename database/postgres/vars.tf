@@ -74,3 +74,9 @@ variable "ssl_mode" {
     error_message = "Invalid value for SSL mode. Valid values: Require, VerifyFull, VerifyCA."
   }
 }
+
+variable "db_backup_retention_period" {
+  type        = number
+  description = "The days to retain database backups for"
+  default     = 10
+}

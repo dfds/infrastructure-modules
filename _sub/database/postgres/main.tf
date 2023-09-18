@@ -51,7 +51,7 @@ resource "aws_db_instance" "postgres" {
   engine                  = "postgres"
   engine_version          = var.engine_version
   publicly_accessible     = "true"
-  backup_retention_period = 10
+  backup_retention_period = var.db_backup_retention_period
   apply_immediately       = true
   deletion_protection     = var.deletion_protection
   identifier              = "${var.application}-postgres-${var.environment}"
