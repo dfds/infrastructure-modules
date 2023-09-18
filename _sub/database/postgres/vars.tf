@@ -99,3 +99,9 @@ variable "additional_tags" {
   description = "A map of tags to apply to all the resources deployed by the module"
   default = {}
 }
+
+variable "db_backup_retention_period" {
+  type        = number
+  description = "The days to retain backups for"
+  default     = 10
+}

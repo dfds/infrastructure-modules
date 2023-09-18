@@ -23,3 +23,7 @@ output "password" {
   value     = var.db_master_password
   sensitive = true
 }
+
+output "db_backup_retention_period" {
+  value = var.db_backup_retention_period
+}
