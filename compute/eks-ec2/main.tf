@@ -327,9 +327,9 @@ module "eks_nvidia_device_plugin" {
   source     = "../../_sub/compute/helm-nvidia-device-plugin"
   depends_on = [module.eks_managed_workers_node_group]
 
-  chart_version = "0.14.1"
-  namespace     = "nvidia-device-plugin"
-  create_namespace = true
-  tolerations = var.nvidia_device_plugin_tolerations
-  affinity = var.nvidia_device_plugin_affinity
+  chart_version    = var.nvidia_chart_version
+  namespace        = var.nvidia_namespace
+  create_namespace = var.create_nvidia_namespace
+  tolerations      = var.nvidia_device_plugin_tolerations
+  affinity         = var.nvidia_device_plugin_affinity
 }

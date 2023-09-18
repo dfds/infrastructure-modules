@@ -11,27 +11,27 @@ variable "namespace" {
 }
 
 variable "create_namespace" {
-  type = bool
+  type        = bool
   description = "Whether to create a namespace with helm"
-  default = false
+  default     = false
 }
 
 variable "tolerations" {
   type = list(object({
-    key = string
+    key      = string
     operator = string
-    value = optional(string)
-    effect = string
+    value    = optional(string)
+    effect   = string
   }))
   description = "A list of tolerations to apply to the nvidia device plugin deployment"
-  default = []
+  default     = []
 }
 
 variable "affinity" {
   type = list(object({
-    key = string
+    key      = string
     operator = string
-    values = list(string)
+    values   = list(string)
   }))
   description = "A list of affinities to apply to the nvidia device plugin deployment"
 }
