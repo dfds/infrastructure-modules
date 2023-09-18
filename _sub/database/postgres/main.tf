@@ -1,5 +1,5 @@
 locals {
-  engine_family = var.engine_version == null ? "postgres13" : "postgres${var.engine_version}"
+  engine_family = var.engine_version == null ? "postgres13" : "postgres${substr(var.engine_version, 0, 2)}"
 }
 
 #tfsec:ignore:no-public-ingress-sgr tfsec:ignore:aws-vpc-no-public-ingress-sg
