@@ -87,3 +87,15 @@ variable "deletion_protection" {
   default     = true
   description = "Protect database against deletion?"
 }
+
+variable "rds_instance_tags" {
+  type = map(string)
+  description = "A map of tags to apply only to the to RDS instance"
+  default = {}
+}
+
+variable "additional_tags" {
+  type = map(string)
+  description = "A map of tags to apply to all the resources deployed by the module"
+  default = {}
+}

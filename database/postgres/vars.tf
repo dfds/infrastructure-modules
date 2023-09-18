@@ -74,3 +74,15 @@ variable "ssl_mode" {
     error_message = "Invalid value for SSL mode. Valid values: Require, VerifyFull, VerifyCA."
   }
 }
+
+variable "rds_instance_tags" {
+  type = map(string)
+  description = "A map of tags to apply only to the to RDS instance"
+  default = {}
+}
+
+variable "additional_tags" {
+  type = map(string)
+  description = "A map of tags to apply to all the resources deployed by the module"
+  default = {}
+}
