@@ -120,7 +120,47 @@ inputs = {
         dedicated = "monitoring"
       }
     },
+    "gpu" = {
+      instance_types = ["g4dn.2xlarge"]
+      desired_size_per_subnet = 1
+      availability_zones      = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+      max_unavailable         = 1
+      ami_id = "ami-024fb23bc22d196dc"
+      taints = [
+        {
+          key = "dfds.service.gpu"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+      labels = {
+        dedicated = "gpu"
+      }
+    }
   }
+
+  # --------------------------------------------------
+  # GPU workloads
+  # --------------------------------------------------
+
+  deploy_nvidia_device_plugin = true
+  nvidia_device_plugin_tolerations = [
+    {
+      key = "dfds.service.gpu"
+      operator = "Exists"
+      effect = "NoSchedule"
+    }
+  ]
+  nvidia_device_plugin_affinity = [
+    {
+      key = "dedicated"
+      operator = "In"
+      values = ["gpu"]
+    }
+  ]
+
+  nvidia_chart_version = "0.14.1"
+  nvidia_namespace = "nvidia-device-plugin"
+  create_nvidia_namespace = true
 
   # --------------------------------------------------
   # Restore Blaster Configmap
