@@ -1,5 +1,7 @@
 locals {
   engine_family = var.engine_version == null ? "postgres13" : "postgres${substr(var.engine_version, 0, 2)}"
+  rds_instance_tags = merge({ environment = var.environment }, var.rds_instance_tags, var.tags)
+  tags = merge({ environment = var.environment }, var.tags)
 }
 
 #tfsec:ignore:no-public-ingress-sgr tfsec:ignore:aws-vpc-no-public-ingress-sg
@@ -19,10 +21,7 @@ resource "aws_security_group" "pgsg" {
     create_before_destroy = true
   }
 
-  tags = {
-    environment = var.environment
-  }
-
+  tags = local.tags
 }
 
 #Enable SSL on the database by default
@@ -40,9 +39,7 @@ resource "aws_db_parameter_group" "dbparams" {
     create_before_destroy = true
   }
 
-  tags = {
-    environment = var.environment
-  }
+  tags = local.tags
 }
 
 #Restore the postgres database with the pre-configured settings
@@ -77,9 +74,7 @@ resource "aws_db_instance" "postgres" {
     create = "2h"
   }
 
-  tags = {
-    environment = var.environment
-  }
+  tags = local.rds_instance_tags
 
   #Do not re-provision database upon snapshot changes
   lifecycle {

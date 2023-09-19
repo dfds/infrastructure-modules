@@ -88,8 +88,21 @@ variable "deletion_protection" {
   description = "Protect database against deletion?"
 }
 
+
 variable "db_backup_retention_period" {
   type        = number
   description = "The days to retain database backups for"
   default     = 10
+}
+
+variable "rds_instance_tags" {
+  type = map(string)
+  description = "A map of tags to apply only to the to RDS instance"
+  default = {}
+}
+
+variable "tags" {
+  type = map(string)
+  description = "A map of tags to apply to all the resources deployed by the module"
+  default = {}
 }
