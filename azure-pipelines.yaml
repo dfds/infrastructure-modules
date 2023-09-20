@@ -160,25 +160,25 @@ stages:
               pathToPublish: $(Build.ArtifactStagingDirectory)/test-feature.bin
               artifactName: test-feature
 
-#      - deployment: init
-#        displayName: Provision from master branch
-#        cancelTimeoutInMinutes: 5
-#        container: prime
-#        dependsOn: build_test_master
-#        condition: succeeded()
-#        environment: QA
-#        strategy:
-#          runOnce:
-#            deploy:
-#              steps:
-#                - checkout: Origin
-#                  fetchDepth: 1
-#                  fetchTags: false
-#                  path: source
-#                - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
-#                  workingDirectory: $(Agent.BuildDirectory)/source
-#                  displayName: "Provision shared EKS S3 bucket"
-#                  timeoutInMinutes: 15
+      - deployment: init
+        displayName: Provision from master branch
+        cancelTimeoutInMinutes: 5
+        container: prime
+        dependsOn: build_test_master
+        condition: succeeded()
+        environment: QA
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: Origin
+                  fetchDepth: 1
+                  fetchTags: false
+                  path: source
+                - bash: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
+                  workingDirectory: $(Agent.BuildDirectory)/source
+                  displayName: "Provision shared EKS S3 bucket"
+                  timeoutInMinutes: 15
 #                - bash: ./src/qa-test-eks.sh apply-cluster eu-west-1 qa
 #                  workingDirectory: $(Agent.BuildDirectory)/source
 #                  displayName: "Provision cluster & services"
