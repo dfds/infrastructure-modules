@@ -182,6 +182,7 @@ inputs = {
   atlantis_data_storage = "1Gi"
 
   atlantis_resources_requests_cpu    = "10m"
+  atlantis_resources_limits_cpu      = "10m"
   atlantis_resources_requests_memory = "512Mi"
 
   atlantis_github_username     = "devex-sa"
