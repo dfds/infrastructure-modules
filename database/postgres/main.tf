@@ -19,7 +19,7 @@ module "postgres" {
   ssl_mode                    = var.ssl_mode
   db_backup_retention_period  = var.db_backup_retention_period
   rds_instance_tags           = var.rds_instance_tags
-  additional_tags             = var.tags
+  tags                        = var.tags
 }
 
 module "param_store_pghost" {
