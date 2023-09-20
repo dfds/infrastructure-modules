@@ -179,27 +179,27 @@ stages:
                   workingDirectory: $(Agent.BuildDirectory)/source
                   displayName: "Provision shared EKS S3 bucket"
                   timeoutInMinutes: 15
-#                - bash: ./src/qa-test-eks.sh apply-cluster eu-west-1 qa
-#                  workingDirectory: $(Agent.BuildDirectory)/source
-#                  displayName: "Provision cluster & services"
-#                  timeoutInMinutes: 60
-#                - bash: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
-#                  workingDirectory: $(Agent.BuildDirectory)/source
-#                  displayName: "Provision Velero S3 bucket"
-#                  timeoutInMinutes: 15
-#                - bash: wait-for-ngs.sh qa
-#                  displayName: "Wait for managed node groups to become active"
-#                  timeoutInMinutes: 15
-#                - bash: wait-for-asgs.sh qa
-#                  displayName: "Wait for auto scaling groups's instances to be in service"
-#                  timeoutInMinutes: 15
-#                - download: current
-#                  displayName: "Download test binary"
-#                  artifact: test-master
-#                - bash: ./src/qa-test-eks.sh test-run eu-west-1 qa $(Pipeline.Workspace)/test-master/test-master.bin
-#                  workingDirectory: $(Agent.BuildDirectory)/source
-#                  displayName: "Run tests"
-#                  timeoutInMinutes: 15
+                - bash: ./src/qa-test-eks.sh apply-cluster eu-west-1 qa
+                  workingDirectory: $(Agent.BuildDirectory)/source
+                  displayName: "Provision cluster & services"
+                  timeoutInMinutes: 60
+                - bash: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
+                  workingDirectory: $(Agent.BuildDirectory)/source
+                  displayName: "Provision Velero S3 bucket"
+                  timeoutInMinutes: 15
+                - bash: wait-for-ngs.sh qa
+                  displayName: "Wait for managed node groups to become active"
+                  timeoutInMinutes: 15
+                - bash: wait-for-asgs.sh qa
+                  displayName: "Wait for auto scaling groups's instances to be in service"
+                  timeoutInMinutes: 15
+                - download: current
+                  displayName: "Download test binary"
+                  artifact: test-master
+                - bash: ./src/qa-test-eks.sh test-run eu-west-1 qa $(Pipeline.Workspace)/test-master/test-master.bin
+                  workingDirectory: $(Agent.BuildDirectory)/source
+                  displayName: "Run tests"
+                  timeoutInMinutes: 15
 
       - deployment: apply
         displayName: Apply from feature branch
