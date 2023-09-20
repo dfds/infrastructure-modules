@@ -9,11 +9,7 @@ resources:
     cpu: ${resources_requests_cpu}
   limits:
     memory: ${resources_limits_memory}
-%{ if length(resources_limits_cpu) == 0 ~}
-    cpu: null
-%{ else ~}
     cpu: ${resources_limits_cpu}
-%{ endif ~}
 
 orgAllowlist: ${github_repos}
 logLevel: "info"
