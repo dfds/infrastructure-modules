@@ -109,7 +109,7 @@ resource "helm_release" "atlantis" {
       parallel_pool_size        = var.parallel_pool_size
       resources_requests_cpu    = var.resources_requests_cpu
       resources_requests_memory = var.resources_requests_memory
-      resources_limits_cpu      = var.resources_limits_cpu != null ? var.resources_limits_cpu : "" # null values are not legal in templatefile
+      resources_limits_cpu      = local.resources_limits_cpu
       resources_limits_memory   = local.resources_limits_memory
     }),
     yamlencode({
