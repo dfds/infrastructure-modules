@@ -30,3 +30,12 @@ provider "kubernetes" {
     ]
   }
 }
+
+provider "helm" {
+  kubernetes {
+    host                   = module.eks_cluster.eks_endpoint
+    cluster_ca_certificate = base64decode(module.eks_cluster.eks_certificate_authority)
+    token                  = data.aws_eks_cluster_auth.eks.token
+    # config_path            = pathexpand("~/.kube/${var.eks_cluster_name}.config") # no datasources in providers allowed when importing into state (remember to flip above bool to load config)
+  }
+}
