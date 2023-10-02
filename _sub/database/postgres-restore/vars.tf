@@ -86,3 +86,9 @@ variable "engine_version" {
   description = "RDS engine version (expects major version)"
   default     = 14
 }
+
+variable "publicly_accessible" {
+  type        = bool
+  default     = true
+  description = "Should the database be public accessible?"
+}

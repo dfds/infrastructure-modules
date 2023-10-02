@@ -1,7 +1,7 @@
 locals {
-  engine_family = var.engine_version == null ? "postgres13" : "postgres${substr(var.engine_version, 0, 2)}"
+  engine_family     = var.engine_version == null ? "postgres13" : "postgres${substr(var.engine_version, 0, 2)}"
   rds_instance_tags = merge({ environment = var.environment }, var.rds_instance_tags, var.tags)
-  tags = merge({ environment = var.environment }, var.tags)
+  tags              = merge({ environment = var.environment }, var.tags)
 }
 
 #tfsec:ignore:no-public-ingress-sgr tfsec:ignore:aws-vpc-no-public-ingress-sg
@@ -47,7 +47,7 @@ resource "aws_db_parameter_group" "dbparams" {
 resource "aws_db_instance" "postgres" {
   engine                  = "postgres"
   engine_version          = var.engine_version
-  publicly_accessible     = "true"
+  publicly_accessible     = var.publicly_accessible
   backup_retention_period = var.db_backup_retention_period
   apply_immediately       = true
   deletion_protection     = var.deletion_protection

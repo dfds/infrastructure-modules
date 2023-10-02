@@ -37,7 +37,7 @@ resource "aws_db_parameter_group" "dbparams" {
 resource "aws_db_instance" "postgres" {
   engine                  = "postgres"
   engine_version          = var.engine_version
-  publicly_accessible     = "true"
+  publicly_accessible     = var.publicly_accessible
   deletion_protection     = var.deletion_protection
   backup_retention_period = 10
   apply_immediately       = true
