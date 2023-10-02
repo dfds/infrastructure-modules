@@ -36,12 +36,6 @@ variable "helm_chart_version" {
   default     = null
 }
 
-variable "interval_duration" {
-  type        = string
-  description = "Interval between scrapes of Helm releases"
-  default     = "10m"
-}
-
 variable "overwrite_on_create" {
   type        = bool
   default     = true
