@@ -202,6 +202,7 @@ data "aws_iam_policy_document" "restrictive" {
       "notifications:List*",
       "sns:*",
       "resource-explorer-2:*",
+      "dataexchange:*"
     ]
     resources = ["*"]
     condition {
