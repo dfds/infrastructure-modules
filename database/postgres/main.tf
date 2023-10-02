@@ -18,6 +18,7 @@ module "postgres" {
   allow_major_version_upgrade = var.allow_major_version_upgrade
   ssl_mode                    = var.ssl_mode
   db_backup_retention_period  = var.db_backup_retention_period
+  publicly_accessible         = var.db_publicly_accessible
   rds_instance_tags           = var.rds_instance_tags
   tags                        = var.tags
 }
