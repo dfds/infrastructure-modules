@@ -36,12 +36,6 @@ variable "helm_chart_version" {
   default     = null
 }
 
-variable "interval_duration" {
-  type        = string
-  description = "Interval between scrapes of Helm releases"
-  default     = "10m"
-}
-
 variable "overwrite_on_create" {
   type        = bool
   default     = true
@@ -78,15 +72,6 @@ variable "app_secret_name" {
 variable "app_secret_key" {
   type    = string
   default = "app-key"
-}
-
-variable "cluster_agent_image_version" {
-  type    = string
-  default = "latest"
-}
-variable "node_agent_image_version" {
-  type    = string
-  default = "latest"
 }
 
 variable "site" {
