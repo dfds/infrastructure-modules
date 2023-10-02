@@ -12,6 +12,7 @@ resource "aws_s3_bucket" "bucket" {
   )
 }
 
+# tfsec:ignore:aws-s3-block-public-acls tfsec:ignore:aws-s3-block-public-policy tfsec:ignore:aws-s3-ignore-public-acls tfsec:ignore:aws-s3-no-public-buckets
 resource "aws_s3_bucket_public_access_block" "bucket" {
   count  = var.deploy && var.acl == "public-read" ? 1 : 0
   bucket = aws_s3_bucket.bucket[count.index].id
