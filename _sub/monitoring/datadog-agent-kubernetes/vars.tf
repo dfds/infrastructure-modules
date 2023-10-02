@@ -80,10 +80,6 @@ variable "app_secret_key" {
   default = "app-key"
 }
 
-variable "cluster_agent_image_version" {
-  type    = string
-  default = "latest"
-}
 variable "node_agent_image_version" {
   type    = string
   default = "latest"
