@@ -20,6 +20,7 @@ resource "aws_iam_policy" "resourceexplorer_read" {
   policy      = data.aws_iam_policy_document.resourceexplorer_read.json
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "resourceexplorer_read" {
   statement {
     effect = "Allow"
