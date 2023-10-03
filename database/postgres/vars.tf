@@ -82,13 +82,19 @@ variable "db_backup_retention_period" {
 }
 
 variable "rds_instance_tags" {
-  type = map(string)
+  type        = map(string)
   description = "A map of tags to apply only to the to RDS instance"
-  default = {}
+  default     = {}
 }
 
 variable "tags" {
-  type = map(string)
+  type        = map(string)
   description = "A map of tags to apply to all the resources deployed by the module"
-  default = {}
+  default     = {}
+}
+
+variable "db_publicly_accessible" {
+  type        = bool
+  default     = true
+  description = "Should the database be public accessible?"
 }
