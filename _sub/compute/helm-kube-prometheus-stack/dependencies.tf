@@ -108,6 +108,11 @@ locals {
             group_interval: 5m
             object_matchers:
             - ['__contacts__', '=~', '.*"${var.grafana_notifier_name}".*']
+          - match:
+            receiver: "${var.grafana_notifier_name}"
+            repeat_interval: 24h
+            object_matchers:
+            - ['repeat', '=', '24h']
       EOT
     }
   }
