@@ -17,7 +17,7 @@ prometheus:
         - path: /metrics
           port: http
         - path: /_stcore/metrics
-          port: 80
+          port: metrics
   prometheusSpec:
     enableAdminAPI: false
 %{ if query_log_file_enabled ~}
