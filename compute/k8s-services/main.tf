@@ -690,6 +690,28 @@ module "fluentd_cloudwatch_flux_manifests" {
 }
 
 # --------------------------------------------------
+# External-Snapshotter adds support for snapshot.storage.k8s.io/v1
+# https://github.com/kubernetes-csi/external-snapshotter/tree/master
+# --------------------------------------------------
+
+module "external_snapshotter" {
+  source                  = "../../_sub/storage/external-snapshotter"
+  cluster_name            = var.eks_cluster_name
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  prune                   = var.fluxcd_prune
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
+}
+
+# --------------------------------------------------
 # Velero - requires that s3-bucket-velero module
 # is already applied through Terragrunt.
 # --------------------------------------------------
@@ -717,7 +739,7 @@ module "velero_flux_manifests" {
     github = github.fluxcd
   }
 
-  depends_on = [module.platform_fluxcd]
+  depends_on = [module.platform_fluxcd, module.external_snapshotter]
 }
 
 

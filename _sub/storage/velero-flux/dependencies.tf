@@ -24,6 +24,7 @@ locals {
     }
     "spec" = {
       "interval" = "1m0s"
+      "dependsOn" = [{"name" = "external-snapshotter-config"}]
       "sourceRef" = {
         "kind" = "GitRepository"
         "name" = "flux-system"
