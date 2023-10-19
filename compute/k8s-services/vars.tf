@@ -1080,6 +1080,13 @@ variable "velero_plugin_for_csi_version" {
   }
 }
 
+variable "velero_snapshots_enabled" {
+  type        = bool
+  default     = false
+  description = "Should Velero use snapshot backups?"
+
+}
+
 variable "kyverno_chart_version" {
   type        = string
   default     = "v2.4.1"
