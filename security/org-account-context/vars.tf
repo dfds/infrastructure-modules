@@ -220,9 +220,16 @@ variable "aws_backup_resource_type_management_preference" {
 
 variable "aws_backup_vault_name" {
   type = string
+  description = "Name of the AWS Backup vault. This is the name of the vault we created initially and will be removed eventually."
+  default = null
+}
+
+variable "aws_backup_vault_name_new" {
+  type = string
   description = "Name of the AWS Backup vault"
   default = null
 }
+
 
 variable "aws_backup_plans" {
   type = list(object({
