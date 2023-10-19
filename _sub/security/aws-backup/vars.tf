@@ -1,6 +1,13 @@
+# TODO: This variable needs to be renamed to `vault_name` after we remove the vault we created initially.
+variable "new_vault_name" {
+  type        = string
+  description = "The name of the vault."
+  default     = null
+}
+
 variable "vault_name" {
   type        = string
-  description = "The name of the Vault."
+  description = "The name of the vault we created initially. This vault will eventually be removed."
   default     = null
 }
 

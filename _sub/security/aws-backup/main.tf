@@ -14,6 +14,11 @@ resource "aws_backup_vault" "this" {
   tags        = var.tags
 }
 
+resource "aws_backup_vault" "vault" {
+  name        = var.new_vault_name
+  tags        = var.tags
+}
+
 resource "aws_kms_key" "this" {
   count               = var.deploy_kms_key ? 1 : 0
   description         = "KMS key for backup encryption"
@@ -84,7 +89,7 @@ resource "aws_backup_plan" "this" {
 
     content {
       rule_name                = rule.value.name
-      target_vault_name        = aws_backup_vault.this.name
+      target_vault_name        = aws_backup_vault.vault.name
       schedule                 = lookup(rule.value, "schedule", null)
       enable_continuous_backup = lookup(rule.value, "enable_continuous_backup", false)
       start_window             = lookup(rule.value, "start_window", null)
