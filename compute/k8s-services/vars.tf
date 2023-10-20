@@ -1083,8 +1083,13 @@ variable "velero_plugin_for_csi_version" {
 variable "velero_snapshots_enabled" {
   type        = bool
   default     = false
-  description = "Should Velero use snapshot backups?"
+  description = "Should Velero create snapshot on backups?"
+}
 
+variable "velero_schedules_template_snapshot_volumes" {
+  type        = bool
+  default     = false
+  description = "Should Velero create snapshots on scheduled backups?"
 }
 
 variable "kyverno_chart_version" {

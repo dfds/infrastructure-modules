@@ -717,24 +717,25 @@ module "external_snapshotter" {
 # --------------------------------------------------
 
 module "velero_flux_manifests" {
-  source                  = "../../_sub/storage/velero-flux"
-  count                   = var.velero_deploy ? 1 : 0
-  cluster_name            = var.eks_cluster_name
-  role_arn                = var.velero_role_arn
-  bucket_name             = var.velero_bucket_name
-  cron_schedule           = var.velero_cron_schedule
-  log_level               = var.velero_log_level
-  repo_name               = var.fluxcd_bootstrap_repo_name
-  repo_branch             = var.fluxcd_bootstrap_repo_branch
-  helm_chart_version      = var.velero_helm_chart_version
-  image_tag               = var.velero_image_tag
-  plugin_for_aws_version  = var.velero_plugin_for_aws_version
-  plugin_for_csi_version  = var.velero_plugin_for_csi_version
-  snapshots_enabled       = var.velero_snapshots_enabled
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
-  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
-  prune                   = var.fluxcd_prune
+  source                              = "../../_sub/storage/velero-flux"
+  count                               = var.velero_deploy ? 1 : 0
+  cluster_name                        = var.eks_cluster_name
+  role_arn                            = var.velero_role_arn
+  bucket_name                         = var.velero_bucket_name
+  cron_schedule                       = var.velero_cron_schedule
+  log_level                           = var.velero_log_level
+  repo_name                           = var.fluxcd_bootstrap_repo_name
+  repo_branch                         = var.fluxcd_bootstrap_repo_branch
+  helm_chart_version                  = var.velero_helm_chart_version
+  image_tag                           = var.velero_image_tag
+  plugin_for_aws_version              = var.velero_plugin_for_aws_version
+  plugin_for_csi_version              = var.velero_plugin_for_csi_version
+  snapshots_enabled                   = var.velero_snapshots_enabled
+  schedules_template_snapshot_volumes = var.velero_schedules_template_snapshot_volumes
+  overwrite_on_create                 = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url                = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch             = var.fluxcd_apps_repo_branch
+  prune                               = var.fluxcd_prune
 
   providers = {
     github = github.fluxcd
