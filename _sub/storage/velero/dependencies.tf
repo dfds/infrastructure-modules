@@ -108,7 +108,7 @@ spec:
         schedule: "${var.cron_schedule}"
         template:
           ttl: "${var.schedules_template_ttl}"
-          snapshotVolumes: ${var.schedules_template_snapshot_volumes}
+          snapshotVolumes: ${var.snapshots_enabled}
           includeClusterResources: ${var.schedules_template_include_cluster_resources}
   YAML
 }

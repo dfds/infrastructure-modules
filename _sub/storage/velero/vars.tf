@@ -55,12 +55,6 @@ variable "schedules_template_ttl" {
   description = "Time to live for the scheduled backup."
 }
 
-variable "schedules_template_snapshot_volumes" {
-  type        = bool
-  default     = false
-  description = "Should Velero use snapshot volumes?"
-}
-
 variable "schedules_template_include_cluster_resources" {
   type        = bool
   default     = false

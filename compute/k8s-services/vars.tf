@@ -1080,12 +1080,6 @@ variable "velero_snapshots_enabled" {
   description = "Should Velero create snapshot on backups?"
 }
 
-variable "velero_schedules_template_snapshot_volumes" {
-  type        = bool
-  default     = false
-  description = "Should Velero create snapshots on scheduled backups?"
-}
-
 variable "velero_service_account" {
   type        = string
   default     = "velero-server"
