@@ -263,9 +263,9 @@ inputs = {
   # --------------------------------------------------
 
   velero_deploy                 = true
-  velero_role_arn               = "arn:aws:iam::266901158286:role/VeleroBackup"
-  velero_bucket_name            = "dfds-velero-qa"
-  velero_plugin_for_aws_version = "v1.4.1"
-  velero_plugin_for_csi_version = "v0.2.0"
+  velero_bucket_arn = "arn:aws:s3:::dfds-velero-qa"
+  velero_helm_chart_version     = "4.2.0"
+  velero_plugin_for_aws_version = "v1.7.0"
+  velero_plugin_for_csi_version = "v0.5.0"
 
 }
