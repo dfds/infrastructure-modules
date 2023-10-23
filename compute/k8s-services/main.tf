@@ -741,7 +741,7 @@ module "velero" {
 
   providers = {
     github = github.fluxcd
-    aws    = aws.core
+    aws    = aws
   }
 
   depends_on = [module.platform_fluxcd, module.external_snapshotter]
