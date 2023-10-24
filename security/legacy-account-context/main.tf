@@ -170,6 +170,7 @@ module "backup_eu_central_1" {
   resource_type_management_preference      = var.aws_backup_resource_type_management_preference
 
   vault_name     = var.aws_backup_vault_name
+  new_vault_name = var.aws_backup_vault_name_new
   deploy_kms_key = local.deploy_kms_key
   kms_key_admins = local.kms_key_admins
   backup_plans   = var.aws_backup_plans
