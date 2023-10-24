@@ -20,16 +20,10 @@ variable "repo_branch" {
   description = "The git branch."
 }
 
-variable "role_arn" {
-  type        = string
-  description = "The ARN for the role that is permitted to use Velero backup storage."
-  default     = null
-}
-
-variable "bucket_name" {
+variable "bucket_arn" {
   type        = string
   default     = null
-  description = "The name of the S3 bucket that contains the Velero backup"
+  description = "The arn of the S3 bucket that contains the Velero backup. Only used if S3 bucket is in a different account"
 }
 
 variable "snapshots_enabled" {
@@ -59,12 +53,6 @@ variable "schedules_template_ttl" {
   type        = string
   default     = "336h"
   description = "Time to live for the scheduled backup."
-}
-
-variable "schedules_template_snapshot_volumes" {
-  type        = bool
-  default     = false
-  description = "Should Velero use snapshot volumes?"
 }
 
 variable "schedules_template_include_cluster_resources" {
@@ -131,4 +119,34 @@ variable "prune" {
   type        = bool
   default     = true
   description = "Enable Garbage collection"
+}
+
+variable "velero_iam_role_name" {
+  type        = string
+  default     = "VeleroBackup"
+  description = "Velero role for S3 actions"
+}
+
+variable "service_account" {
+  type        = string
+  default     = "velero-server"
+  description = "The service account to be used by Velero"
+}
+
+variable "namespace" {
+  type        = string
+  default     = "velero"
+  description = "The namespace where Velero should be installed"
+}
+
+variable "oidc_issuer" {
+  type        = string
+  default     = null
+  description = "The OIDC isssue for the Kubernetes cluster"
+}
+
+variable "workload_account_id" {
+  type        = string
+  default     = null
+  description = "The workload account ID."
 }

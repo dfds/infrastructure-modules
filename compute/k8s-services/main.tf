@@ -716,12 +716,11 @@ module "external_snapshotter" {
 # is already applied through Terragrunt.
 # --------------------------------------------------
 
-module "velero_flux_manifests" {
-  source                  = "../../_sub/storage/velero-flux"
+module "velero" {
+  source                  = "../../_sub/storage/velero"
   count                   = var.velero_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
-  role_arn                = var.velero_role_arn
-  bucket_name             = var.velero_bucket_name
+  bucket_arn              = var.velero_bucket_arn
   cron_schedule           = var.velero_cron_schedule
   log_level               = var.velero_log_level
   repo_name               = var.fluxcd_bootstrap_repo_name
@@ -735,9 +734,14 @@ module "velero_flux_manifests" {
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
+  namespace               = var.velero_namespace
+  service_account         = var.velero_service_account
+  oidc_issuer             = local.oidc_issuer
+  workload_account_id     = var.aws_workload_account_id
 
   providers = {
     github = github.fluxcd
+    aws    = aws
   }
 
   depends_on = [module.platform_fluxcd, module.external_snapshotter]

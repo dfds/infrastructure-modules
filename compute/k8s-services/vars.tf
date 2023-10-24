@@ -1020,12 +1020,6 @@ variable "velero_deploy" {
   description = "Should Velero Helm chart be deployed?"
 }
 
-variable "velero_role_arn" {
-  type        = string
-  description = "The ARN for the role that is permitted to use Velero backup storage."
-  default     = null
-}
-
 variable "velero_bucket_name" {
   type        = string
   default     = null
@@ -1083,9 +1077,31 @@ variable "velero_plugin_for_csi_version" {
 variable "velero_snapshots_enabled" {
   type        = bool
   default     = false
-  description = "Should Velero use snapshot backups?"
-
+  description = "Should Velero create snapshot on backups?"
 }
+
+variable "velero_service_account" {
+  type        = string
+  default     = "velero-server"
+  description = "The service account to be used by Velero"
+}
+
+variable "velero_namespace" {
+  type        = string
+  default     = "velero"
+  description = "The namespace where Velero should be installed"
+}
+
+variable "velero_bucket_arn" {
+  type        = string
+  default     = null
+  description = "The arn of the S3 bucket that contains the Velero backup. Only used if S3 bucket is in a different account"
+}
+
+
+# --------------------------------------------------
+# Kyverno
+# --------------------------------------------------
 
 variable "kyverno_chart_version" {
   type        = string
