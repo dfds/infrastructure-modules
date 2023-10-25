@@ -44,6 +44,21 @@ network
  └ ...
 ```
 
+## Test/QA
+
+### Find compatible AMI images
+
+```bash
+EKS_CLUSTER_VERSION=1.28
+REGION=eu-west-1
+
+# For regular nodes
+aws ssm get-parameter --name /aws/service/eks/optimized-ami/$EKS_CLUSTER_VERSION/amazon-linux-2/recommended/image_id --region $REGION --query "Parameter.Value" --output text
+
+# For GPU nodes:
+aws ssm get-parameter --name /aws/service/eks/optimized-ami/$EKS_CLUSTER_VERSION/amazon-linux-2-gpu/recommended/image_id --region $REGION  --query "Parameter.Value" --output text
+```
+
 ## Release process
 
 Branch protection is not enabled on this repo. Instead we rely on release tags to ensure we do not commit straight to production.
