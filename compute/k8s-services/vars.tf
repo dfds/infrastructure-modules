@@ -1020,12 +1020,6 @@ variable "velero_deploy" {
   description = "Should Velero Helm chart be deployed?"
 }
 
-variable "velero_bucket_name" {
-  type        = string
-  default     = null
-  description = "The name of the S3 bucket that contains the Velero backup"
-}
-
 variable "velero_cron_schedule" {
   type        = string
   default     = "0 0 * * *"
