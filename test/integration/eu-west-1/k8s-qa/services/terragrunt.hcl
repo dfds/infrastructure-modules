@@ -178,7 +178,6 @@ inputs = {
 
   atlantis_deploy       = true
   atlantis_ingress      = "atlantis.qa-alias1.dfds.cloud"
-  atlantis_image_tag    = "0.0.44"
   atlantis_data_storage = "1Gi"
 
   atlantis_resources_requests_cpu    = "10m"
