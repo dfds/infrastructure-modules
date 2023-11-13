@@ -89,7 +89,7 @@ inputs = {
   # aws ssm get-parameter --name /aws/service/eks/optimized-ami/1.27/amazon-linux-2/recommended/image_id --region eu-west-1 --query "Parameter.Value" --output text
   eks_managed_nodegroups = {
     "general" = {
-      instance_types          = ["m5a.xlarge"]
+      instance_types          = ["m6a.xlarge"]
       disk_type               = "gp3"
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
@@ -100,7 +100,7 @@ inputs = {
       max_unavailable_percentage = 50
     }
     "monitoring" = {
-      instance_types          = ["m5a.xlarge"]
+      instance_types          = ["m6a.xlarge"]
       disk_type               = "gp3"
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
@@ -123,7 +123,7 @@ inputs = {
     "gpu" = {
       instance_types = ["g4dn.2xlarge"]
       desired_size_per_subnet = 1
-      availability_zones      = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+      availability_zones      = ["eu-west-1a"]
       max_unavailable         = 1
       ami_id = "ami-0d09ad178e7e780d1"
       taints = [
