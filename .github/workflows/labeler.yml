@@ -26,7 +26,7 @@ jobs:
         if: |
           contains(steps.label-the-PR.outputs.all-labels, 'norelease') &&
           contains(steps.label-the-PR.outputs.all-labels, 'release:patch')
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             github.rest.issues.removeLabel({
@@ -39,7 +39,7 @@ jobs:
         if: |
           contains(steps.label-the-PR.outputs.all-labels, 'norelease') &&
           contains(steps.label-the-PR.outputs.all-labels, 'release:minor')
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             github.rest.issues.removeLabel({
@@ -52,7 +52,7 @@ jobs:
         if: |
           contains(steps.label-the-PR.outputs.all-labels, 'norelease') &&
           contains(steps.label-the-PR.outputs.all-labels, 'release:major')
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             github.rest.issues.removeLabel({
