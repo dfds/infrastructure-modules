@@ -24,4 +24,5 @@ variable "resource_owner_tag_value" {
 
 variable "ec2_exempted_accounts" {
   type = list(string)
+  default = []
 }
