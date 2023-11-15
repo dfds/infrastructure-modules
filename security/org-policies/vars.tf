@@ -21,3 +21,8 @@ variable "reservation_policy_attach_targets" {
 variable "resource_owner_tag_value" {
   type = string
 }
+
+variable "ec2_exempted_accounts" {
+  type = list(string)
+  default = []
+}

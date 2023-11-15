@@ -19,6 +19,12 @@ data "aws_iam_policy_document" "preventive" {
         "*.metal",
       ]
     }
+
+    condition {
+      test     = "StringNotLike"
+      variable = "aws:PrincipalArn"
+      values   = var.ec2_exempted_accounts
+    }
   }
 
   statement {
