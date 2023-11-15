@@ -19,22 +19,9 @@ data "aws_iam_policy_document" "preventive" {
         "*.metal",
       ]
     }
-  }
-
-  statement {
-    sid = "TemporarilyAllowDeniedEC2"
-    effect = "Allow"
-    actions = ["ec2:RunInstances"]
-    resources = ["arn:aws:ec2:*:*:instance/*"]
 
     condition {
-      test     = "StringLike"
-      values   = ["g4dn.12xlarge"]
-      variable = "ec2:InstanceType"
-    }
-
-    condition {
-      test     = "StringLike"
+      test     = "StringNotLike"
       variable = "aws:PrincipalArn"
       values   = var.ec2_exempted_accounts
     }
