@@ -30,6 +30,7 @@ data "aws_iam_policy_document" "integrity" {
       values = [
         "arn:aws:iam::*:role/EKSAdmin",
         "arn:aws:iam::*:role/OrgRole",
+        "arn:aws:iam::*:user/Deploy",
       ]
       variable = "aws:PrincipalArn"
     }
