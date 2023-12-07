@@ -64,18 +64,24 @@ resource "helm_release" "kube_prometheus_stack" {
     }),
 
     templatefile("${path.module}/values/prometheus.yaml", {
-      prometheus_priorityclass  = var.priority_class
-      prometheus_storageclass   = var.prometheus_storageclass
-      prometheus_storage_size   = var.prometheus_storage_size
-      prometheus_retention      = var.prometheus_retention
-      prometheus_request_memory = var.prometheus_request_memory
-      prometheus_request_cpu    = var.prometheus_request_cpu
-      prometheus_limit_memory   = var.prometheus_limit_memory
-      prometheus_limit_cpu      = var.prometheus_limit_cpu
-      query_log_file_enabled    = var.query_log_file_enabled
-      enable_features           = var.enable_features
-      tolerations               = var.tolerations,
-      affinity                  = var.affinity,
+      prometheus_priorityclass                            = var.priority_class
+      prometheus_storageclass                             = var.prometheus_storageclass
+      prometheus_storage_size                             = var.prometheus_storage_size
+      prometheus_retention                                = var.prometheus_retention
+      prometheus_request_memory                           = var.prometheus_request_memory
+      prometheus_request_cpu                              = var.prometheus_request_cpu
+      prometheus_limit_memory                             = var.prometheus_limit_memory
+      prometheus_limit_cpu                                = var.prometheus_limit_cpu
+      query_log_file_enabled                              = var.query_log_file_enabled
+      enable_features                                     = var.enable_features
+      tolerations                                         = var.tolerations,
+      affinity                                            = var.affinity,
+      prometheus_confluent_metrics_scrape_enabled         = var.prometheus_confluent_metrics_scrape_enabled,
+      prometheus_confluent_metrics_api_key                = var.prometheus_confluent_metrics_api_key,
+      prometheus_confluent_metrics_api_secret             = var.prometheus_confluent_metrics_api_secret,
+      prometheus_confluent_metrics_scrape_interval        = var.prometheus_confluent_metrics_scrape_interval,
+      prometheus_confluent_metrics_scrape_timeout         = var.prometheus_confluent_metrics_scrape_timeout,
+      prometheus_confluent_metrics_resource_kafka_id_list = var.prometheus_confluent_metrics_resource_kafka_id_list,
     }),
 
     length(var.slack_webhook) > 0 ? templatefile("${path.module}/values/alertmanager-slack.yaml", {
@@ -131,7 +137,7 @@ resource "github_repository_file" "grafana_config_ingressroute" {
 }
 
 resource "github_repository_file" "grafana_config_alert_config" {
-repository          = var.repo_name
+  repository          = var.repo_name
   branch              = local.repo_branch
   file                = "${local.config_repo_path}/alert-config.yaml"
   content             = jsonencode(local.grafana_config_alert_config)

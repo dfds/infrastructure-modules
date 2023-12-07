@@ -362,6 +362,40 @@ variable "monitoring_kube_prometheus_stack_prometheus_enable_features" {
   default     = []
 }
 
+variable "monitoring_kube_prometheus_stack_prometheus_confluent_metrics_scrape_enabled" {
+  type        = string
+  description = "Whether to enable scraping of Confluent metrics in Prometheus."
+  default     = false
+}
+variable "monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_key" {
+  type        = string
+  description = "Confluent metrics API key."
+  default     = null
+}
+
+variable "monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_secret" {
+  type        = string
+  description = "Confluent metrics API secret."
+  default     = null
+}
+
+variable "monitoring_kube_prometheus_stack_prometheus_confluent_metrics_scrape_interval" {
+  type        = string
+  description = "Confluent metrics scrape interval."
+  default     = "1m"
+}
+
+variable "monitoring_kube_prometheus_stack_prometheus_confluent_metrics_scrape_timeout" {
+  type        = string
+  description = "Confluent metrics scrape timeout."
+  default     = "1m"
+}
+
+variable "monitoring_kube_prometheus_stack_prometheus_confluent_metrics_resource_kafka_id_list" {
+  type        = list(string)
+  description = "List of Kafka cluster IDs to scrape metrics from"
+  default     = []
+}
 # --------------------------------------------------
 # Metrics-Server
 # --------------------------------------------------
