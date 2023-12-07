@@ -357,43 +357,48 @@ module "monitoring_goldpinger" {
 # --------------------------------------------------
 
 module "monitoring_kube_prometheus_stack" {
-  source                      = "../../_sub/compute/helm-kube-prometheus-stack"
-  count                       = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
-  cluster_name                = var.eks_cluster_name
-  chart_version               = var.monitoring_kube_prometheus_stack_chart_version
-  namespace                   = module.monitoring_namespace[0].name
-  priority_class              = var.monitoring_kube_prometheus_stack_priority_class
-  grafana_admin_password      = var.monitoring_kube_prometheus_stack_grafana_admin_password
-  grafana_ingress_path        = var.monitoring_kube_prometheus_stack_grafana_ingress_path
-  grafana_host                = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
-  grafana_notifier_name       = "${var.eks_cluster_name}-alerting"
-  grafana_iam_role_arn        = local.grafana_iam_role_arn
-  grafana_serviceaccount_name = var.monitoring_kube_prometheus_stack_grafana_serviceaccount_name
-  grafana_storage_enabled     = var.monitoring_kube_prometheus_stack_grafana_storage_enabled
-  grafana_storage_class       = var.monitoring_kube_prometheus_stack_grafana_storageclass
-  grafana_storage_size        = var.monitoring_kube_prometheus_stack_grafana_storage_size
-  grafana_serve_from_sub_path = var.monitoring_kube_prometheus_stack_grafana_serve_from_sub_path
-  grafana_azure_tenant_id     = var.monitoring_kube_prometheus_stack_azure_tenant_id != "" ? var.monitoring_kube_prometheus_stack_azure_tenant_id : var.atlantis_arm_tenant_id
-  slack_webhook               = var.monitoring_kube_prometheus_stack_slack_webhook
-  prometheus_storageclass     = var.monitoring_kube_prometheus_stack_prometheus_storageclass
-  prometheus_storage_size     = var.monitoring_kube_prometheus_stack_prometheus_storage_size
-  prometheus_retention        = var.monitoring_kube_prometheus_stack_prometheus_retention
-  slack_channel               = var.monitoring_kube_prometheus_stack_slack_channel
-  target_namespaces           = var.monitoring_kube_prometheus_stack_target_namespaces
-  github_owner                = var.fluxcd_bootstrap_repo_owner
-  repo_name                   = var.fluxcd_bootstrap_repo_name
-  repo_branch                 = var.fluxcd_bootstrap_repo_branch
-  prometheus_request_memory   = var.monitoring_kube_prometheus_stack_prometheus_request_memory
-  prometheus_request_cpu      = var.monitoring_kube_prometheus_stack_prometheus_request_cpu
-  prometheus_limit_memory     = var.monitoring_kube_prometheus_stack_prometheus_limit_memory
-  prometheus_limit_cpu        = var.monitoring_kube_prometheus_stack_prometheus_limit_cpu
-  query_log_file_enabled      = var.monitoring_kube_prometheus_stack_prometheus_query_log_file_enabled
-  enable_features             = var.monitoring_kube_prometheus_stack_prometheus_enable_features
-  overwrite_on_create         = var.fluxcd_bootstrap_overwrite_on_create
-  tolerations                 = var.monitoring_tolerations
-  affinity                    = var.monitoring_affinity
-  prune                       = var.fluxcd_prune
-
+  source                                              = "../../_sub/compute/helm-kube-prometheus-stack"
+  count                                               = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
+  cluster_name                                        = var.eks_cluster_name
+  chart_version                                       = var.monitoring_kube_prometheus_stack_chart_version
+  namespace                                           = module.monitoring_namespace[0].name
+  priority_class                                      = var.monitoring_kube_prometheus_stack_priority_class
+  grafana_admin_password                              = var.monitoring_kube_prometheus_stack_grafana_admin_password
+  grafana_ingress_path                                = var.monitoring_kube_prometheus_stack_grafana_ingress_path
+  grafana_host                                        = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
+  grafana_notifier_name                               = "${var.eks_cluster_name}-alerting"
+  grafana_iam_role_arn                                = local.grafana_iam_role_arn
+  grafana_serviceaccount_name                         = var.monitoring_kube_prometheus_stack_grafana_serviceaccount_name
+  grafana_storage_enabled                             = var.monitoring_kube_prometheus_stack_grafana_storage_enabled
+  grafana_storage_class                               = var.monitoring_kube_prometheus_stack_grafana_storageclass
+  grafana_storage_size                                = var.monitoring_kube_prometheus_stack_grafana_storage_size
+  grafana_serve_from_sub_path                         = var.monitoring_kube_prometheus_stack_grafana_serve_from_sub_path
+  grafana_azure_tenant_id                             = var.monitoring_kube_prometheus_stack_azure_tenant_id != "" ? var.monitoring_kube_prometheus_stack_azure_tenant_id : var.atlantis_arm_tenant_id
+  slack_webhook                                       = var.monitoring_kube_prometheus_stack_slack_webhook
+  prometheus_storageclass                             = var.monitoring_kube_prometheus_stack_prometheus_storageclass
+  prometheus_storage_size                             = var.monitoring_kube_prometheus_stack_prometheus_storage_size
+  prometheus_retention                                = var.monitoring_kube_prometheus_stack_prometheus_retention
+  prometheus_confluent_metrics_scrape_enabled         = var.monitoring_kube_prometheus_stack_prometheus_confluent_metrics_scrape_enabled
+  prometheus_confluent_metrics_api_key                = var.monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_key
+  prometheus_confluent_metrics_api_secret             = var.monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_secret
+  prometheus_confluent_metrics_scrape_interval        = var.monitoring_kube_prometheus_stack_prometheus_confluent_metrics_scrape_interval
+  prometheus_confluent_metrics_scrape_timeout         = var.monitoring_kube_prometheus_stack_prometheus_confluent_metrics_scrape_timeout
+  prometheus_confluent_metrics_resource_kafka_id_list = var.monitoring_kube_prometheus_stack_prometheus_confluent_metrics_resource_kafka_id_list
+  slack_channel                                       = var.monitoring_kube_prometheus_stack_slack_channel
+  target_namespaces                                   = var.monitoring_kube_prometheus_stack_target_namespaces
+  github_owner                                        = var.fluxcd_bootstrap_repo_owner
+  repo_name                                           = var.fluxcd_bootstrap_repo_name
+  repo_branch                                         = var.fluxcd_bootstrap_repo_branch
+  prometheus_request_memory                           = var.monitoring_kube_prometheus_stack_prometheus_request_memory
+  prometheus_request_cpu                              = var.monitoring_kube_prometheus_stack_prometheus_request_cpu
+  prometheus_limit_memory                             = var.monitoring_kube_prometheus_stack_prometheus_limit_memory
+  prometheus_limit_cpu                                = var.monitoring_kube_prometheus_stack_prometheus_limit_cpu
+  query_log_file_enabled                              = var.monitoring_kube_prometheus_stack_prometheus_query_log_file_enabled
+  enable_features                                     = var.monitoring_kube_prometheus_stack_prometheus_enable_features
+  overwrite_on_create                                 = var.fluxcd_bootstrap_overwrite_on_create
+  tolerations                                         = var.monitoring_tolerations
+  affinity                                            = var.monitoring_affinity
+  prune                                               = var.fluxcd_prune
   providers = {
     github = github.fluxcd
   }

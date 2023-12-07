@@ -17,6 +17,28 @@ prometheus:
         - path: /metrics
           port: http
   prometheusSpec:
+%{ if prometheus_confluent_metrics_scrape_enabled ~}
+    queryLogFile: "/dev/stdout"
+    additionalScrapeConfigs:
+      - job_name: confluent-cloud
+        scrape_interval: ${prometheus_confluent_metrics_scrape_interval}
+        scrape_timeout:  ${prometheus_confluent_metrics_scrape_timeout}
+        honor_timestamps: true
+        static_configs:
+          - targets:
+            - api.telemetry.confluent.cloud
+        scheme: https
+        basic_auth:
+          username: ${prometheus_confluent_metrics_api_key}
+          password: ${prometheus_confluent_metrics_api_secret}
+        metrics_path: /v2/metrics/cloud/export
+        params:
+          "resource.kafka.id":
+%{ for f in prometheus_confluent_metrics_resource_kafka_id_list ~}
+            - ${f}
+%{ endfor ~}
+%{ endif ~}
+
     enableAdminAPI: false
 %{ if query_log_file_enabled ~}
     queryLogFile: "/dev/stdout"

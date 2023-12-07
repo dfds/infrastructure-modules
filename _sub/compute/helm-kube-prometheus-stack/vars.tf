@@ -149,6 +149,39 @@ variable "prometheus_limit_cpu" {
   default     = "1000m"
 }
 
+variable "prometheus_confluent_metrics_scrape_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable scraping of Confluent Cloud metrics"
+}
+
+variable "prometheus_confluent_metrics_scrape_interval" {
+  type        = string
+  default     = "1m"
+  description = "Interval to scrape Confluent Cloud metrics"
+}
+
+variable "prometheus_confluent_metrics_scrape_timeout" {
+  type        = string
+  default     = "10s"
+  description = "Timeout to scrape Confluent Cloud metrics"
+}
+
+variable "prometheus_confluent_metrics_api_key" {
+  type        = string
+  description = "value of the Confluent Cloud API key"
+}
+
+variable "prometheus_confluent_metrics_api_secret" {
+  type        = string
+  description = "value of the Confluent Cloud API secret"
+}
+
+variable "prometheus_confluent_metrics_resource_kafka_id_list" {
+  type        = list(string)
+  description = "List of Kafka cluster IDs to scrape metrics from"
+}
+
 variable "overwrite_on_create" {
   type        = bool
   default     = true
