@@ -142,8 +142,8 @@ inputs = {
   monitoring_kube_prometheus_stack_prometheus_query_log_file_enabled = true
   monitoring_kube_prometheus_stack_prometheus_enable_features        = ["memory-snapshot-on-shutdown"]
   monitoring_kube_prometheus_stack_prometheus_confluent_metrics_scrape_enabled = true
-  monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_key="fake"
-  monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_secret="fake"
+  monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_key = "fake"
+  monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_secret = "fake"
 
   # --------------------------------------------------
   # Goldpinger

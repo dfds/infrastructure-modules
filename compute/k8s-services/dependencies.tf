@@ -274,30 +274,32 @@ locals {
   }
 
   atlantis_env_vars_default = {
-    PRODUCTION_AWS_ACCESS_KEY_ID                                     = var.atlantis_aws_access_key
-    PRODUCTION_AWS_SECRET_ACCESS_KEY                                 = var.atlantis_aws_secret
-    PRODUCTION_TF_VAR_slack_webhook_url                              = var.slack_webhook_url
-    PRODUCTION_TF_VAR_monitoring_kube_prometheus_stack_slack_webhook = var.monitoring_kube_prometheus_stack_slack_webhook
-    STAGING_AWS_ACCESS_KEY_ID                                        = var.atlantis_staging_aws_access_key
-    STAGING_AWS_SECRET_ACCESS_KEY                                    = var.atlantis_staging_aws_secret
-    STAGING_TF_VAR_slack_webhook_url                                 = var.staging_slack_webhook_url
-    STAGING_TF_VAR_monitoring_kube_prometheus_stack_slack_webhook    = var.monitoring_kube_prometheus_stack_staging_slack_webhook
-    SHARED_ARM_TENANT_ID                                             = var.atlantis_arm_tenant_id
-    SHARED_ARM_SUBSCRIPTION_ID                                       = var.atlantis_arm_subscription_id
-    SHARED_ARM_CLIENT_ID                                             = var.atlantis_arm_client_id
-    SHARED_ARM_CLIENT_SECRET                                         = var.atlantis_arm_client_secret
-    SHARED_TF_VAR_monitoring_kube_prometheus_stack_azure_tenant_id   = var.monitoring_kube_prometheus_stack_azure_tenant_id
-    SHARED_TF_VAR_fluxcd_bootstrap_repo_owner_token                  = var.fluxcd_bootstrap_repo_owner_token
-    SHARED_TF_VAR_atlantis_github_token                              = var.atlantis_github_token
-    PRODUCTION_PRIME_AWS_ACCESS_KEY_ID                               = var.prime_aws_access_key
-    PRODUCTION_PRIME_AWS_SECRET_ACCESS_KEY                           = var.prime_aws_secret
-    PRODUCTION_PREPRIME_AWS_ACCESS_KEY_ID                            = var.preprime_aws_access_key
-    PRODUCTION_PREPRIME_AWS_SECRET_ACCESS_KEY                        = var.preprime_aws_secret
-    PRODUCTION_PREPRIME_BACKUP_REPORTS_SLACK_WEBHOOK_URL             = var.preprime_backup_reports_slack_webhook_url
-    PRODUCTION_AWS_ACCOUNT_MANIFESTS_KAFKA_BROKER                    = var.aws_account_manifests_kafka_broker
-    PRODUCTION_AWS_ACCOUNT_MANIFESTS_KAFKA_USERNAME                  = var.aws_account_manifests_kafka_username
-    PRODUCTION_AWS_ACCOUNT_MANIFESTS_KAFKA_PASSWORD                  = var.aws_account_manifests_kafka_password
-    PRODUCTION_AWS_ACCOUNT_MANIFESTS_HARDENED_MONITORING_SLACK_TOKEN = var.aws_account_manifests_hardened_monitoring_slack_token
+    PRODUCTION_AWS_ACCESS_KEY_ID                                        = var.atlantis_aws_access_key
+    PRODUCTION_AWS_SECRET_ACCESS_KEY                                    = var.atlantis_aws_secret
+    PRODUCTION_TF_VAR_slack_webhook_url                                 = var.slack_webhook_url
+    PRODUCTION_TF_VAR_monitoring_kube_prometheus_stack_slack_webhook    = var.monitoring_kube_prometheus_stack_slack_webhook
+    STAGING_AWS_ACCESS_KEY_ID                                           = var.atlantis_staging_aws_access_key
+    STAGING_AWS_SECRET_ACCESS_KEY                                       = var.atlantis_staging_aws_secret
+    STAGING_TF_VAR_slack_webhook_url                                    = var.staging_slack_webhook_url
+    STAGING_TF_VAR_monitoring_kube_prometheus_stack_slack_webhook       = var.monitoring_kube_prometheus_stack_staging_slack_webhook
+    SHARED_ARM_TENANT_ID                                                = var.atlantis_arm_tenant_id
+    SHARED_ARM_SUBSCRIPTION_ID                                          = var.atlantis_arm_subscription_id
+    SHARED_ARM_CLIENT_ID                                                = var.atlantis_arm_client_id
+    SHARED_ARM_CLIENT_SECRET                                            = var.atlantis_arm_client_secret
+    SHARED_TF_VAR_monitoring_kube_prometheus_stack_azure_tenant_id      = var.monitoring_kube_prometheus_stack_azure_tenant_id
+    SHARED_TF_VAR_fluxcd_bootstrap_repo_owner_token                     = var.fluxcd_bootstrap_repo_owner_token
+    SHARED_TF_VAR_atlantis_github_token                                 = var.atlantis_github_token
+    PRODUCTION_PRIME_AWS_ACCESS_KEY_ID                                  = var.prime_aws_access_key
+    PRODUCTION_PRIME_AWS_SECRET_ACCESS_KEY                              = var.prime_aws_secret
+    PRODUCTION_PREPRIME_AWS_ACCESS_KEY_ID                               = var.preprime_aws_access_key
+    PRODUCTION_PREPRIME_AWS_SECRET_ACCESS_KEY                           = var.preprime_aws_secret
+    PRODUCTION_PREPRIME_BACKUP_REPORTS_SLACK_WEBHOOK_URL                = var.preprime_backup_reports_slack_webhook_url
+    PRODUCTION_AWS_ACCOUNT_MANIFESTS_KAFKA_BROKER                       = var.aws_account_manifests_kafka_broker
+    PRODUCTION_AWS_ACCOUNT_MANIFESTS_KAFKA_USERNAME                     = var.aws_account_manifests_kafka_username
+    PRODUCTION_AWS_ACCOUNT_MANIFESTS_KAFKA_PASSWORD                     = var.aws_account_manifests_kafka_password
+    PRODUCTION_AWS_ACCOUNT_MANIFESTS_HARDENED_MONITORING_SLACK_TOKEN    = var.aws_account_manifests_hardened_monitoring_slack_token
+    CONFLUENT_KAFKA_PROD_PROMETHEUS_METRICS_EXPORTER_HELLMAN_API_KEY    = var.monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_key
+    CONFLUENT_KAFKA_PROD_PROMETHEUS_METRICS_EXPORTER_HELLMAN_API_SECRET = var.monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_secret
   }
 
   atlantis_env_vars = var.crossplane_deploy ? merge(local.atlantis_env_vars_default, local.confluent_env_vars_for_atlantis) : local.atlantis_env_vars_default
