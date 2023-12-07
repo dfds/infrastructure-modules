@@ -141,7 +141,7 @@ inputs = {
   monitoring_kube_prometheus_stack_grafana_storageclass              = "gp2"
   monitoring_kube_prometheus_stack_prometheus_query_log_file_enabled = true
   monitoring_kube_prometheus_stack_prometheus_enable_features        = ["memory-snapshot-on-shutdown"]
-
+  monitoring_kube_prometheus_stack_prometheus_confluent_metrics_scrape_enabled = false
 
   # --------------------------------------------------
   # Goldpinger
