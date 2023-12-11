@@ -32,7 +32,7 @@ locals {
   }
 
   grafana_config_middleware = {
-    "apiVersion" = "traefik.containo.us/v1alpha1"
+    "apiVersion" = "traefik.io/v1alpha1"
     "kind"       = "Middleware"
     "metadata" = {
       "name"      = local.grafana_middleware_name
@@ -47,7 +47,7 @@ locals {
   }
 
   grafana_config_ingressroute = {
-    "apiVersion" = "traefik.containo.us/v1alpha1"
+    "apiVersion" = "traefik.io/v1alpha1"
     "kind"       = "IngressRoute"
     "metadata" = {
       "name"      = local.grafana_ingressroute_name
