@@ -13,9 +13,12 @@ data "aws_iam_policy_document" "preventive" {
         "i*",
         "p*",
         "x*",
+        "u*",
         "*.1*",
         "*.8*",
         "*.24*",
+        "*.32*",
+        "*.48*",
         "*.metal",
       ]
     }
