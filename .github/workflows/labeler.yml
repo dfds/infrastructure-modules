@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@master
       - name: Apply labels
         id: label-the-PR
-        uses: actions/labeler@v4
+        uses: actions/labeler@v5
         with:
           configuration-path: ".github/pr-labels.yml"
       
