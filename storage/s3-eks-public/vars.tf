@@ -47,3 +47,15 @@ variable "eks_is_sandbox" {
   type    = bool
   default = false
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "A map of tags to apply to all the resources deployed by the module"
+  default     = {}
+}
+
+variable "data_tags" {
+  type        = map(string)
+  description = "A map of tags to apply to all the data and/or storage deployed by the module"
+  default     = {}
+}
