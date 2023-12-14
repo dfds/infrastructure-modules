@@ -98,3 +98,15 @@ variable "db_publicly_accessible" {
   default     = true
   description = "Should the database be public accessible?"
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "A map of tags to apply to all the resources deployed by the module"
+  default     = {}
+}
+
+variable "data_tags" {
+  type        = map(string)
+  description = "A map of tags to apply to all the data and/or storage deployed by the module"
+  default     = {}
+}

@@ -6,6 +6,10 @@ terraform {
 provider "aws" {
   region = var.aws_region
 
+  default_tags {
+    tags = var.tags
+  }
+
   assume_role {
     role_arn = var.aws_assume_role_arn
   }
@@ -14,6 +18,10 @@ provider "aws" {
 provider "aws" {
   region = var.aws_region
   alias  = "core"
+
+  default_tags {
+    tags = var.tags
+  }
 }
 
 locals {
@@ -22,6 +30,10 @@ locals {
 
 provider "aws" {
   region = var.aws_region
+
+  default_tags {
+    tags = var.tags
+  }
 
   assume_role {
     role_arn = local.aws_assume_logs_role_arn
