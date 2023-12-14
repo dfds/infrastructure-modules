@@ -5,9 +5,9 @@ go 1.19
 require (
 	github.com/fluxcd/pkg/apis/meta v1.2.0
 	github.com/stretchr/testify v1.8.4
-	k8s.io/api v0.28.4
+	k8s.io/api v0.29.0
 	k8s.io/apimachinery v0.29.0
-	k8s.io/client-go v0.28.4
+	k8s.io/client-go v0.29.0
 )
 
 require (
@@ -17,7 +17,7 @@ require (
 )
 
 require (
-	github.com/emicklei/go-restful/v3 v3.10.1 // indirect; indirect // indirect
+	github.com/emicklei/go-restful/v3 v3.11.0 // indirect; indirect // indirect
 	github.com/go-openapi/jsonpointer v0.19.6 // indirect
 	github.com/go-openapi/jsonreference v0.20.2 // indirect; indirect // indirect
 	github.com/go-openapi/swag v0.22.3 // indirect; indirect // indirect
@@ -40,7 +40,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/oauth2 v0.8.0 // indirect; indirect // indirect
+	golang.org/x/oauth2 v0.10.0 // indirect; indirect // indirect
 	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/term v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
