@@ -19,6 +19,12 @@ variable "log_group_retention_in_days" {
 }
 
 variable "kms_key_user_accounts" {
-  type = list(string)
+  type    = list(string)
   default = []
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "A map of tags to apply to all the resources deployed by the module"
+  default     = {}
 }

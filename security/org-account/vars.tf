@@ -40,3 +40,9 @@ variable "master_account_id" {
   type        = string
   description = "The AWS account ID of the Organizations Master account"
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "A map of tags to apply to all the resources deployed by the module"
+  default     = {}
+}

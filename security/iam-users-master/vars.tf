@@ -16,3 +16,9 @@ variable "core_account_role_arns" {
   description = "List of core account (e.g. Core, QA, Master, Security) root ARNs"
   type        = list(string)
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "A map of tags to apply to all the resources deployed by the module"
+  default     = {}
+}

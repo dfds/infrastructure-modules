@@ -7,6 +7,10 @@ terraform {
 provider "aws" {
   region = var.aws_region
 
+  default_tags {
+    tags = var.tags
+  }
+
   # Assume role in Master account
   assume_role {
     role_arn     = "arn:aws:iam::${var.master_account_id}:role/${var.prime_role_name}"
@@ -21,6 +25,10 @@ provider "aws" {
   access_key = var.access_key_master
   secret_key = var.secret_key_master
 
+  default_tags {
+    tags = var.tags
+  }
+
   # Assume the Organizational role in Workload account
   assume_role {
     role_arn     = "arn:aws:iam::${var.account_id}:role/${var.org_role_name}"
@@ -34,6 +42,10 @@ provider "aws" {
   access_key = var.access_key_master
   secret_key = var.secret_key_master
 
+  default_tags {
+    tags = var.tags
+  }
+
   # Assume the Organizational role in Workload account
   assume_role {
     role_arn     = "arn:aws:iam::${var.account_id}:role/${var.org_role_name}"
@@ -44,6 +56,10 @@ provider "aws" {
 provider "aws" {
   region = var.aws_region_sso
   alias  = "sso"
+
+  default_tags {
+    tags = var.tags
+  }
 
   # Assume role in Master account
   assume_role {
@@ -58,6 +74,11 @@ provider "aws" {
   alias      = "workload_eu-west-1"
   access_key = var.access_key_master
   secret_key = var.secret_key_master
+
+  default_tags {
+    tags = var.tags
+  }
+
   assume_role {
     role_arn     = module.org_account.org_role_arn
     session_name = var.aws_session_name
@@ -69,6 +90,11 @@ provider "aws" {
   alias      = "workload_eu-west-2"
   access_key = var.access_key_master
   secret_key = var.secret_key_master
+
+  default_tags {
+    tags = var.tags
+  }
+
   assume_role {
     role_arn     = module.org_account.org_role_arn
     session_name = var.aws_session_name
@@ -80,6 +106,11 @@ provider "aws" {
   alias      = "workload_eu-west-3"
   access_key = var.access_key_master
   secret_key = var.secret_key_master
+
+  default_tags {
+    tags = var.tags
+  }
+
   assume_role {
     role_arn     = module.org_account.org_role_arn
     session_name = var.aws_session_name
@@ -92,6 +123,11 @@ provider "aws" {
   alias      = "workload_us-east-1"
   access_key = var.access_key_master
   secret_key = var.secret_key_master
+
+  default_tags {
+    tags = var.tags
+  }
+
   assume_role {
     role_arn     = module.org_account.org_role_arn
     session_name = var.aws_session_name
@@ -103,6 +139,11 @@ provider "aws" {
   alias      = "workload_us-east-2"
   access_key = var.access_key_master
   secret_key = var.secret_key_master
+
+  default_tags {
+    tags = var.tags
+  }
+
   assume_role {
     role_arn     = module.org_account.org_role_arn
     session_name = var.aws_session_name
@@ -114,6 +155,11 @@ provider "aws" {
   alias      = "workload_us-west-1"
   access_key = var.access_key_master
   secret_key = var.secret_key_master
+
+  default_tags {
+    tags = var.tags
+  }
+
   assume_role {
     role_arn     = module.org_account.org_role_arn
     session_name = var.aws_session_name
@@ -125,6 +171,11 @@ provider "aws" {
   alias      = "workload_us-west-2"
   access_key = var.access_key_master
   secret_key = var.secret_key_master
+
+  default_tags {
+    tags = var.tags
+  }
+
   assume_role {
     role_arn     = module.org_account.org_role_arn
     session_name = var.aws_session_name

@@ -125,27 +125,27 @@ variable "deploy_backup" {
 }
 
 variable "aws_backup_settings_resource_type_opt_in_preference" {
-  type = object({})
+  type        = object({})
   description = "A map of services along with the opt-in preferences for the Region"
-  default = {}
+  default     = {}
 }
 
 variable "aws_backup_resource_type_management_preference" {
-  type = object({})
+  type        = object({})
   description = "A map of services along with the management preferences for the Region"
-  default = {}
+  default     = {}
 }
 
 variable "aws_backup_vault_name_new" {
-  type = string
+  type        = string
   description = "Name of the AWS Backup vault"
-  default = null
+  default     = null
 }
 
 variable "aws_backup_vault_name" {
-  type = string
+  type        = string
   description = "Name of the AWS Backup vault. This is the name of the vault we created initially and will be removed eventually."
-  default = null
+  default     = null
 }
 
 variable "aws_backup_plans" {
@@ -164,7 +164,7 @@ variable "aws_backup_plans" {
         lifecycle = object({
           cold_storage_after = optional(number)
           delete_after       = optional(number)
-        }
+          }
         )
       })))
 
@@ -204,12 +204,17 @@ variable "aws_backup_plans" {
     }))
   }))
   description = "A list of backup plans."
-  default = []
+  default     = []
 }
 
 variable "aws_backup_tags" {
-  type = object({})
+  type        = object({})
   description = "A map of tags to apply to the backup components"
-  default = {}
+  default     = {}
 }
 
+variable "tags" {
+  type        = map(string)
+  description = "A map of tags to apply to all the resources deployed by the module"
+  default     = {}
+}
