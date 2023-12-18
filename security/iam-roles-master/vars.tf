@@ -21,3 +21,9 @@ variable "create_org_account_iam_policy_name" {
   description = "Policy granting access to create new AWS Organization accounts"
   type        = string
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "A map of tags to apply to all the resources deployed by the module"
+  default     = {}
+}

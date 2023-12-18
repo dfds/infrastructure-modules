@@ -128,3 +128,9 @@ variable "hardened_security_contact_email" {
 variable "hardened_security_contact_phone_number" {
   type = string
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "A map of tags to apply to all the resources deployed by the module"
+  default     = {}
+}

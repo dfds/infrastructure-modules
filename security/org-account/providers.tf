@@ -1,9 +1,17 @@
 provider "aws" {
   region = var.aws_region
+
+  default_tags {
+    tags = var.tags
+  }
 }
 
 provider "aws" {
   region = var.aws_region
+
+  default_tags {
+    tags = var.tags
+  }
 
   # Assume the Organizational role in Workload account
   assume_role {
@@ -15,6 +23,10 @@ provider "aws" {
 
 provider "aws" {
   region = var.aws_region_2
+
+  default_tags {
+    tags = var.tags
+  }
 
   # Assume the Organizational role in Workload account
   assume_role {
@@ -29,6 +41,10 @@ provider "aws" {
   region = "eu-west-1"
   alias  = "workload_eu-west-1"
 
+  default_tags {
+    tags = var.tags
+  }
+
 
   # Assume the Organizational role in Workload account
   assume_role {
@@ -39,6 +55,10 @@ provider "aws" {
   region = "eu-west-2"
   alias  = "workload_eu-west-2"
 
+  default_tags {
+    tags = var.tags
+  }
+
   # Assume the Organizational role in Workload account
   assume_role {
     role_arn = module.org_account.org_role_arn
@@ -47,6 +67,10 @@ provider "aws" {
 provider "aws" {
   region = "eu-west-3"
   alias  = "workload_eu-west-3"
+
+  default_tags {
+    tags = var.tags
+  }
 
 
   # Assume the Organizational role in Workload account
@@ -58,6 +82,10 @@ provider "aws" {
 provider "aws" {
   region = "eu-north-1"
   alias  = "workload_eu-north-1"
+
+  default_tags {
+    tags = var.tags
+  }
 
 
   # Assume the Organizational role in Workload account
@@ -71,6 +99,10 @@ provider "aws" {
   region = "us-east-1"
   alias  = "workload_us-east-1"
 
+  default_tags {
+    tags = var.tags
+  }
+
   # Assume the Organizational role in Workload account
   assume_role {
     role_arn = module.org_account.org_role_arn
@@ -80,6 +112,10 @@ provider "aws" {
 provider "aws" {
   region = "us-east-2"
   alias  = "workload_us-east-2"
+
+  default_tags {
+    tags = var.tags
+  }
 
   # Assume the Organizational role in Workload account
   assume_role {
@@ -91,6 +127,10 @@ provider "aws" {
   region = "us-west-1"
   alias  = "workload_us-west-1"
 
+  default_tags {
+    tags = var.tags
+  }
+
   # Assume the Organizational role in Workload account
   assume_role {
     role_arn = module.org_account.org_role_arn
@@ -100,6 +140,10 @@ provider "aws" {
 provider "aws" {
   region = "us-west-2"
   alias  = "workload_us-west-2"
+
+  default_tags {
+    tags = var.tags
+  }
 
   # Assume the Organizational role in Workload account
   assume_role {
@@ -112,6 +156,10 @@ provider "aws" {
   region = "ap-south-1"
   alias  = "workload_ap-south-1"
 
+  default_tags {
+    tags = var.tags
+  }
+
   # Assume the Organizational role in Workload account
   assume_role {
     role_arn = module.org_account.org_role_arn
@@ -121,6 +169,10 @@ provider "aws" {
 provider "aws" {
   region = "ap-northeast-3"
   alias  = "workload_ap-northeast-3"
+
+  default_tags {
+    tags = var.tags
+  }
 
   # Assume the Organizational role in Workload account
   assume_role {
@@ -132,6 +184,10 @@ provider "aws" {
   region = "ap-northeast-2"
   alias  = "workload_ap-northeast-2"
 
+  default_tags {
+    tags = var.tags
+  }
+
   # Assume the Organizational role in Workload account
   assume_role {
     role_arn = module.org_account.org_role_arn
@@ -141,6 +197,10 @@ provider "aws" {
 provider "aws" {
   region = "ap-southeast-1"
   alias  = "workload_ap-southeast-1"
+
+  default_tags {
+    tags = var.tags
+  }
 
   # Assume the Organizational role in Workload account
   assume_role {
@@ -152,6 +212,10 @@ provider "aws" {
   region = "ap-southeast-2"
   alias  = "workload_ap-southeast-2"
 
+  default_tags {
+    tags = var.tags
+  }
+
   # Assume the Organizational role in Workload account
   assume_role {
     role_arn = module.org_account.org_role_arn
@@ -161,6 +225,10 @@ provider "aws" {
 provider "aws" {
   region = "ap-northeast-1"
   alias  = "workload_ap-northeast-1"
+
+  default_tags {
+    tags = var.tags
+  }
 
   # Assume the Organizational role in Workload account
   assume_role {
@@ -173,6 +241,10 @@ provider "aws" {
   region = "ca-central-1"
   alias  = "workload_ca-central-1"
 
+  default_tags {
+    tags = var.tags
+  }
+
   # Assume the Organizational role in Workload account
   assume_role {
     role_arn = module.org_account.org_role_arn
@@ -183,6 +255,10 @@ provider "aws" {
 provider "aws" {
   region = "sa-east-1"
   alias  = "workload_sa-east-1"
+
+  default_tags {
+    tags = var.tags
+  }
 
   # Assume the Organizational role in Workload account
   assume_role {

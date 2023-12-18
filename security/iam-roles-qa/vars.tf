@@ -31,3 +31,9 @@ variable "qa_iam_role_trusted_account_root_arn" {
   description = "The ARN of the account trusted to assume the role"
   type        = list(string)
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "A map of tags to apply to all the resources deployed by the module"
+  default     = {}
+}

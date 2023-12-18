@@ -23,6 +23,12 @@ variable "resource_owner_tag_value" {
 }
 
 variable "ec2_exempted_accounts" {
-  type = list(string)
+  type    = list(string)
   default = []
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "A map of tags to apply to all the resources deployed by the module"
+  default     = {}
 }
