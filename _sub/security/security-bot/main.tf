@@ -318,6 +318,15 @@ resource "aws_lambda_function" "bot" {
       SQS_FOLLOW_UP_QUEUE_URL           = aws_sqs_queue.queue[0].id # `id` provides the URL
     }
   }
+  depends_on = [
+    aws_cloudwatch_log_group.lambda_log_group,
+  ]
+}
+
+resource "aws_cloudwatch_log_group" "lambda_log_group" {
+  count             = var.deploy ? 1 : 0
+  name              = "/aws/lambda/${aws_iam_role.lambda[0].name}"
+  retention_in_days = 90
 }
 
 resource "aws_lambda_event_source_mapping" "sqs" {
