@@ -13,3 +13,4 @@ jobs:
       squash_merge: true
       # infrastructure-modules has different branch protection rules
       branch_protection: false
+      status_checks: true
