@@ -8,76 +8,9 @@ resource "aws_backup_region_settings" "this" {
   resource_type_management_preference = var.resource_type_management_preference
 }
 
-resource "aws_backup_vault" "this" {
-  name        = var.vault_name
-  kms_key_arn = var.deploy_kms_key ? aws_kms_key.this[0].arn : var.kms_key_arn
-  tags        = var.tags
-}
-
 resource "aws_backup_vault" "vault" {
   name        = var.new_vault_name
   tags        = var.tags
-}
-
-resource "aws_kms_key" "this" {
-  count               = var.deploy_kms_key ? 1 : 0
-  description         = "KMS key for backup encryption"
-  enable_key_rotation = true
-  policy              = data.aws_iam_policy_document.backup.json
-  tags                = var.tags
-}
-
-data "aws_iam_policy_document" "backup" {
-  statement {
-    sid = "Allow access for Key Administrators"
-    actions = [
-      "kms:Create*",
-      "kms:Describe*",
-      "kms:Enable*",
-      "kms:List*",
-      "kms:Put*",
-      "kms:Update*",
-      "kms:Revoke*",
-      "kms:Disable*",
-      "kms:Get*",
-      "kms:Delete*",
-      "kms:TagResource",
-      "kms:UntagResource",
-      "kms:ScheduleKeyDeletion",
-      "kms:CancelKeyDeletion"
-    ]
-    resources = ["*"]
-
-    principals {
-      type        = "AWS"
-      identifiers = var.kms_key_admins
-    }
-  }
-
-  statement {
-    sid = "Allow access through Backup for all principals in the account that are authorized to use Backup Storage"
-    actions = [
-      "kms:CreateGrant",
-      "kms:Decrypt",
-      "kms:GenerateDataKey*"
-    ]
-    resources = ["*"]
-
-    principals {
-      type        = "AWS"
-      identifiers = ["*"]
-    }
-    condition {
-      test     = "StringEquals"
-      variable = "kms:CallerAccount"
-      values   = [data.aws_caller_identity.current.account_id]
-    }
-    condition {
-      test     = "StringEquals"
-      variable = "kms:ViaService"
-      values   = ["backup.${data.aws_region.current.name}.amazonaws.com"]
-    }
-  }
 }
 
 resource "aws_backup_plan" "this" {
