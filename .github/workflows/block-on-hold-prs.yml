@@ -1,0 +1,10 @@
+name: Block on-hold PRs
+
+on:
+  pull_request:
+    branches: [ master, main ]
+    types: [ opened, labeled, unlabeled ]
+
+jobs:
+  shared:
+    uses: dfds/shared-workflows/.github/workflows/automation-on-hold-prs.yml@master
