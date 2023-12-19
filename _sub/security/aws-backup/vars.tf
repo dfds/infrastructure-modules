@@ -5,18 +5,6 @@ variable "new_vault_name" {
   default     = null
 }
 
-variable "vault_name" {
-  type        = string
-  description = "The name of the vault we created initially. This vault will eventually be removed."
-  default     = null
-}
-
-variable "deploy_kms_key" {
-  type        = bool
-  description = "Indicates whether a KMS key should be deployed."
-  default     = true
-}
-
 variable "kms_key_arn" {
   type        = string
   description = "The ARN of a the KMS key."
