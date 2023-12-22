@@ -136,6 +136,17 @@ module "aws_iam_oidc_provider" {
   }
 }
 
+module "aws_iam_oidc_provider_ssm" { # Add SSM parameter for OIDC provider URL TODO: Test!
+  source = "../../_sub/security/ssm-parameter-store"
+  providers = {
+    aws = aws.workload
+  }
+  key_name        = "/managed/cluster/oidc-provider"
+  key_description = "OIDC Provider URL for EKS cluster"
+  key_value       = var.oidc_provider_url
+  tag_createdby   = var.ssm_param_createdby
+}
+
 # --------------------------------------------------
 # aws_context_account_created event
 # --------------------------------------------------
@@ -284,7 +295,7 @@ module "github_oidc_provider" {
 locals {
   deploy_kms_key = false
   kms_key_admins = [module.org_account.org_role_arn]
-  }
+}
 
 resource "aws_iam_role" "backup" {
   provider = aws.workload
@@ -322,7 +333,7 @@ module "backup_eu_central_1" {
   kms_key_admins = local.kms_key_admins
   backup_plans   = var.aws_backup_plans
   iam_role_arn   = aws_iam_role.backup[0].arn
-  tags = var.aws_backup_tags
+  tags           = var.aws_backup_tags
 }
 
 module "backup_eu_west_1" {
@@ -339,5 +350,5 @@ module "backup_eu_west_1" {
   kms_key_admins = local.kms_key_admins
   backup_plans   = var.aws_backup_plans
   iam_role_arn   = aws_iam_role.backup[0].arn
-  tags = var.aws_backup_tags
+  tags           = var.aws_backup_tags
 }
