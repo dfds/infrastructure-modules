@@ -294,3 +294,9 @@ variable "tags" {
   description = "A map of tags to apply to all the resources deployed by the module"
   default     = {}
 }
+
+
+variable "ssm_param_createdby" {
+  type        = string
+  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
+}
