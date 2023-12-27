@@ -295,8 +295,6 @@ variable "tags" {
   default     = {}
 }
 
-# Optional
-# --------------------------------------------------
 
 variable "ssm_param_createdby" {
   type        = string
