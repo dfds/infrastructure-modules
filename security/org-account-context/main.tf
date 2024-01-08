@@ -147,6 +147,17 @@ module "aws_iam_oidc_provider_ssm" { # Add SSM parameter for OIDC provider URL T
   tag_createdby   = var.ssm_param_createdby
 }
 
+module "aws_iam_oidc_provider_ssm_eu_west_1" { # Add SSM parameter for OIDC provider in eu-west-1
+  source = "../../_sub/security/ssm-parameter-store"
+  providers = {
+    aws = aws.workload_2
+  }
+  key_name        = "/managed/cluster/oidc-provider"
+  key_description = "OIDC Provider URL for EKS cluster"
+  key_value       = var.oidc_provider_url
+  tag_createdby   = var.ssm_param_createdby
+}
+
 # --------------------------------------------------
 # aws_context_account_created event
 # --------------------------------------------------
