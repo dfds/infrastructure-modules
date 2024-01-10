@@ -202,7 +202,14 @@ data "aws_iam_policy_document" "restrictive" {
       "notifications:List*",
       "sns:*",
       "resource-explorer-2:*",
-      "dataexchange:*"
+      "dataexchange:*",
+      "s3:CreateMultiRegionAccessPoint",
+      "s3:DeleteMultiRegionAccessPoint",
+      "s3:PutMultiRegionAccessPointPolicy",
+      "s3:GetMultiRegionAccessPointPolicyStatus",
+      "s3:GetMultiRegionAccessPointPolicy",
+      "s3:GetMultiRegionAccessPoint",
+      "s3:DescribeMultiRegionAccessPointOperation"
     ]
     resources = ["*"]
     condition {
