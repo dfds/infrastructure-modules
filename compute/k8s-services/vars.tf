@@ -488,6 +488,18 @@ variable "fluxcd_apps_repo_branch" {
   description = "The default branch for your GitOps manifests"
 }
 
+variable "fluxcd_custom_apps_repo_name" {
+  type        = string
+  default     = ""
+  description = "The repo name for your Custom GitOps manifests"
+}
+
+variable "fluxcd_custom_apps_repo_branch" {
+  type        = string
+  default     = "main"
+  description = "The default branch for your Custom GitOps manifests"
+}
+
 variable "fluxcd_apps_repo_owner" {
   type        = string
   default     = "main"

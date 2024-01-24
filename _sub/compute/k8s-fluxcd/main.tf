@@ -54,3 +54,19 @@ resource "github_repository_file" "platform_apps_init" {
   content             = local.platform_apps_yaml
   overwrite_on_create = var.overwrite_on_create
 }
+
+resource "github_repository_file" "custom_kustomization" {
+  repository          = var.repository_name
+  branch              = data.github_branch.flux_branch.branch
+  file                = "${local.cluster_target_path}/custom.yaml"
+  content             = local.custom_kustomization_yaml
+  overwrite_on_create = var.overwrite_on_create
+}
+
+resource "github_repository_file" "custom_folder" {
+  repository          = var.repository_name
+  branch              = data.github_branch.flux_branch.branch
+  file                = "platform-apps/${var.cluster_name}/custom/README.md"
+  content             = local.custom_folder_readme
+  overwrite_on_create = var.overwrite_on_create
+}
