@@ -261,6 +261,8 @@ locals {
 
 locals {
   fluxcd_apps_repo_url = "${var.fluxcd_apps_git_provider_url}${var.fluxcd_apps_repo_owner}/${var.fluxcd_apps_repo_name}"
+  fluxcd_custom_apps_repo_url = "${var.fluxcd_apps_git_provider_url}${var.fluxcd_apps_repo_owner}/${var.fluxcd_custom_apps_repo_name}"
+
 }
 
 # --------------------------------------------------
