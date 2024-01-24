@@ -444,8 +444,6 @@ module "platform_fluxcd" {
   overwrite_on_create            = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url           = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch        = var.fluxcd_apps_repo_branch
-  gitops_custom_apps_repo_url    = local.fluxcd_custom_apps_repo_url
-  gitops_custom_apps_repo_branch = var.fluxcd_custom_apps_repo_branch
   cluster_name                   = var.eks_cluster_name
   kubeconfig_path                = local.kubeconfig_path
   prune                          = var.fluxcd_prune

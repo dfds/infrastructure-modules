@@ -39,18 +39,6 @@ variable "gitops_apps_repo_branch" {
   description = "The default branch for your GitOps manifests"
 }
 
-variable "gitops_custom_apps_repo_branch" {
-  type        = string
-  default     = "main"
-  description = "The default branch for your Custom apps GitOps manifests"
-}
-
-variable "gitops_custom_apps_repo_url" {
-  type        = string
-  default     = ""
-  description = "The https url for your Custom apps GitOps manifests"
-}
-
 variable "kubeconfig_path" {
   type    = string
   default = null

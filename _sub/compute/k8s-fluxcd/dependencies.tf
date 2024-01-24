@@ -56,17 +56,6 @@ spec:
     branch: ${var.gitops_apps_repo_branch}
   url: ${var.gitops_apps_repo_url}
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: GitRepository
-metadata:
-  name: flux-apps-git
-  namespace: flux-system
-spec:
-  interval: 1m0s
-  ref:
-    branch: ${var.gitops_custom_apps_repo_branch}
-  url: ${var.gitops_custom_apps_repo_url}
----
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
