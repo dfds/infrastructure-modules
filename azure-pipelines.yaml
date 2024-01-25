@@ -28,6 +28,13 @@ resources:
         TF_VAR_crossplane_provider_confluent_email: $(CROSSPLANE_PROVIDER_CONFLUENT_EMAIL)
         TF_VAR_crossplane_provider_confluent_password: $(CROSSPLANE_PROVIDER_CONFLUENT_PASSWORD)
         TF_VAR_monitoring_kube_prometheus_stack_azure_tenant_id: $(ARM_TENANT_ID)
+        TF_VAR_grafana_agent_api_token: $(TF_VAR_grafana_agent_api_token)
+        TF_VAR_grafana_agent_prometheus_url: $(TF_VAR_grafana_agent_prometheus_url)
+        TF_VAR_grafana_agent_prometheus_username: $(TF_VAR_grafana_agent_prometheus_username)
+        TF_VAR_grafana_agent_loki_url: $(TF_VAR_grafana_agent_loki_url)
+        TF_VAR_grafana_agent_loki_username: $(TF_VAR_grafana_agent_loki_username)
+        TF_VAR_grafana_agent_tempo_url: $(TF_VAR_grafana_agent_tempo_url)
+        TF_VAR_grafana_agent_tempo_username: $(TF_VAR_grafana_agent_tempo_username)
     - container: aws-nuke
       image: dfdsdk/aws-nuke:0.0.19
       env:
