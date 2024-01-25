@@ -802,3 +802,23 @@ module "elb_inactivity_cleanup_auth" {
   elb_name             = module.traefik_alb_auth.alb_name
   elb_arn              = module.traefik_alb_auth.alb_arn
 }
+
+
+# --------------------------------------------------
+# Grafana Agent for Kubernetes monitoring
+# --------------------------------------------------
+
+module "grafana_agent_k8s_monitoring" {
+  source              = "../../_sub/monitoring/helm-grafana-agent"
+  count               = var.grafana_agent_deploy ? 1 : 0
+  chart_version       = var.grafana_agent_chart_version
+  cluster_name        = var.eks_cluster_name
+  api_token           = var.grafana_agent_api_token
+  prometheus_url      = var.grafana_agent_prometheus_url
+  prometheus_username = var.grafana_agent_prometheus_username
+  loki_url            = var.grafana_agent_loki_url
+  loki_username       = var.grafana_agent_loki_username
+  tempo_url           = var.grafana_agent_tempo_url
+  tempo_username      = var.grafana_agent_tempo_username
+  traces_enabled      = var.grafana_agent_traces_enabled
+}

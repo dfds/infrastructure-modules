@@ -3,12 +3,12 @@ variable "helm_repo_url" {
   description = "The repository URL for the Grafana Agent Helm chart"
   default     = "https://grafana.github.io/helm-charts"
   validation {
-    condition     = var.helm_repo_url == null || can(regex("^(https:\\/\\/)+", var.helm_repo_url))
+    condition     = var.helm_repo_url != null || can(regex("^(https:\\/\\/)+", var.helm_repo_url))
     error_message = "The value for var.helm_repo_url must start with https://"
   }
 }
 
-variable "helm_chart_version" {
+variable "chart_version" {
   type        = string
   description = "Grafana Agent helm chart version"
   default     = null
@@ -57,7 +57,7 @@ variable "api_token" {
   description = "The token to authenticate request to a Grafana Cloud stack"
   default     = null
   validation {
-    condition     = var.api_token == null || can(regex("^(glc\\_)+", var.api_token))
+    condition     = var.api_token != null || can(regex("^(glc\\_)+", var.api_token))
     error_message = "The value for var.api_token must start with glc_"
   }
 }
@@ -67,7 +67,7 @@ variable "prometheus_url" {
   description = "The Prometheus URL in a Grafana Cloud stack"
   default     = null
   validation {
-    condition     = var.prometheus_url == null || can(regex("^(https:\\/\\/)+", var.prometheus_url))
+    condition     = var.prometheus_url != null || can(regex("^(https:\\/\\/)+", var.prometheus_url))
     error_message = "The value for var.prometheus_url must start with https://"
   }
 }
@@ -77,8 +77,8 @@ variable "prometheus_username" {
   description = "The username for Prometheus in a Grafana Cloud stack"
   default     = null
   validation {
-    condition     = var.prometheus_username == null
-    error_message = "The value for var.prometheus_username must not be undefined"
+    condition     = var.prometheus_username != null || length(var.prometheus_username) > 0
+    error_message = "The value for var.prometheus_username must be defined"
   }
 }
 
@@ -87,7 +87,7 @@ variable "loki_url" {
   description = "The Loki URL in a Grafana Cloud stack"
   default     = null
   validation {
-    condition     = var.loki_url == null || can(regex("^(https:\\/\\/)+", var.loki_url))
+    condition     = var.loki_url != null || can(regex("^(https:\\/\\/)+", var.loki_url))
     error_message = "The value for var.loki_url must start with https://"
   }
 }
@@ -97,8 +97,8 @@ variable "loki_username" {
   description = "The username for Loki in a Grafana Cloud stack"
   default     = null
   validation {
-    condition     = var.loki_username == null
-    error_message = "The value for var.loki_username must not be undefined"
+    condition     = var.loki_username != null || length(var.loki_username) > 0
+    error_message = "The value for var.loki_username must be defined"
   }
 }
 
@@ -107,7 +107,7 @@ variable "tempo_url" {
   description = "The Tempo URL in a Grafana Cloud stack"
   default     = null
   validation {
-    condition     = var.tempo_url == null || can(regex("^(https:\\/\\/)+", var.tempo_url))
+    condition     = var.tempo_url != null || can(regex("^(https:\\/\\/)+", var.tempo_url))
     error_message = "The value for var.tempo_url must start with https://"
   }
 }
@@ -117,8 +117,8 @@ variable "tempo_username" {
   description = "The username for Tempo in a Grafana Cloud stack"
   default     = null
   validation {
-    condition     = var.tempo_username == null
-    error_message = "The value for var.tempo_username must not be undefined"
+    condition     = var.tempo_username != null || length(var.tempo_username) > 0
+    error_message = "The value for var.tempo_username must be defined"
   }
 }
 

@@ -2,7 +2,7 @@ resource "helm_release" "grafana_agent" {
   name             = "grafana-k8s-monitoring"
   repository       = var.helm_repo_url
   chart            = "k8s-monitoring"
-  version          = var.helm_chart_version
+  version          = var.chart_version
   namespace        = var.namespace
   atomic           = var.atomic
   timeout          = var.timeout
