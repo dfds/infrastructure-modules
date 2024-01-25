@@ -1201,6 +1201,7 @@ variable "grafana_agent_api_token" {
   type        = string
   description = "The token to authenticate request to a Grafana Cloud stack"
   default     = null
+  sensitive   = true
   validation {
     condition     = var.grafana_agent_api_token != null || can(regex("^(glc\\_)+", var.grafana_agent_api_token))
     error_message = "The value for var.grafana_agent_api_token must start with glc_"
