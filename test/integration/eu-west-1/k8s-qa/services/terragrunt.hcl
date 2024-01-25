@@ -269,4 +269,10 @@ inputs = {
   velero_plugin_for_aws_version = "v1.7.0"
   velero_plugin_for_csi_version = "v0.5.0"
 
+  # --------------------------------------------------
+  # Grafana Agent for Kubernetes monitoring
+  # --------------------------------------------------
+
+  grafana_agent_deploy = true
+
 }
