@@ -1,0 +1,39 @@
+cluster:
+  name: ${cluster_name}
+externalServices:
+  prometheus:
+    host: ${prometheus_url}
+    basicAuth:
+      username: "${prometheus_username}"
+      password: ${api_token}
+  loki:
+    host: ${loki_url}
+    basicAuth:
+      username: ${loki_username}
+      password: ${api_token}
+  tempo:
+    host: ${tempo_url}
+    basicAuth:
+      username: ${tempo_username}
+      password: ${api_token}
+opencost:
+  opencost:
+    exporter:
+      defaultClusterId: ${cluster_name}
+    prometheus:
+      external:
+        url: ${prometheus_url}/api/prom
+traces:
+  enabled: ${traces_enabled}
+%{ if enable_side_by_side ~}
+metrics:
+  node-exporter:
+    labelMatchers:
+      app.kubernetes.io/name: prometheus-node-exporter
+    service:
+      isTLS: false
+prometheus-node-exporter:
+  enabled: false
+prometheus-operator-crds:
+  enabled: false
+%{ endif ~}
