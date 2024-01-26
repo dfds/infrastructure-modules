@@ -1276,42 +1276,42 @@ variable "grafana_agent_traces_enabled" {
 variable "staging_grafana_agent_api_token" {
   type        = string
   description = "The token to authenticate request to a Grafana Cloud stack"
-  default     = null
+  default     = ""
   sensitive   = true
 }
 
 variable "staging_grafana_agent_prometheus_url" {
   type        = string
   description = "The Prometheus URL in a Grafana Cloud stack"
-  default     = null
+  default     = ""
 }
 
 variable "staging_grafana_agent_prometheus_username" {
   type        = string
   description = "The username for Prometheus in a Grafana Cloud stack"
-  default     = null
+  default     = ""
 }
 
 variable "staging_grafana_agent_loki_url" {
   type        = string
   description = "The Loki URL in a Grafana Cloud stack"
-  default     = null
+  default     = ""
 }
 
 variable "staging_grafana_agent_loki_username" {
   type        = string
   description = "The username for Loki in a Grafana Cloud stack"
-  default     = null
+  default     = ""
 }
 
 variable "staging_grafana_agent_tempo_url" {
   type        = string
   description = "The Tempo URL in a Grafana Cloud stack"
-  default     = null
+  default     = ""
 }
 
 variable "staging_grafana_agent_tempo_username" {
   type        = string
   description = "The username for Tempo in a Grafana Cloud stack"
-  default     = null
+  default     = ""
 }
