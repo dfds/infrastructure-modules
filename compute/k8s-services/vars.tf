@@ -1194,78 +1194,50 @@ variable "grafana_agent_deploy" {
 variable "grafana_agent_chart_version" {
   type        = string
   description = "Grafana Agent helm chart version"
-  default     = null
+  default     = ""
 }
 
 variable "grafana_agent_api_token" {
   type        = string
   description = "The token to authenticate request to a Grafana Cloud stack"
-  default     = null
+  default     = ""
   sensitive   = true
-  validation {
-    condition     = var.grafana_agent_api_token != null || can(regex("^(glc\\_)+", var.grafana_agent_api_token))
-    error_message = "The value for var.grafana_agent_api_token must start with glc_"
-  }
 }
 
 variable "grafana_agent_prometheus_url" {
   type        = string
   description = "The Prometheus URL in a Grafana Cloud stack"
-  default     = null
-  validation {
-    condition     = var.grafana_agent_prometheus_url != null || can(regex("^(https:\\/\\/)+", var.grafana_agent_prometheus_url))
-    error_message = "The value for var.grafana_agent_prometheus_url must start with https://"
-  }
+  default     = ""
 }
 
 variable "grafana_agent_prometheus_username" {
   type        = string
   description = "The username for Prometheus in a Grafana Cloud stack"
-  default     = null
-  validation {
-    condition     = var.grafana_agent_prometheus_username != null || length(var.grafana_agent_prometheus_username) > 0
-    error_message = "The value for var.grafana_agent_prometheus_username must be defined"
-  }
+  default     = ""
 }
 
 variable "grafana_agent_loki_url" {
   type        = string
   description = "The Loki URL in a Grafana Cloud stack"
-  default     = null
-  validation {
-    condition     = var.grafana_agent_loki_url != null || can(regex("^(https:\\/\\/)+", var.grafana_agent_loki_url))
-    error_message = "The value for var.grafana_agent_loki_url must start with https://"
-  }
+  default     = ""
 }
 
 variable "grafana_agent_loki_username" {
   type        = string
   description = "The username for Loki in a Grafana Cloud stack"
-  default     = null
-  validation {
-    condition     = var.grafana_agent_loki_username != null || length(var.grafana_agent_loki_username) > 0
-    error_message = "The value for var.grafana_agent_loki_username must be defined"
-  }
+  default     = ""
 }
 
 variable "grafana_agent_tempo_url" {
   type        = string
   description = "The Tempo URL in a Grafana Cloud stack"
-  default     = null
-  validation {
-    condition     = var.grafana_agent_tempo_url != null || can(regex("^(https:\\/\\/)+", var.grafana_agent_tempo_url))
-    error_message = "The value for var.grafana_agent_tempo_url must start with https://"
-  }
+  default     = ""
 }
 
 variable "grafana_agent_tempo_username" {
   type        = string
   description = "The username for Tempo in a Grafana Cloud stack"
-  default     = null
-  validation {
-    condition     = var.grafana_agent_tempo_username != null || length(var.grafana_agent_tempo_username) > 0
-    error_message = "The value for var.grafana_agent_tempo_username must be defined"
-  }
+  default     = ""
 }
 
 variable "grafana_agent_traces_enabled" {
