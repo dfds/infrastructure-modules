@@ -3,7 +3,7 @@ module go.dfds.cloud/infrastructure-modules/test/integration/suite
 go 1.19
 
 require (
-	github.com/fluxcd/pkg/apis/meta v1.2.0
+	github.com/fluxcd/pkg/apis/meta v1.3.0
 	github.com/stretchr/testify v1.8.4
 	k8s.io/api v0.29.1
 	k8s.io/apimachinery v0.29.1
@@ -39,10 +39,10 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect; indirect // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	golang.org/x/net v0.19.0 // indirect
+	golang.org/x/net v0.20.0 // indirect
 	golang.org/x/oauth2 v0.10.0 // indirect; indirect // indirect
-	golang.org/x/sys v0.15.0 // indirect
-	golang.org/x/term v0.15.0 // indirect
+	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/term v0.16.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.3.0 // indirect; indirect // indirect
 	google.golang.org/appengine v1.6.7 // indirect
