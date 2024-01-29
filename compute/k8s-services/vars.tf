@@ -1221,6 +1221,7 @@ variable "grafana_agent_prometheus_url" {
 variable "grafana_agent_prometheus_username" {
   type        = string
   description = "The username for Prometheus in a Grafana Cloud stack"
+  default     = null
   validation {
     condition     = var.grafana_agent_prometheus_username != null || length(var.grafana_agent_prometheus_username) > 0
     error_message = "The value for var.grafana_agent_prometheus_username must be defined"
