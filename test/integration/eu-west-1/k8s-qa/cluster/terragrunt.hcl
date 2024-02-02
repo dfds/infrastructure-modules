@@ -125,7 +125,7 @@ inputs = {
       desired_size_per_subnet = 1
       availability_zones      = ["eu-west-1a"]
       max_unavailable         = 1
-      ami_id = "ami-0c18f4378931087e0"
+      ami_id = "ami-099cf6455e994ad9d"
       taints = [
         {
           key = "dfds.service.gpu"
