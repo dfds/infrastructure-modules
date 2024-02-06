@@ -136,6 +136,7 @@ data "aws_iam_policy_document" "restrictive" {
     effect = "Deny"
     not_actions = [
       "access-analyzer:*",
+      "account:CloseAccount",
       "account:Get*",
       "account:List*",
       "account:PutAlternateContact",
@@ -270,16 +271,9 @@ data "aws_iam_policy_document" "restrictive" {
     effect = "Deny"
     actions = "account:CloseAccount"
     resources = ["*"]
-  }
-
-  statement {
-    sid    = "AllowCloseAccountForRoot"
-    effect = "Allow"
-    actions = "account:CloseAccount"
-    resources = ["*"]
-
+  
     condition {
-      test = "StringLike"
+      test = "StringNotLike"
       values = [
         "arn:aws:iam::*:root"
       ]
