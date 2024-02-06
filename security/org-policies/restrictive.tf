@@ -136,6 +136,7 @@ data "aws_iam_policy_document" "restrictive" {
     effect = "Deny"
     not_actions = [
       "access-analyzer:*",
+      "account:CloseAccount",
       "account:Get*",
       "account:List*",
       "account:PutAlternateContact",
