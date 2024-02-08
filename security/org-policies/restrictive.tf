@@ -136,6 +136,7 @@ data "aws_iam_policy_document" "restrictive" {
     effect = "Deny"
     not_actions = [
       "access-analyzer:*",
+      "account:CloseAccount",
       "account:Get*",
       "account:List*",
       "account:PutAlternateContact",
@@ -260,6 +261,21 @@ data "aws_iam_policy_document" "restrictive" {
         "arn:aws:iam::*:role/OrgRole",
         "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
         "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_Billing_*",
+      ]
+      variable = "aws:PrincipalArn"
+    }
+  }
+
+  statement {
+    sid    = "DenyCloseAccountForNonRoot"
+    effect = "Deny"
+    actions = "account:CloseAccount"
+    resources = ["*"]
+  
+    condition {
+      test = "StringNotLike"
+      values = [
+        "arn:aws:iam::*:root"
       ]
       variable = "aws:PrincipalArn"
     }
