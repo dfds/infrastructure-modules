@@ -1,14 +1,14 @@
 resource "aws_iam_openid_connect_provider" "github" {
-  client_id_list  = ["sts.amazonaws.com"]
+  client_id_list = ["sts.amazonaws.com"]
   thumbprint_list = [
     "6938fd4d98bab03faadb97b34396831e3780aea1",
     "1c58a3a8518e8759bf075b76b750d4f2df264fcd"
   ]
-  url             = "https://token.actions.githubusercontent.com"
+  url = "https://token.actions.githubusercontent.com"
 }
 
 resource "aws_iam_role" "this" {
-  name               = "oidc-role"
+  name               = var.oidc_role_name
   assume_role_policy = data.aws_iam_policy_document.trust.json
 }
 
@@ -34,7 +34,7 @@ data "aws_iam_policy_document" "trust" {
 }
 
 resource "aws_iam_role_policy" "this" {
-  name   = "oidc-access"
+  name   = var.oidc_policy_name
   policy = data.aws_iam_policy_document.oidc_access.json
   role   = aws_iam_role.this.id
 }
