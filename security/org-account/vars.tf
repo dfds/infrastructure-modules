@@ -58,6 +58,7 @@ variable "iam_github_oidc_repositories" {
     repository_name = string
     refs            = list(string)
   }))
+  default     = []
   description = "List of repositories to authenticate to AWS from. Each object contains repository name and list of git refs that should be allowed to deploy from"
   validation {
     condition     = alltrue([for v in flatten(values({ for repo in var.iam_github_oidc_repositories : repo.repository_name => repo.refs })) : startswith(v, "refs/heads/") || startswith(v, "refs/tags/")])
@@ -70,6 +71,7 @@ variable "iam_github_oidc_policy_json" {
     actions   = list(string)
     resources = list(string)
   }))
+  default     = []
   description = "List of allowed actions for the oidc-role"
 }
 
