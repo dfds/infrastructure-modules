@@ -713,6 +713,13 @@ variable "atlantis_resources_limits_memory" {
   description = "Memory resources limits size"
 }
 
+variable "atlantis_grafana_cloud_api_key" {
+  type        = string
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "Grafana Cloud API key"
+  sensitive   = true
+}
+
 # --------------------------------------------------
 # Crossplane
 # --------------------------------------------------
