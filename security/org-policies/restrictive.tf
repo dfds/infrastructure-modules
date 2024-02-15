@@ -267,11 +267,11 @@ data "aws_iam_policy_document" "restrictive" {
   }
 
   statement {
-    sid    = "DenyCloseAccountForNonRoot"
-    effect = "Deny"
-    actions = "account:CloseAccount"
+    sid       = "DenyCloseAccountForNonRoot"
+    effect    = "Deny"
+    actions   = ["account:CloseAccount"]
     resources = ["*"]
-  
+
     condition {
       test = "StringNotLike"
       values = [
