@@ -82,5 +82,5 @@ variable "iam_github_oidc_role_name" {
 variable "iam_github_oidc_policy_name" {
   type        = string
   default     = "oidc-access"
-  description = "Name of the role to create"
+  description = "Name of the policy to create"
 }

@@ -27,5 +27,5 @@ variable "oidc_role_name" {
 variable "oidc_policy_name" {
   type        = string
   default     = "oidc-access"
-  description = "Name of the role to create"
+  description = "Name of the policy to create"
 }
