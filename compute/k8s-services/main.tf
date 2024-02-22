@@ -478,6 +478,7 @@ module "atlantis" {
   github_repositories       = var.atlantis_github_repositories
   webhook_url               = var.atlantis_ingress
   webhook_events            = var.atlantis_webhook_events
+  environment               = var.atlantis_environment
 
   environment_variables = local.atlantis_env_vars
 
