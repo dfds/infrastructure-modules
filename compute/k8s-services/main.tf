@@ -436,17 +436,17 @@ module "aws_node_service" {
 # --------------------------------------------------
 
 module "platform_fluxcd" {
-  source                         = "../../_sub/compute/k8s-fluxcd"
-  release_tag                    = var.fluxcd_version
-  repository_name                = var.fluxcd_bootstrap_repo_name
-  branch                         = var.fluxcd_bootstrap_repo_branch
-  github_owner                   = var.fluxcd_bootstrap_repo_owner
-  overwrite_on_create            = var.fluxcd_bootstrap_overwrite_on_create
-  gitops_apps_repo_url           = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch        = var.fluxcd_apps_repo_branch
-  cluster_name                   = var.eks_cluster_name
-  kubeconfig_path                = local.kubeconfig_path
-  prune                          = var.fluxcd_prune
+  source                  = "../../_sub/compute/k8s-fluxcd"
+  release_tag             = var.fluxcd_version
+  repository_name         = var.fluxcd_bootstrap_repo_name
+  branch                  = var.fluxcd_bootstrap_repo_branch
+  github_owner            = var.fluxcd_bootstrap_repo_owner
+  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  cluster_name            = var.eks_cluster_name
+  kubeconfig_path         = local.kubeconfig_path
+  prune                   = var.fluxcd_prune
 
   providers = {
     github = github.fluxcd

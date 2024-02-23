@@ -583,9 +583,9 @@ variable "atlantis_data_storage" {
 }
 
 variable "atlantis_environment" {
-  type = string
+  type        = string
   description = "Environment for atlantis"
-  default = ""
+  default     = ""
 }
 
 # --------------------------------------------------
