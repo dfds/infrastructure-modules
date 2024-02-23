@@ -127,6 +127,6 @@ variable "parallel_pool_size" {
 }
 
 variable "environment" {
-  type = string
+  type        = string
   description = "Environment"
 }
