@@ -146,12 +146,6 @@ inputs = {
   monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_secret = "fake"
 
   # --------------------------------------------------
-  # Metrics-Server
-  # --------------------------------------------------
-
-  metrics_server_helm_chart_version = "3.11.0"
-
-  # --------------------------------------------------
   # Goldpinger
   # --------------------------------------------------
 
