@@ -411,15 +411,25 @@ module "monitoring_kube_prometheus_stack" {
 # Metrics-Server
 # --------------------------------------------------
 
-module "monitoring_metrics_server" {
-  source             = "../../_sub/compute/helm-metrics-server"
-  count              = var.monitoring_metrics_server_deploy && var.monitoring_namespace_deploy ? 1 : 0
-  helm_chart_version = var.monitoring_metrics_server_chart_version
-  helm_repo_url      = var.monitoring_metrics_server_repo_url
-  namespace          = module.monitoring_namespace[0].name
-  tolerations        = var.monitoring_tolerations
-  affinity           = var.monitoring_affinity
+module "metrics_server" {
+  source                  = "../../_sub/monitoring/metrics-server"
+  count                   = var.metrics_server_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  repo_owner              = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  chart_version           = var.metrics_server_helm_chart_version
+
+  depends_on = [module.platform_fluxcd]
+
+  providers = {
+    github = github.fluxcd
+  }
 }
+
 
 # --------------------------------------------------
 # Scrape Prometheus metrics for aws-node Daemonset
