@@ -1301,3 +1301,19 @@ variable "staging_grafana_agent_tempo_username" {
   description = "The username for Tempo in a Grafana Cloud stack"
   default     = ""
 }
+
+# --------------------------------------------------
+# External Secrets
+# --------------------------------------------------
+
+variable "external_secrets_deploy" {
+  type        = string
+  default     = false
+  description = "Feature toggle for External Secrets module"
+}
+
+variable "external_secrets_helm_chart_version" {
+  type        = string
+  description = "External Secrets helm chart version"
+  default     = ""
+}

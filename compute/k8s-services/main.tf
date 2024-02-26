@@ -823,3 +823,29 @@ module "grafana_agent_k8s_monitoring" {
   tempo_username      = var.grafana_agent_tempo_username
   traces_enabled      = var.grafana_agent_traces_enabled
 }
+
+# --------------------------------------------------
+# External Secrets
+# --------------------------------------------------
+
+module "external_secrets" {
+  source                  = "../../_sub/security/external-secrets"
+  count                   = var.external_secrets_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  deploy_name             = "external-secrets"
+  namespace               = "external-secrets"
+  helm_chart_version      = var.external_secrets_helm_chart_version
+  github_owner            = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  prune                   = var.fluxcd_prune
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
+}
