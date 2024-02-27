@@ -1,7 +1,7 @@
 # --------------------------------------------------
-# Create JSON files to be picked up by Flux CD
+# Create files to be picked up by Flux CD
 # --------------------------------------------------
-resource "github_repository_file" "helm_exporter_helm" {
+resource "github_repository_file" "helm" {
   repository          = var.repo_name
   branch              = local.repo_branch
   file                = "${local.cluster_repo_path}/${local.app_install_name}-helm.yaml"
@@ -9,7 +9,7 @@ resource "github_repository_file" "helm_exporter_helm" {
   overwrite_on_create = var.overwrite_on_create
 }
 
-resource "github_repository_file" "helm_exporter_helm_install" {
+resource "github_repository_file" "kustomization" {
   repository          = var.repo_name
   branch              = local.repo_branch
   file                = "${local.helm_repo_path}/kustomization.yaml"
@@ -17,7 +17,7 @@ resource "github_repository_file" "helm_exporter_helm_install" {
   overwrite_on_create = var.overwrite_on_create
 }
 
-resource "github_repository_file" "helm_exporter_helm_patch" {
+resource "github_repository_file" "patch" {
   repository          = var.repo_name
   branch              = local.repo_branch
   file                = "${local.helm_repo_path}/patch.yaml"
