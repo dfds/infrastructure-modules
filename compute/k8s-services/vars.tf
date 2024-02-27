@@ -417,7 +417,7 @@ variable "metrics_server_deploy" {
 variable "metrics_server_helm_chart_version" {
   type        = string
   description = "The helm chart version"
-  default     = null
+  default     = ""
 }
 
 

@@ -18,7 +18,7 @@ variable "namespace" {
 variable "chart_version" {
   type        = string
   description = "The helm chart version"
-  default     = null
+  default     = ""
 }
 
 variable "repo_owner" {
