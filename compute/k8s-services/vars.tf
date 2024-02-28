@@ -402,27 +402,24 @@ variable "monitoring_kube_prometheus_stack_prometheus_confluent_metrics_resource
   description = "List of Kafka cluster IDs to scrape metrics from"
   default     = []
 }
+
+
 # --------------------------------------------------
 # Metrics-Server
 # --------------------------------------------------
 
-variable "monitoring_metrics_server_deploy" {
+variable "metrics_server_deploy" {
   type        = bool
-  description = "Deploy metrics-server helm chart switch. If setting to true, monitoring_namespace_deploy must also be set to true"
+  description = "Deploy metrics-server helm chart switch."
   default     = true
 }
 
-variable "monitoring_metrics_server_chart_version" {
+variable "metrics_server_helm_chart_version" {
   type        = string
-  description = "metrics-server helm chart version"
-  default     = null
+  description = "The helm chart version"
+  default     = ""
 }
 
-variable "monitoring_metrics_server_repo_url" {
-  type        = string
-  description = "The repository URL for the metrics-server Helm chart"
-  default     = "https://kubernetes-sigs.github.io/metrics-server/"
-}
 
 # --------------------------------------------------
 # Flux CD
