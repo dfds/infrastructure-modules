@@ -276,4 +276,10 @@ inputs = {
 
   grafana_agent_deploy = true
 
+  # --------------------------------------------------
+  # External Secrets
+  # --------------------------------------------------
+  external_secrets_deploy = true
+  external_secrets_helm_chart_version = "0.9.13"
+
 }
