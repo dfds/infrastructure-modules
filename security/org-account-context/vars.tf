@@ -300,3 +300,16 @@ variable "ssm_param_createdby" {
   type        = string
   description = "The value that will be used for the createdBy key when tagging any SSM parameters"
 }
+
+# --------------------------------------------------
+# IAM role for Grafana Cloud Cloudwatch integration
+# --------------------------------------------------
+
+variable "grafana_cloud_iam_role" {
+  type = object({
+    arn          = string
+    external_ids = list(string)
+  })
+  description = "IAM role used for Grafana Cloud IAM CloudWatch access"
+  default     = null
+}

@@ -125,20 +125,3 @@ module "iam_github_oidc_provider" {
     aws = aws.workload
   }
 }
-
-
-module "iam_role_grafana_cloud_cloudwatch" {
-  source               = "../../_sub/security/iam-role"
-  count                = var.iam_grafana_cloud_assume_enabled ? 1 : 0
-  role_name            = local.grafana_cloud_iam_role_name
-  role_description     = "Role for Grafana to read Cloudwatch metric"
-  role_policy_name     = local.grafana_iam_role_name
-  role_policy_document = data.aws_iam_policy_document.cloudwatch_metrics.json
-  assume_role_policy   = data.aws_iam_policy_document.cloudwatch_metrics_trust.json
-}
-
-
-locals {
-  grafana_cloud_iam_role_name = "${var.eks_cluster_name}-grafana-cloud-cloudwatch"
-  grafana_iam_role_arn        = "arn:aws:iam::${var.grafana_cloud_aws_account_id}:role/${local.grafana_cloud_iam_role_name}"
-}

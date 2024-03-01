@@ -18,3 +18,7 @@ output "org_role_arn" {
   value = module.org_account.org_role_arn
 }
 
+
+output "grafana_cloud_cloudwatch_integration_role" {
+  value = try(module.iam_role_grafana_cloud_cloudwatch.role_arn, null)
+}

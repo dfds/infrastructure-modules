@@ -363,3 +363,22 @@ module "backup_eu_west_1" {
   iam_role_arn   = aws_iam_role.backup[0].arn
   tags           = var.aws_backup_tags
 }
+
+
+# --------------------------------------------------
+# IAM role for Grafana Cloud Cloudwatch integration
+# --------------------------------------------------
+
+module "iam_role_grafana_cloud_cloudwatch" {
+  source               = "../../_sub/security/iam-role"
+  count                = local.grafana_cloud_cloudwatch_integration_enabled ? 1 : 0
+  role_name            = local.grafana_cloud_iam_role_name
+  role_description     = "Role for Grafana Cloud to read Cloudwatch data"
+  role_policy_name     = local.grafana_cloud_iam_role_name
+  role_policy_document = data.aws_iam_policy_document.grafana_cloud_cloudwatch_permissions.json
+  assume_role_policy   = data.aws_iam_policy_document.grafana_cloud_cloudwatch_trust.json
+
+  providers = {
+    aws = aws.workload
+  }
+}
