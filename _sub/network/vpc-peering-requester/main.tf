@@ -43,6 +43,10 @@ resource "aws_subnet" "c" {
   }
 }
 
+# TODO: Our instructions prepare a security group for postgres.
+# We might want to use a map here with default values that lets us 
+# append to the values if required
+
 resource "aws_vpc_security_group_ingress_rule" "postgres" {
   security_group_id = aws_vpc.peering.default_security_group_id
   cidr_ipv4         = var.cidr_block_peer
