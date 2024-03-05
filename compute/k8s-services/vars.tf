@@ -1315,20 +1315,36 @@ variable "external_secrets_helm_chart_version" {
   default     = ""
 }
 
-variable "external_secrets_iam_role_name" {
+# --------------------------------------------------
+# External Secrets with SSM
+# --------------------------------------------------
+
+variable "external_secrets_ssm_deploy" {
+  type        = string
+  default     = false
+  description = "Feature toggle for External Secrets module"
+}
+
+variable "external_secrets_ssm_iam_role_name" {
   type        = string
   description = "The name of the IAM role to assume"
   default     = "ssm-secrets-for-kubernetes"
 }
 
-variable "external_secrets_service_account" {
+variable "external_secrets_ssm_service_account" {
   type        = string
   default     = "ssm-secrets"
   description = "The service account to be used by an SecretStore"
 }
 
-variable "external_secrets_allowed_namespaces" {
+variable "external_secrets_ssm_allowed_namespaces" {
   type        = list(string)
   default     = []
   description = "The namespaces that can use IRSA to access external secrets"
+}
+
+variable "external_secrets_ssm_aws_region" {
+  type        = string
+  default     = ""
+  description = "The AWS region to use for the external secrets"
 }
