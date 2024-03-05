@@ -852,6 +852,11 @@ module "external_secrets" {
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
+  workload_account_id     = var.aws_workload_account_id
+  oidc_issuer             = local.oidc_issuer
+  iam_role_name           = var.external_secrets_iam_role_name
+  service_account         = var.external_secrets_service_account
+  allowed_namespaces      = var.external_secrets_allowed_namespaces
 
   providers = {
     github = github.fluxcd

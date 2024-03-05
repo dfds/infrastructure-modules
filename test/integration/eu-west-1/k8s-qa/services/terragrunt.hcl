@@ -281,5 +281,6 @@ inputs = {
   # --------------------------------------------------
   external_secrets_deploy = true
   external_secrets_helm_chart_version = "0.9.13"
+  external_secrets_allowed_namespaces = ["atlantis", "flux-system"]
 
 }
