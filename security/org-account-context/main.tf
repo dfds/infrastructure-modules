@@ -363,3 +363,42 @@ module "backup_eu_west_1" {
   iam_role_arn   = aws_iam_role.backup[0].arn
   tags           = var.aws_backup_tags
 }
+
+# --------------------------------------------------
+# VPC Peering
+# --------------------------------------------------
+
+module "vpc_peering_capability" {
+  count  = var.deploy_vpc_peering ? 1 : 0
+  source = "../../_sub/network/vpc-peering-requester"
+
+  cidr_block_vpc      = var.assigned_cidr_block_vpc
+  cidr_block_subnet_a = var.assigned_cidr_block_subnet_a
+  cidr_block_subnet_b = var.assigned_cidr_block_subnet_b
+  cidr_block_subnet_c = var.assigned_cidr_block_subnet_c
+
+  cidr_block_peer = var.cidr_block_peer
+  peer_owner_id   = var.shared_account_id
+  peer_vpc_id     = var.peer_vpc_id
+  peer_region     = var.peer_region
+
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "vpc_peering_oxygen" {
+  count  = var.deploy_vpc_peering ? 1 : 0
+  source = "../../_sub/network/vpc-peering-accepter"
+
+  capability_ip_range    = var.assigned_cidr_block_vpc
+  capability_name        = var.capability_name
+  gateway_id             = var.gateway_id
+  destination_cidr_block = module.vpc_peering_capability.outputs.vpc_cidr_block
+  route_table_id         = var.route_table_id
+
+  providers = {
+    aws = aws.shared
+  }
+}

@@ -300,3 +300,50 @@ variable "ssm_param_createdby" {
   type        = string
   description = "The value that will be used for the createdBy key when tagging any SSM parameters"
 }
+
+# VPC Peering
+
+variable "deploy_vpc_peering" {
+  type        = bool
+  description = "Whether to deploy VPC peering"
+  default     = false
+}
+
+variable "peer_vpc_id" {
+  type        = string
+  description = "The VPC ID of the peer"
+}
+
+variable "peer_region" {    
+    description = "The region of the peer VPC"
+}
+
+variable "cidr_block_peer" {
+  type        = string
+  description = "The CIDR block of the peer"
+}
+
+variable "assigned_cidr_block_vpc" {
+  description = "The assigned CIDR block of the VPC"
+}
+
+variable "assigned_cidr_block_subnet_a" {
+  description = "The assigned CIDR block of the first subnet"
+}
+
+variable "assigned_cidr_block_subnet_b" {
+  description = "The assigned CIDR block of the second subnet"
+}  
+
+variable "assigned_cidr_block_subnet_c" {
+  description = "The assigned CIDR block of the optional third subnet"
+  default = ""
+}
+
+variable "gateway_id" {
+    description = "The ID of the gateway to which the route will be added"
+}
+
+variable "route_table_id" {
+    description = "The ID of the route table to which the route will be added"
+}
