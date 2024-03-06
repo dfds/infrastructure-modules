@@ -859,3 +859,28 @@ module "external_secrets" {
 
   depends_on = [module.platform_fluxcd]
 }
+
+# --------------------------------------------------
+# External Secrets with SSM
+# --------------------------------------------------
+
+locals {
+  aws_region = var.external_secrets_ssm_aws_region != "" ? var.external_secrets_ssm_aws_region : var.aws_region
+}
+
+module "external_secrets_ssm" {
+  source              = "../../_sub/security/external-secrets-ssm"
+  count               = var.external_secrets_deploy && var.external_secrets_ssm_deploy ? 1 : 0
+  workload_account_id = var.aws_workload_account_id
+  aws_region          = local.aws_region
+  oidc_issuer         = local.oidc_issuer
+  iam_role_name       = var.external_secrets_ssm_iam_role_name
+  service_account     = var.external_secrets_ssm_service_account
+  allowed_namespaces  = var.external_secrets_ssm_allowed_namespaces
+
+  providers = {
+    aws = aws
+  }
+
+  depends_on = [module.external_secrets]
+}
