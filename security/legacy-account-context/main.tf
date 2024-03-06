@@ -173,7 +173,7 @@ module "backup_eu_central_1" {
   kms_key_admins = local.kms_key_admins
   backup_plans   = var.aws_backup_plans
   iam_role_arn   = aws_iam_role.backup[0].arn
-  tags = var.aws_backup_tags
+  tags           = var.aws_backup_tags
 }
 
 module "backup_eu_west_1" {
@@ -190,5 +190,19 @@ module "backup_eu_west_1" {
   kms_key_admins = local.kms_key_admins
   backup_plans   = var.aws_backup_plans
   iam_role_arn   = aws_iam_role.backup[0].arn
-  tags = var.aws_backup_tags
+  tags           = var.aws_backup_tags
+}
+
+# --------------------------------------------------
+# IAM role for Grafana Cloud Cloudwatch integration
+# --------------------------------------------------
+
+module "grafana_cloud_cloudwatch_integration" {
+  count    = var.grafana_cloud_cloudwatch_integration_iam_role != null ? 1 : 0
+  source   = "../../_sub/security/grafana-cloud-cloudwatch-integration"
+  iam_role = var.grafana_cloud_cloudwatch_integration_iam_role
+
+  providers = {
+    aws = aws.workload
+  }
 }
