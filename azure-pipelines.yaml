@@ -41,7 +41,7 @@ resources:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
     - container: go-build
-      image: golang:1.22.0-bullseye
+      image: golang:1.22.1-bullseye
   repositories:
     - repository: Origin
       type: github
