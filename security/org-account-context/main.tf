@@ -394,9 +394,7 @@ module "vpc_peering_oxygen" {
 
   capability_ip_range    = var.assigned_cidr_block_vpc
   capability_name        = var.capability_name
-  gateway_id             = var.gateway_id
   destination_cidr_block = module.vpc_peering_capability.outputs.vpc_cidr_block
-  route_table_id         = var.route_table_id
 
   providers = {
     aws = aws.shared

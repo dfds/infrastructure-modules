@@ -339,11 +339,3 @@ variable "assigned_cidr_block_subnet_c" {
   description = "The assigned CIDR block of the optional third subnet"
   default = ""
 }
-
-variable "gateway_id" {
-    description = "The ID of the gateway to which the route will be added"
-}
-
-variable "route_table_id" {
-    description = "The ID of the route table to which the route will be added"
-}
