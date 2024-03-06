@@ -134,3 +134,16 @@ variable "tags" {
   description = "A map of tags to apply to all the resources deployed by the module"
   default     = {}
 }
+
+# --------------------------------------------------
+# IAM role for Grafana Cloud Cloudwatch integration
+# --------------------------------------------------
+
+variable "grafana_cloud_cloudwatch_integration_iam_role" {
+  type = object({
+    arn       = string
+    stack_ids = list(string)
+  })
+  description = "IAM role used for Grafana Cloud IAM CloudWatch access"
+  default     = null
+}
