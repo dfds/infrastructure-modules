@@ -18,3 +18,6 @@ output "org_role_arn" {
   value = module.org_account.org_role_arn
 }
 
+output "grafana_cloud_cloudwatch_integration_iam_role_arn" {
+  value = try(module.grafana_cloud_cloudwatch_integration[0].arn, "Not used for this account")
+}

@@ -172,3 +172,17 @@ resource "aws_resourceexplorer2_index" "eu-west-1" {
 
   provider = aws.workload_2
 }
+
+# --------------------------------------------------
+# IAM role for Grafana Cloud Cloudwatch integration
+# --------------------------------------------------
+
+module "grafana_cloud_cloudwatch_integration" {
+  count    = var.grafana_cloud_cloudwatch_integration_iam_role != null ? 1 : 0
+  source   = "../../_sub/security/grafana-cloud-cloudwatch-integration"
+  iam_role = var.grafana_cloud_cloudwatch_integration_iam_role
+
+  providers = {
+    aws = aws.workload
+  }
+}
