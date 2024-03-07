@@ -383,6 +383,8 @@ module "vpc_peering_capability" {
   peer_region     = var.peer_region
 
 
+  # TODO: We need to be able to specify which region in the workload account the VPC peer is created in.
+  # Potentially this may require the use of 2 instances of this module with 2 flags that can both be enabled
   providers = {
     aws = aws.workload
   }
@@ -392,11 +394,12 @@ module "vpc_peering_oxygen" {
   count  = var.deploy_vpc_peering ? 1 : 0
   source = "../../_sub/network/vpc-peering-accepter"
 
-  capability_ip_range    = var.assigned_cidr_block_vpc
   capability_name        = var.capability_name
-  destination_cidr_block = module.vpc_peering_capability.outputs.vpc_cidr_block
+  destination_cidr_block = var.assigned_cidr_block_vpc
+  vpc_id = var.peer_vpc_id
+  peering_connection_id = module.vpc_peering_capability[0].vpc_peering_connection_id
 
   providers = {
-    aws = aws.shared
+    aws = aws.shared_vpc
   }
 }

@@ -2,10 +2,14 @@ variable "destination_cidr_block" {
     description = "The CIDR block of the route"
 }  
 
-variable "capability_ip_range" {
-    description = "The IP range of the shared VPC"
-}
-
 variable "capability_name" {
     description = "The name of the capability peered from"
+}
+
+variable "vpc_id" {
+    description = "The ID of the VPC"
+}
+
+variable "peering_connection_id" {
+    description = "The ID of the peering connection"
 }

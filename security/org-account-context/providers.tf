@@ -37,6 +37,21 @@ provider "aws" {
 }
 
 provider "aws" {
+  region = var.aws_region_vpc
+  alias  = "shared_vpc"
+
+  default_tags {
+    tags = var.tags
+  }
+
+  # Assume role in Shared account
+  assume_role {
+    role_arn     = "arn:aws:iam::${var.shared_account_id}:role/${var.prime_role_name}"
+    session_name = var.aws_session_name
+  }
+}
+
+provider "aws" {
   region = var.aws_region
   alias  = "workload"
 

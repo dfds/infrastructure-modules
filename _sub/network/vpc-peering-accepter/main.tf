@@ -1,11 +1,15 @@
+data "aws_vpc" "peering" {
+  id = var.vpc_id
+}
+
 resource "aws_route" "peer" {
-  route_table_id         = aws_vpc.peering.main_route_table_id
-  destination_cidr_block = var.capability_ip_range
-  vpc_peering_connection_id = aws_vpc_peering_connection.capability.id
+  route_table_id         = data.aws_vpc.peering.main_route_table_id
+  destination_cidr_block = var.destination_cidr_block
+  vpc_peering_connection_id = var.peering_connection_id
 }
 
 resource "aws_vpc_peering_connection_accepter" "shared" {
-  vpc_peering_connection_id = aws_vpc_peering_connection.capability.id
+  vpc_peering_connection_id = var.peering_connection_id
   auto_accept               = true
 
   tags = {

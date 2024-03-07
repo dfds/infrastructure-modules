@@ -312,30 +312,46 @@ variable "deploy_vpc_peering" {
 variable "peer_vpc_id" {
   type        = string
   description = "The VPC ID of the peer"
+  default = ""
 }
 
 variable "peer_region" {    
     description = "The region of the peer VPC"
+    default = ""
 }
 
 variable "cidr_block_peer" {
   type        = string
   description = "The CIDR block of the peer"
+  default     = ""
 }
 
 variable "assigned_cidr_block_vpc" {
   description = "The assigned CIDR block of the VPC"
+  type = string
+  default = ""
 }
 
 variable "assigned_cidr_block_subnet_a" {
   description = "The assigned CIDR block of the first subnet"
+  type = string
+  default = ""
 }
 
 variable "assigned_cidr_block_subnet_b" {
   description = "The assigned CIDR block of the second subnet"
+  type = string
+  default = ""
 }  
 
 variable "assigned_cidr_block_subnet_c" {
   description = "The assigned CIDR block of the optional third subnet"
+  type = string
   default = ""
+}
+
+variable "aws_region_vpc" {
+  type        = string
+  description = "The region in which to deploy the VPC peering"
+  default     = "eu-west-1"
 }

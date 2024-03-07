@@ -84,7 +84,7 @@ resource "aws_internet_gateway" "gw" {
   }
 }
 
-resource "aws_route" "capability_to_shared" {
+resource "aws_route" "default" {
   route_table_id            = aws_vpc.peering.main_route_table_id
   destination_cidr_block    = "0.0.0.0/0"
   gateway_id = aws_internet_gateway.gw.id
