@@ -1,0 +1,18 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ${ingressroute_name}
+  namespace: ${namespace}
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`${ingressroute_hostname}`) && PathPrefix(`/`)
+      services:
+        - kind: Service
+          name: ${deploy_name}
+          port: 80
+      middlewares:
+        - name: ${ingressroute_basic_auth_middleware_name}
+          namespace: ${namespace}

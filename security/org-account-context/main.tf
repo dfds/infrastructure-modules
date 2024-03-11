@@ -364,42 +364,129 @@ module "backup_eu_west_1" {
   tags           = var.aws_backup_tags
 }
 
+
+# IAM role for Grafana Cloud Cloudwatch integration
 # --------------------------------------------------
-# VPC Peering
-# --------------------------------------------------
 
-module "vpc_peering_capability" {
-  count  = var.deploy_vpc_peering ? 1 : 0
-  source = "../../_sub/network/vpc-peering-requester"
+module "grafana_cloud_cloudwatch_integration" {
+  count    = var.grafana_cloud_cloudwatch_integration_iam_role != null ? 1 : 0
+  source   = "../../_sub/security/grafana-cloud-cloudwatch-integration"
+  iam_role = var.grafana_cloud_cloudwatch_integration_iam_role
 
-  cidr_block_vpc      = var.assigned_cidr_block_vpc
-  cidr_block_subnet_a = var.assigned_cidr_block_subnet_a
-  cidr_block_subnet_b = var.assigned_cidr_block_subnet_b
-  cidr_block_subnet_c = var.assigned_cidr_block_subnet_c
-
-  cidr_block_peer = var.cidr_block_peer
-  peer_owner_id   = var.shared_account_id
-  peer_vpc_id     = var.peer_vpc_id
-  peer_region     = var.peer_region
-
-
-  # TODO: We need to be able to specify which region in the workload account the VPC peer is created in.
-  # Potentially this may require the use of 2 instances of this module with 2 flags that can both be enabled
   providers = {
     aws = aws.workload
   }
 }
 
-module "vpc_peering_oxygen" {
-  count  = var.deploy_vpc_peering ? 1 : 0
+# --------------------------------------------------
+# VPC Peering
+# --------------------------------------------------
+
+module "vpc_peering_capability_eu_west_1" {
+  for_each = { for k, v in var.vpc_peering_settings_eu_west_1 : k => v if var.deploy_vpc_peering_eu_west_1 }
+
+  source = "../../_sub/network/vpc-peering-requester"
+
+  cidr_block_vpc      = each.value.assigned_cidr_block_vpc
+  cidr_block_subnet_a = each.value.assigned_cidr_block_subnet_a
+  cidr_block_subnet_b = each.value.assigned_cidr_block_subnet_b
+  cidr_block_subnet_c = each.value.assigned_cidr_block_subnet_c
+
+  cidr_block_peer = each.value.cidr_block_peer
+  peer_owner_id   = var.shared_account_id
+  peer_vpc_id     = each.value.peer_vpc_id
+  peer_region     = each.value.peer_region
+
+  providers = {
+    aws = aws.workload_eu-west-1
+  }
+}
+
+module "vpc_peering_oxygen_eu_west_1" {
+  for_each = { for k, v in var.vpc_peering_settings_eu_west_1 : k => v if var.deploy_vpc_peering_eu_west_1 }
+
   source = "../../_sub/network/vpc-peering-accepter"
 
-  capability_name        = var.capability_name
-  destination_cidr_block = var.assigned_cidr_block_vpc
-  vpc_id = var.peer_vpc_id
-  peering_connection_id = module.vpc_peering_capability[0].vpc_peering_connection_id
+    capability_name        = var.capability_name
+    destination_cidr_block = each.value.assigned_cidr_block_vpc
+    vpc_id = each.value.peer_vpc_id
+    peering_connection_id = module.vpc_peering_capability_eu_west_1[each.key].vpc_peering_connection_id
 
   providers = {
     aws = aws.shared_vpc
   }
 }
+
+module "vpc_peering_capability_eu_central_1" {
+  for_each = { for k, v in var.vpc_peering_settings_eu_central_1 : k => v if var.deploy_vpc_peering_eu_central_1 }
+
+  source = "../../_sub/network/vpc-peering-requester"
+
+  cidr_block_vpc      = each.value.assigned_cidr_block_vpc
+  cidr_block_subnet_a = each.value.assigned_cidr_block_subnet_a
+  cidr_block_subnet_b = each.value.assigned_cidr_block_subnet_b
+  cidr_block_subnet_c = each.value.assigned_cidr_block_subnet_c
+
+  cidr_block_peer = each.value.cidr_block_peer
+  peer_owner_id   = var.shared_account_id
+  peer_vpc_id     = each.value.peer_vpc_id
+  peer_region     = each.value.peer_region
+
+  providers = {
+    aws = aws.workload_eu-central-1
+  }
+}
+
+
+
+module "vpc_peering_oxygen_eu_central_1" {
+  for_each = { for k, v in var.vpc_peering_settings_eu_central_1 : k => v if var.deploy_vpc_peering_eu_central_1 }
+
+  source = "../../_sub/network/vpc-peering-accepter"
+
+    capability_name        = var.capability_name
+    destination_cidr_block = each.value.assigned_cidr_block_vpc
+    vpc_id = each.value.peer_vpc_id
+    peering_connection_id = module.vpc_peering_capability_eu_central_1[each.key].vpc_peering_connection_id
+
+  providers = {
+    aws = aws.shared_vpc
+  }
+}
+
+
+# module "vpc_peering_capability" {
+#   count  = var.deploy_vpc_peering ? 1 : 0
+#   source = "../../_sub/network/vpc-peering-requester"
+
+#   cidr_block_vpc      = var.assigned_cidr_block_vpc
+#   cidr_block_subnet_a = var.assigned_cidr_block_subnet_a
+#   cidr_block_subnet_b = var.assigned_cidr_block_subnet_b
+#   cidr_block_subnet_c = var.assigned_cidr_block_subnet_c
+
+#   cidr_block_peer = var.cidr_block_peer
+#   peer_owner_id   = var.shared_account_id
+#   peer_vpc_id     = var.peer_vpc_id
+#   peer_region     = var.peer_region
+
+
+#   # TODO: We need to be able to specify which region in the workload account the VPC peer is created in.
+#   # Potentially this may require the use of 2 instances of this module with 2 flags that can both be enabled
+#   providers = {
+#     aws = aws.workload
+#   }
+# }
+
+# module "vpc_peering_oxygen" {
+#   count  = var.deploy_vpc_peering ? 1 : 0
+#   source = "../../_sub/network/vpc-peering-accepter"
+
+#   capability_name        = var.capability_name
+#   destination_cidr_block = var.assigned_cidr_block_vpc
+#   vpc_id = var.peer_vpc_id
+#   peering_connection_id = module.vpc_peering_capability[0].vpc_peering_connection_id
+
+#   providers = {
+#     aws = aws.shared_vpc
+#   }
+# }

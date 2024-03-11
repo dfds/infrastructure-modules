@@ -303,55 +303,128 @@ variable "ssm_param_createdby" {
 
 # VPC Peering
 
-variable "deploy_vpc_peering" {
+variable "vpc_peering_settings_eu_west_1" {
+  type = map(object({
+    peer_vpc_id             = string
+    peer_region             = string
+    cidr_block_peer         = string
+    assigned_cidr_block_vpc = string
+    assigned_cidr_block_subnet_a = string
+    assigned_cidr_block_subnet_b = string
+    assigned_cidr_block_subnet_c = string
+  }))
+  description = "Map containing two sets of values for VPC peering settings"
+  default = {
+    "instance1" = {
+      peer_vpc_id             = ""
+      peer_region             = ""
+      cidr_block_peer         = ""
+      assigned_cidr_block_vpc = ""
+      assigned_cidr_block_subnet_a = ""
+      assigned_cidr_block_subnet_b = ""
+      assigned_cidr_block_subnet_c = ""
+    }
+  }
+}
+
+variable "vpc_peering_settings_eu_central_1" {
+  type = map(object({
+    peer_vpc_id             = string
+    peer_region             = string
+    cidr_block_peer         = string
+    assigned_cidr_block_vpc = string
+    assigned_cidr_block_subnet_a = string
+    assigned_cidr_block_subnet_b = string
+    assigned_cidr_block_subnet_c = string
+  }))
+  description = "Map containing two sets of values for VPC peering settings"
+   default = {
+    "instance1" = {
+      peer_vpc_id             = ""
+      peer_region             = ""
+      cidr_block_peer         = ""
+      assigned_cidr_block_vpc = ""
+      assigned_cidr_block_subnet_a = ""
+      assigned_cidr_block_subnet_b = ""
+      assigned_cidr_block_subnet_c = ""
+    }
+  }
+}
+
+variable "deploy_vpc_peering_eu_west_1" {
   type        = bool
   description = "Whether to deploy VPC peering"
   default     = false
 }
 
-variable "peer_vpc_id" {
-  type        = string
-  description = "The VPC ID of the peer"
-  default = ""
+variable "deploy_vpc_peering_eu_central_1" {
+  type        = bool
+  description = "Whether to deploy VPC peering"
+  default     = false
 }
 
-variable "peer_region" {    
-    description = "The region of the peer VPC"
-    default = ""
-}
+# variable "deploy_vpc_peering" {
+#   type        = bool
+#   description = "Whether to deploy VPC peering"
+#   default     = false
+# }
 
-variable "cidr_block_peer" {
-  type        = string
-  description = "The CIDR block of the peer"
-  default     = ""
-}
+# variable "peer_vpc_id" {
+#   type        = string
+#   description = "The VPC ID of the peer"
+#   default = ""
+# }
 
-variable "assigned_cidr_block_vpc" {
-  description = "The assigned CIDR block of the VPC"
-  type = string
-  default = ""
-}
+# variable "peer_region" {    
+#     description = "The region of the peer VPC"
+#     default = ""
+# }
 
-variable "assigned_cidr_block_subnet_a" {
-  description = "The assigned CIDR block of the first subnet"
-  type = string
-  default = ""
-}
+# variable "cidr_block_peer" {
+#   type        = string
+#   description = "The CIDR block of the peer"
+#   default     = ""
+# }
 
-variable "assigned_cidr_block_subnet_b" {
-  description = "The assigned CIDR block of the second subnet"
-  type = string
-  default = ""
-}  
+# variable "assigned_cidr_block_vpc" {
+#   description = "The assigned CIDR block of the VPC"
+#   type = string
+#   default = ""
+# }
 
-variable "assigned_cidr_block_subnet_c" {
-  description = "The assigned CIDR block of the optional third subnet"
-  type = string
-  default = ""
-}
+# variable "assigned_cidr_block_subnet_a" {
+#   description = "The assigned CIDR block of the first subnet"
+#   type = string
+#   default = ""
+# }
 
-variable "aws_region_vpc" {
-  type        = string
-  description = "The region in which to deploy the VPC peering"
-  default     = "eu-west-1"
+# variable "assigned_cidr_block_subnet_b" {
+#   description = "The assigned CIDR block of the second subnet"
+#   type = string
+#   default = ""
+# }  
+
+# variable "assigned_cidr_block_subnet_c" {
+#   description = "The assigned CIDR block of the optional third subnet"
+#   type = string
+#   default = ""
+# }
+
+# variable "aws_region_vpc" {
+#   type        = string
+#   description = "The region in which to deploy the VPC peering"
+#   default     = "eu-west-1"
+# }
+
+# --------------------------------------------------
+# IAM role for Grafana Cloud Cloudwatch integration
+# --------------------------------------------------
+
+variable "grafana_cloud_cloudwatch_integration_iam_role" {
+  type = object({
+    arn       = string
+    stack_ids = list(string)
+  })
+  description = "IAM role used for Grafana Cloud IAM CloudWatch access"
+  default     = null
 }
