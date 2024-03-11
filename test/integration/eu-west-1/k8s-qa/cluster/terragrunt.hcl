@@ -94,8 +94,8 @@ inputs = {
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.28-*"]}]
-      # currentImageName=amazon-eks-node-1.28-v20240227
-      ami_id                     = "ami-05e357d57b10de349"
+      # currentImageName=amazon-eks-node-1.28-v20240307
+      ami_id                     = "ami-0ad9b07975b371648"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
     }
@@ -105,8 +105,8 @@ inputs = {
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.28-*"]}]
-      # currentImageName=amazon-eks-node-1.28-v20240227
-      ami_id             = "ami-05e357d57b10de349"
+      # currentImageName=amazon-eks-node-1.28-v20240307
+      ami_id             = "ami-0ad9b07975b371648"
       availability_zones = ["eu-west-1b"]
       kubelet_extra_args = "--max-pods=30 --kube-reserved=memory=585Mi,cpu=80m"
       max_unavailable    = 1
