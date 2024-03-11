@@ -4,10 +4,10 @@ resource "github_repository_file" "atlantis_config_path" {
   file       = "${local.cluster_repo_path}/${local.app_install_name}-config.yaml"
   content = templatefile("${path.module}/values/app-config.yaml", {
     app_install_name = local.app_install_name
+    config_repo_path    = local.config_repo_path
+    prune               = var.prune
   })
   overwrite_on_create = var.overwrite_on_create
-  config_repo_path    = local.config_repo_path
-  prune               = var.prune
 }
 
 resource "github_repository_file" "atlantis_config_init" {
