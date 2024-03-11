@@ -1,0 +1,8 @@
+apiVersion: "traefik.io/v1alpha1"
+kind: Middleware
+metadata:
+    name: ${ingressroute_basic_auth_middleware_name}
+    namespace: ${namespace}
+spec:
+    basicAuth:
+        secret: ${ingressroute_basic_auth_secret_name}
