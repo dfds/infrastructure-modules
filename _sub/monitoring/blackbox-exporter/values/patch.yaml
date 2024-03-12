@@ -15,4 +15,9 @@ spec:
       defaults:
         labels:
           release: monitoring
-      targets: ${monitoring_targets}
+      targets:
+        %{~ for target in monitoring_targets ~}
+        - name: ${target.name}
+          url: ${target.url}
+          module: ${target.module}
+        %{~ endfor ~}
