@@ -13,3 +13,7 @@ variable "vpc_id" {
 variable "peering_connection_id" {
     description = "The ID of the peering connection"
 }
+
+variable "route_table_id" {
+    description = "The ID of the route table"
+}

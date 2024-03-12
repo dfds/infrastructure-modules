@@ -307,6 +307,7 @@ variable "vpc_peering_settings_eu_west_1" {
   type = map(object({
     peer_vpc_id             = string
     peer_region             = string
+    peer_route_table_id     = string
     cidr_block_peer         = string
     assigned_cidr_block_vpc = string
     assigned_cidr_block_subnet_a = string
@@ -318,6 +319,7 @@ variable "vpc_peering_settings_eu_west_1" {
     "instance1" = {
       peer_vpc_id             = ""
       peer_region             = ""
+      peer_route_table_id     = ""
       cidr_block_peer         = ""
       assigned_cidr_block_vpc = ""
       assigned_cidr_block_subnet_a = ""
@@ -331,6 +333,7 @@ variable "vpc_peering_settings_eu_central_1" {
   type = map(object({
     peer_vpc_id             = string
     peer_region             = string
+    peer_route_table_id     = string
     cidr_block_peer         = string
     assigned_cidr_block_vpc = string
     assigned_cidr_block_subnet_a = string
@@ -342,6 +345,7 @@ variable "vpc_peering_settings_eu_central_1" {
     "instance1" = {
       peer_vpc_id             = ""
       peer_region             = ""
+      peer_route_table_id     = ""
       cidr_block_peer         = ""
       assigned_cidr_block_vpc = ""
       assigned_cidr_block_subnet_a = ""

@@ -51,6 +51,7 @@ resource "aws_vpc_security_group_ingress_rule" "postgres" {
   security_group_id = aws_vpc.peering.default_security_group_id
   cidr_ipv4         = var.cidr_block_peer
   ip_protocol       = "tcp"
+  from_port         = 5432
   to_port           = 5432
 }
 
@@ -85,7 +86,7 @@ resource "aws_internet_gateway" "gw" {
 }
 
 resource "aws_route" "default" {
-  route_table_id            = aws_vpc.peering.main_route_table_id
-  destination_cidr_block    = "0.0.0.0/0"
-  gateway_id = aws_internet_gateway.gw.id
+  route_table_id         = aws_vpc.peering.main_route_table_id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.gw.id
 }
