@@ -2,6 +2,8 @@ data "aws_vpc" "peering" {
   id = var.vpc_id
 }
 
+data "aws_region" "current" {}
+
 resource "aws_route" "peer" {
   route_table_id         = var.route_table_id
   destination_cidr_block = var.destination_cidr_block
@@ -13,6 +15,6 @@ resource "aws_vpc_peering_connection_accepter" "shared" {
   auto_accept               = true
 
   tags = {
-    Name = "peering to ${var.capability_name}"
+    Name = "${var.capability_id}_${data.aws_region.current.name}"
   }
 }

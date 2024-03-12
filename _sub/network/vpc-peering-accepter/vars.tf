@@ -2,7 +2,7 @@ variable "destination_cidr_block" {
     description = "The CIDR block of the route"
 }  
 
-variable "capability_name" {
+variable "capability_id" {
     description = "The name of the capability peered from"
 }
 

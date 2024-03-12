@@ -407,11 +407,11 @@ module "vpc_peering_oxygen_eu_west_1" {
 
   source = "../../_sub/network/vpc-peering-accepter"
 
-    capability_name        = var.capability_name
-    destination_cidr_block = each.value.assigned_cidr_block_vpc
-    vpc_id = each.value.peer_vpc_id
-    peering_connection_id = module.vpc_peering_capability_eu_west_1[each.key].vpc_peering_connection_id
-    route_table_id = each.value.peer_route_table_id
+  capability_id          = var.capability_id
+  destination_cidr_block = each.value.assigned_cidr_block_vpc
+  vpc_id                 = each.value.peer_vpc_id
+  peering_connection_id  = module.vpc_peering_capability_eu_west_1[each.key].vpc_peering_connection_id
+  route_table_id         = each.value.peer_route_table_id
 
   providers = {
     aws = aws.shared_vpc
@@ -445,11 +445,11 @@ module "vpc_peering_oxygen_eu_central_1" {
 
   source = "../../_sub/network/vpc-peering-accepter"
 
-    capability_name        = var.capability_name
-    destination_cidr_block = each.value.assigned_cidr_block_vpc
-    vpc_id = each.value.peer_vpc_id
-    peering_connection_id = module.vpc_peering_capability_eu_central_1[each.key].vpc_peering_connection_id
-    route_table_id = each.value.peer_route_table_id
+  capability_id          = var.capability_id
+  destination_cidr_block = each.value.assigned_cidr_block_vpc
+  vpc_id                 = each.value.peer_vpc_id
+  peering_connection_id  = module.vpc_peering_capability_eu_central_1[each.key].vpc_peering_connection_id
+  route_table_id         = each.value.peer_route_table_id
 
   providers = {
     aws = aws.shared_vpc
