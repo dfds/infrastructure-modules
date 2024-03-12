@@ -6,7 +6,7 @@ metadata:
 spec:
   chart:
     spec:
-      version: ${helm_chart_version}
+      version: "${helm_chart_version}"
   values:
     deployment:
       replicas: ${replicas}
