@@ -43,23 +43,39 @@ resource "aws_subnet" "c" {
   })
 }
 
-# TODO: Our instructions prepare a security group for postgres.
-# We might want to use a map here with default values that lets us 
-# append to the values if required
-
 resource "aws_vpc_security_group_ingress_rule" "postgres" {
   security_group_id = aws_vpc.peering.default_security_group_id
   cidr_ipv4         = var.cidr_block_peer
   ip_protocol       = "tcp"
   from_port         = 5432
   to_port           = 5432
+  description = "Postgres access from Hellman Kubernetes cluster"
+
+  tags = var.tags
+}
+
+resource "aws_vpc_security_group_ingress_rule" "redis" {
+  security_group_id = aws_vpc.peering.default_security_group_id
+  cidr_ipv4         = var.cidr_block_peer
+  ip_protocol       = "tcp"
+  from_port         = 6379
+  to_port           = 6379
+  description = "Redis access from Hellman Kubernetes cluster"
 
   tags = var.tags
 }
 
 # TODO: Our instructions prepare an RDS subnet group. 
 # Not technically a VPC feature but let's do that here
-# TBC
+# or make a decision to miss it out
+resource "aws_db_subnet_group" "peering" {
+  name       = "peering"
+  subnet_ids = flatten([aws_subnet.a.id, aws_subnet.b.id, var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : []])
+
+  tags = {
+    Name = "peering"
+  }
+}
 
 
 resource "aws_vpc_peering_connection" "capability" {
