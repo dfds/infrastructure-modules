@@ -2,9 +2,9 @@ resource "aws_vpc" "peering" {
 
   cidr_block = var.cidr_block_vpc
 
-  tags = {
+  tags = merge(var.tags, {
     Name = "peering"
-  }
+  })
 }
 
 resource "aws_subnet" "a" {
@@ -13,9 +13,9 @@ resource "aws_subnet" "a" {
 
   cidr_block = var.cidr_block_subnet_a
 
-  tags = {
+  tags = merge(var.tags,{
     Name = "peering-a"
-  }
+  })
 
 }
 
@@ -24,9 +24,9 @@ resource "aws_subnet" "b" {
 
   cidr_block = var.cidr_block_subnet_b
 
-  tags = {
+  tags = merge(var.tags,{
     Name = "peering-b"
-  }
+  })
 }
 
 resource "aws_subnet" "c" {
@@ -38,9 +38,9 @@ resource "aws_subnet" "c" {
 
   cidr_block = var.cidr_block_subnet_c
 
-  tags = {
+  tags = merge(var.tags,{
     Name = "peering-c"
-  }
+  })
 }
 
 # TODO: Our instructions prepare a security group for postgres.
@@ -53,6 +53,8 @@ resource "aws_vpc_security_group_ingress_rule" "postgres" {
   ip_protocol       = "tcp"
   from_port         = 5432
   to_port           = 5432
+
+  tags = var.tags
 }
 
 # TODO: Our instructions prepare an RDS subnet group. 
@@ -66,9 +68,9 @@ resource "aws_vpc_peering_connection" "capability" {
   peer_region   = var.peer_region
   vpc_id        = aws_vpc.peering.id
 
-  tags = {
+  tags = merge(var.tags,{
     Name = "peering to hellman"
-  }
+  })
 }
 
 resource "aws_route" "capability_to_shared" {
@@ -80,9 +82,9 @@ resource "aws_route" "capability_to_shared" {
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.peering.id
 
-  tags = {
+  tags = merge(var.tags,{
     Name = "peering-igw"
-  }
+  })
 }
 
 resource "aws_route" "default" {

@@ -17,3 +17,8 @@ variable "peering_connection_id" {
 variable "route_table_id" {
     description = "The ID of the route table"
 }
+
+variable "tags" {
+    description = "The tags to apply to the resources"
+    type        = map(string)
+}

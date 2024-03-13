@@ -30,3 +30,8 @@ variable "peer_vpc_id" {
 variable "peer_region" {    
     description = "The region of the peer VPC"
 }
+
+variable "tags" {
+    description = "The tags to apply to the resources"
+    type        = map(string)
+}

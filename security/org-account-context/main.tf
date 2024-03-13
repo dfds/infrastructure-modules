@@ -397,6 +397,8 @@ module "vpc_peering_capability_eu_west_1" {
   peer_vpc_id     = each.value.peer_vpc_id
   peer_region     = each.value.peer_region
 
+  tags = local.all_tags
+
   providers = {
     aws = aws.workload_eu-west-1
   }
@@ -412,6 +414,8 @@ module "vpc_peering_oxygen_eu_west_1" {
   vpc_id                 = each.value.peer_vpc_id
   peering_connection_id  = module.vpc_peering_capability_eu_west_1[each.key].vpc_peering_connection_id
   route_table_id         = each.value.peer_route_table_id
+
+  tags = local.all_tags
 
   providers = {
     aws = aws.shared_vpc
@@ -433,6 +437,8 @@ module "vpc_peering_capability_eu_central_1" {
   peer_vpc_id     = each.value.peer_vpc_id
   peer_region     = each.value.peer_region
 
+  tags = local.all_tags
+
   providers = {
     aws = aws.workload_eu-central-1
   }
@@ -450,6 +456,8 @@ module "vpc_peering_oxygen_eu_central_1" {
   vpc_id                 = each.value.peer_vpc_id
   peering_connection_id  = module.vpc_peering_capability_eu_central_1[each.key].vpc_peering_connection_id
   route_table_id         = each.value.peer_route_table_id
+
+  tags = local.all_tags
 
   providers = {
     aws = aws.shared_vpc
