@@ -10,5 +10,5 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: "./${local.controller_repo_path}"
+  path: "./${controller_repo_path}"
   prune: ${prune}
