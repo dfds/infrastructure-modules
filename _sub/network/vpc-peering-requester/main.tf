@@ -69,9 +69,6 @@ resource "aws_vpc_security_group_ingress_rule" "redis" {
   tags = var.tags
 }
 
-# TODO: Our instructions prepare an RDS subnet group. 
-# Not technically a VPC feature but let's do that here
-# or make a decision to miss it out
 resource "aws_db_subnet_group" "peering" {
   name       = "peering"
   subnet_ids = flatten([aws_subnet.a.id, aws_subnet.b.id, var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : []])
