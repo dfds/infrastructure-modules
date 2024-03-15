@@ -1,0 +1,23 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: prometheus-blackbox-exporter
+  namespace: ${namespace}
+spec:
+  chart:
+    spec:
+      version: "${helm_chart_version}"
+  values:
+    deployment:
+      replicas: ${replicas}
+    serviceMonitor:
+      enabled: true
+      defaults:
+        labels:
+          release: monitoring
+      targets:
+        %{~ for target in monitoring_targets ~}
+        - name: ${target.name}
+          url: ${target.url}
+          module: ${target.module}
+        %{~ endfor ~}

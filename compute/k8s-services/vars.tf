@@ -982,7 +982,7 @@ variable "blackbox_exporter_deploy" {
 variable "blackbox_exporter_helm_chart_version" {
   type        = string
   description = "Helm Chart version to be used to deploy Traefik"
-  default     = null
+  default     = ""
 }
 
 variable "blackbox_exporter_monitoring_targets" {
