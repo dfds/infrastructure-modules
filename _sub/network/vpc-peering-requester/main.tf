@@ -1,3 +1,5 @@
+data "aws_region" "current" {}
+
 resource "aws_vpc" "peering" {
 
   cidr_block = var.cidr_block_vpc
@@ -12,6 +14,7 @@ resource "aws_subnet" "a" {
   vpc_id = aws_vpc.peering.id
 
   cidr_block = var.cidr_block_subnet_a
+  availability_zone = "${data.aws_region.current.name}a"
 
   tags = merge(var.tags,{
     Name = "peering-a"
@@ -23,6 +26,7 @@ resource "aws_subnet" "b" {
   vpc_id = aws_vpc.peering.id
 
   cidr_block = var.cidr_block_subnet_b
+  availability_zone = "${data.aws_region.current.name}b"
 
   tags = merge(var.tags,{
     Name = "peering-b"
