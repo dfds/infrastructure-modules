@@ -377,3 +377,89 @@ module "grafana_cloud_cloudwatch_integration" {
     aws = aws.workload
   }
 }
+
+# --------------------------------------------------
+# VPC Peering
+# --------------------------------------------------
+
+module "vpc_peering_capability_eu_west_1" {
+  for_each = { for k, v in var.vpc_peering_settings_eu_west_1 : k => v if var.deploy_vpc_peering_eu_west_1 }
+
+  source = "../../_sub/network/vpc-peering-requester"
+
+  cidr_block_vpc      = each.value.assigned_cidr_block_vpc
+  cidr_block_subnet_a = each.value.assigned_cidr_block_subnet_a
+  cidr_block_subnet_b = each.value.assigned_cidr_block_subnet_b
+  cidr_block_subnet_c = each.value.assigned_cidr_block_subnet_c
+
+  cidr_block_peer = each.value.cidr_block_peer
+  peer_owner_id   = var.shared_account_id
+  peer_vpc_id     = each.value.peer_vpc_id
+  peer_region     = each.value.peer_region
+
+  tags = local.all_tags
+
+  providers = {
+    aws = aws.workload_eu-west-1
+  }
+}
+
+module "vpc_peering_oxygen_eu_west_1" {
+  for_each = { for k, v in var.vpc_peering_settings_eu_west_1 : k => v if var.deploy_vpc_peering_eu_west_1 }
+
+  source = "../../_sub/network/vpc-peering-accepter"
+
+  capability_id          = var.capability_id
+  destination_cidr_block = each.value.assigned_cidr_block_vpc
+  vpc_id                 = each.value.peer_vpc_id
+  peering_connection_id  = module.vpc_peering_capability_eu_west_1[each.key].vpc_peering_connection_id
+  route_table_id         = each.value.peer_route_table_id
+
+  tags = local.all_tags
+
+  providers = {
+    aws = aws.shared_vpc
+  }
+}
+
+module "vpc_peering_capability_eu_central_1" {
+  for_each = { for k, v in var.vpc_peering_settings_eu_central_1 : k => v if var.deploy_vpc_peering_eu_central_1 }
+
+  source = "../../_sub/network/vpc-peering-requester"
+
+  cidr_block_vpc      = each.value.assigned_cidr_block_vpc
+  cidr_block_subnet_a = each.value.assigned_cidr_block_subnet_a
+  cidr_block_subnet_b = each.value.assigned_cidr_block_subnet_b
+  cidr_block_subnet_c = each.value.assigned_cidr_block_subnet_c
+
+  cidr_block_peer = each.value.cidr_block_peer
+  peer_owner_id   = var.shared_account_id
+  peer_vpc_id     = each.value.peer_vpc_id
+  peer_region     = each.value.peer_region
+
+  tags = local.all_tags
+
+  providers = {
+    aws = aws.workload_eu-central-1
+  }
+}
+
+
+
+module "vpc_peering_oxygen_eu_central_1" {
+  for_each = { for k, v in var.vpc_peering_settings_eu_central_1 : k => v if var.deploy_vpc_peering_eu_central_1 }
+
+  source = "../../_sub/network/vpc-peering-accepter"
+
+  capability_id          = var.capability_id
+  destination_cidr_block = each.value.assigned_cidr_block_vpc
+  vpc_id                 = each.value.peer_vpc_id
+  peering_connection_id  = module.vpc_peering_capability_eu_central_1[each.key].vpc_peering_connection_id
+  route_table_id         = each.value.peer_route_table_id
+
+  tags = local.all_tags
+
+  providers = {
+    aws = aws.shared_vpc
+  }
+}
