@@ -185,6 +185,12 @@ resource "aws_iam_role" "ssm_tunnel" {
   tags = var.tags
 }
 
+resource "aws_iam_instance_profile" "ssm_tunnel" {
+  name = aws_iam_role.ssm_tunnel.name
+  role = aws_iam_role.ssm_tunnel.name
+}
+
+
 
 resource "aws_vpc_security_group_ingress_rule" "postgres" {
   security_group_id = aws_vpc.peering.default_security_group_id
