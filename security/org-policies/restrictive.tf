@@ -55,13 +55,11 @@ data "aws_iam_policy_document" "restrictive" {
       "iam:CreateAccountAlias",
       "iam:CreateGroup",
       "iam:CreateLoginProfile",
-      "iam:CreateSAMLProvider",
       "iam:CreateUser",
       "iam:DeleteAccountAlias",
       "iam:DeleteAccountPasswordPolicy",
       "iam:DeleteGroup",
       "iam:DeleteGroupPolicy",
-      "iam:DeleteSAMLProvider",
       "iam:DetachGroupPolicy",
       "iam:PutGroupPolicy",
       "iam:PutUserPermissionsBoundary",
@@ -69,7 +67,6 @@ data "aws_iam_policy_document" "restrictive" {
       "iam:UpdateAccountPasswordPolicy",
       "iam:UpdateGroup",
       "iam:UpdateLoginProfile",
-      "iam:UpdateSAMLProvider",
       "iam:UpdateUser",
     ]
     resources = ["*"]
