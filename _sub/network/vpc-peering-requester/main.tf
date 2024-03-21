@@ -107,7 +107,7 @@ resource "aws_vpc_security_group_egress_rule" "ssm_https" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "sec_sec" {
-  security_group_id = aws_vpc.peering.default_security_group_id
+  security_group_id = aws_default_security_group.default.id
   referenced_security_group_id = aws_security_group.ssm.id
   description = "Postgres access from Hellman Kubernetes cluster"
 
@@ -128,7 +128,7 @@ resource "aws_vpc_endpoint" "ssm" {
 
   security_group_ids = [
     aws_security_group.ssm.id,
-    aws_vpc.peering.default_security_group_id
+    aws_default_security_group.default.id
   ]
 
   tags = var.tags
@@ -145,7 +145,7 @@ resource "aws_vpc_endpoint" "ssmmessages" {
 
   security_group_ids = [
     aws_security_group.ssm.id,
-    aws_vpc.peering.default_security_group_id
+    aws_default_security_group.default.id
   ]
 
   tags = var.tags
@@ -162,7 +162,7 @@ resource "aws_vpc_endpoint" "ec2" {
 
   security_group_ids = [
     aws_security_group.ssm.id,
-    aws_vpc.peering.default_security_group_id
+    aws_default_security_group.default.id
   ]
 
   tags = var.tags
@@ -179,7 +179,7 @@ resource "aws_vpc_endpoint" "ec2messages" {
 
   security_group_ids = [
     aws_security_group.ssm.id,
-    aws_vpc.peering.default_security_group_id
+    aws_default_security_group.default.id
   ]
 
   tags = var.tags
@@ -215,7 +215,7 @@ resource "aws_iam_instance_profile" "ssm_tunnel" {
 
 
 resource "aws_vpc_security_group_ingress_rule" "postgres" {
-  security_group_id = aws_vpc.peering.default_security_group_id
+  security_group_id = aws_default_security_group.default.id
   cidr_ipv4         = var.cidr_block_peer
   ip_protocol       = "tcp"
   from_port         = 5432
@@ -226,7 +226,7 @@ resource "aws_vpc_security_group_ingress_rule" "postgres" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "redis" {
-  security_group_id = aws_vpc.peering.default_security_group_id
+  security_group_id = aws_default_security_group.default.id
   cidr_ipv4         = var.cidr_block_peer
   ip_protocol       = "tcp"
   from_port         = 6379
