@@ -8,10 +8,30 @@ resource "aws_vpc" "peering" {
   tags = merge(var.tags, {
     Name = "peering"
   })
+}
 
-  tags_all = merge(var.tags, {
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.peering.id
+
+  tags = merge(var.tags,{
     Name = "peering"
   })
+}
+
+resource "aws_vpc_security_group_egress_rule" "default" {
+  security_group_id = aws_default_security_group.default.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = -1
+
+  tags = var.tags
+}
+
+resource "aws_vpc_security_group_ingress_rule" "default" {
+  security_group_id = aws_default_security_group.default.id
+  referenced_security_group_id = aws_default_security_group.default.id
+  ip_protocol       = -1
+
+  tags = var.tags
 }
 
 resource "aws_subnet" "a" {
@@ -59,7 +79,9 @@ resource "aws_security_group" "ssm" {
   description = "Attach this security group to items that need to communicate with SSM for tunneling"
   vpc_id = aws_vpc.peering.id
 
-  tags = var.tags
+  tags = merge(var.tags, {
+    Name = "ssm-tunnel"
+  })
 }
 
 resource "aws_vpc_security_group_egress_rule" "ssm_postgres" {
