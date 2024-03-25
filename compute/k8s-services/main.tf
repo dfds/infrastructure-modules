@@ -834,6 +834,8 @@ module "grafana_agent_k8s_monitoring" {
   traces_enabled                = var.grafana_agent_traces_enabled
   agent_resource_memory_limit   = var.grafana_agent_resource_memory_limit
   agent_resource_memory_request = var.grafana_agent_resource_memory_request
+  affinity                      = var.observability_affinity
+  tolerations                   = var.observability_tolerations
 }
 
 # --------------------------------------------------

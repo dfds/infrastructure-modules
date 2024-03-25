@@ -18,10 +18,12 @@ resource "helm_release" "grafana_agent" {
       loki_username                 = var.loki_username,
       tempo_url                     = var.tempo_url,
       tempo_username                = var.tempo_username,
-      traces_enabled                = var.traces_enabled
-      enable_side_by_side           = var.enable_side_by_side
-      agent_resource_memory_limit   = var.agent_resource_memory_limit
-      agent_resource_memory_request = var.agent_resource_memory_request
+      traces_enabled                = var.traces_enabled,
+      enable_side_by_side           = var.enable_side_by_side,
+      agent_resource_memory_limit   = var.agent_resource_memory_limit,
+      agent_resource_memory_request = var.agent_resource_memory_request,
+      tolerations                   = var.tolerations,
+      affinity                      = var.affinity
     }),
   ]
 }
