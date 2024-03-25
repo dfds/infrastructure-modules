@@ -136,13 +136,32 @@ variable "enable_side_by_side" {
 }
 
 variable "agent_resource_memory_limit" {
-  type = string
-  default = null
+  type        = string
+  default     = null
   description = "Set resource memory limits on Grafana Agent container"
 }
 
 variable "agent_resource_memory_request" {
-  type = string
-  default = null
+  type        = string
+  default     = null
   description = "Set resource memory request on Grafana Agent container"
+}
+
+variable "tolerations" {
+  type = list(object({
+    key      = string,
+    operator = string,
+    value    = optional(string),
+    effect   = string,
+  }))
+  default = []
+}
+
+variable "affinity" {
+  type = list(object({
+    key      = string,
+    operator = string,
+    values   = list(string)
+  }))
+  default = []
 }

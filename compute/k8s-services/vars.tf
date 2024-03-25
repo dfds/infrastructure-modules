@@ -1257,14 +1257,14 @@ variable "grafana_agent_traces_enabled" {
 }
 
 variable "grafana_agent_resource_memory_limit" {
-  type = string
-  default = "20Gi"
+  type        = string
+  default     = "20Gi"
   description = "Set resource memory limits on Grafana Agent container"
 }
 
 variable "grafana_agent_resource_memory_request" {
-  type = string
-  default = "4Gi"
+  type        = string
+  default     = "4Gi"
   description = "Set resource memory request on Grafana Agent container"
 }
 
@@ -1309,6 +1309,27 @@ variable "staging_grafana_agent_tempo_username" {
   type        = string
   description = "The username for Tempo in a Grafana Cloud stack"
   default     = ""
+}
+
+variable "observability_tolerations" {
+  type = list(object({
+    key      = string,
+    operator = string,
+    value    = optional(string),
+    effect   = string,
+  }))
+  description = "Tolerations to apply to the cluster-wide observability workloads."
+  default     = []
+}
+
+variable "observability_affinity" {
+  type = list(object({
+    key      = string,
+    operator = string,
+    values   = list(string)
+  }))
+  description = "Affinities to apply to the cluster-wide observability workloads."
+  default     = []
 }
 
 # --------------------------------------------------
