@@ -1256,6 +1256,18 @@ variable "grafana_agent_traces_enabled" {
   description = "Enable traces or not. Default: true"
 }
 
+variable "grafana_agent_resource_memory_limit" {
+  type = string
+  default = "20Gi"
+  description = "Set resource memory limits on Grafana Agent container"
+}
+
+variable "grafana_agent_resource_memory_request" {
+  type = string
+  default = "4Gi"
+  description = "Set resource memory request on Grafana Agent container"
+}
+
 variable "staging_grafana_agent_api_token" {
   type        = string
   description = "The token to authenticate request to a Grafana Cloud stack"
