@@ -135,3 +135,14 @@ variable "enable_side_by_side" {
   description = "Allow Grafana Agent to be installed side by side with kube-prometheus-stack and use its CRDs and its node-exporter. Default: true"
 }
 
+variable "agent_resource_memory_limit" {
+  type = string
+  default = null
+  description = "Set resource memory limits on Grafana Agent container"
+}
+
+variable "agent_resource_memory_request" {
+  type = string
+  default = null
+  description = "Set resource memory request on Grafana Agent container"
+}

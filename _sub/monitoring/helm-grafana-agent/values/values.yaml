@@ -1,5 +1,12 @@
 cluster:
   name: ${cluster_name}
+grafana-agent:
+  agent:
+    resources:
+      requests:
+        memory: ${agent_resource_memory_request}
+      limits:
+        memory: ${agent_resource_memory_limit}
 externalServices:
   prometheus:
     host: ${prometheus_url}
