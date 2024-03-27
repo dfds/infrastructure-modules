@@ -2,12 +2,21 @@ cluster:
   name: ${cluster_name}
 grafana-agent:
   agent:
+%{ if storage_enabled ~}
+    clustering:
+      enabled: true
+    storagePath: /var/lib/agent
+    mounts:
+      extra:
+        - mountPath: /var/lib/agent
+          name: agent-wal
+%{ endif ~}
     resources:
       requests:
         memory: ${agent_resource_memory_request}
       limits:
         memory: ${agent_resource_memory_limit}
-%{ if length(tolerations) > 0 || length(affinity) > 0 ~}
+%{ if length(tolerations) > 0 || length(affinity) > 0 || storage_enabled ~}
   controller:
 %{ endif ~}
 %{ if length(tolerations) > 0 ~}
@@ -36,6 +45,18 @@ grafana-agent:
               - ${ v }
 %{ endfor ~}
 %{ endfor ~}
+%{ endif ~}
+%{ if storage_enabled ~}
+    replicas: ${agent_replicas}
+    volumeClaimTemplates:
+      - metadata:
+          name: agent-wal
+        spec:
+          accessModes: [ "ReadWriteOnce" ]
+          storageClassName: ${storage_class}
+          resources:
+            requests:
+              storage: ${storage_size}
 %{ endif ~}
 externalServices:
   prometheus:

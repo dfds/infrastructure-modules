@@ -277,6 +277,8 @@ inputs = {
   grafana_agent_deploy = true
   grafana_agent_resource_memory_request = "4Gi"
   grafana_agent_resource_memory_limit   = "4Gi"
+  grafana_agent_storage_enabled = true
+  grafana_agent_storage_size = "10Gi"
 
   observability_tolerations = [
     {
