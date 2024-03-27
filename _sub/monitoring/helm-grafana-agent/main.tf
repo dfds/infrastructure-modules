@@ -23,7 +23,11 @@ resource "helm_release" "grafana_agent" {
       agent_resource_memory_limit   = var.agent_resource_memory_limit,
       agent_resource_memory_request = var.agent_resource_memory_request,
       tolerations                   = var.tolerations,
-      affinity                      = var.affinity
+      affinity                      = var.affinity,
+      agent_replicas                = var.agent_replicas,
+      storage_enabled               = var.storage_enabled,
+      storage_class                 = var.storage_class,
+      storage_size                  = var.storage_size
     }),
   ]
 }

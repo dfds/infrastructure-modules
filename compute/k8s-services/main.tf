@@ -836,6 +836,10 @@ module "grafana_agent_k8s_monitoring" {
   agent_resource_memory_request = var.grafana_agent_resource_memory_request
   affinity                      = var.observability_affinity
   tolerations                   = var.observability_tolerations
+  agent_replicas                = var.grafana_agent_replicas
+  storage_enabled               = var.grafana_agent_storage_enabled
+  storage_class                 = var.grafana_agent_storage_class
+  storage_size                  = var.grafana_agent_storage_size
 }
 
 # --------------------------------------------------

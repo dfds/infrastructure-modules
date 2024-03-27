@@ -1311,6 +1311,30 @@ variable "staging_grafana_agent_tempo_username" {
   default     = ""
 }
 
+variable "grafana_agent_replicas" {
+  type        = number
+  default     = 1
+  description = "How many replicas to run Grafana Agent with"
+}
+
+variable "grafana_agent_storage_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable persistence for Write Ahead Logs (WAL) in Grafana using Persistent Volume Claims"
+}
+
+variable "grafana_agent_storage_class" {
+  type        = string
+  description = "Storage class for Grafana Persistent Volume"
+  default     = "csi-gp3"
+}
+
+variable "grafana_agent_storage_size" {
+  type        = string
+  description = "Storage size for Grafana Persistent Volume"
+  default     = "5Gi"
+}
+
 variable "observability_tolerations" {
   type = list(object({
     key      = string,

@@ -165,3 +165,27 @@ variable "affinity" {
   }))
   default = []
 }
+
+variable "agent_replicas" {
+  type        = number
+  default     = 1
+  description = "How many replicas to run Grafana Agent with"
+}
+
+variable "storage_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable persistence for Write Ahead Logs (WAL) in Grafana using Persistent Volume Claims"
+}
+
+variable "storage_class" {
+  type        = string
+  description = "Storage class for Grafana Persistent Volume"
+  default     = "csi-gp3"
+}
+
+variable "storage_size" {
+  type        = string
+  description = "Storage size for Grafana Persistent Volume"
+  default     = "5Gi"
+}
