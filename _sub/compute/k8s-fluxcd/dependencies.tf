@@ -71,4 +71,26 @@ spec:
   path: ./sources
   prune: ${var.prune}
   YAML
+
+  custom_kustomization_yaml = <<YAML
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: custom
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./platform-apps/${var.cluster_name}/custom
+  prune: ${var.prune}
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  YAML
+
+  custom_folder_readme = <<EOT
+Place custom manifests in here. Make sure to place them in a folder named after the application
+  EOT
 }
+
+  

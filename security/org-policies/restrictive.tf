@@ -55,13 +55,11 @@ data "aws_iam_policy_document" "restrictive" {
       "iam:CreateAccountAlias",
       "iam:CreateGroup",
       "iam:CreateLoginProfile",
-      "iam:CreateSAMLProvider",
       "iam:CreateUser",
       "iam:DeleteAccountAlias",
       "iam:DeleteAccountPasswordPolicy",
       "iam:DeleteGroup",
       "iam:DeleteGroupPolicy",
-      "iam:DeleteSAMLProvider",
       "iam:DetachGroupPolicy",
       "iam:PutGroupPolicy",
       "iam:PutUserPermissionsBoundary",
@@ -69,7 +67,6 @@ data "aws_iam_policy_document" "restrictive" {
       "iam:UpdateAccountPasswordPolicy",
       "iam:UpdateGroup",
       "iam:UpdateLoginProfile",
-      "iam:UpdateSAMLProvider",
       "iam:UpdateUser",
     ]
     resources = ["*"]
@@ -136,6 +133,7 @@ data "aws_iam_policy_document" "restrictive" {
     effect = "Deny"
     not_actions = [
       "access-analyzer:*",
+      "account:CloseAccount",
       "account:Get*",
       "account:List*",
       "account:PutAlternateContact",
@@ -202,7 +200,14 @@ data "aws_iam_policy_document" "restrictive" {
       "notifications:List*",
       "sns:*",
       "resource-explorer-2:*",
-      "dataexchange:*"
+      "dataexchange:*",
+      "s3:CreateMultiRegionAccessPoint",
+      "s3:DeleteMultiRegionAccessPoint",
+      "s3:PutMultiRegionAccessPointPolicy",
+      "s3:GetMultiRegionAccessPointPolicyStatus",
+      "s3:GetMultiRegionAccessPointPolicy",
+      "s3:GetMultiRegionAccessPoint",
+      "s3:DescribeMultiRegionAccessPointOperation"
     ]
     resources = ["*"]
     condition {
@@ -253,6 +258,21 @@ data "aws_iam_policy_document" "restrictive" {
         "arn:aws:iam::*:role/OrgRole",
         "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
         "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_Billing_*",
+      ]
+      variable = "aws:PrincipalArn"
+    }
+  }
+
+  statement {
+    sid       = "DenyCloseAccountForNonRoot"
+    effect    = "Deny"
+    actions   = ["account:CloseAccount"]
+    resources = ["*"]
+
+    condition {
+      test = "StringNotLike"
+      values = [
+        "arn:aws:iam::*:root"
       ]
       variable = "aws:PrincipalArn"
     }

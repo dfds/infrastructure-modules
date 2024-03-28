@@ -411,15 +411,25 @@ module "monitoring_kube_prometheus_stack" {
 # Metrics-Server
 # --------------------------------------------------
 
-module "monitoring_metrics_server" {
-  source             = "../../_sub/compute/helm-metrics-server"
-  count              = var.monitoring_metrics_server_deploy && var.monitoring_namespace_deploy ? 1 : 0
-  helm_chart_version = var.monitoring_metrics_server_chart_version
-  helm_repo_url      = var.monitoring_metrics_server_repo_url
-  namespace          = module.monitoring_namespace[0].name
-  tolerations        = var.monitoring_tolerations
-  affinity           = var.monitoring_affinity
+module "metrics_server" {
+  source                  = "../../_sub/monitoring/metrics-server"
+  count                   = var.metrics_server_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  repo_owner              = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  chart_version           = var.metrics_server_helm_chart_version
+
+  depends_on = [module.platform_fluxcd]
+
+  providers = {
+    github = github.fluxcd
+  }
 }
+
 
 # --------------------------------------------------
 # Scrape Prometheus metrics for aws-node Daemonset
@@ -478,6 +488,7 @@ module "atlantis" {
   github_repositories       = var.atlantis_github_repositories
   webhook_url               = var.atlantis_ingress
   webhook_events            = var.atlantis_webhook_events
+  environment               = var.atlantis_environment
 
   environment_variables = local.atlantis_env_vars
 
@@ -801,4 +812,83 @@ module "elb_inactivity_cleanup_auth" {
   inactivity_alarm_arn = data.terraform_remote_state.cluster.outputs.eks_inactivity_alarm_arn
   elb_name             = module.traefik_alb_auth.alb_name
   elb_arn              = module.traefik_alb_auth.alb_arn
+}
+
+
+# --------------------------------------------------
+# Grafana Agent for Kubernetes monitoring
+# --------------------------------------------------
+
+module "grafana_agent_k8s_monitoring" {
+  source                        = "../../_sub/monitoring/helm-grafana-agent"
+  count                         = var.grafana_agent_deploy ? 1 : 0
+  chart_version                 = var.grafana_agent_chart_version
+  cluster_name                  = var.eks_cluster_name
+  api_token                     = var.grafana_agent_api_token
+  prometheus_url                = var.grafana_agent_prometheus_url
+  prometheus_username           = var.grafana_agent_prometheus_username
+  loki_url                      = var.grafana_agent_loki_url
+  loki_username                 = var.grafana_agent_loki_username
+  tempo_url                     = var.grafana_agent_tempo_url
+  tempo_username                = var.grafana_agent_tempo_username
+  traces_enabled                = var.grafana_agent_traces_enabled
+  agent_resource_memory_limit   = var.grafana_agent_resource_memory_limit
+  agent_resource_memory_request = var.grafana_agent_resource_memory_request
+  affinity                      = var.observability_affinity
+  tolerations                   = var.observability_tolerations
+  agent_replicas                = var.grafana_agent_replicas
+  storage_enabled               = var.grafana_agent_storage_enabled
+  storage_class                 = var.grafana_agent_storage_class
+  storage_size                  = var.grafana_agent_storage_size
+}
+
+# --------------------------------------------------
+# External Secrets
+# --------------------------------------------------
+
+module "external_secrets" {
+  source                  = "../../_sub/security/external-secrets"
+  count                   = var.external_secrets_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  deploy_name             = "external-secrets"
+  namespace               = "external-secrets"
+  helm_chart_version      = var.external_secrets_helm_chart_version
+  github_owner            = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  prune                   = var.fluxcd_prune
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
+}
+
+# --------------------------------------------------
+# External Secrets with SSM
+# --------------------------------------------------
+
+locals {
+  aws_region = var.external_secrets_ssm_aws_region != "" ? var.external_secrets_ssm_aws_region : var.aws_region
+}
+
+module "external_secrets_ssm" {
+  source              = "../../_sub/security/external-secrets-ssm"
+  count               = var.external_secrets_deploy && var.external_secrets_ssm_deploy ? 1 : 0
+  workload_account_id = var.aws_workload_account_id
+  aws_region          = local.aws_region
+  oidc_issuer         = local.oidc_issuer
+  iam_role_name       = var.external_secrets_ssm_iam_role_name
+  service_account     = var.external_secrets_ssm_service_account
+  allowed_namespaces  = var.external_secrets_ssm_allowed_namespaces
+
+  providers = {
+    aws = aws
+  }
+
+  depends_on = [module.external_secrets]
 }

@@ -402,27 +402,24 @@ variable "monitoring_kube_prometheus_stack_prometheus_confluent_metrics_resource
   description = "List of Kafka cluster IDs to scrape metrics from"
   default     = []
 }
+
+
 # --------------------------------------------------
 # Metrics-Server
 # --------------------------------------------------
 
-variable "monitoring_metrics_server_deploy" {
+variable "metrics_server_deploy" {
   type        = bool
-  description = "Deploy metrics-server helm chart switch. If setting to true, monitoring_namespace_deploy must also be set to true"
+  description = "Deploy metrics-server helm chart switch."
   default     = true
 }
 
-variable "monitoring_metrics_server_chart_version" {
+variable "metrics_server_helm_chart_version" {
   type        = string
-  description = "metrics-server helm chart version"
-  default     = null
+  description = "The helm chart version"
+  default     = ""
 }
 
-variable "monitoring_metrics_server_repo_url" {
-  type        = string
-  description = "The repository URL for the metrics-server Helm chart"
-  default     = "https://kubernetes-sigs.github.io/metrics-server/"
-}
 
 # --------------------------------------------------
 # Flux CD
@@ -582,6 +579,12 @@ variable "atlantis_data_storage" {
   default     = "5Gi"
 }
 
+variable "atlantis_environment" {
+  type        = string
+  description = "Environment for atlantis"
+  default     = ""
+}
+
 # --------------------------------------------------
 # Atlantis variables
 # --------------------------------------------------
@@ -711,6 +714,13 @@ variable "atlantis_resources_limits_memory" {
   type        = string
   default     = null
   description = "Memory resources limits size"
+}
+
+variable "atlantis_grafana_cloud_api_key" {
+  type        = string
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "Grafana Cloud API key"
+  sensitive   = true
 }
 
 # --------------------------------------------------
@@ -972,7 +982,7 @@ variable "blackbox_exporter_deploy" {
 variable "blackbox_exporter_helm_chart_version" {
   type        = string
   description = "Helm Chart version to be used to deploy Traefik"
-  default     = null
+  default     = ""
 }
 
 variable "blackbox_exporter_monitoring_targets" {
@@ -1179,4 +1189,219 @@ variable "disable_inactivity_cleanup" {
   type        = bool
   default     = false
   description = "Disables automated clean up of ELB resources based on inactivity. Only applicable to sandboxes."
+}
+
+# --------------------------------------------------
+# Grafana Agent for Kubernetes monitoring
+# --------------------------------------------------
+
+variable "grafana_agent_deploy" {
+  type        = string
+  default     = false
+  description = "Feature toggle for Grafana Agent module"
+}
+
+variable "grafana_agent_chart_version" {
+  type        = string
+  description = "Grafana Agent helm chart version"
+  default     = ""
+}
+
+variable "grafana_agent_api_token" {
+  type        = string
+  description = "The token to authenticate request to a Grafana Cloud stack"
+  default     = ""
+  sensitive   = true
+}
+
+variable "grafana_agent_prometheus_url" {
+  type        = string
+  description = "The Prometheus URL in a Grafana Cloud stack"
+  default     = ""
+}
+
+variable "grafana_agent_prometheus_username" {
+  type        = string
+  description = "The username for Prometheus in a Grafana Cloud stack"
+  default     = ""
+}
+
+variable "grafana_agent_loki_url" {
+  type        = string
+  description = "The Loki URL in a Grafana Cloud stack"
+  default     = ""
+}
+
+variable "grafana_agent_loki_username" {
+  type        = string
+  description = "The username for Loki in a Grafana Cloud stack"
+  default     = ""
+}
+
+variable "grafana_agent_tempo_url" {
+  type        = string
+  description = "The Tempo URL in a Grafana Cloud stack"
+  default     = ""
+}
+
+variable "grafana_agent_tempo_username" {
+  type        = string
+  description = "The username for Tempo in a Grafana Cloud stack"
+  default     = ""
+}
+
+variable "grafana_agent_traces_enabled" {
+  type        = bool
+  default     = true
+  description = "Enable traces or not. Default: true"
+}
+
+variable "grafana_agent_resource_memory_limit" {
+  type        = string
+  default     = "20Gi"
+  description = "Set resource memory limits on Grafana Agent container"
+}
+
+variable "grafana_agent_resource_memory_request" {
+  type        = string
+  default     = "4Gi"
+  description = "Set resource memory request on Grafana Agent container"
+}
+
+variable "staging_grafana_agent_api_token" {
+  type        = string
+  description = "The token to authenticate request to a Grafana Cloud stack"
+  default     = ""
+  sensitive   = true
+}
+
+variable "staging_grafana_agent_prometheus_url" {
+  type        = string
+  description = "The Prometheus URL in a Grafana Cloud stack"
+  default     = ""
+}
+
+variable "staging_grafana_agent_prometheus_username" {
+  type        = string
+  description = "The username for Prometheus in a Grafana Cloud stack"
+  default     = ""
+}
+
+variable "staging_grafana_agent_loki_url" {
+  type        = string
+  description = "The Loki URL in a Grafana Cloud stack"
+  default     = ""
+}
+
+variable "staging_grafana_agent_loki_username" {
+  type        = string
+  description = "The username for Loki in a Grafana Cloud stack"
+  default     = ""
+}
+
+variable "staging_grafana_agent_tempo_url" {
+  type        = string
+  description = "The Tempo URL in a Grafana Cloud stack"
+  default     = ""
+}
+
+variable "staging_grafana_agent_tempo_username" {
+  type        = string
+  description = "The username for Tempo in a Grafana Cloud stack"
+  default     = ""
+}
+
+variable "grafana_agent_replicas" {
+  type        = number
+  default     = 1
+  description = "How many replicas to run Grafana Agent with"
+}
+
+variable "grafana_agent_storage_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable persistence for Write Ahead Logs (WAL) in Grafana using Persistent Volume Claims"
+}
+
+variable "grafana_agent_storage_class" {
+  type        = string
+  description = "Storage class for Grafana Persistent Volume"
+  default     = "csi-gp3"
+}
+
+variable "grafana_agent_storage_size" {
+  type        = string
+  description = "Storage size for Grafana Persistent Volume"
+  default     = "5Gi"
+}
+
+variable "observability_tolerations" {
+  type = list(object({
+    key      = string,
+    operator = string,
+    value    = optional(string),
+    effect   = string,
+  }))
+  description = "Tolerations to apply to the cluster-wide observability workloads."
+  default     = []
+}
+
+variable "observability_affinity" {
+  type = list(object({
+    key      = string,
+    operator = string,
+    values   = list(string)
+  }))
+  description = "Affinities to apply to the cluster-wide observability workloads."
+  default     = []
+}
+
+# --------------------------------------------------
+# External Secrets
+# --------------------------------------------------
+
+variable "external_secrets_deploy" {
+  type        = string
+  default     = false
+  description = "Feature toggle for External Secrets module"
+}
+
+variable "external_secrets_helm_chart_version" {
+  type        = string
+  description = "External Secrets helm chart version"
+  default     = ""
+}
+
+# --------------------------------------------------
+# External Secrets with SSM
+# --------------------------------------------------
+
+variable "external_secrets_ssm_deploy" {
+  type        = string
+  default     = false
+  description = "Feature toggle for External Secrets module"
+}
+
+variable "external_secrets_ssm_iam_role_name" {
+  type        = string
+  description = "The name of the IAM role to assume"
+  default     = "ssm-secrets-for-kubernetes"
+}
+
+variable "external_secrets_ssm_service_account" {
+  type        = string
+  default     = "ssm-secrets"
+  description = "The service account to be used by an SecretStore"
+}
+
+variable "external_secrets_ssm_allowed_namespaces" {
+  type        = list(string)
+  default     = []
+  description = "The namespaces that can use IRSA to access external secrets"
+}
+
+variable "external_secrets_ssm_aws_region" {
+  type        = string
+  default     = ""
+  description = "The AWS region to use for the external secrets"
 }

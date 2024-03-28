@@ -38,7 +38,7 @@ variable "repo_branch" {
 variable "helm_chart_version" {
   type        = string
   description = "The version of the Blackbox Exporter Helm Chart that should be used"
-  default     = null
+  default     = ""
 }
 
 variable "monitoring_targets" {

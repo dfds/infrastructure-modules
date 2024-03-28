@@ -1,3 +1,5 @@
+# Hardened account settings
+
 data "aws_region" "workload" {
   count = var.harden ? 1 : 0
 

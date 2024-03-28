@@ -8,5 +8,5 @@ variable "vpc_id" {
 
 variable "retention_in_days" {
   type    = number
-  default = 7
+  default = 30
 }

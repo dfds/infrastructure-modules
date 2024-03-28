@@ -1,7 +1,7 @@
 locals {
   engine_family     = var.engine_version == null ? "postgres13" : "postgres${substr(var.engine_version, 0, 2)}"
-  rds_instance_tags = merge({ environment = var.environment }, var.rds_instance_tags, var.tags)
-  tags              = merge({ environment = var.environment }, var.tags)
+  rds_instance_tags = merge({ environment = var.environment, "dfds.env" = var.environment }, var.rds_instance_tags, var.tags)
+  tags              = merge({ environment = var.environment, "dfds.env" = var.environment }, var.tags)
 }
 
 #tfsec:ignore:no-public-ingress-sgr tfsec:ignore:aws-vpc-no-public-ingress-sg

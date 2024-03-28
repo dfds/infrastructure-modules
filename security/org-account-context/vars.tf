@@ -294,3 +294,88 @@ variable "tags" {
   description = "A map of tags to apply to all the resources deployed by the module"
   default     = {}
 }
+
+
+variable "ssm_param_createdby" {
+  type        = string
+  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
+}
+
+# VPC Peering
+
+variable "vpc_peering_settings_eu_west_1" {
+  type = map(object({
+    peer_vpc_id             = string
+    peer_region             = string
+    peer_route_table_id     = string
+    cidr_block_peer         = string
+    assigned_cidr_block_vpc = string
+    assigned_cidr_block_subnet_a = string
+    assigned_cidr_block_subnet_b = string
+    assigned_cidr_block_subnet_c = string
+  }))
+  description = "Map containing two sets of values for VPC peering settings"
+  default = {
+    "instance1" = {
+      peer_vpc_id             = ""
+      peer_region             = ""
+      peer_route_table_id     = ""
+      cidr_block_peer         = ""
+      assigned_cidr_block_vpc = ""
+      assigned_cidr_block_subnet_a = ""
+      assigned_cidr_block_subnet_b = ""
+      assigned_cidr_block_subnet_c = ""
+    }
+  }
+}
+
+variable "vpc_peering_settings_eu_central_1" {
+  type = map(object({
+    peer_vpc_id             = string
+    peer_region             = string
+    peer_route_table_id     = string
+    cidr_block_peer         = string
+    assigned_cidr_block_vpc = string
+    assigned_cidr_block_subnet_a = string
+    assigned_cidr_block_subnet_b = string
+    assigned_cidr_block_subnet_c = string
+  }))
+  description = "Map containing two sets of values for VPC peering settings"
+   default = {
+    "instance1" = {
+      peer_vpc_id             = ""
+      peer_region             = ""
+      peer_route_table_id     = ""
+      cidr_block_peer         = ""
+      assigned_cidr_block_vpc = ""
+      assigned_cidr_block_subnet_a = ""
+      assigned_cidr_block_subnet_b = ""
+      assigned_cidr_block_subnet_c = ""
+    }
+  }
+}
+
+variable "deploy_vpc_peering_eu_west_1" {
+  type        = bool
+  description = "Whether to deploy VPC peering"
+  default     = false
+}
+
+variable "deploy_vpc_peering_eu_central_1" {
+  type        = bool
+  description = "Whether to deploy VPC peering"
+  default     = false
+}
+
+# --------------------------------------------------
+# IAM role for Grafana Cloud Cloudwatch integration
+# --------------------------------------------------
+
+variable "grafana_cloud_cloudwatch_integration_iam_role" {
+  type = object({
+    arn       = string
+    stack_ids = list(string)
+  })
+  description = "IAM role used for Grafana Cloud IAM CloudWatch access"
+  default     = null
+}

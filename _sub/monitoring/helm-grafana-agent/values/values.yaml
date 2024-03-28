@@ -1,0 +1,97 @@
+cluster:
+  name: ${cluster_name}
+grafana-agent:
+  agent:
+%{ if storage_enabled ~}
+    clustering:
+      enabled: true
+    storagePath: /var/lib/agent
+    mounts:
+      extra:
+        - mountPath: /var/lib/agent
+          name: agent-wal
+%{ endif ~}
+    resources:
+      requests:
+        memory: ${agent_resource_memory_request}
+      limits:
+        memory: ${agent_resource_memory_limit}
+%{ if length(tolerations) > 0 || length(affinity) > 0 || storage_enabled ~}
+  controller:
+%{ endif ~}
+%{ if length(tolerations) > 0 ~}
+    tolerations:
+%{ for t in tolerations ~}
+    - key: ${t.key}
+      operator: ${t.operator}
+%{ if t.value != null ~}
+      value: ${t.value}
+%{ endif ~}
+      effect: ${t.effect}
+%{ endfor ~}
+%{ endif ~}
+%{ if length(affinity) > 0 ~}
+    affinity:
+      nodeAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 1
+          preference:
+            matchExpressions:
+%{ for a in affinity ~}
+            - key: ${a.key}
+              operator: ${a.operator}
+              values:
+%{ for v in a.values ~}
+              - ${ v }
+%{ endfor ~}
+%{ endfor ~}
+%{ endif ~}
+%{ if storage_enabled ~}
+    replicas: ${agent_replicas}
+    volumeClaimTemplates:
+      - metadata:
+          name: agent-wal
+        spec:
+          accessModes: [ "ReadWriteOnce" ]
+          storageClassName: ${storage_class}
+          resources:
+            requests:
+              storage: ${storage_size}
+%{ endif ~}
+externalServices:
+  prometheus:
+    host: ${prometheus_url}
+    basicAuth:
+      username: "${prometheus_username}"
+      password: ${api_token}
+  loki:
+    host: ${loki_url}
+    basicAuth:
+      username: ${loki_username}
+      password: ${api_token}
+  tempo:
+    host: ${tempo_url}
+    basicAuth:
+      username: ${tempo_username}
+      password: ${api_token}
+opencost:
+  opencost:
+    exporter:
+      defaultClusterId: ${cluster_name}
+    prometheus:
+      external:
+        url: ${prometheus_url}/api/prom
+traces:
+  enabled: ${traces_enabled}
+%{ if enable_side_by_side ~}
+metrics:
+  node-exporter:
+    labelMatchers:
+      app.kubernetes.io/name: prometheus-node-exporter
+    service:
+      isTLS: false
+prometheus-node-exporter:
+  enabled: false
+prometheus-operator-crds:
+  enabled: false
+%{ endif ~}

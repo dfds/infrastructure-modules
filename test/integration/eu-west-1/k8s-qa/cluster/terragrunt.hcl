@@ -21,7 +21,7 @@ inputs = {
   # --------------------------------------------------
 
   eks_cluster_name                           = "qa"
-  eks_cluster_version                        = "1.28"
+  eks_cluster_version                        = "1.29"
   eks_cluster_zones                          = 2
   eks_addon_vpccni_prefix_delegation_enabled = true
   eks_addon_most_recent                      = true
@@ -93,9 +93,9 @@ inputs = {
       disk_type               = "gp3"
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
-      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.28-*"]}]
-      # currentImageName=amazon-eks-node-1.28-v20231201
-      ami_id                     = "ami-0d739204fa6ce45fd"
+      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.29-*"]}]
+      # currentImageName=amazon-eks-node-1.29-v20240307
+      ami_id                     = "ami-02e2de73058d55743"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
     }
@@ -104,9 +104,9 @@ inputs = {
       disk_type               = "gp3"
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
-      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.28-*"]}]
-      # currentImageName=amazon-eks-node-1.28-v20231201
-      ami_id             = "ami-0d739204fa6ce45fd"
+      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.29-*"]}]
+      # currentImageName=amazon-eks-node-1.29-v20240307
+      ami_id             = "ami-02e2de73058d55743"
       availability_zones = ["eu-west-1b"]
       kubelet_extra_args = "--max-pods=30 --kube-reserved=memory=585Mi,cpu=80m"
       max_unavailable    = 1
@@ -119,21 +119,26 @@ inputs = {
       labels = {
         dedicated = "monitoring"
       }
-    },
-    "gpu" = {
-      instance_types = ["g4dn.2xlarge"]
+    }
+    "observability" = {
+      instance_types          = ["t3.large"]
+      disk_type               = "gp3"
       desired_size_per_subnet = 1
-      availability_zones      = ["eu-west-1a"]
       max_unavailable         = 1
-      ami_id = "ami-0d09ad178e7e780d1"
+      # This comment configures the renovate bot to automatically update this variable:
+      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.29-*"]}]
+      # currentImageName=amazon-eks-node-1.29-v20240307
+      ami_id             = "ami-02e2de73058d55743"
+      availability_zones = ["eu-west-1c"]
+      kubelet_extra_args = "--max-pods=30 --kube-reserved=memory=585Mi,cpu=90m"
       taints = [
         {
-          key = "dfds.service.gpu"
+          key    = "observability.dfds"
           effect = "NO_SCHEDULE"
         }
       ]
       labels = {
-        dedicated = "gpu"
+        dedicated = "observability"
       }
     }
   }
@@ -142,7 +147,7 @@ inputs = {
   # GPU workloads
   # --------------------------------------------------
 
-  deploy_nvidia_device_plugin = true
+  deploy_nvidia_device_plugin = false
   nvidia_device_plugin_tolerations = [
     {
       key = "dfds.service.gpu"
@@ -160,7 +165,7 @@ inputs = {
 
   nvidia_chart_version = "0.14.1"
   nvidia_namespace = "nvidia-device-plugin"
-  create_nvidia_namespace = true
+  create_nvidia_namespace = false
 
   # --------------------------------------------------
   # Restore Blaster Configmap

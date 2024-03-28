@@ -136,6 +136,28 @@ module "aws_iam_oidc_provider" {
   }
 }
 
+module "aws_iam_oidc_provider_ssm" { # Add SSM parameter for OIDC provider URL TODO: Test!
+  source = "../../_sub/security/ssm-parameter-store"
+  providers = {
+    aws = aws.workload
+  }
+  key_name        = "/managed/cluster/oidc-provider"
+  key_description = "OIDC Provider URL for EKS cluster"
+  key_value       = var.oidc_provider_url
+  tag_createdby   = var.ssm_param_createdby
+}
+
+module "aws_iam_oidc_provider_ssm_eu_west_1" { # Add SSM parameter for OIDC provider in eu-west-1
+  source = "../../_sub/security/ssm-parameter-store"
+  providers = {
+    aws = aws.workload_2
+  }
+  key_name        = "/managed/cluster/oidc-provider"
+  key_description = "OIDC Provider URL for EKS cluster"
+  key_value       = var.oidc_provider_url
+  tag_createdby   = var.ssm_param_createdby
+}
+
 # --------------------------------------------------
 # aws_context_account_created event
 # --------------------------------------------------
@@ -284,7 +306,7 @@ module "github_oidc_provider" {
 locals {
   deploy_kms_key = false
   kms_key_admins = [module.org_account.org_role_arn]
-  }
+}
 
 resource "aws_iam_role" "backup" {
   provider = aws.workload
@@ -322,7 +344,7 @@ module "backup_eu_central_1" {
   kms_key_admins = local.kms_key_admins
   backup_plans   = var.aws_backup_plans
   iam_role_arn   = aws_iam_role.backup[0].arn
-  tags = var.aws_backup_tags
+  tags           = var.aws_backup_tags
 }
 
 module "backup_eu_west_1" {
@@ -339,5 +361,105 @@ module "backup_eu_west_1" {
   kms_key_admins = local.kms_key_admins
   backup_plans   = var.aws_backup_plans
   iam_role_arn   = aws_iam_role.backup[0].arn
-  tags = var.aws_backup_tags
+  tags           = var.aws_backup_tags
+}
+
+# --------------------------------------------------
+# IAM role for Grafana Cloud Cloudwatch integration
+# --------------------------------------------------
+
+module "grafana_cloud_cloudwatch_integration" {
+  count    = var.grafana_cloud_cloudwatch_integration_iam_role != null ? 1 : 0
+  source   = "../../_sub/security/grafana-cloud-cloudwatch-integration"
+  iam_role = var.grafana_cloud_cloudwatch_integration_iam_role
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+# --------------------------------------------------
+# VPC Peering
+# --------------------------------------------------
+
+module "vpc_peering_capability_eu_west_1" {
+  for_each = { for k, v in var.vpc_peering_settings_eu_west_1 : k => v if var.deploy_vpc_peering_eu_west_1 }
+
+  source = "../../_sub/network/vpc-peering-requester"
+
+  cidr_block_vpc      = each.value.assigned_cidr_block_vpc
+  cidr_block_subnet_a = each.value.assigned_cidr_block_subnet_a
+  cidr_block_subnet_b = each.value.assigned_cidr_block_subnet_b
+  cidr_block_subnet_c = each.value.assigned_cidr_block_subnet_c
+
+  cidr_block_peer = each.value.cidr_block_peer
+  peer_owner_id   = var.shared_account_id
+  peer_vpc_id     = each.value.peer_vpc_id
+  peer_region     = each.value.peer_region
+
+  tags = local.all_tags
+
+  providers = {
+    aws = aws.workload_eu-west-1
+  }
+}
+
+module "vpc_peering_oxygen_eu_west_1" {
+  for_each = { for k, v in var.vpc_peering_settings_eu_west_1 : k => v if var.deploy_vpc_peering_eu_west_1 }
+
+  source = "../../_sub/network/vpc-peering-accepter"
+
+  capability_id          = var.capability_id
+  destination_cidr_block = each.value.assigned_cidr_block_vpc
+  vpc_id                 = each.value.peer_vpc_id
+  peering_connection_id  = module.vpc_peering_capability_eu_west_1[each.key].vpc_peering_connection_id
+  route_table_id         = each.value.peer_route_table_id
+
+  tags = local.all_tags
+
+  providers = {
+    aws = aws.shared_vpc
+  }
+}
+
+module "vpc_peering_capability_eu_central_1" {
+  for_each = { for k, v in var.vpc_peering_settings_eu_central_1 : k => v if var.deploy_vpc_peering_eu_central_1 }
+
+  source = "../../_sub/network/vpc-peering-requester"
+
+  cidr_block_vpc      = each.value.assigned_cidr_block_vpc
+  cidr_block_subnet_a = each.value.assigned_cidr_block_subnet_a
+  cidr_block_subnet_b = each.value.assigned_cidr_block_subnet_b
+  cidr_block_subnet_c = each.value.assigned_cidr_block_subnet_c
+
+  cidr_block_peer = each.value.cidr_block_peer
+  peer_owner_id   = var.shared_account_id
+  peer_vpc_id     = each.value.peer_vpc_id
+  peer_region     = each.value.peer_region
+
+  tags = local.all_tags
+
+  providers = {
+    aws = aws.workload_eu-central-1
+  }
+}
+
+
+
+module "vpc_peering_oxygen_eu_central_1" {
+  for_each = { for k, v in var.vpc_peering_settings_eu_central_1 : k => v if var.deploy_vpc_peering_eu_central_1 }
+
+  source = "../../_sub/network/vpc-peering-accepter"
+
+  capability_id          = var.capability_id
+  destination_cidr_block = each.value.assigned_cidr_block_vpc
+  vpc_id                 = each.value.peer_vpc_id
+  peering_connection_id  = module.vpc_peering_capability_eu_central_1[each.key].vpc_peering_connection_id
+  route_table_id         = each.value.peer_route_table_id
+
+  tags = local.all_tags
+
+  providers = {
+    aws = aws.shared_vpc
+  }
 }

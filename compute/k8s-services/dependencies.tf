@@ -300,6 +300,21 @@ locals {
     PRODUCTION_AWS_ACCOUNT_MANIFESTS_HARDENED_MONITORING_SLACK_TOKEN    = var.aws_account_manifests_hardened_monitoring_slack_token
     CONFLUENT_KAFKA_PROD_PROMETHEUS_METRICS_EXPORTER_HELLMAN_API_KEY    = var.monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_key
     CONFLUENT_KAFKA_PROD_PROMETHEUS_METRICS_EXPORTER_HELLMAN_API_SECRET = var.monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_secret
+    PRODUCTION_GRAFANA_AGENT_API_TOKEN                                  = var.grafana_agent_api_token
+    PRODUCTION_GRAFANA_AGENT_PROMETHEUS_URL                             = var.grafana_agent_prometheus_url
+    PRODUCTION_GRAFANA_AGENT_PROMETHEUS_USERNAME                        = var.grafana_agent_prometheus_username
+    PRODUCTION_GRAFANA_AGENT_LOKI_URL                                   = var.grafana_agent_loki_url
+    PRODUCTION_GRAFANA_AGENT_LOKI_USERNAME                              = var.grafana_agent_loki_username
+    PRODUCTION_GRAFANA_AGENT_TEMPO_URL                                  = var.grafana_agent_tempo_url
+    PRODUCTION_GRAFANA_AGENT_TEMPO_USERNAME                             = var.grafana_agent_tempo_username
+    STAGING_GRAFANA_AGENT_API_TOKEN                                     = var.staging_grafana_agent_api_token
+    STAGING_GRAFANA_AGENT_PROMETHEUS_URL                                = var.staging_grafana_agent_prometheus_url
+    STAGING_GRAFANA_AGENT_PROMETHEUS_USERNAME                           = var.staging_grafana_agent_prometheus_username
+    STAGING_GRAFANA_AGENT_LOKI_URL                                      = var.staging_grafana_agent_loki_url
+    STAGING_GRAFANA_AGENT_LOKI_USERNAME                                 = var.staging_grafana_agent_loki_username
+    STAGING_GRAFANA_AGENT_TEMPO_URL                                     = var.staging_grafana_agent_tempo_url
+    STAGING_GRAFANA_AGENT_TEMPO_USERNAME                                = var.staging_grafana_agent_tempo_username
+    PRODUCTION_GRAFANA_CLOUD_API_KEY                                    = var.atlantis_grafana_cloud_api_key
   }
 
   atlantis_env_vars = var.crossplane_deploy ? merge(local.atlantis_env_vars_default, local.confluent_env_vars_for_atlantis) : local.atlantis_env_vars_default

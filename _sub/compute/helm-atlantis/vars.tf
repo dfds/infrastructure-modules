@@ -125,3 +125,8 @@ variable "parallel_pool_size" {
   default     = 50
   description = "The number of concurrent go-routines when running terraform plan"
 }
+
+variable "environment" {
+  type        = string
+  description = "Environment"
+}

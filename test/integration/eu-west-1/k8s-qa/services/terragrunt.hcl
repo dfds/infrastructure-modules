@@ -191,6 +191,7 @@ inputs = {
   atlantis_github_owner        = "dfds"
   atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
   atlantis_chart_version       = "4.18.0"
+  atlantis_environment         = "qa"
 
   # --------------------------------------------------
   # Blackbox Exporter
@@ -268,5 +269,44 @@ inputs = {
   velero_helm_chart_version     = "4.2.0"
   velero_plugin_for_aws_version = "v1.7.0"
   velero_plugin_for_csi_version = "v0.5.0"
+
+  # --------------------------------------------------
+  # Grafana Agent for Kubernetes monitoring
+  # --------------------------------------------------
+
+  grafana_agent_deploy = true
+  grafana_agent_resource_memory_request = "4Gi"
+  grafana_agent_resource_memory_limit   = "4Gi"
+  grafana_agent_storage_enabled = true
+  grafana_agent_storage_size = "10Gi"
+
+  observability_tolerations = [
+    {
+      key      = "observability.dfds",
+      operator = "Exists",
+      effect   = "NoSchedule",
+    }
+  ]
+  observability_affinity = [
+    {
+      key      = "dedicated",
+      operator = "In",
+      values   = ["observability"],
+    }
+  ]
+
+  # --------------------------------------------------
+  # External Secrets
+  # --------------------------------------------------
+
+  external_secrets_deploy = true
+  external_secrets_helm_chart_version = "0.9.13"
+
+  # --------------------------------------------------
+  # External Secrets with SSM
+  # --------------------------------------------------
+
+  external_secrets_ssm_deploy = true
+  external_secrets_ssm_allowed_namespaces = ["atlantis", "flux-system"]
 
 }
