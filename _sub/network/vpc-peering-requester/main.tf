@@ -124,7 +124,7 @@ resource "aws_vpc_endpoint" "ssm" {
 
   private_dns_enabled = true
 
-  subnet_ids = flatten([aws_subnet.a.id, aws_subnet.b.id, var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : []])
+  subnet_ids = flatten([aws_subnet.a.id, aws_subnet.b.id, var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : ""])
 
   security_group_ids = [
     aws_security_group.ssm.id,
@@ -141,7 +141,7 @@ resource "aws_vpc_endpoint" "ssmmessages" {
 
   private_dns_enabled = true
 
-  subnet_ids = flatten([aws_subnet.a.id, aws_subnet.b.id, var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : []])
+  subnet_ids = flatten([aws_subnet.a.id, aws_subnet.b.id, var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : ""])
 
   security_group_ids = [
     aws_security_group.ssm.id,
@@ -158,7 +158,7 @@ resource "aws_vpc_endpoint" "ec2" {
 
   private_dns_enabled = true
 
-  subnet_ids = flatten([aws_subnet.a.id, aws_subnet.b.id, var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : []])
+  subnet_ids = flatten([aws_subnet.a.id, aws_subnet.b.id, var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : ""])
 
   security_group_ids = [
     aws_security_group.ssm.id,
@@ -175,7 +175,7 @@ resource "aws_vpc_endpoint" "ec2messages" {
 
   private_dns_enabled = true
 
-  subnet_ids = flatten([aws_subnet.a.id, aws_subnet.b.id, var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : []])
+  subnet_ids = flatten([aws_subnet.a.id, aws_subnet.b.id, var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : ""])
 
   security_group_ids = [
     aws_security_group.ssm.id,
@@ -238,7 +238,7 @@ resource "aws_vpc_security_group_ingress_rule" "redis" {
 
 resource "aws_db_subnet_group" "peering" {
   name       = "peering"
-  subnet_ids = flatten([aws_subnet.a.id, aws_subnet.b.id, var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : []])
+  subnet_ids = flatten([aws_subnet.a.id, aws_subnet.b.id, var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : ""])
 
   tags = {
     Name = "peering"
