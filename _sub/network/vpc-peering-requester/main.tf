@@ -132,7 +132,7 @@ resource "aws_vpc_endpoint" "ssm" {
   ]
 
   tags = merge(var.tags,{
-    Name = "com.amazonaws.${data.aws_region.current.name}.ssm"
+    Name = "peering-com.amazonaws.${data.aws_region.current.name}.ssm"
   })
 }
 
@@ -151,7 +151,7 @@ resource "aws_vpc_endpoint" "ssmmessages" {
   ]
 
   tags = merge(var.tags,{
-    Name = "com.amazonaws.${data.aws_region.current.name}.ssmmessages"
+    Name = "peering-com.amazonaws.${data.aws_region.current.name}.ssmmessages"
   })
 }
 
@@ -170,7 +170,7 @@ resource "aws_vpc_endpoint" "ec2" {
   ]
 
   tags = merge(var.tags,{
-    Name = "com.amazonaws.${data.aws_region.current.name}.ec2"
+    Name = "peering-com.amazonaws.${data.aws_region.current.name}.ec2"
   })
 }
 
@@ -189,7 +189,7 @@ resource "aws_vpc_endpoint" "ec2messages" {
   ]
 
   tags = merge(var.tags,{
-    Name = "com.amazonaws.${data.aws_region.current.name}.ec2messages"
+    Name = "peering-com.amazonaws.${data.aws_region.current.name}.ec2messages"
   })
 }
 
