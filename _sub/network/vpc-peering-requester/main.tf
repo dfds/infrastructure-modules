@@ -131,7 +131,9 @@ resource "aws_vpc_endpoint" "ssm" {
     aws_default_security_group.default.id
   ]
 
-  tags = var.tags
+  tags = merge(var.tags,{
+    Name = "com.amazonaws.${data.aws_region.current.name}.ssm"
+  })
 }
 
 resource "aws_vpc_endpoint" "ssmmessages" {
@@ -148,7 +150,9 @@ resource "aws_vpc_endpoint" "ssmmessages" {
     aws_default_security_group.default.id
   ]
 
-  tags = var.tags
+  tags = merge(var.tags,{
+    Name = "com.amazonaws.${data.aws_region.current.name}.ssmmessages"
+  })
 }
 
 resource "aws_vpc_endpoint" "ec2" {
@@ -165,7 +169,9 @@ resource "aws_vpc_endpoint" "ec2" {
     aws_default_security_group.default.id
   ]
 
-  tags = var.tags
+  tags = merge(var.tags,{
+    Name = "com.amazonaws.${data.aws_region.current.name}.ec2"
+  })
 }
 
 resource "aws_vpc_endpoint" "ec2messages" {
@@ -182,7 +188,9 @@ resource "aws_vpc_endpoint" "ec2messages" {
     aws_default_security_group.default.id
   ]
 
-  tags = var.tags
+  tags = merge(var.tags,{
+    Name = "com.amazonaws.${data.aws_region.current.name}.ec2messages"
+  })
 }
 
 data "aws_iam_policy_document" "ssm_trust" {
