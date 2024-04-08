@@ -305,11 +305,11 @@ variable "ssm_param_createdby" {
 
 variable "vpc_peering_settings_eu_west_1" {
   type = map(object({
-    peer_vpc_id             = string
-    peer_region             = string
-    peer_route_table_id     = string
-    cidr_block_peer         = string
-    assigned_cidr_block_vpc = string
+    peer_vpc_id                  = string
+    peer_region                  = string
+    peer_route_table_id          = string
+    cidr_block_peer              = string
+    assigned_cidr_block_vpc      = string
     assigned_cidr_block_subnet_a = string
     assigned_cidr_block_subnet_b = string
     assigned_cidr_block_subnet_c = string
@@ -317,11 +317,11 @@ variable "vpc_peering_settings_eu_west_1" {
   description = "Map containing two sets of values for VPC peering settings"
   default = {
     "instance1" = {
-      peer_vpc_id             = ""
-      peer_region             = ""
-      peer_route_table_id     = ""
-      cidr_block_peer         = ""
-      assigned_cidr_block_vpc = ""
+      peer_vpc_id                  = ""
+      peer_region                  = ""
+      peer_route_table_id          = ""
+      cidr_block_peer              = ""
+      assigned_cidr_block_vpc      = ""
       assigned_cidr_block_subnet_a = ""
       assigned_cidr_block_subnet_b = ""
       assigned_cidr_block_subnet_c = ""
@@ -331,23 +331,23 @@ variable "vpc_peering_settings_eu_west_1" {
 
 variable "vpc_peering_settings_eu_central_1" {
   type = map(object({
-    peer_vpc_id             = string
-    peer_region             = string
-    peer_route_table_id     = string
-    cidr_block_peer         = string
-    assigned_cidr_block_vpc = string
+    peer_vpc_id                  = string
+    peer_region                  = string
+    peer_route_table_id          = string
+    cidr_block_peer              = string
+    assigned_cidr_block_vpc      = string
     assigned_cidr_block_subnet_a = string
     assigned_cidr_block_subnet_b = string
     assigned_cidr_block_subnet_c = string
   }))
   description = "Map containing two sets of values for VPC peering settings"
-   default = {
+  default = {
     "instance1" = {
-      peer_vpc_id             = ""
-      peer_region             = ""
-      peer_route_table_id     = ""
-      cidr_block_peer         = ""
-      assigned_cidr_block_vpc = ""
+      peer_vpc_id                  = ""
+      peer_region                  = ""
+      peer_route_table_id          = ""
+      cidr_block_peer              = ""
+      assigned_cidr_block_vpc      = ""
       assigned_cidr_block_subnet_a = ""
       assigned_cidr_block_subnet_b = ""
       assigned_cidr_block_subnet_c = ""
@@ -364,6 +364,12 @@ variable "deploy_vpc_peering_eu_west_1" {
 variable "deploy_vpc_peering_eu_central_1" {
   type        = bool
   description = "Whether to deploy VPC peering"
+  default     = false
+}
+
+variable "vpc_peering_map_public_ip_on_launch" {
+  description = "Map public IP on launch in subnets used for VPC peering"
+  type        = bool
   default     = false
 }
 
