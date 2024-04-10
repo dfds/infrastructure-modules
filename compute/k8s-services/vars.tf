@@ -1405,3 +1405,19 @@ variable "external_secrets_ssm_aws_region" {
   default     = ""
   description = "The AWS region to use for the external secrets"
 }
+
+# --------------------------------------------------
+# External Secrets
+# --------------------------------------------------
+
+variable "argocd_deploy" {
+  type        = string
+  default     = false
+  description = "Feature toggle for argocd module"
+}
+
+variable "argocd_helm_chart_version" {
+  type        = string
+  description = "argocd helm chart version"
+  default     = ""
+}

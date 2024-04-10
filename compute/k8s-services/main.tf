@@ -892,3 +892,30 @@ module "external_secrets_ssm" {
 
   depends_on = [module.external_secrets]
 }
+
+
+# --------------------------------------------------
+# External Secrets
+# --------------------------------------------------
+
+module "argocd" {
+  source                  = "../../_sub/compute/k8s-argocd"
+  count                   = var.argocd_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  deploy_name             = "argocd"
+  namespace               = "argocd"
+  helm_chart_version      = var.argocd_helm_chart_version
+  github_owner            = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  prune                   = var.fluxcd_prune
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
+}
