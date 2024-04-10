@@ -1,0 +1,26 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: prometheus-helm-exporter
+  namespace: ${namespace}
+spec:
+  chart:
+    spec:
+      version: "${helm_chart_version}"
+  values:
+    config:
+      helmRegistries:
+        override:
+          %{~ for target_chart in target_charts ~}
+          - charts:
+            %{~ for chart in target_chart.charts ~}
+            - ${chart}
+            %{~ endfor ~}
+            registry:
+              url: ${target_chart.registry.url}
+          %{~ endfor ~}
+    deployment:
+      replicas: ${replicas}
+    intervalDuration: ${interval_duration}
+    namespaces: ${target_namespaces}
