@@ -373,6 +373,12 @@ variable "vpc_peering_map_public_ip_on_launch" {
   default     = false
 }
 
+variable "deploy_vpc_peering_endpoints" {
+  description = "Deploy required VPC endpoints for VPC peering SSM connections"
+  type        = bool
+  default     = true
+}
+
 # --------------------------------------------------
 # IAM role for Grafana Cloud Cloudwatch integration
 # --------------------------------------------------
