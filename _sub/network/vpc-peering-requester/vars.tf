@@ -41,3 +41,9 @@ variable "map_public_ip_on_launch" {
   type        = bool
   default     = false
 }
+
+variable "deploy_vpc_peering_endpoints" {
+  description = "Deploy required VPC endpoints for VPC peering SSM connections"
+  type        = bool
+  default     = true
+}
