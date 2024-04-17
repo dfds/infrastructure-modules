@@ -276,6 +276,7 @@ inputs = {
   # --------------------------------------------------
 
   grafana_agent_deploy = true
+  grafana_agent_chart_version = "0.10.0"
   grafana_agent_resource_memory_request = "4Gi"
   grafana_agent_resource_memory_limit   = "4Gi"
   grafana_agent_storage_enabled = true
