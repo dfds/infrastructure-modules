@@ -5,12 +5,12 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.44.0"
+      version = "~> 5.46.0"
     }
 
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "~> 2.28.0"
+      version = "~> 2.29.0"
     }
 
     kubectl = {
@@ -20,12 +20,12 @@ terraform {
 
     helm = {
       source  = "hashicorp/helm"
-      version = "~> 2.13.0"
+      version = "~> 2.12.0"
     }
 
     azuread = {
       source  = "hashicorp/azuread"
-      version = "~> 2.47.0"
+      version = "~> 2.48.0"
     }
 
     github = {

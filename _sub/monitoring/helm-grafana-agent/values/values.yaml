@@ -94,4 +94,6 @@ prometheus-node-exporter:
   enabled: false
 prometheus-operator-crds:
   enabled: false
+kube-state-metrics:
+  enabled: false  
 %{ endif ~}
