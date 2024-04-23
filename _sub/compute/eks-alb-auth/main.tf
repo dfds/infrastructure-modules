@@ -22,6 +22,7 @@ resource "aws_lb" "traefik_auth" {
   }
 
   drop_invalid_header_fields = true
+  idle_timeout = 120
 }
 
 resource "aws_lb_target_group" "traefik_auth_blue_variant" {
