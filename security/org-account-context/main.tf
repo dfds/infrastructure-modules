@@ -392,10 +392,12 @@ module "vpc_peering_capability_eu_west_1" {
   cidr_block_subnet_b = each.value.assigned_cidr_block_subnet_b
   cidr_block_subnet_c = each.value.assigned_cidr_block_subnet_c
 
-  cidr_block_peer = each.value.cidr_block_peer
-  peer_owner_id   = var.shared_account_id
-  peer_vpc_id     = each.value.peer_vpc_id
-  peer_region     = each.value.peer_region
+  cidr_block_peer              = each.value.cidr_block_peer
+  peer_owner_id                = var.shared_account_id
+  peer_vpc_id                  = each.value.peer_vpc_id
+  peer_region                  = each.value.peer_region
+  map_public_ip_on_launch      = var.vpc_peering_map_public_ip_on_launch
+  deploy_vpc_peering_endpoints = var.deploy_vpc_peering_endpoints
 
   tags = local.all_tags
 
@@ -409,7 +411,7 @@ module "vpc_peering_oxygen_eu_west_1" {
 
   source = "../../_sub/network/vpc-peering-accepter"
 
-  capability_id          = var.capability_id
+  capability_id          = var.capability_root_id
   destination_cidr_block = each.value.assigned_cidr_block_vpc
   vpc_id                 = each.value.peer_vpc_id
   peering_connection_id  = module.vpc_peering_capability_eu_west_1[each.key].vpc_peering_connection_id
@@ -432,11 +434,13 @@ module "vpc_peering_capability_eu_central_1" {
   cidr_block_subnet_b = each.value.assigned_cidr_block_subnet_b
   cidr_block_subnet_c = each.value.assigned_cidr_block_subnet_c
 
-  cidr_block_peer = each.value.cidr_block_peer
-  peer_owner_id   = var.shared_account_id
-  peer_vpc_id     = each.value.peer_vpc_id
-  peer_region     = each.value.peer_region
-
+  cidr_block_peer         = each.value.cidr_block_peer
+  peer_owner_id           = var.shared_account_id
+  peer_vpc_id             = each.value.peer_vpc_id
+  peer_region             = each.value.peer_region
+  map_public_ip_on_launch = var.vpc_peering_map_public_ip_on_launch
+  deploy_vpc_peering_endpoints = var.deploy_vpc_peering_endpoints
+  
   tags = local.all_tags
 
   providers = {

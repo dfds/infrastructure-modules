@@ -190,8 +190,9 @@ inputs = {
   atlantis_github_repositories = ["dfds/qa-dummy-atlantis"]
   atlantis_github_owner        = "dfds"
   atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
-  atlantis_chart_version       = "4.18.0"
+  atlantis_chart_version       = "4.25.0"
   atlantis_environment         = "qa"
+  atlantis_image_tag           = "0.0.50"
 
   # --------------------------------------------------
   # Blackbox Exporter
@@ -275,6 +276,7 @@ inputs = {
   # --------------------------------------------------
 
   grafana_agent_deploy = true
+  grafana_agent_chart_version = "0.10.0"
   grafana_agent_resource_memory_request = "4Gi"
   grafana_agent_resource_memory_limit   = "4Gi"
   grafana_agent_storage_enabled = true
