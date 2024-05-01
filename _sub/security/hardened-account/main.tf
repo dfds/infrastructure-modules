@@ -151,6 +151,13 @@ resource "aws_sns_topic" "guard_duty_findings" {
   provider = aws.workload
 }
 
+resource "aws_sns_topic" "guard_duty_findings_2" {
+  count = var.harden ? 1 : 0
+  name  = "guard-duty-finding-alarms"
+
+  provider = aws.workload_2
+}
+
 resource "aws_sns_topic_subscription" "guard_duty_findings" {
   count     = var.harden && var.monitoring_email != null ? 1 : 0
   topic_arn = aws_sns_topic.guard_duty_findings[count.index].arn
@@ -158,6 +165,15 @@ resource "aws_sns_topic_subscription" "guard_duty_findings" {
   endpoint  = var.monitoring_email
 
   provider = aws.workload
+}
+
+resource "aws_sns_topic_subscription" "guard_duty_findings_2" {
+  count     = var.harden && var.monitoring_email != null ? 1 : 0
+  topic_arn = aws_sns_topic.guard_duty_findings_2[count.index].arn
+  protocol  = "email"
+  endpoint  = var.monitoring_email
+
+  provider = aws.workload_2
 }
 
 resource "aws_cloudwatch_event_rule" "guard_duty_findings" {
@@ -216,6 +232,7 @@ data "aws_iam_policy_document" "sns_guard_duty_findings_access" {
 
     resources = [
       aws_sns_topic.guard_duty_findings[count.index].arn,
+      aws_sns_topic.guard_duty_findings_2[count.index].arn,
     ]
   }
 
@@ -233,6 +250,7 @@ data "aws_iam_policy_document" "sns_guard_duty_findings_access" {
 
     resources = [
       aws_sns_topic.guard_duty_findings[count.index].arn,
+      aws_sns_topic.guard_duty_findings_2[count.index].arn,
     ]
   }
 }
@@ -242,6 +260,13 @@ resource "aws_sns_topic_policy" "guard_duty_findings" {
   arn      = aws_sns_topic.guard_duty_findings[count.index].arn
   policy   = data.aws_iam_policy_document.sns_guard_duty_findings_access[count.index].json
   provider = aws.workload
+}
+
+resource "aws_sns_topic_policy" "guard_duty_findings_2" {
+  count    = var.harden ? 1 : 0
+  arn      = aws_sns_topic.guard_duty_findings_2[count.index].arn
+  policy   = data.aws_iam_policy_document.sns_guard_duty_findings_access[count.index].json
+  provider = aws.workload_2
 }
 
 resource "aws_cloudwatch_event_target" "guard_duty_findings" {
@@ -295,7 +320,7 @@ module "security-bot" {
   cloudwatch_logs_group_arn         = module.cloudtrail_local.cloudwatch_logs_group_arn
   sns_topic_arn_cis_controls        = try(aws_sns_topic.cis_controls[0].arn, null)
   sns_topic_arn_compliance_changes  = try(aws_sns_topic.compliance_changes[0].arn, null)
-  sns_topic_arn_guard_duty_findings = try(aws_sns_topic.guard_duty_findings[0].arn, null)
+  sns_topic_arn_guard_duty_findings = try([aws_sns_topic.guard_duty_findings[0].arn, aws_sns_topic.guard_duty_findings_2[0].arn], null)
 
   providers = {
     aws = aws.workload

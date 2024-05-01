@@ -50,6 +50,6 @@ variable "sns_topic_arn_compliance_changes" {
 }
 
 variable "sns_topic_arn_guard_duty_findings" {
-  type        = string
-  description = "The SNS topic where GuardDuty findings are published."
+  type        =  list(string)
+  description = "The SNS topics where GuardDuty findings are published."
 }
