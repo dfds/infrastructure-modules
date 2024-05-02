@@ -77,7 +77,7 @@ resource "aws_sns_topic_subscription" "compliance_changes" {
 }
 
 resource "aws_sns_topic_subscription" "guard_duty_findings" {
-  count     = var.deploy ? length(var.sns_topic_arn_guard_duty_findings) > 0 : 0
+  count     = var.deploy ? (length(var.sns_topic_arn_guard_duty_findings)) > 0 : 0
   topic_arn = var.sns_topic_arn_guard_duty_findings[count.index]
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.queue[0].arn
