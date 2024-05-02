@@ -335,7 +335,7 @@ resource "aws_lambda_function" "bot" {
 
 resource "aws_cloudwatch_log_group" "lambda_log_group" {
   count             = var.deploy ? 1 : 0
-  name              = "/aws/lambda/${aws_iam_role.lambda[0].name}"
+  name              = "/aws/lambda/security/${aws_iam_role.lambda[0].name}"
   retention_in_days = 90
 }
 

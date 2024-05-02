@@ -255,6 +255,60 @@ data "aws_iam_policy_document" "sns_guard_duty_findings_access" {
   }
 }
 
+
+data "aws_iam_policy_document" "sns_guard_duty_findings_access_2" {
+  count = var.harden ? 1 : 0
+
+  statement {
+    sid    = "Default"
+    effect = "Allow"
+    actions = [
+      "SNS:Subscribe",
+      "SNS:SetTopicAttributes",
+      "SNS:RemovePermission",
+      "SNS:Receive",
+      "SNS:Publish",
+      "SNS:ListSubscriptionsByTopic",
+      "SNS:GetTopicAttributes",
+      "SNS:DeleteTopic",
+      "SNS:AddPermission",
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceOwner"
+
+      values = [var.account_id]
+    }
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    resources = [
+      aws_sns_topic.guard_duty_findings_2[count.index].arn,
+    ]
+  }
+
+  statement {
+    sid    = "PublishEvents"
+    effect = "Allow"
+    actions = [
+      "SNS:Publish",
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
+    }
+
+    resources = [
+      aws_sns_topic.guard_duty_findings_2[count.index].arn,
+    ]
+  }
+}
+
 resource "aws_sns_topic_policy" "guard_duty_findings" {
   count    = var.harden ? 1 : 0
   arn      = aws_sns_topic.guard_duty_findings[count.index].arn
@@ -265,7 +319,7 @@ resource "aws_sns_topic_policy" "guard_duty_findings" {
 resource "aws_sns_topic_policy" "guard_duty_findings_2" {
   count    = var.harden ? 1 : 0
   arn      = aws_sns_topic.guard_duty_findings_2[count.index].arn
-  policy   = data.aws_iam_policy_document.sns_guard_duty_findings_access[count.index].json
+  policy   = data.aws_iam_policy_document.sns_guard_duty_findings_access_1[count.index].json
   provider = aws.workload_2
 }
 
