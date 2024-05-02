@@ -320,8 +320,8 @@ module "security-bot" {
   cloudwatch_logs_group_arn         = module.cloudtrail_local.cloudwatch_logs_group_arn
   sns_topic_arn_cis_controls        = try(aws_sns_topic.cis_controls[0].arn, null)
   sns_topic_arn_compliance_changes  = try(aws_sns_topic.compliance_changes[0].arn, null)
-  sns_topic_arn_guard_duty_findings = try([aws_sns_topic.guard_duty_findings[0].arn, aws_sns_topic.guard_duty_findings_2[0].arn], null)
-
+  sns_topic_arn_guard_duty_findings = try(aws_sns_topic.guard_duty_findings[0].arn, null)
+sns_topic_arn_guard_duty_findings_2 = try(aws_sns_topic.guard_duty_findings_2[0].arn, null)
   providers = {
     aws = aws.workload
   }
