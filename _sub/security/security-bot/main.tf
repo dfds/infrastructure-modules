@@ -42,15 +42,10 @@ data "aws_iam_policy_document" "sqs_policy" {
 
       values = [
         var.sns_topic_arn_cis_controls,
-        var.sns_topic_arn_compliance_changes
+        var.sns_topic_arn_compliance_changes,
+        var.sns_topic_arn_guard_duty_findings,
+        var.sns_topic_arn_guard_duty_findings_2
       ]
-    }
-
-    condition {
-      test     = "ArnLike"
-      variable = "aws:SourceArn"
-
-      values = var.sns_topic_arn_guard_duty_findings
     }
   }
 }
@@ -77,8 +72,16 @@ resource "aws_sns_topic_subscription" "compliance_changes" {
 }
 
 resource "aws_sns_topic_subscription" "guard_duty_findings" {
-  count     = var.deploy && length(var.sns_topic_arn_guard_duty_findings) > 0 ? 1 : 0
-  topic_arn = var.sns_topic_arn_guard_duty_findings[count.index]
+  count     = var.deploy ? 1 : 0
+  topic_arn = var.sns_topic_arn_guard_duty_findings
+  protocol  = "sqs"
+  endpoint  = aws_sqs_queue.queue[0].arn
+}
+
+
+resource "aws_sns_topic_subscription" "guard_duty_findings_2" {
+  count     = var.deploy ? 1 : 0
+  topic_arn = var.sns_topic_arn_guard_duty_findings_2
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.queue[0].arn
 }
@@ -320,7 +323,7 @@ resource "aws_lambda_function" "bot" {
       CLOUD_WATCH_LOGS_GROUP_NAME       = var.cloudwatch_logs_group_name
       SNS_TOPIC_ARN_CIS_CONTROLS        = var.sns_topic_arn_cis_controls
       SNS_TOPIC_ARN_COMPLIANCE_CHANGES  = var.sns_topic_arn_compliance_changes
-      SNS_TOPIC_ARN_GUARD_DUTY_FINDINGS = jsonencode(var.sns_topic_arn_guard_duty_findings)
+      SNS_TOPIC_ARN_GUARD_DUTY_FINDINGS = concat([var.sns_topic_arn_guard_duty_findings], [var.sns_topic_arn_guard_duty_findings_2])
       SQS_FOLLOW_UP_QUEUE_URL           = aws_sqs_queue.queue[0].id # `id` provides the URL
     }
   }
