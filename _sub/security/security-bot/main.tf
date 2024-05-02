@@ -50,7 +50,7 @@ data "aws_iam_policy_document" "sqs_policy" {
       test     = "ArnLike"
       variable = "aws:SourceArn"
 
-      values = jsonencode(var.sns_topic_arn_guard_duty_findings)
+      values = var.sns_topic_arn_guard_duty_findings
     }
   }
 }
