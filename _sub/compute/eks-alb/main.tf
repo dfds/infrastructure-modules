@@ -22,6 +22,7 @@ resource "aws_lb" "traefik" {
   }
 
   drop_invalid_header_fields = true
+  idle_timeout = 300
 }
 
 resource "aws_lb_target_group" "traefik_blue_variant" {
