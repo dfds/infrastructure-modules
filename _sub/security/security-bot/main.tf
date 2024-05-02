@@ -323,7 +323,8 @@ resource "aws_lambda_function" "bot" {
       CLOUD_WATCH_LOGS_GROUP_NAME       = var.cloudwatch_logs_group_name
       SNS_TOPIC_ARN_CIS_CONTROLS        = var.sns_topic_arn_cis_controls
       SNS_TOPIC_ARN_COMPLIANCE_CHANGES  = var.sns_topic_arn_compliance_changes
-      SNS_TOPIC_ARN_GUARD_DUTY_FINDINGS = concat([var.sns_topic_arn_guard_duty_findings], [var.sns_topic_arn_guard_duty_findings_2])
+      SNS_TOPIC_ARN_GUARD_DUTY_FINDINGS = var.sns_topic_arn_guard_duty_findings
+      SNS_TOPIC_ARN_GUARD_DUTY_FINDINGS_2 = var.sns_topic_arn_guard_duty_findings_2
       SQS_FOLLOW_UP_QUEUE_URL           = aws_sqs_queue.queue[0].id # `id` provides the URL
     }
   }
