@@ -308,7 +308,7 @@ data "aws_iam_policy_document" "sns_guard_duty_findings_access_2" {
     ]
   }
 }
-
+ 
 resource "aws_sns_topic_policy" "guard_duty_findings" {
   count    = var.harden ? 1 : 0
   arn      = aws_sns_topic.guard_duty_findings[count.index].arn
