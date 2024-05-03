@@ -231,8 +231,7 @@ data "aws_iam_policy_document" "sns_guard_duty_findings_access" {
     }
 
     resources = [
-      aws_sns_topic.guard_duty_findings[count.index].arn,
-      aws_sns_topic.guard_duty_findings_2[count.index].arn,
+      aws_sns_topic.guard_duty_findings[count.index].arn
     ]
   }
 
@@ -249,8 +248,7 @@ data "aws_iam_policy_document" "sns_guard_duty_findings_access" {
     }
 
     resources = [
-      aws_sns_topic.guard_duty_findings[count.index].arn,
-      aws_sns_topic.guard_duty_findings_2[count.index].arn,
+      aws_sns_topic.guard_duty_findings[count.index].arn
     ]
   }
 }
@@ -287,7 +285,7 @@ data "aws_iam_policy_document" "sns_guard_duty_findings_access_2" {
     }
 
     resources = [
-      aws_sns_topic.guard_duty_findings_2[count.index].arn,
+      aws_sns_topic.guard_duty_findings_2[count.index].arn
     ]
   }
 
@@ -304,7 +302,7 @@ data "aws_iam_policy_document" "sns_guard_duty_findings_access_2" {
     }
 
     resources = [
-      aws_sns_topic.guard_duty_findings_2[count.index].arn,
+      aws_sns_topic.guard_duty_findings_2[count.index].arn
     ]
   }
 }
