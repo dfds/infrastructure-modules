@@ -319,7 +319,7 @@ resource "aws_sns_topic_policy" "guard_duty_findings" {
 resource "aws_sns_topic_policy" "guard_duty_findings_2" {
   count    = var.harden ? 1 : 0
   arn      = aws_sns_topic.guard_duty_findings_2[count.index].arn
-  policy   = data.aws_iam_policy_document.sns_guard_duty_findings_access_1[count.index].json
+  policy   = data.aws_iam_policy_document.sns_guard_duty_findings_access_2[count.index].json
   provider = aws.workload_2
 }
 
@@ -333,7 +333,7 @@ resource "aws_cloudwatch_event_target" "guard_duty_findings" {
 resource "aws_cloudwatch_event_target" "guard_duty_findings_2" {
   count    = var.harden ? 1 : 0
   rule     = aws_cloudwatch_event_rule.guard_duty_findings_2[count.index].name
-  arn      = aws_sns_topic.guard_duty_findings[count.index].arn
+  arn      = aws_sns_topic.guard_duty_findings2[count.index].arn
   provider = aws.workload_2
 }
 
