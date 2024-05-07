@@ -1,7 +1,7 @@
 cluster:
   name: ${cluster_name}
-grafana-agent:
-  agent:
+alloy:
+  alloy:
 %{ if storage_enabled ~}
     clustering:
       enabled: true
@@ -75,6 +75,7 @@ externalServices:
       username: ${tempo_username}
       password: ${api_token}
 opencost:
+  enabled: ${open_cost_enabled}
   opencost:
     exporter:
       defaultClusterId: ${cluster_name}
@@ -95,5 +96,5 @@ prometheus-node-exporter:
 prometheus-operator-crds:
   enabled: false
 kube-state-metrics:
-  enabled: false  
+  enabled: false
 %{ endif ~}

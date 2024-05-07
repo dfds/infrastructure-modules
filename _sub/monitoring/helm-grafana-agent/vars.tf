@@ -129,6 +129,12 @@ variable "traces_enabled" {
   description = "Enable traces or not. Default: true"
 }
 
+variable "open_cost_enabled" {
+  type        = bool
+  description = "Enable scraping cost metrics Grafana Cloud Prometheus or not. Default: false"
+  default     = false
+}
+
 variable "enable_side_by_side" {
   type        = bool
   default     = true

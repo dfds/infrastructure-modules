@@ -1256,6 +1256,13 @@ variable "grafana_agent_traces_enabled" {
   description = "Enable traces or not. Default: true"
 }
 
+variable "grafana_agent_open_cost_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable Open Cost or not. Default: false"
+}
+
+
 variable "grafana_agent_resource_memory_limit" {
   type        = string
   default     = "20Gi"

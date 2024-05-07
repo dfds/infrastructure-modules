@@ -19,6 +19,7 @@ resource "helm_release" "grafana_agent" {
       tempo_url                     = var.tempo_url,
       tempo_username                = var.tempo_username,
       traces_enabled                = var.traces_enabled,
+      open_cost_enabled             = var.open_cost_enabled
       enable_side_by_side           = var.enable_side_by_side,
       agent_resource_memory_limit   = var.agent_resource_memory_limit,
       agent_resource_memory_request = var.agent_resource_memory_request,
