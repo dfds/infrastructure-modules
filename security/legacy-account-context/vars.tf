@@ -23,6 +23,11 @@ variable "core_account_id" {
   description = "The AWS account ID of the Organizations Core account"
 }
 
+variable "security_account_id" {
+  type = string
+  description = "The AWS account ID of the Organizations Security account"
+}
+
 variable "access_key_master" {
   type = string
 }
@@ -224,4 +229,14 @@ variable "grafana_cloud_cloudwatch_integration_iam_role" {
   })
   description = "IAM role used for Grafana Cloud IAM CloudWatch access"
   default     = null
+}
+
+# --------------------------------------------------
+# Steampipe
+# --------------------------------------------------
+
+variable "steampipe_audit_role_name" {
+  type = string
+  description = "Name of the IAM role used by Steampipe for reading resources"
+  default = "steampipe-audit"
 }
