@@ -183,6 +183,7 @@ data "aws_iam_policy_document" "restrictive" {
       "ssm:DescribeParameters",
       "sso:DescribeRegisteredRegions",
       "support:*",
+      "supportplans:*",
       "tax:Get*",
       "tax:List*",
       "elasticloadbalancing:*",
@@ -296,6 +297,7 @@ data "aws_iam_policy_document" "restrictive" {
       "cloudhsm:*",
       "cloud9:*",
       "managedblockchain:*",
+      "supportplans:*",
     ]
     resources = ["*"]
 
