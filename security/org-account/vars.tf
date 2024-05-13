@@ -41,6 +41,11 @@ variable "master_account_id" {
   description = "The AWS account ID of the Organizations Master account"
 }
 
+variable "security_account_id" {
+  type = string
+  description = "The AWS account ID of the Organizations Security account"
+}
+
 variable "tags" {
   type        = map(string)
   description = "A map of tags to apply to all the resources deployed by the module"
@@ -85,4 +90,10 @@ variable "iam_github_oidc_policy_name" {
   type        = string
   default     = "oidc-access"
   description = "Name of the policy to create"
+}
+
+variable "steampipe_audit_role_name" {
+  type = string
+  description = "Name of the IAM role used by Steampipe for reading resources"
+  default = "steampipe-audit"
 }
