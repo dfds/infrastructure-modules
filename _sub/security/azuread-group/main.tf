@@ -14,7 +14,7 @@ resource "azuread_group" "this" {
   security_enabled = true
 #  owners           = [data.azuread_client_config.current.object_id]
   administrative_unit_ids = var.administrative_unit_ids
-  prevent_duplicate_names = true
+#  prevent_duplicate_names = true
 }
 
 
