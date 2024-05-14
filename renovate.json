@@ -1,5 +1,9 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+    "config:recommended"
+    ],
+    "schedule": ["after 6am and before 8am every wednesday"],
     "branchPrefix": "feature/renovate/",
     "username": "devex-sa",
     "onboarding": false,
