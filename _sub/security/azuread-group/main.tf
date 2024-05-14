@@ -12,7 +12,7 @@ locals {
 resource "azuread_group" "this" {
   display_name     = var.display_name
   security_enabled = true
-  owners           = [data.azuread_client_config.current.object_id]
+  owners           = local.owners
   administrative_unit_ids = var.administrative_unit_ids
 #  prevent_duplicate_names = true
 }
