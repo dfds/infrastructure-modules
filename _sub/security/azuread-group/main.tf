@@ -6,7 +6,7 @@ data "azuread_user" "owner" {
 }
 
 locals {
-  owners = concat([data.azuread_client_config.current.object_id], [for user in data.azuread_user : user.object_id])
+  owners = concat([data.azuread_client_config.current.object_id], [for user in data.azuread_user.owner : user.object_id])
 }
 
 resource "azuread_group" "this" {
