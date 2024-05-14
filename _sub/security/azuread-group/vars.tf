@@ -1,7 +1,7 @@
-variable "owners" {
-  type = list(string)
-  description = "List of owners of the group"
-}
+#variable "owners" {
+#  type = list(string)
+#  description = "List of owners of the group"
+#}
 
 variable "display_name" {
   type = string
