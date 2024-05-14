@@ -12,8 +12,9 @@ data "azuread_client_config" "current" {}
 resource "azuread_group" "this" {
   display_name     = var.display_name
   security_enabled = true
-  owners           = [data.azuread_client_config.current.object_id]
+#  owners           = [data.azuread_client_config.current.object_id]
   administrative_unit_ids = var.administrative_unit_ids
+  prevent_duplicate_names = true
 }
 
 
