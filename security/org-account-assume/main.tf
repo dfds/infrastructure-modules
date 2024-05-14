@@ -197,5 +197,8 @@ module "steampipe-audit" {
   allowed_account_id        = var.security_account_id
   allowed_principal_role_name = var.steampipe_audit_role_name
 
-
+  providers = {
+    aws = aws.workload
+  }
+  
 }
