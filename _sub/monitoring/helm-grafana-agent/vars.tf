@@ -195,3 +195,9 @@ variable "storage_size" {
   description = "Storage size for Grafana Persistent Volume"
   default     = "5Gi"
 }
+
+variable "priority_class" {
+  type        = string
+  description = "Name of priority class to apply"
+  default     = "cluster-monitoring" # TODO: remove default and change to monitoring_kube_prometheus_stack_priority_class
+}

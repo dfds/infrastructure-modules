@@ -1361,6 +1361,12 @@ variable "grafana_agent_storage_size" {
   default     = "5Gi"
 }
 
+variable "grafana_agent_namespace" {
+  type        = string
+  description = "Namespace for Grafana Agent deployment"
+  default     = "grafana-agent"
+}
+
 variable "observability_tolerations" {
   type = list(object({
     key      = string,

@@ -345,7 +345,7 @@ module "monitoring_goldpinger" {
   count                  = var.monitoring_goldpinger_deploy ? 1 : 0
   chart_version          = var.monitoring_goldpinger_chart_version
   priority_class         = var.monitoring_goldpinger_priority_class
-  namespace              = module.monitoring_namespace[0].name
+  namespace              = var.grafana_agent_namespace
   servicemonitor_enabled = var.monitoring_kube_prometheus_stack_deploy
 
   depends_on = [module.monitoring_kube_prometheus_stack]
@@ -771,7 +771,7 @@ module "velero" {
 module "aws_subnet_exporter" {
   source         = "../../_sub/compute/k8s-subnet-exporter"
   count          = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
-  namespace_name = module.monitoring_namespace[0].name
+  namespace_name = var.grafana_agent_namespace
   aws_account_id = var.aws_workload_account_id
   aws_region     = var.aws_region
   image_tag      = "0.3"
@@ -841,6 +841,8 @@ module "grafana_agent_k8s_monitoring" {
   storage_enabled               = var.grafana_agent_storage_enabled
   storage_class                 = var.grafana_agent_storage_class
   storage_size                  = var.grafana_agent_storage_size
+  priority_class                = var.monitoring_kube_prometheus_stack_priority_class
+  namespace                     = var.grafana_agent_namespace
 }
 
 # --------------------------------------------------
