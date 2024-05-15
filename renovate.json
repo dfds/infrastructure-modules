@@ -1,75 +1,63 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": [
-    "config:recommended"
-    ],
-    "schedule": ["after 6am and before 8am every wednesday"],
+    "extends": ["config:recommended"],
+    "schedule": ["after 6am and before 8am on wednesday"],
     "branchPrefix": "feature/renovate/",
-    "username": "devex-sa",
-    "onboarding": false,
-    "platform": "github",
-    "repositories": ["dfds/infrastructure-modules"],
     "ignorePaths": ["test/integration/suite/vendor/**"],
     "postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"],
-    "regexManagers": [
-        {
-            "fileMatch": [".*"],
-            "matchStrings": [
-                ".*amiFilter=(?<packageName>.*?)\n(.*currentImageName=(?<currentDigest>.*?)\n)?(.*\n)?.*?(?<depName>[a-zA-Z0-9-_:]*)[ ]*?[:|=][ ]*?[\"|']?(?<currentValue>ami-[a-z0-9]{17})[\"|']?.*"
-            ],
-            "datasourceTemplate": "aws-machine-image",
-            "versioningTemplate": "aws-machine-image"
-        }
+    "customManagers": [
+      {
+        "customType": "regex",
+        "fileMatch": [".*"],
+        "matchStrings": [
+          ".*amiFilter=(?<packageName>.*?)\n(.*currentImageName=(?<currentDigest>.*?)\n)?(.*\n)?.*?(?<depName>[a-zA-Z0-9-_:]*)[ ]*?[:|=][ ]*?[\"|']?(?<currentValue>ami-[a-z0-9]{17})[\"|']?.*"
+        ],
+        "datasourceTemplate": "aws-machine-image",
+        "versioningTemplate": "aws-machine-image"
+      }
     ],
     "packageRules": [
-        {
-            "matchUpdateTypes": [
-                "pin",
-                "digest",
-                "patch",
-                "lockFileMaintenance",
-                "minor",
-                "major"
-            ],
-            "ignoreTests": false,
-            "dependencyDashboard": true,
-            "dependencyDashboardApproval": false
-        },
-        {
-            "matchUpdateTypes": [
-                "pin",
-                "digest",
-                "patch",
-                "lockFileMaintenance",
-                "minor"
-            ],
-            "matchCurrentVersion": "!/^0/"
-        },
-        {
-            "matchUpdateTypes": [
-                "pin",
-                "digest",
-                "patch",
-                "lockFileMaintenance"
-            ],
-            "addLabels": ["release:patch"],
-            "stabilityDays": 1,
-            "automerge": true
-        },
-        {
-            "matchUpdateTypes": ["minor"],
-            "addLabels": ["release:minor"],
-            "stabilityDays": 7,
-            "automerge": false
-        },
-        {
-            "matchUpdateTypes": ["major"],
-            "addLabels": ["release:major"],
-            "stabilityDays": 14,
-            "automerge": false
-        }
+      {
+        "matchUpdateTypes": [
+          "pin",
+          "digest",
+          "patch",
+          "lockFileMaintenance",
+          "minor",
+          "major"
+        ],
+        "ignoreTests": false,
+        "dependencyDashboard": true,
+        "dependencyDashboardApproval": false
+      },
+      {
+        "matchUpdateTypes": [
+          "pin",
+          "digest",
+          "patch",
+          "lockFileMaintenance",
+          "minor"
+        ],
+        "matchCurrentVersion": "!/^0/"
+      },
+      {
+        "matchUpdateTypes": ["pin", "digest", "patch", "lockFileMaintenance"],
+        "addLabels": ["release:patch"],
+        "minimumReleaseAge": "1 day",
+        "automerge": true
+      },
+      {
+        "matchUpdateTypes": ["minor"],
+        "addLabels": ["release:minor"],
+        "minimumReleaseAge": "7 days",
+        "automerge": false
+      },
+      {
+        "matchUpdateTypes": ["major"],
+        "addLabels": ["release:major"],
+        "minimumReleaseAge": "14 days",
+        "automerge": false
+      }
     ],
-    "azure-pipelines": {
-        "enabled": true
-    }
-}
+    "azure-pipelines": {"enabled": true}
+  }
