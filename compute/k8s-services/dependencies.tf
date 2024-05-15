@@ -315,6 +315,9 @@ locals {
     STAGING_GRAFANA_AGENT_TEMPO_URL                                     = var.staging_grafana_agent_tempo_url
     STAGING_GRAFANA_AGENT_TEMPO_USERNAME                                = var.staging_grafana_agent_tempo_username
     PRODUCTION_GRAFANA_CLOUD_API_KEY                                    = var.atlantis_grafana_cloud_api_key
+    PRODUCTION_GRAFANA_CLOUD_ARM_CLIENT_ID                              = var.atlantis_grafana_cloud_arm_client_id
+    PRODUCTION_GRAFANA_CLOUD_ARM_CLIENT_SECRET                          = var.atlantis_grafana_cloud_arm_client_secret
+    PRODUCTION_GRAFANA_CLOUD_ARM_TENANT_ID                              = var.atlantis_grafana_cloud_arm_tenant_id
   }
 
   atlantis_env_vars = var.crossplane_deploy ? merge(local.atlantis_env_vars_default, local.confluent_env_vars_for_atlantis) : local.atlantis_env_vars_default

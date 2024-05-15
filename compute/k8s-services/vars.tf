@@ -723,6 +723,25 @@ variable "atlantis_grafana_cloud_api_key" {
   sensitive   = true
 }
 
+variable "atlantis_grafana_cloud_arm_client_id" {
+  type        = string
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "Grafana cloud app registration client ID"
+}
+
+variable "atlantis_grafana_cloud_arm_tenant_id" {
+  type        = string
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "Grafana cloud app registration tenant ID"
+}
+
+variable "atlantis_grafana_cloud_arm_client_secret" {
+  type        = string
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "Grafana cloud app registration client secret"
+  sensitive   = true
+}
+
 # --------------------------------------------------
 # Crossplane
 # --------------------------------------------------
