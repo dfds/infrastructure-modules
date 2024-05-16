@@ -24,7 +24,7 @@ spec:
 
   sourceRef:
     kind: GitRepository
-    name: "flux-system" 
+    name: "flux-system"
   path: "./${local.helm_repo_path}"
   prune: ${var.prune}
 YAML
@@ -39,7 +39,7 @@ patchesStrategicMerge:
 YAML
 
   helm_patch = <<YAML
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: ${var.deploy_name}
