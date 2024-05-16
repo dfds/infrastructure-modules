@@ -742,6 +742,20 @@ variable "atlantis_grafana_cloud_arm_client_secret" {
   sensitive   = true
 }
 
+variable "atlantis_grafana_cloud_config_admins_group_id" {
+  type = string
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "The ID of the group for config admins for grafana cloud"
+  sensitive   = true
+}
+
+variable "atlantis_grafana_cloud_readers_group_id" {
+  type = string
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "The ID of the group for readers for grafana cloud"
+  sensitive   = true
+}
+
 # --------------------------------------------------
 # Crossplane
 # --------------------------------------------------
