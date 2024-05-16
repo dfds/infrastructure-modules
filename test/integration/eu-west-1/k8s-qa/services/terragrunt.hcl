@@ -90,14 +90,14 @@ inputs = {
   # Flux CD
   # --------------------------------------------------
 
-  fluxcd_version                    = "v2.1.2"
+  fluxcd_version                    = "v2.3.0"
 
   fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
   fluxcd_bootstrap_repo_branch      = "main"
   fluxcd_bootstrap_repo_owner       = "dfds"
 
   fluxcd_apps_repo_name             = "platform-apps"
-  fluxcd_apps_repo_branch           = "main"
+  fluxcd_apps_repo_branch           = "qa"
   fluxcd_apps_repo_owner            = "dfds"
 
 
