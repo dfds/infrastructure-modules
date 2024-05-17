@@ -1,5 +1,7 @@
 cluster:
   name: ${cluster_name}
+
+### Grafana Agent
 alloy:
   alloy:
 %{ if storage_enabled ~}
@@ -58,32 +60,29 @@ alloy:
             requests:
               storage: ${storage_size}
 %{ endif ~}
+###################################
+
+# Grafana Agent Config
 externalServices:
   prometheus:
     host: ${prometheus_url}
-
-    ## Remove this block  when PR is ready
-    authMode: none
-    writeEndpoint: /api/v1/push
-    queryEndpoint: /api/v1/query
-    ####################################
-  loki:
-    host: ${loki_url}
-    ## Remove this block  when PR is ready
-    authMode: none
-    ####################################
-
-# externalServices: # TODO: re-activate this when PR is ready
-#   prometheus:
-#     host: ${prometheus_url}
 #     basicAuth:
 #       username: "${prometheus_username}"
 #       password: ${api_token}
-#   loki:
-#     host: ${loki_url}
+    ## Enable this for local testing ##
+    authMode: none
+    writeEndpoint: /api/v1/push
+    queryEndpoint: /api/v1/query
+    ###################################
+  loki:
+    host: ${loki_url}
+    ## Enable this for local testing ##
+    authMode: none
+    ###################################
 #     basicAuth:
 #       username: ${loki_username}
 #       password: ${api_token}
+
 #   tempo:
 #     host: ${tempo_url}
 #     basicAuth:
@@ -97,51 +96,41 @@ opencost:
     prometheus:
       external:
         url: ${prometheus_url}/api/prom
+
+## Traces configurations
 traces:
   enabled: ${traces_enabled}
-%{ if enable_side_by_side ~}
-metrics:
-  node-exporter: # activating this causes duplicates => integrations/node_exporter
-    enabled: false
-    # labelMatchers:
-    #   app.kubernetes.io/name: prometheus-node-exporter
-    service:
-      isTLS: false
-  kube-state-metrics:
-    # -- Scrape cluster object metrics from Kube State Metrics
-    enabled: false
+###################################
 
-  # Container metrics from cAdvisor
-  cadvisor:
-    # -- Scrape container metrics from cAdvisor
-    enabled: false
-
-
-prometheus-operator-crds:
-  enabled: false
-# kube-state-metrics:
-#   enabled: false
-%{ endif ~}
-
-prometheus-node-exporter:
+## Logging configurations
+logs:
   enabled: true
-  podLabels:
-    ## Add the 'node-exporter' label to be used by serviceMonitor to match standard common usage in rules and grafana dashboards
-    ##
-    jobLabel: node-exporter
-  resources:
-    requests:
-      cpu: 20m
-      memory: 50Mi
-  priorityClassName: ${prometheus_node_exporter_priorityclass}
-  prometheus:
-    monitor: # ServiceMonitor
-      enabled: true
-      jobLabel: jobLabel # it will set the jobLabel in the ServiceMonitor spec to look for label value. If not set it will use app.kubernetes.io/name instead
-      additionalLabels: {
-        release: monitoring
+  pod_logs:
+    enabled: true
+  cluster_events:
+    enabled: true
+
+alloy-events: {}
+alloy-logs: {}
+###################################
+
+# Metrics configurations and infrastructure
+metrics:
+  enabled: true
+  cost:
+    enabled: ${open_cost_enabled}
+  node-exporter:
+    enabled: true
+  serviceMonitors:
+    enabled: true
+    selector: |- # TODO: Delete this block when shutting down the old Prometheus
+      match_expression {
+        key = "release"
+        operator = "NotIn"
+        values = ["monitoring"]
       }
 
+### Prometheus Operator components
 kube-state-metrics:
   enabled: true
   customLabels:
@@ -151,9 +140,8 @@ kube-state-metrics:
       cpu: 20m
       memory: 100Mi
   priorityClassName: ${kube_state_metrics_priorityclass}
-  # releaseLabel: true
   prometheus:
-    monitor:
+    monitor: # ServiceMonitor - TODO: Delete this block when shutting down the old Prometheus
       enabled: true
       jobLabel: jobLabel
       additionalLabels: {
@@ -187,8 +175,72 @@ kube-state-metrics:
 %{ endfor ~}
 %{ endif ~}
 
-extraObjects:
-- apiVersion: monitoring.coreos.com/v1 # TODO: give a different name to highlight that is from kube-prometheus-stack (legacy) and also enable the cAdvisor job from this chart
+prometheus-node-exporter:
+  enabled: true
+  podLabels:
+    jobLabel: node-exporter # Used for to set the label on the service for the ServiceMonitor
+  resources:
+    requests:
+      cpu: 20m
+      memory: 50Mi
+  priorityClassName: ${prometheus_node_exporter_priorityclass}
+  prometheus: #
+    monitor: # TODO: Delete this block when shutting down the old Prometheus
+      enabled: true
+      jobLabel: jobLabel # Used for Prometheus to name the job. If jobLabel has not been set on the Service then default value will come from app.kubernetes.io/name
+      additionalLabels: {
+        release: monitoring
+      }
+
+prometheus-operator-crds:
+# Set this to true when removing the old Prometheus stack
+  enabled: false
+
+
+extraObjects: # Delete these service monitors when shutting down the old Prometheus
+###################################
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    name: kube-prometheus-stack-coredns
+    namespace: grafana-agent
+    labels:
+      app: kube-prometheus-stack-coredns
+      app.kubernetes.io/instance: kube-prometheus-stack
+      release: monitoring
+  spec:
+    jobLabel: jobLabel
+    selector:
+      matchLabels:
+        app: kube-prometheus-stack-coredns
+        release: monitoring
+    namespaceSelector:
+      matchNames:
+        - kube-system
+    endpoints:
+    - port: http-metrics
+      bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: kube-prometheus-stack-coredns
+    labels:
+      app: kube-prometheus-stack-coredns
+      jobLabel: coredns
+      app.kubernetes.io/instance: kube-prometheus-stack
+      release: monitoring
+    namespace: kube-system
+  spec:
+    clusterIP: None
+    ports:
+      - name: http-metrics
+        port: 9153
+        protocol: TCP
+        targetPort: 9153
+    selector:
+      k8s-app: kube-dns
+###################################
+- apiVersion: monitoring.coreos.com/v1
   kind: ServiceMonitor
   metadata:
     labels:
@@ -254,47 +306,7 @@ extraObjects:
       matchLabels:
         app.kubernetes.io/name: kubelet
         k8s-app: kubelet
-- apiVersion: monitoring.coreos.com/v1
-  kind: ServiceMonitor
-  metadata:
-    name: kube-prometheus-stack-coredns
-    namespace: grafana-agent
-    labels:
-      app: kube-prometheus-stack-coredns
-      app.kubernetes.io/instance: kube-prometheus-stack
-      release: monitoring # was missing
-  spec:
-    jobLabel: jobLabel
-    selector:
-      matchLabels:
-        app: kube-prometheus-stack-coredns
-        release: monitoring
-    namespaceSelector:
-      matchNames:
-        - kube-system
-    endpoints:
-    - port: http-metrics
-      bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-- apiVersion: v1
-  kind: Service
-  metadata:
-    name: kube-prometheus-stack-coredns
-    labels:
-      app: kube-prometheus-stack-coredns
-      jobLabel: coredns # this is used for the exporter
-      app.kubernetes.io/instance: kube-prometheus-stack
-      release: monitoring
-    namespace: kube-system
-  spec:
-    clusterIP: None
-    ports:
-      - name: http-metrics
-        port: 9153
-        protocol: TCP
-        targetPort: 9153
-    selector:
-      k8s-app: kube-dns
-
+##########################
 - apiVersion: monitoring.coreos.com/v1
   kind: ServiceMonitor
   metadata:
