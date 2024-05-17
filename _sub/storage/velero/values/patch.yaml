@@ -1,0 +1,50 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: velero
+  namespace: flux-system
+spec:
+  chart:
+    spec:
+      chart: velero
+      version: ${helm_chart_version}
+      sourceRef:
+        kind: HelmRepository
+        name: ${helm_repo_name}
+        namespace: flux-system
+  values:
+    image:
+      repository: velero/velero
+      tag: ${image_tag}
+    snapshotsEnabled: ${snapshots_enabled}
+    initContainers:
+      - name: velero-plugin-for-aws
+        image: velero/velero-plugin-for-aws:${plugin_for_aws_version}
+        volumeMounts:
+          - mountPath: /target
+            name: plugins
+      - name: velero-plugin-for-csi
+        image: velero/velero-plugin-for-csi:${plugin_for_csi_version}
+        volumeMounts:
+          - mountPath: /target
+            name: plugins
+    configuration:
+      logLevel: ${log_level}
+      backupStorageLocation:
+        - provider: aws
+          bucket: ${bucket_name}
+          config:
+            region: ${bucket_region}
+    serviceAccount:
+      server:
+        create: true
+        annotations:
+          eks.amazonaws.com/role-arn: "${velero_role_arn}"
+          eks.amazonaws.com/sts-regional-endpoints: "true"
+    schedules:
+      ${cluster_name}-cluster-backup:
+        schedule: "${cron_schedule}"
+        template:
+          ttl: "${schedules_template_ttl}"
+          snapshotVolumes: ${snapshots_enabled}
+          includeClusterResources: ${schedules_template_include_cluster_resources}

@@ -3,27 +3,54 @@
 # is already applied through Terragrunt.
 # --------------------------------------------------
 
+# --------------------------------------------------
+# Create JSON files to be picked up by Flux CD
+# --------------------------------------------------
+
 resource "github_repository_file" "velero_flux_helm_path" {
-  repository          = var.repo_name
-  branch              = data.github_branch.flux_branch.branch
-  file                = "${local.cluster_repo_path}/${local.app_install_name}-helm.yaml"
-  content             = jsonencode(local.app_helm_path)
+  repository = var.repo_name
+  branch     = data.github_branch.flux_branch.branch
+  file       = "${local.cluster_repo_path}/${local.app_install_name}-helm.yaml"
+  content = templatefile("${path.module}/values/app-config.yaml", {
+    app_install_name = local.app_install_name
+    helm_repo_path   = local.helm_repo_path
+    prune            = var.prune
+  })
   overwrite_on_create = var.overwrite_on_create
 }
 
 resource "github_repository_file" "velero_flux_helm_init" {
-  repository          = var.repo_name
-  branch              = data.github_branch.flux_branch.branch
-  file                = "${local.helm_repo_path}/kustomization.yaml"
-  content             = jsonencode(local.helm_init)
+  repository = var.repo_name
+  branch     = data.github_branch.flux_branch.branch
+  file       = "${local.helm_repo_path}/kustomization.yaml"
+  content = templatefile("${path.module}/values/kustomization.yaml", {
+    gitops_apps_repo_url    = var.gitops_apps_repo_url
+    deploy_name             = var.deploy_name
+    gitops_apps_repo_branch = var.gitops_apps_repo_branch
+  })
   overwrite_on_create = var.overwrite_on_create
 }
 
 resource "github_repository_file" "velero_flux_helm_patch_yaml" {
-  repository          = var.repo_name
-  branch              = data.github_branch.flux_branch.branch
-  file                = "${local.helm_repo_path}/patch.yaml"
-  content             = local.helm_patch_yaml
+  repository = var.repo_name
+  branch     = data.github_branch.flux_branch.branch
+  file       = "${local.helm_repo_path}/patch.yaml"
+  content = templatefile("${path.module}/values/patch.yaml", {
+    helm_chart_version                           = var.helm_chart_version
+    helm_repo_name                               = var.helm_repo_name
+    image_tag                                    = var.image_tag
+    snapshots_enabled                            = var.snapshots_enabled
+    plugin_for_aws_version                       = var.plugin_for_aws_version
+    plugin_for_csi_version                       = var.plugin_for_csi_version
+    log_level                                    = var.log_level
+    bucket_name                                  = local.bucket_name
+    bucket_region                                = var.bucket_region
+    velero_role_arn                              = aws_iam_role.velero_role.arn
+    cluster_name                                 = var.cluster_name
+    cron_schedule                                = var.cron_schedule
+    schedules_template_ttl                       = var.schedules_template_ttl
+    schedules_template_include_cluster_resources = var.schedules_template_include_cluster_resources
+  })
   overwrite_on_create = var.overwrite_on_create
 }
 
