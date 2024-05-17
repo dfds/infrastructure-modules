@@ -200,6 +200,6 @@ resource "azuread_application" "grafana" {
 }
 
 resource "azuread_application_password" "grafana" {
-  count                 = length(var.grafana_azure_tenant_id) == 36 ? 1 : 0
+  count          = length(var.grafana_azure_tenant_id) == 36 ? 1 : 0
   application_id = "/applications/${azuread_application.grafana[0].object_id}"
 }
