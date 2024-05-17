@@ -1,6 +1,8 @@
 provider "flux" {
   kubernetes = {
-    config_path = var.kubeconfig_path
+    host                   = var.endpoint
+    token                  = var.token
+    cluster_ca_certificate = var.cluster_ca_certificate
   }
   git = {
     url = "ssh://git@github.com/${data.github_repository.main.full_name}.git"
