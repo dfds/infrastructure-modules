@@ -843,6 +843,7 @@ module "grafana_agent_k8s_monitoring" {
   storage_enabled               = var.grafana_agent_storage_enabled
   storage_class                 = var.grafana_agent_storage_class
   storage_size                  = var.grafana_agent_storage_size
+  timeout                       = var.grafana_agent_helm_install_timeout
 }
 
 # --------------------------------------------------
