@@ -1378,7 +1378,7 @@ variable "grafana_agent_storage_size" {
 variable "grafana_agent_helm_install_timeout" {
   type        = number
   description = "Timeout for helm install command"
-  default     = 300
+  default     = 600
 }
 
 variable "observability_tolerations" {
