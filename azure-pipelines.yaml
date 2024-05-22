@@ -36,7 +36,7 @@ resources:
         TF_VAR_grafana_agent_tempo_url: $(TF_VAR_grafana_agent_tempo_url)
         TF_VAR_grafana_agent_tempo_username: $(TF_VAR_grafana_agent_tempo_username)
     - container: aws-nuke
-      image: dfdsdk/aws-nuke:0.0.19
+      image: dfdsdk/aws-nuke:0.0.20
       env:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
