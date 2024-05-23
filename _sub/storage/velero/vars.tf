@@ -26,6 +26,12 @@ variable "bucket_arn" {
   description = "The arn of the S3 bucket that contains the Velero backup. Only used if S3 bucket is in a different account"
 }
 
+variable "bucket_region" {
+  type        = string
+  default     = "eu-west-1"
+  description = "The region in which the S3 bucket that contains the Velero backup has been created"
+}
+
 variable "snapshots_enabled" {
   type        = bool
   default     = false

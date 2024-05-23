@@ -455,8 +455,10 @@ module "platform_fluxcd" {
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   cluster_name            = var.eks_cluster_name
-  kubeconfig_path         = local.kubeconfig_path
   prune                   = var.fluxcd_prune
+  endpoint                = data.aws_eks_cluster.eks.endpoint
+  token                   = data.aws_eks_cluster_auth.eks.token
+  cluster_ca_certificate  = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
 
   providers = {
     github = github.fluxcd
@@ -843,6 +845,7 @@ module "grafana_agent_k8s_monitoring" {
   storage_size                  = var.grafana_agent_storage_size
   priority_class                = var.monitoring_kube_prometheus_stack_priority_class
   namespace                     = var.grafana_agent_namespace
+  timeout                       = var.grafana_agent_helm_install_timeout
 }
 
 # --------------------------------------------------

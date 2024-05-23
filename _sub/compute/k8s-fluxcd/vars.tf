@@ -39,11 +39,6 @@ variable "gitops_apps_repo_branch" {
   description = "The default branch for your GitOps manifests"
 }
 
-variable "kubeconfig_path" {
-  type    = string
-  default = null
-}
-
 variable "overwrite_on_create" {
   type        = bool
   default     = true
@@ -54,4 +49,16 @@ variable "prune" {
   type        = bool
   default     = true
   description = "Enable Garbage collection"
+}
+
+variable "endpoint" {
+  type = string
+}
+
+variable "token" {
+  type = string
+}
+
+variable "cluster_ca_certificate" {
+  type = string
 }

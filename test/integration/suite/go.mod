@@ -1,13 +1,15 @@
 module go.dfds.cloud/infrastructure-modules/test/integration/suite
 
-go 1.22
+go 1.22.0
+
+toolchain go1.22.1
 
 require (
 	github.com/fluxcd/pkg/apis/meta v1.4.0
 	github.com/stretchr/testify v1.9.0
-	k8s.io/api v0.30.0
-	k8s.io/apimachinery v0.30.0
-	k8s.io/client-go v0.30.0
+	k8s.io/api v0.30.1
+	k8s.io/apimachinery v0.30.1
+	k8s.io/client-go v0.30.1
 )
 
 require (

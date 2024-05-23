@@ -70,7 +70,7 @@ locals {
   }
 
   helm_patch = {
-    "apiVersion" = "helm.toolkit.fluxcd.io/v2beta1"
+    "apiVersion" = "helm.toolkit.fluxcd.io/v2"
     "kind"       = "HelmRelease"
     "metadata" = {
       "name"      = var.deploy_name

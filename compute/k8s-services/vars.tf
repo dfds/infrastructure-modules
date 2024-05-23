@@ -742,6 +742,20 @@ variable "atlantis_grafana_cloud_arm_client_secret" {
   sensitive   = true
 }
 
+variable "atlantis_grafana_cloud_config_admins_group_id" {
+  type        = string
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "The ID of the group for config admins for grafana cloud"
+  sensitive   = true
+}
+
+variable "atlantis_grafana_cloud_readers_group_id" {
+  type        = string
+  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "The ID of the group for readers for grafana cloud"
+  sensitive   = true
+}
+
 # --------------------------------------------------
 # Crossplane
 # --------------------------------------------------
@@ -1360,11 +1374,16 @@ variable "grafana_agent_storage_size" {
   description = "Storage size for Grafana Persistent Volume"
   default     = "5Gi"
 }
-
 variable "grafana_agent_namespace" {
   type        = string
   description = "Namespace for Grafana Agent deployment"
   default     = "grafana-agent"
+}
+
+variable "grafana_agent_helm_install_timeout" {
+  type        = number
+  description = "Timeout for helm install command"
+  default     = 600
 }
 
 variable "observability_tolerations" {
