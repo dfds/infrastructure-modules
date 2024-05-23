@@ -66,28 +66,20 @@ alloy:
 externalServices:
   prometheus:
     host: ${prometheus_url}
-#     basicAuth:
-#       username: "${prometheus_username}"
-#       password: ${api_token}
-    ## Enable this for local testing ##
-    authMode: none
-    writeEndpoint: /api/v1/push
-    queryEndpoint: /api/v1/query
-    ###################################
+    basicAuth:
+      username: "${prometheus_username}"
+      password: ${api_token}
   loki:
     host: ${loki_url}
-    ## Enable this for local testing ##
-    authMode: none
-    ###################################
-#     basicAuth:
-#       username: ${loki_username}
-#       password: ${api_token}
+    basicAuth:
+      username: ${loki_username}
+      password: ${api_token}
 
-#   tempo:
-#     host: ${tempo_url}
-#     basicAuth:
-#       username: ${tempo_username}
-#       password: ${api_token}
+  tempo:
+    host: ${tempo_url}
+    basicAuth:
+      username: ${tempo_username}
+      password: ${api_token}
 opencost:
   enabled: ${open_cost_enabled}
   opencost:
@@ -117,6 +109,8 @@ alloy-logs: {}
 # Metrics configurations and infrastructure
 metrics:
   enabled: true
+  autoDiscover:
+    enabled: false
   cost:
     enabled: ${open_cost_enabled}
   node-exporter:
@@ -196,14 +190,33 @@ prometheus-operator-crds:
 # Set this to true when removing the old Prometheus stack
   enabled: false
 
+extraObjects:
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    labels:
+      app: prometheus-service-metrics-scraper
+    name: prometheus-service-metrics-scraper
+  spec:
+    endpoints:
+    - path: /metrics
+      port: metrics
+      scrapeTimeout: 30s
+    - path: /metrics
+      port: admin
+    - path: /metrics
+      port: http
+    namespaceSelector:
+      any: true
+    selector:
+      matchLabels:
+        scrape-service-metrics: "true"
 
-extraObjects: # Delete these service monitors when shutting down the old Prometheus
-###################################
+# Delete below service monitors when shutting down the old Prometheus
 - apiVersion: monitoring.coreos.com/v1
   kind: ServiceMonitor
   metadata:
     name: kube-prometheus-stack-coredns
-    namespace: grafana-agent
     labels:
       app: kube-prometheus-stack-coredns
       app.kubernetes.io/instance: kube-prometheus-stack
@@ -247,7 +260,6 @@ extraObjects: # Delete these service monitors when shutting down the old Prometh
       app: kube-prometheus-stack-kubelet
       release: monitoring
     name: monitoring-kube-prometheus-kubelet
-    namespace: grafana-agent
   spec:
     attachMetadata:
       node: false
@@ -311,7 +323,6 @@ extraObjects: # Delete these service monitors when shutting down the old Prometh
   kind: ServiceMonitor
   metadata:
     name: kube-prometheus-stack-apiserver
-    namespace: grafana-agent
     labels:
       app: kube-prometheus-stack-apiserver
       app.kubernetes.io/instance: kube-prometheus-stack
@@ -339,3 +350,4 @@ extraObjects: # Delete these service monitors when shutting down the old Prometh
       matchLabels:
         component: apiserver
         provider: kubernetes
+  ####
