@@ -345,10 +345,8 @@ module "monitoring_goldpinger" {
   count                  = var.monitoring_goldpinger_deploy ? 1 : 0
   chart_version          = var.monitoring_goldpinger_chart_version
   priority_class         = var.monitoring_goldpinger_priority_class
-  namespace              = var.grafana_agent_namespace
+  namespace              = module.grafana_agent_k8s_monitoring[0].outputs.namespace
   servicemonitor_enabled = var.monitoring_kube_prometheus_stack_deploy
-
-  depends_on = [module.monitoring_kube_prometheus_stack]
 }
 
 
@@ -437,8 +435,7 @@ module "metrics_server" {
 
 module "aws_node_service" {
   source     = "../../_sub/monitoring/aws-node"
-  count      = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
-  depends_on = [module.monitoring_kube_prometheus_stack]
+  count      = var.grafana_agent_deploy ? 1 : 0
 }
 
 # --------------------------------------------------
@@ -616,7 +613,7 @@ module "blackbox_exporter_flux_manifests" {
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   monitoring_targets      = local.blackbox_exporter_monitoring_targets
-  namespace               = module.monitoring_namespace[0].name
+  namespace               = module.grafana_agent_k8s_monitoring[0].outputs.namespace
   overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
@@ -626,7 +623,7 @@ module "blackbox_exporter_flux_manifests" {
     github = github.fluxcd
   }
 
-  depends_on = [module.monitoring_kube_prometheus_stack, module.platform_fluxcd]
+  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -772,8 +769,8 @@ module "velero" {
 
 module "aws_subnet_exporter" {
   source         = "../../_sub/compute/k8s-subnet-exporter"
-  count          = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
-  namespace_name = var.grafana_agent_namespace
+  count          = var.grafana_agent_deploy ? 1 : 0
+  namespace_name = module.grafana_agent_k8s_monitoring[0].outputs.namespace
   aws_account_id = var.aws_workload_account_id
   aws_region     = var.aws_region
   image_tag      = "0.3"
