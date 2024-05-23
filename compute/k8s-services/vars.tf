@@ -1374,6 +1374,7 @@ variable "grafana_agent_storage_size" {
   description = "Storage size for Grafana Persistent Volume"
   default     = "5Gi"
 }
+
 variable "grafana_agent_namespace" {
   type        = string
   description = "Namespace for Grafana Agent deployment"
