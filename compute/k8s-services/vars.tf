@@ -1377,8 +1377,8 @@ variable "grafana_agent_storage_size" {
 
 variable "grafana_agent_namespace" {
   type        = string
-  description = "Namespace for Grafana Agent deployment"
-  default     = "grafana-agent"
+  description = "Namespace for hosting monitoring components"
+  default     = "grafana"
 }
 
 variable "grafana_agent_helm_install_timeout" {

@@ -16,8 +16,8 @@ variable "chart_version" {
 
 variable "namespace" {
   type        = string
-  description = "Namespace to apply Grafana Agent in"
-  default     = "grafana-agent"
+  description = "Namespace to apply monitoring components in"
+  default     = "grafana"
   validation {
     condition     = can(regex("[a-z]+", var.namespace))
     error_message = "Namespace must contain at least one letter."
