@@ -435,9 +435,9 @@ module "metrics_server" {
 # Scrape Prometheus metrics for aws-node Daemonset
 # --------------------------------------------------
 
-module "aws_node_service" { # TODO: Need to be deployed when grafana_agent_deploy = false
+module "aws_node_service" {
   source = "../../_sub/monitoring/aws-node"
-  count  = var.grafana_agent_deploy ? 1 : 0
+  count  = var.grafana_agent_deploy || var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
 }
 
 # --------------------------------------------------
