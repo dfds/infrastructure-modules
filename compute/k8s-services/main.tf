@@ -402,8 +402,8 @@ module "monitoring_kube_prometheus_stack" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
+  enable_prom_kube_stack_components = var.grafana_agent_deploy ? false : true
+  depends_on                        = [module.platform_fluxcd]
 }
 
 
@@ -435,9 +435,9 @@ module "metrics_server" {
 # Scrape Prometheus metrics for aws-node Daemonset
 # --------------------------------------------------
 
-module "aws_node_service" {
-  source     = "../../_sub/monitoring/aws-node"
-  count      = var.grafana_agent_deploy ? 1 : 0
+module "aws_node_service" { # TODO: Need to be deployed when grafana_agent_deploy = false
+  source = "../../_sub/monitoring/aws-node"
+  count  = var.grafana_agent_deploy ? 1 : 0
 }
 
 # --------------------------------------------------

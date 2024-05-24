@@ -40,6 +40,7 @@ resource "helm_release" "kube_prometheus_stack" {
 
   values = [
     templatefile("${path.module}/values/components.yaml", {
+      enable_components = var.enable_prom_kube_stack_components
     }),
 
     templatefile("${path.module}/values/grafana.yaml", {

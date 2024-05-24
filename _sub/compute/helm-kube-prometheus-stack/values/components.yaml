@@ -11,17 +11,16 @@ kubeProxy:
   enabled: false
 
 nodeExporter:
-  enabled: false
+  enabled: ${enable_components}
 
 kubeStateMetrics:
-  enabled: false
+  enabled: ${enable_components}
 
 kubelet:
-  enabled: false
+  enabled: ${enable_components}
 
 coreDns:
-  enabled: false
-
+  enabled: ${enable_components}
 
 kubeApiServer:
-  enabled: false
+  enabled: ${enable_components}

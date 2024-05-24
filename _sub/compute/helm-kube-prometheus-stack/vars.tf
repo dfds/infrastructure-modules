@@ -235,3 +235,8 @@ variable "prune" {
   default     = true
   description = "Enable Garbage collection"
 }
+
+variable "enable_prom_kube_stack_components" {
+  type        = bool
+  description = "Toggle to enable or disable kube-prometheus-stack components"
+}
