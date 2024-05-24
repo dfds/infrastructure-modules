@@ -1207,6 +1207,11 @@ variable "kyverno_namespace_labels" {
 # --------------------------------------------------
 # Subnet Exporter
 # --------------------------------------------------
+variable "subnet_exporter_deploy" {
+  type = bool
+  default = true
+  description = "Feature toggle for Subnet Exporter module"
+}
 
 variable "subnet_exporter_iam_role_name" {
   type        = string
