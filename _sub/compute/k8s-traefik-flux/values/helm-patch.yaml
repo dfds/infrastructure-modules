@@ -14,5 +14,8 @@ spec:
       traefik:
         nodePort: ${admin_nodeport}
     additionalArguments: ${additional_args}
+      %{~ for arg in additional_args ~}
+      - ${arg}
+      %{~ endfor ~}
     deployment:
       replicas: ${replicas}
