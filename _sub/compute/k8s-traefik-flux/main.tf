@@ -5,7 +5,7 @@ resource "github_repository_file" "traefik_helm" {
   repository = var.repo_name
   branch     = local.repo_branch
   file       = "${local.cluster_repo_path}/${local.app_install_name}-helm.yaml"
-  content = templatefile("${path.module}/values/app-helm-path.yaml", {
+  content = templatefile("${path.module}/values/app-helm.yaml", {
     app_install_name = local.app_install_name
     helm_repo_path   = local.helm_repo_path
     prune            = var.prune
