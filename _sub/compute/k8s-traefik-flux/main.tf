@@ -69,6 +69,6 @@ resource "github_repository_file" "traefik_config_init" {
   repository          = var.repo_name
   branch              = local.repo_branch
   file                = "${local.config_repo_path}/kustomization.yaml"
-  content             = file("${path.module}/vaalues/config-init.yaml")
+  content             = file("${path.module}/values/config-init.yaml")
   overwrite_on_create = var.overwrite_on_create
 }
