@@ -13,7 +13,7 @@ spec:
         nodePort: ${http_nodeport}
       traefik:
         nodePort: ${admin_nodeport}
-    additionalArguments: ${additional_args}
+    additionalArguments:
       %{~ for arg in additional_args ~}
       - ${arg}
       %{~ endfor ~}
