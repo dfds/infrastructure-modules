@@ -345,10 +345,10 @@ module "monitoring_goldpinger" {
   count                  = var.monitoring_goldpinger_deploy ? 1 : 0
   chart_version          = var.monitoring_goldpinger_chart_version
   priority_class         = var.monitoring_goldpinger_priority_class
-  namespace              = module.monitoring_namespace[0].name
+  namespace              = var.grafana_agent_deploy ? var.grafana_agent_namespace : module.monitoring_namespace[0].name
   servicemonitor_enabled = var.monitoring_kube_prometheus_stack_deploy
 
-  depends_on = [module.monitoring_kube_prometheus_stack]
+  depends_on = [module.grafana_agent_k8s_monitoring]
 }
 
 
@@ -402,8 +402,8 @@ module "monitoring_kube_prometheus_stack" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
+  enable_prom_kube_stack_components = var.grafana_agent_deploy ? false : true
+  depends_on                        = [module.platform_fluxcd]
 }
 
 
@@ -436,9 +436,8 @@ module "metrics_server" {
 # --------------------------------------------------
 
 module "aws_node_service" {
-  source     = "../../_sub/monitoring/aws-node"
-  count      = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
-  depends_on = [module.monitoring_kube_prometheus_stack]
+  source = "../../_sub/monitoring/aws-node"
+  count  = var.grafana_agent_deploy || var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
 }
 
 # --------------------------------------------------
@@ -616,7 +615,7 @@ module "blackbox_exporter_flux_manifests" {
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   monitoring_targets      = local.blackbox_exporter_monitoring_targets
-  namespace               = module.monitoring_namespace[0].name
+  namespace               = var.grafana_agent_deploy ? var.grafana_agent_namespace : module.monitoring_namespace[0].name
   overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
@@ -626,7 +625,7 @@ module "blackbox_exporter_flux_manifests" {
     github = github.fluxcd
   }
 
-  depends_on = [module.monitoring_kube_prometheus_stack, module.platform_fluxcd]
+  depends_on = [module.grafana_agent_k8s_monitoring, module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -772,8 +771,8 @@ module "velero" {
 
 module "aws_subnet_exporter" {
   source         = "../../_sub/compute/k8s-subnet-exporter"
-  count          = var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
-  namespace_name = module.monitoring_namespace[0].name
+  count          = var.subnet_exporter_deploy ? 1 : 0
+  namespace_name = var.grafana_agent_deploy ? var.grafana_agent_namespace : module.monitoring_namespace[0].name
   aws_account_id = var.aws_workload_account_id
   aws_region     = var.aws_region
   image_tag      = "0.3"
@@ -782,6 +781,8 @@ module "aws_subnet_exporter" {
   iam_role_name  = var.subnet_exporter_iam_role_name
   tolerations    = var.monitoring_tolerations
   affinity       = var.monitoring_affinity
+
+  depends_on = [module.grafana_agent_k8s_monitoring]
 }
 
 # --------------------------------------------------
@@ -843,6 +844,8 @@ module "grafana_agent_k8s_monitoring" {
   storage_enabled               = var.grafana_agent_storage_enabled
   storage_class                 = var.grafana_agent_storage_class
   storage_size                  = var.grafana_agent_storage_size
+  priority_class                = var.monitoring_kube_prometheus_stack_priority_class
+  namespace                     = var.grafana_agent_namespace
   timeout                       = var.grafana_agent_helm_install_timeout
 }
 

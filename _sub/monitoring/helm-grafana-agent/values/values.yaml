@@ -1,5 +1,7 @@
 cluster:
   name: ${cluster_name}
+
+### Grafana Agent
 alloy:
   alloy:
 %{ if storage_enabled ~}
@@ -58,6 +60,9 @@ alloy:
             requests:
               storage: ${storage_size}
 %{ endif ~}
+###################################
+
+# Grafana Agent Config
 externalServices:
   prometheus:
     host: ${prometheus_url}
@@ -69,6 +74,7 @@ externalServices:
     basicAuth:
       username: ${loki_username}
       password: ${api_token}
+
   tempo:
     host: ${tempo_url}
     basicAuth:
@@ -82,19 +88,266 @@ opencost:
     prometheus:
       external:
         url: ${prometheus_url}/api/prom
+
+## Traces configurations
 traces:
   enabled: ${traces_enabled}
-%{ if enable_side_by_side ~}
+###################################
+
+## Logging configurations
+logs:
+  enabled: true
+  pod_logs:
+    enabled: true
+  cluster_events:
+    enabled: true
+
+alloy-events: {}
+alloy-logs: {}
+###################################
+
+# Metrics configurations and infrastructure
 metrics:
+  enabled: true
+  autoDiscover:
+    enabled: false
+  cost:
+    enabled: ${open_cost_enabled}
   node-exporter:
-    labelMatchers:
-      app.kubernetes.io/name: prometheus-node-exporter
-    service:
-      isTLS: false
-prometheus-node-exporter:
-  enabled: false
-prometheus-operator-crds:
-  enabled: false
+    enabled: true
+  serviceMonitors:
+    enabled: true
+    selector: |- # TODO: Delete this block when shutting down the old Prometheus
+      match_expression {
+        key = "release"
+        operator = "NotIn"
+        values = ["monitoring"]
+      }
+
+### Prometheus Operator components
 kube-state-metrics:
-  enabled: false
+  enabled: true
+  customLabels:
+    jobLabel: kube-state-metrics
+  resources:
+    requests:
+      cpu: 20m
+      memory: 100Mi
+  priorityClassName: ${kube_state_metrics_priorityclass}
+  prometheus:
+    monitor: # ServiceMonitor - TODO: Delete this block when shutting down the old Prometheus
+      enabled: true
+      jobLabel: jobLabel
+      additionalLabels: {
+        release: monitoring
+      }
+%{ if length(tolerations) > 0 ~}
+  tolerations:
+%{ for t in tolerations ~}
+  - key: ${t.key}
+    operator: ${t.operator}
+%{ if t.value != null ~}
+    value: ${t.value}
 %{ endif ~}
+    effect: ${t.effect}
+%{ endfor ~}
+%{ endif ~}
+%{ if length(affinity) > 0 ~}
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+%{ for a in affinity ~}
+          - key: ${a.key}
+            operator: ${a.operator}
+            values:
+%{ for v in a.values ~}
+            - ${ v }
+%{ endfor ~}
+%{ endfor ~}
+%{ endif ~}
+
+prometheus-node-exporter:
+  enabled: true
+  podLabels:
+    jobLabel: node-exporter # Used for to set the label on the service for the ServiceMonitor
+  resources:
+    requests:
+      cpu: 20m
+      memory: 50Mi
+  priorityClassName: ${prometheus_node_exporter_priorityclass}
+  prometheus: #
+    monitor: # TODO: Delete this block when shutting down the old Prometheus
+      enabled: true
+      jobLabel: jobLabel # Used for Prometheus to name the job. If jobLabel has not been set on the Service then default value will come from app.kubernetes.io/name
+      additionalLabels: {
+        release: monitoring
+      }
+
+prometheus-operator-crds:
+# Set this to true when removing the old Prometheus stack
+  enabled: false
+
+extraObjects:
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    labels:
+      app: prometheus-service-metrics-scraper
+    name: prometheus-service-metrics-scraper
+  spec:
+    endpoints:
+    - path: /metrics
+      port: metrics
+      scrapeTimeout: 30s
+    - path: /metrics
+      port: admin
+    - path: /metrics
+      port: http
+    namespaceSelector:
+      any: true
+    selector:
+      matchLabels:
+        scrape-service-metrics: "true"
+
+# Delete below service monitors when shutting down the old Prometheus
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    name: kube-prometheus-stack-coredns
+    labels:
+      app: kube-prometheus-stack-coredns
+      app.kubernetes.io/instance: kube-prometheus-stack
+      release: monitoring
+  spec:
+    jobLabel: jobLabel
+    selector:
+      matchLabels:
+        app: kube-prometheus-stack-coredns
+        release: monitoring
+    namespaceSelector:
+      matchNames:
+        - kube-system
+    endpoints:
+    - port: http-metrics
+      bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: kube-prometheus-stack-coredns
+    labels:
+      app: kube-prometheus-stack-coredns
+      jobLabel: coredns
+      app.kubernetes.io/instance: kube-prometheus-stack
+      release: monitoring
+    namespace: kube-system
+  spec:
+    clusterIP: None
+    ports:
+      - name: http-metrics
+        port: 9153
+        protocol: TCP
+        targetPort: 9153
+    selector:
+      k8s-app: kube-dns
+###################################
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    labels:
+      app: kube-prometheus-stack-kubelet
+      release: monitoring
+    name: monitoring-kube-prometheus-kubelet
+  spec:
+    attachMetadata:
+      node: false
+    endpoints:
+    - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+      honorLabels: true
+      honorTimestamps: true
+      port: https-metrics
+      relabelings:
+      - action: replace
+        sourceLabels:
+        - __metrics_path__
+        targetLabel: metrics_path
+      scheme: https
+      tlsConfig:
+        caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        insecureSkipVerify: true
+    - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+      honorLabels: true
+      honorTimestamps: true
+      metricRelabelings:
+      - action: labeldrop
+        regex: id
+      - action: labeldrop
+        regex: name
+      path: /metrics/cadvisor
+      port: https-metrics
+      relabelings:
+      - action: replace
+        sourceLabels:
+        - __metrics_path__
+        targetLabel: metrics_path
+      scheme: https
+      tlsConfig:
+        caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        insecureSkipVerify: true
+    - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+      honorLabels: true
+      honorTimestamps: true
+      path: /metrics/probes
+      port: https-metrics
+      relabelings:
+      - action: replace
+        sourceLabels:
+        - __metrics_path__
+        targetLabel: metrics_path
+      scheme: https
+      tlsConfig:
+        caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        insecureSkipVerify: true
+    jobLabel: k8s-app
+    namespaceSelector:
+      matchNames:
+      - kube-system
+    selector:
+      matchLabels:
+        app.kubernetes.io/name: kubelet
+        k8s-app: kubelet
+##########################
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    name: kube-prometheus-stack-apiserver
+    labels:
+      app: kube-prometheus-stack-apiserver
+      app.kubernetes.io/instance: kube-prometheus-stack
+      release: monitoring
+  spec:
+    endpoints:
+    - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+      port: https
+      scheme: https
+      metricRelabelings:
+        - action: drop
+          regex: apiserver_request_duration_seconds_bucket;(0.15|0.2|0.3|0.35|0.4|0.45|0.6|0.7|0.8|0.9|1.25|1.5|1.75|2|3|3.5|4|4.5|6|7|8|9|15|25|40|50)
+          sourceLabels:
+          - __name__
+          - le
+      tlsConfig:
+        caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        serverName: kubernetes
+        insecureSkipVerify: false
+    jobLabel: component
+    namespaceSelector:
+      matchNames:
+      - default
+    selector:
+      matchLabels:
+        component: apiserver
+        provider: kubernetes
+  ####

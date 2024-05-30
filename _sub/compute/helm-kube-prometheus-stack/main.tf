@@ -40,6 +40,7 @@ resource "helm_release" "kube_prometheus_stack" {
 
   values = [
     templatefile("${path.module}/values/components.yaml", {
+      enable_components = var.enable_prom_kube_stack_components
     }),
 
     templatefile("${path.module}/values/grafana.yaml", {
@@ -200,6 +201,6 @@ resource "azuread_application" "grafana" {
 }
 
 resource "azuread_application_password" "grafana" {
-  count                 = length(var.grafana_azure_tenant_id) == 36 ? 1 : 0
+  count          = length(var.grafana_azure_tenant_id) == 36 ? 1 : 0
   application_id = "/applications/${azuread_application.grafana[0].object_id}"
 }

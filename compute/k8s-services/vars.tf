@@ -1207,6 +1207,11 @@ variable "kyverno_namespace_labels" {
 # --------------------------------------------------
 # Subnet Exporter
 # --------------------------------------------------
+variable "subnet_exporter_deploy" {
+  type = bool
+  default = true
+  description = "Feature toggle for Subnet Exporter module"
+}
 
 variable "subnet_exporter_iam_role_name" {
   type        = string
@@ -1373,6 +1378,12 @@ variable "grafana_agent_storage_size" {
   type        = string
   description = "Storage size for Grafana Persistent Volume"
   default     = "5Gi"
+}
+
+variable "grafana_agent_namespace" {
+  type        = string
+  description = "Namespace for hosting monitoring components"
+  default     = "grafana"
 }
 
 variable "grafana_agent_helm_install_timeout" {

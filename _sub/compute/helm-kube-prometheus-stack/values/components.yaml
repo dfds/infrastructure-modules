@@ -9,3 +9,18 @@ kubeControllerManager:
 
 kubeProxy:
   enabled: false
+
+nodeExporter:
+  enabled: ${enable_components}
+
+kubeStateMetrics:
+  enabled: ${enable_components}
+
+kubelet:
+  enabled: ${enable_components}
+
+coreDns:
+  enabled: ${enable_components}
+
+kubeApiServer:
+  enabled: ${enable_components}

@@ -16,8 +16,8 @@ variable "chart_version" {
 
 variable "namespace" {
   type        = string
-  description = "Namespace to apply Grafana Agent in"
-  default     = "grafana-agent"
+  description = "Namespace to apply monitoring components in"
+  default     = "grafana"
   validation {
     condition     = can(regex("[a-z]+", var.namespace))
     error_message = "Namespace must contain at least one letter."
@@ -194,4 +194,10 @@ variable "storage_size" {
   type        = string
   description = "Storage size for Grafana Persistent Volume"
   default     = "5Gi"
+}
+
+variable "priority_class" {
+  type        = string
+  description = "Name of priority class to apply"
+  default     = "cluster-monitoring" # TODO: remove default and change to monitoring_kube_prometheus_stack_priority_class
 }
