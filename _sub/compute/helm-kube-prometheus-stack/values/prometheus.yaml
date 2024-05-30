@@ -98,10 +98,10 @@ grafana:
     enabled: true
     labels:
       release: monitoring
-# kubelet:
-#   serviceMonitor:
-#     cAdvisorMetricRelabelings:
-#       - regex: id
-#         action: labeldrop
-#       - regex: name
-#         action: labeldrop
+kubelet:
+  serviceMonitor:
+    cAdvisorMetricRelabelings:
+      - regex: id
+        action: labeldrop
+      - regex: name
+        action: labeldrop
