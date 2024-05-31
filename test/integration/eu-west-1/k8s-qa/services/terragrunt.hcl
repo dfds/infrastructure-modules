@@ -275,13 +275,13 @@ inputs = {
   # Grafana Agent for Kubernetes monitoring
   # --------------------------------------------------
 
-  grafana_agent_deploy = false
+  grafana_agent_deploy = true
   grafana_agent_chart_version = "1.0.12"
   grafana_agent_resource_memory_request = "4Gi"
   grafana_agent_resource_memory_limit   = "4Gi"
   grafana_agent_storage_enabled = true
   grafana_agent_storage_size = "10Gi"
-  grafana_agent_namespace = "grafana-agent"
+  grafana_agent_namespace = "grafana"
 
   observability_tolerations = [
     {
