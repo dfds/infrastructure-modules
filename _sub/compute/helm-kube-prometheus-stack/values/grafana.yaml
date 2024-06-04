@@ -1,6 +1,7 @@
 etcd:
   enabled: true
 grafana:
+%{ if length(grafana_slack_webhook) > 0 ~}
   alerting:
     contactpoints.yaml:
       apiVersion: 1
@@ -14,6 +15,7 @@ grafana:
               settings:
                 url: "${grafana_slack_webhook}"
                 username: alertbot
+%{ endif ~}
   resources:
     requests:
       cpu: 50m
