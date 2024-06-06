@@ -1025,8 +1025,9 @@ variable "blackbox_exporter_monitoring_targets" {
 }
 
 variable "blackbox_exporter_namespace" {
-  type = string
+  type        = string
   description = "Namespace for blackbox exporter"
+  default     = "monitoring"
 }
 
 # --------------------------------------------------
@@ -1213,8 +1214,8 @@ variable "kyverno_namespace_labels" {
 # Subnet Exporter
 # --------------------------------------------------
 variable "subnet_exporter_deploy" {
-  type = bool
-  default = true
+  type        = bool
+  default     = true
   description = "Feature toggle for Subnet Exporter module"
 }
 
