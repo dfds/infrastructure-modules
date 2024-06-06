@@ -1024,6 +1024,11 @@ variable "blackbox_exporter_monitoring_targets" {
   default     = []
 }
 
+variable "blackbox_exporter_namespace" {
+  type = string
+  description = "Namespace for blackbox exporter"
+}
+
 # --------------------------------------------------
 # Helm Exporter
 # --------------------------------------------------
