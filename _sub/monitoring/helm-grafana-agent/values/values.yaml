@@ -136,11 +136,11 @@ kube-state-metrics:
   priorityClassName: ${kube_state_metrics_priorityclass}
   prometheus:
     monitor: # ServiceMonitor - TODO: Delete this block when shutting down the old Prometheus
-      enabled: true
-      jobLabel: jobLabel
-      additionalLabels: {
-        release: monitoring
-      }
+      enabled: false
+      # jobLabel: jobLabel
+      # additionalLabels: {
+      #   release: monitoring
+      # }
 %{ if length(tolerations) > 0 ~}
   tolerations:
 %{ for t in tolerations ~}

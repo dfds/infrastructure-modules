@@ -14,7 +14,7 @@ nodeExporter:
   enabled: ${enable_components}
 
 kubeStateMetrics:
-  enabled: ${enable_components}
+  enabled: true
 
 kubelet:
   enabled: ${enable_components}
