@@ -615,7 +615,7 @@ module "blackbox_exporter_flux_manifests" {
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   monitoring_targets      = local.blackbox_exporter_monitoring_targets
-  namespace               = var.grafana_agent_deploy ? var.grafana_agent_namespace : module.monitoring_namespace[0].name
+  namespace               = var.blackbox_exporter_namespace
   overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
