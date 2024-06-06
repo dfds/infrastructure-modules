@@ -48,7 +48,7 @@ variable "repo_branch" {
 variable "helm_chart_version" {
   type        = string
   description = "The version of the Traefik v2 Helm Chart that should be used"
-  default     = null
+  default     = ""
 }
 
 variable "additional_args" {
