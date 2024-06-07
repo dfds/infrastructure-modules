@@ -49,7 +49,7 @@ resource "aws_db_instance" "postgres" {
   engine_version          = var.engine_version
   publicly_accessible     = var.publicly_accessible
   backup_retention_period = var.db_backup_retention_period
-  apply_immediately       = true
+  apply_immediately       = var.apply_immediately
   deletion_protection     = var.deletion_protection
   identifier              = "${var.application}-postgres-${var.environment}"
   parameter_group_name    = aws_db_parameter_group.dbparams.name
@@ -69,6 +69,7 @@ resource "aws_db_instance" "postgres" {
   password                    = var.db_master_password
   skip_final_snapshot         = var.skip_final_snapshot
   allow_major_version_upgrade = var.allow_major_version_upgrade
+  ca_cert_identifier          = var.ca_cert_identifier
 
   timeouts {
     create = "2h"

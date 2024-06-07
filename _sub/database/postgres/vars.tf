@@ -112,3 +112,15 @@ variable "publicly_accessible" {
   default     = true
   description = "Should the database be public accessible?"
 }
+
+variable "ca_cert_identifier" {
+  description = "The identifier of the CA certificate to use for the RDS instance"
+  type        = string
+  default     = "rds-ca-rsa2048-g1"
+}
+
+variable "apply_immediately" {
+  description = "Specifies whether any database modifications are applied immediately, or during the next maintenance window"
+  type        = bool
+  default     = true
+}
