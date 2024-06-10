@@ -5,8 +5,8 @@ github.com/davecgh/go-spew/spew
 ## explicit; go 1.13
 github.com/emicklei/go-restful/v3
 github.com/emicklei/go-restful/v3/log
-# github.com/fluxcd/pkg/apis/meta v1.4.0
-## explicit; go 1.22
+# github.com/fluxcd/pkg/apis/meta v1.5.0
+## explicit; go 1.22.0
 github.com/fluxcd/pkg/apis/meta
 # github.com/go-logr/logr v1.4.1
 ## explicit; go 1.18
