@@ -21,6 +21,8 @@ module "postgres" {
   publicly_accessible         = var.db_publicly_accessible
   rds_instance_tags           = var.rds_instance_tags
   tags                        = var.tags
+  ca_cert_identifier          = var.ca_cert_identifier
+  apply_immediately           = var.apply_immediately
 }
 
 module "param_store_pghost" {
