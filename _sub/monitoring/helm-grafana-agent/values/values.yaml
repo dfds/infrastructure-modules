@@ -123,7 +123,12 @@ metrics:
         operator = "NotIn"
         values = ["monitoring"]
       }
-
+  kube-state-metrics:
+    metricsTuning:
+      useDefaultAllowList: false
+  cadvisor:
+    metricsTuning:
+      useDefaultAllowList: false
 ### Prometheus Operator components
 kube-state-metrics:
   enabled: true
