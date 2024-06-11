@@ -150,29 +150,6 @@ inputs = {
   # --------------------------------------------------
 
   monitoring_goldpinger_deploy        = true
-  monitoring_goldpinger_chart_version = "6.0.1"
-
-  # --------------------------------------------------
-  # Crossplane
-  # --------------------------------------------------
-
-  crossplane_deploy        = false
-  crossplane_chart_version = "1.6.3-up.1"
-  # Do not configure Confluent provider in QA
-  crossplane_providers = ["crossplane/provider-aws:v0.26.0", "crossplane/provider-kubernetes:v0.3.0"]
-  crossplane_admin_service_accounts = [
-    {
-      serviceaccount = "default"
-      namespace      = "kube-system"
-    }
-  ]
-  eks_openid_connect_provider_url = dependency.cluster.outputs.eks_openid_connect_provider_url
-
-  crossplane_cfg_pkg_deploy       = false
-  crossplane_cfg_pkg_docker_image = "dfdsdk/dfds-infra:v0.0.1-alpha.28"
-
-  crossplane_operator_deploy             = false
-  crossplane_operator_helm_chart_version = "0.1.5"
 
   # --------------------------------------------------
   # Atlantis
@@ -212,7 +189,6 @@ inputs = {
   # --------------------------------------------------
 
   helm_exporter_deploy             = "true"
-  helm_exporter_helm_chart_version = "1.2.5"
   helm_exporter_target_namespaces  = "fluentd,flux-system,monitoring,traefik-blue-variant"
   helm_exporter_target_charts = [
     {
@@ -303,7 +279,6 @@ inputs = {
   # --------------------------------------------------
 
   external_secrets_deploy = true
-  external_secrets_helm_chart_version = "0.9.13"
 
   # --------------------------------------------------
   # External Secrets with SSM
