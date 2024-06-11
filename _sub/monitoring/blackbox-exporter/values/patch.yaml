@@ -12,9 +12,6 @@ spec:
       replicas: ${replicas}
     serviceMonitor:
       enabled: true
-      defaults:
-        labels:
-          release: monitoring
       targets:
         %{~ for target in monitoring_targets ~}
         - name: ${target.name}
