@@ -11,7 +11,7 @@ variable "helm_repo_url" {
 variable "chart_version" {
   type        = string
   description = "Grafana Agent helm chart version"
-  default     = null
+  default     = ""
 }
 
 variable "namespace" {

@@ -210,7 +210,7 @@ variable "monitoring_goldpinger_deploy" {
 variable "monitoring_goldpinger_chart_version" {
   type        = string
   description = "Goldpinger helm chart version"
-  default     = "6.0.1"
+  default     = ""
 }
 
 variable "monitoring_goldpinger_priority_class" {
@@ -232,7 +232,7 @@ variable "monitoring_kube_prometheus_stack_deploy" {
 variable "monitoring_kube_prometheus_stack_chart_version" {
   type        = string
   description = "Kube-prometheus-stack helm chart version"
-  default     = null
+  default     = ""
 }
 
 variable "monitoring_kube_prometheus_stack_priority_class" {
@@ -546,7 +546,7 @@ variable "atlantis_namespace_labels" {
 variable "atlantis_chart_version" {
   type        = string
   description = "Version of the helm chart to deploy"
-  default     = null
+  default     = ""
 }
 
 variable "atlantis_ingress" {
@@ -786,7 +786,7 @@ variable "crossplane_release_name" {
 variable "crossplane_chart_version" {
   type        = string
   description = "Specify a version of the Helm chart"
-  default     = null
+  default     = ""
 }
 
 variable "crossplane_recreate_pods" {
@@ -887,7 +887,7 @@ variable "crossplane_operator_deploy_name" {
 variable "crossplane_operator_helm_chart_version" {
   type        = string
   description = "The Helm Chart version to deploy."
-  default     = null
+  default     = ""
 }
 
 variable "crossplane_provider_confluent_email" {
@@ -932,7 +932,7 @@ variable "crossplane_confluent_clusters_endpoints" {
 variable "traefik_blue_variant_helm_chart_version" {
   type        = string
   description = "Helm Chart version to be used to deploy Traefik"
-  default     = null
+  default     = ""
 }
 
 variable "traefik_blue_variant_http_nodeport" {
@@ -969,7 +969,7 @@ variable "traefik_blue_variant_weight" {
 variable "traefik_green_variant_helm_chart_version" {
   type        = string
   description = "Helm Chart version to be used to deploy the Traefik green variant"
-  default     = null
+  default     = ""
 }
 
 variable "traefik_green_variant_http_nodeport" {
@@ -1043,7 +1043,7 @@ variable "helm_exporter_deploy" {
 variable "helm_exporter_helm_chart_version" {
   type        = string
   description = "Helm Chart version to be used to deploy Helm Exporter"
-  default     = null
+  default     = ""
 }
 
 variable "helm_exporter_target_namespaces" {
@@ -1188,7 +1188,7 @@ variable "velero_bucket_arn" {
 
 variable "kyverno_chart_version" {
   type        = string
-  default     = "v2.4.1"
+  default     = ""
   description = "Helm chart version of Kyverno"
 }
 
