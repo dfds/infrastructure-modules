@@ -115,6 +115,8 @@ metrics:
     enabled: ${open_cost_enabled}
   node-exporter:
     enabled: true
+    metricsTuning:
+      useDefaultAllowList: false
   serviceMonitors:
     enabled: true
     selector: |- # TODO: Delete this block when shutting down the old Prometheus
