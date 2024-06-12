@@ -81,7 +81,7 @@ variable "helm_chart_version" {
 
 variable "image_tag" {
   type        = string
-  default     = ""
+  default     = "v1.12.4"
   description = "Override the image tag in the Helm chart with a custom version"
 }
 

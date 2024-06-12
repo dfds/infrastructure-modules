@@ -1,5 +1,6 @@
 variable "chart_version" {
   type        = string
+  default     = ""
   description = "Kyverno helm chart version"
 }
 
