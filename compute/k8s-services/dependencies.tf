@@ -318,8 +318,10 @@ locals {
     PRODUCTION_GRAFANA_CLOUD_ARM_CLIENT_ID                              = var.atlantis_grafana_cloud_arm_client_id
     PRODUCTION_GRAFANA_CLOUD_ARM_CLIENT_SECRET                          = var.atlantis_grafana_cloud_arm_client_secret
     PRODUCTION_GRAFANA_CLOUD_ARM_TENANT_ID                              = var.atlantis_grafana_cloud_arm_tenant_id
-    PRODUCTION_GRAFANA_CLOUD_CONFIG_ADMINS_GROUP_ID                     = var.atlantis_grafana_cloud_config_admins_group_id
-    PRODUCTION_GRAFANA_CLOUD_READERS_GROUP_ID                           = var.atlantis_grafana_cloud_readers_group_id
+    PRODUCTION_GRAFANA_CLOUD_SSO_SAML_CERTIFICATE                       = var.atlantis_grafana_cloud_sso_saml_certificate
+    PRODUCTION_GRAFANA_CLOUD_SSO_SAML_PRIVATE_KEY                       = var.atlantis_grafana_cloud_sso_saml_private_key
+    PRODUCTION_GRAFANA_CLOUD_SSO_SAML_IDP_METADATA_URL                  = var.atlantis_grafana_cloud_sso_saml_idp_metadata
+
   }
 
   atlantis_env_vars = var.crossplane_deploy ? merge(local.atlantis_env_vars_default, local.confluent_env_vars_for_atlantis) : local.atlantis_env_vars_default
