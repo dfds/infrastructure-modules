@@ -745,21 +745,21 @@ variable "atlantis_grafana_cloud_arm_client_secret" {
 variable "atlantis_grafana_cloud_sso_saml_certificate" {
   type        = string
   default     = ""
-  description = "The SAML certificate for SSO"
+  description = "The SAML certificate for Grafana SSO integration"
   sensitive   = true
 }
 
 variable "atlantis_grafana_cloud_sso_saml_private_key" {
   type        = string
   default     = ""
-  description = "The SAML private key for SSO"
+  description = "The SAML private key for SSO integration"
   sensitive   = true
 }
 
 variable "atlantis_grafana_cloud_sso_saml_idp_metadata" {
   type        = string
   default     = ""
-  description = "The SAML IDP metadata for SSO"
+  description = "The SAML IDP metadata for SSO integration"
   sensitive   = true
 }
 # --------------------------------------------------
