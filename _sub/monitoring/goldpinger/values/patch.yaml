@@ -7,5 +7,5 @@ spec:
   chart:
     spec:
       version: "${chart_version}"
-values:
-  priorityClassName: ${priority_class}
+  values:
+    priorityClassName: ${priority_class}
