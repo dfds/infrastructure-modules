@@ -1,0 +1,11 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ${deploy_name}
+  namespace: ${namespace}
+spec:
+  chart:
+    spec:
+      version: "${chart_version}"
+  values:
+    priorityClassName: ${priority_class}

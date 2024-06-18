@@ -340,15 +340,25 @@ module "monitoring_namespace" {
 # Goldpinger
 # --------------------------------------------------
 
-module "monitoring_goldpinger" {
-  source                 = "../../_sub/compute/helm-goldpinger"
-  count                  = var.monitoring_goldpinger_deploy ? 1 : 0
-  chart_version          = var.monitoring_goldpinger_chart_version
-  priority_class         = var.monitoring_goldpinger_priority_class
-  namespace              = var.grafana_agent_deploy ? var.grafana_agent_namespace : module.monitoring_namespace[0].name
-  servicemonitor_enabled = var.monitoring_kube_prometheus_stack_deploy
+module "goldpinger" {
+  source                  = "../../_sub/monitoring/goldpinger"
+  count                   = var.goldpinger_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  repo_owner              = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  namespace               = var.goldpinger_namespace
+  chart_version           = var.goldpinger_chart_version
+  priority_class          = var.goldpinger_priority_class
 
-  depends_on = [module.grafana_agent_k8s_monitoring]
+  depends_on = [module.grafana_agent_k8s_monitoring, module.platform_fluxcd]
+
+  providers = {
+    github = github.fluxcd
+  }
 }
 
 

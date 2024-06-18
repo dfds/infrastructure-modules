@@ -201,19 +201,25 @@ variable "monitoring_affinity" {
 # Goldpinger
 # --------------------------------------------------
 
-variable "monitoring_goldpinger_deploy" {
+variable "goldpinger_deploy" {
   type        = bool
   description = "Deploy goldpinger helm chart switch"
   default     = false
 }
 
-variable "monitoring_goldpinger_chart_version" {
+variable "goldpinger_namespace" {
+  type        = string
+  description = "The namespace to deploy goldpinger in"
+  default     = "goldpinger"
+}
+
+variable "goldpinger_chart_version" {
   type        = string
   description = "Goldpinger helm chart version"
   default     = ""
 }
 
-variable "monitoring_goldpinger_priority_class" {
+variable "goldpinger_priority_class" {
   type        = string
   description = "Goldpinger daemonset priority class name"
   default     = "cluster-monitoring"

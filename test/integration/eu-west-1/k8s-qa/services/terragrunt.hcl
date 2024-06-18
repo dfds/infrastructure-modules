@@ -149,7 +149,7 @@ inputs = {
   # Goldpinger
   # --------------------------------------------------
 
-  monitoring_goldpinger_deploy        = true
+  goldpinger_deploy = true
 
   # --------------------------------------------------
   # Atlantis
