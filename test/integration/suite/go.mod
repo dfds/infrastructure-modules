@@ -7,9 +7,9 @@ toolchain go1.22.4
 require (
 	github.com/fluxcd/pkg/apis/meta v1.5.0
 	github.com/stretchr/testify v1.9.0
-	k8s.io/api v0.30.1
-	k8s.io/apimachinery v0.30.1
-	k8s.io/client-go v0.30.1
+	k8s.io/api v0.30.2
+	k8s.io/apimachinery v0.30.2
+	k8s.io/client-go v0.30.2
 )
 
 require (
