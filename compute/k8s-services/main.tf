@@ -859,6 +859,35 @@ module "grafana_agent_k8s_monitoring" {
   timeout                       = var.grafana_agent_helm_install_timeout
 }
 
+module "grafana_agent" {
+  source = "../../_sub/monitoring/grafana-agent"
+  count                         = var.grafana_agent_deploy ? 1 : 0
+
+  cluster_name                  = var.eks_cluster_name
+  github_owner = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  chart_version                 = var.grafana_agent_chart_version
+  api_token                     = var.grafana_agent_api_token
+  prometheus_url                = var.grafana_agent_prometheus_url
+  prometheus_username           = var.grafana_agent_prometheus_username
+  loki_url                      = var.grafana_agent_loki_url
+  loki_username                 = var.grafana_agent_loki_username
+  tempo_url                     = var.grafana_agent_tempo_url
+  tempo_username                = var.grafana_agent_tempo_username
+  traces_enabled                = var.grafana_agent_traces_enabled
+  open_cost_enabled             = var.grafana_agent_open_cost_enabled
+  agent_resource_memory_limit   = var.grafana_agent_resource_memory_limit
+  agent_resource_memory_request = var.grafana_agent_resource_memory_request
+  affinity                      = var.observability_affinity
+  tolerations                   = var.observability_tolerations
+  agent_replicas                = var.grafana_agent_replicas
+  storage_enabled               = var.grafana_agent_storage_enabled
+  storage_class                 = var.grafana_agent_storage_class
+  storage_size                  = var.grafana_agent_storage_size
+  priority_class                = var.monitoring_kube_prometheus_stack_priority_class
+  namespace                     = var.grafana_agent_namespace
+}
+
 # --------------------------------------------------
 # External Secrets
 # --------------------------------------------------
