@@ -333,3 +333,11 @@ module "eks_nvidia_device_plugin" {
   tolerations      = var.nvidia_device_plugin_tolerations
   affinity         = var.nvidia_device_plugin_affinity
 }
+
+
+module "eks_version_endpoint" {
+  count           = var.secure_eks_version_endpoint ? 1 : 0
+  source          = "../../_sub/security/eks-version-endpoint"
+  kubeconfig_path = local.kubeconfig_path
+  depends_on      = [module.eks_heptio]
+}

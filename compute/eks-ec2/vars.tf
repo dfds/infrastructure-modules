@@ -259,3 +259,9 @@ variable "nvidia_device_plugin_affinity" {
   description = "A list of affinities to apply to the nvidia device plugin deployment"
   default     = []
 }
+
+variable "secure_eks_version_endpoint" {
+  type        = bool
+  default     = true
+  description = "Whether to secure the EKS version endpoint"
+}
