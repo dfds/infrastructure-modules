@@ -12,7 +12,7 @@ spec:
       name: ${cluster_name}
     alloy:
       alloy:
-        %{ if storage_enabled ~}
+%{ if storage_enabled ~}
         clustering:
           enabled: true
         storagePath: /var/lib/agent
@@ -20,43 +20,43 @@ spec:
           extra:
             - mountPath: /var/lib/agent
               name: agent-wal
-        %{ endif ~}
+%{ endif ~}
         resources:
           requests:
             memory: ${agent_resource_memory_request}
           limits:
             memory: ${agent_resource_memory_limit}
-       %{ if length(tolerations) > 0 || length(affinity) > 0 || storage_enabled ~}
+%{ if length(tolerations) > 0 || length(affinity) > 0 || storage_enabled ~}
       controller:
-      %{ endif ~}
-        %{ if length(tolerations) > 0 ~}
+%{ endif ~}
+%{ if length(tolerations) > 0 ~}
         tolerations:
-        %{ for t in tolerations ~}
+%{ for t in tolerations ~}
         - key: ${t.key}
           operator: ${t.operator}
-          %{ if t.value != null ~}
+%{ if t.value != null ~}
           value: ${t.value}
-          %{ endif ~}
+%{ endif ~}
           effect: ${t.effect}
-        %{ endfor ~}
-      %{ endif ~}
-        %{ if length(affinity) > 0 ~}
+%{ endfor ~}
+%{ endif ~}
+%{ if length(affinity) > 0 ~}
         affinity:
           nodeAffinity:
             preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
               preference:
                 matchExpressions:
-                %{ for a in affinity ~}
+%{ for a in affinity ~}
                 - key: ${a.key}
                   operator: ${a.operator}
                   values:
-                  %{ for v in a.values ~}
+%{ for v in a.values ~}
                   - ${ v }
-                  %{ endfor ~}
-                %{ endfor ~}
-        %{ endif ~}
-        %{ if storage_enabled ~}
+%{ endfor ~}
+%{ endfor ~}
+%{ endif ~}
+%{ if storage_enabled ~}
         replicas: ${agent_replicas}
         volumeClaimTemplates:
           - metadata:
@@ -67,7 +67,7 @@ spec:
               resources:
                 requests:
                   storage: ${storage_size}
-        %{ endif ~}
+%{ endif ~}
     externalServices:
       prometheus:
         host: ${prometheus_url}
@@ -79,7 +79,6 @@ spec:
         basicAuth:
           username: ${loki_username}
           password: ${api_token}
-
       tempo:
         host: ${tempo_url}
         basicAuth:
@@ -100,33 +99,33 @@ spec:
         enabled: ${open_cost_enabled}
     kube-state-metrics:
       priorityClassName: ${kube_state_metrics_priorityclass}
-      %{ if length(tolerations) > 0 ~}
+%{ if length(tolerations) > 0 ~}
       tolerations:
-      %{ for t in tolerations ~}
+%{ for t in tolerations ~}
       - key: ${t.key}
         operator: ${t.operator}
-      %{ if t.value != null ~}
-      value: ${t.value}
-      %{ endif ~}
-      effect: ${t.effect}
-      %{ endfor ~}
-      %{ endif ~}
-      %{ if length(affinity) > 0 ~}
+%{ if t.value != null ~}
+        value: ${t.value}
+%{ endif ~}
+        effect: ${t.effect}
+%{ endfor ~}
+%{ endif ~}
+%{ if length(affinity) > 0 ~}
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              preference:
-                matchExpressions:
-      %{ for a in affinity ~}
-      - key: ${a.key}
-        operator: ${a.operator}
-        values:
-      %{ for v in a.values ~}
-      - ${ v }
-      %{ endfor ~}
-      %{ endfor ~}
-      %{ endif ~}
+          - weight: 1
+            preference:
+              matchExpressions:
+%{ for a in affinity ~}
+              - key: ${a.key}
+                operator: ${a.operator}
+                values:
+%{ for v in a.values ~}
+                - ${ v }
+%{ endfor ~}
+%{ endfor ~}
+%{ endif ~}
     prometheus-node-exporter:
       priorityClassName: ${prometheus_node_exporter_priorityclass}
 

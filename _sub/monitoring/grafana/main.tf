@@ -22,7 +22,7 @@ resource "github_repository_file" "grafana_agent_helm_install" {
   overwrite_on_create = var.overwrite_on_create
 }
 
-resource "github_repository_file" "blackbox_exporter_helm_patch" {
+resource "github_repository_file" "grafana_agent_helm_patch" {
   repository = var.repo_name
   branch     = local.repo_branch
   file       = "${local.helm_repo_path}/patch.yaml"
@@ -35,7 +35,7 @@ resource "github_repository_file" "blackbox_exporter_helm_patch" {
     agent_resource_memory_limit            = var.agent_resource_memory_limit
     tolerations                            = var.tolerations
     affinity                               = var.affinity
-    replicas                               = var.agent_replicas
+    agent_replicas                         = var.agent_replicas
     storage_class                          = var.storage_class
     storage_size                           = var.storage_size
     prometheus_url                         = var.prometheus_url

@@ -21,7 +21,7 @@ variable "cluster_name" {
 variable "deploy_name" {
   type        = string
   description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "grafana-agent"
+  default     = "grafana"
 }
 
 variable "prune" {
@@ -43,8 +43,8 @@ variable "gitops_apps_repo_url" {
 }
 
 variable "gitops_apps_repo_branch" {
-  type        = string
-  default     = "main"
+  type = string
+  #   default     = "main"
   description = "The default branch for your GitOps manifests"
 }
 
