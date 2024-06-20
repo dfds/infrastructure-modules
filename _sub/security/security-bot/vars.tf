@@ -50,6 +50,11 @@ variable "sns_topic_arn_compliance_changes" {
 }
 
 variable "sns_topic_arn_guard_duty_findings" {
-  type        = string
-  description = "The SNS topic where GuardDuty findings are published."
+  type        =  string
+  description = "Fisrt SNS topics where GuardDuty findings are published."
+}
+
+variable "sns_topic_arn_guard_duty_findings_2" {
+  type        =  string
+  description = "Second SNS topics where GuardDuty findings are published."
 }
