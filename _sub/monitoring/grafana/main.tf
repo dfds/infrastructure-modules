@@ -1,4 +1,4 @@
-resource "github_repository_file" "grafana_agent_helm" {
+resource "github_repository_file" "grafana_helm" {
   repository = var.repo_name
   branch     = local.repo_branch
   file       = "${local.cluster_repo_path}/${local.app_install_name}-helm.yaml"
@@ -10,7 +10,7 @@ resource "github_repository_file" "grafana_agent_helm" {
   overwrite_on_create = var.overwrite_on_create
 }
 
-resource "github_repository_file" "grafana_agent_helm_install" {
+resource "github_repository_file" "grafana_helm_install" {
   repository = var.repo_name
   branch     = local.repo_branch
   file       = "${local.helm_repo_path}/kustomization.yaml"
@@ -22,7 +22,7 @@ resource "github_repository_file" "grafana_agent_helm_install" {
   overwrite_on_create = var.overwrite_on_create
 }
 
-resource "github_repository_file" "grafana_agent_helm_patch" {
+resource "github_repository_file" "grafana_helm_patch" {
   repository = var.repo_name
   branch     = local.repo_branch
   file       = "${local.helm_repo_path}/patch.yaml"
