@@ -1257,6 +1257,12 @@ variable "grafana_agent_deploy" {
   description = "Feature toggle for Grafana Agent module"
 }
 
+variable "grafana_deploy" {
+  type        = string
+  default     = false
+  description = "Feature toggle for Grafana module"
+}
+
 variable "grafana_agent_chart_version" {
   type        = string
   description = "Grafana Agent helm chart version"
