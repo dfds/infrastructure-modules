@@ -1,0 +1,13 @@
+name: Legitify Analyze
+on:
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Legitify Action
+        uses: Legit-Labs/legitify@main
+        with:
+          github_token: ${{ secrets.SHARED_WORKFLOW_HOUSEKEEPING }}
+          analyze_self_only: true
