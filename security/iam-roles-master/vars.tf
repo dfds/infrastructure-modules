@@ -14,7 +14,7 @@ variable "iam_role_description" {
 
 variable "iam_role_trusted_account_root_arn" {
   description = "The ARN of the account trusted to assume the role"
-  type        = string
+  type        = list(string)
 }
 
 variable "create_org_account_iam_policy_name" {
