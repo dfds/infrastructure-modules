@@ -43,3 +43,16 @@ repoConfig: |
   - id: "/.*/"
     allowed_overrides: [workflow]
     allow_custom_workflows: true
+
+%{ if add_secret_volumes ~}
+extraVolumes:
+  - name: kubeconfigs
+    secret:
+      secretName: kubeconfigs
+      defaultMode: 0644
+
+extraVolumeMounts:
+  - name: kubeconfigs
+    readOnly: true
+    mountPath: "/kubeconfigs"
+%{ endif ~}

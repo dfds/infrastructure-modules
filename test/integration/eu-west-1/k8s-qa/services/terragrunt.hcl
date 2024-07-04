@@ -145,6 +145,7 @@ inputs = {
   monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_key = "fake"
   monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_secret = "fake"
 
+
   # --------------------------------------------------
   # Goldpinger
   # --------------------------------------------------
@@ -170,6 +171,7 @@ inputs = {
   atlantis_chart_version       = "4.25.0"
   atlantis_environment         = "qa"
   atlantis_image_tag           = "0.0.50"
+  atlantis_add_secret_volumes  = true
 
   # --------------------------------------------------
   # Blackbox Exporter

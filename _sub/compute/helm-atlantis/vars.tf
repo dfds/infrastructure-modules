@@ -130,3 +130,9 @@ variable "environment" {
   type        = string
   description = "Environment"
 }
+
+variable "add_secret_volumes" {
+  type        = bool
+  default     = false
+  description = "Add secret volumes to the Atlantis deployment. Requires a secret deployed named 'kubeconfigs'"
+}
