@@ -768,6 +768,13 @@ variable "atlantis_grafana_cloud_sso_saml_idp_metadata" {
   description = "The SAML IDP metadata for SSO integration"
   sensitive   = true
 }
+
+variable "atlantis_add_secret_volumes" {
+  type        = bool
+  default     = false
+  description = "Add secret volumes to the Atlantis deployment"
+
+}
 # --------------------------------------------------
 # Crossplane
 # --------------------------------------------------
