@@ -11,7 +11,7 @@ variable "chart_version" {
 variable "deploy_name" {
   type        = string
   description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "goldpinger"
+  default     = "nvidia-device-plugin"
 }
 
 variable "namespace" {

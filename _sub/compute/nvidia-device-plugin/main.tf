@@ -33,6 +33,8 @@ resource "github_repository_file" "nvidia_device_plugin_helm_patch" {
     namespace      = var.namespace
     chart_version  = var.chart_version
     deploy_name    = var.deploy_name
+    tolerations    = var.tolerations
+    affinity       = var.affinity
   })
   overwrite_on_create = var.overwrite_on_create
 }

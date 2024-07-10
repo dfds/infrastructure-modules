@@ -8,29 +8,29 @@ spec:
     spec:
       version: "${chart_version}"
   values:
-    %{ if length(affinity) > 0 ~}
+%{ if length(affinity) > 0 ~}
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
             - matchExpressions:
-              %{ for a in affinity ~}
+%{ for a in affinity ~}
               - key: ${a.key}
                 operator: ${a.operator}
                 values:
-                  %{ for v in a.values ~}
+%{ for v in a.values ~}
                   - ${ v }
-                  %{ endfor ~}
-              %{ endfor ~}
-    %{ endif ~}
-    %{ if length(tolerations) > 0 ~}
+%{ endfor ~}
+%{ endfor ~}
+%{ endif ~}
+%{ if length(tolerations) > 0 ~}
     tolerations:
-      %{ for t in tolerations ~}
+%{ for t in tolerations ~}
       - key: ${t.key}
         operator: ${t.operator}
-        %{ if t.value != null ~}
+%{ if t.value != null ~}
         value: ${t.value}
-        %{ endif ~}
+%{ endif ~}
         effect: ${t.effect}
-      %{ endfor ~}
-    %{ endif ~}
+%{ endfor ~}
+%{ endif ~}

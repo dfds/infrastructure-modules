@@ -947,3 +947,29 @@ module "external_secrets_ssm" {
 
   depends_on = [module.external_secrets]
 }
+
+# --------------------------------------------------
+# Nvidia device plugin
+# --------------------------------------------------
+
+module "eks_nvidia_device_plugin" {
+  count                   = var.deploy_nvidia_device_plugin ? 1 : 0
+  source                  = "../../_sub/compute/nvidia-device-plugin"
+  repo_owner              = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  cluster_name            = var.eks_cluster_name
+  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  chart_version           = var.nvidia_chart_version
+  namespace               = var.nvidia_namespace
+  tolerations             = var.nvidia_device_plugin_tolerations
+  affinity                = var.nvidia_device_plugin_affinity
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
+}
