@@ -111,6 +111,7 @@ resource "helm_release" "atlantis" {
       resources_requests_memory = var.resources_requests_memory
       resources_limits_cpu      = local.resources_limits_cpu
       resources_limits_memory   = local.resources_limits_memory
+      add_secret_volumes        = var.add_secret_volumes
     }),
     yamlencode({
       environmentSecrets = [

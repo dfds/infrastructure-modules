@@ -500,6 +500,7 @@ module "atlantis" {
   webhook_url               = var.atlantis_ingress
   webhook_events            = var.atlantis_webhook_events
   environment               = var.atlantis_environment
+  add_secret_volumes        = var.atlantis_add_secret_volumes
 
   environment_variables = local.atlantis_env_vars
 
