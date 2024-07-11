@@ -17,6 +17,7 @@ variable "deploy_name" {
 variable "namespace" {
   type        = string
   description = "The namespace in which to deploy Helm resources"
+  default     = "nvidia-device-plugin"
 }
 
 variable "repo_owner" {
