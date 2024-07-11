@@ -191,7 +191,7 @@ inputs = {
   # --------------------------------------------------
 
   helm_exporter_deploy             = "true"
-  helm_exporter_target_namespaces  = "fluentd,flux-system,monitoring,traefik-blue-variant"
+  helm_exporter_target_namespaces  = "flux-system,monitoring,traefik-blue-variant"
   helm_exporter_target_charts = [
     {
       registry = {
@@ -231,12 +231,6 @@ inputs = {
   # --------------------------------------------------
 
   podinfo_deploy = true
-
-  # --------------------------------------------------
-  # fluent-cloudwatch
-  # --------------------------------------------------
-
-  fluentd_cloudwatch_deploy = true
 
   # --------------------------------------------------
   # Velero - requires that s3-bucket-velero module
