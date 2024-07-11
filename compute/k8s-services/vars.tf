@@ -1513,7 +1513,7 @@ variable "nvidia_chart_version" {
 variable "nvidia_namespace" {
   type        = string
   description = "Nvidia device plugin namespace"
-  default     = null
+  default     = "nvidia-device-plugin"
 }
 
 variable "nvidia_device_plugin_tolerations" {
