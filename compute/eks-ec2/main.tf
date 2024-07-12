@@ -322,19 +322,6 @@ module "eks_inactivity_cleanup" {
 # GPU workloads
 # --------------------------------------------------
 
-module "eks_nvidia_device_plugin" {
-  count      = var.deploy_nvidia_device_plugin ? 1 : 0
-  source     = "../../_sub/compute/helm-nvidia-device-plugin"
-  depends_on = [module.eks_managed_workers_node_group]
-
-  chart_version    = var.nvidia_chart_version
-  namespace        = var.nvidia_namespace
-  create_namespace = var.create_nvidia_namespace
-  tolerations      = var.nvidia_device_plugin_tolerations
-  affinity         = var.nvidia_device_plugin_affinity
-}
-
-
 module "eks_version_endpoint" {
   count           = var.secure_eks_version_endpoint ? 1 : 0
   source          = "../../_sub/security/eks-version-endpoint"

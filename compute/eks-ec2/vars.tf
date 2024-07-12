@@ -215,51 +215,6 @@ variable "disable_inactivity_cleanup" {
 # GPU workloads
 # --------------------------------------------------
 
-variable "deploy_nvidia_device_plugin" {
-  type        = bool
-  default     = false
-  description = "Whether to deploy NVIDIA device plugin. This needs to be set to `true` when GPU based workloads needs to be enabled."
-}
-
-variable "nvidia_chart_version" {
-  type        = string
-  description = "Nvidia device plugin helm chart version"
-  default     = null
-}
-
-variable "nvidia_namespace" {
-  type        = string
-  description = "Nvidia device plugin namespace"
-  default     = null
-}
-
-variable "create_nvidia_namespace" {
-  type        = bool
-  description = "Whether to create a namespace with helm"
-  default     = false
-}
-
-variable "nvidia_device_plugin_tolerations" {
-  type = list(object({
-    key      = string
-    operator = string
-    value    = optional(string)
-    effect   = string
-  }))
-  description = "A list of tolerations to apply to the nvidia device plugin deployment"
-  default     = []
-}
-
-variable "nvidia_device_plugin_affinity" {
-  type = list(object({
-    key      = string
-    operator = string
-    values   = list(string)
-  }))
-  description = "A list of affinities to apply to the nvidia device plugin deployment"
-  default     = []
-}
-
 variable "secure_eks_version_endpoint" {
   type        = bool
   default     = true
