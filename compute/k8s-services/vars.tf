@@ -1507,7 +1507,7 @@ variable "deploy_nvidia_device_plugin" {
 variable "nvidia_chart_version" {
   type        = string
   description = "Nvidia device plugin helm chart version"
-  default     = null
+  default     = ""
 }
 
 variable "nvidia_namespace" {
