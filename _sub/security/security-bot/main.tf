@@ -316,7 +316,7 @@ resource "aws_lambda_function" "bot" {
   timeout       = 300
 
   logging_config {
-    log_format = "JSON"
+    log_format = "Text"
     log_group = aws_cloudwatch_log_group.lambda_log_group[0].name
   }
 
