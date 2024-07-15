@@ -317,7 +317,7 @@ resource "aws_lambda_function" "bot" {
 
   logging_config {
     log_format = "JSON"
-    log_group = aws_cloudwatch_log_group.lambda_log_group.name
+    log_group = aws_cloudwatch_log_group.lambda_log_group[0].name
   }
 
   environment {
