@@ -78,12 +78,12 @@ resource "aws_sns_topic_subscription" "guard_duty_findings" {
   endpoint  = aws_sqs_queue.queue[0].arn
 }
 
-
 resource "aws_sns_topic_subscription" "guard_duty_findings_2" {
   count     = var.deploy ? 1 : 0
   topic_arn = var.sns_topic_arn_guard_duty_findings_2
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.queue[0].arn
+  provider  = aws.workload_2
 }
 
 

@@ -377,6 +377,8 @@ module "security-bot" {
  
   providers = {
     aws = aws.workload
+    aws.workload   = aws.workload
+    aws.workload_2 = aws.workload_2
   }
 }
 
