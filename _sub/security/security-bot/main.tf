@@ -44,6 +44,7 @@ data "aws_iam_policy_document" "sqs_policy" {
         var.sns_topic_arn_cis_controls,
         var.sns_topic_arn_compliance_changes,
         var.sns_topic_arn_guard_duty_findings,
+        var.sns_topic_arn_guard_duty_findings_2
       ]
     }
   }
@@ -75,6 +76,14 @@ resource "aws_sns_topic_subscription" "guard_duty_findings" {
   topic_arn = var.sns_topic_arn_guard_duty_findings
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.queue[0].arn
+}
+
+resource "aws_sns_topic_subscription" "guard_duty_findings_2" {
+  count     = var.deploy ? 1 : 0
+  topic_arn = var.sns_topic_arn_guard_duty_findings_2
+  protocol  = "sqs"
+  endpoint  = aws_sqs_queue.queue[0].arn
+  provider  = aws.workload_2
 }
 
 
@@ -306,6 +315,11 @@ resource "aws_lambda_function" "bot" {
   runtime       = "provided.al2"
   timeout       = 300
 
+  logging_config {
+    log_format = "Text"
+    log_group = aws_cloudwatch_log_group.lambda_log_group[0].name
+  }
+
   environment {
     variables = {
       AWS_ACCOUNT_NAME                  = var.account_name
@@ -315,9 +329,19 @@ resource "aws_lambda_function" "bot" {
       SNS_TOPIC_ARN_CIS_CONTROLS        = var.sns_topic_arn_cis_controls
       SNS_TOPIC_ARN_COMPLIANCE_CHANGES  = var.sns_topic_arn_compliance_changes
       SNS_TOPIC_ARN_GUARD_DUTY_FINDINGS = var.sns_topic_arn_guard_duty_findings
+      SNS_TOPIC_ARN_GUARD_DUTY_FINDINGS_2 = var.sns_topic_arn_guard_duty_findings_2
       SQS_FOLLOW_UP_QUEUE_URL           = aws_sqs_queue.queue[0].id # `id` provides the URL
     }
   }
+    depends_on = [
+    aws_cloudwatch_log_group.lambda_log_group,
+  ]
+}
+
+resource "aws_cloudwatch_log_group" "lambda_log_group" {
+  count             = var.deploy ? 1 : 0
+  name              = "/aws/lambda/security/${aws_iam_role.lambda[0].name}"
+  retention_in_days = 90
 }
 
 resource "aws_lambda_event_source_mapping" "sqs" {
@@ -328,4 +352,3 @@ resource "aws_lambda_event_source_mapping" "sqs" {
   batch_size                         = 10
   maximum_batching_window_in_seconds = 5
 }
-
