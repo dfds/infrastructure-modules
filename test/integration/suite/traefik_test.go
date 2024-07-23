@@ -38,9 +38,15 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "nginx-test",
 			Namespace: "default",
+			Labels: map[string]string{
+				"app": "nginx-test",
+			},
 		},
 		Spec: appsv1.DeploymentSpec{
-			Replicas: func() *int32 { i := int32(2); return &i }(),
+			Strategy: appsv1.DeploymentStrategy{
+				Type: appsv1.RecreateDeploymentStrategyType,
+			},
+			Replicas: func() *int32 { i := int32(1); return &i }(),
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
 					"app": "nginx-test",
@@ -55,15 +61,8 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 				Spec: apiv1.PodSpec{
 					Containers: []apiv1.Container{
 						{
-							Name:  "web",
+							Name:  "nginx",
 							Image: "nginx",
-							Ports: []apiv1.ContainerPort{
-								{
-									Name:          "http",
-									Protocol:      apiv1.ProtocolTCP,
-									ContainerPort: 80,
-								},
-							},
 						},
 					},
 				},
@@ -125,7 +124,7 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 
 	_, err := customClientSet.Resource(ingressRouteGVR).Namespace("default").Create(context.TODO(), ingressRoute, metav1.CreateOptions{})
 	if err != nil {
-		return fmt.Errorf("error creating IngressRoute: %v", err)
+		log.Fatalf(fmt.Errorf("error creating IngressRoute: %v", err))
 	}
 
 	// Create the controller-runtime client for Traefik CRDs
@@ -149,7 +148,7 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 	}
 
 	if err := k8sClient.Create(context.TODO(), middleware); err != nil {
-		return fmt.Errorf("error creating Middleware: %v", err)
+		log.Fatalf(fmt.Errorf("error creating Middleware: %v", err))
 	}
 
 	// Traefik IngressRoute
@@ -181,35 +180,10 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 	}
 
 	if err := k8sClient.Create(context.TODO(), ingressRoute); err != nil {
-		return fmt.Errorf("error creating IngressRoute: %v", err)
+		log.Fatalf(fmt.Errorf("error creating IngressRoute: %v", err))
 	}
 
-	// Delete resources
-
-	if err := k8sClient.Delete(context.TODO(), middleware); err != nil {
-		return fmt.Errorf("error deleting Middleware: %v", err)
-	}
-
-	if err := k8sClient.Delete(context.TODO(), ingressRoute); err != nil {
-		return fmt.Errorf("error deleting IngressRoute: %v", err)
-	}
-
-	deletePolicy := metav1.DeletePropagationForeground
-	if err := deploymentsClient.Delete(context.TODO(), name, metav1.DeleteOptions{
-		PropagationPolicy: &deletePolicy,
-	}); err != nil {
-		return fmt.Errorf("error deleting Deployment: %v", err)
-	}
-
-	servicesClient := clientset.CoreV1().Services(namespace)
-	if err := servicesClient.Delete(context.TODO(), name, metav1.DeleteOptions{}); err != nil {
-		return fmt.Errorf("error deleting Service: %v", err)
-	}
-
-	// The Grafana deployment utilizes the Traefik resources IngressRoute and
-	// Middleware to expose a public endpoint. This public endpoint will be
-	// used to check if Traefik is routing traffic correctly.
-	AssertK8sDeployment(t, clientset, "default", "test-ingress-deployment", 1)
+	AssertK8sDeployment(t, clientset, "default", "nginx-test", 1)
 
 	// Call the Grafana health endpoint and parse the response
 	resp, err := http.Get("https://nginx-test.qa.qa.dfds.cloud/test")
@@ -229,4 +203,26 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.Equal(t, "ok", strings.ToLower(msg.Database))
+
+	// Delete resources
+
+	if err := k8sClient.Delete(context.TODO(), middleware); err != nil {
+		log.Fatalf(fmt.Errorf("error deleting Middleware: %v", err))
+	}
+
+	if err := k8sClient.Delete(context.TODO(), ingressRoute); err != nil {
+		log.Fatalffmt.Errorf("error deleting IngressRoute: %v", err))
+	}
+
+	deletePolicy := metav1.DeletePropagationForeground
+	if err := deploymentsClient.Delete(context.TODO(), name, metav1.DeleteOptions{
+		PropagationPolicy: &deletePolicy,
+	}); err != nil {
+		log.Fatalf(fmt.Errorf("error deleting Deployment: %v", err))
+	}
+
+	servicesClient := clientset.CoreV1().Services(namespace)
+	if err := servicesClient.Delete(context.TODO(), name, metav1.DeleteOptions{}); err != nil {
+		log.Fatalf(fmt.Errorf("error deleting Service: %v", err))
+	}
 }
