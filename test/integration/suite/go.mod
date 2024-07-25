@@ -7,15 +7,32 @@ toolchain go1.22.5
 require (
 	github.com/fluxcd/pkg/apis/meta v1.5.0
 	github.com/stretchr/testify v1.9.0
-	k8s.io/api v0.30.2
-	k8s.io/apimachinery v0.30.2
-	k8s.io/client-go v0.30.2
+	github.com/traefik/traefik/v2 v2.11.6
+	k8s.io/api v0.30.3
+	k8s.io/apimachinery v0.30.3
+	k8s.io/client-go v0.30.3
 )
 
 require (
+	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
+	github.com/evanphx/json-patch/v5 v5.9.0 // indirect
+	github.com/go-acme/lego/v4 v4.17.4 // indirect
+	github.com/go-jose/go-jose/v4 v4.0.2 // indirect
 	github.com/google/gnostic-models v0.6.8 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/traefik/traefik/v2 v2.11.6 // indirect
+	github.com/gorilla/mux v1.8.0 // indirect
+	github.com/miekg/dns v1.1.59 // indirect
+	github.com/onsi/gomega v1.32.0 // indirect
+	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
+	github.com/pkg/errors v0.9.1 // indirect
+	github.com/sirupsen/logrus v1.9.3 // indirect
+	github.com/traefik/paerser v0.2.0 // indirect
+	golang.org/x/crypto v0.24.0 // indirect
+	golang.org/x/mod v0.18.0 // indirect
+	golang.org/x/sync v0.7.0 // indirect
+	golang.org/x/tools v0.22.0 // indirect
+	k8s.io/apiextensions-apiserver v0.30.1 // indirect
+	sigs.k8s.io/controller-runtime v0.18.4 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 )
 
@@ -48,7 +65,6 @@ require (
 	golang.org/x/term v0.21.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/time v0.5.0 // indirect; indirect // indirect
-	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect; indirect // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
