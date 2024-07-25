@@ -324,6 +324,5 @@ locals {
     PRODUCTION_GRAFANA_1PASSWORD_API_KEY                                = var.atlantis_grafana_1password_api_key
   }
 
-
   atlantis_env_vars = var.crossplane_deploy ? merge(local.atlantis_env_vars_default, local.confluent_env_vars_for_atlantis) : local.atlantis_env_vars_default
 }
