@@ -110,7 +110,7 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 
 	// Custom Resources
 
-	kubeconfig := filepath.Join(homedir.HomeDir(), ".kube", "sofia-deploy-token.config")
+	kubeconfig := filepath.Join(homedir.HomeDir(), ".kube", "qa.config")
 	cfg, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 	if err != nil {
 		t.Logf("Error building kubeconfig: %v", err)
