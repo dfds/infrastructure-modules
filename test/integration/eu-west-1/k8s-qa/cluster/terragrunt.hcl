@@ -142,7 +142,7 @@ inputs = {
       }
     }
     "dataplatform" = {
-      instance_types          = ["r6g.2xlarge"]
+      instance_types          = ["r6a.2xlarge"]
       disk_type               = "gp3"
       desired_size_per_subnet = 1
       max_unavailable         = 1
