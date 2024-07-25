@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"path/filepath"
 	"testing"
@@ -20,6 +21,7 @@ import (
 
 	"github.com/traefik/traefik/v2/pkg/config/dynamic"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/scheme"
 )
 
 func TestTraefikDeployment(t *testing.T) {
@@ -116,8 +118,18 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 		t.Logf("Error building kubeconfig: %v", err)
 	}
 
+	// Create a new scheme
+	schemeBuilder := &scheme.Builder{GroupVersion: traefikv1alpha1.SchemeGroupVersion}
+	schemeBuilder.Register(&traefikv1alpha1.Middleware{}, &traefikv1alpha1.MiddlewareList{})
+	schemeBuilder.Register(&traefikv1alpha1.IngressRoute{}, &traefikv1alpha1.IngressRouteList{})
+
+	myScheme, err := schemeBuilder.Build()
+	if err != nil {
+		log.Fatalf("Error building scheme: %v", err)
+	}
+
 	// Create the controller-runtime client for Traefik CRDs
-	k8sClient, err := client.New(cfg, client.Options{})
+	k8sClient, err := client.New(cfg, client.Options{Scheme: myScheme})
 	if err != nil {
 		t.Logf("Error creating controller-runtime client: %v", err)
 	}
