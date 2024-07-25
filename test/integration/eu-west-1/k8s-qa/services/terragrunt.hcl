@@ -110,6 +110,11 @@ inputs = {
       key      = "monitoring.dfds",
       operator = "Exists",
       effect   = "NoSchedule",
+    },
+    {
+      key      = "dataplatform.dfds",
+      operator = "Exists",
+      effect   = "NoSchedule",
     }
   ]
   monitoring_affinity = [

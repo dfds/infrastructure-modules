@@ -91,3 +91,43 @@ func TestMonitoringNodeLabels(t *testing.T) {
 		assert.Equal(t, "monitoring", node.Labels["dedicated"])
 	}
 }
+
+func TestDataPlatformNodeTaints(t *testing.T) {
+	t.Parallel()
+	clientset := NewK8sClientSet(t)
+
+	resp, err := clientset.CoreV1().Nodes().List(context.Background(),
+		metav1.ListOptions{
+			LabelSelector: "eks.amazonaws.com/nodegroup in (dataplatform)",
+		})
+	if err != nil {
+		t.Log(err.Error())
+		return
+	}
+
+	for _, node := range resp.Items {
+		assert.Equal(t, 1, len(node.Spec.Taints))
+		taint := node.Spec.Taints[0]
+		assert.Equal(t, "dataplatform.dfds", taint.Key)
+		assert.Equal(t, v1.TaintEffectNoSchedule, taint.Effect)
+		assert.Equal(t, "", taint.Value)
+	}
+}
+
+func TestDataPlatformNodeLabels(t *testing.T) {
+	t.Parallel()
+	clientset := NewK8sClientSet(t)
+
+	resp, err := clientset.CoreV1().Nodes().List(context.Background(),
+		metav1.ListOptions{
+			LabelSelector: "eks.amazonaws.com/nodegroup in (dataplatform)",
+		})
+	if err != nil {
+		t.Log(err.Error())
+		return
+	}
+
+	for _, node := range resp.Items {
+		assert.Equal(t, "dataplatform", node.Labels["dedicated"])
+	}
+}
