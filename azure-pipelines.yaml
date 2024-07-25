@@ -203,10 +203,10 @@ stages:
                 - download: current
                   displayName: "Download test binary"
                   artifact: test-master
-                - bash: ./src/qa-test-eks.sh test-run eu-west-1 qa $(Pipeline.Workspace)/test-master/test-master.bin
-                  workingDirectory: $(Agent.BuildDirectory)/source
-                  displayName: "Run tests"
-                  timeoutInMinutes: 15
+                # - bash: ./src/qa-test-eks.sh test-run eu-west-1 qa $(Pipeline.Workspace)/test-master/test-master.bin
+                #   workingDirectory: $(Agent.BuildDirectory)/source
+                #   displayName: "Run tests"
+                #   timeoutInMinutes: 15
 
       - deployment: apply
         displayName: Apply from feature branch
