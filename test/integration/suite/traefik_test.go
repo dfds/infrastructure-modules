@@ -123,13 +123,13 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 	schemeBuilder.Register(&traefikv1alpha1.Middleware{}, &traefikv1alpha1.MiddlewareList{})
 	schemeBuilder.Register(&traefikv1alpha1.IngressRoute{}, &traefikv1alpha1.IngressRouteList{})
 
-	myScheme, err := schemeBuilder.Build()
+	clientScheme, err := schemeBuilder.Build()
 	if err != nil {
 		log.Fatalf("Error building scheme: %v", err)
 	}
 
 	// Create the controller-runtime client for Traefik CRDs
-	k8sClient, err := client.New(cfg, client.Options{Scheme: myScheme})
+	k8sClient, err := client.New(cfg, client.Options{Scheme: clientScheme})
 	if err != nil {
 		t.Logf("Error creating controller-runtime client: %v", err)
 	}
