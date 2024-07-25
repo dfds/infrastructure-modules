@@ -2,12 +2,10 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"path/filepath"
-	"strings"
 	"testing"
 
 	appsv1 "k8s.io/api/apps/v1"
@@ -113,7 +111,7 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 
 	// Custom Resources
 
-	kubeconfig := filepath.Join(homedir.HomeDir(), ".kube", "config")
+	kubeconfig := filepath.Join(homedir.HomeDir(), ".kube", "qa.config")
 	cfg, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 	if err != nil {
 		log.Fatalf("Error building kubeconfig: %v", err)
@@ -182,24 +180,13 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 
 	AssertK8sDeployment(t, clientset, "default", "nginx-test", 1)
 
-	// Call the Grafana health endpoint and parse the response
+	// Call the test endpoint
 	resp, err := http.Get("https://nginx-test.qa.qa.dfds.cloud/test")
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer resp.Body.Close()
 	assert.Equal(t, 200, resp.StatusCode)
-	msg := struct {
-		Commit   string `json:"commit"`
-		Database string `json:"database"`
-		Version  string `json:"version"`
-	}{}
-	decoder := json.NewDecoder(resp.Body)
-	err = decoder.Decode(&msg)
-	if err != nil {
-		t.Fatal(err)
-	}
-	assert.Equal(t, "ok", strings.ToLower(msg.Database))
 
 	// Delete resources
 
