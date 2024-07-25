@@ -769,6 +769,18 @@ variable "atlantis_grafana_cloud_sso_saml_idp_metadata" {
   sensitive   = true
 }
 
+variable "atlantis_grafana_1password_api_key" {
+  type        = string
+  default     = ""
+  description = "1Password API key for Vault used by Grafana Cloud Pipeline"
+  sensitive   = true
+
+}
+
+# --------------------------------------------------
+# Atlantis
+# --------------------------------------------------
+
 variable "atlantis_add_secret_volumes" {
   type        = bool
   default     = false

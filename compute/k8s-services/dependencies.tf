@@ -321,8 +321,9 @@ locals {
     PRODUCTION_GRAFANA_CLOUD_SSO_SAML_CERTIFICATE                       = var.atlantis_grafana_cloud_sso_saml_certificate
     PRODUCTION_GRAFANA_CLOUD_SSO_SAML_PRIVATE_KEY                       = var.atlantis_grafana_cloud_sso_saml_private_key
     PRODUCTION_GRAFANA_CLOUD_SSO_SAML_IDP_METADATA_URL                  = var.atlantis_grafana_cloud_sso_saml_idp_metadata
-
+    PRODUCTION_GRAFANA_1PASSWORD_API_KEY                                = var.atlantis_grafana_1password_api_key
   }
+
 
   atlantis_env_vars = var.crossplane_deploy ? merge(local.atlantis_env_vars_default, local.confluent_env_vars_for_atlantis) : local.atlantis_env_vars_default
 }
