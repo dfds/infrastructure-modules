@@ -141,6 +141,26 @@ inputs = {
         dedicated = "observability"
       }
     }
+    "dataplatform" = {
+      instance_types          = ["r6a.2xlarge"]
+      disk_type               = "gp3"
+      desired_size_per_subnet = 1
+      max_unavailable         = 1
+      # This comment configures the renovate bot to automatically update this variable:
+      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.29-*"]}]
+      # currentImageName=amazon-eks-node-1.29-v20240522
+      ami_id             = "ami-08173a57bd89c4c39"
+      availability_zones = ["eu-west-1a", "eu-west-1b"]
+      taints = [
+        {
+          key    = "dataplatform.dfds"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+      labels = {
+        dedicated = "dataplatform"
+      }
+    }
   }
 
   # --------------------------------------------------
