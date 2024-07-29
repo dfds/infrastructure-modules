@@ -56,3 +56,8 @@ extraVolumeMounts:
     readOnly: true
     mountPath: "/kubeconfigs"
 %{ endif ~}
+
+
+statefulSet:
+  securityContext:
+    runAsUser: 200
