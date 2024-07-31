@@ -123,7 +123,7 @@ github.com/stretchr/testify/assert
 # github.com/traefik/paerser v0.2.0
 ## explicit; go 1.19
 github.com/traefik/paerser/types
-# github.com/traefik/traefik/v2 v2.11.6
+# github.com/traefik/traefik/v2 v2.11.7
 ## explicit; go 1.22
 github.com/traefik/traefik/v2/pkg/config/dynamic
 github.com/traefik/traefik/v2/pkg/ip
