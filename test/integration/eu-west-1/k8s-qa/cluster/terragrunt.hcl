@@ -148,7 +148,7 @@ inputs = {
       max_unavailable         = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.29-*"]}]
-      # currentImageName=amazon-eks-node-1.29-v20240522
+      # currentImageName=amazon-eks-node-1.29-v20240703
       ami_id             = "ami-08173a57bd89c4c39"
       availability_zones = ["eu-west-1a", "eu-west-1b"]
       taints = [
