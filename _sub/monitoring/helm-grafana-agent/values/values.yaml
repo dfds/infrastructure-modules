@@ -129,7 +129,7 @@ alloy-logs: {}
 
 # Metrics configurations and infrastructure
 metrics:
-  enabled: false
+  enabled: true
   autoDiscover:
     enabled: false
   cost:
