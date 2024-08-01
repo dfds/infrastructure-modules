@@ -68,6 +68,20 @@ module "iam_role_sso_reader" {
   }
 }
 
+module "iam_role_vpc_reader" {
+  source               = "../../_sub/security/iam-role"
+  role_name            = "vpc-reader"
+  role_description     = "Reads VPC and VPC tags"
+  max_session_duration = 28800 # 8 hours
+  assume_role_policy   = data.aws_iam_policy_document.assume_role_policy_selfservice_api.json
+  role_policy_name     = "VpcRead"
+  role_policy_document = module.iam_policies.vpcreader
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
 module "iam_role_ecr_push" {
   source               = "../../_sub/security/iam-role"
   role_name            = "ecr-push"

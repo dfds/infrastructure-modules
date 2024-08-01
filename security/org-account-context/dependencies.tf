@@ -24,6 +24,17 @@ data "aws_iam_policy_document" "assume_role_policy_selfservice" {
   }
 }
 
+data "aws_iam_policy_document" "assume_role_policy_selfservice_api" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.shared_account_id}:role/selfservice-api"]
+    }
+  }
+}
+
 // Gives access to role through the individual Capability account
 data "aws_iam_policy_document" "shared_role_cap_acc" {
   statement {

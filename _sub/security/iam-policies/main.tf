@@ -189,6 +189,21 @@ data "aws_iam_policy_document" "ssoreader" {
   }
 }
 
+# VPCReader
+data "aws_iam_policy_document" "vpcreader" {
+  statement {
+    sid    = "VpcReaderTf"
+    effect = "Allow"
+    actions = [
+      "ec2:DescribeVpcs",
+      "ec2:DescribeTags"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+}
+
 # ------------------------------------------------------------------------------
 # Trusted Account
 # ------------------------------------------------------------------------------

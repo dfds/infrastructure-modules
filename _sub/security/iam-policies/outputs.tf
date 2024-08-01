@@ -6,6 +6,10 @@ output "ssoreader" {
   value = data.aws_iam_policy_document.ssoreader.json
 }
 
+output "vpcreader" {
+  value = data.aws_iam_policy_document.vpcreader.json
+}
+
 output "push_to_ecr" {
   value = data.aws_iam_policy_document.push_to_ecr.json
 }
