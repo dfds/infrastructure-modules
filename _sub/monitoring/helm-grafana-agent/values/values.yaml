@@ -110,7 +110,7 @@ logs:
         __address__ = "localhost",
         __path__    = "/var/log/**",
          __path_exclude__ = "/var/log/{pods,containers,journal}/**",
-        instance    = constants.hostname,
+        instance = env("HOSTNAME"),
         job         = "integrations/kubernetes/worker-node",
       }]
     }
