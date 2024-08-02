@@ -101,6 +101,30 @@ logs:
     enabled: true
   cluster_events:
     enabled: true
+  journal:
+    enabled: true
+    units: []
+  extraConfig: |
+    local.file_match "worker_nodes_logs" {
+      path_targets = [{
+        __address__ = "localhost",
+        __path__    = "/var/log/**",
+         __path_exclude__ = "/var/log/{pods,containers,journal}/**",
+        instance = env("HOSTNAME"),
+        job         = "integrations/kubernetes/worker-node",
+      }]
+    }
+
+    loki.source.file "worker_nodes_logs" {
+      targets    = local.file_match.worker_nodes_logs.targets
+      forward_to = [loki.process.worker_nodes_logs.receiver]
+    }
+
+    loki.process "worker_nodes_logs" {
+      forward_to = [
+        loki.process.logs_service.receiver,
+      ]
+    }
 
 alloy-events: {}
 alloy-logs: {}
