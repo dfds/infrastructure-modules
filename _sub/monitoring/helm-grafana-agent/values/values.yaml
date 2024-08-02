@@ -101,6 +101,9 @@ logs:
     enabled: true
   cluster_events:
     enabled: true
+  journal:
+    enabled: true
+    units: []
   extraConfig: |
     local.file_match "worker_nodes_logs" {
       path_targets = [{
@@ -108,7 +111,7 @@ logs:
         __path__    = "/var/log/**",
          __path_exclude__ = "/var/log/{pods,containers,journal}/**",
         instance    = constants.hostname,
-        job         = "integrations/worker-node",
+        job         = "integrations/kubernetes/worker-node",
       }]
     }
 
