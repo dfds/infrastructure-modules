@@ -7,7 +7,7 @@ toolchain go1.22.5
 require (
 	github.com/fluxcd/pkg/apis/meta v1.5.0
 	github.com/stretchr/testify v1.9.0
-	github.com/traefik/traefik/v2 v2.11.7
+	github.com/traefik/traefik/v3 v3.1.1
 	k8s.io/api v0.30.3
 	k8s.io/apimachinery v0.30.3
 	k8s.io/client-go v0.30.3
