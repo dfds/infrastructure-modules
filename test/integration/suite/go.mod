@@ -7,7 +7,7 @@ toolchain go1.22.6
 require (
 	github.com/fluxcd/pkg/apis/meta v1.5.0
 	github.com/stretchr/testify v1.9.0
-	github.com/traefik/traefik/v2 v2.11.7
+	github.com/traefik/traefik/v2 v2.11.8
 	k8s.io/api v0.30.3
 	k8s.io/apimachinery v0.30.3
 	k8s.io/client-go v0.30.3
@@ -21,7 +21,7 @@ require (
 	github.com/go-jose/go-jose/v4 v4.0.2 // indirect
 	github.com/google/gnostic-models v0.6.8 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/gorilla/mux v1.8.0 // indirect
+	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/miekg/dns v1.1.59 // indirect
 	github.com/onsi/gomega v1.32.0 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
