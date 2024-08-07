@@ -1,7 +1,11 @@
 #!/bin/bash
 set -eux #-o pipefail
 
-echo "TERRAGRUNT_TFPATH is set to ${TERRAGRUNT_TFPATH}"
+if [[ -z ${TERRAGRUNT_TFPATH+x} ]]; then
+	echo "TERRAGRUNT_TFPATH is unset"
+else
+	echo "TERRAGRUNT_TFPATH is set to ${TERRAGRUNT_TFPATH}"
+fi
 
 BASEPATH=./test/integration
 ACTION=$1
