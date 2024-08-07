@@ -18,7 +18,7 @@ pr:
 resources:
   containers:
     - container: prime
-      image: dfdsdk/prime-pipeline:1.0.0
+      image: dfdsdk/prime-pipeline:2.0.0
       env:
         AWS_DEFAULT_REGION: eu-west-1
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
@@ -35,6 +35,8 @@ resources:
         TF_VAR_grafana_agent_loki_username: $(TF_VAR_grafana_agent_loki_username)
         TF_VAR_grafana_agent_tempo_url: $(TF_VAR_grafana_agent_tempo_url)
         TF_VAR_grafana_agent_tempo_username: $(TF_VAR_grafana_agent_tempo_username)
+        TF_IN_AUTOMATION: "true"
+        TERRAGRUNT_TFPATH: /usr/local/bin/tofu
     - container: aws-nuke
       image: dfdsdk/aws-nuke:0.0.20
       env:
