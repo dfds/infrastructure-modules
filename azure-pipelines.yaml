@@ -38,7 +38,7 @@ resources:
         TF_IN_AUTOMATION: "true"
         TERRAGRUNT_TFPATH: /usr/local/bin/tofu
     - container: aws-nuke
-      image: dfdsdk/aws-nuke:0.0.20
+      image: dfdsdk/aws-nuke:0.0.21
       env:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
