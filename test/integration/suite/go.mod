@@ -21,7 +21,7 @@ require (
 	github.com/go-jose/go-jose/v4 v4.0.2 // indirect
 	github.com/google/gnostic-models v0.6.8 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/gorilla/mux v1.8.0 // indirect
+	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/miekg/dns v1.1.59 // indirect
 	github.com/onsi/gomega v1.32.0 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
