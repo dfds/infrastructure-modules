@@ -136,3 +136,9 @@ variable "add_secret_volumes" {
   default     = false
   description = "Add secret volumes to the Atlantis deployment. Requires a secret deployed named 'kubeconfigs'"
 }
+
+variable "enable_github_secrets" {
+  type        = bool
+  default     = true
+  description = "Enable Github secrets for Atlantis"
+}
