@@ -151,6 +151,7 @@ resource "github_repository_webhook" "hook" {
 }
 
 resource "github_actions_organization_secret" "atlantis_username" {
+  count                   = var.enable_github_secrets ? 1 : 0
   secret_name             = "${upper(var.environment)}_ATLANTIS_USERNAME"
   visibility              = "selected"
   plaintext_value         = var.auth_username
@@ -158,6 +159,7 @@ resource "github_actions_organization_secret" "atlantis_username" {
 }
 
 resource "github_actions_organization_secret" "atlantis_password" {
+  count                   = var.enable_github_secrets ? 1 : 0
   secret_name             = "${upper(var.environment)}_ATLANTIS_PASSWORD"
   visibility              = "selected"
   plaintext_value         = random_password.password.result

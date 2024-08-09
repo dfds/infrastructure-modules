@@ -591,6 +591,12 @@ variable "atlantis_environment" {
   default     = ""
 }
 
+variable "atlantis_enable_github_secrets" {
+  type        = bool
+  default     = true
+  description = "Enable Github secrets for Atlantis"
+}
+
 # --------------------------------------------------
 # Atlantis variables
 # --------------------------------------------------
