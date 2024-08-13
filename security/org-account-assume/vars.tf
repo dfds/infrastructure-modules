@@ -78,6 +78,16 @@ variable "sso_admin_group_name" {
   type = string
 }
 
+variable "sso_IAMRA_permission_set_name" {
+  type = string
+  default = ""
+}
+
+variable "sso_IAMRA_group_name" {
+  type = string
+  default = ""
+}
+
 variable "sso_support_permission_set_name" {
   type    = string
   default = null
