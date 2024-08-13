@@ -58,7 +58,7 @@ module "iam_identity_center_assignment_IAMRA" {
   count  = var.sso_IAMRA_permission_set_name != "" && var.sso_IAMRA_group_name != "" ? 1 : 0
 
   permission_set_name = var.sso_IAMRA_permission_set_name
-  group_name          = var.IAMRA
+  group_name          = var.sso_IAMRA_group_name
   aws_account_id      = module.org_account.id
 
   providers = {
