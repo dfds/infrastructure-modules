@@ -52,7 +52,8 @@ resource "aws_ssoadmin_permission_set" "IAMRA" {
 }
 
 resource "aws_ssoadmin_permission_set_inline_policy" "IAMRA" {
+  count              = length(var.private_ca_arns) > 0 && length(var.pca_account_ids) > 0 ? 1 : 0
   inline_policy      = data.aws_iam_policy_document.IAMRA.json
-  instance_arn       = aws_ssoadmin_permission_set.IAMRA.instance_arn
-  permission_set_arn = aws_ssoadmin_permission_set.IAMRA.arn
+  instance_arn       = aws_ssoadmin_permission_set.IAMRA[0].instance_arn
+  permission_set_arn = aws_ssoadmin_permission_set.IAMRA[0].arn
 }
