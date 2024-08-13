@@ -53,6 +53,19 @@ module "iam_identity_center_assignment" {
   }
 }
 
+module "iam_identity_center_assignment_IAMRA" {
+  source = "../../_sub/security/iam-identity-center-assignment"
+  count  = var.sso_IAMRA_permission_set_name != "" && var.sso_IAMRA_group_name != "" ? 1 : 0
+
+  permission_set_name = var.sso_IAMRA_permission_set_name
+  group_name          = var.IAMRA
+  aws_account_id      = module.org_account.id
+
+  providers = {
+    aws = aws.sso
+  }
+}
+
 resource "aws_iam_role" "prime" {
   name                 = var.prime_role_name
   description          = "Admin role to be assumed by Prime"
