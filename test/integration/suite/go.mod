@@ -2,7 +2,7 @@ module go.dfds.cloud/infrastructure-modules/test/integration/suite
 
 go 1.22.0
 
-toolchain go1.22.6
+toolchain go1.23.0
 
 require (
 	github.com/fluxcd/pkg/apis/meta v1.5.0
