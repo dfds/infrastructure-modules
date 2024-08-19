@@ -25,7 +25,7 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/miekg/dns v1.1.59 // indirect
-	github.com/onsi/gomega v1.32.0 // indirect
+	github.com/onsi/gomega v1.33.1 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
@@ -35,7 +35,7 @@ require (
 	golang.org/x/mod v0.18.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/tools v0.22.0 // indirect
-	k8s.io/apiextensions-apiserver v0.30.1 // indirect
+	k8s.io/apiextensions-apiserver v0.31.0 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 )
 
