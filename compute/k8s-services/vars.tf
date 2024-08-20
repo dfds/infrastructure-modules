@@ -1628,3 +1628,15 @@ variable "github_arc_runners_max_runners" {
   description = "Maximum number of runners to scale to"
   default = 5
 }
+
+variable "github_arc_runners_memory_request" {
+  type = string
+  description = "Memory request for the runner pods"
+  default = "128Mi"
+}
+
+variable "github_arc_runners_memory_limit" {
+  type = string
+  description = "Memory request for the runner pods"
+  default = "8Gi"
+}

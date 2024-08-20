@@ -103,5 +103,16 @@ variable "max_runners" {
   type = number
   description = "Maximum number of runners to keep running"
   default = 5
+}
   
+variable "runner_memory_request" {
+  type = string
+  description = "Memory request for the runner pods"
+  default = "128Mi"
+}
+
+variable "runner_memory_limit" {
+  type = string
+  description = "Memory request for the runner pods"
+  default = "8Gi"
 }

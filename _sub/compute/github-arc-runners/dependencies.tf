@@ -67,6 +67,11 @@ spec:
         - name: runner
           image: ghcr.io/actions/actions-runner:latest
           command: ["/home/runner/run.sh"]
+          resources:
+            requests:
+              memory: "${var.runner_memory_request}"
+            limits:
+              memory: "${var.runner_memory_limit}"
           env:
             - name: ACTIONS_RUNNER_CONTAINER_HOOKS
               value: /home/runner/k8s/index.js
