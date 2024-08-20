@@ -1554,3 +1554,74 @@ variable "nvidia_device_plugin_affinity" {
   description = "A list of affinities to apply to the nvidia device plugin deployment"
   default     = []
 }
+
+# --------------------------------------------------
+# Github ARC SS Controller
+# --------------------------------------------------
+
+variable "github_arc_ss_controller_deploy" {
+  type        = string
+  default     = false
+  description = "Feature toggle for Github ARC SS Controller"
+}
+
+variable "github_arc_ss_controller_helm_chart_version" {
+  type        = string
+  description = "Github ARC SS Controller helm chart version"
+  default     = ""
+}
+
+# --------------------------------------------------
+# Github ARC Runners
+# --------------------------------------------------
+
+variable "github_arc_runners_deploy" {
+  type        = string
+  default     = false
+  description = "Feature toggle for Github ARC Runners"
+}
+
+variable "github_arc_runners_helm_chart_version" {
+  type        = string
+  description = "Github ARC Runners helm chart version"
+  default     = ""
+}
+
+variable "github_arc_runners_github_config_url" {
+  type = string
+  description = "URL of Github organisation or repo for the runners"
+}
+
+variable "github_arc_runners_github_config_secret" {
+  type = string
+  description = "Secret name containing authorisation information for the runners. This is not deployed by this module, consider using external-secrets to deploy it"
+}
+
+variable "github_arc_runners_runner_scale_set_name" {
+  type = string
+  description = "Name for the runner scale set"
+}
+
+variable "github_arc_runners_storage_class_name" {
+  type = string
+  description = "Name of the storage class to use for the runners persistent volume"
+  default = "csi-gp3"
+}
+
+variable "github_arc_runners_storage_request_size" {
+  type = string
+  description = "Size of the persistent volume claim for the runners"
+  default = "1Gi"
+}
+
+variable "github_arc_runners_min_runners" {
+  type = number
+  description = "Minimum number of runners to keep running"
+  default = 0
+}
+
+variable "github_arc_runners_max_runners" {
+  type = number
+  description = "Maximum number of runners to scale to"
+  default = 5
+}

@@ -975,3 +975,62 @@ module "eks_nvidia_device_plugin" {
 
   depends_on = [module.platform_fluxcd]
 }
+
+# --------------------------------------------------
+# Github ARC SS Controller
+# --------------------------------------------------
+
+module "github_arc_ss_controller" {
+  source                  = "../../_sub/compute/github-arc-ss-controller"
+  count                   = var.github_arc_ss_controller_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  deploy_name             = "arc"
+  namespace               = "arc-systems"
+  helm_chart_version      = var.github_arc_ss_controller_helm_chart_version
+  github_owner            = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  prune                   = var.fluxcd_prune
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
+}
+
+# --------------------------------------------------
+# Github ARC Runners
+# --------------------------------------------------
+
+module "github_arc_runners" {
+  source                  = "../../_sub/compute/github-arc-runners"
+  count                   = var.github_arc_runners_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  deploy_name             = "arc-runner-set"
+  namespace               = "arc-runners"
+  helm_chart_version      = var.github_arc_runners_helm_chart_version
+  github_owner            = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  prune                   = var.fluxcd_prune
+  github_config_url       = var.github_arc_runners_github_config_url
+  github_config_secret    = var.github_arc_runners_github_config_secret
+  runner_scale_set_name   = var.github_arc_runners_runner_scale_set_name
+  storage_class_name      = var.github_arc_runners_storage_class_name
+  storage_request_size    = var.github_arc_runners_storage_request_size
+  min_runners             = var.github_arc_runners_min_runners
+  max_runners             = var.github_arc_runners_max_runners
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd, module.github_arc_ss_controller]
+}
