@@ -1590,16 +1590,19 @@ variable "github_arc_runners_helm_chart_version" {
 variable "github_arc_runners_github_config_url" {
   type = string
   description = "URL of Github organisation or repo for the runners"
+  default = ""
 }
 
 variable "github_arc_runners_github_config_secret" {
   type = string
   description = "Secret name containing authorisation information for the runners. This is not deployed by this module, consider using external-secrets to deploy it"
+  default = ""
 }
 
 variable "github_arc_runners_runner_scale_set_name" {
   type = string
   description = "Name for the runner scale set"
+  default = ""
 }
 
 variable "github_arc_runners_storage_class_name" {
