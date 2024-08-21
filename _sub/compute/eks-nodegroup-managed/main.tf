@@ -1,3 +1,7 @@
+locals {
+  user_data_script = var.is_al2023 ? "user-data-al2023.sh.tftpl" : "user-data.sh.tftpl"
+}
+
 resource "aws_launch_template" "eks" {
   count = signum(var.desired_size_per_subnet)
 
@@ -6,7 +10,7 @@ resource "aws_launch_template" "eks" {
   name_prefix   = "eks-${var.cluster_name}-${var.nodegroup_name}-"
   # Make sure to update the max pod values in the template below using the script
   # `src/produce-eni-max-pods.sh` when updating the EKS VPC CNI addon.
-  user_data = base64encode(templatefile("${path.module}/user-data.sh.tftpl", {
+  user_data = base64encode(templatefile("${path.module}/${local.user_data_script}", {
     eks_endpoint : var.eks_endpoint,
     eks_certificate_authority : var.eks_certificate_authority,
     cluster_name : var.cluster_name,
@@ -16,6 +20,7 @@ resource "aws_launch_template" "eks" {
     cloudwatch_agent_config_bucket : var.cloudwatch_agent_config_bucket,
     cloudwatch_agent_config_file : var.cloudwatch_agent_config_file,
     vpc_cni_prefix_delegation_enabled : var.vpc_cni_prefix_delegation_enabled,
+    cidr : data.aws_eks_cluster.this.kubernetes_network_config[0].service_ipv4_cidr
   }))
   key_name               = var.ec2_ssh_key
   update_default_version = true

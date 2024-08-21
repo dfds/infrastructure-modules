@@ -139,3 +139,9 @@ variable "max_unavailable_percentage" {
   description = "Desired max percentage of unavailable worker nodes during node group update."
   default     = null
 }
+
+variable "is_al2023" {
+  type = bool
+  description = "Whether the node group is using AL2023 image"
+  default = false
+}

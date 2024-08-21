@@ -158,6 +158,7 @@ variable "eks_managed_nodegroups" {
       effect = string
     })), [])
     labels = optional(map(string), {})
+    is_al2023 = optional(bool, false)
   }))
   default = {}
 }

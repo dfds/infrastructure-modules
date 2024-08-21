@@ -136,6 +136,7 @@ module "eks_managed_workers_node_group" {
   subnet_ids = length(each.value.availability_zones) == 0 ? module.eks_managed_workers_subnet.subnet_ids : [
     for sn in module.eks_managed_workers_subnet.subnets : sn.id if contains(each.value.availability_zones, sn.availability_zone)
   ]
+  is_al2023 = each.value.is_al2023
 }
 
 # --------------------------------------------------
