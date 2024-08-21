@@ -288,4 +288,11 @@ inputs = {
   external_secrets_ssm_deploy = true
   external_secrets_ssm_allowed_namespaces = ["atlantis", "flux-system"]
 
+  # --------------------------------------------------
+  # Github ARC SS Controller
+  # --------------------------------------------------
+  
+  github_arc_ss_controller_deploy = true
+  github_arc_ss_controller_helm_chart_version = "0.9.3"
+
 }
