@@ -98,6 +98,7 @@ inputs = {
       ami_id                     = "ami-0d694ee9037e1f937"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
+      is_al2023 = true
 
     }
     "monitoring" = {
