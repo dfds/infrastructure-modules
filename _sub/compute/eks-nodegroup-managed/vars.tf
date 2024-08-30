@@ -145,3 +145,21 @@ variable "is_al2023" {
   description = "Whether the node group is using AL2023 image"
   default = false
 }
+
+variable "max_pods" {
+  type = number
+  description = "Maximum number of Pods that can run on the Kubelet"
+  default = 110
+}
+
+variable "cpu" {
+  type = string
+  description = "CPU reserved for kubernetes system components"
+  default = null
+}
+
+variable "memory" {
+  type = string
+  description = "Memory reserved for kubernetes system components"
+  default = null
+}
