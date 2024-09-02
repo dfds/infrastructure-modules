@@ -307,16 +307,6 @@ module "alarm_notifier_log_account" {
   }
 }
 
-module "cloudwatch_alarm_log_anomaly" {
-  source        = "../../_sub/monitoring/cloudwatch-alarms/log-anomaly/"
-  deploy        = var.cloudwatch_alarm_log_anomaly_deploy
-  sns_topic_arn = module.alarm_notifier_log_account.sns_arn
-
-  providers = {
-    aws = aws.logs
-  }
-}
-
 # --------------------------------------------------
 # Monitoring namespace
 # --------------------------------------------------
@@ -684,35 +674,6 @@ module "podinfo_flux_manifests" {
 
   providers = {
     github = github.fluxcd
-  }
-
-  depends_on = [module.platform_fluxcd]
-}
-
-# --------------------------------------------------
-# fluentd-cloudwatch through Flux
-# --------------------------------------------------
-
-module "fluentd_cloudwatch_flux_manifests" {
-  source                          = "../../_sub/monitoring/fluentd-cloudwatch"
-  count                           = var.fluentd_cloudwatch_deploy ? 1 : 0
-  cluster_name                    = var.eks_cluster_name
-  aws_region                      = var.aws_region
-  retention_in_days               = var.fluentd_cloudwatch_retention_in_days
-  repo_name                       = var.fluxcd_bootstrap_repo_name
-  repo_branch                     = var.fluxcd_bootstrap_repo_branch
-  deploy_oidc_provider            = var.aws_assume_logs_role_arn == null || var.aws_assume_logs_role_arn == "" ? false : true # do not create extra oidc provider if external log account is provided
-  eks_openid_connect_provider_url = local.oidc_issuer
-  overwrite_on_create             = var.fluxcd_bootstrap_overwrite_on_create
-  gitops_apps_repo_url            = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch         = var.fluxcd_apps_repo_branch
-  docker_image_name               = var.fluentd_cloudwatch_docker_image_name
-  docker_image_tag                = var.fluentd_cloudwatch_docker_image_tag
-  prune                           = var.fluxcd_prune
-
-  providers = {
-    github = github.fluxcd
-    aws    = aws.logs
   }
 
   depends_on = [module.platform_fluxcd]

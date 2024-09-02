@@ -53,7 +53,7 @@ variable "eks_cluster_name" {
 }
 
 # --------------------------------------------------
-# FluentD CloudWatch Logs
+# CloudWatch Logs
 # --------------------------------------------------
 
 variable "aws_assume_logs_role_arn" {
@@ -1109,33 +1109,6 @@ variable "podinfo_deploy" {
 }
 
 # --------------------------------------------------
-# fluentd-cloudwatch through Flux
-# --------------------------------------------------
-
-variable "fluentd_cloudwatch_deploy" {
-  type    = bool
-  default = false
-}
-
-variable "fluentd_cloudwatch_retention_in_days" {
-  type        = string
-  default     = "7"
-  description = "How many days to keep the logs?"
-}
-
-variable "fluentd_cloudwatch_docker_image_name" {
-  type        = string
-  default     = "fluent/fluentd-kubernetes-daemonset"
-  description = "The repo/name for the fluentd-kubernetes-daemonset image"
-}
-
-variable "fluentd_cloudwatch_docker_image_tag" {
-  type        = string
-  default     = "v1.16-debian-cloudwatch-1"
-  description = "The tag for the fluentd-kubernetes-daemonset image"
-}
-
-# --------------------------------------------------
 # Velero - requires that s3-bucket-velero module
 # is already applied through Terragrunt.
 # --------------------------------------------------
@@ -1588,55 +1561,55 @@ variable "github_arc_runners_helm_chart_version" {
 }
 
 variable "github_arc_runners_github_config_url" {
-  type = string
+  type        = string
   description = "URL of Github organisation or repo for the runners"
-  default = ""
+  default     = ""
 }
 
 variable "github_arc_runners_github_config_secret" {
-  type = string
+  type        = string
   description = "Secret name containing authorisation information for the runners. This is not deployed by this module, consider using external-secrets to deploy it"
-  default = ""
+  default     = ""
 }
 
 variable "github_arc_runners_runner_scale_set_name" {
-  type = string
+  type        = string
   description = "Name for the runner scale set"
-  default = ""
+  default     = ""
 }
 
 variable "github_arc_runners_storage_class_name" {
-  type = string
+  type        = string
   description = "Name of the storage class to use for the runners persistent volume"
-  default = "csi-gp3"
+  default     = "csi-gp3"
 }
 
 variable "github_arc_runners_storage_request_size" {
-  type = string
+  type        = string
   description = "Size of the persistent volume claim for the runners"
-  default = "1Gi"
+  default     = "1Gi"
 }
 
 variable "github_arc_runners_min_runners" {
-  type = number
+  type        = number
   description = "Minimum number of runners to keep running"
-  default = 0
+  default     = 0
 }
 
 variable "github_arc_runners_max_runners" {
-  type = number
+  type        = number
   description = "Maximum number of runners to scale to"
-  default = 5
+  default     = 5
 }
 
 variable "github_arc_runners_memory_request" {
-  type = string
+  type        = string
   description = "Memory request for the runner pods"
-  default = "128Mi"
+  default     = "128Mi"
 }
 
 variable "github_arc_runners_memory_limit" {
-  type = string
+  type        = string
   description = "Memory request for the runner pods"
-  default = "8Gi"
+  default     = "8Gi"
 }
