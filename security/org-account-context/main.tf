@@ -32,6 +32,49 @@ module "iam_account_alias" {
 }
 
 # --------------------------------------------------
+# AWS Account - Alternate contacts
+# --------------------------------------------------
+
+module "alternate_contact_billing" {
+  source = "../../_sub/security/alternate-contact"
+  count  = var.email_billing != null ? 1 : 0
+
+  contact_type = "BILLING"
+  email        = var.email_billing
+  phone_number = var.primary_phone_number
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "alternate_contact_operations" {
+  source = "../../_sub/security/alternate-contact"
+  count  = var.email_operations != null ? 1 : 0
+
+  contact_type = "OPERATIONS"
+  email        = var.email_operations
+  phone_number = var.primary_phone_number
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+module "alternate_contact_security" {
+  source = "../../_sub/security/alternate-contact"
+  count  = var.email_security != null ? 1 : 0
+
+  contact_type = "SECURITY"
+  email        = var.email_security
+  phone_number = var.primary_phone_number
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+# --------------------------------------------------
 # IAM roles - Shared
 # --------------------------------------------------
 

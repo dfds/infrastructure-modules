@@ -166,6 +166,25 @@ variable "hardened_security_contact_phone_number" {
   type = string
 }
 
+variable "primary_phone_number" {
+  type = string
+}
+
+variable "email_billing" {
+  type = string
+  default = null
+}
+
+variable "email_operations" {
+  type = string
+  default = null
+}
+
+variable "email_security" {
+  type = string
+  default = null
+}
+
 variable "aws_region_sso" {
   type    = string
   default = "eu-west-1"
