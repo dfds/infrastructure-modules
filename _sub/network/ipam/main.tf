@@ -2,8 +2,7 @@ data "aws_region" "current" {}
 
 locals {
   all_ipam_regions = distinct(concat([data.aws_region.current.name], var.ipam_regions))
-  name_tag         = { Name = var.ipam_name }
-  all_tags         = merge(var.tags, local.name_tag)
+  all_tags         = merge(var.tags, { "Name" = var.ipam_name })
 }
 
 resource "aws_vpc_ipam" "this" {

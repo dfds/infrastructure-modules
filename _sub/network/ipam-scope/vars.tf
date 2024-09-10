@@ -1,11 +1,11 @@
 variable "ipam_id" {
   type        = string
-  description = "The IPAM id"
+  description = "The IPAM instance id"
 }
 
 variable "scope_name" {
-  type    = string
-  default = ""
+  type        = string
+  description = "The name of the IPAM scope"
 }
 
 variable "tags" {

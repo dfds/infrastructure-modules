@@ -5,8 +5,9 @@ variable "ipam_name" {
 }
 
 variable "ipam_regions" {
-  type    = list(string)
-  default = ["eu-west-1", "eu-central-1"]
+  type        = list(string)
+  description = "The regions to support for IPAM"
+  default     = ["eu-west-1", "eu-central-1"]
 }
 
 variable "ipam_tier" {
@@ -14,7 +15,7 @@ variable "ipam_tier" {
   description = "The tier of the IPAM"
   default     = "advanced"
   validation {
-    condition     = can(regex("^(free|advanced)$", var.tier))
+    condition     = can(regex("^(free|advanced)$", var.ipam_tier))
     error_message = "Tier must be either 'free' or 'advanced'"
   }
 }
