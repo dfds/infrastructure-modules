@@ -16,33 +16,45 @@ module "ipam_scope" {
 module "main_pool" {
   source   = "../../_sub/network/ipam-pool"
   scope_id = module.ipam_scope.id
-  pool     = var.ipam_pools["main"]
-  cascade  = var.ipam_pools_cascade
-  tags     = var.tags
+  pool = {
+    name = "main"
+    cidr = var.ipam_pools["main"].cidr
+  }
+  cascade = var.ipam_pools_cascade
+  tags    = var.tags
 }
 
 module "platform_pool" {
-  source              = "../../_sub/network/ipam-pool"
-  scope_id            = module.ipam_scope.id
-  pool                = var.ipam_pools["platform"]
+  source   = "../../_sub/network/ipam-pool"
+  scope_id = module.ipam_scope.id
+  pool = {
+    name = "platform"
+    cidr = var.ipam_pools["platform"].cidr
+  }
   source_ipam_pool_id = module.main_pool.id
   cascade             = var.ipam_pools_cascade
   tags                = var.tags
 }
 
 module "capabilities_pool" {
-  source              = "../../_sub/network/ipam-pool"
-  scope_id            = module.ipam_scope.id
-  pool                = var.ipam_pools["capabilities"]
+  source   = "../../_sub/network/ipam-pool"
+  scope_id = module.ipam_scope.id
+  pool = {
+    name = "capabilities"
+    cidr = var.ipam_pools["capabilities"].cidr
+  }
   source_ipam_pool_id = module.main_pool.id
   cascade             = var.ipam_pools_cascade
   tags                = var.tags
 }
 
 module "unused_pool" {
-  source              = "../../_sub/network/ipam-pool"
-  scope_id            = module.ipam_scope.id
-  pool                = var.ipam_pools["unused"]
+  source   = "../../_sub/network/ipam-pool"
+  scope_id = module.ipam_scope.id
+  pool = {
+    name = "unused"
+    cidr = var.ipam_pools["unused"].cidr
+  }
   source_ipam_pool_id = module.main_pool.id
   cascade             = var.ipam_pools_cascade
   tags                = var.tags
@@ -53,9 +65,9 @@ module "regional_platform_pools" {
   for_each = var.ipam_pools["platform"].sub_pools
   scope_id = module.ipam_scope.id
   pool = {
-    name   = "${var.ipam_pools["platform"].name}-${each.key}"
+    name   = "platform-${each.key}"
     cidr   = each.value.cidr
-    region = each.key
+    locale = each.key
   }
   source_ipam_pool_id = module.platform_pool.id
   tags                = var.tags
@@ -66,9 +78,9 @@ module "regional_capabilities_pools" {
   for_each = var.ipam_pools["capabilities"].sub_pools
   scope_id = module.ipam_scope.id
   pool = {
-    name   = "${var.ipam_pools["capabilities"].name}-${each.key}"
+    name   = "capabilities-${each.key}"
     cidr   = each.value.cidr
-    region = each.key
+    locale = each.key
   }
   source_ipam_pool_id = module.capabilities_pool.id
   tags                = var.tags

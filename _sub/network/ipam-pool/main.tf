@@ -8,6 +8,7 @@ resource "aws_vpc_ipam_pool" "this" {
   locale              = var.pool.locale
   auto_import         = var.pool.locale != null ? true : false
   source_ipam_pool_id = var.source_ipam_pool_id != null ? var.source_ipam_pool_id : null
+  description         = var.pool.name
   cascade             = var.cascade
   tags                = local.all_tags
 }

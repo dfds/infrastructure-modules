@@ -37,10 +37,8 @@ variable "ipam_pools_cascade" {
   default     = true
 }
 
-// The key of a sub pool must be a region name that is in the ipam_regions list
 variable "ipam_pools" {
   type = map(object({
-    name           = string
     cidr           = string
     address_family = optional(string, "ipv4")
     locale         = optional(string, null)
@@ -48,7 +46,28 @@ variable "ipam_pools" {
       cidr = string
     })), {})
   }))
-  description = "The pools to create in the IPAM. The key of an optional sub pool must be a region name that is in the ipam_regions list"
+  description = <<EOF
+    The pools to create in the IPAM.
+    The key of an optional sub pool must be a region name that is in the ipam_regions list.
+
+    Example:
+    ipam_pools = {
+      "main" = {
+        cidr = "192.168.0.0/13"
+      }
+      "platform" = {
+        cidr = "192.168.0.0/15"
+        sub_pools = {
+          "us-east-1" = {
+            cidr = "192.168.0.0/17"
+          }
+          "us-east-2" = {
+            cidr = "192.168.128.0/17"
+          }
+        }
+      }
+    }
+EOF
 }
 
 variable "tags" {
