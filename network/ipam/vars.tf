@@ -70,6 +70,12 @@ variable "ipam_pools" {
 EOF
 }
 
+variable "ipam_prefix" {
+  type        = string
+  description = "Optional prefix to use for the IPAM scope and pools."
+  default     = ""
+}
+
 variable "tags" {
   type        = map(string)
   description = "A map of tags to apply to all the resources deployed by the module"

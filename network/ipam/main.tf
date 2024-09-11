@@ -9,7 +9,7 @@ module "ipam" {
 module "ipam_scope" {
   source     = "../../_sub/network/ipam-scope"
   ipam_id    = module.ipam.id
-  scope_name = var.ipam_scope_name
+  scope_name = length(var.ipam_prefix) > 0 ? "${var.ipam_prefix}-${var.ipam_scope_name}" : var.ipam_scope_name
   tags       = var.tags
 }
 
@@ -17,7 +17,7 @@ module "main_pool" {
   source   = "../../_sub/network/ipam-pool"
   scope_id = module.ipam_scope.id
   pool = {
-    name = "main"
+    name = length(var.ipam_prefix) > 0 ? "${var.ipam_prefix}-main" : "main"
     cidr = var.ipam_pools["main"].cidr
   }
   cascade = var.ipam_pools_cascade
@@ -28,7 +28,7 @@ module "platform_pool" {
   source   = "../../_sub/network/ipam-pool"
   scope_id = module.ipam_scope.id
   pool = {
-    name = "platform"
+    name = length(var.ipam_prefix) > 0 ? "${var.ipam_prefix}-platform" : "platform"
     cidr = var.ipam_pools["platform"].cidr
   }
   source_ipam_pool_id = module.main_pool.id
@@ -40,7 +40,7 @@ module "capabilities_pool" {
   source   = "../../_sub/network/ipam-pool"
   scope_id = module.ipam_scope.id
   pool = {
-    name = "capabilities"
+    name = length(var.ipam_prefix) > 0 ? "${var.ipam_prefix}-capabilities" : "capabilities"
     cidr = var.ipam_pools["capabilities"].cidr
   }
   source_ipam_pool_id = module.main_pool.id
@@ -52,7 +52,7 @@ module "unused_pool" {
   source   = "../../_sub/network/ipam-pool"
   scope_id = module.ipam_scope.id
   pool = {
-    name = "unused"
+    name = length(var.ipam_prefix) > 0 ? "${var.ipam_prefix}-unused" : "unused"
     cidr = var.ipam_pools["unused"].cidr
   }
   source_ipam_pool_id = module.main_pool.id
@@ -65,7 +65,7 @@ module "regional_platform_pools" {
   for_each = var.ipam_pools["platform"].sub_pools
   scope_id = module.ipam_scope.id
   pool = {
-    name   = "platform-${each.key}"
+    name   = length(var.ipam_prefix) > 0 ? "${var.ipam_prefix}-platform-${each.key}" : "platform-${each.key}"
     cidr   = each.value.cidr
     locale = each.key
   }
@@ -78,7 +78,7 @@ module "regional_capabilities_pools" {
   for_each = var.ipam_pools["capabilities"].sub_pools
   scope_id = module.ipam_scope.id
   pool = {
-    name   = "capabilities-${each.key}"
+    name   = length(var.ipam_prefix) > 0 ? "${var.ipam_prefix}-capabilities-${each.key}" : "capabilities-${each.key}"
     cidr   = each.value.cidr
     locale = each.key
   }
