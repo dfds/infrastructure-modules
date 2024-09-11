@@ -76,6 +76,33 @@ variable "ipam_prefix" {
   default     = ""
 }
 
+variable "ipam_platform_principals" {
+  type        = list(string)
+  description = "The ARNs of the principals to associate with a Resource Manager share for the regional platform pools"
+  default     = []
+}
+
+variable "ipam_ou_id" {
+  type        = string
+  description = "The ID of the AWS Organization OU that you want to query for accounts. This is used for sharing access to the IPAM pools."
+}
+
+variable "ipam_role_name" {
+  type        = string
+  description = "The name of an IAM role in each AWS Organization account that is allowed to request IP addresses from the IPAM pools."
+  default     = "AWSServiceRoleForIPAM"
+}
+
+variable "ipam_role_pattern" {
+  type        = string
+  description = <<EOF
+    The pattern of a role ARN that is allowed to request IP addresses from the IPAM pools.
+    The %s placeholders will be replaced with the AWS account ID from var.ipam_ou_id
+    and the value of var.ipam_role_name within this module.
+EOF
+  default     = "arn:aws:iam::%s:role/aws-service-role/ipam.amazonaws.com/%s"
+}
+
 variable "tags" {
   type        = map(string)
   description = "A map of tags to apply to all the resources deployed by the module"
