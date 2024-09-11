@@ -179,4 +179,76 @@ data "aws_iam_policy_document" "preventive" {
       values   = ["arn:aws:iam::*:role/OrgRole"]
     }
   }
+
+  statement {
+    sid       = "DenyRootUser"
+    effect    = "Deny"
+    resources = ["*"]
+    actions   = ["*"]
+
+    condition {
+      test     = "StringLike"
+      variable = "aws:PrincipalArn"
+      values   = ["arn:aws:iam::*:root"]
+    }
+  }
+
+  statement {
+    sid       = "DenyPublicVPC"
+    effect    = "Deny"
+    resources = ["*"]
+
+    actions = [
+      "ec2:AttachInternetGateway",
+      "ec2:CreateInternetGateway",
+      "ec2:CreateEgressOnlyInternetGateway",
+      "ec2:CreateVpcPeeringConnection",
+      "ec2:AcceptVpcPeeringConnection",
+      "globalaccelerator:Create*",
+      "globalaccelerator:Update*",
+    ]
+
+    condition {
+      test     = "StringNotLike"
+      variable = "aws:PrincipalArn"
+      values   = ["arn:aws:iam::*:role/OrgRole"]
+    }
+  }
+
+  statement {
+    sid       = ""
+    effect    = "Deny"
+    resources = ["*"]
+    actions   = ["ec2:AssociateAddress"]
+  }
+
+  statement {
+    sid       = "DenyDisablingSecuritySettings"
+    effect    = "Deny"
+    resources = ["*"]
+
+    actions = [
+      "access-analyzer:DeleteAnalyzer",
+      "ec2:DisableEbsEncryptionByDefault",
+      "s3:PutAccountPublicAccessBlock",
+      "s3:PutBucketPublicAccessBlock",
+    ]
+  }
+
+  statement {
+    sid       = "DenyLambdaFunctionUrlConfig"
+    effect    = "Deny"
+    resources = ["arn:aws:lambda:*:*:function:*"]
+
+    actions = [
+      "lambda:CreateFunctionUrlConfig",
+      "lambda:UpdateFunctionUrlConfig",
+    ]
+
+    condition {
+      test     = "StringNotEquals"
+      variable = "lambda:FunctionUrlAuthType"
+      values   = ["AWS_IAM"]
+    }
+  }
 }
