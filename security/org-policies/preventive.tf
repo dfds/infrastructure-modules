@@ -228,7 +228,6 @@ data "aws_iam_policy_document" "preventive" {
     resources = ["*"]
 
     actions = [
-      "access-analyzer:DeleteAnalyzer",
       "ec2:DisableEbsEncryptionByDefault",
       "s3:PutAccountPublicAccessBlock",
       "s3:PutBucketPublicAccessBlock",
