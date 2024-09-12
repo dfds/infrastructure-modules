@@ -85,3 +85,28 @@ module "regional_capabilities_pools" {
   source_ipam_pool_id = module.capabilities_pool.id
   tags                = var.tags
 }
+
+module "org-account-query" {
+  source = "../../_sub/security/org-account-query"
+  ou_id  = var.ipam_ou_id
+}
+
+module "ram_share_with_platform" {
+  source              = "../../_sub/security/resource-access-manager"
+  resource_share_name = length(var.ipam_prefix) > 0 ? "ipam-${var.ipam_prefix}-platform" : "ipam-platform"
+  resource_arns = [
+    for pool in values(module.regional_platform_pools) : pool.arn
+  ]
+  principals = var.ipam_platform_principals
+  tags       = var.tags
+}
+
+module "ram_share_with_capabilities" {
+  source              = "../../_sub/security/resource-access-manager"
+  resource_share_name = length(var.ipam_prefix) > 0 ? "ipam-${var.ipam_prefix}-capabilities" : "ipam-capabilities"
+  resource_arns = [
+    for pool in values(module.regional_capabilities_pools) : pool.arn
+  ]
+  principals = formatlist(var.ipam_role_pattern, module.org-account-query.account_ids, var.ipam_role_name)
+  tags       = var.tags
+}
