@@ -1,8 +1,14 @@
 data "aws_region" "current" {}
 
-resource "aws_vpc" "peering" {
+data "aws_vpc_ipam_pool" "this" {
+  count        = var.ipam_cidr_enable && var.ipam_pool != "" ? 1 : 0
+  ipam_pool_id = var.ipam_pool
+}
 
-  cidr_block           = var.cidr_block_vpc
+resource "aws_vpc" "peering" {
+  ipv4_ipam_pool_id    = var.ipam_cidr_enable && var.ipam_pool != "" ? data.aws_vpc_ipam_pool.this[0].id : null
+  ipv4_netmask_length  = var.ipam_cidr_enable && var.ipam_cidr_prefix != "" ? var.ipam_cidr_prefix : null
+  cidr_block           = var.ipam_cidr_enable ? null : var.cidr_block_vpc
   enable_dns_hostnames = true
 
   tags = merge(var.tags, {
@@ -118,7 +124,7 @@ resource "aws_vpc_security_group_ingress_rule" "sec_sec" {
 }
 
 resource "aws_vpc_endpoint" "ssm" {
-  count = var.deploy_vpc_peering_endpoints ? 1 : 0
+  count             = var.deploy_vpc_peering_endpoints ? 1 : 0
   vpc_id            = aws_vpc.peering.id
   service_name      = "com.amazonaws.${data.aws_region.current.name}.ssm"
   vpc_endpoint_type = "Interface"
@@ -138,7 +144,7 @@ resource "aws_vpc_endpoint" "ssm" {
 }
 
 resource "aws_vpc_endpoint" "ssmmessages" {
-  count = var.deploy_vpc_peering_endpoints ? 1 : 0
+  count             = var.deploy_vpc_peering_endpoints ? 1 : 0
   vpc_id            = aws_vpc.peering.id
   service_name      = "com.amazonaws.${data.aws_region.current.name}.ssmmessages"
   vpc_endpoint_type = "Interface"
@@ -158,7 +164,7 @@ resource "aws_vpc_endpoint" "ssmmessages" {
 }
 
 resource "aws_vpc_endpoint" "ec2" {
-  count = var.deploy_vpc_peering_endpoints ? 1 : 0
+  count             = var.deploy_vpc_peering_endpoints ? 1 : 0
   vpc_id            = aws_vpc.peering.id
   service_name      = "com.amazonaws.${data.aws_region.current.name}.ec2"
   vpc_endpoint_type = "Interface"
@@ -178,7 +184,7 @@ resource "aws_vpc_endpoint" "ec2" {
 }
 
 resource "aws_vpc_endpoint" "ec2messages" {
-  count = var.deploy_vpc_peering_endpoints ? 1 : 0
+  count             = var.deploy_vpc_peering_endpoints ? 1 : 0
   vpc_id            = aws_vpc.peering.id
   service_name      = "com.amazonaws.${data.aws_region.current.name}.ec2messages"
   vpc_endpoint_type = "Interface"

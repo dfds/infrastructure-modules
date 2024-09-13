@@ -26,7 +26,7 @@ variable "shared_account_id" {
 }
 
 variable "security_account_id" {
-  type = string
+  type        = string
   description = "The AWS account ID of the Organizations Security account"
 }
 
@@ -171,17 +171,17 @@ variable "primary_phone_number" {
 }
 
 variable "email_billing" {
-  type = string
+  type    = string
   default = null
 }
 
 variable "email_operations" {
-  type = string
+  type    = string
   default = null
 }
 
 variable "email_security" {
-  type = string
+  type    = string
   default = null
 }
 
@@ -327,6 +327,15 @@ variable "ssm_param_createdby" {
 
 # VPC Peering
 
+variable "ipam_pools" {
+  type = map(string)
+  default = {
+    "eu-west-1"    = ""
+    "eu-central-1" = ""
+  }
+  description = "The ID of the IPAM pool when using AWS IPAM assignment."
+}
+
 variable "vpc_peering_settings_eu_west_1" {
   type = map(object({
     peer_vpc_id                  = string
@@ -337,8 +346,23 @@ variable "vpc_peering_settings_eu_west_1" {
     assigned_cidr_block_subnet_a = string
     assigned_cidr_block_subnet_b = string
     assigned_cidr_block_subnet_c = string
+    ipam_cidr_enable             = optional(bool, false)
+    ipam_cidr_prefix             = optional(string, "26")
+    ipam_subnet_bits             = optional(list(number), [1, 1])
   }))
-  description = "Map containing two sets of values for VPC peering settings"
+  description = <<EOF
+    Map containing two sets of values for VPC peering settings.
+    VPC peering requester settings when using AWS IPAM assignment requires ipam_cidr_enable to be set to true.
+    The ipam_cidr_prefix is the number of bits to use for the VPC CIDR block. Default of /26.
+    The ipam_subnet_bits is a list of at least two numbers.
+    The first is the number of bits to use for the first subnet,
+    the second is the number of bits to use for the second subnet and so on.
+    A ipam_cidr_prefix of 26 and ipam_subnet_bits of [1, 1] will create a VPC
+    with a CIDR block of /26 and two subnets with a CIDR block of /27 each.
+    A ipam_cidr_prefix of 26 and ipam_subnet_bits of [2, 2, 2, 2] will create a VPC
+    with a CIDR block of /26 and four subnets with a CIDR block of /28 each.
+    All subnets will be created in different availability zones where possible.
+EOF
   default = {
     "instance1" = {
       peer_vpc_id                  = ""
@@ -349,6 +373,9 @@ variable "vpc_peering_settings_eu_west_1" {
       assigned_cidr_block_subnet_a = ""
       assigned_cidr_block_subnet_b = ""
       assigned_cidr_block_subnet_c = ""
+      ipam_cidr_enable             = false
+      ipam_cidr_prefix             = "26"
+      ipam_subnet_bits             = [1, 1]
     }
   }
 }
@@ -363,8 +390,23 @@ variable "vpc_peering_settings_eu_central_1" {
     assigned_cidr_block_subnet_a = string
     assigned_cidr_block_subnet_b = string
     assigned_cidr_block_subnet_c = string
+    ipam_cidr_enable             = optional(bool, false)
+    ipam_cidr_prefix             = optional(string, "26")
+    ipam_subnet_bits             = optional(list(number), [1, 1])
   }))
-  description = "Map containing two sets of values for VPC peering settings"
+  description = <<EOF
+  Map containing two sets of values for VPC peering settings.
+    VPC peering requester settings when using AWS IPAM assignment requires ipam_cidr_enable to be set to true.
+    The ipam_cidr_prefix is the number of bits to use for the VPC CIDR block. Default of /26.
+    The ipam_subnet_bits is a list of at least two numbers.
+    The first is the number of bits to use for the first subnet,
+    the second is the number of bits to use for the second subnet and so on.
+    A ipam_cidr_prefix of 26 and ipam_subnet_bits of [1, 1] will create a VPC
+    with a CIDR block of /26 and two subnets with a CIDR block of /27 each.
+    A ipam_cidr_prefix of 26 and ipam_subnet_bits of [2, 2, 2, 2] will create a VPC
+    with a CIDR block of /26 and four subnets with a CIDR block of /28 each.
+    All subnets will be created in different availability zones where possible.
+EOF
   default = {
     "instance1" = {
       peer_vpc_id                  = ""
@@ -375,6 +417,9 @@ variable "vpc_peering_settings_eu_central_1" {
       assigned_cidr_block_subnet_a = ""
       assigned_cidr_block_subnet_b = ""
       assigned_cidr_block_subnet_c = ""
+      ipam_cidr_enable             = false
+      ipam_cidr_prefix             = "26"
+      ipam_subnet_bits             = [1, 1]
     }
   }
 }
@@ -421,7 +466,7 @@ variable "grafana_cloud_cloudwatch_integration_iam_role" {
 # --------------------------------------------------
 
 variable "steampipe_audit_role_name" {
-  type = string
+  type        = string
   description = "Name of the IAM role used by Steampipe for reading resources"
-  default = "steampipe-audit"
+  default     = "steampipe-audit"
 }

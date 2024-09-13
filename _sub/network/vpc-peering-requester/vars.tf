@@ -47,3 +47,26 @@ variable "deploy_vpc_peering_endpoints" {
   type        = bool
   default     = true
 }
+
+variable "ipam_pool" {
+  type        = string
+  description = "The ID of the IPAM pool when using AWS IPAM assignment."
+}
+
+variable "ipam_cidr_enable" {
+  description = "Use IPAM for VPC peering connections"
+  type        = bool
+  default     = false
+}
+
+variable "ipam_cidr_prefix" {
+  description = "The CIDR block to use for IPAM assignment"
+  type        = string
+  default     = ""
+}
+
+variable "ipam_subnet_bits" {
+  description = "The number of bits to use for subnet calculations"
+  type        = list(number)
+  default     = [1, 1]
+}
