@@ -5,6 +5,21 @@ data "aws_vpc_ipam_pool" "this" {
   ipam_pool_id = var.ipam_pool
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+resource "aws_vpc_ipam_preview_next_cidr" "this" {
+  count          = var.ipam_cidr_enable && var.ipam_pool != "" ? 1 : 0
+  ipam_pool_id   = data.aws_vpc_ipam_pool.this[0].id
+  netmask_length = var.ipam_cidr_prefix
+}
+
+locals {
+  subnets            = var.ipam_cidr_enable ? cidrsubnets(aws_vpc_ipam_preview_next_cidr.this[0].cidr, var.ipam_subnet_bits...) : []
+  availability_zones = slice(data.aws_availability_zones.available.names, 0, length(var.ipam_subnet_bits))
+}
+
 resource "aws_vpc" "peering" {
   ipv4_ipam_pool_id    = var.ipam_cidr_enable && var.ipam_pool != "" ? data.aws_vpc_ipam_pool.this[0].id : null
   ipv4_netmask_length  = var.ipam_cidr_enable && var.ipam_cidr_prefix != "" ? var.ipam_cidr_prefix : null
@@ -12,7 +27,7 @@ resource "aws_vpc" "peering" {
   enable_dns_hostnames = true
 
   tags = merge(var.tags, {
-    Name = "peering"
+    Name = "peering-${var.configuration_name}"
   })
 }
 
@@ -20,7 +35,7 @@ resource "aws_default_security_group" "default" {
   vpc_id = aws_vpc.peering.id
 
   tags = merge(var.tags, {
-    Name = "peering"
+    Name = "peering-${var.configuration_name}"
   })
 }
 
@@ -40,8 +55,20 @@ resource "aws_vpc_security_group_ingress_rule" "default" {
   tags = var.tags
 }
 
-resource "aws_subnet" "a" {
+resource "aws_subnet" "this" {
+  count                   = var.ipam_cidr_enable ? length(var.ipam_subnet_bits) : 0
+  vpc_id                  = aws_vpc.peering.id
+  map_public_ip_on_launch = var.map_public_ip_on_launch
+  cidr_block              = element(local.subnets, count.index)
+  availability_zone       = element(local.availability_zones, count.index)
 
+  tags = merge(var.tags, {
+    Name = "peering-${element(local.availability_zones, count.index)}"
+  })
+}
+
+resource "aws_subnet" "a" {
+  count                   = var.ipam_cidr_enable ? 0 : 1
   vpc_id                  = aws_vpc.peering.id
   map_public_ip_on_launch = var.map_public_ip_on_launch
   cidr_block              = var.cidr_block_subnet_a
@@ -54,6 +81,7 @@ resource "aws_subnet" "a" {
 }
 
 resource "aws_subnet" "b" {
+  count                   = var.ipam_cidr_enable ? 0 : 1
   vpc_id                  = aws_vpc.peering.id
   map_public_ip_on_launch = var.map_public_ip_on_launch
   cidr_block              = var.cidr_block_subnet_b
@@ -67,8 +95,7 @@ resource "aws_subnet" "b" {
 resource "aws_subnet" "c" {
 
   # This is a legacy/optional subnet, so we only create it if the cidr_block_subnet_c variable is set
-
-  count                   = var.cidr_block_subnet_c != "" ? 1 : 0
+  count                   = var.ipam_cidr_enable ? 0 : var.cidr_block_subnet_c != "" ? 1 : 0
   vpc_id                  = aws_vpc.peering.id
   map_public_ip_on_launch = var.map_public_ip_on_launch
   cidr_block              = var.cidr_block_subnet_c
@@ -131,7 +158,13 @@ resource "aws_vpc_endpoint" "ssm" {
 
   private_dns_enabled = true
 
-  subnet_ids = flatten([aws_subnet.a.id, aws_subnet.b.id, var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : ""])
+  subnet_ids = var.ipam_cidr_enable ? [for subnet in aws_subnet.this : subnet.id] : flatten(
+    [
+      var.cidr_block_subnet_a != "" ? aws_subnet.a[0].id : "",
+      var.cidr_block_subnet_b != "" ? aws_subnet.b[0].id : "",
+      var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : ""
+    ]
+  )
 
   security_group_ids = [
     aws_security_group.ssm.id,
@@ -151,7 +184,13 @@ resource "aws_vpc_endpoint" "ssmmessages" {
 
   private_dns_enabled = true
 
-  subnet_ids = flatten([aws_subnet.a.id, aws_subnet.b.id, var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : ""])
+  subnet_ids = var.ipam_cidr_enable ? [for subnet in aws_subnet.this : subnet.id] : flatten(
+    [
+      var.cidr_block_subnet_a != "" ? aws_subnet.a[0].id : "",
+      var.cidr_block_subnet_b != "" ? aws_subnet.b[0].id : "",
+      var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : ""
+    ]
+  )
 
   security_group_ids = [
     aws_security_group.ssm.id,
@@ -171,7 +210,13 @@ resource "aws_vpc_endpoint" "ec2" {
 
   private_dns_enabled = true
 
-  subnet_ids = flatten([aws_subnet.a.id, aws_subnet.b.id, var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : ""])
+  subnet_ids = var.ipam_cidr_enable ? [for subnet in aws_subnet.this : subnet.id] : flatten(
+    [
+      var.cidr_block_subnet_a != "" ? aws_subnet.a[0].id : "",
+      var.cidr_block_subnet_b != "" ? aws_subnet.b[0].id : "",
+      var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : ""
+    ]
+  )
 
   security_group_ids = [
     aws_security_group.ssm.id,
@@ -191,7 +236,13 @@ resource "aws_vpc_endpoint" "ec2messages" {
 
   private_dns_enabled = true
 
-  subnet_ids = flatten([aws_subnet.a.id, aws_subnet.b.id, var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : ""])
+  subnet_ids = var.ipam_cidr_enable ? [for subnet in aws_subnet.this : subnet.id] : flatten(
+    [
+      var.cidr_block_subnet_a != "" ? aws_subnet.a[0].id : "",
+      var.cidr_block_subnet_b != "" ? aws_subnet.b[0].id : "",
+      var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : ""
+    ]
+  )
 
   security_group_ids = [
     aws_security_group.ssm.id,
@@ -217,7 +268,7 @@ data "aws_iam_policy_document" "ssm_trust" {
 }
 
 resource "aws_iam_role" "ssm_tunnel" {
-  name                = "ssm-tunnel"
+  name                = "ssm-tunnel-${var.configuration_name}"
   assume_role_policy  = data.aws_iam_policy_document.ssm_trust.json
   managed_policy_arns = ["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]
 
@@ -229,8 +280,6 @@ resource "aws_iam_instance_profile" "ssm_tunnel" {
   name = aws_iam_role.ssm_tunnel.name
   role = aws_iam_role.ssm_tunnel.name
 }
-
-
 
 resource "aws_vpc_security_group_ingress_rule" "postgres" {
   security_group_id = aws_default_security_group.default.id
@@ -255,11 +304,17 @@ resource "aws_vpc_security_group_ingress_rule" "redis" {
 }
 
 resource "aws_db_subnet_group" "peering" {
-  name       = "peering"
-  subnet_ids = flatten([aws_subnet.a.id, aws_subnet.b.id, var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : ""])
+  name = "peering-${var.configuration_name}"
+  subnet_ids = var.ipam_cidr_enable ? [for subnet in aws_subnet.this : subnet.id] : flatten(
+    [
+      var.cidr_block_subnet_a != "" ? aws_subnet.a[0].id : "",
+      var.cidr_block_subnet_b != "" ? aws_subnet.b[0].id : "",
+      var.cidr_block_subnet_c != "" ? aws_subnet.c[0].id : ""
+    ]
+  )
 
   tags = {
-    Name = "peering"
+    Name = "peering-${var.configuration_name}"
   }
 }
 
@@ -285,7 +340,7 @@ resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.peering.id
 
   tags = merge(var.tags, {
-    Name = "peering-igw"
+    Name = "peering-${var.configuration_name}"
   })
 }
 

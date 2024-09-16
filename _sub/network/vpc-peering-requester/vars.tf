@@ -1,3 +1,8 @@
+variable "configuration_name" {
+  description = "The unique name of the configuration"
+  type        = string
+}
+
 variable "cidr_block_vpc" {
   description = "The CIDR block of the VPC"
 }
