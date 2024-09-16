@@ -1,5 +1,6 @@
 data "aws_region" "current" {}
 
+# TODO: IPAM will only work if we trust the role used by our pipeline
 data "aws_vpc_ipam_pool" "this" {
   count        = var.ipam_cidr_enable && var.ipam_pool != "" ? 1 : 0
   ipam_pool_id = var.ipam_pool
