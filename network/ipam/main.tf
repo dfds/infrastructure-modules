@@ -107,6 +107,8 @@ module "ram_share_with_capabilities" {
   resource_arns = [
     for pool in values(module.regional_capabilities_pools) : pool.arn
   ]
-  principals = formatlist(var.ipam_role_pattern, module.org-account-query.account_ids, var.ipam_role_name)
-  tags       = var.tags
+  principals = flatten([
+    for pattern in var.ipam_role_patterns : formatlist(pattern, module.org-account-query.account_ids)
+  ])
+  tags = var.tags
 }
