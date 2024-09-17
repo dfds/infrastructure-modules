@@ -87,20 +87,14 @@ variable "ipam_ou_id" {
   description = "The ID of the AWS Organization OU that you want to query for accounts. This is used for sharing access to the IPAM pools."
 }
 
-variable "ipam_role_name" {
-  type        = string
-  description = "The name of an IAM role in each AWS Organization account that is allowed to request IP addresses from the IPAM pools."
-  default     = "AWSServiceRoleForIPAM"
-}
-
-variable "ipam_role_pattern" {
-  type        = string
+variable "ipam_role_patterns" {
+  type        = list(string)
   description = <<EOF
-    The pattern of a role ARN that is allowed to request IP addresses from the IPAM pools.
-    The %s placeholders will be replaced with the AWS account ID from var.ipam_ou_id
-    and the value of var.ipam_role_name within this module.
+    The pattern of a role ARNs that are1 allowed to request IP addresses from the IPAM pools.
+    The %s placeholders will be replaced with the AWS account ID from accounts under
+    the OU specified by var.ipam_ou_id.
 EOF
-  default     = "arn:aws:iam::%s:role/aws-service-role/ipam.amazonaws.com/%s"
+  default     = ["arn:aws:iam::%s:role/aws-service-role/ipam.amazonaws.com/AWSServiceRoleForIPAM"]
 }
 
 variable "tags" {
