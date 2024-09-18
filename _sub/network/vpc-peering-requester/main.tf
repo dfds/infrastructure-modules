@@ -1,6 +1,5 @@
 data "aws_region" "current" {}
 
-# TODO: IPAM will only work if we trust the role used by our pipeline
 data "aws_vpc_ipam_pool" "this" {
   count        = var.ipam_cidr_enable && var.ipam_pool != "" ? 1 : 0
   ipam_pool_id = var.ipam_pool
@@ -8,6 +7,10 @@ data "aws_vpc_ipam_pool" "this" {
 
 data "aws_availability_zones" "available" {
   state = "available"
+}
+
+locals {
+  regional_postfix = var.regional_postfix ? "-${data.aws_region.current.name}" : ""
 }
 
 resource "aws_vpc_ipam_preview_next_cidr" "this" {
@@ -28,7 +31,7 @@ resource "aws_vpc" "peering" {
   enable_dns_hostnames = true
 
   tags = merge(var.tags, {
-    Name = "peering-${var.configuration_name}"
+    Name = "peering"
   })
 }
 
@@ -36,7 +39,7 @@ resource "aws_default_security_group" "default" {
   vpc_id = aws_vpc.peering.id
 
   tags = merge(var.tags, {
-    Name = "peering-${var.configuration_name}"
+    Name = "peering"
   })
 }
 
@@ -269,12 +272,10 @@ data "aws_iam_policy_document" "ssm_trust" {
 }
 
 resource "aws_iam_role" "ssm_tunnel" {
-  name                = "ssm-tunnel-${var.configuration_name}"
+  name                = "ssm-tunnel${local.regional_postfix}"
   assume_role_policy  = data.aws_iam_policy_document.ssm_trust.json
   managed_policy_arns = ["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]
-
-
-  tags = var.tags
+  tags                = var.tags
 }
 
 resource "aws_iam_instance_profile" "ssm_tunnel" {
@@ -305,7 +306,7 @@ resource "aws_vpc_security_group_ingress_rule" "redis" {
 }
 
 resource "aws_db_subnet_group" "peering" {
-  name = "peering-${var.configuration_name}"
+  name = "peering"
   subnet_ids = var.ipam_cidr_enable ? [for subnet in aws_subnet.this : subnet.id] : flatten(
     [
       var.cidr_block_subnet_a != "" ? aws_subnet.a[0].id : "",
@@ -315,7 +316,7 @@ resource "aws_db_subnet_group" "peering" {
   )
 
   tags = {
-    Name = "peering-${var.configuration_name}"
+    Name = "peering"
   }
 }
 
@@ -341,7 +342,7 @@ resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.peering.id
 
   tags = merge(var.tags, {
-    Name = "peering-${var.configuration_name}"
+    Name = "peering-igw"
   })
 }
 

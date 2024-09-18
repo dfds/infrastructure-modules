@@ -1,39 +1,48 @@
-variable "configuration_name" {
-  description = "The unique name of the configuration"
-  type        = string
+variable "regional_postfix" {
+  description = "Enable region as postfix in resources names where applicable"
+  type        = bool
+  default     = false
 }
 
 variable "cidr_block_vpc" {
   description = "The CIDR block of the VPC"
+  type        = string
 }
 
 variable "cidr_block_subnet_a" {
   description = "The CIDR block of the first subnet"
+  type        = string
 }
 
 variable "cidr_block_subnet_b" {
   description = "The CIDR block of the second subnet"
+  type        = string
 }
 
 variable "cidr_block_subnet_c" {
   description = "The CIDR block of the optional third subnet"
+  type        = string
   default     = ""
 }
 
 variable "cidr_block_peer" {
   description = "The CIDR block of the peer VPC"
+  type        = string
 }
 
 variable "peer_owner_id" {
   description = "The AWS account ID of the owner of the peer VPC"
+  type        = string
 }
 
 variable "peer_vpc_id" {
   description = "The ID of the peer VPC"
+  type        = string
 }
 
 variable "peer_region" {
   description = "The region of the peer VPC"
+  type        = string
 }
 
 variable "tags" {

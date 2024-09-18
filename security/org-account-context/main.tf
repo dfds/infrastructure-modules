@@ -442,7 +442,7 @@ module "grafana_cloud_cloudwatch_integration" {
 module "vpc_peering_capability_eu_west_1" {
   source                       = "../../_sub/network/vpc-peering-requester"
   for_each                     = { for k, v in var.vpc_peering_settings_eu_west_1 : k => v if var.deploy_vpc_peering_eu_west_1 }
-  configuration_name           = "eu-west-1-${each.key}"
+  regional_postfix             = var.deploy_vpc_peering_eu_west_1 && var.deploy_vpc_peering_eu_central_1 ? true : false
   ipam_pool                    = lookup(var.ipam_pools, "eu-west-1", "")
   ipam_cidr_enable             = each.value.ipam_cidr_enable
   ipam_cidr_prefix             = each.value.ipam_cidr_prefix
@@ -483,7 +483,7 @@ module "vpc_peering_oxygen_eu_west_1" {
 module "vpc_peering_capability_eu_central_1" {
   source                       = "../../_sub/network/vpc-peering-requester"
   for_each                     = { for k, v in var.vpc_peering_settings_eu_central_1 : k => v if var.deploy_vpc_peering_eu_central_1 }
-  configuration_name           = "eu-central-1-${each.key}"
+  regional_postfix             = var.deploy_vpc_peering_eu_west_1 && var.deploy_vpc_peering_eu_central_1 ? true : false
   ipam_pool                    = lookup(var.ipam_pools, "eu-central-1", "")
   ipam_cidr_enable             = each.value.ipam_cidr_enable
   ipam_cidr_prefix             = each.value.ipam_cidr_prefix
