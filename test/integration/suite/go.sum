@@ -22,6 +22,8 @@ github.com/fxamacker/cbor/v2 v2.7.0 h1:iM5WgngdRBanHcxugY4JySA0nk1wZorNOpTgCMedv
 github.com/fxamacker/cbor/v2 v2.7.0/go.mod h1:pxXPTn3joSm21Gbwsv0w9OSA2y1HFR9qXEeXQVeNoDQ=
 github.com/go-acme/lego/v4 v4.17.4 h1:h0nePd3ObP6o7kAkndtpTzCw8shOZuWckNYeUQwo36Q=
 github.com/go-acme/lego/v4 v4.17.4/go.mod h1:dU94SvPNqimEeb7EVilGGSnS0nU1O5Exir0pQ4QFL4U=
+github.com/go-acme/lego/v4 v4.18.0 h1:2hH8KcdRBSb+p5o9VZIm61GAOXYALgILUCSs1Q+OYsk=
+github.com/go-acme/lego/v4 v4.18.0/go.mod h1:Blkg3izvXpl3zxk7WKngIuwR2I/hvYVP3vRnvgBp7m8=
 github.com/go-jose/go-jose/v4 v4.0.2 h1:R3l3kkBds16bO7ZFAEEcofK0MkrAJt3jlJznWZG0nvk=
 github.com/go-jose/go-jose/v4 v4.0.2/go.mod h1:WVf9LFMHh/QVrmqrOfqun0C45tMe3RoiKJMPvgWwLfY=
 github.com/go-logr/logr v1.4.1 h1:pKouT5E8xu9zeFC39JXRDukb6JFQPXM5p5I91188VAQ=
@@ -115,12 +117,16 @@ github.com/stretchr/testify v1.9.0 h1:HtqpIVDClZ4nwg75+f6Lvsy/wHu+3BoSGCbBAcpTsT
 github.com/stretchr/testify v1.9.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8C91i36aY=
 github.com/traefik/paerser v0.2.0 h1:zqCLGSXoNlcBd+mzqSCLjon/I6phqIjeJL2xFB2ysgQ=
 github.com/traefik/paerser v0.2.0/go.mod h1:afzaVcgF8A+MpTnPG4wBr4whjanCSYA6vK5RwaYVtRc=
+github.com/traefik/paerser v0.2.1 h1:LFgeak1NmjEHF53c9ENdXdL1UMkF/lD5t+7Evsz4hH4=
+github.com/traefik/paerser v0.2.1/go.mod h1:7BBDd4FANoVgaTZG+yh26jI6CA2nds7D/4VTEdIsh24=
 github.com/traefik/traefik/v2 v2.11.6 h1:+PCf9wGMLqfOyOUu7WZWxkjrzNvvEp1WANMXiYZCF2U=
 github.com/traefik/traefik/v2 v2.11.6/go.mod h1:dAWTe9bpVKrF2wUyysEXY9Jm+I0NJr0IBnpRY7LSwac=
 github.com/traefik/traefik/v2 v2.11.7 h1:wI74PQyB7ySXiYPZomZM6/hVl3lkdYC2WnZiYSvH3oc=
 github.com/traefik/traefik/v2 v2.11.7/go.mod h1:WdgXy0xa+Ip8CcyP/bK92MVMgFAuMKtDuWm6bLrRngg=
 github.com/traefik/traefik/v2 v2.11.8 h1:sCeTF9i/UfUmQFQ7qZ3JL3FjB43xgfdupJ+zqf2fQxo=
 github.com/traefik/traefik/v2 v2.11.8/go.mod h1:Auj2aZkxjLkvr0IOHUQSUBIQlul8AidrWAEA12ECN3c=
+github.com/traefik/traefik/v2 v2.11.9 h1:aXgjxyCepIwQWvRmDLqiIv60wUEfDDfI1wSN/APj/Lk=
+github.com/traefik/traefik/v2 v2.11.9/go.mod h1:n+tI0DIZM2wqR7vHu4KnHAZ0T2OSLfKK79xEmJ1HaPA=
 github.com/x448/float16 v0.8.4 h1:qLwI1I70+NjRFUR3zs1JPUCgaCXSh3SW62uAKT1mSBM=
 github.com/x448/float16 v0.8.4/go.mod h1:14CWIYCyZA/cWjXOioeEpHeN/83MdbZDRQHoFcYsOfg=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
