@@ -458,6 +458,7 @@ module "platform_fluxcd" {
   endpoint                = data.aws_eks_cluster.eks.endpoint
   token                   = data.aws_eks_cluster_auth.eks.token
   cluster_ca_certificate  = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+  enable_monitoring       = var.monitoring_kube_prometheus_stack_deploy || var.grafana_deploy ? true : false
 
   providers = {
     github = github.fluxcd
@@ -994,4 +995,25 @@ module "github_arc_runners" {
   }
 
   depends_on = [module.platform_fluxcd, module.github_arc_ss_controller]
+}
+
+# --------------------------------------------------
+# Apache Druid Operator
+# --------------------------------------------------
+
+module "druid_operator" {
+  source                  = "../../_sub/database/druid-operator"
+  count                   = var.druid_operator_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  repo_owner              = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  chart_version           = var.druid_operator_chart_version
+
+  providers = {
+    github = github.fluxcd
+  }
 }

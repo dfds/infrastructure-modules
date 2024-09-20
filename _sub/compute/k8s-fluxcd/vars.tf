@@ -62,3 +62,9 @@ variable "token" {
 variable "cluster_ca_certificate" {
   type = string
 }
+
+variable "enable_monitoring" {
+  type        = bool
+  default     = false
+  description = "Enable monitoring for Flux"
+}

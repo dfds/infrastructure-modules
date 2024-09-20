@@ -35,6 +35,7 @@ resource "flux_bootstrap_git" "this" {
 # --------------------------------------------------
 
 resource "github_repository_file" "flux_monitoring_config_path" {
+  count               = var.enable_monitoring ? 1 : 0
   repository          = var.repository_name
   branch              = data.github_branch.flux_branch.branch
   file                = "${local.cluster_target_path}/${local.app_install_name}.yaml"

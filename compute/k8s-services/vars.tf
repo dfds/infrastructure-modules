@@ -468,7 +468,6 @@ variable "fluxcd_bootstrap_overwrite_on_create" {
   description = "Enable overwriting existing files"
 }
 
-
 # --------------------------------------------------
 # GitOps apps used by Flux CD
 # --------------------------------------------------
@@ -1612,4 +1611,20 @@ variable "github_arc_runners_memory_limit" {
   type        = string
   description = "Memory request for the runner pods"
   default     = "8Gi"
+}
+
+# --------------------------------------------------
+# Apache Druid Operator
+# --------------------------------------------------
+
+variable "druid_operator_deploy" {
+  type        = bool
+  description = "Deploy Apache Druid Operator"
+  default     = false
+}
+
+variable "druid_operator_chart_version" {
+  type        = string
+  description = "The helm chart version"
+  default     = ""
 }
