@@ -1614,17 +1614,36 @@ variable "github_arc_runners_memory_limit" {
 }
 
 # --------------------------------------------------
-# Apache Druid Operator
+# Flux CD in a shared responsibility model with
+# other platform teams
 # --------------------------------------------------
 
-variable "druid_operator_deploy" {
+variable "shared_manifests_repo_name" {
+  type        = string
+  default     = ""
+  description = "The repo name for your GitOps manifests"
+}
+
+variable "shared_manifests_repo_branch" {
+  type        = string
+  default     = "main"
+  description = "The default branch for your GitOps manifests"
+}
+
+variable "shared_manifests_repo_owner" {
+  type        = string
+  default     = "main"
+  description = "The repo owner for your GitOps manifests"
+}
+
+variable "shared_manifests_deploy" {
   type        = bool
-  description = "Deploy Apache Druid Operator"
+  description = "Deploy Flux manifests from a shared responsibily repo"
   default     = false
 }
 
-variable "druid_operator_chart_version" {
+variable "shared_manifests_overlay_folder" {
   type        = string
-  description = "The helm chart version"
-  default     = ""
+  description = "Which overlay folder to deploy"
+  default     = "production"
 }

@@ -998,22 +998,29 @@ module "github_arc_runners" {
 }
 
 # --------------------------------------------------
-# Apache Druid Operator
+# Flux CD in a shared responsibility model with
+# other platform teams
 # --------------------------------------------------
 
-module "druid_operator" {
-  source                  = "../../_sub/database/druid-operator"
-  count                   = var.druid_operator_deploy ? 1 : 0
-  cluster_name            = var.eks_cluster_name
-  repo_owner              = var.fluxcd_bootstrap_repo_owner
-  repo_name               = var.fluxcd_bootstrap_repo_name
-  repo_branch             = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
-  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
-  chart_version           = var.druid_operator_chart_version
+module "shared_manifests" {
+  source                       = "../../_sub/compute/k8s-shared-manifests"
+  count                        = var.shared_manifests_deploy ? 1 : 0
+  cluster_name                 = var.eks_cluster_name
+  overlay_folder               = var.shared_manifests_overlay_folder
+  repo_owner                   = var.fluxcd_bootstrap_repo_owner
+  repo_name                    = var.fluxcd_bootstrap_repo_name
+  repo_token                   = var.fluxcd_bootstrap_repo_owner_token
+  repo_branch                  = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create          = var.fluxcd_bootstrap_overwrite_on_create
+  shared_manifests_repo_url    = local.shared_manifests_repo_url
+  shared_manifests_repo_branch = var.shared_manifests_repo_branch
+  account_id                   = var.aws_workload_account_id
+  role_name                    = var.external_secrets_ssm_iam_role_name
+  is_sandbox                   = data.terraform_remote_state.cluster.outputs.eks_is_sandbox
 
   providers = {
     github = github.fluxcd
   }
+
+  depends_on = [module.external_secrets_ssm]
 }
