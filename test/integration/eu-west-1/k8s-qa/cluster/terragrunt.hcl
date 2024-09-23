@@ -104,11 +104,10 @@ inputs = {
     "monitoring" = {
       instance_types          = ["m6a.xlarge"]
       disk_type               = "gp3"
-      desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
-      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-1.30-*"]}]
-      # currentImageName=amazon-eks-node-1.30-v20240910
-      ami_id             = "ami-0eb3c6b810888f6e2"
+      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.30-*"]}]
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.30-v20240807
+      ami_id                     = "ami-090ea8d1ab1887790"
       availability_zones = ["eu-west-1b"]
       kubelet_extra_args = "--max-pods=30 --kube-reserved=memory=585Mi,cpu=80m"
       max_unavailable    = 1
@@ -121,6 +120,10 @@ inputs = {
       labels = {
         dedicated = "monitoring"
       }
+      is_al2023 = true
+      max_pods = 30
+      cpu = "80m"
+      memory = "585Mi"
     }
     "observability" = {
       instance_types          = ["t3.large"]
