@@ -120,7 +120,7 @@ inputs = {
       labels = {
         dedicated = "monitoring"
       }
-      is_al2023 = true
+      is_al2023 = false
       max_pods = 30
       cpu = "80m"
       memory = "585Mi"
@@ -145,6 +145,10 @@ inputs = {
       labels = {
         dedicated = "observability"
       }
+      is_al2023 = true
+      max_pods = 30
+      cpu = "90m"
+      memory = "585Mi"
     }
     "dataplatform" = {
       instance_types          = ["r6a.2xlarge"]
