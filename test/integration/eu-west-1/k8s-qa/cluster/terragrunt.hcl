@@ -120,7 +120,7 @@ inputs = {
       labels = {
         dedicated = "monitoring"
       }
-      is_al2023 = false
+      is_al2023 = true
       max_pods = 30
       cpu = "80m"
       memory = "585Mi"
