@@ -107,7 +107,7 @@ inputs = {
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.30-*"]}]
       # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.30-v20240807
-      ami_id                     = "ami-090ea8d1ab1887790"
+      ami_id                     = "ami-0eb3c6b810888f6e2"
       availability_zones = ["eu-west-1b"]
       kubelet_extra_args = "--max-pods=30 --kube-reserved=memory=585Mi,cpu=80m"
       max_unavailable    = 1
@@ -133,7 +133,7 @@ inputs = {
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.30-*"]}]
       # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.30-v20240807
-      ami_id                     = "ami-090ea8d1ab1887790"
+      ami_id                     = "ami-0eb3c6b810888f6e2"
       availability_zones = ["eu-west-1c"]
       kubelet_extra_args = "--max-pods=30 --kube-reserved=memory=585Mi,cpu=90m"
       taints = [
