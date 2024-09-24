@@ -1002,6 +1002,22 @@ module "github_arc_runners" {
 # other platform teams
 # --------------------------------------------------
 
+module "shared_manifests_git_owner" {
+  source          = "../../_sub/security/ssm-parameter-store"
+  key_name        = "/github/shared-manifests/owner"
+  key_description = "Git owner for the shared Flux manifests"
+  key_value       = var.fluxcd_bootstrap_repo_owner
+  tag_createdby   = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-services"
+}
+
+module "shared_manifests_git_token" {
+  source          = "../../_sub/security/ssm-parameter-store"
+  key_name        = "/github/shared-manifests/token"
+  key_description = "Git owner's token for the shared Flux manifests"
+  key_value       = var.fluxcd_bootstrap_repo_owner_token
+  tag_createdby   = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-services"
+}
+
 module "shared_manifests" {
   source                       = "../../_sub/compute/k8s-shared-manifests"
   count                        = var.shared_manifests_deploy ? 1 : 0
@@ -1022,5 +1038,9 @@ module "shared_manifests" {
     github = github.fluxcd
   }
 
-  depends_on = [module.external_secrets_ssm]
+  depends_on = [
+    module.shared_manifests_git_owner,
+    module.shared_manifests_git_token,
+    module.external_secrets_ssm
+  ]
 }

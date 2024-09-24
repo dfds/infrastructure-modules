@@ -39,10 +39,10 @@ spec:
   data:
     - secretKey: username
       remoteRef:
-        key: /github/username/shared-manifests
+        key: /github/shared-manifests/owner
     - secretKey: password
       remoteRef:
-        key: /github/token/shared-manifests
+        key: /github/shared-manifests/token
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository

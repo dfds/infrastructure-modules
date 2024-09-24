@@ -1614,6 +1614,16 @@ variable "github_arc_runners_memory_limit" {
 }
 
 # --------------------------------------------------
+# Optional
+# --------------------------------------------------
+
+variable "ssm_param_createdby" {
+  type        = string
+  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
+  default     = null
+}
+
+# --------------------------------------------------
 # Flux CD in a shared responsibility model with
 # other platform teams
 # --------------------------------------------------
