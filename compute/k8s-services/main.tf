@@ -1004,6 +1004,7 @@ module "github_arc_runners" {
 
 module "shared_manifests_git_owner" {
   source          = "../../_sub/security/ssm-parameter-store"
+  count           = var.shared_manifests_deploy ? 1 : 0
   key_name        = "/github/shared-manifests/owner"
   key_description = "Git owner for the shared Flux manifests"
   key_value       = var.fluxcd_bootstrap_repo_owner
@@ -1012,6 +1013,7 @@ module "shared_manifests_git_owner" {
 
 module "shared_manifests_git_token" {
   source          = "../../_sub/security/ssm-parameter-store"
+  count           = var.shared_manifests_deploy ? 1 : 0
   key_name        = "/github/shared-manifests/token"
   key_description = "Git owner's token for the shared Flux manifests"
   key_value       = var.fluxcd_bootstrap_repo_owner_token
