@@ -291,8 +291,20 @@ inputs = {
   # --------------------------------------------------
   # Github ARC SS Controller
   # --------------------------------------------------
-  
+
   github_arc_ss_controller_deploy = true
   github_arc_ss_controller_helm_chart_version = "0.9.3"
+
+  # --------------------------------------------------
+  # Flux CD in a shared responsibility model with
+  # other platform teams
+  # --------------------------------------------------
+
+  shared_manifests_repo_name             = "shared-manifests"
+  shared_manifests_repo_branch           = "main"
+  shared_manifests_repo_owner            = "dfds"
+
+  shared_manifests_deploy         = true
+  shared_manifests_overlay_folder = "qa"
 
 }

@@ -458,6 +458,7 @@ module "platform_fluxcd" {
   endpoint                = data.aws_eks_cluster.eks.endpoint
   token                   = data.aws_eks_cluster_auth.eks.token
   cluster_ca_certificate  = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+  enable_monitoring       = var.monitoring_kube_prometheus_stack_deploy || var.grafana_deploy ? true : false
 
   providers = {
     github = github.fluxcd
@@ -994,4 +995,52 @@ module "github_arc_runners" {
   }
 
   depends_on = [module.platform_fluxcd, module.github_arc_ss_controller]
+}
+
+# --------------------------------------------------
+# Flux CD in a shared responsibility model with
+# other platform teams
+# --------------------------------------------------
+
+module "shared_manifests_git_owner" {
+  source          = "../../_sub/security/ssm-parameter-store"
+  count           = var.shared_manifests_deploy ? 1 : 0
+  key_name        = "/github/shared-manifests/owner"
+  key_description = "Git owner for the shared Flux manifests"
+  key_value       = var.fluxcd_bootstrap_repo_owner
+  tag_createdby   = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-services"
+}
+
+module "shared_manifests_git_token" {
+  source          = "../../_sub/security/ssm-parameter-store"
+  count           = var.shared_manifests_deploy ? 1 : 0
+  key_name        = "/github/shared-manifests/token"
+  key_description = "Git owner's token for the shared Flux manifests"
+  key_value       = var.fluxcd_bootstrap_repo_owner_token
+  tag_createdby   = var.ssm_param_createdby != null ? var.ssm_param_createdby : "k8s-services"
+}
+
+module "shared_manifests" {
+  source                       = "../../_sub/compute/k8s-shared-manifests"
+  count                        = var.shared_manifests_deploy ? 1 : 0
+  cluster_name                 = var.eks_cluster_name
+  overlay_folder               = var.shared_manifests_overlay_folder
+  repo_owner                   = var.fluxcd_bootstrap_repo_owner
+  repo_name                    = var.fluxcd_bootstrap_repo_name
+  repo_branch                  = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create          = var.fluxcd_bootstrap_overwrite_on_create
+  shared_manifests_repo_url    = local.shared_manifests_repo_url
+  shared_manifests_repo_branch = var.shared_manifests_repo_branch
+  account_id                   = var.aws_workload_account_id
+  role_name                    = var.external_secrets_ssm_iam_role_name
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [
+    module.shared_manifests_git_owner,
+    module.shared_manifests_git_token,
+    module.external_secrets_ssm
+  ]
 }
