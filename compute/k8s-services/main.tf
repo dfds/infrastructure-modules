@@ -1027,14 +1027,12 @@ module "shared_manifests" {
   overlay_folder               = var.shared_manifests_overlay_folder
   repo_owner                   = var.fluxcd_bootstrap_repo_owner
   repo_name                    = var.fluxcd_bootstrap_repo_name
-  repo_token                   = var.fluxcd_bootstrap_repo_owner_token
   repo_branch                  = var.fluxcd_bootstrap_repo_branch
   overwrite_on_create          = var.fluxcd_bootstrap_overwrite_on_create
   shared_manifests_repo_url    = local.shared_manifests_repo_url
   shared_manifests_repo_branch = var.shared_manifests_repo_branch
   account_id                   = var.aws_workload_account_id
   role_name                    = var.external_secrets_ssm_iam_role_name
-  is_sandbox                   = data.terraform_remote_state.cluster.outputs.eks_is_sandbox
 
   providers = {
     github = github.fluxcd

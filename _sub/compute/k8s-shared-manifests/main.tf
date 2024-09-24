@@ -11,7 +11,6 @@ locals {
   default_repo_branch = data.github_repository.main.default_branch
   repo_branch         = length(var.repo_branch) > 0 ? var.repo_branch : local.default_repo_branch
   cluster_repo_path   = "clusters/${var.cluster_name}"
-  overlay_folder      = var.is_sandbox ? "sandbox/${var.cluster_name}" : var.overlay_folder
 }
 
 resource "github_repository_file" "shared_manifests" {
@@ -21,7 +20,7 @@ resource "github_repository_file" "shared_manifests" {
   content = templatefile("${path.module}/values/shared-manifests.yaml", {
     shared_manifests_repo_url    = var.shared_manifests_repo_url
     shared_manifests_repo_branch = var.shared_manifests_repo_branch
-    overlay_folder               = local.overlay_folder
+    overlay_folder               = var.overlay_folder
     account_id                   = var.account_id
     role_name                    = var.role_name
     prune                        = var.prune

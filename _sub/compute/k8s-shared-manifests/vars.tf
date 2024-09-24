@@ -12,11 +12,6 @@ variable "repo_owner" {
   sensitive   = true
 }
 
-variable "repo_token" {
-  type      = string
-  sensitive = true
-}
-
 variable "repo_name" {
   type        = string
   description = "Name of the Github repo to store the manifests in"
@@ -50,12 +45,6 @@ variable "prune" {
   type        = bool
   default     = true
   description = "Enable Garbage collection"
-}
-
-variable "is_sandbox" {
-  type        = bool
-  default     = false
-  description = "Is this used in a sandbox?"
 }
 
 variable "account_id" {
