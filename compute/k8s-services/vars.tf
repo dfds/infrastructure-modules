@@ -468,7 +468,6 @@ variable "fluxcd_bootstrap_overwrite_on_create" {
   description = "Enable overwriting existing files"
 }
 
-
 # --------------------------------------------------
 # GitOps apps used by Flux CD
 # --------------------------------------------------
@@ -1612,4 +1611,49 @@ variable "github_arc_runners_memory_limit" {
   type        = string
   description = "Memory request for the runner pods"
   default     = "8Gi"
+}
+
+# --------------------------------------------------
+# Optional
+# --------------------------------------------------
+
+variable "ssm_param_createdby" {
+  type        = string
+  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
+  default     = null
+}
+
+# --------------------------------------------------
+# Flux CD in a shared responsibility model with
+# other platform teams
+# --------------------------------------------------
+
+variable "shared_manifests_repo_name" {
+  type        = string
+  default     = ""
+  description = "The repo name for your GitOps manifests"
+}
+
+variable "shared_manifests_repo_branch" {
+  type        = string
+  default     = "main"
+  description = "The default branch for your GitOps manifests"
+}
+
+variable "shared_manifests_repo_owner" {
+  type        = string
+  default     = "main"
+  description = "The repo owner for your GitOps manifests"
+}
+
+variable "shared_manifests_deploy" {
+  type        = bool
+  description = "Deploy Flux manifests from a shared responsibily repo"
+  default     = false
+}
+
+variable "shared_manifests_overlay_folder" {
+  type        = string
+  description = "Which overlay folder to deploy"
+  default     = "production"
 }
