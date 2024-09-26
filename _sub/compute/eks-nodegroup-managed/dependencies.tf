@@ -43,3 +43,7 @@ locals {
   */
   bootstrap_extra_args = length(var.kubelet_extra_args) >= 1 ? "--kubelet-extra-args '${var.kubelet_extra_args}'" : ""
 }
+
+data "aws_eks_cluster" "this" {
+  name = var.cluster_name
+}

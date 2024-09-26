@@ -1,0 +1,42 @@
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="BOUNDARY"
+
+--BOUNDARY
+Content-Type: text/x-shellscript; charset="us-ascii"
+
+#!/bin/sh
+set -o xtrace
+
+echo fs.inotify.max_user_watches=${worker_inotify_max_user_watches} | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+
+
+--BOUNDARY
+Content-Type: application/node.eks.aws
+
+---
+apiVersion: node.eks.aws/v1alpha1
+kind: NodeConfig
+spec:
+    cluster:
+        name: ${cluster_name}
+        apiServerEndpoint: ${eks_endpoint}
+        certificateAuthority: ${eks_certificate_authority}
+        cidr: ${cidr}
+    kubelet:
+        config:
+%{ if vpc_cni_prefix_delegation_enabled }
+            maxPods: ${max_pods}
+%{ endif ~}
+            registryPullQPS: 0
+%{ if cpu != null || memory != null }
+            kubeReserved:
+%{ endif ~}
+%{ if cpu != null }
+                cpu: ${cpu}
+%{ endif ~}
+%{ if memory != null }
+                memory: ${memory}
+%{ endif ~}
+
+--BOUNDARY--

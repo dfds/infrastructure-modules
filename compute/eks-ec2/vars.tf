@@ -158,6 +158,10 @@ variable "eks_managed_nodegroups" {
       effect = string
     })), [])
     labels = optional(map(string), {})
+    is_al2023 = optional(bool, false)
+    max_pods = optional(number, 110)
+    cpu = optional(string, null)
+    memory = optional(string, null)
   }))
   default = {}
 }
