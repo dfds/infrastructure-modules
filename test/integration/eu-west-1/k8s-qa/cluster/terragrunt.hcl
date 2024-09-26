@@ -27,7 +27,7 @@ inputs = {
   eks_addon_most_recent                      = true
 
   eks_worker_ssh_ip_whitelist = ["193.9.230.0/24"]
-  eks_worker_ssh_public_key   = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDS85QojLMO8eI5ArwburDpVthEZmW3IVs4/nmv7YnDMgs+ucJmW/etm7MlkRDvWphH4X/6mSGGmylJq7vUIn5rHMG0KTFxg06G2ZJ0zS6ryQ89tDLA9LXhD3q//TzXDFJ4ztjcSyxL1fSW44Lpmt7l7wWHdgrMaP3db2TRYOKY2/0iC22TwQKjTSGku59sFmv3XkLVBehO3fFOXcbLChZ4+maPMmgJDUyYMVSVZNJ2YsjFHHeaYClaN0az0Agcab2HIZMZh0Vv08ro0Se5ZBUjyfoPuDe3WjutkivePajG710k10vSOx6X5CHO3bZvQEBA8klCY58Xp2XrzSChNZhP eks-deploy-hellman"
+  eks_worker_ssh_public_key   = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC2PlxsmewLiLRCQbuATu4yLRsAOMGqaCa/KL3GPo1Wyr19XVVFWseyaVERN1t/xBPlryOikHbfkuNnm8c3mtOop9daEEi2neWMpHqGp/IqHRw5tJiEg50/zauC2kETuG9pLADzs/tVrLlghKHmzv9s6VPEJM7l6hKWF04AdHK2auICRXnOM+by1+gquoDAvL3tytX55Xrx3P+dMB4tpgt/SABVomE6/XiaaxHdntj6pGGl1CYtzC2Md+4K6pXh2mr/pESqXqGxcW6HBUhwYhDEdm1ZEg3WLaFZ2kTjCvIUCPgA7Zo3cq8NQbjw6rsnrqTrsCG7OIRakrWFlxetKvZluVARaJscnQov98iwS7+owGKf+eJ9Fg6O26ewHKX0zuxU/33l1KqGdfGEVfsA+CzRSKr9yj1BvCzqf4yaESZT/D0uNDCWPTC0pmJ02F1/XUvOnDl7cihHHTXTlwRnXBKz7X8xpwUtb/K+yyvUI4KcRmcmxRUFxl3SVuaaXJ1avfb0FOGB07ZO47OQ1/gCkHmzYpu5YtBeVwOAfxOsCX3k1Svqhvpbwg6KdkdSvouXdMFqQ10rtF65E8yiX0pHnDHC3Vgpa/Nw5hZ0fH1MTRDIDf2ZTciARkzGrUtYPu9Yi68X9bcLgfn6cA6HNp/UGhm6YvpoKrkZgX2yJIkphALqTQ== qa"
   eks_k8s_auth_api_version    = "client.authentication.k8s.io/v1beta1"
 
   eks_is_sandbox = true
