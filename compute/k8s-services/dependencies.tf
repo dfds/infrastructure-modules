@@ -261,7 +261,7 @@ locals {
 
 locals {
   fluxcd_apps_repo_url      = "${var.fluxcd_apps_git_provider_url}${var.fluxcd_apps_repo_owner}/${var.fluxcd_apps_repo_name}"
-  shared_manifests_repo_url = "${var.fluxcd_apps_git_provider_url}${var.shared_manifests_repo_owner}/${var.shared_manifests_repo_name}"
+  shared_manifests_repo_url = "ssh://git@github.com/${var.shared_manifests_repo_owner}/${var.shared_manifests_repo_name}.git"
 }
 
 # --------------------------------------------------
