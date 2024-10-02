@@ -118,7 +118,7 @@ data "aws_iam_policy_document" "preventive" {
     ]
     resources = ["*"]
   }
-  
+
   statement {
     sid    = "DenyAWSBackupOnSpecificTag"
     effect = "Deny"
@@ -191,35 +191,6 @@ data "aws_iam_policy_document" "preventive" {
       variable = "aws:PrincipalArn"
       values   = ["arn:aws:iam::*:root"]
     }
-  }
-
-  statement {
-    sid       = "DenyPublicVPC"
-    effect    = "Deny"
-    resources = ["*"]
-
-    actions = [
-      "ec2:AttachInternetGateway",
-      "ec2:CreateInternetGateway",
-      "ec2:CreateEgressOnlyInternetGateway",
-      "ec2:CreateVpcPeeringConnection",
-      "ec2:AcceptVpcPeeringConnection",
-      "globalaccelerator:Create*",
-      "globalaccelerator:Update*",
-    ]
-
-    condition {
-      test     = "StringNotLike"
-      variable = "aws:PrincipalArn"
-      values   = ["arn:aws:iam::*:role/OrgRole"]
-    }
-  }
-
-  statement {
-    sid       = ""
-    effect    = "Deny"
-    resources = ["*"]
-    actions   = ["ec2:AssociateAddress"]
   }
 
   statement {

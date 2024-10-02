@@ -41,16 +41,13 @@ variable "shared_manifests_repo_branch" {
   description = "The default branch for your GitOps manifests"
 }
 
+variable "shared_manifests_repo_name" {
+  type        = string
+  description = "Name of the Github repo to read the shared manifests from"
+}
+
 variable "prune" {
   type        = bool
   default     = true
   description = "Enable Garbage collection"
-}
-
-variable "account_id" {
-  type = string
-}
-
-variable "role_name" {
-  type = string
 }

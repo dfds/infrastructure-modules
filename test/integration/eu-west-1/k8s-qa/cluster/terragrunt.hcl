@@ -94,8 +94,8 @@ inputs = {
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.30-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.30-v20240917
-      ami_id                     = "ami-090ea8d1ab1887790"
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.30-v20240928
+      ami_id                     = "ami-0c0ce812f3f679bd1"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
       is_al2023 = true
@@ -106,8 +106,8 @@ inputs = {
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.30-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.30-v20240917
-      ami_id             = "ami-090ea8d1ab1887790"
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.30-v20240928
+      ami_id             = "ami-0c0ce812f3f679bd1"
       availability_zones = ["eu-west-1b"]
       max_unavailable    = 1
       taints = [
@@ -131,8 +131,8 @@ inputs = {
       max_unavailable         = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.30-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.30-v20240917
-      ami_id             = "ami-090ea8d1ab1887790"
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.30-v20240928
+      ami_id             = "ami-0c0ce812f3f679bd1"
       availability_zones = ["eu-west-1c"]
       taints = [
         {
@@ -155,8 +155,8 @@ inputs = {
       max_unavailable         = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.30-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.30-v20240917
-      ami_id             = "ami-090ea8d1ab1887790"
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.30-v20240928
+      ami_id             = "ami-0c0ce812f3f679bd1"
       availability_zones = ["eu-west-1a", "eu-west-1b"]
       taints = [
         {
