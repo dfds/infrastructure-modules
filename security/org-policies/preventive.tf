@@ -221,4 +221,50 @@ data "aws_iam_policy_document" "preventive" {
       values   = ["AWS_IAM"]
     }
   }
+
+  statement {
+    sid       = "RequireAllEc2RolesToUseV2"
+    effect    = "Deny"
+    resources = ["*"]
+    actions   = ["*"]
+
+    condition {
+      test     = "NumericLessThan"
+      variable = "ec2:RoleDelivery"
+      values   = ["2.0"]
+    }
+  }
+
+  statement {
+    sid       = "RequireImdsV2"
+    effect    = "Deny"
+    resources = ["arn:aws:ec2:*:*:instance/*"]
+    actions   = ["ec2:RunInstances"]
+
+    condition {
+      test     = "StringNotEquals"
+      variable = "ec2:MetadataHttpTokens"
+      values   = ["required"]
+    }
+  }
+
+  statement {
+    sid       = ""
+    effect    = "Deny"
+    resources = ["*"]
+    actions   = ["ec2:ModifyInstanceMetadataOptions"]
+  }
+
+  statement {
+    sid       = "MaxImdsHopLimit"
+    effect    = "Deny"
+    resources = ["arn:aws:ec2:*:*:instance/*"]
+    actions   = ["ec2:RunInstances"]
+
+    condition {
+      test     = "NumericGreaterThan"
+      variable = "ec2:MetadataHttpPutResponseHopLimit"
+      values   = ["2"]
+    }
+  }
 }
