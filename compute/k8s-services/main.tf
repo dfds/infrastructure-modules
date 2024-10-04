@@ -98,7 +98,7 @@ module "traefik_alb_auth" {
   alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
   nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
   azure_tenant_id       = try(module.traefik_alb_auth_appreg[0].tenant_id, "")
-  azure_client_id       = try(module.traefik_alb_auth_appreg[0].application_id, "")
+  azure_client_id       = try(module.traefik_alb_auth_appreg[0].client_id, "")
   azure_client_secret   = try(module.traefik_alb_auth_appreg[0].application_key, "")
   access_logs_bucket    = module.traefik_alb_s3_access_logs.name
 

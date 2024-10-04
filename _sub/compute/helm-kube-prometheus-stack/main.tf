@@ -54,7 +54,7 @@ resource "helm_release" "kube_prometheus_stack" {
       grafana_storage_enabled     = var.grafana_storage_enabled
       grafana_storage_class       = var.grafana_storage_class
       grafana_storage_size        = var.grafana_storage_size
-      grafana_app_id              = try(azuread_application.grafana[0].application_id, "")
+      grafana_app_id              = try(azuread_application.grafana[0].client_id, "")
       grafana_app_secret          = try(azuread_application_password.grafana[0].value, "")
       grafana_azure_tenant_id     = length(var.grafana_azure_tenant_id) == 36 ? var.grafana_azure_tenant_id : ""
       tolerations                 = var.tolerations,
