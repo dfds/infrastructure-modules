@@ -100,30 +100,6 @@ inputs = {
       max_unavailable_percentage = 50
       is_al2023 = true
     }
-    "monitoring" = {
-      instance_types          = ["t3.large"]
-      disk_type               = "gp3"
-      desired_size_per_subnet = 1
-      # This comment configures the renovate bot to automatically update this variable:
-      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.31-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.31-v20240928
-      ami_id             = "ami-02c1559fa605afe01"
-      availability_zones = ["eu-west-1b"]
-      max_unavailable    = 1
-      taints = [
-        {
-          key    = "monitoring.dfds"
-          effect = "NO_SCHEDULE"
-        }
-      ]
-      labels = {
-        dedicated = "monitoring"
-      }
-      is_al2023 = true
-      max_pods = 30
-      cpu = "80m"
-      memory = "585Mi"
-    }
     "observability" = {
       instance_types          = ["t3.large"]
       disk_type               = "gp3"
