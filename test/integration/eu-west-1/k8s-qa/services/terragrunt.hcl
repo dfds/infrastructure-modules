@@ -107,12 +107,7 @@ inputs = {
 
   monitoring_tolerations = [
     {
-      key      = "monitoring.dfds",
-      operator = "Exists",
-      effect   = "NoSchedule",
-    },
-    {
-      key      = "dataplatform.dfds",
+      key      = "observability.dfds",
       operator = "Exists",
       effect   = "NoSchedule",
     }
@@ -121,7 +116,7 @@ inputs = {
     {
       key      = "dedicated",
       operator = "In",
-      values   = ["monitoring"],
+      values   = ["observability"],
     }
   ]
 
