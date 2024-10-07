@@ -30,13 +30,13 @@ func TestGeneralNodeMaxPod(t *testing.T) {
 	}
 }
 
-func TestMonitoringNodeMaxPod(t *testing.T) {
+func TestObservabilityNodeMaxPod(t *testing.T) {
 	t.Parallel()
 	clientset := NewK8sClientSet(t)
 
 	resp, err := clientset.CoreV1().Nodes().List(context.Background(),
 		metav1.ListOptions{
-			LabelSelector: "eks.amazonaws.com/nodegroup in (monitoring)",
+			LabelSelector: "eks.amazonaws.com/nodegroup in (observability)",
 		})
 	if err != nil {
 		t.Log(err.Error())
@@ -48,17 +48,17 @@ func TestMonitoringNodeMaxPod(t *testing.T) {
 			// This node group has an overriden value for max pods to avoid
 			// excessive memory reservations by the kubelet to accomodate a
 			// higher limit for pods.
-			30, node.Status.Capacity.Pods().Value(), "monitoring node %q pods limit does not match", node.Name)
+			30, node.Status.Capacity.Pods().Value(), "observability node %q pods limit does not match", node.Name)
 	}
 }
 
-func TestMonitoringNodeTaints(t *testing.T) {
+func TestObservabilityNodeTaints(t *testing.T) {
 	t.Parallel()
 	clientset := NewK8sClientSet(t)
 
 	resp, err := clientset.CoreV1().Nodes().List(context.Background(),
 		metav1.ListOptions{
-			LabelSelector: "eks.amazonaws.com/nodegroup in (monitoring)",
+			LabelSelector: "eks.amazonaws.com/nodegroup in (observability)",
 		})
 	if err != nil {
 		t.Log(err.Error())
@@ -68,19 +68,19 @@ func TestMonitoringNodeTaints(t *testing.T) {
 	for _, node := range resp.Items {
 		assert.Equal(t, 1, len(node.Spec.Taints))
 		taint := node.Spec.Taints[0]
-		assert.Equal(t, "monitoring.dfds", taint.Key)
+		assert.Equal(t, "observability.dfds", taint.Key)
 		assert.Equal(t, v1.TaintEffectNoSchedule, taint.Effect)
 		assert.Equal(t, "", taint.Value)
 	}
 }
 
-func TestMonitoringNodeLabels(t *testing.T) {
+func TestObservabilityNodeLabels(t *testing.T) {
 	t.Parallel()
 	clientset := NewK8sClientSet(t)
 
 	resp, err := clientset.CoreV1().Nodes().List(context.Background(),
 		metav1.ListOptions{
-			LabelSelector: "eks.amazonaws.com/nodegroup in (monitoring)",
+			LabelSelector: "eks.amazonaws.com/nodegroup in (observability)",
 		})
 	if err != nil {
 		t.Log(err.Error())
@@ -88,46 +88,6 @@ func TestMonitoringNodeLabels(t *testing.T) {
 	}
 
 	for _, node := range resp.Items {
-		assert.Equal(t, "monitoring", node.Labels["dedicated"])
-	}
-}
-
-func TestDataPlatformNodeTaints(t *testing.T) {
-	t.Parallel()
-	clientset := NewK8sClientSet(t)
-
-	resp, err := clientset.CoreV1().Nodes().List(context.Background(),
-		metav1.ListOptions{
-			LabelSelector: "eks.amazonaws.com/nodegroup in (dataplatform)",
-		})
-	if err != nil {
-		t.Log(err.Error())
-		return
-	}
-
-	for _, node := range resp.Items {
-		assert.Equal(t, 1, len(node.Spec.Taints))
-		taint := node.Spec.Taints[0]
-		assert.Equal(t, "dataplatform.dfds", taint.Key)
-		assert.Equal(t, v1.TaintEffectNoSchedule, taint.Effect)
-		assert.Equal(t, "", taint.Value)
-	}
-}
-
-func TestDataPlatformNodeLabels(t *testing.T) {
-	t.Parallel()
-	clientset := NewK8sClientSet(t)
-
-	resp, err := clientset.CoreV1().Nodes().List(context.Background(),
-		metav1.ListOptions{
-			LabelSelector: "eks.amazonaws.com/nodegroup in (dataplatform)",
-		})
-	if err != nil {
-		t.Log(err.Error())
-		return
-	}
-
-	for _, node := range resp.Items {
-		assert.Equal(t, "dataplatform", node.Labels["dedicated"])
+		assert.Equal(t, "observability", node.Labels["dedicated"])
 	}
 }
