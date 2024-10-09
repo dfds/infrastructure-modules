@@ -54,7 +54,8 @@ inputs = {
   traefik_blue_variant_helm_chart_version = "23.1.0"
   traefik_blue_variant_additional_args = [
     "--metrics.prometheus",
-    "--providers.kubernetescrd.allowCrossNamespace=true"
+    "--providers.kubernetescrd.allowCrossNamespace=true",
+    "--providers.kubernetesingress=true",
   ]
   traefik_blue_variant_weight = 1
 
@@ -64,7 +65,8 @@ inputs = {
   traefik_green_variant_helm_chart_version = "20.8.0"
   traefik_green_variant_additional_args = [
     "--metrics.prometheus",
-    "--providers.kubernetescrd.allowCrossNamespace=true"
+    "--providers.kubernetescrd.allowCrossNamespace=true",
+    "--providers.kubernetesingress=true",
   ]
   traefik_green_variant_weight = 0
 
