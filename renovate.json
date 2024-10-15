@@ -82,9 +82,6 @@
       "matchUpdateTypes": [
         "major"
       ],
-      "addLabels": [
-        "release:patch"
-      ],
       "minimumReleaseAge": "7 days",
       "automerge": false
     }
