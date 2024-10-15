@@ -147,7 +147,6 @@ variable "eks_managed_nodegroups" {
     disk_size                  = optional(number, 128)
     disk_type                  = optional(string, "gp2")
     desired_size_per_subnet    = optional(number, 0)
-    kubelet_extra_args         = optional(string, "")
     gpu_ami                    = optional(bool, false)
     availability_zones         = optional(list(string), [])
     max_unavailable            = optional(number, null)
@@ -158,7 +157,6 @@ variable "eks_managed_nodegroups" {
       effect = string
     })), [])
     labels = optional(map(string), {})
-    is_al2023 = optional(bool, false)
     max_pods = optional(number, 110)
     cpu = optional(string, null)
     memory = optional(string, null)
@@ -188,11 +186,6 @@ variable "blaster_configmap_bucket_tags" {
 variable "eks_worker_cloudwatch_agent_config_deploy" {
   type    = bool
   default = false
-}
-
-variable "eks_worker_cloudwatch_agent_config_file" {
-  type    = string
-  default = "aws-cloudwatch-agent-conf.json"
 }
 
 # --------------------------------------------------
