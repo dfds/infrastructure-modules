@@ -4,7 +4,7 @@
     "config:recommended"
   ],
   "schedule": [
-    "after 6am and before 8am on wednesday"
+    "after 6am and before 8am on tuesday"
   ],
   "branchPrefix": "feature/renovate/",
   "ignorePaths": [
@@ -67,7 +67,7 @@
       "addLabels": [
         "release:patch"
       ],
-      "minimumReleaseAge": "1 day",
+      "minimumReleaseAge": "0 day",
       "automerge": true
     },
     {
@@ -75,19 +75,19 @@
         "minor"
       ],
       "addLabels": [
-        "release:minor"
+        "release:patch"
       ],
-      "minimumReleaseAge": "7 days",
-      "automerge": false
+      "minimumReleaseAge": "1 days",
+      "automerge": true
     },
     {
       "matchUpdateTypes": [
         "major"
       ],
       "addLabels": [
-        "release:major"
+        "release:patch"
       ],
-      "minimumReleaseAge": "14 days",
+      "minimumReleaseAge": "7 days",
       "automerge": false
     }
   ],
