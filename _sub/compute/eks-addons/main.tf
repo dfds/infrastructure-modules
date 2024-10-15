@@ -40,6 +40,19 @@ resource "aws_eks_addon" "aws-ebs-csi-driver" {
   ]
 }
 
+resource "aws_eks_addon" "aws_s3_csi_driver" {
+  cluster_name                = var.cluster_name
+  addon_name                  = "aws-mountpoint-s3-csi-driver"
+  addon_version               = local.awss3csidriver_version
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
+  service_account_role_arn    = aws_iam_role.s3_csi_driver.arn
+
+  depends_on = [
+    aws_iam_role_policy_attachment.s3_csi_driver
+  ]
+}
+
 # Roles & policies
 # https://docs.aws.amazon.com/eks/latest/userguide/csi-iam-role.html
 
@@ -85,6 +98,63 @@ resource "aws_iam_role_policy_attachment" "managed-ebs-csi-driver-policy" {
   role       = aws_iam_role.ebs-csi-driver-role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
+
+data "aws_iam_policy_document" "s3_csi_driver_trust" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+
+    principals {
+      type        = "Federated"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.this.account_id}:oidc-provider/${local.oidc_issuer}"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "${local.oidc_issuer}:aud"
+      values   = ["sts.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringLike"
+      variable = "${local.oidc_issuer}:sub"
+      values   = ["system:serviceaccount:kube-system:s3-csi-*"]
+    }
+  }
+}
+
+resource "aws_iam_role" "s3_csi_driver" {
+  name = "eks-${var.cluster_name}-s3-csi-driver"
+  description = "Role the S3 CSI driver assumes"
+
+  assume_role_policy = data.aws_iam_policy_document.s3_csi_driver_trust.json
+}
+
+data "aws_iam_policy_document" "s3_csi_driver" {
+  statement {
+    sid = "AllowS3Access"
+    effect = "Allow"
+    actions = [
+      "s3:ListBucket",
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:AbortMultipartUpload",
+      "s3:DeleteObject"
+    ]
+    resources = concat(formatlist("%s/*", var.s3_buckets), var.s3_buckets)
+  }
+}
+
+resource "aws_iam_policy" "s3_csi_driver" {
+  name = "s3-csi-driver-access"
+  policy = data.aws_iam_policy_document.s3_csi_driver.json
+}
+
+resource "aws_iam_role_policy_attachment" "s3_csi_driver" {
+  role       = aws_iam_role.s3_csi_driver.name
+  policy_arn = aws_iam_policy.s3_csi_driver.arn
+}
+
 
 # Storage classes
 

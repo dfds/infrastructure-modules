@@ -174,6 +174,8 @@ module "eks_addons" {
   most_recent                      = var.eks_addon_most_recent
   cluster_version                  = var.eks_cluster_version
   eks_openid_connect_provider_url  = module.eks_cluster.eks_openid_connect_provider_url
+  s3_buckets                       = var.eks_addon_awss3csidriver_s3_buckets
+  awss3csidriver_version_override  = var. eks_addon_awss3csidriver_version_override
 }
 
 module "k8s_priority_class" {

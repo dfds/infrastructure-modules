@@ -30,6 +30,11 @@ variable "awsebscsidriver_version_override" {
   default = ""
 }
 
+variable "awss3csidriver_version_override" {
+  type = string
+  default = ""
+}
+
 variable "vpccni_prefix_delegation_enabled" {
   type        = bool
   description = "Whether to enable prefix delegation mode on the VPC CNI addon."
@@ -40,4 +45,10 @@ variable "most_recent" {
   type        = bool
   default     = false
   description = "Should we use the latest version of an EKS add-on?"
+}
+
+variable "s3_buckets" {
+  type = list(string)
+  default = []
+  description = "List of bucket names that the S3 CSI Driver will have permissions to interact with"
 }

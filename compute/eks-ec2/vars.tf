@@ -118,6 +118,11 @@ variable "eks_addon_awsebscsidriver_version_override" {
   default = ""
 }
 
+variable "eks_addon_awss3csidriver_version_override" {
+  type = string
+  default = ""
+}
+
 variable "eks_addon_most_recent" {
   type        = bool
   default     = false
@@ -134,6 +139,11 @@ variable "eks_k8s_auth_api_version" {
   description = "The fully qualified version of the client authentication API."
   type        = string
   default     = "client.authentication.k8s.io/v1beta1"
+}
+
+variable "eks_addon_awss3csidriver_s3_buckets" {
+  type = list(string)
+  default = []
 }
 
 # --------------------------------------------------
