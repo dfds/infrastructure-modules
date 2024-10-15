@@ -13,6 +13,12 @@ pr:
   paths:
     exclude:
       - ".github/workflows/*"
+      - .gitignore
+      - .pre-commit-config.yaml
+      - .tflint.hcl
+      - LICENSE
+      - README.md
+      - renovate.json
 
 # Define resources for container to use.
 resources:
