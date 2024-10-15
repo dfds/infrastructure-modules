@@ -67,7 +67,6 @@
       "addLabels": [
         "release:patch"
       ],
-      "minimumReleaseAge": "0 day",
       "automerge": true
     },
     {
@@ -77,7 +76,6 @@
       "addLabels": [
         "release:patch"
       ],
-      "minimumReleaseAge": "1 days",
       "automerge": true
     },
     {
