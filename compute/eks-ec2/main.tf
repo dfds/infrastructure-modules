@@ -115,9 +115,6 @@ module "eks_managed_workers_node_group" {
   eks_certificate_authority         = module.eks_cluster.eks_certificate_authority
   vpc_cni_prefix_delegation_enabled = var.eks_addon_vpccni_prefix_delegation_enabled
   worker_inotify_max_user_watches   = var.eks_worker_inotify_max_user_watches
-  cloudwatch_agent_config_bucket    = var.eks_worker_cloudwatch_agent_config_deploy ? module.cloudwatch_agent_config_bucket.bucket_name : "none"
-  cloudwatch_agent_config_file      = var.eks_worker_cloudwatch_agent_config_file
-  cloudwatch_agent_enabled          = var.eks_worker_cloudwatch_agent_config_deploy
 
   # Node group variations
   nodegroup_name             = each.key
@@ -127,7 +124,6 @@ module "eks_managed_workers_node_group" {
   disk_size                  = each.value.disk_size
   disk_type                  = each.value.disk_type
   desired_size_per_subnet    = each.value.desired_size_per_subnet
-  kubelet_extra_args         = each.value.kubelet_extra_args
   gpu_ami                    = each.value.gpu_ami
   taints                     = each.value.taints
   labels                     = each.value.labels
@@ -136,7 +132,6 @@ module "eks_managed_workers_node_group" {
   subnet_ids = length(each.value.availability_zones) == 0 ? module.eks_managed_workers_subnet.subnet_ids : [
     for sn in module.eks_managed_workers_subnet.subnets : sn.id if contains(each.value.availability_zones, sn.availability_zone)
   ]
-  is_al2023 = each.value.is_al2023
   max_pods = each.value.max_pods
   cpu = each.value.cpu
   memory = each.value.memory
