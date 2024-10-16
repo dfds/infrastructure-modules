@@ -98,7 +98,6 @@ inputs = {
       ami_id             = "ami-0616330afd7cd2ad1"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
-      is_al2023 = true
     }
     "observability" = {
       instance_types          = ["t3.large"]
@@ -119,7 +118,6 @@ inputs = {
       labels = {
         dedicated = "observability"
       }
-      is_al2023 = true
       max_pods = 30
       memory = "585Mi"
       cpu = "90m"
