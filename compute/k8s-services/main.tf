@@ -470,17 +470,16 @@ module "platform_fluxcd" {
 # --------------------------------------------------
 
 module "atlantis" {
-  source                    = "../../_sub/compute/helm-atlantis"
+  source                    = "../../_sub/compute/atlantis"
   count                     = var.atlantis_deploy ? 1 : 0
   cluster_name              = var.eks_cluster_name
-  namespace                 = var.atlantis_namespace
-  namespace_labels          = var.atlantis_namespace_labels
   chart_version             = var.atlantis_chart_version
-  atlantis_image            = var.atlantis_image
-  atlantis_image_tag        = var.atlantis_image_tag
-  atlantis_ingress          = var.atlantis_ingress
+  enable_secret_volumes     = var.atlantis_add_secret_volumes
+  image                     = var.atlantis_image
+  image_tag                 = var.atlantis_image_tag
+  ingress_hostname          = var.atlantis_ingress
   storage_class             = var.atlantis_storage_class
-  data_storage              = var.atlantis_data_storage
+  storage_size              = var.atlantis_data_storage
   resources_requests_cpu    = var.atlantis_resources_requests_cpu
   resources_requests_memory = var.atlantis_resources_requests_memory
   resources_limits_cpu      = var.atlantis_resources_limits_cpu
@@ -488,16 +487,22 @@ module "atlantis" {
   github_username           = var.atlantis_github_username
   github_token              = var.atlantis_github_token
   github_repositories       = var.atlantis_github_repositories
-  webhook_url               = var.atlantis_ingress
+  webhook_ingress_hostname  = "wh-${var.atlantis_ingress}"
+  webhook_url               = "wh-${var.atlantis_ingress}"
   webhook_events            = var.atlantis_webhook_events
-  environment               = var.atlantis_environment
-  add_secret_volumes        = var.atlantis_add_secret_volumes
-  enable_github_secrets     = var.atlantis_enable_github_secrets
+  github_enable_org_secrets = var.atlantis_enable_github_secrets
+  repo_owner                = var.fluxcd_bootstrap_repo_owner
+  repo_name                 = var.fluxcd_bootstrap_repo_name
+  repo_branch               = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create       = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url      = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch   = var.fluxcd_apps_repo_branch
+  prune                     = var.fluxcd_prune
 
-  environment_variables = local.atlantis_env_vars
+  depends_on = [module.platform_fluxcd]
 
   providers = {
-    github = github.atlantis
+    github = github.fluxcd
   }
 }
 
