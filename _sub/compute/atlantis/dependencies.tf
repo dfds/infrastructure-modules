@@ -2,14 +2,10 @@ data "github_repository" "main" {
   full_name = "${var.repo_owner}/${var.repo_name}"
 }
 
-data "github_repository" "repo" {
-  count     = length(var.github_repositories)
-  full_name = var.github_repositories[count.index]
-}
-
 locals {
-  deploy_name = "atlantis"
-  namespace   = "atlantis"
+  deploy_name     = "atlantis"
+  namespace       = "atlantis"
+  service_account = local.deploy_name
   fully_qualified_repository_names = [
     for repo in var.github_repositories :
     "github.com/${repo}"

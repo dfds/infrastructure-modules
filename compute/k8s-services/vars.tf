@@ -533,7 +533,7 @@ variable "atlantis_github_repositories" {
 
 variable "atlantis_webhook_events" {
   description = "A list of events that should trigger the webhook"
-  default     = []
+  default     = ["issue_comment", "pull_request", "pull_request_review", "push"]
   type        = list(string)
 }
 

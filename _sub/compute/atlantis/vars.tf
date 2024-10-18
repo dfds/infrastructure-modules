@@ -65,11 +65,31 @@ variable "github_repositories" {
 variable "github_token" {
   type        = string
   description = "Github token that the provider uses to perform Github operations. Leaving unset will fall back to GITHUB_TOKEN environment variable"
+  sensitive   = true
 }
 
 variable "github_username" {
   type        = string
   description = "Github username of the account that will post Atlantis comments on PR's"
+}
+
+# --------------------------------------------------
+# IRSA variables
+# --------------------------------------------------
+
+variable "oidc_issuer" {
+  type        = string
+  description = "The OIDC isssue for the Kubernetes cluster"
+}
+
+variable "workload_account_id" {
+  type        = string
+  description = "The workload account ID."
+}
+
+variable "aws_region" {
+  type        = string
+  description = "The AWS region"
 }
 
 # --------------------------------------------------
@@ -88,6 +108,11 @@ variable "enable_secret_volumes" {
   description = "Add secret volumes to the Atlantis deployment. Requires a secret deployed named 'kubeconfigs'"
 }
 
+variable "environment" {
+  type        = string
+  description = "Environment"
+}
+
 variable "image" {
   type        = string
   description = "The Atlantis image to use"
@@ -103,12 +128,6 @@ variable "image_tag" {
 variable "ingress_hostname" {
   type        = string
   description = "The hostname for the Atlantis ingress"
-}
-
-variable "ingress_username" {
-  type        = string
-  description = "Username used for basic authentication when going through the ingres."
-  default     = "cloudengineer"
 }
 
 variable "parallel_pool_size" {
@@ -153,23 +172,8 @@ variable "storage_size" {
   description = "Size of the persistent volume"
 }
 
-variable "webhook_url" {
-  type        = string
-  description = "URL for the deployed Atlantis endpoint listener"
-}
-
-variable "webhook_content_type" {
-  type    = string
-  default = "application/json"
-}
-
 variable "webhook_events" {
   description = "A list of events that should trigger the webhook"
-  default     = []
+  default     = ["issue_comment", "pull_request", "pull_request_review", "push"]
   type        = list(string)
-}
-
-variable "webhook_ingress_hostname" {
-  type        = string
-  description = "The hostname for the Atlantis webhook ingress"
 }

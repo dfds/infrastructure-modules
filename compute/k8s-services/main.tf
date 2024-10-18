@@ -469,35 +469,37 @@ module "platform_fluxcd" {
 # Atlantis
 # --------------------------------------------------
 
-module "atlantis" {
+module "atlantis_deployment" {
   source                    = "../../_sub/compute/atlantis"
   count                     = var.atlantis_deploy ? 1 : 0
-  cluster_name              = var.eks_cluster_name
+  aws_region                = local.aws_region
   chart_version             = var.atlantis_chart_version
+  cluster_name              = var.eks_cluster_name
   enable_secret_volumes     = var.atlantis_add_secret_volumes
+  environment               = var.atlantis_environment
+  github_enable_org_secrets = var.atlantis_enable_github_secrets
+  github_repositories       = var.atlantis_github_repositories
+  github_token              = var.atlantis_github_token
+  github_username           = var.atlantis_github_username
+  gitops_apps_repo_branch   = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_url      = local.fluxcd_apps_repo_url
   image                     = var.atlantis_image
   image_tag                 = var.atlantis_image_tag
   ingress_hostname          = var.atlantis_ingress
-  storage_class             = var.atlantis_storage_class
-  storage_size              = var.atlantis_data_storage
-  resources_requests_cpu    = var.atlantis_resources_requests_cpu
-  resources_requests_memory = var.atlantis_resources_requests_memory
+  oidc_issuer               = local.oidc_issuer
+  overwrite_on_create       = var.fluxcd_bootstrap_overwrite_on_create
+  prune                     = var.fluxcd_prune
+  repo_branch               = var.fluxcd_bootstrap_repo_branch
+  repo_name                 = var.fluxcd_bootstrap_repo_name
+  repo_owner                = var.fluxcd_bootstrap_repo_owner
   resources_limits_cpu      = var.atlantis_resources_limits_cpu
   resources_limits_memory   = var.atlantis_resources_limits_memory
-  github_username           = var.atlantis_github_username
-  github_token              = var.atlantis_github_token
-  github_repositories       = var.atlantis_github_repositories
-  webhook_ingress_hostname  = "wh-${var.atlantis_ingress}"
-  webhook_url               = "wh-${var.atlantis_ingress}"
+  resources_requests_cpu    = var.atlantis_resources_requests_cpu
+  resources_requests_memory = var.atlantis_resources_requests_memory
+  storage_class             = var.atlantis_storage_class
+  storage_size              = var.atlantis_data_storage
   webhook_events            = var.atlantis_webhook_events
-  github_enable_org_secrets = var.atlantis_enable_github_secrets
-  repo_owner                = var.fluxcd_bootstrap_repo_owner
-  repo_name                 = var.fluxcd_bootstrap_repo_name
-  repo_branch               = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create       = var.fluxcd_bootstrap_overwrite_on_create
-  gitops_apps_repo_url      = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch   = var.fluxcd_apps_repo_branch
-  prune                     = var.fluxcd_prune
+  workload_account_id       = var.aws_workload_account_id
 
   depends_on = [module.platform_fluxcd]
 
@@ -506,23 +508,17 @@ module "atlantis" {
   }
 }
 
-module "atlantis_flux_manifests" {
-  source                = "../../_sub/compute/k8s-atlantis-flux-config"
-  count                 = var.atlantis_deploy ? 1 : 0
-  namespace             = var.atlantis_namespace
-  ingressroute_hostname = var.atlantis_ingress
-  cluster_name          = var.eks_cluster_name
-  repo_owner            = var.fluxcd_bootstrap_repo_owner
-  repo_name             = var.fluxcd_bootstrap_repo_name
-  repo_branch           = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create   = var.fluxcd_bootstrap_overwrite_on_create
+# TODO
+# module "atlantis_github_configuration" {
+#   source                    = "../../_sub/security/atlantis-github-configuration"
+#   count                     = var.atlantis_deploy ? 1 : 0
 
-  depends_on = [module.atlantis, module.platform_fluxcd]
+#   depends_on = [module.atlantis_deployment]
 
-  providers = {
-    github = github.fluxcd
-  }
-}
+#   providers = {
+#     github = github.atlantis
+#   }
+# }
 
 # --------------------------------------------------
 # Crossplane

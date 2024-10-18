@@ -8,7 +8,9 @@ spec:
     spec:
       version: "${chart_version}"
   values:
-    environmentSecrets: []
+    basicAuth:
+      username: ${deploy_name}
+      password: ${basic_auth_password}
     extraArgs:
       - --parallel-pool-size=${parallel_pool_size}
 %{ if enable_secret_volumes ~}
@@ -22,15 +24,16 @@ spec:
           defaultMode: 420
           secretName: kubeconfigs
 %{ endif ~}
-    github: {} # TODO: Patch this
+    github:
+      secret: ${github_secret}
+      token: ${github_token}
+      user: ${github_username}
     image:
       pullPolicy: IfNotPresent
       repository: ${image}
       tag: ${image_tag}
     ingress:
       host: ${ingress_hostname}
-    webhook_ingress:
-      host: ${webhook_ingress_hostname}
     logLevel: info
     orgAllowlist: ${org_allowlist}
     repoConfig: |
@@ -54,3 +57,9 @@ spec:
     volumeClaim:
       dataStorage: ${storage_size}
       storageClassName: ${storage_class}
+    serviceAccount:
+      create: true
+      name: ${service_account_name}
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::${workload_account_id}:role/${iam_role_name}
+        eks.amazonaws.com/sts-regional-endpoints: "true"
