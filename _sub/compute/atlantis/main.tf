@@ -85,3 +85,16 @@ resource "aws_ssm_parameter" "dashboard_password" {
     ]
   }
 }
+
+resource "aws_ssm_parameter" "webhook_secret" {
+  name        = "/eks/${var.cluster_name}/${local.deploy_name}-webhook-secret"
+  description = "Secret for mutual trust between Atlantis and GitHub"
+  type        = "SecureString"
+  value       = random_password.webhook.result
+
+  lifecycle {
+    ignore_changes = [
+      overwrite,
+    ]
+  }
+}
