@@ -170,9 +170,9 @@ inputs = {
   atlantis_github_repositories = ["dfds/qa-dummy-atlantis"]
   atlantis_github_owner        = "dfds"
   atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
-  atlantis_chart_version       = "4.25.0"
+  atlantis_chart_version       = "5.7.0"
   atlantis_environment         = "qa"
-  atlantis_image_tag           = "2.0.0"
+  atlantis_image_tag           = "2.0.2"
   atlantis_add_secret_volumes  = true
 
   # --------------------------------------------------

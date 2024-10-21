@@ -13,12 +13,18 @@ pr:
   paths:
     exclude:
       - ".github/workflows/*"
+      - .gitignore
+      - .pre-commit-config.yaml
+      - .tflint.hcl
+      - LICENSE
+      - README.md
+      - renovate.json
 
 # Define resources for container to use.
 resources:
   containers:
     - container: prime
-      image: dfdsdk/prime-pipeline:2.1.0
+      image: dfdsdk/prime-pipeline:2.1.1
       env:
         AWS_DEFAULT_REGION: eu-west-1
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
@@ -38,7 +44,7 @@ resources:
         TF_IN_AUTOMATION: "true"
         TERRAGRUNT_TFPATH: /usr/local/bin/tofu
     - container: aws-nuke
-      image: dfdsdk/aws-nuke:0.0.22
+      image: dfdsdk/aws-nuke:0.0.25
       env:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)

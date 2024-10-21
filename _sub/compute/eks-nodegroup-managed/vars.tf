@@ -89,26 +89,8 @@ variable "eks_certificate_authority" {
   type = string
 }
 
-variable "cloudwatch_agent_config_bucket" {
-  type = string
-}
-
-variable "cloudwatch_agent_config_file" {
-  type = string
-}
-
-variable "cloudwatch_agent_enabled" {
-  type    = bool
-  default = false
-}
-
 variable "worker_inotify_max_user_watches" {
   type = number
-}
-
-variable "kubelet_extra_args" {
-  type    = string
-  default = ""
 }
 
 variable "is_sandbox" {
@@ -138,12 +120,6 @@ variable "max_unavailable_percentage" {
   type        = number
   description = "Desired max percentage of unavailable worker nodes during node group update."
   default     = null
-}
-
-variable "is_al2023" {
-  type = bool
-  description = "Whether the node group is using AL2023 image"
-  default = false
 }
 
 variable "max_pods" {

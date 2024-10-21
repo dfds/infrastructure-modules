@@ -36,14 +36,6 @@ locals {
   node_ami = var.ami_id != "" ? var.ami_id : local.latest_ami
 }
 
-locals {
-  /*
-  https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/#example-use-cases
-  https://aws.amazon.com/blogs/opensource/improvements-eks-worker-node-provisioning/
-  */
-  bootstrap_extra_args = length(var.kubelet_extra_args) >= 1 ? "--kubelet-extra-args '${var.kubelet_extra_args}'" : ""
-}
-
 data "aws_eks_cluster" "this" {
   name = var.cluster_name
 }
