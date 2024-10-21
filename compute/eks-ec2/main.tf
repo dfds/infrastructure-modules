@@ -167,9 +167,16 @@ module "eks_heptio" {
   eks_k8s_auth_api_version    = var.eks_k8s_auth_api_version
 }
 
+module "efs_fs" {
+  source = "../../_sub/compute/efs-fs"
+  name   = "eks-${var.eks_cluster_name}-efs"
+  vpc_id = module.eks_cluster.vpc_id
+  vpc_subnet_ids = module.eks_managed_workers_subnet.subnet_ids
+}
+
 module "eks_addons" {
   source                           = "../../_sub/compute/eks-addons"
-  depends_on                       = [module.eks_cluster]
+  depends_on                       = [module.eks_cluster, module.efs_fs]
   cluster_name                     = var.eks_cluster_name
   kubeproxy_version_override       = var.eks_addon_kubeproxy_version_override
   coredns_version_override         = var.eks_addon_coredns_version_override
@@ -179,6 +186,7 @@ module "eks_addons" {
   most_recent                      = var.eks_addon_most_recent
   cluster_version                  = var.eks_cluster_version
   eks_openid_connect_provider_url  = module.eks_cluster.eks_openid_connect_provider_url
+  efs_fs_id                        = module.efs_fs.id
 }
 
 module "k8s_priority_class" {

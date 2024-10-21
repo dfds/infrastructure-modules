@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: druid-native-ingress
+  namespace: druid-operator-system
+spec:
+  rules:
+  - host: druid.qa.qa.dfds.cloud
+    http:
+      paths:
+        - backend:
+            service:
+              name: druid-tiny-cluster-routers
+              port:
+                number: 8088
+          path: /
+          pathType: Prefix

@@ -29,4 +29,3 @@ output "eks_role_arn" {
 output "eks_openid_connect_provider_url" {
   value = aws_eks_cluster.eks.identity[0].oidc[0].issuer
 }
-
