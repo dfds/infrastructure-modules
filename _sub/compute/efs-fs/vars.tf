@@ -30,3 +30,9 @@ variable "vpc_subnet_ids" {
   type = list(string)
   description = "The VPC subnet IDs in which to create the file system"
 }
+
+variable "automated_backup_enabled" {
+  type = bool
+  description = "Whether to enable automated backups"
+  default = true
+}

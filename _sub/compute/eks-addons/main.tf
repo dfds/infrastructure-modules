@@ -203,7 +203,7 @@ resource "kubernetes_storage_class" "csi-efs" {
     }
   }
   storage_provisioner    = "efs.csi.aws.com"
-  reclaim_policy         = "Delete"
+  reclaim_policy         = "Delete" # ?
   volume_binding_mode    = "WaitForFirstConsumer"
   allow_volume_expansion = "false"
   parameters = {
@@ -212,10 +212,10 @@ resource "kubernetes_storage_class" "csi-efs" {
     directoryPerms = "700"
     gidRangeStart =  "1000"
     gidRangeEnd = "2000"
-    basePath = "/"
+    basePath = "/namespaces"
     subPathPattern = "$${.PVC.namespace}/$${.PVC.name}"
     ensureUniqueDirectory =  "true"
-    reuseAccessPoint = "false"
+    reuseAccessPoint = "false" # optional
   }
   depends_on = [
     aws_eks_addon.aws-efs-csi-driver
