@@ -476,7 +476,6 @@ module "atlantis_deployment" {
   chart_version             = var.atlantis_chart_version
   cluster_name              = var.eks_cluster_name
   enable_secret_volumes     = var.atlantis_add_secret_volumes
-  environment               = var.atlantis_environment
   github_enable_org_secrets = var.atlantis_enable_github_secrets
   github_repositories       = var.atlantis_github_repositories
   github_token              = var.atlantis_github_token
@@ -498,7 +497,6 @@ module "atlantis_deployment" {
   resources_requests_memory = var.atlantis_resources_requests_memory
   storage_class             = var.atlantis_storage_class
   storage_size              = var.atlantis_data_storage
-  webhook_events            = var.atlantis_webhook_events
   workload_account_id       = var.aws_workload_account_id
 
   depends_on = [module.platform_fluxcd]
@@ -508,17 +506,23 @@ module "atlantis_deployment" {
   }
 }
 
-# TODO
-# module "atlantis_github_configuration" {
-#   source                    = "../../_sub/security/atlantis-github-configuration"
-#   count                     = var.atlantis_deploy ? 1 : 0
+module "atlantis_github_configuration" {
+  source                = "../../_sub/security/atlantis-github-configuration"
+  count                 = var.atlantis_deploy ? 1 : 0
+  dashboard_password    = module.atlantis_deployment[0].dashboard_password
+  enable_github_secrets = var.atlantis_enable_github_secrets
+  environment           = var.atlantis_environment
+  github_repositories   = var.atlantis_github_repositories
+  ingress_hostname      = var.atlantis_ingress
+  webhook_events        = var.atlantis_webhook_events
+  webhook_secret        = module.atlantis_deployment[0].webhook_secret
 
-#   depends_on = [module.atlantis_deployment]
+  depends_on = [module.atlantis_deployment]
 
-#   providers = {
-#     github = github.atlantis
-#   }
-# }
+  providers = {
+    github = github.atlantis
+  }
+}
 
 # --------------------------------------------------
 # Crossplane

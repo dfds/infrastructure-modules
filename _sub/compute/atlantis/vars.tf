@@ -108,11 +108,6 @@ variable "enable_secret_volumes" {
   description = "Add secret volumes to the Atlantis deployment. Requires a secret deployed named 'kubeconfigs'"
 }
 
-variable "environment" {
-  type        = string
-  description = "Environment"
-}
-
 variable "image" {
   type        = string
   description = "The Atlantis image to use"
@@ -170,10 +165,4 @@ variable "storage_size" {
   type        = string
   default     = "5Gi"
   description = "Size of the persistent volume"
-}
-
-variable "webhook_events" {
-  description = "A list of events that should trigger the webhook"
-  default     = ["issue_comment", "pull_request", "pull_request_review", "push"]
-  type        = list(string)
 }
