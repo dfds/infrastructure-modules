@@ -217,6 +217,7 @@ resource "kubernetes_storage_class" "csi-efs" {
     ensureUniqueDirectory =  "true"
     reuseAccessPoint = "false" # optional
   }
+  mount_options = ["tls"]
   depends_on = [
     aws_eks_addon.aws-efs-csi-driver
   ]
