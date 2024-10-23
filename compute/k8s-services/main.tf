@@ -916,7 +916,7 @@ module "external_secrets_ssm" {
 # kafka-exporter
 # --------------------------------------------------
 
-module "kafka_exporter_prod" {
+module "kafka_exporter" {
   source                  = "../../_sub/monitoring/kafka-exporter"
   count                   = var.kafka_exporter_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
