@@ -179,6 +179,22 @@ module "iam_user_deploy" {
   }
 }
 
+# Fetch the IAM user named "Deploy" and apply a tag if found
+data "aws_iam_user" "deploy_user" {
+  user_name = "Deploy"
+  provider  = aws.workload
+}
+
+resource "aws_iam_user" "deploy" {
+  provider  = aws.workload
+  count     = length(data.aws_iam_user.deploy_user.arn) > 0 ? 1 : 0
+  name      = data.aws_iam_user.deploy_user.user_name
+
+  tags      = {
+    Name = "deploy"
+  }
+}
+
 # --------------------------------------------------
 # IAM OpenID Connect Provider
 # --------------------------------------------------
