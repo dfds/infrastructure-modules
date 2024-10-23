@@ -177,9 +177,6 @@ module "iam_user_deploy" {
   providers = {
     aws = aws.workload
   }
-  tags = {
-    Name = "deploy"
-  }
 }
 
 
