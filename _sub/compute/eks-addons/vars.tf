@@ -52,3 +52,5 @@ variable "s3_buckets" {
   default = []
   description = "List of bucket names that the S3 CSI Driver will have permissions to interact with"
 }
+
+#TODO: Add conditional creation

@@ -214,3 +214,19 @@ resource "kubernetes_annotations" "gp2-not-default" {
     aws_eks_addon.aws-ebs-csi-driver
   ]
 }
+
+resource "kubernetes_storage_class_v1" "csi_s3" {
+  metadata {
+    name = "csi-s3"
+    annotations = {
+      "storageclass.kubernetes.io/is-default-class" = "false"
+    }
+  }
+  storage_provisioner = "s3.csi.aws.com"
+  reclaim_policy         = "Delete"
+  volume_binding_mode    = "WaitForFirstConsumer"
+  allow_volume_expansion = "false"
+  parameters = {
+    type = "standard"
+  }
+}
