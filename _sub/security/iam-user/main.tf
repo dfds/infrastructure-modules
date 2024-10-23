@@ -1,5 +1,9 @@
 resource "aws_iam_user" "user" {
   name = var.user_name
+
+  tags = merge(var.tags, {
+    Name = var.user_name
+  })
 }
 
 resource "aws_iam_user_group_membership" "user" {
