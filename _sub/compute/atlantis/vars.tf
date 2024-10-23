@@ -50,12 +50,6 @@ variable "prune" {
 # GitHub integration variables
 # --------------------------------------------------
 
-variable "github_enable_org_secrets" {
-  type        = bool
-  default     = true
-  description = "Enable Github secrets for Atlantis"
-}
-
 variable "github_repositories" {
   description = "List of repositories to whitelist for Atlantis"
   type        = list(string)

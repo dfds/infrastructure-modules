@@ -117,10 +117,6 @@ locals {
   traefik_alb_auth_appreg_reply_urls = split(",", local.traefik_alb_auth_appreg_reply_replace_end)
 }
 
-locals {
-  kubeconfig_path = pathexpand("~/.kube/${var.eks_cluster_name}.config")
-}
-
 # --------------------------------------------------
 # Monitoring namespace iam role annotations
 # --------------------------------------------------
@@ -262,68 +258,4 @@ locals {
 locals {
   fluxcd_apps_repo_url      = "${var.fluxcd_apps_git_provider_url}${var.fluxcd_apps_repo_owner}/${var.fluxcd_apps_repo_name}"
   shared_manifests_repo_url = "ssh://git@github.com/${var.shared_manifests_repo_owner}/${var.shared_manifests_repo_name}.git"
-}
-
-# --------------------------------------------------
-# Atlantis
-# --------------------------------------------------
-
-locals {
-  confluent_env_vars_for_atlantis = {
-    TF_VAR_crossplane_provider_confluent_email    = var.crossplane_provider_confluent_email
-    TF_VAR_crossplane_provider_confluent_password = var.crossplane_provider_confluent_password
-  }
-
-  atlantis_env_vars_default = {
-    PRODUCTION_AWS_ACCESS_KEY_ID                                        = var.atlantis_aws_access_key
-    PRODUCTION_AWS_SECRET_ACCESS_KEY                                    = var.atlantis_aws_secret
-    PRODUCTION_TF_VAR_slack_webhook_url                                 = var.slack_webhook_url
-    PRODUCTION_TF_VAR_monitoring_kube_prometheus_stack_slack_webhook    = var.monitoring_kube_prometheus_stack_slack_webhook
-    STAGING_AWS_ACCESS_KEY_ID                                           = var.atlantis_staging_aws_access_key
-    STAGING_AWS_SECRET_ACCESS_KEY                                       = var.atlantis_staging_aws_secret
-    STAGING_TF_VAR_slack_webhook_url                                    = var.staging_slack_webhook_url
-    STAGING_TF_VAR_monitoring_kube_prometheus_stack_slack_webhook       = var.monitoring_kube_prometheus_stack_staging_slack_webhook
-    SHARED_ARM_TENANT_ID                                                = var.atlantis_arm_tenant_id
-    SHARED_ARM_SUBSCRIPTION_ID                                          = var.atlantis_arm_subscription_id
-    SHARED_ARM_CLIENT_ID                                                = var.atlantis_arm_client_id
-    SHARED_ARM_CLIENT_SECRET                                            = var.atlantis_arm_client_secret
-    SHARED_TF_VAR_monitoring_kube_prometheus_stack_azure_tenant_id      = var.monitoring_kube_prometheus_stack_azure_tenant_id
-    SHARED_TF_VAR_fluxcd_bootstrap_repo_owner_token                     = var.fluxcd_bootstrap_repo_owner_token
-    SHARED_TF_VAR_atlantis_github_token                                 = var.atlantis_github_token
-    PRODUCTION_PRIME_AWS_ACCESS_KEY_ID                                  = var.prime_aws_access_key
-    PRODUCTION_PRIME_AWS_SECRET_ACCESS_KEY                              = var.prime_aws_secret
-    PRODUCTION_PREPRIME_AWS_ACCESS_KEY_ID                               = var.preprime_aws_access_key
-    PRODUCTION_PREPRIME_AWS_SECRET_ACCESS_KEY                           = var.preprime_aws_secret
-    PRODUCTION_PREPRIME_BACKUP_REPORTS_SLACK_WEBHOOK_URL                = var.preprime_backup_reports_slack_webhook_url
-    PRODUCTION_AWS_ACCOUNT_MANIFESTS_KAFKA_BROKER                       = var.aws_account_manifests_kafka_broker
-    PRODUCTION_AWS_ACCOUNT_MANIFESTS_KAFKA_USERNAME                     = var.aws_account_manifests_kafka_username
-    PRODUCTION_AWS_ACCOUNT_MANIFESTS_KAFKA_PASSWORD                     = var.aws_account_manifests_kafka_password
-    PRODUCTION_AWS_ACCOUNT_MANIFESTS_HARDENED_MONITORING_SLACK_TOKEN    = var.aws_account_manifests_hardened_monitoring_slack_token
-    CONFLUENT_KAFKA_PROD_PROMETHEUS_METRICS_EXPORTER_HELLMAN_API_KEY    = var.monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_key
-    CONFLUENT_KAFKA_PROD_PROMETHEUS_METRICS_EXPORTER_HELLMAN_API_SECRET = var.monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_secret
-    PRODUCTION_GRAFANA_AGENT_API_TOKEN                                  = var.grafana_agent_api_token
-    PRODUCTION_GRAFANA_AGENT_PROMETHEUS_URL                             = var.grafana_agent_prometheus_url
-    PRODUCTION_GRAFANA_AGENT_PROMETHEUS_USERNAME                        = var.grafana_agent_prometheus_username
-    PRODUCTION_GRAFANA_AGENT_LOKI_URL                                   = var.grafana_agent_loki_url
-    PRODUCTION_GRAFANA_AGENT_LOKI_USERNAME                              = var.grafana_agent_loki_username
-    PRODUCTION_GRAFANA_AGENT_TEMPO_URL                                  = var.grafana_agent_tempo_url
-    PRODUCTION_GRAFANA_AGENT_TEMPO_USERNAME                             = var.grafana_agent_tempo_username
-    STAGING_GRAFANA_AGENT_API_TOKEN                                     = var.staging_grafana_agent_api_token
-    STAGING_GRAFANA_AGENT_PROMETHEUS_URL                                = var.staging_grafana_agent_prometheus_url
-    STAGING_GRAFANA_AGENT_PROMETHEUS_USERNAME                           = var.staging_grafana_agent_prometheus_username
-    STAGING_GRAFANA_AGENT_LOKI_URL                                      = var.staging_grafana_agent_loki_url
-    STAGING_GRAFANA_AGENT_LOKI_USERNAME                                 = var.staging_grafana_agent_loki_username
-    STAGING_GRAFANA_AGENT_TEMPO_URL                                     = var.staging_grafana_agent_tempo_url
-    STAGING_GRAFANA_AGENT_TEMPO_USERNAME                                = var.staging_grafana_agent_tempo_username
-    PRODUCTION_GRAFANA_CLOUD_API_KEY                                    = var.atlantis_grafana_cloud_api_key
-    PRODUCTION_GRAFANA_CLOUD_ARM_CLIENT_ID                              = var.atlantis_grafana_cloud_arm_client_id
-    PRODUCTION_GRAFANA_CLOUD_ARM_CLIENT_SECRET                          = var.atlantis_grafana_cloud_arm_client_secret
-    PRODUCTION_GRAFANA_CLOUD_ARM_TENANT_ID                              = var.atlantis_grafana_cloud_arm_tenant_id
-    PRODUCTION_GRAFANA_CLOUD_SSO_SAML_CERTIFICATE                       = var.atlantis_grafana_cloud_sso_saml_certificate
-    PRODUCTION_GRAFANA_CLOUD_SSO_SAML_PRIVATE_KEY                       = var.atlantis_grafana_cloud_sso_saml_private_key
-    PRODUCTION_GRAFANA_CLOUD_SSO_SAML_IDP_METADATA_URL                  = var.atlantis_grafana_cloud_sso_saml_idp_metadata
-    PRODUCTION_GRAFANA_1PASSWORD_API_KEY                                = var.atlantis_grafana_1password_api_key
-  }
-
-  atlantis_env_vars = var.crossplane_deploy ? merge(local.atlantis_env_vars_default, local.confluent_env_vars_for_atlantis) : local.atlantis_env_vars_default
 }
