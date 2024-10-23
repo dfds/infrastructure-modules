@@ -1485,6 +1485,22 @@ variable "external_secrets_ssm_aws_region" {
 }
 
 # --------------------------------------------------
+# kafka-exporter
+# --------------------------------------------------
+
+variable "kafka_exporter_deploy" {
+  type        = string
+  default     = false
+  description = "Feature toggle for kafka-exporter module"
+}
+
+variable "kafka_exporter_clusters" {
+  type        = map
+  description = "Map of clusters that will be used to deploy exporters"
+  default     = {}
+}
+
+# --------------------------------------------------
 # Nvidia device plugin
 # --------------------------------------------------
 
