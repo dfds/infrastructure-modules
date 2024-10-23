@@ -94,8 +94,8 @@ inputs = {
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.31-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.31-v20241011
-      ami_id             = "ami-0616330afd7cd2ad1"
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.31-v20241016
+      ami_id             = "ami-04d7644c2706873fe"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
     }
@@ -106,8 +106,8 @@ inputs = {
       max_unavailable         = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.31-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.31-v20241011
-      ami_id             = "ami-0616330afd7cd2ad1"
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.31-v20241016
+      ami_id             = "ami-04d7644c2706873fe"
       availability_zones = ["eu-west-1c"]
       taints = [
         {
