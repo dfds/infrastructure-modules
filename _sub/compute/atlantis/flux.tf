@@ -22,6 +22,7 @@ resource "github_repository_file" "install" {
     deploy_name             = local.deploy_name
     gitops_apps_repo_branch = var.gitops_apps_repo_branch
     gitops_apps_repo_url    = var.gitops_apps_repo_url
+    enable_secret_volumes   = var.enable_secret_volumes
   })
   overwrite_on_create = var.overwrite_on_create
 }
@@ -53,6 +54,17 @@ resource "github_repository_file" "patch" {
     storage_class             = var.storage_class
     storage_size              = var.storage_size
     workload_account_id       = var.workload_account_id
+  })
+  overwrite_on_create = var.overwrite_on_create
+}
+
+resource "github_repository_file" "kubeconfigs" {
+  count      = var.enable_secret_volumes ? 1 : 0
+  repository = var.repo_name
+  branch     = local.repo_branch
+  file       = "${local.helm_repo_path}/kubeconfigs.yaml"
+  content = templatefile("${path.module}/values/kubeconfigs.yaml", {
+    cluster_name = var.cluster_name
   })
   overwrite_on_create = var.overwrite_on_create
 }
