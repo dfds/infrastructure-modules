@@ -215,7 +215,7 @@ resource "kubernetes_storage_class" "csi-efs" {
     basePath = "/namespaces"
     subPathPattern = "$${.PVC.namespace}/$${.PVC.name}"
     ensureUniqueDirectory =  "true"
-    reuseAccessPoint = "false" # optional
+    reuseAccessPoint = "false"
   }
   mount_options = ["tls"]
   depends_on = [
