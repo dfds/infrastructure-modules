@@ -2,7 +2,7 @@ resource "aws_iam_user" "user" {
   name = var.user_name
 
   tags = merge(var.tags, {
-    Name = var.user_name
+    iam_deploy_tag = var.user_name
   })
 }
 
