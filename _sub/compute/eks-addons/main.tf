@@ -211,7 +211,7 @@ resource "kubernetes_storage_class" "csi-efs" {
     fileSystemId = var.efs_fs_id
     directoryPerms = "700"
     gidRangeStart =  "1000"
-    gidRangeEnd = "2000"
+    gidRangeEnd = "2000000"
     basePath = "/namespaces"
     subPathPattern = "$${.PVC.namespace}/$${.PVC.name}"
     ensureUniqueDirectory =  "true"
