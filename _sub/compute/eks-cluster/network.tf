@@ -10,6 +10,9 @@ resource "aws_vpc" "eks" {
     "Name"                                      = "eks-${var.cluster_name}-cluster"
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
   }
+
+  enable_dns_support   = true
+  enable_dns_hostnames = true
 }
 
 # Disable ingress/egress in the default security group in the VPC

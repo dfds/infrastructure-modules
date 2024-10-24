@@ -217,3 +217,9 @@ variable "secure_eks_version_endpoint" {
   default     = true
   description = "Whether to secure the EKS version endpoint"
 }
+
+variable "efs_automated_backup_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether to enable automated backups for the EFS file system"
+}

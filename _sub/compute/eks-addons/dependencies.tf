@@ -22,10 +22,17 @@ data "aws_eks_addon_version" "aws_ebs_csi_driver" {
   most_recent        = var.most_recent
 }
 
+data "aws_eks_addon_version" "aws_efs_csi_driver" {
+  addon_name         = "aws-efs-csi-driver"
+  kubernetes_version = var.cluster_version
+  most_recent        = var.most_recent
+}
+
 # Lookup actual add-on versions
 locals {
   vpccni_version          = var.vpccni_version_override == "" ? data.aws_eks_addon_version.vpc_cni.version : var.vpccni_version_override
   coredns_version         = var.coredns_version_override == "" ? data.aws_eks_addon_version.coredns.version : var.coredns_version_override
   kubeproxy_version       = var.kubeproxy_version_override == "" ? data.aws_eks_addon_version.kube_proxy.version : var.kubeproxy_version_override
   awsebscsidriver_version = var.awsebscsidriver_version_override == "" ? data.aws_eks_addon_version.aws_ebs_csi_driver.version : var.awsebscsidriver_version_override
+  awsefscsidriver_version = var.awsefscsidriver_version_override == "" ? data.aws_eks_addon_version.aws_efs_csi_driver.version : var.awsefscsidriver_version_override
 }
