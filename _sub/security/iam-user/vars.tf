@@ -7,3 +7,9 @@ variable "group_memberships" {
   description = "The list of group names the user belongs to."
   default     = []
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "Tags to apply to the IAM user."
+  default     = {}
+}
