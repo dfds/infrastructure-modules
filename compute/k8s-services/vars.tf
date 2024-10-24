@@ -124,11 +124,6 @@ variable "slack_webhook_url" {
   default = ""
 }
 
-variable "staging_slack_webhook_url" {
-  type    = string
-  default = ""
-}
-
 variable "alarm_notifier_deploy" {
   type    = bool
   default = false
@@ -162,18 +157,6 @@ variable "monitoring_namespace_deploy" {
 variable "monitoring_namespace_labels" {
   type    = map(any)
   default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/enforce" = "privileged" }
-}
-
-variable "monitoring_namespace_iam_roles" {
-  type        = string
-  description = "IAM roles allowed to assume"
-  default     = ""
-  validation {
-    condition = var.monitoring_namespace_iam_roles == "" ? true : (
-      can(regex("^arn:aws:iam::", var.monitoring_namespace_iam_roles))
-    )
-    error_message = "The value must contain full role ARNs."
-  }
 }
 
 variable "monitoring_tolerations" {
@@ -299,12 +282,6 @@ variable "monitoring_kube_prometheus_stack_azure_tenant_id" {
 variable "monitoring_kube_prometheus_stack_slack_webhook" {
   type        = string
   description = "Kube-prometheus-stack alert slack webhook"
-  default     = ""
-}
-
-variable "monitoring_kube_prometheus_stack_staging_slack_webhook" {
-  type        = string
-  description = "Kube-prometheus-stack alert slack webhook for the staging environment"
   default     = ""
 }
 
@@ -533,7 +510,7 @@ variable "atlantis_github_repositories" {
 
 variable "atlantis_webhook_events" {
   description = "A list of events that should trigger the webhook"
-  default     = []
+  default     = ["issue_comment", "pull_request", "pull_request_review", "push"]
   type        = list(string)
 }
 
@@ -541,11 +518,6 @@ variable "atlantis_namespace" {
   type        = string
   description = "Namespace for Atlantis deployment"
   default     = "atlantis"
-}
-
-variable "atlantis_namespace_labels" {
-  type    = map(any)
-  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/warn" = "baseline" }
 }
 
 variable "atlantis_chart_version" {
@@ -607,102 +579,6 @@ variable "atlantis_arm_tenant_id" {
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
-variable "atlantis_arm_subscription_id" {
-  type        = string
-  description = "Used to set environment variable for ARM subscription ID"
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-}
-
-variable "atlantis_arm_client_id" {
-  type        = string
-  description = "Used to set environment variable for ARM client ID"
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-}
-
-variable "atlantis_arm_client_secret" {
-  type        = string
-  description = "Used to set environment variable for ARM client secret"
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-}
-
-variable "atlantis_aws_access_key" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "AWS Access Key"
-}
-
-variable "atlantis_aws_secret" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "AWS Secret"
-}
-
-variable "prime_aws_access_key" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "AWS Access Key for prime pipeline. Used by Atlantis."
-}
-
-variable "prime_aws_secret" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "AWS Secret for prime pipeline. Used by Atlantis."
-}
-
-variable "preprime_aws_access_key" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "AWS Access Key for pre-prime pipeline. Used by Atlantis."
-}
-
-variable "preprime_aws_secret" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "AWS Secret for pre-prime pipeline. Used by Atlantis."
-}
-
-variable "preprime_backup_reports_slack_webhook_url" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "Webhook token for backup reports used in pre-prime pipeline. Used by Atlantis."
-}
-
-variable "aws_account_manifests_kafka_broker" {
-  type        = string
-  default     = ""
-  description = "Used by Atlantis for the AWS Account Manifests pipeline"
-}
-
-variable "aws_account_manifests_kafka_username" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "Used by Atlantis for the AWS Account Manifests pipeline"
-}
-
-variable "aws_account_manifests_kafka_password" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "Used by Atlantis for the AWS Account Manifests pipeline"
-}
-
-variable "aws_account_manifests_hardened_monitoring_slack_token" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "Used by Atlantis for the AWS Account Manifests pipeline"
-}
-
-variable "atlantis_staging_aws_access_key" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "AWS Access Key for staging environment"
-}
-
-variable "atlantis_staging_aws_secret" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "AWS Secret for staging environment"
-}
-
 variable "atlantis_resources_requests_cpu" {
   type        = string
   default     = "100m"
@@ -725,61 +601,6 @@ variable "atlantis_resources_limits_memory" {
   type        = string
   default     = null
   description = "Memory resources limits size"
-}
-
-variable "atlantis_grafana_cloud_api_key" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "Grafana Cloud API key"
-  sensitive   = true
-}
-
-variable "atlantis_grafana_cloud_arm_client_id" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "Grafana cloud app registration client ID"
-}
-
-variable "atlantis_grafana_cloud_arm_tenant_id" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "Grafana cloud app registration tenant ID"
-}
-
-variable "atlantis_grafana_cloud_arm_client_secret" {
-  type        = string
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  description = "Grafana cloud app registration client secret"
-  sensitive   = true
-}
-
-variable "atlantis_grafana_cloud_sso_saml_certificate" {
-  type        = string
-  default     = ""
-  description = "The SAML certificate for Grafana SSO integration"
-  sensitive   = true
-}
-
-variable "atlantis_grafana_cloud_sso_saml_private_key" {
-  type        = string
-  default     = ""
-  description = "The SAML private key for SSO integration"
-  sensitive   = true
-}
-
-variable "atlantis_grafana_cloud_sso_saml_idp_metadata" {
-  type        = string
-  default     = ""
-  description = "The SAML IDP metadata for SSO integration"
-  sensitive   = true
-}
-
-variable "atlantis_grafana_1password_api_key" {
-  type        = string
-  default     = ""
-  description = "1Password API key for Vault used by Grafana Cloud Pipeline"
-  sensitive   = true
-
 }
 
 # --------------------------------------------------
@@ -1332,49 +1153,6 @@ variable "grafana_agent_resource_memory_request" {
   type        = string
   default     = "4Gi"
   description = "Set resource memory request on Grafana Agent container"
-}
-
-variable "staging_grafana_agent_api_token" {
-  type        = string
-  description = "The token to authenticate request to a Grafana Cloud stack"
-  default     = ""
-  sensitive   = true
-}
-
-variable "staging_grafana_agent_prometheus_url" {
-  type        = string
-  description = "The Prometheus URL in a Grafana Cloud stack"
-  default     = ""
-}
-
-variable "staging_grafana_agent_prometheus_username" {
-  type        = string
-  description = "The username for Prometheus in a Grafana Cloud stack"
-  default     = ""
-}
-
-variable "staging_grafana_agent_loki_url" {
-  type        = string
-  description = "The Loki URL in a Grafana Cloud stack"
-  default     = ""
-}
-
-variable "staging_grafana_agent_loki_username" {
-  type        = string
-  description = "The username for Loki in a Grafana Cloud stack"
-  default     = ""
-}
-
-variable "staging_grafana_agent_tempo_url" {
-  type        = string
-  description = "The Tempo URL in a Grafana Cloud stack"
-  default     = ""
-}
-
-variable "staging_grafana_agent_tempo_username" {
-  type        = string
-  description = "The username for Tempo in a Grafana Cloud stack"
-  default     = ""
 }
 
 variable "grafana_agent_replicas" {
