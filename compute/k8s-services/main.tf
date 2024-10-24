@@ -469,53 +469,57 @@ module "platform_fluxcd" {
 # Atlantis
 # --------------------------------------------------
 
-module "atlantis" {
-  source                    = "../../_sub/compute/helm-atlantis"
+module "atlantis_deployment" {
+  source                    = "../../_sub/compute/atlantis"
   count                     = var.atlantis_deploy ? 1 : 0
-  cluster_name              = var.eks_cluster_name
-  namespace                 = var.atlantis_namespace
-  namespace_labels          = var.atlantis_namespace_labels
+  aws_region                = local.aws_region
   chart_version             = var.atlantis_chart_version
-  atlantis_image            = var.atlantis_image
-  atlantis_image_tag        = var.atlantis_image_tag
-  atlantis_ingress          = var.atlantis_ingress
-  storage_class             = var.atlantis_storage_class
-  data_storage              = var.atlantis_data_storage
-  resources_requests_cpu    = var.atlantis_resources_requests_cpu
-  resources_requests_memory = var.atlantis_resources_requests_memory
+  cluster_name              = var.eks_cluster_name
+  enable_secret_volumes     = var.atlantis_add_secret_volumes
+  github_repositories       = var.atlantis_github_repositories
+  github_token              = var.atlantis_github_token
+  github_username           = var.atlantis_github_username
+  gitops_apps_repo_branch   = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_url      = local.fluxcd_apps_repo_url
+  image                     = var.atlantis_image
+  image_tag                 = var.atlantis_image_tag
+  ingress_hostname          = var.atlantis_ingress
+  oidc_issuer               = local.oidc_issuer
+  overwrite_on_create       = var.fluxcd_bootstrap_overwrite_on_create
+  prune                     = var.fluxcd_prune
+  repo_branch               = var.fluxcd_bootstrap_repo_branch
+  repo_name                 = var.fluxcd_bootstrap_repo_name
+  repo_owner                = var.fluxcd_bootstrap_repo_owner
   resources_limits_cpu      = var.atlantis_resources_limits_cpu
   resources_limits_memory   = var.atlantis_resources_limits_memory
-  github_username           = var.atlantis_github_username
-  github_token              = var.atlantis_github_token
-  github_repositories       = var.atlantis_github_repositories
-  webhook_url               = var.atlantis_ingress
-  webhook_events            = var.atlantis_webhook_events
-  environment               = var.atlantis_environment
-  add_secret_volumes        = var.atlantis_add_secret_volumes
-  enable_github_secrets     = var.atlantis_enable_github_secrets
+  resources_requests_cpu    = var.atlantis_resources_requests_cpu
+  resources_requests_memory = var.atlantis_resources_requests_memory
+  storage_class             = var.atlantis_storage_class
+  storage_size              = var.atlantis_data_storage
+  workload_account_id       = var.aws_workload_account_id
 
-  environment_variables = local.atlantis_env_vars
-
-  providers = {
-    github = github.atlantis
-  }
-}
-
-module "atlantis_flux_manifests" {
-  source                = "../../_sub/compute/k8s-atlantis-flux-config"
-  count                 = var.atlantis_deploy ? 1 : 0
-  namespace             = var.atlantis_namespace
-  ingressroute_hostname = var.atlantis_ingress
-  cluster_name          = var.eks_cluster_name
-  repo_owner            = var.fluxcd_bootstrap_repo_owner
-  repo_name             = var.fluxcd_bootstrap_repo_name
-  repo_branch           = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create   = var.fluxcd_bootstrap_overwrite_on_create
-
-  depends_on = [module.atlantis, module.platform_fluxcd]
+  depends_on = [module.platform_fluxcd]
 
   providers = {
     github = github.fluxcd
+  }
+}
+
+module "atlantis_github_configuration" {
+  source                = "../../_sub/security/atlantis-github-configuration"
+  count                 = var.atlantis_deploy ? 1 : 0
+  dashboard_password    = module.atlantis_deployment[0].dashboard_password
+  enable_github_secrets = var.atlantis_enable_github_secrets
+  environment           = var.atlantis_environment
+  github_repositories   = var.atlantis_github_repositories
+  ingress_hostname      = var.atlantis_ingress
+  webhook_events        = var.atlantis_webhook_events
+  webhook_secret        = module.atlantis_deployment[0].webhook_secret
+
+  depends_on = [module.atlantis_deployment]
+
+  providers = {
+    github = github.atlantis
   }
 }
 
@@ -910,6 +914,32 @@ module "external_secrets_ssm" {
   }
 
   depends_on = [module.external_secrets]
+}
+
+# --------------------------------------------------
+# kafka-exporter
+# --------------------------------------------------
+
+module "kafka_exporter" {
+  source                  = "../../_sub/monitoring/kafka-exporter"
+  count                   = var.kafka_exporter_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  deploy_name             = "kafka-exporter"
+  namespace               = "monitoring"
+  github_owner            = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  prune                   = var.fluxcd_prune
+  kafka_clusters          = var.kafka_exporter_clusters
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
