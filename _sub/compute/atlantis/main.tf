@@ -5,7 +5,7 @@
 resource "random_password" "webhook" {
   length           = 16
   special          = true
-  override_special = "!@$%&*_=+?"
+  override_special = "!_="
 }
 
 # --------------------------------------------------
@@ -15,7 +15,7 @@ resource "random_password" "webhook" {
 resource "random_password" "password" {
   length           = 32
   special          = true
-  override_special = "!@$%&*_=+?"
+  override_special = "!_="
 }
 
 resource "htpasswd_password" "hash" {
