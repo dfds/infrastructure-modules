@@ -205,7 +205,7 @@ resource "kubernetes_storage_class" "csi-efs" {
   storage_provisioner    = "efs.csi.aws.com"
   reclaim_policy         = "Delete" # ?
   volume_binding_mode    = "WaitForFirstConsumer"
-  allow_volume_expansion = "false"
+  allow_volume_expansion = "true"
   parameters = {
     provisioningMode = "efs-ap"
     fileSystemId = var.efs_fs_id
