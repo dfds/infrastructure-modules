@@ -825,6 +825,8 @@ module "grafana_agent_k8s_monitoring" {
   priority_class                = var.monitoring_kube_prometheus_stack_priority_class
   namespace                     = var.grafana_agent_namespace
   timeout                       = var.grafana_agent_helm_install_timeout
+
+  depends_on = [module.monitoring_kube_prometheus_stack]
 }
 
 module "grafana" {
