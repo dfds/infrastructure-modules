@@ -1279,6 +1279,16 @@ variable "kafka_exporter_clusters" {
 }
 
 # --------------------------------------------------
+# 1password-connect
+# --------------------------------------------------
+
+variable "onepassword-connect_deploy" {
+  type        = string
+  default     = false
+  description = "Feature toggle for 1password connect module"
+}
+
+# --------------------------------------------------
 # Nvidia device plugin
 # --------------------------------------------------
 
