@@ -4,8 +4,10 @@ repos:
     hooks:
       - id: terraform_fmt
         exclude: test/integration/suite/vendor/.*
-      - id: terraform_tfsec
-        exclude: test/integration/suite/vendor/.*
+      - id: terraform_trivy
+        args:
+          - "--args=--skip-dirs=test/integration/suite/vendor/.*"
+          - "--args=--severity HIGH,CRITICAL"
         files: (\.tf|\.tfvars)$
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
