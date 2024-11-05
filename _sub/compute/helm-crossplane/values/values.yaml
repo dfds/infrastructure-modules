@@ -1,2 +1,0 @@
-metrics:
-  enabled: ${crossplane_metrics_enabled}
