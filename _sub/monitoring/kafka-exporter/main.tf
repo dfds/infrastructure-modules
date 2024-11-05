@@ -20,7 +20,7 @@ resource "github_repository_file" "kafka-exporter_helm_install" {
 }
 
 resource "github_repository_file" "kafka-exporter_helm_manifest" {
-  for_each = local.clusters
+  for_each            = local.clusters
   repository          = var.repo_name
   branch              = local.repo_branch
   file                = "${local.helm_repo_path}/manifest-${each.value.original.id}.yaml"

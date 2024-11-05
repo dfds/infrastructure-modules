@@ -4,6 +4,7 @@ metadata:
   name: velero
   namespace: flux-system
 spec:
+  serviceAccountName: helm-controller
   chart:
     spec:
       chart: velero
