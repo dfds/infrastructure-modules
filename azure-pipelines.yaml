@@ -143,7 +143,7 @@ stages:
               GOCACHE: $(GO_CACHE_DIR)
             displayName: "Build test binary"
             timeoutInMinutes: 15
-          - task: PublishBuildArtifacts@1.245.1
+          - task: PublishBuildArtifacts@1.247.1
             inputs:
               pathToPublish: $(Build.ArtifactStagingDirectory)/test-master.bin
               artifactName: test-master
@@ -170,7 +170,7 @@ stages:
               GOCACHE: $(GO_CACHE_DIR)
             displayName: "Build test binary"
             timeoutInMinutes: 15
-          - task: PublishBuildArtifacts@1.245.1
+          - task: PublishBuildArtifacts@1.247.1
             inputs:
               pathToPublish: $(Build.ArtifactStagingDirectory)/test-feature.bin
               artifactName: test-feature
