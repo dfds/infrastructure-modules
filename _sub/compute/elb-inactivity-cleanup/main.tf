@@ -114,6 +114,7 @@ data "aws_iam_policy_document" "issue_clean_elb_trust" {
   }
 }
 
+# tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "issue_clean_elb" {
   statement {
     effect    = "Allow"

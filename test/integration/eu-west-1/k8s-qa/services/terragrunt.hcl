@@ -144,8 +144,8 @@ inputs = {
   monitoring_kube_prometheus_stack_prometheus_query_log_file_enabled = true
   monitoring_kube_prometheus_stack_prometheus_enable_features        = ["memory-snapshot-on-shutdown"]
   monitoring_kube_prometheus_stack_prometheus_confluent_metrics_scrape_enabled = true
-  monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_key = "fake"
-  monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_secret = "fake"
+  monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_key = "fake"      # pragma: allowlist secret
+  monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_secret = "fake"   # pragma: allowlist secret
 
 
   # --------------------------------------------------
@@ -294,15 +294,12 @@ inputs = {
   github_arc_ss_controller_helm_chart_version = "0.9.3"
 
   # --------------------------------------------------
-  # Flux CD in a shared responsibility model with
-  # other platform teams
+  # Apache Druid Operator
   # --------------------------------------------------
 
-  shared_manifests_repo_name             = "shared-manifests"
-  shared_manifests_repo_branch           = "main"
-  shared_manifests_repo_owner            = "dfds"
-
-  shared_manifests_deploy         = true
-  shared_manifests_overlay_folder = "qa"
+  druid_operator_deploy                   = true
+  druid_operator_chart_version            = "0.3.7"
+  druid_operator_resources_limits_cpu     = "500m"
+  druid_operator_resources_limits_memory  = "128Mi"
 
 }
