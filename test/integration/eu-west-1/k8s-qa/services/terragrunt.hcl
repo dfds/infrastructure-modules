@@ -302,4 +302,10 @@ inputs = {
   druid_operator_resources_limits_cpu     = "500m"
   druid_operator_resources_limits_memory  = "128Mi"
 
+  # --------------------------------------------------
+  # Trivy Operator
+  # --------------------------------------------------
+
+  trivy_operator_deploy                   = true
+
 }
