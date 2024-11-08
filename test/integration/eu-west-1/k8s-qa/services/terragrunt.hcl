@@ -320,4 +320,16 @@ inputs = {
     }
   ]
 
+  tenants = [
+    {
+      namespace = "flux-tenant-test"
+      repositories = [
+        {
+          url = "https://github.com/dfds/flux-tenant-test"
+          branch = "main"
+        }
+      ]
+    }
+  ]
+
 }
