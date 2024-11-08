@@ -1,0 +1,16 @@
+%{ for t in tenants ~}
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: tenant-${t.namespace}
+  namespace: flux-system
+spec:
+  interval: 5m
+  serviceAccountName: kustomize-controller
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./tenants/${cluster_name}/base/${t.namespace}
+  prune: true
+%{ endfor ~}

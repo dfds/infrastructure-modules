@@ -72,3 +72,55 @@ resource "github_repository_file" "custom_folder" {
   content             = local.custom_folder_readme
   overwrite_on_create = var.overwrite_on_create
 }
+
+# --------------------------------------------------
+# Flux CD Multi-tenancy
+# --------------------------------------------------
+
+resource "github_repository_file" "tenants" {
+  count = length(var.tenants) > 0 ? 1 : 0
+  repository          = var.repository_name
+  branch              = data.github_branch.flux_branch.branch
+  file                = "${local.cluster_target_path}/tenants.yaml"
+  content             = templatefile("${path.module}/values/tenants.yaml", {
+    tenants = var.tenants
+    cluster_name = var.cluster_name
+  })
+  overwrite_on_create = var.overwrite_on_create
+}
+
+resource "github_repository_file" "tenant_rbac" {
+  for_each = { for tenant in var.tenants : tenant.namespace => tenant }
+  repository          = var.repository_name
+  branch              = data.github_branch.flux_branch.branch
+  file                = "tenants/${var.cluster_name}/base/${each.value.namespace}/rbac.yaml"
+  content             = templatefile("${path.module}/values/rbac.yaml", {
+    namespace = each.value.namespace
+  })
+  overwrite_on_create = var.overwrite_on_create
+}
+
+resource "github_repository_file" "tenant_kustomization" {
+  for_each = { for tenant in var.tenants : tenant.namespace => tenant }
+  repository          = var.repository_name
+  branch              = data.github_branch.flux_branch.branch
+  file                = "tenants/${var.cluster_name}/base/${each.value.namespace}/kustomization.yaml"
+  content             = templatefile("${path.module}/values/kustomization.yaml", {
+    namespace = each.value.namespace
+  })
+  overwrite_on_create = var.overwrite_on_create
+}
+
+resource "github_repository_file" "tenant_sync" {
+  for_each = { for tenant in var.tenants : tenant.namespace => tenant }
+  repository          = var.repository_name
+  branch              = data.github_branch.flux_branch.branch
+  file                = "tenants/${var.cluster_name}/base/${each.value.namespace}/sync.yaml"
+  content             = templatefile("${path.module}/values/sync.yaml", {
+    namespace = each.value.namespace
+    repositories = [ for k, v in each.value.repositories :
+      merge(v, { name = element((split("/", v.url)), length ((split("/", v.url)))-1) })
+    ]
+  })
+  overwrite_on_create = var.overwrite_on_create
+}

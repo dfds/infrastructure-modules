@@ -68,3 +68,15 @@ variable "enable_monitoring" {
   default     = false
   description = "Enable monitoring for Flux"
 }
+
+variable "tenants" {
+  type = list(object({
+    namespace = string
+    repositories = list(object({
+      url = string
+      branch = string
+    }))
+  }))
+  description = "List of tenants' namespaces and repository URLs"
+  default = []
+}
