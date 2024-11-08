@@ -21,7 +21,8 @@ locals {
       "namespace" = "flux-system"
     }
     "spec" = {
-      "interval" = "1m0s"
+      "serviceAccountName" = "kustomize-controller"
+      "interval"           = "1m0s"
       "sourceRef" = {
         "kind" = "GitRepository"
         "name" = "flux-system"

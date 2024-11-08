@@ -1,4 +1,17 @@
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-reconciler-druid-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: helm-controller
+    namespace: druid-operator-system
+---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
@@ -18,6 +31,7 @@ metadata:
   name: shared-manifests-druid-operator
   namespace: flux-system
 spec:
+  serviceAccountName: kustomize-controller
   interval: 1m0s
   dependsOn:
     - name: flux-system
@@ -35,6 +49,7 @@ metadata:
   name: shared-manifests-tiny-cluster
   namespace: flux-system
 spec:
+  serviceAccountName: kustomize-controller
   interval: 1m0s
   dependsOn:
     - name: shared-manifests-druid-operator

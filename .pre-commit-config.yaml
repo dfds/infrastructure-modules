@@ -1,35 +1,37 @@
 repos:
-- repo: https://github.com/antonbabenko/pre-commit-terraform
-  rev: v1.96.2
-  hooks:
-    - id: terraform_fmt
-      exclude: test/integration/suite/vendor/.*
-    - id: terraform_tfsec
-      exclude: test/integration/suite/vendor/.*
-      files: (\.tf|\.tfvars)$
-- repo: https://github.com/Yelp/detect-secrets
-  rev: v1.5.0
-  hooks:
-    - id: detect-secrets
-      exclude: test/integration/suite/vendor/.*
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v5.0.0
-  hooks:
-    - id: trailing-whitespace
-      exclude: test/integration/suite/vendor/.*
-    - id: check-added-large-files
-      exclude: test/integration/suite/vendor/.*
-    - id: check-merge-conflict
-    - id: detect-aws-credentials
-      exclude: test/integration/suite/vendor/.*
-      args:
-        - "--allow-missing-credentials"
-    - id: detect-private-key
-- repo: https://github.com/gruntwork-io/pre-commit
-  rev: v0.1.24
-  hooks:
-    - id: tflint
-      exclude: test/integration/suite/vendor/.*
-      args:
-        - "--module"
-        - "--config=.tflint.hcl"
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.96.2
+    hooks:
+      - id: terraform_fmt
+        exclude: test/integration/suite/vendor/.*
+      - id: terraform_trivy
+        args:
+          - "--args=--skip-dirs=test/integration/suite/vendor/.*"
+          - "--args=--severity HIGH,CRITICAL"
+        files: (\.tf|\.tfvars)$
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        exclude: test/integration/suite/vendor/.*
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: test/integration/suite/vendor/.*
+      - id: check-added-large-files
+        exclude: test/integration/suite/vendor/.*
+      - id: check-merge-conflict
+      - id: detect-aws-credentials
+        exclude: test/integration/suite/vendor/.*
+        args:
+          - "--allow-missing-credentials"
+      - id: detect-private-key
+  - repo: https://github.com/gruntwork-io/pre-commit
+    rev: v0.1.24
+    hooks:
+      - id: tflint
+        exclude: test/integration/suite/vendor/.*
+        args:
+          - "--call-module-type=all"
+          - "--config=__GIT_ROOT__/.tflint.hcl"

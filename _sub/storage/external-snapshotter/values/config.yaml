@@ -4,6 +4,7 @@ metadata:
   name: ${deploy_name}-config
   namespace: flux-system
 spec:
+  serviceAccountName: kustomize-controller
   interval: 1m0s
   dependsOn:
     - name: ${deploy_name}-controller

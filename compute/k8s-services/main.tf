@@ -739,6 +739,8 @@ module "grafana_agent_k8s_monitoring" {
   priority_class                = var.monitoring_kube_prometheus_stack_priority_class
   namespace                     = var.grafana_agent_namespace
   timeout                       = var.grafana_agent_helm_install_timeout
+
+  depends_on = [module.monitoring_kube_prometheus_stack]
 }
 
 module "grafana" {
@@ -835,19 +837,17 @@ module "external_secrets_ssm" {
 # --------------------------------------------------
 
 module "kafka_exporter" {
-  source                  = "../../_sub/monitoring/kafka-exporter"
-  count                   = var.kafka_exporter_deploy ? 1 : 0
-  cluster_name            = var.eks_cluster_name
-  deploy_name             = "kafka-exporter"
-  namespace               = "monitoring"
-  github_owner            = var.fluxcd_bootstrap_repo_owner
-  repo_name               = var.fluxcd_bootstrap_repo_name
-  repo_branch             = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
-  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
-  prune                   = var.fluxcd_prune
-  kafka_clusters          = var.kafka_exporter_clusters
+  source              = "../../_sub/monitoring/kafka-exporter"
+  count               = var.kafka_exporter_deploy ? 1 : 0
+  cluster_name        = var.eks_cluster_name
+  deploy_name         = "kafka-exporter"
+  namespace           = "monitoring"
+  github_owner        = var.fluxcd_bootstrap_repo_owner
+  repo_name           = var.fluxcd_bootstrap_repo_name
+  repo_branch         = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create = var.fluxcd_bootstrap_overwrite_on_create
+  prune               = var.fluxcd_prune
+  kafka_clusters      = var.kafka_exporter_clusters
 
   providers = {
     github = github.fluxcd

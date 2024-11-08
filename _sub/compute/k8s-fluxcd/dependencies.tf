@@ -21,6 +21,7 @@ locals {
       "namespace" = "flux-system"
     }
     "spec" = {
+      "serviceAccountName" = "kustomize-controller"
       "dependsOn" = [
         {
           "name" = "platform-apps-sources"
@@ -62,6 +63,7 @@ metadata:
   name: platform-apps-sources
   namespace: flux-system
 spec:
+  serviceAccountName: kustomize-controller
   interval: 1m0s
   dependsOn:
     - name: flux-system
@@ -80,6 +82,7 @@ metadata:
   name: custom
   namespace: flux-system
 spec:
+  serviceAccountName: kustomize-controller
   interval: 1m0s
   path: ./platform-apps/${var.cluster_name}/custom
   prune: ${var.prune}
@@ -93,4 +96,3 @@ Place custom manifests in here. Make sure to place them in a folder named after 
   EOT
 }
 
-  

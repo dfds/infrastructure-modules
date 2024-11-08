@@ -4,6 +4,7 @@ metadata:
   name: ${deploy_name}-crd
   namespace: flux-system
 spec:
+  serviceAccountName: kustomize-controller
   interval: 1m0s
   sourceRef:
     kind: GitRepository
