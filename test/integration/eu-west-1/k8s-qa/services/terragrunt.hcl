@@ -320,7 +320,7 @@ inputs = {
     }
   ]
 
-  tenants = [
+  fluxcd_tenants = [
     {
       namespace = "flux-tenant-test"
       repositories = [
