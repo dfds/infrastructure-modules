@@ -445,6 +445,18 @@ variable "fluxcd_bootstrap_overwrite_on_create" {
   description = "Enable overwriting existing files"
 }
 
+variable "fluxcd_tenants" {
+  type = list(object({
+    namespace = string
+    repositories = list(object({
+      url = string
+      branch = string
+    }))
+  }))
+  description = "List of tenants' namespaces and repository URLs"
+  default = []
+}
+
 # --------------------------------------------------
 # GitOps apps used by Flux CD
 # --------------------------------------------------

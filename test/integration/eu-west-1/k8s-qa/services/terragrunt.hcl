@@ -308,4 +308,28 @@ inputs = {
 
   trivy_operator_deploy                   = true
 
+  tenants = [
+    {
+      namespace = "flux-tenant-test"
+      repositories = [
+        {
+          url = "https://github.com/dfds/flux-tenant-test"
+          branch = "main"
+        }
+      ]
+    }
+  ]
+
+  tenants = [
+    {
+      namespace = "flux-tenant-test"
+      repositories = [
+        {
+          url = "https://github.com/dfds/flux-tenant-test"
+          branch = "main"
+        }
+      ]
+    }
+  ]
+
 }
