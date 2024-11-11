@@ -38,5 +38,14 @@ spec:
 %{ if memory != null }
                 memory: ${memory}
 %{ endif ~}
+%{ if cpu != null || memory != null }
+            systemReserved:
+%{ endif ~}
+%{ if cpu != null }
+                cpu: ${cpu}
+%{ endif ~}
+%{ if memory != null }
+                memory: ${memory}
+%{ endif ~}
 
 --BOUNDARY--
