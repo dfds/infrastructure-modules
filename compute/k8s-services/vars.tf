@@ -445,7 +445,7 @@ variable "fluxcd_bootstrap_overwrite_on_create" {
   description = "Enable overwriting existing files"
 }
 
-variable "tenants" {
+variable "fluxcd_tenants" {
   type = list(object({
     namespace = string
     repositories = list(object({

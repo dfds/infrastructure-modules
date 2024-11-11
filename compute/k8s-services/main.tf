@@ -459,7 +459,7 @@ module "platform_fluxcd" {
   token                   = data.aws_eks_cluster_auth.eks.token
   cluster_ca_certificate  = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
   enable_monitoring       = var.monitoring_kube_prometheus_stack_deploy || var.grafana_deploy ? true : false
-  tenants                 = var.tenants
+  tenants                 = var.fluxcd_tenants
 
   providers = {
     github = github.fluxcd
