@@ -1005,30 +1005,3 @@ module "trivy_operator" {
     module.platform_fluxcd
   ]
 }
-
-# --------------------------------------------------
-# Flux CD in a shared responsibility model with
-# other platform teams
-# --------------------------------------------------
-
-module "shared_manifests" {
-  source                       = "../../_sub/compute/k8s-shared-manifests"
-  count                        = var.shared_manifests_deploy ? 1 : 0
-  cluster_name                 = var.eks_cluster_name
-  overlay_folder               = var.shared_manifests_overlay_folder
-  repo_owner                   = var.fluxcd_bootstrap_repo_owner
-  repo_name                    = var.fluxcd_bootstrap_repo_name
-  repo_branch                  = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create          = var.fluxcd_bootstrap_overwrite_on_create
-  shared_manifests_repo_url    = local.shared_manifests_repo_url
-  shared_manifests_repo_branch = var.shared_manifests_repo_branch
-  shared_manifests_repo_name   = var.shared_manifests_repo_name
-
-  providers = {
-    github = github.fluxcd
-  }
-
-  depends_on = [
-    module.platform_fluxcd
-  ]
-}
