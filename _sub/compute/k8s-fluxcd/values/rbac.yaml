@@ -12,7 +12,7 @@ kind: RoleBinding
 metadata:
   labels:
     toolkit.fluxcd.io/tenant: tenant-${namespace}
-  name: tenant-${namespace}-reconciler
+  name: flux-tenant-reconciler
   namespace: ${namespace}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
