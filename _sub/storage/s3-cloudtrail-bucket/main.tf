@@ -8,6 +8,14 @@ resource "aws_s3_bucket" "log_bucket" {
   force_destroy = true
 }
 
+resource "aws_s3_bucket_versioning" "log_bucket" {
+  count  = var.create_s3_bucket && var.s3_log_bucket != null ? 1 : 0
+  bucket = aws_s3_bucket.log_bucket[count.index].id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 resource "aws_s3_bucket_ownership_controls" "log_bucket_ownership_controls" {
   count  = var.create_s3_bucket && var.s3_log_bucket != null ? 1 : 0
   bucket = aws_s3_bucket.log_bucket[count.index].id
@@ -38,6 +46,14 @@ resource "aws_s3_bucket" "bucket" {
   }
 
   force_destroy = true
+}
+
+resource "aws_s3_bucket_versioning" "bucket" {
+  count  = var.create_s3_bucket ? 1 : 0
+  bucket = aws_s3_bucket.bucket[count.index].id
+  versioning_configuration {
+    status = "Enabled"
+  }
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "bucket" {
