@@ -19,10 +19,32 @@ module "iam_account_alias" {
   }
 }
 
+module "cloudtrail_bucket_replication_role" {
+  source                              = "../../_sub/security/iam-bucket-replication"
+  count                               = var.create_cloudtrail_s3_bucket && var.cloudtrail_replication_enabled ? 1 : 0
+  replication_source_role_name        = var.cloudtrail_replication_source_role_name
+  replication_source_bucket_arn       = "arn:aws:s3:::${var.cloudtrail_central_s3_bucket}"
+  replication_destination_bucket_arn  = var.cloudtrail_replication_destination_bucket_arn
+  replication_source_kms_key_arn      = var.cloudtrail_replication_source_kms_key_arn
+  replication_destination_kms_key_arn = var.cloudtrail_replication_destination_kms_key_arn
+  tags                                = var.tags
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
 module "cloudtrail_s3_central" {
-  source           = "../../_sub/storage/s3-cloudtrail-bucket"
-  create_s3_bucket = var.create_cloudtrail_s3_bucket
-  s3_bucket        = var.cloudtrail_central_s3_bucket
+  source                              = "../../_sub/storage/s3-cloudtrail-bucket"
+  create_s3_bucket                    = var.create_cloudtrail_s3_bucket
+  s3_bucket                           = var.cloudtrail_central_s3_bucket
+  replication_enabled                 = var.cloudtrail_replication_enabled
+  replication_source_role_arn         = var.cloudtrail_replication_enabled ? module.cloudtrail_bucket_replication_role[0].role_arn : null
+  replication_destination_account_id  = var.cloudtrail_replication_destination_account_id
+  replication_destination_bucket_arn  = var.cloudtrail_replication_destination_bucket_arn
+  replication_destination_kms_key_arn = var.cloudtrail_replication_destination_kms_key_arn
+  tags                                = var.tags
+
 
   providers = {
     aws = aws.workload
@@ -133,7 +155,7 @@ module "iam_github_oidc_provider" {
 module "steampipe-audit" {
   source = "../../_sub/security/steampipe-audit"
 
-  allowed_account_id        = var.security_account_id
+  allowed_account_id          = var.security_account_id
   allowed_principal_role_name = var.steampipe_audit_role_name
 
   providers = {
