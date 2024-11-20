@@ -1,29 +1,24 @@
-variable "role_name" {
+variable "replication_source_role_name" {
   type        = string
   description = "Name of the role to create"
 }
 
-variable "policy_name" {
-  type        = string
-  description = "Name of the IAM policy to create"
-}
-
-variable "s3_source_bucket_arn" {
+variable "replication_source_bucket_arn" {
   type        = string
   description = "The ARN of the S3 bucket to allow replication from"
 }
 
-variable "s3_destination_bucket_arn" {
+variable "replication_destination_bucket_arn" {
   type        = string
   description = "The ARN of the S3 bucket to allow replication to"
 }
 
-variable "kms_key_source_arn" {
+variable "replication_source_kms_key_arn" {
   type        = string
   description = "The ARN of the KMS key to allow decryption of the source bucket"
 }
 
-variable "kms_key_destination_arn" {
+variable "replication_destination_kms_key_arn" {
   type        = string
   description = "The ARN of the KMS key to allow encryption of the destination bucket"
 }

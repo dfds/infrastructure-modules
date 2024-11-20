@@ -1,6 +1,7 @@
 locals {
-  s3_source_bucket_arns      = concat([var.s3_source_bucket_arn], formatlist("%s/*", var.s3_source_bucket_arn))
-  s3_destination_bucket_arns = concat(formatlist("%s/*", var.s3_destination_bucket_arn))
+  replication_source_bucket_arns      = concat([var.replication_source_bucket_arn], formatlist("%s/*", var.replication_source_bucket_arn))
+  replication_destination_bucket_arns = concat(formatlist("%s/*", var.replication_destination_bucket_arn))
+  policy_name                         = var.replication_source_role_name
 }
 
 data "aws_iam_policy_document" "this" {
@@ -8,7 +9,7 @@ data "aws_iam_policy_document" "this" {
     sid    = "SourceBucketPermissions"
     effect = "Allow"
 
-    resources = local.s3_source_bucket_arns
+    resources = local.replication_source_bucket_arns
 
     actions = [
       "s3:GetObjectLegalHold",
@@ -24,7 +25,7 @@ data "aws_iam_policy_document" "this" {
   statement {
     sid       = "DestinationBucketPermissions"
     effect    = "Allow"
-    resources = local.s3_destination_bucket_arns
+    resources = local.replication_destination_bucket_arns
 
     actions = [
       "s3:GetObjectVersionTagging",
@@ -38,7 +39,7 @@ data "aws_iam_policy_document" "this" {
   statement {
     sid       = "SourceBucketKMSKey"
     effect    = "Allow"
-    resources = [var.kms_key_source_arn]
+    resources = [var.replication_source_kms_key_arn]
 
     actions = [
       "kms:Decrypt",
@@ -49,7 +50,7 @@ data "aws_iam_policy_document" "this" {
   statement {
     sid       = "DestinationBucketKMSKey"
     effect    = "Allow"
-    resources = [var.kms_key_destination_arn]
+    resources = [var.replication_destination_kms_key_arn]
 
     actions = [
       "kms:Encrypt",
@@ -59,7 +60,7 @@ data "aws_iam_policy_document" "this" {
 }
 
 resource "aws_iam_policy" "this" {
-  name   = var.policy_name
+  name   = local.policy_name
   path   = "/"
   policy = data.aws_iam_policy_document.this.json
   tags   = var.tags
@@ -78,7 +79,7 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "this" {
-  name               = var.role_name
+  name               = var.replication_source_role_name
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
   tags               = var.tags
 }
