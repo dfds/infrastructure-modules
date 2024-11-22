@@ -7,11 +7,24 @@ resource "azuread_application" "app" {
     homepage_url  = var.homepage_url
     redirect_uris = var.redirect_uris
   }
+
+  dynamic "app_role" {
+    for_each = var.app_roles
+    content {
+      allowed_member_types = app_role.value.allowed_member_types
+      description          = app_role.value.description
+      display_name         = app_role.value.display_name
+      enabled              = app_role.value.enabled
+      id                   = app_role.value.id
+      value                = app_role.value.value
+    }
+  }
 }
 
 resource "azuread_service_principal" "sp" {
   client_id = azuread_application.app.client_id
   owners    = [data.azuread_client_config.current.object_id]
+  app_role_assignment_required = var.assignment_is_required
 }
 
 resource "random_password" "password" {
