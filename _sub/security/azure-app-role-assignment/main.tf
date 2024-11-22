@@ -1,6 +1,6 @@
 
 resource "azuread_app_role_assignment" "this" {
-  for_each = { for x in var.role_assignments : x.role_id => x }
+  for_each = { for x in var.role_assignments : x.app_role_id => x }
 
 
   app_role_id  = each.value.app_role_id
