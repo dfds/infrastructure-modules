@@ -11,11 +11,11 @@ output "application_key" {
   sensitive = true
 }
 
-output "oath_2_authorization_endpoint" {
+output "oauth_2_authorization_endpoint" {
   value = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/authorize"
 
 }
-output "oath_2_token_endpoint" {
+output "oauth_2_token_endpoint" {
   value = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/token"
 
 }
