@@ -70,6 +70,36 @@ variable "traefik_alb_s3_access_logs_retiontion_days" {
   default = 30
 }
 
+variable "alb_access_logs_replication_enabled" {
+  type        = bool
+  description = "Enable S3 bucket replication."
+  default     = false
+}
+
+variable "alb_access_logs_replication_destination_bucket_arn" {
+  type        = string
+  description = "The ARN of the destination bucket."
+  default     = null
+}
+
+variable "alb_access_logs_replication_source_role_name" {
+  type        = string
+  description = "Name of the role to create"
+  default     = null
+}
+
+variable "alb_access_logs_replication_source_kms_key_arn" {
+  type        = string
+  description = "The ARN of the KMS key to allow decryption of the source bucket"
+  default     = null
+}
+
+variable "alb_access_logs_replication_destination_kms_key_arn" {
+  type        = string
+  description = "The ARN of the KMS key to allow encryption of the destination bucket"
+  default     = null
+}
+
 # --------------------------------------------------
 # Load Balancers in front of Traefik
 # --------------------------------------------------

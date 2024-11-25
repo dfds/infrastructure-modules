@@ -2,6 +2,17 @@
 # ALB access logs S3 bucket
 # --------------------------------------------------
 
+module "alb_access_logs_bucket_replication_role" {
+  source                              = "../../_sub/security/iam-bucket-replication"
+  count                               = var.alb_access_logs_replication_enabled ? 1 : 0
+  replication_source_role_name        = var.alb_access_logs_replication_source_role_name
+  replication_source_bucket_arn       = "arn:aws:s3:::${local.alb_access_log_bucket_name}"
+  replication_destination_bucket_arn  = var.alb_access_logs_replication_destination_bucket_arn
+  replication_source_kms_key_arn      = var.alb_access_logs_replication_source_kms_key_arn
+  replication_destination_kms_key_arn = var.alb_access_logs_replication_destination_kms_key_arn
+  tags                                = var.tags
+}
+
 module "traefik_alb_s3_access_logs" {
   source          = "../../_sub/storage/s3-bucket-lifecycle"
   name            = local.alb_access_log_bucket_name
