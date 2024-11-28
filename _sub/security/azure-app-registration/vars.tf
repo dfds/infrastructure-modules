@@ -41,3 +41,16 @@ variable "app_roles" {
   default     = []
   description = "A list of app roles to create for the application. Note: allowed_member_types must be a list containing only 'User' or 'Application'"
 }
+
+variable "api_permissions" {
+  type = object({
+    roles = optional(list(string), [])
+    scopes = optional(list(string), [])
+  })
+  default = null
+  description = <<EOF
+  A map of API permissions (Microsoft Graph) to assign to the application.
+  roles is a list of roles to assign to the application. Example: ["User.Read.All"]
+  scopes is a list of scopes to assign to the application. Example: ["email"]
+  EOF
+}
