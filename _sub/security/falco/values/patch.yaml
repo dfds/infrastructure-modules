@@ -1,0 +1,47 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ${deploy_name}
+  namespace: ${namespace}
+spec:
+  serviceAccountName: helm-controller
+  chart:
+    spec:
+      version: "${chart_version}"
+  values:
+    driver:
+      enabled: true
+      kind: modern_ebpf
+      modern_ebpf:
+        leastPrivileged: true
+    metrics:
+      enabled: true
+    collectors:
+      kubernetes:
+        enabled: true # Experimental
+    serviceMonitor:
+      create: true
+      labels:
+        scrape-service-metrics: "true"
+    grafana:
+      dashboards:
+        enabled: true
+    webserver:
+      prometheus_metrics_enabled: true
+    falcosidekick:
+      enabled: true
+      webui:
+        enabled: true
+      config:
+        slack:
+          webhookurl: "${slack_alert_webhook_url}"
+          channel: "${slack_alert_channel_name}"
+          minimumpriority: "${slack_alert_minimum_priority}"
+      serviceMonitor:
+        enabled: true
+        additionalLabels:
+          scrape-service-metrics: "true"
+    falco:
+      program_output:
+        enabled: ${stream_enabled}
+        program: "jq '{channel: \"${stream_channel_name}\", text: .output}' | curl -d @- -X POST ${stream_webhook_url}"
