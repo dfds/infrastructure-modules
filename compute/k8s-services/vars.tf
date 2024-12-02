@@ -553,9 +553,11 @@ variable "atlantis_github_username" {
 }
 
 variable "atlantis_github_repositories" {
-  description = "List of repositories to whitelist for Atlantis"
-  type        = list(string)
-  default     = []
+  description = "Map of repositories to whitelist for Atlantis"
+  type = map(object({
+    repository = string
+  }))
+  default = {}
 }
 
 variable "atlantis_webhook_events" {

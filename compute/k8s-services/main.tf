@@ -524,11 +524,11 @@ module "atlantis_deployment" {
 
 module "atlantis_github_configuration" {
   source                = "../../_sub/security/atlantis-github-configuration"
-  count                 = var.atlantis_deploy ? 1 : 0
+  for_each              = var.atlantis_github_repositories
   dashboard_password    = module.atlantis_deployment[0].dashboard_password
   enable_github_secrets = var.atlantis_enable_github_secrets
   environment           = var.atlantis_environment
-  github_repositories   = var.atlantis_github_repositories
+  repository            = each.value.repository
   ingress_hostname      = var.atlantis_ingress
   webhook_events        = var.atlantis_webhook_events
   webhook_secret        = module.atlantis_deployment[0].webhook_secret

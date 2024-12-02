@@ -7,13 +7,11 @@ locals {
 }
 
 data "github_repository" "repo" {
-  count     = length(var.github_repositories)
-  full_name = var.github_repositories[count.index]
+  full_name = var.repository
 }
 
 resource "github_repository_webhook" "webhook" {
-  count      = length(data.github_repository.repo)
-  repository = data.github_repository.repo[count.index].name
+  repository = data.github_repository.repo.name
 
   configuration {
     url          = "https://${local.deploy_name}:${urlencode(var.dashboard_password)}@${var.ingress_hostname}/events"
@@ -30,7 +28,7 @@ resource "github_actions_organization_secret" "atlantis_username" {
   secret_name             = "${upper(var.environment)}_ATLANTIS_USERNAME"
   visibility              = "selected"
   plaintext_value         = local.deploy_name
-  selected_repository_ids = [for repo in data.github_repository.repo : repo.repo_id]
+  selected_repository_ids = data.github_repository.repo.repo_id
 }
 
 resource "github_actions_organization_secret" "atlantis_password" {
@@ -38,5 +36,5 @@ resource "github_actions_organization_secret" "atlantis_password" {
   secret_name             = "${upper(var.environment)}_ATLANTIS_PASSWORD"
   visibility              = "selected"
   plaintext_value         = var.dashboard_password
-  selected_repository_ids = [for repo in data.github_repository.repo : repo.repo_id]
+  selected_repository_ids = data.github_repository.repo.repo_id
 }

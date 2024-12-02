@@ -14,10 +14,9 @@ variable "environment" {
   description = "Environment"
 }
 
-variable "github_repositories" {
-  description = "List of repositories to whitelist for Atlantis"
-  type        = list(string)
-  default     = []
+variable "repository" {
+  description = "The repository to whitelist for Atlantis"
+  type        = string
 }
 
 variable "ingress_hostname" {

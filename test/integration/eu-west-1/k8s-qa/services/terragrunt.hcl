@@ -167,7 +167,9 @@ inputs = {
   atlantis_resources_requests_memory = "512Mi"
 
   atlantis_github_username     = "devex-sa"
-  atlantis_github_repositories = ["dfds/qa-dummy-atlantis"]
+  atlantis_github_repositories = {
+    dummy = { repository = "dfds/qa-dummy-atlantis" }
+  }
   atlantis_github_owner        = "dfds"
   atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
   atlantis_chart_version       = "5.7.0"
@@ -307,18 +309,6 @@ inputs = {
   # --------------------------------------------------
 
   trivy_operator_deploy                   = true
-
-  tenants = [
-    {
-      namespace = "flux-tenant-test"
-      repositories = [
-        {
-          url = "https://github.com/dfds/flux-tenant-test"
-          branch = "main"
-        }
-      ]
-    }
-  ]
 
   fluxcd_tenants = [
     {
