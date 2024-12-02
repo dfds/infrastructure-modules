@@ -3,13 +3,12 @@ data "github_repository" "main" {
 }
 
 locals {
-  deploy_name     = "atlantis"
-  namespace       = "atlantis"
-  service_account = local.deploy_name
-  fully_qualified_repository_names = [
-    for repo in var.github_repositories :
-    "github.com/${repo}"
-  ]
+  deploy_name                      = "atlantis"
+  namespace                        = "atlantis"
+  service_account                  = local.deploy_name
+  fully_qualified_repository_names = [for gr in var.github_repositories : "github.com/${gr.repository}"]
+
+
   resources_limits_memory = var.resources_limits_memory != null ? var.resources_limits_memory : var.resources_requests_memory
   resources_limits_cpu    = var.resources_limits_cpu != null ? var.resources_limits_cpu : var.resources_requests_cpu
   default_repo_branch     = data.github_repository.main.default_branch

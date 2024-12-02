@@ -52,8 +52,10 @@ variable "prune" {
 
 variable "github_repositories" {
   description = "List of repositories to whitelist for Atlantis"
-  type        = list(string)
-  default     = []
+  type = map(object({
+    repository = string
+  }))
+  default = {}
 }
 
 variable "github_token" {
