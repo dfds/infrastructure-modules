@@ -8,7 +8,6 @@ output "client_id" {
 
 output "application_object_id" {
   value = azuread_application.app.object_id
-
 }
 
 output "application_key" {
