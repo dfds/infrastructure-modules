@@ -73,10 +73,11 @@ variable "tenants" {
   type = list(object({
     namespace = string
     repositories = list(object({
-      url = string
+      url    = string
       branch = string
+      path   = optional(string, null),
     }))
   }))
   description = "List of tenants' namespaces and repository URLs"
-  default = []
+  default     = []
 }

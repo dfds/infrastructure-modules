@@ -488,6 +488,7 @@ variable "fluxcd_tenants" {
     repositories = list(object({
       url    = string
       branch = string
+      path   = optional(string, null),
     }))
   }))
   description = "List of tenants' namespaces and repository URLs"

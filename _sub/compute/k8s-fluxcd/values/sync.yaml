@@ -20,7 +20,10 @@ metadata:
   namespace: ${namespace}
 spec:
   serviceAccountName: flux-tenant
-  interval: 5m
+  interval: 1m
+%{ if r.path !=null ~}
+  path: ${r.path}
+%{ endif ~}
   sourceRef:
     kind: GitRepository
     name: ${r.name}
