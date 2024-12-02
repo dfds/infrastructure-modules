@@ -19,6 +19,12 @@ resource "azuread_application" "app" {
       value                = app_role.value.value
     }
   }
+
+  lifecycle {
+    ignore_changes = [
+      required_resource_access,
+    ]
+  }
 }
 
 resource "azuread_service_principal" "sp" {
@@ -35,4 +41,14 @@ resource "random_password" "password" {
 
 resource "azuread_service_principal_password" "key" {
   service_principal_id = azuread_service_principal.sp.id
+}
+
+
+resource "azuread_application_api_access" "azure_app" {
+  count = length(local.scope_ids) > 0 || length(local.roles_ids) > 0 ? 1 : 0
+  application_id = "/applications/${azuread_application.app.object_id}"
+  api_client_id  = data.azuread_application_published_app_ids.well_known.result["MicrosoftGraph"]
+
+  role_ids = local.roles_ids
+  scope_ids = local.scope_ids
 }

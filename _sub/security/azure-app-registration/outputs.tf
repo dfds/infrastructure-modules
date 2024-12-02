@@ -6,6 +6,10 @@ output "client_id" {
   value = azuread_application.app.client_id
 }
 
+output "application_object_id" {
+  value = azuread_application.app.object_id
+}
+
 output "application_key" {
   value     = azuread_service_principal_password.key.value
   sensitive = true
