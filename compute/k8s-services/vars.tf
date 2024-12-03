@@ -100,6 +100,13 @@ variable "alb_access_logs_replication_destination_kms_key_arn" {
   default     = null
 }
 
+variable "alb_access_logs_replication_destination_account_id" {
+  type        = string
+  description = "The account ID of the destination bucket."
+  default     = null
+}
+
+
 # --------------------------------------------------
 # Load Balancers in front of Traefik
 # --------------------------------------------------
@@ -481,6 +488,7 @@ variable "fluxcd_tenants" {
     repositories = list(object({
       url    = string
       branch = string
+      path   = optional(string, null),
     }))
   }))
   description = "List of tenants' namespaces and repository URLs"
