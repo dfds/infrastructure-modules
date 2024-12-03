@@ -1021,3 +1021,37 @@ module "trivy_operator" {
     module.platform_fluxcd
   ]
 }
+
+# --------------------------------------------------
+# Falco
+# --------------------------------------------------
+
+module "falco" {
+  source                       = "../../_sub/security/falco"
+  count                        = var.falco_deploy ? 1 : 0
+  cluster_name                 = var.eks_cluster_name
+  deploy_name                  = var.falco_deploy_name
+  namespace                    = var.falco_namespace
+  chart_version                = var.falco_chart_version
+  github_token                 = var.fluxcd_bootstrap_repo_owner_token
+  repo_owner                   = var.fluxcd_bootstrap_repo_owner
+  repo_name                    = var.fluxcd_bootstrap_repo_name
+  repo_branch                  = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create          = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url         = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch      = var.fluxcd_apps_repo_branch
+  slack_alert_webhook_url      = var.falco_slack_alert_webhook_url
+  slack_alert_channel_name     = var.falco_slack_alert_channel_name
+  slack_alert_minimum_priority = var.falco_slack_alert_minimum_priority
+  stream_enabled               = var.falco_stream_enabled
+  stream_webhook_url           = var.falco_stream_webhook_url
+  stream_channel_name          = var.falco_stream_channel_name
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [
+    module.platform_fluxcd
+  ]
+}
