@@ -524,7 +524,7 @@ module "atlantis_deployment" {
 
 module "atlantis_github_configuration" {
   source                = "../../_sub/security/atlantis-github-configuration"
-  for_each              = var.atlantis_github_repositories
+  for_each              = var.atlantis_deploy ? var.atlantis_github_repositories : {}
   dashboard_password    = module.atlantis_deployment[0].dashboard_password
   enable_github_secrets = var.atlantis_enable_github_secrets
   environment           = var.atlantis_environment
