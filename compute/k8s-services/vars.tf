@@ -1412,3 +1412,67 @@ variable "trivy_operator_resources_limits_memory" {
   default     = "1024Mi"
   description = "Memory resources limits size"
 }
+
+# --------------------------------------------------
+# Falco
+# --------------------------------------------------
+
+variable "falco_deploy" {
+  type        = bool
+  description = "Deploy Falco helm chart switch"
+  default     = false
+}
+
+variable "falco_deploy_name" {
+  type        = string
+  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
+  default     = "falco"
+}
+
+variable "falco_chart_version" {
+  type        = string
+  description = "Falco helm chart version"
+  default     = ""
+}
+
+variable "falco_namespace" {
+  type        = string
+  description = "The namespace to deploy Falco in"
+  default     = "falco"
+}
+
+variable "falco_slack_alert_webhook_url" {
+  type = string
+  default = ""
+  description = "Value for slack webhook url. If not provided, slack alerts will not be sent"
+}
+
+variable "falco_slack_alert_channel_name" {
+  type = string
+  default = ""
+  description = "Channel name for slack alerts. Example: #falco-alerts"
+}
+
+variable "falco_slack_alert_minimum_priority" {
+  type = string
+  default = "critical"
+  description = "Minimum priority level for slack alerts to be sent to Slack"
+}
+
+variable "falco_stream_enabled" {
+  type = bool
+  default = false
+  description = "Enable Falco stream output to a specified webhook"
+}
+
+variable "falco_stream_webhook_url" {
+  type = string
+  default = ""
+  description = "Value for webhook url to which to send falco events stream. stream_enabled must be set to true. If not provided, slack stream will not be sent"
+}
+
+variable "falco_stream_channel_name" {
+  type = string
+  default = ""
+  description = "Channel name for falco stream. Example: #falco-stream"
+}
