@@ -61,12 +61,6 @@ variable "schedules_template_ttl" {
   description = "Time to live for the scheduled backup."
 }
 
-variable "schedules_template_include_cluster_resources" {
-  type        = bool
-  default     = false
-  description = "Should Velero also backup cluster resources?"
-}
-
 variable "helm_repo_name" {
   type        = string
   default     = "vmware-tanzu"
@@ -155,4 +149,16 @@ variable "workload_account_id" {
   type        = string
   default     = null
   description = "The workload account ID."
+}
+
+variable "excluded_cluster_scoped_resources" {
+  type        = list(string)
+  default     = []
+  description = "List of cluster-scoped resources to exclude from backup"
+}
+
+variable "excluded_namespace_scoped_resources" {
+  type        = list(string)
+  default     = []
+  description = "List of namespace-scoped resources to exclude from backup"
 }

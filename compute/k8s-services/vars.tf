@@ -897,6 +897,18 @@ variable "velero_bucket_arn" {
   description = "The arn of the S3 bucket that contains the Velero backup. Only used if S3 bucket is in a different account"
 }
 
+variable "velero_excluded_cluster_scoped_resources" {
+  type        = list(string)
+  default     = []
+  description = "List of cluster-scoped resources to exclude from backup"
+}
+
+variable "velero_excluded_namespace_scoped_resources" {
+  type        = list(string)
+  default     = []
+  description = "List of namespace-scoped resources to exclude from backup"
+}
+
 
 # --------------------------------------------------
 # Kyverno
@@ -1442,37 +1454,37 @@ variable "falco_namespace" {
 }
 
 variable "falco_slack_alert_webhook_url" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "Value for slack webhook url. If not provided, slack alerts will not be sent"
 }
 
 variable "falco_slack_alert_channel_name" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "Channel name for slack alerts. Example: #falco-alerts"
 }
 
 variable "falco_slack_alert_minimum_priority" {
-  type = string
-  default = "critical"
+  type        = string
+  default     = "critical"
   description = "Minimum priority level for slack alerts to be sent to Slack"
 }
 
 variable "falco_stream_enabled" {
-  type = bool
-  default = false
+  type        = bool
+  default     = false
   description = "Enable Falco stream output to a specified webhook"
 }
 
 variable "falco_stream_webhook_url" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "Value for webhook url to which to send falco events stream. stream_enabled must be set to true. If not provided, slack stream will not be sent"
 }
 
 variable "falco_stream_channel_name" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "Channel name for falco stream. Example: #falco-stream"
 }
