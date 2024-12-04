@@ -48,6 +48,5 @@ spec:
         template:
           ttl: "${schedules_template_ttl}"
           snapshotVolumes: ${snapshots_enabled}
-          includeClusterResources: ${schedules_template_include_cluster_resources}
-          excludedNamespaceScopedResources:
-          excludedClusterScopedResources:
+          excludedNamespaceScopedResources: ${excluded_namespace_scoped_resources}
+          excludedClusterScopedResources: ${excluded_cluster_scoped_resources}
