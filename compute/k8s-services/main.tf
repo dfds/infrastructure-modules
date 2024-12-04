@@ -654,7 +654,6 @@ module "velero" {
   helm_chart_version                  = var.velero_helm_chart_version
   image_tag                           = var.velero_image_tag
   plugin_for_aws_version              = var.velero_plugin_for_aws_version
-  plugin_for_csi_version              = var.velero_plugin_for_csi_version
   snapshots_enabled                   = var.velero_snapshots_enabled
   overwrite_on_create                 = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url                = local.fluxcd_apps_repo_url

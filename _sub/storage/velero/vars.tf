@@ -75,7 +75,7 @@ variable "helm_chart_version" {
 
 variable "image_tag" {
   type        = string
-  default     = "v1.12.4"
+  default     = ""
   description = "Override the image tag in the Helm chart with a custom version"
 }
 
@@ -85,15 +85,6 @@ variable "plugin_for_aws_version" {
   validation {
     condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.plugin_for_aws_version))
     error_message = "Velero plugin for AWS must specify a version. The version must start with the letter v and followed by a semantic version number."
-  }
-}
-
-variable "plugin_for_csi_version" {
-  type        = string
-  description = "The version of velero-plugin-for-csi to use as initContainer"
-  validation {
-    condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.plugin_for_csi_version))
-    error_message = "Velero plugin for CSI must specify a version. The version must start with the letter v and followed by a semantic version number."
   }
 }
 

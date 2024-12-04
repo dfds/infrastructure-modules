@@ -24,11 +24,6 @@ spec:
         volumeMounts:
           - mountPath: /target
             name: plugins
-      - name: velero-plugin-for-csi
-        image: velero/velero-plugin-for-csi:${plugin_for_csi_version}
-        volumeMounts:
-          - mountPath: /target
-            name: plugins
     configuration:
       logLevel: ${log_level}
       backupStorageLocation:
@@ -48,5 +43,15 @@ spec:
         template:
           ttl: "${schedules_template_ttl}"
           snapshotVolumes: ${snapshots_enabled}
-          excludedNamespaceScopedResources: ${excluded_namespace_scoped_resources}
-          excludedClusterScopedResources: ${excluded_cluster_scoped_resources}
+%{ if length(excluded_namespace_scoped_resources) > 0 ~}
+          excludedNamespaceScopedResources:
+%{ for ex_ns in excluded_namespace_scoped_resources ~}
+            - ${ex_ns}
+%{ endfor ~}
+%{ endif ~}
+%{ if length(excluded_cluster_scoped_resources) > 0 ~}
+          excludedClusterScopedResources:
+%{ for ex_cl in excluded_cluster_scoped_resources ~}
+            - ${ex_cl}
+%{ endfor ~}
+%{ endif ~}
