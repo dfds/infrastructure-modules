@@ -849,7 +849,7 @@ variable "velero_helm_chart_version" {
 
 variable "velero_image_tag" {
   type        = string
-  default     = "v1.12.4"
+  default     = ""
   description = "Override the image tag in the Helm chart with a custom version"
 }
 
@@ -860,16 +860,6 @@ variable "velero_plugin_for_aws_version" {
   validation {
     condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.velero_plugin_for_aws_version)) || var.velero_plugin_for_aws_version == ""
     error_message = "Velero plugin for AWS must specify a version. The version must start with the letter v and followed by a semantic version number."
-  }
-}
-
-variable "velero_plugin_for_csi_version" {
-  type        = string
-  default     = "v0.2.0"
-  description = "The version of velero-plugin-for-csi to use as initContainer"
-  validation {
-    condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.velero_plugin_for_csi_version)) || var.velero_plugin_for_csi_version == ""
-    error_message = "Velero plugin for CSI must specify a version. The version must start with the letter v and followed by a semantic version number."
   }
 }
 
@@ -895,6 +885,18 @@ variable "velero_bucket_arn" {
   type        = string
   default     = null
   description = "The arn of the S3 bucket that contains the Velero backup. Only used if S3 bucket is in a different account"
+}
+
+variable "velero_excluded_cluster_scoped_resources" {
+  type        = list(string)
+  default     = []
+  description = "List of cluster-scoped resources to exclude from backup"
+}
+
+variable "velero_excluded_namespace_scoped_resources" {
+  type        = list(string)
+  default     = []
+  description = "List of namespace-scoped resources to exclude from backup"
 }
 
 
@@ -1411,4 +1413,68 @@ variable "trivy_operator_resources_limits_memory" {
   type        = string
   default     = "1024Mi"
   description = "Memory resources limits size"
+}
+
+# --------------------------------------------------
+# Falco
+# --------------------------------------------------
+
+variable "falco_deploy" {
+  type        = bool
+  description = "Deploy Falco helm chart switch"
+  default     = false
+}
+
+variable "falco_deploy_name" {
+  type        = string
+  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
+  default     = "falco"
+}
+
+variable "falco_chart_version" {
+  type        = string
+  description = "Falco helm chart version"
+  default     = ""
+}
+
+variable "falco_namespace" {
+  type        = string
+  description = "The namespace to deploy Falco in"
+  default     = "falco"
+}
+
+variable "falco_slack_alert_webhook_url" {
+  type        = string
+  default     = ""
+  description = "Value for slack webhook url. If not provided, slack alerts will not be sent"
+}
+
+variable "falco_slack_alert_channel_name" {
+  type        = string
+  default     = ""
+  description = "Channel name for slack alerts. Example: #falco-alerts"
+}
+
+variable "falco_slack_alert_minimum_priority" {
+  type        = string
+  default     = "critical"
+  description = "Minimum priority level for slack alerts to be sent to Slack"
+}
+
+variable "falco_stream_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable Falco stream output to a specified webhook"
+}
+
+variable "falco_stream_webhook_url" {
+  type        = string
+  default     = ""
+  description = "Value for webhook url to which to send falco events stream. stream_enabled must be set to true. If not provided, slack stream will not be sent"
+}
+
+variable "falco_stream_channel_name" {
+  type        = string
+  default     = ""
+  description = "Channel name for falco stream. Example: #falco-stream"
 }

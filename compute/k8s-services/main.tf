@@ -643,27 +643,28 @@ module "external_snapshotter" {
 # --------------------------------------------------
 
 module "velero" {
-  source                  = "../../_sub/storage/velero"
-  count                   = var.velero_deploy ? 1 : 0
-  cluster_name            = var.eks_cluster_name
-  bucket_arn              = var.velero_bucket_arn
-  cron_schedule           = var.velero_cron_schedule
-  log_level               = var.velero_log_level
-  repo_name               = var.fluxcd_bootstrap_repo_name
-  repo_branch             = var.fluxcd_bootstrap_repo_branch
-  helm_chart_version      = var.velero_helm_chart_version
-  image_tag               = var.velero_image_tag
-  plugin_for_aws_version  = var.velero_plugin_for_aws_version
-  plugin_for_csi_version  = var.velero_plugin_for_csi_version
-  snapshots_enabled       = var.velero_snapshots_enabled
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
-  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
-  prune                   = var.fluxcd_prune
-  namespace               = var.velero_namespace
-  service_account         = var.velero_service_account
-  oidc_issuer             = local.oidc_issuer
-  workload_account_id     = var.aws_workload_account_id
+  source                              = "../../_sub/storage/velero"
+  count                               = var.velero_deploy ? 1 : 0
+  cluster_name                        = var.eks_cluster_name
+  bucket_arn                          = var.velero_bucket_arn
+  cron_schedule                       = var.velero_cron_schedule
+  log_level                           = var.velero_log_level
+  repo_name                           = var.fluxcd_bootstrap_repo_name
+  repo_branch                         = var.fluxcd_bootstrap_repo_branch
+  helm_chart_version                  = var.velero_helm_chart_version
+  image_tag                           = var.velero_image_tag
+  plugin_for_aws_version              = var.velero_plugin_for_aws_version
+  snapshots_enabled                   = var.velero_snapshots_enabled
+  overwrite_on_create                 = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url                = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch             = var.fluxcd_apps_repo_branch
+  prune                               = var.fluxcd_prune
+  namespace                           = var.velero_namespace
+  service_account                     = var.velero_service_account
+  oidc_issuer                         = local.oidc_issuer
+  workload_account_id                 = var.aws_workload_account_id
+  excluded_cluster_scoped_resources   = var.velero_excluded_cluster_scoped_resources
+  excluded_namespace_scoped_resources = var.velero_excluded_namespace_scoped_resources
 
   providers = {
     github = github.fluxcd
@@ -1012,6 +1013,40 @@ module "trivy_operator" {
   overwrite_on_create       = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url      = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch   = var.fluxcd_apps_repo_branch
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [
+    module.platform_fluxcd
+  ]
+}
+
+# --------------------------------------------------
+# Falco
+# --------------------------------------------------
+
+module "falco" {
+  source                       = "../../_sub/security/falco"
+  count                        = var.falco_deploy ? 1 : 0
+  cluster_name                 = var.eks_cluster_name
+  deploy_name                  = var.falco_deploy_name
+  namespace                    = var.falco_namespace
+  chart_version                = var.falco_chart_version
+  github_token                 = var.fluxcd_bootstrap_repo_owner_token
+  repo_owner                   = var.fluxcd_bootstrap_repo_owner
+  repo_name                    = var.fluxcd_bootstrap_repo_name
+  repo_branch                  = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create          = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url         = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch      = var.fluxcd_apps_repo_branch
+  slack_alert_webhook_url      = var.falco_slack_alert_webhook_url
+  slack_alert_channel_name     = var.falco_slack_alert_channel_name
+  slack_alert_minimum_priority = var.falco_slack_alert_minimum_priority
+  stream_enabled               = var.falco_stream_enabled
+  stream_webhook_url           = var.falco_stream_webhook_url
+  stream_channel_name          = var.falco_stream_channel_name
 
   providers = {
     github = github.fluxcd

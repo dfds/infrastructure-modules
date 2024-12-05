@@ -38,20 +38,20 @@ resource "github_repository_file" "velero_flux_helm_patch_yaml" {
   branch     = data.github_branch.flux_branch.branch
   file       = "${local.helm_repo_path}/patch.yaml"
   content = templatefile("${path.module}/values/patch.yaml", {
-    helm_chart_version                           = var.helm_chart_version
-    helm_repo_name                               = var.helm_repo_name
-    image_tag                                    = var.image_tag
-    snapshots_enabled                            = var.snapshots_enabled
-    plugin_for_aws_version                       = var.plugin_for_aws_version
-    plugin_for_csi_version                       = var.plugin_for_csi_version
-    log_level                                    = var.log_level
-    bucket_name                                  = local.bucket_name
-    bucket_region                                = var.bucket_region
-    velero_role_arn                              = aws_iam_role.velero_role.arn
-    cluster_name                                 = var.cluster_name
-    cron_schedule                                = var.cron_schedule
-    schedules_template_ttl                       = var.schedules_template_ttl
-    schedules_template_include_cluster_resources = var.schedules_template_include_cluster_resources
+    helm_chart_version                  = var.helm_chart_version
+    helm_repo_name                      = var.helm_repo_name
+    image_tag                           = var.image_tag
+    snapshots_enabled                   = var.snapshots_enabled
+    plugin_for_aws_version              = var.plugin_for_aws_version
+    log_level                           = var.log_level
+    bucket_name                         = local.bucket_name
+    bucket_region                       = var.bucket_region
+    velero_role_arn                     = aws_iam_role.velero_role.arn
+    cluster_name                        = var.cluster_name
+    cron_schedule                       = var.cron_schedule
+    schedules_template_ttl              = var.schedules_template_ttl
+    excluded_cluster_scoped_resources   = var.excluded_cluster_scoped_resources
+    excluded_namespace_scoped_resources = var.excluded_namespace_scoped_resources
   })
   overwrite_on_create = var.overwrite_on_create
 }
