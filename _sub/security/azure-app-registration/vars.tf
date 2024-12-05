@@ -52,5 +52,6 @@ variable "api_permissions" {
   A map of API permissions (Microsoft Graph) to assign to the application.
   roles is a list of roles to assign to the application. Example: ["User.Read.All"]
   scopes is a list of scopes to assign to the application. Example: ["email"]
+  Important note: If the permissions require admin consent, then you can use the azure-app-delegated-permissions-grant module to grant those permissions.
   EOF
 }
