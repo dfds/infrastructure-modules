@@ -55,3 +55,16 @@ variable "api_permissions" {
   Important note: If the permissions require admin consent, then you can use the azure-app-delegated-permissions-grant module to grant those permissions.
   EOF
 }
+
+variable "groups_claim" {
+  type        = list(string)
+  default     = ["None"]
+  description = <<EOF
+  The groups claim issued in a user or OAuth 2.0 access token that the application expects.
+  Possible values are: "None", "SecurityGroup", "All", "DirectoryRole", "ApplicationGroup".
+  EOF
+  validation {
+    error_message = "One of the following values must be used: None, SecurityGroup, All, DirectoryRole, ApplicationGroup"
+    condition     = alltrue([for value in var.groups_claim : contains(["None", "SecurityGroup", "All", "DirectoryRole", "ApplicationGroup"], value)])
+  }
+}
