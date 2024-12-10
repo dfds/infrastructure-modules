@@ -25,6 +25,9 @@ resource "azuread_application" "app" {
       required_resource_access,
     ]
   }
+
+  group_membership_claims = var.groups_claim
+
 }
 
 resource "azuread_service_principal" "sp" {
