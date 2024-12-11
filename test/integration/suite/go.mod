@@ -6,9 +6,9 @@ require (
 	github.com/fluxcd/pkg/apis/meta v1.8.0
 	github.com/stretchr/testify v1.10.0
 	github.com/traefik/traefik/v2 v2.11.14
-	k8s.io/api v0.31.3
-	k8s.io/apimachinery v0.31.3
-	k8s.io/client-go v0.31.3
+	k8s.io/api v0.31.4
+	k8s.io/apimachinery v0.31.4
+	k8s.io/client-go v0.31.4
 	sigs.k8s.io/controller-runtime v0.19.3
 )
 
