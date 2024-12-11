@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.79.0"
+      version = "~> 5.80.0"
     }
     github = {
       source  = "integrations/github"
@@ -12,7 +12,7 @@ terraform {
     }
     kubectl = {
       source  = "gavinbunney/kubectl"
-      version = "~> 1.17.0"
+      version = "~> 1.18.0"
     }
     htpasswd = {
       source  = "loafoe/htpasswd"

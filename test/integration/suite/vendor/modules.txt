@@ -12,13 +12,13 @@ github.com/emicklei/go-restful/v3/log
 ## explicit; go 1.18
 github.com/evanphx/json-patch/v5
 github.com/evanphx/json-patch/v5/internal/json
-# github.com/fluxcd/pkg/apis/meta v1.6.1
-## explicit; go 1.22.0
+# github.com/fluxcd/pkg/apis/meta v1.8.0
+## explicit; go 1.22.7
 github.com/fluxcd/pkg/apis/meta
 # github.com/fxamacker/cbor/v2 v2.7.0
 ## explicit; go 1.17
 github.com/fxamacker/cbor/v2
-# github.com/go-acme/lego/v4 v4.20.2
+# github.com/go-acme/lego/v4 v4.20.4
 ## explicit; go 1.22.0
 github.com/go-acme/lego/v4/acme
 github.com/go-acme/lego/v4/acme/api
@@ -134,7 +134,7 @@ github.com/stretchr/testify/assert/yaml
 # github.com/traefik/paerser v0.2.1
 ## explicit; go 1.22.0
 github.com/traefik/paerser/types
-# github.com/traefik/traefik/v2 v2.11.14
+# github.com/traefik/traefik/v2 v2.11.15
 ## explicit; go 1.23.0
 github.com/traefik/traefik/v2/pkg/config/dynamic
 github.com/traefik/traefik/v2/pkg/ip
@@ -251,7 +251,7 @@ gopkg.in/yaml.v2
 # gopkg.in/yaml.v3 v3.0.1
 ## explicit
 gopkg.in/yaml.v3
-# k8s.io/api v0.31.3
+# k8s.io/api v0.31.4
 ## explicit; go 1.22.0
 k8s.io/api/admissionregistration/v1
 k8s.io/api/admissionregistration/v1alpha1
@@ -312,7 +312,7 @@ k8s.io/api/storagemigration/v1alpha1
 ## explicit; go 1.22.0
 k8s.io/apiextensions-apiserver/pkg/apis/apiextensions
 k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1
-# k8s.io/apimachinery v0.31.3
+# k8s.io/apimachinery v0.31.4
 ## explicit; go 1.22.0
 k8s.io/apimachinery/pkg/api/equality
 k8s.io/apimachinery/pkg/api/errors
@@ -363,7 +363,7 @@ k8s.io/apimachinery/pkg/version
 k8s.io/apimachinery/pkg/watch
 k8s.io/apimachinery/third_party/forked/golang/json
 k8s.io/apimachinery/third_party/forked/golang/reflect
-# k8s.io/client-go v0.31.3
+# k8s.io/client-go v0.31.4
 ## explicit; go 1.22.0
 k8s.io/client-go/applyconfigurations/admissionregistration/v1
 k8s.io/client-go/applyconfigurations/admissionregistration/v1alpha1
