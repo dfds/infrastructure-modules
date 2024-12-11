@@ -12,7 +12,7 @@ terraform {
     }
     kubectl = {
       source  = "gavinbunney/kubectl"
-      version = "~> 1.17.0"
+      version = "~> 1.18.0"
     }
     htpasswd = {
       source  = "loafoe/htpasswd"
