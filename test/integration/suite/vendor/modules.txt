@@ -18,7 +18,7 @@ github.com/fluxcd/pkg/apis/meta
 # github.com/fxamacker/cbor/v2 v2.7.0
 ## explicit; go 1.17
 github.com/fxamacker/cbor/v2
-# github.com/go-acme/lego/v4 v4.20.2
+# github.com/go-acme/lego/v4 v4.20.4
 ## explicit; go 1.22.0
 github.com/go-acme/lego/v4/acme
 github.com/go-acme/lego/v4/acme/api
@@ -134,7 +134,7 @@ github.com/stretchr/testify/assert/yaml
 # github.com/traefik/paerser v0.2.1
 ## explicit; go 1.22.0
 github.com/traefik/paerser/types
-# github.com/traefik/traefik/v2 v2.11.14
+# github.com/traefik/traefik/v2 v2.11.15
 ## explicit; go 1.23.0
 github.com/traefik/traefik/v2/pkg/config/dynamic
 github.com/traefik/traefik/v2/pkg/ip
