@@ -41,7 +41,7 @@ resource "github_repository_file" "helm_patch" {
     stream_enabled               = var.stream_enabled
     stream_webhook_url           = var.stream_webhook_url
     stream_channel_name          = var.stream_channel_name
-
+    custom_rules                 = var.custom_rules
   })
   overwrite_on_create = var.overwrite_on_create
 }

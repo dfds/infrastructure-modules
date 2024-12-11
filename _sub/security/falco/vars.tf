@@ -101,3 +101,9 @@ variable "stream_channel_name" {
   default = ""
   description = "Channel name for falco stream. Example: #falco-stream"
 }
+
+variable "custom_rules" {
+  type = string
+  default = ""
+  description = "Custom rules to be added to the falco config"
+}
