@@ -5,7 +5,7 @@ go 1.23.0
 require (
 	github.com/fluxcd/pkg/apis/meta v1.8.0
 	github.com/stretchr/testify v1.10.0
-	github.com/traefik/traefik/v2 v2.11.14
+	github.com/traefik/traefik/v2 v2.11.15
 	k8s.io/api v0.31.4
 	k8s.io/apimachinery v0.31.4
 	k8s.io/client-go v0.31.4
@@ -16,7 +16,7 @@ require (
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/evanphx/json-patch/v5 v5.9.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.7.0 // indirect
-	github.com/go-acme/lego/v4 v4.20.2 // indirect
+	github.com/go-acme/lego/v4 v4.20.4 // indirect
 	github.com/go-jose/go-jose/v4 v4.0.4 // indirect
 	github.com/google/gnostic-models v0.6.8 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
