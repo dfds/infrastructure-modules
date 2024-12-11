@@ -1047,6 +1047,7 @@ module "falco" {
   stream_enabled               = var.falco_stream_enabled
   stream_webhook_url           = var.falco_stream_webhook_url
   stream_channel_name          = var.falco_stream_channel_name
+  custom_rules                 = var.falco_custom_rules
 
   providers = {
     github = github.fluxcd
