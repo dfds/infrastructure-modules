@@ -6,9 +6,9 @@ require (
 	github.com/fluxcd/pkg/apis/meta v1.9.0
 	github.com/stretchr/testify v1.10.0
 	github.com/traefik/traefik/v2 v2.11.16
-	k8s.io/api v0.31.4
+	k8s.io/api v0.32.0
 	k8s.io/apimachinery v0.32.0
-	k8s.io/client-go v0.31.4
+	k8s.io/client-go v0.32.0
 	sigs.k8s.io/controller-runtime v0.19.3
 )
 
@@ -33,6 +33,7 @@ require (
 	golang.org/x/mod v0.21.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/tools v0.26.0 // indirect
+	gopkg.in/evanphx/json-patch.v4 v4.12.0 // indirect
 	k8s.io/apiextensions-apiserver v0.31.0 // indirect
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3 // indirect
 )
