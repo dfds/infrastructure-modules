@@ -39,12 +39,27 @@ patches:
 YAML
 
   helm_patch = <<YAML
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-reconciler-${var.deploy_name}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: helm-controller
+  namespace: ${var.namespace}
+---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: ${var.deploy_name}
   namespace: ${var.namespace}
 spec:
+  serviceAccountName: helm-controller
   chart:
     spec:
       version: ${var.chart_version}
