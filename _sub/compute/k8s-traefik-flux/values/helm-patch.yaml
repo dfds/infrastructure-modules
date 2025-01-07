@@ -4,6 +4,7 @@ metadata:
   name: ${deploy_name}
   namespace: ${namespace}
 spec:
+  serviceAccountName: helm-controller
   chart:
     spec:
       version: ${helm_chart_version}
@@ -14,8 +15,8 @@ spec:
       traefik:
         nodePort: ${admin_nodeport}
     additionalArguments:
-      %{~ for arg in additional_args ~}
+  %{~ for arg in additional_args ~}
       - ${arg}
-      %{~ endfor ~}
+  %{~ endfor ~}
     deployment:
       replicas: ${replicas}

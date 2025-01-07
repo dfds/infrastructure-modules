@@ -4,6 +4,7 @@ metadata:
   name: ${app_install_name}-config
   namespace: flux-system
 spec:
+  serviceAccountName: kustomize-controller
   interval: 1m0s
   dependsOn:
     - name: ${app_install_name}-helm

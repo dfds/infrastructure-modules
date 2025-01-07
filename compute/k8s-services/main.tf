@@ -2,12 +2,28 @@
 # ALB access logs S3 bucket
 # --------------------------------------------------
 
+module "alb_access_logs_bucket_replication_role" {
+  source                              = "../../_sub/security/iam-bucket-replication"
+  count                               = var.alb_access_logs_replication_source_role_name != null ? 1 : 0
+  replication_source_role_name        = var.alb_access_logs_replication_source_role_name
+  replication_source_bucket_arn       = "arn:aws:s3:::${local.alb_access_log_bucket_name}"
+  replication_destination_bucket_arn  = var.alb_access_logs_replication_destination_bucket_arn
+  replication_source_kms_key_arn      = var.alb_access_logs_replication_source_kms_key_arn
+  replication_destination_kms_key_arn = var.alb_access_logs_replication_destination_kms_key_arn
+  tags                                = var.tags
+}
+
 module "traefik_alb_s3_access_logs" {
-  source          = "../../_sub/storage/s3-bucket-lifecycle"
-  name            = local.alb_access_log_bucket_name
-  retention_days  = var.traefik_alb_s3_access_logs_retiontion_days
-  policy          = local.alb_access_log_bucket_policy
-  additional_tags = var.s3_bucket_additional_tags
+  source                              = "../../_sub/storage/s3-bucket-lifecycle"
+  name                                = local.alb_access_log_bucket_name
+  retention_days                      = var.traefik_alb_s3_access_logs_retiontion_days
+  policy                              = local.alb_access_log_bucket_policy
+  additional_tags                     = var.s3_bucket_additional_tags
+  replication_enabled                 = var.alb_access_logs_replication_enabled
+  replication_source_role_arn         = var.alb_access_logs_replication_enabled ? module.alb_access_logs_bucket_replication_role[0].role_arn : null
+  replication_destination_account_id  = var.alb_access_logs_replication_destination_account_id
+  replication_destination_bucket_arn  = var.alb_access_logs_replication_destination_bucket_arn
+  replication_destination_kms_key_arn = var.alb_access_logs_replication_destination_kms_key_arn
 }
 
 # --------------------------------------------------
@@ -459,6 +475,7 @@ module "platform_fluxcd" {
   token                   = data.aws_eks_cluster_auth.eks.token
   cluster_ca_certificate  = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
   enable_monitoring       = var.monitoring_kube_prometheus_stack_deploy || var.grafana_deploy ? true : false
+  tenants                 = var.fluxcd_tenants
 
   providers = {
     github = github.fluxcd
@@ -521,92 +538,6 @@ module "atlantis_github_configuration" {
   providers = {
     github = github.atlantis
   }
-}
-
-# --------------------------------------------------
-# Crossplane
-# --------------------------------------------------
-
-module "crossplane" {
-  source                            = "../../_sub/compute/helm-crossplane"
-  release_name                      = var.crossplane_release_name
-  count                             = var.crossplane_deploy ? 1 : 0
-  namespace                         = var.crossplane_namespace
-  namespace_labels                  = var.crossplane_namespace_labels
-  chart_version                     = var.crossplane_chart_version
-  recreate_pods                     = var.crossplane_recreate_pods
-  force_update                      = var.crossplane_force_update
-  devel                             = var.crossplane_devel
-  crossplane_providers              = var.crossplane_providers
-  crossplane_admin_service_accounts = var.crossplane_admin_service_accounts
-  crossplane_edit_service_accounts  = var.crossplane_edit_service_accounts
-  crossplane_view_service_accounts  = var.crossplane_view_service_accounts
-  crossplane_metrics_enabled        = var.crossplane_metrics_enabled
-  crossplane_aws_iam_role_name      = var.crossplane_aws_iam_role_name
-  eks_openid_connect_provider_url   = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
-}
-
-module "crossplane_operator" {
-  source              = "../../_sub/compute/k8s-crossplane-operator"
-  count               = var.crossplane_operator_deploy ? 1 : 0
-  deploy_name         = var.crossplane_operator_deploy_name
-  helm_chart_version  = var.crossplane_operator_helm_chart_version
-  namespace           = var.crossplane_namespace # Same namespace as for the crossplane module
-  repo_owner          = var.fluxcd_bootstrap_repo_owner
-  repo_name           = var.fluxcd_bootstrap_repo_name
-  repo_branch         = var.fluxcd_bootstrap_repo_branch
-  cluster_name        = var.eks_cluster_name
-  overwrite_on_create = var.fluxcd_bootstrap_overwrite_on_create
-
-  providers = {
-    github = github.fluxcd
-  }
-
-  depends_on = [module.crossplane, module.platform_fluxcd]
-}
-
-module "crossplane_configuration_package" {
-  source              = "../../_sub/compute/k8s-crossplane-cfg-pkg"
-  count               = var.crossplane_cfg_pkg_deploy ? 1 : 0
-  name                = var.crossplane_cfg_pkg_name
-  package             = var.crossplane_cfg_pkg_docker_image
-  repo_owner          = var.fluxcd_bootstrap_repo_owner
-  repo_name           = var.fluxcd_bootstrap_repo_name
-  repo_branch         = var.fluxcd_bootstrap_repo_branch
-  cluster_name        = var.eks_cluster_name
-  overwrite_on_create = var.fluxcd_bootstrap_overwrite_on_create
-
-  providers = {
-    github = github.fluxcd
-  }
-
-  depends_on = [module.crossplane, module.platform_fluxcd]
-}
-
-locals {
-  crossplane_provider_images = [for provider in var.crossplane_providers : element(split(":", provider), 0)]
-}
-
-module "crossplane_provider_confluent_prereqs" {
-  source       = "../../_sub/compute/k8s-crossplane-provider-confluent"
-  count        = contains(local.crossplane_provider_images, "dfdsdk/provider-confluent") ? 1 : 0
-  namespace    = var.crossplane_namespace
-  email        = var.crossplane_provider_confluent_email
-  password     = var.crossplane_provider_confluent_password
-  repo_owner   = var.fluxcd_bootstrap_repo_owner
-  repo_name    = var.fluxcd_bootstrap_repo_name
-  repo_branch  = var.fluxcd_bootstrap_repo_branch
-  cluster_name = var.eks_cluster_name
-
-  confluent_environments       = var.crossplane_confluent_environments
-  confluent_clusters           = var.crossplane_confluent_clusters
-  confluent_clusters_endpoints = var.crossplane_confluent_clusters_endpoints
-
-  providers = {
-    github = github.fluxcd
-  }
-
-  depends_on = [module.crossplane, module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -712,27 +643,28 @@ module "external_snapshotter" {
 # --------------------------------------------------
 
 module "velero" {
-  source                  = "../../_sub/storage/velero"
-  count                   = var.velero_deploy ? 1 : 0
-  cluster_name            = var.eks_cluster_name
-  bucket_arn              = var.velero_bucket_arn
-  cron_schedule           = var.velero_cron_schedule
-  log_level               = var.velero_log_level
-  repo_name               = var.fluxcd_bootstrap_repo_name
-  repo_branch             = var.fluxcd_bootstrap_repo_branch
-  helm_chart_version      = var.velero_helm_chart_version
-  image_tag               = var.velero_image_tag
-  plugin_for_aws_version  = var.velero_plugin_for_aws_version
-  plugin_for_csi_version  = var.velero_plugin_for_csi_version
-  snapshots_enabled       = var.velero_snapshots_enabled
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
-  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
-  prune                   = var.fluxcd_prune
-  namespace               = var.velero_namespace
-  service_account         = var.velero_service_account
-  oidc_issuer             = local.oidc_issuer
-  workload_account_id     = var.aws_workload_account_id
+  source                              = "../../_sub/storage/velero"
+  count                               = var.velero_deploy ? 1 : 0
+  cluster_name                        = var.eks_cluster_name
+  bucket_arn                          = var.velero_bucket_arn
+  cron_schedule                       = var.velero_cron_schedule
+  log_level                           = var.velero_log_level
+  repo_name                           = var.fluxcd_bootstrap_repo_name
+  repo_branch                         = var.fluxcd_bootstrap_repo_branch
+  helm_chart_version                  = var.velero_helm_chart_version
+  image_tag                           = var.velero_image_tag
+  plugin_for_aws_version              = var.velero_plugin_for_aws_version
+  snapshots_enabled                   = var.velero_snapshots_enabled
+  overwrite_on_create                 = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url                = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch             = var.fluxcd_apps_repo_branch
+  prune                               = var.fluxcd_prune
+  namespace                           = var.velero_namespace
+  service_account                     = var.velero_service_account
+  oidc_issuer                         = local.oidc_issuer
+  workload_account_id                 = var.aws_workload_account_id
+  excluded_cluster_scoped_resources   = var.velero_excluded_cluster_scoped_resources
+  excluded_namespace_scoped_resources = var.velero_excluded_namespace_scoped_resources
 
   providers = {
     github = github.fluxcd
@@ -825,6 +757,8 @@ module "grafana_agent_k8s_monitoring" {
   priority_class                = var.monitoring_kube_prometheus_stack_priority_class
   namespace                     = var.grafana_agent_namespace
   timeout                       = var.grafana_agent_helm_install_timeout
+
+  depends_on = [module.monitoring_kube_prometheus_stack]
 }
 
 module "grafana" {
@@ -921,19 +855,17 @@ module "external_secrets_ssm" {
 # --------------------------------------------------
 
 module "kafka_exporter" {
-  source                  = "../../_sub/monitoring/kafka-exporter"
-  count                   = var.kafka_exporter_deploy ? 1 : 0
-  cluster_name            = var.eks_cluster_name
-  deploy_name             = "kafka-exporter"
-  namespace               = "monitoring"
-  github_owner            = var.fluxcd_bootstrap_repo_owner
-  repo_name               = var.fluxcd_bootstrap_repo_name
-  repo_branch             = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
-  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
-  prune                   = var.fluxcd_prune
-  kafka_clusters          = var.kafka_exporter_clusters
+  source              = "../../_sub/monitoring/kafka-exporter"
+  count               = var.kafka_exporter_deploy ? 1 : 0
+  cluster_name        = var.eks_cluster_name
+  deploy_name         = "kafka-exporter"
+  namespace           = "monitoring"
+  github_owner        = var.fluxcd_bootstrap_repo_owner
+  repo_name           = var.fluxcd_bootstrap_repo_name
+  repo_branch         = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create = var.fluxcd_bootstrap_overwrite_on_create
+  prune               = var.fluxcd_prune
+  kafka_clusters      = var.kafka_exporter_clusters
 
   providers = {
     github = github.fluxcd
@@ -1057,22 +989,94 @@ module "github_arc_runners" {
 }
 
 # --------------------------------------------------
-# Flux CD in a shared responsibility model with
-# other platform teams
+# Apache Druid Operator
 # --------------------------------------------------
 
-module "shared_manifests" {
-  source                       = "../../_sub/compute/k8s-shared-manifests"
-  count                        = var.shared_manifests_deploy ? 1 : 0
+module "druid_operator" {
+  source                    = "../../_sub/compute/druid-operator"
+  count                     = var.druid_operator_deploy ? 1 : 0
+  cluster_name              = var.eks_cluster_name
+  deploy_name               = var.druid_operator_deploy_name
+  namespace                 = var.druid_operator_namespace
+  chart_version             = var.druid_operator_chart_version
+  watch_namespace           = var.druid_operator_watch_namespace
+  resources_requests_cpu    = var.druid_operator_resources_requests_cpu
+  resources_requests_memory = var.druid_operator_resources_requests_memory
+  resources_limits_cpu      = var.druid_operator_resources_limits_cpu
+  resources_limits_memory   = var.druid_operator_resources_limits_memory
+  repo_owner                = var.fluxcd_bootstrap_repo_owner
+  repo_name                 = var.fluxcd_bootstrap_repo_name
+  repo_branch               = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create       = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url      = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch   = var.fluxcd_apps_repo_branch
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [
+    module.platform_fluxcd
+  ]
+}
+
+# --------------------------------------------------
+# Trivy Operator
+# --------------------------------------------------
+
+module "trivy_operator" {
+  source                    = "../../_sub/compute/trivy-operator"
+  count                     = var.trivy_operator_deploy ? 1 : 0
+  cluster_name              = var.eks_cluster_name
+  deploy_name               = var.trivy_operator_deploy_name
+  namespace                 = var.trivy_operator_namespace
+  chart_version             = var.trivy_operator_chart_version
+  resources_requests_cpu    = var.trivy_operator_resources_requests_cpu
+  resources_requests_memory = var.trivy_operator_resources_requests_memory
+  resources_limits_cpu      = var.trivy_operator_resources_limits_cpu
+  resources_limits_memory   = var.trivy_operator_resources_limits_memory
+  github_token              = var.fluxcd_bootstrap_repo_owner_token
+  repo_owner                = var.fluxcd_bootstrap_repo_owner
+  repo_name                 = var.fluxcd_bootstrap_repo_name
+  repo_branch               = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create       = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url      = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch   = var.fluxcd_apps_repo_branch
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [
+    module.platform_fluxcd
+  ]
+}
+
+# --------------------------------------------------
+# Falco
+# --------------------------------------------------
+
+module "falco" {
+  source                       = "../../_sub/security/falco"
+  count                        = var.falco_deploy ? 1 : 0
   cluster_name                 = var.eks_cluster_name
-  overlay_folder               = var.shared_manifests_overlay_folder
+  deploy_name                  = var.falco_deploy_name
+  namespace                    = var.falco_namespace
+  chart_version                = var.falco_chart_version
+  github_token                 = var.fluxcd_bootstrap_repo_owner_token
   repo_owner                   = var.fluxcd_bootstrap_repo_owner
   repo_name                    = var.fluxcd_bootstrap_repo_name
   repo_branch                  = var.fluxcd_bootstrap_repo_branch
   overwrite_on_create          = var.fluxcd_bootstrap_overwrite_on_create
-  shared_manifests_repo_url    = local.shared_manifests_repo_url
-  shared_manifests_repo_branch = var.shared_manifests_repo_branch
-  shared_manifests_repo_name   = var.shared_manifests_repo_name
+  gitops_apps_repo_url         = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch      = var.fluxcd_apps_repo_branch
+  slack_alert_webhook_url      = var.falco_slack_alert_webhook_url
+  slack_alert_channel_name     = var.falco_slack_alert_channel_name
+  slack_alert_minimum_priority = var.falco_slack_alert_minimum_priority
+  stream_enabled               = var.falco_stream_enabled
+  stream_webhook_url           = var.falco_stream_webhook_url
+  stream_channel_name          = var.falco_stream_channel_name
+  custom_rules                 = var.falco_custom_rules
 
   providers = {
     github = github.fluxcd

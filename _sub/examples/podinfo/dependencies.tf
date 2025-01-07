@@ -35,6 +35,7 @@ locals {
           "name" = "platform-apps-sources"
         }
       ]
+      "serviceAccountName" = "kustomize-controller"
       "interval" = "1m0s"
       "path"     = "./apps/podinfo"
       "prune"    = var.prune

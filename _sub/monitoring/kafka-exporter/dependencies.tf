@@ -12,12 +12,27 @@ locals {
 
 locals {
   app_helm_path = <<YAML
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-reconciler-${var.deploy_name}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: helm-controller
+    namespace: ${var.namespace}
+---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: "${local.app_install_name}-helm"
   namespace: "flux-system"
 spec:
+  serviceAccountName: kustomize-controller
   interval: 1m0s
   dependsOn:
     - name: "platform-apps-sources"
@@ -39,6 +54,7 @@ metadata:
   namespace: ${var.namespace}
 spec:
   releaseName: ${var.deploy_name}-${item.id}
+  serviceAccountName: helm-controller
   chart:
     spec:
       chart: chart
@@ -59,10 +75,10 @@ spec:
         id: ${item.id}
         environment: ${item.environment}
 YAML
-  }}
+  } }
 
   dyn_clusters_file_list = [for key, value in local.clusters : "\"manifest-${key}.yaml\""]
-  clusters_mapped = join("\n  - ", local.dyn_clusters_file_list)
+  clusters_mapped        = join("\n  - ", local.dyn_clusters_file_list)
 
   helm_install = <<YAML
 apiVersion: kustomize.config.k8s.io/v1beta1

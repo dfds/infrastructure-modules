@@ -4,6 +4,7 @@ metadata:
   name: velero
   namespace: flux-system
 spec:
+  serviceAccountName: helm-controller
   chart:
     spec:
       chart: velero
@@ -20,11 +21,6 @@ spec:
     initContainers:
       - name: velero-plugin-for-aws
         image: velero/velero-plugin-for-aws:${plugin_for_aws_version}
-        volumeMounts:
-          - mountPath: /target
-            name: plugins
-      - name: velero-plugin-for-csi
-        image: velero/velero-plugin-for-csi:${plugin_for_csi_version}
         volumeMounts:
           - mountPath: /target
             name: plugins
@@ -47,4 +43,15 @@ spec:
         template:
           ttl: "${schedules_template_ttl}"
           snapshotVolumes: ${snapshots_enabled}
-          includeClusterResources: ${schedules_template_include_cluster_resources}
+%{ if length(excluded_namespace_scoped_resources) > 0 ~}
+          excludedNamespaceScopedResources:
+%{ for ex_ns in excluded_namespace_scoped_resources ~}
+            - ${ex_ns}
+%{ endfor ~}
+%{ endif ~}
+%{ if length(excluded_cluster_scoped_resources) > 0 ~}
+          excludedClusterScopedResources:
+%{ for ex_cl in excluded_cluster_scoped_resources ~}
+            - ${ex_cl}
+%{ endfor ~}
+%{ endif ~}

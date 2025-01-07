@@ -61,30 +61,30 @@ variable "prune" {
 }
 
 variable "github_config_url" {
-  type = string
+  type        = string
   description = "URL of Github organisation or repo for the runners"
 }
 
 variable "github_config_secret" {
-  type = string
+  type        = string
   description = "Secret name containing authorisation information for the runners. This is not deployed by this module, consider using external-secrets to deploy it"
 }
 
 variable "runner_scale_set_name" {
-  type = string
+  type        = string
   description = "Name for the runner scale set"
 }
 
 variable "storage_class_name" {
-  type = string
+  type        = string
   description = "Name of the storage class to use for the runners persistent volume"
-  default = "csi-gp3"
+  default     = "csi-gp3"
 }
 
 variable "storage_request_size" {
-  type = string
+  type        = string
   description = "Size of the persistent volume claim for the runners"
-  default = "1Gi"
+  default     = "1Gi"
 }
 
 variable "controller_deploy_name" {
@@ -94,25 +94,25 @@ variable "controller_deploy_name" {
 }
 
 variable "min_runners" {
-  type = number
+  type        = number
   description = "Minimum number of runners to keep running"
-  default = 0
+  default     = 0
 }
 
 variable "max_runners" {
-  type = number
+  type        = number
   description = "Maximum number of runners to keep running"
-  default = 5
+  default     = 5
 }
-  
+
 variable "runner_memory_request" {
-  type = string
+  type        = string
   description = "Memory request for the runner pods"
-  default = "128Mi"
+  default     = "128Mi"
 }
 
 variable "runner_memory_limit" {
-  type = string
+  type        = string
   description = "Memory request for the runner pods"
-  default = "8Gi"
+  default     = "8Gi"
 }

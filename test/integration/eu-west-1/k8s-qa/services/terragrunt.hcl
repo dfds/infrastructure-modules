@@ -144,8 +144,8 @@ inputs = {
   monitoring_kube_prometheus_stack_prometheus_query_log_file_enabled = true
   monitoring_kube_prometheus_stack_prometheus_enable_features        = ["memory-snapshot-on-shutdown"]
   monitoring_kube_prometheus_stack_prometheus_confluent_metrics_scrape_enabled = true
-  monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_key = "fake"
-  monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_secret = "fake"
+  monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_key = "fake"      # pragma: allowlist secret
+  monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_secret = "fake"   # pragma: allowlist secret
 
 
   # --------------------------------------------------
@@ -239,10 +239,11 @@ inputs = {
   # is already applied through Terragrunt.
   # --------------------------------------------------
 
-  velero_deploy                 = true
-  velero_bucket_arn = "arn:aws:s3:::dfds-velero-qa"
-  velero_plugin_for_aws_version = "v1.7.0"
-  velero_plugin_for_csi_version = "v0.5.0"
+  velero_deploy                               = true
+  velero_bucket_arn                           = "arn:aws:s3:::dfds-velero-qa"
+  velero_helm_chart_version                   = "8.1.0"
+  velero_plugin_for_aws_version               = "v1.7.0"
+  velero_excluded_namespace_scoped_resources  = ["secrets"]
 
   # --------------------------------------------------
   # Grafana Agent for Kubernetes monitoring
@@ -293,15 +294,42 @@ inputs = {
   github_arc_ss_controller_helm_chart_version = "0.9.3"
 
   # --------------------------------------------------
-  # Flux CD in a shared responsibility model with
-  # other platform teams
+  # Apache Druid Operator
   # --------------------------------------------------
 
-  shared_manifests_repo_name             = "shared-manifests"
-  shared_manifests_repo_branch           = "main"
-  shared_manifests_repo_owner            = "dfds"
+  druid_operator_deploy                   = true
+  druid_operator_chart_version            = "0.3.7"
+  druid_operator_resources_limits_cpu     = "500m"
+  druid_operator_resources_limits_memory  = "128Mi"
 
-  shared_manifests_deploy         = true
-  shared_manifests_overlay_folder = "qa"
+  # --------------------------------------------------
+  # Trivy Operator
+  # --------------------------------------------------
+
+  trivy_operator_deploy                   = true
+
+  tenants = [
+    {
+      namespace = "flux-tenant-test"
+      repositories = [
+        {
+          url = "https://github.com/dfds/flux-tenant-test"
+          branch = "main"
+        }
+      ]
+    }
+  ]
+
+  fluxcd_tenants = [
+    {
+      namespace = "flux-tenant-test"
+      repositories = [
+        {
+          url = "https://github.com/dfds/flux-tenant-test"
+          branch = "main"
+        }
+      ]
+    }
+  ]
 
 }

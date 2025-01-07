@@ -4,6 +4,7 @@ metadata:
   name: grafana-k8s-monitoring
   namespace: ${namespace}
 spec:
+  serviceAccountName: helm-controller
   chart:
     spec:
       version: "${helm_chart_version}"
@@ -128,5 +129,3 @@ spec:
 %{ endif ~}
     prometheus-node-exporter:
       priorityClassName: ${prometheus_node_exporter_priorityclass}
-
-

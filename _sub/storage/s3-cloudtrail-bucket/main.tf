@@ -1,11 +1,16 @@
 resource "aws_s3_bucket" "log_bucket" {
-  count  = var.create_s3_bucket && var.s3_log_bucket != null ? 1 : 0
-  bucket = var.s3_log_bucket
-  tags = {
-    "Managed by" = "Terraform"
-  }
-
+  count         = var.create_s3_bucket && var.s3_log_bucket != null ? 1 : 0
+  bucket        = var.s3_log_bucket
+  tags          = var.tags
   force_destroy = true
+}
+
+resource "aws_s3_bucket_versioning" "log_bucket" {
+  count  = var.create_s3_bucket && var.s3_log_bucket != null ? 1 : 0
+  bucket = aws_s3_bucket.log_bucket[count.index].id
+  versioning_configuration {
+    status = "Enabled"
+  }
 }
 
 resource "aws_s3_bucket_ownership_controls" "log_bucket_ownership_controls" {
@@ -31,13 +36,18 @@ resource "aws_s3_bucket_policy" "log_bucket_policy" {
 }
 
 resource "aws_s3_bucket" "bucket" {
-  count  = var.create_s3_bucket ? 1 : 0
-  bucket = var.s3_bucket
-  tags = {
-    "Managed by" = "Terraform"
-  }
-
+  count         = var.create_s3_bucket ? 1 : 0
+  bucket        = var.s3_bucket
+  tags          = var.tags
   force_destroy = true
+}
+
+resource "aws_s3_bucket_versioning" "bucket" {
+  count  = var.create_s3_bucket ? 1 : 0
+  bucket = aws_s3_bucket.bucket[count.index].id
+  versioning_configuration {
+    status = "Enabled"
+  }
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "bucket" {
@@ -101,4 +111,36 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket_liftecycle" {
       days = var.retention_days
     }
   }
+}
+
+resource "aws_s3_bucket_replication_configuration" "bucket_replication" {
+  count  = var.create_s3_bucket && var.replication_enabled ? 1 : 0
+  bucket = aws_s3_bucket.bucket[count.index].id
+  role   = var.replication_source_role_arn
+
+  rule {
+    id     = "datalake"
+    status = "Enabled"
+
+    destination {
+      access_control_translation {
+        owner = "Destination"
+      }
+
+      account = var.replication_destination_account_id
+      bucket  = var.replication_destination_bucket_arn
+
+      encryption_configuration {
+        replica_kms_key_id = var.replication_destination_kms_key_arn
+      }
+    }
+
+    source_selection_criteria {
+      sse_kms_encrypted_objects {
+        status = "Enabled"
+      }
+    }
+  }
+
+  depends_on = [aws_s3_bucket_versioning.bucket]
 }

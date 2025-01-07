@@ -32,3 +32,11 @@ if [[ ${NS} -eq 1 ]]; then
 		fi
 	fi
 fi
+
+TENANT_NS=$(kubectl get namespace --no-headers | grep -w flux-tenant-test | wc -l | tr -d ' ')
+if [[ ${TENANT_NS} -eq 0 ]]; then
+  kubectl create namespace flux-tenant-test
+fi
+
+
+
