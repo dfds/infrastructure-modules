@@ -61,12 +61,6 @@ variable "schedules_template_ttl" {
   description = "Time to live for the scheduled backup."
 }
 
-variable "schedules_template_include_cluster_resources" {
-  type        = bool
-  default     = false
-  description = "Should Velero also backup cluster resources?"
-}
-
 variable "helm_repo_name" {
   type        = string
   default     = "vmware-tanzu"
@@ -81,7 +75,7 @@ variable "helm_chart_version" {
 
 variable "image_tag" {
   type        = string
-  default     = "v1.12.4"
+  default     = ""
   description = "Override the image tag in the Helm chart with a custom version"
 }
 
@@ -91,15 +85,6 @@ variable "plugin_for_aws_version" {
   validation {
     condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.plugin_for_aws_version))
     error_message = "Velero plugin for AWS must specify a version. The version must start with the letter v and followed by a semantic version number."
-  }
-}
-
-variable "plugin_for_csi_version" {
-  type        = string
-  description = "The version of velero-plugin-for-csi to use as initContainer"
-  validation {
-    condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.plugin_for_csi_version))
-    error_message = "Velero plugin for CSI must specify a version. The version must start with the letter v and followed by a semantic version number."
   }
 }
 
@@ -155,4 +140,16 @@ variable "workload_account_id" {
   type        = string
   default     = null
   description = "The workload account ID."
+}
+
+variable "excluded_cluster_scoped_resources" {
+  type        = list(string)
+  default     = []
+  description = "List of cluster-scoped resources to exclude from backup"
+}
+
+variable "excluded_namespace_scoped_resources" {
+  type        = list(string)
+  default     = []
+  description = "List of namespace-scoped resources to exclude from backup"
 }

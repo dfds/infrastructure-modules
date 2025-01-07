@@ -70,6 +70,43 @@ variable "traefik_alb_s3_access_logs_retiontion_days" {
   default = 30
 }
 
+variable "alb_access_logs_replication_enabled" {
+  type        = bool
+  description = "Enable S3 bucket replication."
+  default     = false
+}
+
+variable "alb_access_logs_replication_destination_bucket_arn" {
+  type        = string
+  description = "The ARN of the destination bucket."
+  default     = null
+}
+
+variable "alb_access_logs_replication_source_role_name" {
+  type        = string
+  description = "Name of the role to create"
+  default     = null
+}
+
+variable "alb_access_logs_replication_source_kms_key_arn" {
+  type        = string
+  description = "The ARN of the KMS key to allow decryption of the source bucket"
+  default     = null
+}
+
+variable "alb_access_logs_replication_destination_kms_key_arn" {
+  type        = string
+  description = "The ARN of the KMS key to allow encryption of the destination bucket"
+  default     = null
+}
+
+variable "alb_access_logs_replication_destination_account_id" {
+  type        = string
+  description = "The account ID of the destination bucket."
+  default     = null
+}
+
+
 # --------------------------------------------------
 # Load Balancers in front of Traefik
 # --------------------------------------------------
@@ -445,6 +482,19 @@ variable "fluxcd_bootstrap_overwrite_on_create" {
   description = "Enable overwriting existing files"
 }
 
+variable "fluxcd_tenants" {
+  type = list(object({
+    namespace = string
+    repositories = list(object({
+      url    = string
+      branch = string
+      path   = optional(string, null),
+    }))
+  }))
+  description = "List of tenants' namespaces and repository URLs"
+  default     = []
+}
+
 # --------------------------------------------------
 # GitOps apps used by Flux CD
 # --------------------------------------------------
@@ -612,170 +662,6 @@ variable "atlantis_add_secret_volumes" {
   default     = false
   description = "Add secret volumes to the Atlantis deployment"
 
-}
-# --------------------------------------------------
-# Crossplane
-# --------------------------------------------------
-
-variable "crossplane_deploy" {
-  type        = bool
-  description = "Deploy Crossplane"
-  default     = false
-}
-
-variable "crossplane_namespace" {
-  type        = string
-  description = "Namespace in which to install Crossplane"
-  default     = "upbound-system"
-}
-
-variable "crossplane_namespace_labels" {
-  type    = map(any)
-  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/warn" = "baseline" }
-}
-
-variable "crossplane_release_name" {
-  type        = string
-  description = "Name of the chart release"
-  default     = "universal-crossplane"
-}
-
-variable "crossplane_chart_version" {
-  type        = string
-  description = "Specify a version of the Helm chart"
-  default     = ""
-}
-
-variable "crossplane_recreate_pods" {
-  type        = bool
-  description = "Recreate pods on deployment"
-  default     = true
-}
-
-variable "crossplane_force_update" {
-  type        = bool
-  description = "Force resource updates through replacement"
-  default     = false
-}
-
-
-variable "crossplane_devel" {
-  type        = bool
-  description = "Allow use of development versions of Crossplane"
-  default     = true
-}
-
-
-variable "crossplane_providers" {
-  type        = list(string)
-  description = "List of Crossplane providers to install"
-  default     = []
-}
-
-variable "crossplane_admin_service_accounts" {
-  type = list(object({
-    serviceaccount = string
-    namespace      = string
-  }))
-  description = "List of service account objects that should have crossplane-admin access"
-  default     = []
-}
-
-variable "crossplane_edit_service_accounts" {
-  type = list(object({
-    serviceaccount = string
-    namespace      = string
-  }))
-  description = "List of service account objects that should have crossplane-edit access"
-  default     = []
-}
-
-variable "crossplane_view_service_accounts" {
-  type = list(object({
-    serviceaccount = string
-    namespace      = string
-  }))
-  description = "List of service account objects that should have crossplane-view access"
-  default     = []
-}
-
-variable "crossplane_metrics_enabled" {
-  type        = bool
-  description = "Enable crossplane metrics"
-  default     = true
-}
-
-variable "crossplane_aws_iam_role_name" {
-  type        = string
-  description = ""
-  default     = "provider-aws"
-}
-
-variable "crossplane_cfg_pkg_deploy" {
-  type        = bool
-  description = "Deploy Crossplane configuration package"
-  default     = false
-}
-
-variable "crossplane_cfg_pkg_name" {
-  type        = string
-  description = "The unique Crossplane configuration name in Kubernetes"
-  default     = "dfdsdk-dfds-infra"
-}
-
-variable "crossplane_cfg_pkg_docker_image" {
-  type        = string
-  description = "The Docker image address the crossplane configuration we want to deploy, e.g.: dfdsdk/dfds-infra:v0.0.1"
-  default     = null
-}
-
-variable "crossplane_operator_deploy" {
-  type        = bool
-  description = "Deploy Crossplane configuration package"
-  default     = false
-}
-
-variable "crossplane_operator_deploy_name" {
-  type        = string
-  description = "The unique name for this deployment."
-  default     = "crossplane-operator"
-}
-
-variable "crossplane_operator_helm_chart_version" {
-  type        = string
-  description = "The Helm Chart version to deploy."
-  default     = ""
-}
-
-variable "crossplane_provider_confluent_email" {
-  type        = string
-  default     = null
-  description = "Confluent global admin account email"
-}
-
-variable "crossplane_provider_confluent_password" {
-  type        = string
-  default     = null
-  description = "Confluent global admin account password"
-  sensitive   = true
-}
-
-variable "crossplane_confluent_environments" {
-  type        = map(any)
-  default     = {}
-  description = "Supported Confluent environments"
-}
-
-variable "crossplane_confluent_clusters" {
-  type        = map(any)
-  default     = {}
-  description = "Supported Confluent clusters"
-}
-
-variable "crossplane_confluent_clusters_endpoints" {
-  type        = map(any)
-  default     = {}
-  description = "Endpoints for each supported supported Confluent clusters"
 }
 
 # --------------------------------------------------
@@ -963,7 +849,7 @@ variable "velero_helm_chart_version" {
 
 variable "velero_image_tag" {
   type        = string
-  default     = "v1.12.4"
+  default     = ""
   description = "Override the image tag in the Helm chart with a custom version"
 }
 
@@ -974,16 +860,6 @@ variable "velero_plugin_for_aws_version" {
   validation {
     condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.velero_plugin_for_aws_version)) || var.velero_plugin_for_aws_version == ""
     error_message = "Velero plugin for AWS must specify a version. The version must start with the letter v and followed by a semantic version number."
-  }
-}
-
-variable "velero_plugin_for_csi_version" {
-  type        = string
-  default     = "v0.2.0"
-  description = "The version of velero-plugin-for-csi to use as initContainer"
-  validation {
-    condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.velero_plugin_for_csi_version)) || var.velero_plugin_for_csi_version == ""
-    error_message = "Velero plugin for CSI must specify a version. The version must start with the letter v and followed by a semantic version number."
   }
 }
 
@@ -1009,6 +885,18 @@ variable "velero_bucket_arn" {
   type        = string
   default     = null
   description = "The arn of the S3 bucket that contains the Velero backup. Only used if S3 bucket is in a different account"
+}
+
+variable "velero_excluded_cluster_scoped_resources" {
+  type        = list(string)
+  default     = []
+  description = "List of cluster-scoped resources to exclude from backup"
+}
+
+variable "velero_excluded_namespace_scoped_resources" {
+  type        = list(string)
+  default     = []
+  description = "List of namespace-scoped resources to exclude from backup"
 }
 
 
@@ -1273,7 +1161,7 @@ variable "kafka_exporter_deploy" {
 }
 
 variable "kafka_exporter_clusters" {
-  type        = map
+  type        = map(any)
   description = "Map of clusters that will be used to deploy exporters"
   default     = {}
 }
@@ -1428,36 +1316,181 @@ variable "ssm_param_createdby" {
 }
 
 # --------------------------------------------------
-# Flux CD in a shared responsibility model with
-# other platform teams
+# Apache Druid Operator
 # --------------------------------------------------
 
-variable "shared_manifests_repo_name" {
-  type        = string
-  default     = ""
-  description = "The repo name for your GitOps manifests"
-}
-
-variable "shared_manifests_repo_branch" {
-  type        = string
-  default     = "main"
-  description = "The default branch for your GitOps manifests"
-}
-
-variable "shared_manifests_repo_owner" {
-  type        = string
-  default     = "main"
-  description = "The repo owner for your GitOps manifests"
-}
-
-variable "shared_manifests_deploy" {
+variable "druid_operator_deploy" {
   type        = bool
-  description = "Deploy Flux manifests from a shared responsibily repo"
+  description = "Deploy druid_operator helm chart switch"
   default     = false
 }
 
-variable "shared_manifests_overlay_folder" {
+variable "druid_operator_deploy_name" {
   type        = string
-  description = "Which overlay folder to deploy"
-  default     = "production"
+  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
+  default     = "druid-operator"
+}
+
+variable "druid_operator_chart_version" {
+  type        = string
+  description = "Druid Operator helm chart version"
+  default     = ""
+}
+
+variable "druid_operator_namespace" {
+  type        = string
+  description = "The namespace to deploy druid_operator in"
+  default     = "druid-system"
+}
+
+variable "druid_operator_watch_namespace" {
+  type        = string
+  description = "Comma seperated string of namespaces to watch for Druid resources"
+  default     = ""
+}
+
+variable "druid_operator_resources_requests_cpu" {
+  type        = string
+  default     = "10m"
+  description = "CPU resources request size"
+}
+
+variable "druid_operator_resources_requests_memory" {
+  type        = string
+  default     = "128Mi"
+  description = "Memory resources requests size"
+}
+
+variable "druid_operator_resources_limits_cpu" {
+  type        = string
+  default     = null
+  description = "CPU resources limits size"
+}
+
+variable "druid_operator_resources_limits_memory" {
+  type        = string
+  default     = null
+  description = "Memory resources limits size"
+}
+
+# --------------------------------------------------
+# Trivy Operator
+# --------------------------------------------------
+
+variable "trivy_operator_deploy" {
+  type        = bool
+  description = "Deploy Trivy Operator helm chart switch"
+  default     = false
+}
+
+variable "trivy_operator_deploy_name" {
+  type        = string
+  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
+  default     = "trivy-operator"
+}
+
+variable "trivy_operator_chart_version" {
+  type        = string
+  description = "Trivy Operator helm chart version"
+  default     = ""
+}
+
+variable "trivy_operator_namespace" {
+  type        = string
+  description = "The namespace to deploy Trivy Operator in"
+  default     = "trivy-system"
+}
+
+variable "trivy_operator_resources_requests_cpu" {
+  type        = string
+  default     = "100m"
+  description = "CPU resources request size"
+}
+
+variable "trivy_operator_resources_requests_memory" {
+  type        = string
+  default     = "128Mi"
+  description = "Memory resources requests size"
+}
+
+variable "trivy_operator_resources_limits_cpu" {
+  type        = string
+  default     = "500m"
+  description = "CPU resources limits size"
+}
+
+variable "trivy_operator_resources_limits_memory" {
+  type        = string
+  default     = "1024Mi"
+  description = "Memory resources limits size"
+}
+
+# --------------------------------------------------
+# Falco
+# --------------------------------------------------
+
+variable "falco_deploy" {
+  type        = bool
+  description = "Deploy Falco helm chart switch"
+  default     = false
+}
+
+variable "falco_deploy_name" {
+  type        = string
+  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
+  default     = "falco"
+}
+
+variable "falco_chart_version" {
+  type        = string
+  description = "Falco helm chart version"
+  default     = ""
+}
+
+variable "falco_namespace" {
+  type        = string
+  description = "The namespace to deploy Falco in"
+  default     = "falco"
+}
+
+variable "falco_slack_alert_webhook_url" {
+  type        = string
+  default     = ""
+  description = "Value for slack webhook url. If not provided, slack alerts will not be sent"
+}
+
+variable "falco_slack_alert_channel_name" {
+  type        = string
+  default     = ""
+  description = "Channel name for slack alerts. Example: #falco-alerts"
+}
+
+variable "falco_slack_alert_minimum_priority" {
+  type        = string
+  default     = "critical"
+  description = "Minimum priority level for slack alerts to be sent to Slack"
+}
+
+variable "falco_stream_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable Falco stream output to a specified webhook"
+}
+
+variable "falco_stream_webhook_url" {
+  type        = string
+  default     = ""
+  description = "Value for webhook url to which to send falco events stream. stream_enabled must be set to true. If not provided, slack stream will not be sent"
+}
+
+variable "falco_stream_channel_name" {
+  type        = string
+  default     = ""
+  description = "Channel name for falco stream. Example: #falco-stream"
+}
+
+variable "falco_custom_rules" {
+  type = string
+  default = ""
+  description = "Custom rules to be added to the falco config"
 }

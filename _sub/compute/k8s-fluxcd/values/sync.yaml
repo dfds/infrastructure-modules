@@ -1,0 +1,31 @@
+%{ for r in repositories ~}
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: ${r.name}
+  namespace: ${namespace}
+spec:
+  interval: 1m
+  url: ${r.url}
+  secretRef:
+    name: ${r.name}
+  ref:
+    branch: ${r.branch}
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: tenant-${r.name}
+  namespace: ${namespace}
+spec:
+  serviceAccountName: flux-tenant
+  interval: 1m
+%{ if r.path !=null ~}
+  path: ${r.path}
+%{ endif ~}
+  sourceRef:
+    kind: GitRepository
+    name: ${r.name}
+  prune: true
+%{ endfor ~}

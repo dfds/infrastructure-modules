@@ -203,6 +203,13 @@ data "aws_iam_policy_document" "preventive" {
       "s3:PutAccountPublicAccessBlock",
       "s3:PutBucketPublicAccessBlock",
     ]
+    condition {
+      test = "StringNotLike"
+      values = [
+        "arn:aws:iam::*:role/EKSAdmin",
+      ]
+      variable = "aws:PrincipalArn"
+    }
   }
 
   statement {

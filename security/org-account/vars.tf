@@ -42,7 +42,7 @@ variable "master_account_id" {
 }
 
 variable "security_account_id" {
-  type = string
+  type        = string
   description = "The AWS account ID of the Organizations Security account"
 }
 
@@ -93,7 +93,43 @@ variable "iam_github_oidc_policy_name" {
 }
 
 variable "steampipe_audit_role_name" {
-  type = string
+  type        = string
   description = "Name of the IAM role used by Steampipe for reading resources"
-  default = "steampipe-audit"
+  default     = "steampipe-audit"
+}
+
+variable "cloudtrail_replication_enabled" {
+  type        = bool
+  description = "Enable S3 bucket replication."
+  default     = false
+}
+
+variable "cloudtrail_replication_destination_account_id" {
+  type        = string
+  description = "The account ID of the destination bucket."
+  default     = null
+}
+
+variable "cloudtrail_replication_destination_bucket_arn" {
+  type        = string
+  description = "The ARN of the destination bucket."
+  default     = null
+}
+
+variable "cloudtrail_replication_source_role_name" {
+  type        = string
+  description = "Name of the role to create"
+  default     = null
+}
+
+variable "cloudtrail_replication_source_kms_key_arn" {
+  type        = string
+  description = "The ARN of the KMS key to allow decryption of the source bucket"
+  default     = null
+}
+
+variable "cloudtrail_replication_destination_kms_key_arn" {
+  type        = string
+  description = "The ARN of the KMS key to allow encryption of the destination bucket"
+  default     = null
 }

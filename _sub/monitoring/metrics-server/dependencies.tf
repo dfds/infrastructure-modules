@@ -10,21 +10,36 @@ locals {
   app_install_name    = "platform-apps-${var.deploy_name}"
 
   app_helm_path = <<YAML
-    apiVersion: kustomize.toolkit.fluxcd.io/v1
-    kind: Kustomization
-    metadata:
-      name: "${local.app_install_name}-helm"
-      namespace: "flux-system"
-    spec:
-      interval: 1m0s
-      dependsOn:
-        - name: "platform-apps-sources"
-      sourceRef:
-        kind: GitRepository
-        name: "flux-system"
-      path: "./${local.helm_repo_path}"
-      prune: ${var.prune}
-    YAML
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-reconciler-${var.deploy_name}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: helm-controller
+    namespace: ${var.namespace}
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: "${local.app_install_name}-helm"
+  namespace: "flux-system"
+spec:
+  serviceAccountName: kustomize-controller
+  interval: 1m0s
+  dependsOn:
+    - name: "platform-apps-sources"
+  sourceRef:
+    kind: GitRepository
+    name: "flux-system"
+  path: "./${local.helm_repo_path}"
+  prune: ${var.prune}
+YAML
 
   helm_install = <<YAML
     apiVersion: kustomize.config.k8s.io/v1beta1
@@ -42,6 +57,7 @@ locals {
       name: ${var.deploy_name}
       namespace: ${var.namespace}
     spec:
+      serviceAccountName: helm-controller
       chart:
         spec:
           version: ${var.chart_version}
