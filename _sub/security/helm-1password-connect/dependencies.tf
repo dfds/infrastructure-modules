@@ -12,12 +12,27 @@ locals {
 
 locals {
   app_helm_path = <<YAML
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-reconciler-${var.deploy_name}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: helm-controller
+  namespace: ${var.namespace}
+---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: "${local.app_install_name}-helm"
   namespace: "flux-system"
 spec:
+  serviceAccountName: kustomize-controller
   interval: 1m0s
   dependsOn:
     - name: "platform-apps-sources"
