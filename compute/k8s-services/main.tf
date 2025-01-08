@@ -379,6 +379,7 @@ module "monitoring_kube_prometheus_stack" {
   chart_version                                       = var.monitoring_kube_prometheus_stack_chart_version
   namespace                                           = module.monitoring_namespace[0].name
   priority_class                                      = var.monitoring_kube_prometheus_stack_priority_class
+  grafana_enabled                                     = var.monitoring_kube_prometheus_stack_grafana_enabled
   grafana_admin_password                              = var.monitoring_kube_prometheus_stack_grafana_admin_password
   grafana_ingress_path                                = var.monitoring_kube_prometheus_stack_grafana_ingress_path
   grafana_host                                        = "grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}"

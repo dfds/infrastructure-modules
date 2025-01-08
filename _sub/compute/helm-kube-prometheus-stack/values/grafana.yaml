@@ -1,6 +1,7 @@
 etcd:
   enabled: true
 grafana:
+  enabled: ${grafana_enabled}
 %{ if length(grafana_slack_webhook) > 0 ~}
   alerting:
     contactpoints.yaml:
