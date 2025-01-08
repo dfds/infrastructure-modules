@@ -168,6 +168,8 @@ github.com/traefik/traefik/v2 v2.11.16 h1:cIZPmZPocayaZPk59xfhg3mhBDoedtdYSQpZx3
 github.com/traefik/traefik/v2 v2.11.16/go.mod h1:uWpwWjKmAYybWIuRrIl8OCuj9VFZe0o1LpO2kl6voqc=
 github.com/traefik/traefik/v2 v2.11.17 h1:yolh+cSvbVLfmUv7uNcuwPylkzfyUkyvZDaT1O2x4Lg=
 github.com/traefik/traefik/v2 v2.11.17/go.mod h1:MnIv8lbvljiRR3NIrF4F/RfkUtHovQ8C9nHhKRFnA6U=
+github.com/traefik/traefik/v2 v2.11.18 h1:MYvDSGI1FIH3++jbv9IcPz3lPwyX20U+Ybd8GM3Hqf0=
+github.com/traefik/traefik/v2 v2.11.18/go.mod h1:MnIv8lbvljiRR3NIrF4F/RfkUtHovQ8C9nHhKRFnA6U=
 github.com/x448/float16 v0.8.4 h1:qLwI1I70+NjRFUR3zs1JPUCgaCXSh3SW62uAKT1mSBM=
 github.com/x448/float16 v0.8.4/go.mod h1:14CWIYCyZA/cWjXOioeEpHeN/83MdbZDRQHoFcYsOfg=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
