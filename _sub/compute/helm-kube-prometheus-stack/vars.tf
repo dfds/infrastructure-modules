@@ -24,6 +24,12 @@ variable "priority_class" {
   description = "Name of priority class to apply"
 }
 
+variable "grafana_enabled" {
+  type        = bool
+  description = "Feature toogle for Grafana deployment or not"
+  default     = true
+}
+
 variable "grafana_admin_password" {
   type        = string
   description = "Grafana admin password"

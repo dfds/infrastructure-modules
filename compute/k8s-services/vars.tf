@@ -267,6 +267,12 @@ variable "monitoring_kube_prometheus_stack_priority_class" {
   default     = "cluster-monitoring"
 }
 
+variable "monitoring_kube_prometheus_stack_grafana_enabled" {
+  type        = bool
+  description = "Feature toogle for Grafana deployment or not"
+  default     = true
+}
+
 variable "monitoring_kube_prometheus_stack_grafana_admin_password" {
   type        = string
   description = "Grafana admin password"
@@ -1490,7 +1496,7 @@ variable "falco_stream_channel_name" {
 }
 
 variable "falco_custom_rules" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "Custom rules to be added to the falco config"
 }

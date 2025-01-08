@@ -44,6 +44,7 @@ resource "helm_release" "kube_prometheus_stack" {
     }),
 
     templatefile("${path.module}/values/grafana.yaml", {
+      grafana_enabled             = var.grafana_enabled
       grafana_admin_password      = var.grafana_admin_password != "" ? var.grafana_admin_password : random_password.grafana_password.result
       grafana_priorityclass       = var.priority_class
       grafana_ingress_path        = var.grafana_ingress_path
@@ -114,6 +115,7 @@ resource "helm_release" "kube_prometheus_stack" {
 }
 
 resource "github_repository_file" "grafana_config_path" {
+  count               = var.grafana_enabled ? 1 : 0
   repository          = var.repo_name
   branch              = local.repo_branch
   file                = "${local.cluster_repo_path}/${local.grafana_platform_apps_name}-config.yaml"
@@ -122,6 +124,7 @@ resource "github_repository_file" "grafana_config_path" {
 }
 
 resource "github_repository_file" "grafana_config_middleware" {
+  count               = var.grafana_enabled ? 1 : 0
   repository          = var.repo_name
   branch              = local.repo_branch
   file                = "${local.config_repo_path}/middleware.yaml"
@@ -130,6 +133,7 @@ resource "github_repository_file" "grafana_config_middleware" {
 }
 
 resource "github_repository_file" "grafana_config_ingressroute" {
+  count               = var.grafana_enabled ? 1 : 0
   repository          = var.repo_name
   branch              = local.repo_branch
   file                = "${local.config_repo_path}/ingressroute.yaml"
@@ -138,6 +142,7 @@ resource "github_repository_file" "grafana_config_ingressroute" {
 }
 
 resource "github_repository_file" "grafana_config_alert_config" {
+  count               = var.grafana_enabled ? 1 : 0
   repository          = var.repo_name
   branch              = local.repo_branch
   file                = "${local.config_repo_path}/alert-config.yaml"
@@ -146,6 +151,7 @@ resource "github_repository_file" "grafana_config_alert_config" {
 }
 
 resource "github_repository_file" "grafana_config_init" {
+  count               = var.grafana_enabled ? 1 : 0
   repository          = var.repo_name
   branch              = local.repo_branch
   file                = "${local.config_repo_path}/kustomization.yaml"
