@@ -84,6 +84,15 @@
       ],
       "minimumReleaseAge": "7 days",
       "automerge": false
+    },
+    {
+      "description": "Group dependencies affecting the QA environment and it's test resources.",
+      "matchFileNames": [
+        "test/integration/**"
+      ],
+      "addLabels": [
+        "norelease"
+      ]
     }
   ],
   "azure-pipelines": {
