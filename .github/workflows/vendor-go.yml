@@ -1,0 +1,53 @@
+name: Vendor Go modules
+permissions:
+  contents: read
+  pull-requests: write
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches: [main, master]
+    paths:
+      - test/integration/suite/**
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ">=1.23"
+
+      - name: Vendor go modules
+        id: vendor
+        run: |
+          go get -t go.dfds.cloud/infrastructure-modules/test/integration/suite
+          go mod vendor
+        working-directory: test/integration/suite
+
+      - name: Verify that the test script can be compiled
+        id: test
+        run: |
+          ./src/qa-test-eks.sh test-build eu-west-1 qa test-feature.bin
+          if [[ -f test/integration/suite/test-feature.bin ]]; then
+            rm test/integration/suite/test-feature.bin
+          else
+            echo "Test script failed to compile"
+            exit 1
+          fi
+
+      - name: Commit changes
+        id: commit
+        if: steps.test.outcome == 'success'
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git add test/integration/suite/
+          git commit -m "Vendor Go packages again"
+          git push
