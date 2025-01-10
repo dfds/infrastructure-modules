@@ -30,7 +30,7 @@ func initK8s() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	log.Println("Kube client config initialized")
+	log.Println("Kube client config initialized.")
 }
 
 func NewK8sClientSet(t *testing.T) *kubernetes.Clientset {
