@@ -46,13 +46,18 @@ jobs:
         id: verify
         run: |
           diff checksum-before.txt checksum-after.txt
-          if [[ $? -eq 0 ]]; then
-            echo "UPDATED_VENDORING=1" >> $GITHUB_ENV
+          if [[ $? -ne 0 ]]; then
+            echo "UPDATED_VENDORED_FILES=1" >> $GITHUB_ENV
           fi
+
+      - name: Cleanup checksum files
+        id: cleanup
+        run: |
+          rm checksum-before.txt checksum-after.txt || true
 
       - name: Verify that the test script can be compiled
         id: test
-        if: env.UPDATED_VENDORING == '1'
+        if: env.UPDATED_VENDORED_FILES == '1'
         run: |
           ./src/qa-test-eks.sh test-build eu-west-1 qa test-feature.bin
           if [[ -f test/integration/suite/test-feature.bin ]]; then
@@ -64,7 +69,7 @@ jobs:
 
       - name: Commit changes
         id: commit
-        if: env.UPDATED_VENDORING == '1' && steps.test.outcome == 'success'
+        if: env.UPDATED_VENDORED_FILES == '1' && steps.test.outcome == 'success'
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
