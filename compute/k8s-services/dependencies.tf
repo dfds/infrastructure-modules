@@ -223,12 +223,6 @@ locals {
     "module" = "http_2xx"
   }] : []
 
-  blackbox_exporter_monitoring_grafana = var.monitoring_kube_prometheus_stack_deploy ? [{
-    "name"   = "grafana"
-    "url"    = "http://monitoring-grafana.monitoring/api/health"
-    "module" = "http_2xx"
-  }] : []
-
   blackbox_exporter_monitoring_traefik_blue_variant = var.traefik_blue_variant_deploy ? [{
     "name"   = "traefik-blue-variant"
     "url"    = "http://traefik-blue-variant.traefik-blue-variant:9000/ping"
@@ -244,7 +238,6 @@ locals {
 
   blackbox_exporter_monitoring_targets = concat(
     local.blackbox_exporter_monitoring_atlantis,
-    local.blackbox_exporter_monitoring_grafana,
     local.blackbox_exporter_monitoring_traefik_blue_variant,
     local.blackbox_exporter_monitoring_traefik_green_variant,
     var.blackbox_exporter_monitoring_targets
