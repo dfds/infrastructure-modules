@@ -1,15 +1,16 @@
-name: Vendor Go modules
+name: Vendoring Go modules for test suite
 permissions:
   contents: read
   pull-requests: write
 on:
   pull_request:
-    types: [opened, reopened]
-    branches: [main, master]
+    types: [opened, reopened, synchronize]
+    branches: [master]
     paths:
       - test/integration/suite/**
 jobs:
-  docs:
+  vendoring:
+    if: startsWith(github.head_ref, 'feature/renovate/')
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -24,15 +25,34 @@ jobs:
         with:
           go-version: ">=1.23"
 
-      - name: Vendor go modules
-        id: vendor
+      - name: Find test suite checksum before vendoring
+        id: checksum-before
+        run: |
+          find test/integration/suite -type f -exec md5sum {} \; > checksum-before.txt
+
+      - name: Vendoring go modules
+        id: vendoring
         run: |
           go get -t go.dfds.cloud/infrastructure-modules/test/integration/suite
           go mod vendor
         working-directory: test/integration/suite
 
+      - name: Find test suite checksum after vendoring
+        id: checksum-after
+        run: |
+          find test/integration/suite -type f -exec md5sum {} \; > checksum-after.txt
+
+      - name: Verify that the test suite has been vendored
+        id: verify
+        run: |
+          diff checksum-before.txt checksum-after.txt
+          if [[ $? -eq 0 ]]; then
+            echo "UPDATED_VENDORING=1" >> $GITHUB_ENV
+          fi
+
       - name: Verify that the test script can be compiled
         id: test
+        if: env.UPDATED_VENDORING == '1'
         run: |
           ./src/qa-test-eks.sh test-build eu-west-1 qa test-feature.bin
           if [[ -f test/integration/suite/test-feature.bin ]]; then
@@ -44,10 +64,10 @@ jobs:
 
       - name: Commit changes
         id: commit
-        if: steps.test.outcome == 'success'
+        if: env.UPDATED_VENDORING == '1' && steps.test.outcome == 'success'
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git add test/integration/suite/
-          git commit -m "Vendor Go packages again"
+          git commit -m "Vendoring Go packages again"
           git push
