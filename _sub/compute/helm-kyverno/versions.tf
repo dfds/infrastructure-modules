@@ -14,7 +14,7 @@ terraform {
     }
     kubectl = {
       source  = "gavinbunney/kubectl"
-      version = "~> 1.18.0"
+      version = "~> 1.19.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
