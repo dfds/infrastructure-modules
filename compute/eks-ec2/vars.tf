@@ -118,6 +118,11 @@ variable "eks_addon_awsebscsidriver_version_override" {
   default = ""
 }
 
+variable "eks_addon_awsefscsidriver_version_override" {
+  type    = string
+  default = ""
+}
+
 variable "eks_addon_most_recent" {
   type        = bool
   default     = false
@@ -156,10 +161,10 @@ variable "eks_managed_nodegroups" {
       value  = optional(string),
       effect = string
     })), [])
-    labels = optional(map(string), {})
+    labels   = optional(map(string), {})
     max_pods = optional(number, 110)
-    cpu = optional(string, null)
-    memory = optional(string, null)
+    cpu      = optional(string, null)
+    memory   = optional(string, null)
   }))
   default = {}
 }
