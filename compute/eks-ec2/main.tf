@@ -133,8 +133,8 @@ module "eks_managed_workers_node_group" {
     for sn in module.eks_managed_workers_subnet.subnets : sn.id if contains(each.value.availability_zones, sn.availability_zone)
   ]
   max_pods = each.value.max_pods
-  cpu = each.value.cpu
-  memory = each.value.memory
+  cpu      = each.value.cpu
+  memory   = each.value.memory
 }
 
 # --------------------------------------------------
@@ -163,10 +163,10 @@ module "eks_heptio" {
 }
 
 module "efs_fs" {
-  source = "../../_sub/compute/efs-fs"
-  name   = "eks-${var.eks_cluster_name}-efs"
-  vpc_id = module.eks_cluster.vpc_id
-  vpc_subnet_ids = module.eks_managed_workers_subnet.subnet_ids
+  source                   = "../../_sub/compute/efs-fs"
+  name                     = "eks-${var.eks_cluster_name}-efs"
+  vpc_id                   = module.eks_cluster.vpc_id
+  vpc_subnet_ids           = module.eks_managed_workers_subnet.subnet_ids
   automated_backup_enabled = var.efs_automated_backup_enabled
 }
 
@@ -179,6 +179,7 @@ module "eks_addons" {
   vpccni_version_override          = var.eks_addon_vpccni_version_override
   vpccni_prefix_delegation_enabled = var.eks_addon_vpccni_prefix_delegation_enabled
   awsebscsidriver_version_override = var.eks_addon_awsebscsidriver_version_override
+  awsefscsidriver_version_override = var.eks_addon_awsefscsidriver_version_override
   most_recent                      = var.eks_addon_most_recent
   cluster_version                  = var.eks_cluster_version
   eks_openid_connect_provider_url  = module.eks_cluster.eks_openid_connect_provider_url
