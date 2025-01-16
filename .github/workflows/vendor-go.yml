@@ -45,8 +45,8 @@ jobs:
       - name: Verify that the test suite has been vendored
         id: verify
         run: |
-          CHECKSUM_BEFORE_FILE=(md5sum checksum-before.txt | awk '{print $1}')
-          CHECKSUM_AFTER_FILE=(md5sum checksum-after.txt | awk '{print $1}')
+          CHECKSUM_BEFORE_FILE=$(md5sum checksum-before.txt | awk '{print $1}')
+          CHECKSUM_AFTER_FILE=$(md5sum checksum-after.txt | awk '{print $1}')
 
           if [[ $CHECKSUM_BEFORE_FILE != $CHECKSUM_AFTER_FILE ]]; then
             echo "UPDATED_VENDORED_FILES=1" >> $GITHUB_ENV
