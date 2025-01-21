@@ -360,7 +360,7 @@ module "goldpinger" {
   chart_version           = var.goldpinger_chart_version
   priority_class          = var.goldpinger_priority_class
 
-  depends_on = [module.grafana, module.grafana_agent_k8s_monitoring, module.platform_fluxcd]
+  depends_on = [module.grafana, module.platform_fluxcd]
 
   providers = {
     github = github.fluxcd
@@ -419,7 +419,7 @@ module "monitoring_kube_prometheus_stack" {
   providers = {
     github = github.fluxcd
   }
-  enable_prom_kube_stack_components = var.grafana_agent_deploy || var.grafana_deploy ? false : true
+  enable_prom_kube_stack_components = var.grafana_deploy ? false : true
   depends_on                        = [module.platform_fluxcd]
 }
 
@@ -454,7 +454,7 @@ module "metrics_server" {
 
 module "aws_node_service" {
   source = "../../_sub/monitoring/aws-node"
-  count  = var.grafana_agent_deploy || var.grafana_deploy || var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
+  count  = var.grafana_deploy || var.monitoring_kube_prometheus_stack_deploy ? 1 : 0
 }
 
 # --------------------------------------------------
@@ -564,7 +564,7 @@ module "blackbox_exporter_flux_manifests" {
     github = github.fluxcd
   }
 
-  depends_on = [module.grafana, module.grafana_agent_k8s_monitoring, module.platform_fluxcd]
+  depends_on = [module.grafana, module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -683,7 +683,7 @@ module "velero" {
 module "aws_subnet_exporter" {
   source         = "../../_sub/compute/k8s-subnet-exporter"
   count          = var.subnet_exporter_deploy ? 1 : 0
-  namespace_name = var.grafana_agent_deploy || var.grafana_deploy ? var.grafana_agent_namespace : module.monitoring_namespace[0].name
+  namespace_name = var.grafana_deploy ? var.grafana_agent_namespace : module.monitoring_namespace[0].name
   aws_account_id = var.aws_workload_account_id
   aws_region     = var.aws_region
   image_tag      = "0.3"
@@ -693,7 +693,7 @@ module "aws_subnet_exporter" {
   tolerations    = var.monitoring_tolerations
   affinity       = var.monitoring_affinity
 
-  depends_on = [module.grafana, module.grafana_agent_k8s_monitoring]
+  depends_on = [module.grafana]
 }
 
 # --------------------------------------------------
@@ -732,35 +732,6 @@ module "elb_inactivity_cleanup_auth" {
 # --------------------------------------------------
 # Grafana Agent for Kubernetes monitoring
 # --------------------------------------------------
-
-module "grafana_agent_k8s_monitoring" {
-  source                        = "../../_sub/monitoring/helm-grafana-agent"
-  count                         = var.grafana_agent_deploy ? 1 : 0
-  chart_version                 = var.grafana_agent_chart_version
-  cluster_name                  = var.eks_cluster_name
-  api_token                     = var.grafana_agent_api_token
-  prometheus_url                = var.grafana_agent_prometheus_url
-  prometheus_username           = var.grafana_agent_prometheus_username
-  loki_url                      = var.grafana_agent_loki_url
-  loki_username                 = var.grafana_agent_loki_username
-  tempo_url                     = var.grafana_agent_tempo_url
-  tempo_username                = var.grafana_agent_tempo_username
-  traces_enabled                = var.grafana_agent_traces_enabled
-  open_cost_enabled             = var.grafana_agent_open_cost_enabled
-  agent_resource_memory_limit   = var.grafana_agent_resource_memory_limit
-  agent_resource_memory_request = var.grafana_agent_resource_memory_request
-  affinity                      = var.observability_affinity
-  tolerations                   = var.observability_tolerations
-  agent_replicas                = var.grafana_agent_replicas
-  storage_enabled               = var.grafana_agent_storage_enabled
-  storage_class                 = var.grafana_agent_storage_class
-  storage_size                  = var.grafana_agent_storage_size
-  priority_class                = var.monitoring_kube_prometheus_stack_priority_class
-  namespace                     = var.grafana_agent_namespace
-  timeout                       = var.grafana_agent_helm_install_timeout
-
-  depends_on = [module.monitoring_kube_prometheus_stack]
-}
 
 module "grafana" {
   source = "../../_sub/monitoring/grafana"
@@ -880,21 +851,21 @@ module "kafka_exporter" {
 # --------------------------------------------------
 
 module "onepassword_connect" {
-  source                    = "../../_sub/security/helm-1password-connect"
-  count                     = var.onepassword-connect_deploy ? 1 : 0
-  cluster_name              = var.eks_cluster_name
-  deploy_name               = "1password-connect"
-  namespace                 = "1password-connect"
-  github_owner              = var.fluxcd_bootstrap_repo_owner
-  repo_name                 = var.fluxcd_bootstrap_repo_name
-  repo_branch               = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create       = var.fluxcd_bootstrap_overwrite_on_create
-  gitops_apps_repo_url      = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch   = var.fluxcd_apps_repo_branch
-  prune                     = var.fluxcd_prune
-  workload_account_id       = var.aws_workload_account_id
-  oidc_issuer               = local.oidc_issuer
-  aws_region                = local.aws_region
+  source                  = "../../_sub/security/helm-1password-connect"
+  count                   = var.onepassword-connect_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  deploy_name             = "1password-connect"
+  namespace               = "1password-connect"
+  github_owner            = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  prune                   = var.fluxcd_prune
+  workload_account_id     = var.aws_workload_account_id
+  oidc_issuer             = local.oidc_issuer
+  aws_region              = local.aws_region
 
 
   providers = {

@@ -963,12 +963,6 @@ variable "disable_inactivity_cleanup" {
 # Grafana Agent for Kubernetes monitoring
 # --------------------------------------------------
 
-variable "grafana_agent_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for Grafana Agent module"
-}
-
 variable "grafana_deploy" {
   type        = string
   default     = false
