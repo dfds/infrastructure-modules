@@ -763,6 +763,7 @@ module "grafana" {
   storage_size                  = var.grafana_agent_storage_size
   priority_class                = var.monitoring_kube_prometheus_stack_priority_class
   namespace                     = var.grafana_agent_namespace
+  enable_prometheus_crds        = var.monitoring_kube_prometheus_stack_deploy ? false : var.grafana_agent_enable_prometheus_crds
 
   providers = {
     github = github.fluxcd
