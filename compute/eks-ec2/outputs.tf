@@ -40,6 +40,10 @@ output "eks_worker_subnet_ids" {
   value = module.eks_managed_workers_subnet.subnet_ids
 }
 
+output "eks_control_subnet_ids" {
+  value = module.eks_cluster.subnet_ids
+}
+
 output "eks_workers_security_group_id" {
   value = module.eks_workers_security_group.id
 }
