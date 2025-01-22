@@ -963,12 +963,6 @@ variable "disable_inactivity_cleanup" {
 # Grafana Agent for Kubernetes monitoring
 # --------------------------------------------------
 
-variable "grafana_agent_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for Grafana Agent module"
-}
-
 variable "grafana_deploy" {
   type        = string
   default     = false
@@ -1079,10 +1073,11 @@ variable "grafana_agent_namespace" {
   default     = "grafana"
 }
 
-variable "grafana_agent_helm_install_timeout" {
-  type        = number
-  description = "Timeout for helm install command"
-  default     = 600
+
+variable "grafana_agent_enable_prometheus_crds" {
+  type        = bool
+  description = "Enable Prometheus CRDs"
+  default     = true
 }
 
 variable "observability_tolerations" {
