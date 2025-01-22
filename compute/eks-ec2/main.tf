@@ -17,11 +17,42 @@ module "eks_internet_gateway" {
   vpc_id = module.eks_cluster.vpc_id
 }
 
+# NAT Gateway (place in control plane subnet)
+module "eks_nat_gateway" {
+  source = "../../_sub/network/nat-gateway"
+  count  = var.use_worker_nat_gateway ? length(module.eks_cluster.subnet_ids) : 0
+  subnet_id = module.eks_cluster.subnet_ids[count.index]
+  tags = var.tags
+
+  depends_on = [ module.eks_internet_gateway ]
+}
+
+# Control Plane Route Table
 module "eks_route_table" {
+  count  = !var.use_worker_nat_gateway ? 1 : 0
   source     = "../../_sub/network/route-table"
   name       = "eks-${var.eks_cluster_name}-subnet"
   vpc_id     = module.eks_cluster.vpc_id
   gateway_id = module.eks_internet_gateway.id
+}
+
+# Control Plane Route Table with NAT Gateway
+module "eks_route_table_nat_gateway" {
+  count  = var.use_worker_nat_gateway ? length(module.eks_cluster.subnet_ids) : 0
+  source     = "../../_sub/network/route-table"
+  name       = "eks-${var.eks_cluster_name}-subnet-control-plane"
+  vpc_id     = module.eks_cluster.vpc_id
+  gateway_id = module.eks_internet_gateway.id
+}
+
+# Worker Node Route Table with NAT Gateway
+module "eks_route_table_workers_nat_gateway" {
+  count  = var.use_worker_nat_gateway ? length(module.eks_managed_workers_subnet.subnet_ids) : 0
+  source     = "../../_sub/network/route-table"
+  name       = "eks-${var.eks_cluster_name}-subnet-worker-node-${count.index}"
+  vpc_id     = module.eks_cluster.vpc_id
+  # nat_gateway_id = module.eks_nat_gateway[count.index].gateway_id
+  nat_gateway_id = count.index < length(module.eks_nat_gateway) ? module.eks_nat_gateway[count.index].gateway_id : module.eks_nat_gateway[count.index - 1].gateway_id
 }
 
 data "aws_availability_zones" "available" {
@@ -45,10 +76,10 @@ data "aws_availability_zones" "available" {
       ]))
       error_message = "All managed node group subnet availability zones must be within the region specified by var.aws_region."
     }
-
   }
 }
 
+# Worker node subnets
 module "eks_managed_workers_subnet" {
   source       = "../../_sub/network/vpc-subnet-eks"
   deploy       = length(var.eks_managed_worker_subnets) >= 1 ? true : false
@@ -80,18 +111,39 @@ module "eks_workers" {
   cur_bucket_arn                 = var.eks_worker_cur_bucket_arn
 }
 
+# Control Plane Route Table Association
 module "eks_workers_route_table_assoc" {
   source = "../../_sub/network/route-table-assoc"
-
+  count = !var.use_worker_nat_gateway ? 1 : 0
   subnet_ids     = module.eks_cluster.subnet_ids
-  route_table_id = module.eks_route_table.id
+  route_table_id = module.eks_route_table[0].id
 }
 
+# Control Plante Route Table Assocation with NAT Gateway
+module "eks_workers_route_table_assoc_nat_gateway" {
+  source = "../../_sub/network/route-table-assoc"
+  count = var.use_worker_nat_gateway ? length(module.eks_cluster.subnet_ids) : 0
+
+  subnet_ids     = tolist([module.eks_cluster.subnet_ids[count.index]])
+  route_table_id = module.eks_route_table_nat_gateway[count.index].id
+}
+
+# Worker Node Route Table Assocation
 module "eks_managed_workers_route_table_assoc" {
   source = "../../_sub/network/route-table-assoc"
+  count = !var.use_worker_nat_gateway ? 1 : 0
 
   subnet_ids     = module.eks_managed_workers_subnet.subnet_ids
-  route_table_id = module.eks_route_table.id
+  route_table_id = module.eks_route_table[0].id
+}
+
+# Worker Node Route Table Association with NAT Gateway
+module "eks_managed_workers_route_table_assoc_nat_gateway" {
+  source = "../../_sub/network/route-table-assoc"
+  count = var.use_worker_nat_gateway ? length(module.eks_managed_workers_subnet.subnet_ids) : 0
+
+  subnet_ids     = tolist([tostring(module.eks_managed_workers_subnet.subnet_ids[count.index])])
+  route_table_id = module.eks_route_table_workers_nat_gateway[count.index].id
 }
 
 # --------------------------------------------------

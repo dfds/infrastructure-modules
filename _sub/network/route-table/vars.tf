@@ -8,4 +8,10 @@ variable "vpc_id" {
 
 variable "gateway_id" {
   type = string
+  default = null
+}
+
+variable "nat_gateway_id" {
+  type = string
+  default = null
 }

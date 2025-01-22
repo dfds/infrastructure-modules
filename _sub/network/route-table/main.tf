@@ -11,4 +11,5 @@ resource "aws_route" "default" {
   route_table_id         = aws_route_table.table.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = var.gateway_id
+  nat_gateway_id             = var.nat_gateway_id
 }

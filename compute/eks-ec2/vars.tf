@@ -228,3 +228,14 @@ variable "efs_automated_backup_enabled" {
   default     = true
   description = "Whether to enable automated backups for the EFS file system"
 }
+
+
+# --------------------------------------------------
+# NAT Gateway
+# --------------------------------------------------
+
+variable "use_worker_nat_gateway" {
+  type        = bool
+  default     = false
+  description = "Whether to use NAT Gateway for worker nodes"
+}
