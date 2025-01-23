@@ -239,3 +239,9 @@ variable "use_worker_nat_gateway" {
   default     = false
   description = "Whether to use NAT Gateway for worker nodes"
 }
+
+variable "eks_cluster_subnets" {
+  type = number
+  default = 3
+  description = "Number of subnets to use for the Cluster Control Plane"
+}

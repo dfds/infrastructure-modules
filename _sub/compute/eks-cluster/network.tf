@@ -27,7 +27,7 @@ module "flow_log" {
 }
 
 resource "aws_subnet" "eks" {
-  count = var.cluster_zones
+  count = var.cluster_subnets
 
   availability_zone = data.aws_availability_zones.available.names[count.index]
   cidr_block        = "10.0.${count.index}.0/24"
