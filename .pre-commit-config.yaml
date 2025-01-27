@@ -36,6 +36,8 @@ repos:
         exclude: test/integration/suite/vendor/.*
       - id: mixed-line-ending
         exclude: test/integration/suite/vendor/.*
+        args:
+          - "--fix=lf"
   - repo: https://github.com/gruntwork-io/pre-commit
     rev: v0.1.25
     hooks:
