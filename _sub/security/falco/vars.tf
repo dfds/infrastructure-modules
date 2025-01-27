@@ -67,43 +67,43 @@ variable "prune" {
 }
 
 variable "slack_alert_webhook_url" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "Value for slack webhook url to which to send alerts. If not provided, slack alerts will not be sent"
 }
 
 variable "slack_alert_channel_name" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "Channel name for slack alerts. Example: #falco-alerts"
 }
 
 variable "slack_alert_minimum_priority" {
-  type = string
-  default = "critical"
+  type        = string
+  default     = "critical"
   description = "Minimum priority level for slack alerts. Valid options are: "
 }
 
 variable "stream_enabled" {
-  type = bool
-  default = false
+  type        = bool
+  default     = false
   description = "Enable Falco stream output to a specified webhook"
 }
 
 variable "stream_webhook_url" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "Value for webhook url to which to send falco events stream. stream_enabled must be set to true. If not provided, slack stream will not be sent"
 }
 
 variable "stream_channel_name" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "Channel name for falco stream. Example: #falco-stream"
 }
 
 variable "custom_rules" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "Custom rules to be added to the falco config"
 }

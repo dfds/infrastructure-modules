@@ -14,8 +14,8 @@ resource "aws_launch_template" "eks" {
     vpc_cni_prefix_delegation_enabled : var.vpc_cni_prefix_delegation_enabled,
     cidr : data.aws_eks_cluster.this.kubernetes_network_config[0].service_ipv4_cidr
     max_pods : var.max_pods,
-    cpu: var.cpu,
-    memory: var.memory
+    cpu : var.cpu,
+    memory : var.memory
   }))
   key_name               = var.ec2_ssh_key
   update_default_version = true

@@ -30,7 +30,7 @@ variable "assignment_is_required" {
 }
 
 variable "app_roles" {
-  type        = list(object({
+  type = list(object({
     allowed_member_types = list(string)
     description          = string
     display_name         = string
@@ -44,10 +44,10 @@ variable "app_roles" {
 
 variable "api_permissions" {
   type = object({
-    roles = optional(list(string), [])
+    roles  = optional(list(string), [])
     scopes = optional(list(string), [])
   })
-  default = null
+  default     = null
   description = <<EOF
   A map of API permissions (Microsoft Graph) to assign to the application.
   roles is a list of roles to assign to the application. Example: ["User.Read.All"]

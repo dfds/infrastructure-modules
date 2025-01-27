@@ -9,8 +9,8 @@ resource "aws_backup_region_settings" "this" {
 }
 
 resource "aws_backup_vault" "vault" {
-  name        = var.new_vault_name
-  tags        = var.tags
+  name = var.new_vault_name
+  tags = var.tags
 }
 
 resource "aws_backup_plan" "this" {

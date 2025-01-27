@@ -31,7 +31,7 @@ variable "awsebscsidriver_version_override" {
 }
 
 variable "awsefscsidriver_version_override" {
-  type = string
+  type    = string
   default = ""
 }
 
@@ -48,6 +48,6 @@ variable "most_recent" {
 }
 
 variable "efs_fs_id" {
-  type = string
+  type    = string
   default = "ID of the EFS file system to use for the EFS CSI StorageClass"
 }

@@ -36,9 +36,9 @@ locals {
         }
       ]
       "serviceAccountName" = "kustomize-controller"
-      "interval" = "1m0s"
-      "path"     = "./apps/podinfo"
-      "prune"    = var.prune
+      "interval"           = "1m0s"
+      "path"               = "./apps/podinfo"
+      "prune"              = var.prune
       "sourceRef" = {
         "kind" = "GitRepository"
         "name" = "platform-apps-git"

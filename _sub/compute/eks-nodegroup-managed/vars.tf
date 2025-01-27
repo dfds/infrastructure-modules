@@ -123,19 +123,19 @@ variable "max_unavailable_percentage" {
 }
 
 variable "max_pods" {
-  type = number
+  type        = number
   description = "Maximum number of Pods that can run on the Kubelet"
-  default = 110
+  default     = 110
 }
 
 variable "cpu" {
-  type = string
+  type        = string
   description = "CPU reserved for kubernetes system components"
-  default = null
+  default     = null
 }
 
 variable "memory" {
-  type = string
+  type        = string
   description = "Memory reserved for kubernetes system components"
-  default = null
+  default     = null
 }

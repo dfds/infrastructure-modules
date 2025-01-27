@@ -1,7 +1,7 @@
 resource "aws_efs_file_system" "this" {
-  encrypted = var.encrypted
+  encrypted        = var.encrypted
   performance_mode = var.performance_mode
-  throughput_mode = var.throughput_mode
+  throughput_mode  = var.throughput_mode
   tags = {
     Name = var.name
   }
@@ -15,18 +15,18 @@ resource "aws_security_group" "this" {
 }
 
 resource "aws_security_group_rule" "this" {
-  type = "ingress"
-  from_port = 2049
-  to_port = 2049
-  protocol = "tcp"
+  type              = "ingress"
+  from_port         = 2049
+  to_port           = 2049
+  protocol          = "tcp"
   security_group_id = aws_security_group.this.id
   cidr_blocks       = [data.aws_vpc.selected.cidr_block]
 }
 
 resource "aws_efs_mount_target" "this" {
-  for_each = toset(var.vpc_subnet_ids)
-  file_system_id = aws_efs_file_system.this.id
-  subnet_id      = each.value
+  for_each        = toset(var.vpc_subnet_ids)
+  file_system_id  = aws_efs_file_system.this.id
+  subnet_id       = each.value
   security_groups = [aws_security_group.this.id]
 }
 

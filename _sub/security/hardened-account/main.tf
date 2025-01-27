@@ -306,7 +306,7 @@ data "aws_iam_policy_document" "sns_guard_duty_findings_access_2" {
     ]
   }
 }
- 
+
 resource "aws_sns_topic_policy" "guard_duty_findings" {
   count    = var.harden ? 1 : 0
   arn      = aws_sns_topic.guard_duty_findings[count.index].arn
@@ -360,23 +360,23 @@ module "cloudtrail_local" {
 }
 
 module "security-bot" {
-  source                            = "../../../_sub/security/security-bot"
-  deploy                            = var.harden && var.monitoring_slack_channel != null && var.monitoring_slack_token != null
-  name                              = "security-bot"
-  account_name                      = var.account_name
-  lambda_version                    = var.security_bot_lambda_version
-  lambda_s3_bucket                  = var.security_bot_lambda_s3_bucket
-  slack_token                       = var.monitoring_slack_token
-  slack_channel                     = var.monitoring_slack_channel
-  cloudwatch_logs_group_name        = module.cloudtrail_local.cloudwatch_logs_group_name
-  cloudwatch_logs_group_arn         = module.cloudtrail_local.cloudwatch_logs_group_arn
-  sns_topic_arn_cis_controls        = try(aws_sns_topic.cis_controls[0].arn, null)
-  sns_topic_arn_compliance_changes  = try(aws_sns_topic.compliance_changes[0].arn, null)
-  sns_topic_arn_guard_duty_findings = try(aws_sns_topic.guard_duty_findings[0].arn, null)
+  source                              = "../../../_sub/security/security-bot"
+  deploy                              = var.harden && var.monitoring_slack_channel != null && var.monitoring_slack_token != null
+  name                                = "security-bot"
+  account_name                        = var.account_name
+  lambda_version                      = var.security_bot_lambda_version
+  lambda_s3_bucket                    = var.security_bot_lambda_s3_bucket
+  slack_token                         = var.monitoring_slack_token
+  slack_channel                       = var.monitoring_slack_channel
+  cloudwatch_logs_group_name          = module.cloudtrail_local.cloudwatch_logs_group_name
+  cloudwatch_logs_group_arn           = module.cloudtrail_local.cloudwatch_logs_group_arn
+  sns_topic_arn_cis_controls          = try(aws_sns_topic.cis_controls[0].arn, null)
+  sns_topic_arn_compliance_changes    = try(aws_sns_topic.compliance_changes[0].arn, null)
+  sns_topic_arn_guard_duty_findings   = try(aws_sns_topic.guard_duty_findings[0].arn, null)
   sns_topic_arn_guard_duty_findings_2 = try(aws_sns_topic.guard_duty_findings_2[0].arn, null)
- 
+
   providers = {
-    aws = aws.workload
+    aws            = aws.workload
     aws.workload   = aws.workload
     aws.workload_2 = aws.workload_2
   }

@@ -1,11 +1,11 @@
 variable "permission_set_name" {
-    type = string
+  type = string
 }
 
 variable "group_name" {
-    type = string
+  type = string
 }
 
 variable "aws_account_id" {
-    type = string
+  type = string
 }
