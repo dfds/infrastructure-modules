@@ -9,8 +9,8 @@ data "azuread_service_principal" "msgraph" {
 locals {
   scope_ids = var.api_permissions != null ? [
     for scope in var.api_permissions.scopes : data.azuread_service_principal.msgraph.oauth2_permission_scope_ids[scope]
-  ]: []
+  ] : []
   roles_ids = var.api_permissions != null ? [
     for role in var.api_permissions.roles : data.azuread_service_principal.msgraph.app_role_ids[role]
-  ]: []
+  ] : []
 }

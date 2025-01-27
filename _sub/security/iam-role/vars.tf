@@ -29,4 +29,3 @@ variable "role_policy_name" {
 variable "role_policy_document" {
   type = string
 }
-

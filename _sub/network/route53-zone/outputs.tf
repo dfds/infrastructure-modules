@@ -11,4 +11,3 @@ output "dns_zone_id" {
 output "dns_zone_ns" {
   value = aws_route53_zone.dnszone.name_servers
 }
-

@@ -72,4 +72,3 @@ module "param_store_pgconnection_string" {
   key_value       = module.postgres.connection_string
   tags            = var.tags
 }
-

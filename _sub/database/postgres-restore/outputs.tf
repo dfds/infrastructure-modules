@@ -13,4 +13,3 @@ output "pgconnection_string" {
     "",
   )};Port=${var.db_port};Database=${var.db_name};SSL Mode=${var.ssl_mode}"
 }
-

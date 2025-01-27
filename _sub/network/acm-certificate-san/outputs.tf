@@ -4,4 +4,3 @@ output "certificate_arn" {
     0,
   )
 }
-

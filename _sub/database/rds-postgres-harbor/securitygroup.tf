@@ -48,4 +48,3 @@ resource "aws_security_group_rule" "allow_connections_from_security_group" {
     create_before_destroy = true
   }
 }
-

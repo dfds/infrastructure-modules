@@ -4,4 +4,3 @@ resource "random_string" "password" {
   override_special = "{}[]!"
   length           = 24
 }
-

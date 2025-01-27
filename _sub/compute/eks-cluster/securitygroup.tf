@@ -26,4 +26,3 @@ resource "aws_security_group_rule" "eks-ingress-workstation-https" {
   to_port           = 443
   type              = "ingress"
 }
-

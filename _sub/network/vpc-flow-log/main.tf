@@ -52,4 +52,3 @@ resource "aws_iam_role_policy" "flow_log" {
   role   = aws_iam_role.flow_log.id
   policy = data.aws_iam_policy_document.flow_log.json
 }
-

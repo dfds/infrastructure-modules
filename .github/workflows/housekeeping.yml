@@ -7,7 +7,7 @@ on:
 jobs:
   shared:
     uses: dfds/shared-workflows/.github/workflows/automation-housekeeping.yml@master
-    secrets: inherit
+    secrets: inherit # pragma: allowlist secret
     with:
       delete_head_branch: true
       squash_merge: true

@@ -24,7 +24,7 @@ variable "core_account_id" {
 }
 
 variable "security_account_id" {
-  type = string
+  type        = string
   description = "The AWS account ID of the Organizations Security account"
 }
 
@@ -236,7 +236,7 @@ variable "grafana_cloud_cloudwatch_integration_iam_role" {
 # --------------------------------------------------
 
 variable "steampipe_audit_role_name" {
-  type = string
+  type        = string
   description = "Name of the IAM role used by Steampipe for reading resources"
-  default = "steampipe-audit"
+  default     = "steampipe-audit"
 }

@@ -5,8 +5,8 @@ resource "aws_iam_role" "steampipe_audit" {
 
 data "aws_iam_policy_document" "steampipe_audit_assume" {
   statement {
-    sid    = "assume"
-    effect = "Allow"
+    sid     = "assume"
+    effect  = "Allow"
     actions = ["sts:AssumeRole"]
 
     principals {
