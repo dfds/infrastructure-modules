@@ -17,4 +17,3 @@ output "org_role_name" {
 output "org_role_arn" {
   value = module.org_account.org_role_arn
 }
-

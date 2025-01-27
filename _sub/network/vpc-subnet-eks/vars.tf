@@ -23,4 +23,3 @@ variable "subnets" {
 variable "cluster_name" {
   type = string
 }
-

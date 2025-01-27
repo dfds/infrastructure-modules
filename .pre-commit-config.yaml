@@ -27,6 +27,15 @@ repos:
         args:
           - "--allow-missing-credentials"
       - id: detect-private-key
+      - id: check-executables-have-shebangs
+        exclude: test/integration/suite/vendor/.*
+      - id: check-shebang-scripts-are-executable
+        exclude: test/integration/suite/vendor/.*
+      - id: check-json
+      - id: end-of-file-fixer
+        exclude: test/integration/suite/vendor/.*
+      - id: mixed-line-ending
+        exclude: test/integration/suite/vendor/.*
   - repo: https://github.com/gruntwork-io/pre-commit
     rev: v0.1.25
     hooks:

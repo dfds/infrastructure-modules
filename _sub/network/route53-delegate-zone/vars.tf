@@ -13,4 +13,3 @@ variable "dns_zone_id" {
 variable "dns_zone_ns" {
   type = list(string)
 }
-

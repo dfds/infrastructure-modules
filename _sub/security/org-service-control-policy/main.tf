@@ -14,4 +14,3 @@ resource "aws_organizations_policy_attachment" "attach" {
   policy_id = aws_organizations_policy.policy.id
   target_id = each.key
 }
-

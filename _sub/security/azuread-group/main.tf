@@ -16,5 +16,3 @@ resource "azuread_group" "this" {
   administrative_unit_ids = var.administrative_unit_ids
   prevent_duplicate_names = true
 }
-
-

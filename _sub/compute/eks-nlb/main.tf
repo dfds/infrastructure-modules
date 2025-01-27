@@ -50,4 +50,3 @@ resource "aws_security_group_rule" "allow_argo" {
   cidr_blocks       = var.cidr_blocks
   security_group_id = var.nodes_sg_id
 }
-

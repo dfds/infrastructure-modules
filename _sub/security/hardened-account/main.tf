@@ -784,4 +784,3 @@ EOT
     aws = aws.workload
   }
 }
-

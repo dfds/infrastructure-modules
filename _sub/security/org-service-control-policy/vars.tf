@@ -14,4 +14,3 @@ variable "policy" {
 variable "attach_targets" {
   type = list(string)
 }
-

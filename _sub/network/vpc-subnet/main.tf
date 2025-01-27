@@ -8,4 +8,3 @@ resource "aws_subnet" "subnet" {
     "Name" = var.name
   }
 }
-
