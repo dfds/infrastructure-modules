@@ -9,6 +9,14 @@ repos:
           - "--args=--skip-dirs=test/integration/suite/vendor/.*"
           - "--args=--severity HIGH,CRITICAL"
         files: (\.tf|\.tfvars)$
+      - id: terraform_checkov
+        args:
+          - "--args=--quiet"
+          - "--args=--skip-path=test/integration/suite/vendor/.*"
+      - id: terraform_tflint
+        args:
+          - "--args=--call-module-type=all"
+          - "--args=--config=__GIT_WORKING_DIR__/.tflint.hcl"
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:
@@ -38,11 +46,3 @@ repos:
         exclude: test/integration/suite/vendor/.*
         args:
           - "--fix=lf"
-  - repo: https://github.com/gruntwork-io/pre-commit
-    rev: v0.1.25
-    hooks:
-      - id: tflint
-        exclude: test/integration/suite/vendor/.*
-        args:
-          - "--call-module-type=all"
-          - "--config=__GIT_ROOT__/.tflint.hcl"
