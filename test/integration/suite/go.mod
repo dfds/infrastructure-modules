@@ -5,7 +5,7 @@ go 1.23.0
 require (
 	github.com/fluxcd/pkg/apis/meta v1.9.0
 	github.com/stretchr/testify v1.10.0
-	github.com/traefik/traefik/v2 v2.11.18
+	github.com/traefik/traefik/v2 v2.11.19
 	k8s.io/api v0.32.1
 	k8s.io/apimachinery v0.32.1
 	k8s.io/client-go v0.32.1
