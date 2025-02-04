@@ -24,7 +24,7 @@ module "eks_nat_gateway" {
   count  = var.use_worker_nat_gateway ? length(module.eks_cluster.subnet_ids) : 0
   subnet_id = module.eks_cluster.subnet_ids[count.index]
   tags = var.tags
-
+  use_static_ip = var.use_static_ip
   depends_on = [ module.eks_internet_gateway ]
 }
 
