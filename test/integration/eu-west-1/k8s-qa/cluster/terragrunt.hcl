@@ -93,9 +93,9 @@ inputs = {
       disk_type               = "gp3"
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
-      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.31-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.31-v20250123
-      ami_id             = "ami-0450bfd9dee9bca43"
+      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.32-*"]}]
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.32-v20250123
+      ami_id             = "ami-062737eb2a573ae14"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
     }
@@ -105,9 +105,9 @@ inputs = {
       desired_size_per_subnet = 1
       max_unavailable         = 1
       # This comment configures the renovate bot to automatically update this variable:
-      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.31-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.31-v20250123
-      ami_id             = "ami-0450bfd9dee9bca43"
+      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.32-*"]}]
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.32-v20250123
+      ami_id             = "ami-062737eb2a573ae14"
       availability_zones = ["eu-west-1c"]
       taints = [
         {
