@@ -240,6 +240,12 @@ variable "use_worker_nat_gateway" {
   description = "Whether to use NAT Gateway for worker nodes"
 }
 
+variable "use_static_ip" {
+  type        = bool
+  default     = false
+  description = "Whether to use a static IP address for the NAT Gateway"
+}
+
 variable "eks_cluster_subnets" {
   type = number
   default = 3

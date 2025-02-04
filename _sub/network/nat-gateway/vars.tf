@@ -7,3 +7,8 @@ variable "tags" {
     description = "A map of tags to assign to the NAT Gateway."
     type = map(string)
 }
+
+variable "use_static_ip" {
+    description = "Whether to use a static IP address for the NAT Gateway."
+    type = bool
+}

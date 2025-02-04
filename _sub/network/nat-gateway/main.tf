@@ -8,6 +8,7 @@ resource "aws_nat_gateway" "ng" {
 }
 
 resource "aws_eip" "ng" {
+    count = var.use_static_ip ? 1 : 0
     domain = "vpc"
     tags = var.tags
 }
