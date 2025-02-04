@@ -24,31 +24,6 @@ module "eks_route_table" {
   gateway_id = module.eks_internet_gateway.id
 }
 
-data "aws_availability_zones" "available" {
-  # At the moment, this is the best way to validate multiple variables against
-  # each other:
-  # https://github.com/hashicorp/terraform/issues/25609#issuecomment-1136340278
-  lifecycle {
-
-    precondition {
-      condition = alltrue([
-        for sn in var.eks_managed_worker_subnets : startswith(sn.availability_zone, var.aws_region)
-      ])
-      error_message = "All managed worker subnet availability zones must be within the region specified by var.aws_region."
-    }
-
-    precondition {
-      condition = alltrue(flatten([
-        for name, ng in var.eks_managed_nodegroups : [
-          for az in ng.availability_zones : startswith(az, var.aws_region)
-        ]
-      ]))
-      error_message = "All managed node group subnet availability zones must be within the region specified by var.aws_region."
-    }
-
-  }
-}
-
 module "eks_managed_workers_subnet" {
   source       = "../../_sub/network/vpc-subnet-eks"
   deploy       = length(var.eks_managed_worker_subnets) >= 1 ? true : false
@@ -135,6 +110,8 @@ module "eks_managed_workers_node_group" {
   max_pods = each.value.max_pods
   cpu      = each.value.cpu
   memory   = each.value.memory
+
+  depends_on = [module.eks_cluster]
 }
 
 # --------------------------------------------------
@@ -166,7 +143,7 @@ module "efs_fs" {
   source                   = "../../_sub/compute/efs-fs"
   name                     = "eks-${var.eks_cluster_name}-efs"
   vpc_id                   = module.eks_cluster.vpc_id
-  vpc_subnet_ids           = module.eks_managed_workers_subnet.subnet_ids
+  vpc_subnet_ids           = { ids = module.eks_managed_workers_subnet.subnet_ids }
   automated_backup_enabled = var.efs_automated_backup_enabled
 }
 
