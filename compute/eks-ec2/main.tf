@@ -56,7 +56,6 @@ module "eks_managed_workers_subnet" {
   cluster_name = var.eks_cluster_name
   vpc_id       = module.eks_cluster.vpc_id
   subnets      = var.eks_managed_worker_subnets
-  depends_on   = [module.eks_cluster]
 }
 
 module "eks_workers_keypair" {
@@ -136,6 +135,8 @@ module "eks_managed_workers_node_group" {
   max_pods = each.value.max_pods
   cpu      = each.value.cpu
   memory   = each.value.memory
+
+  depends_on = [module.eks_cluster]
 }
 
 # --------------------------------------------------
