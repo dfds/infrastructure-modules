@@ -166,7 +166,7 @@ module "efs_fs" {
   source                   = "../../_sub/compute/efs-fs"
   name                     = "eks-${var.eks_cluster_name}-efs"
   vpc_id                   = module.eks_cluster.vpc_id
-  vpc_subnet_ids           = module.eks_managed_workers_subnet.subnet_ids
+  vpc_subnet_ids           = { ids = module.eks_managed_workers_subnet.subnet_ids }
   automated_backup_enabled = var.efs_automated_backup_enabled
 }
 
