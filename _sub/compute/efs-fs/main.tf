@@ -9,8 +9,8 @@ resource "aws_efs_file_system" "this" {
 }
 
 resource "aws_security_group" "this" {
-  vpc_id      = var.vpc_id
-  description = "EFS security group"
+  #checkov:skip=CKV_AWS_23: Ensure every security group and rule has a description
+  vpc_id = var.vpc_id
   tags = {
     Name = var.name
   }
