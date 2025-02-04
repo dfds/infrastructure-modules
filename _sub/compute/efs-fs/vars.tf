@@ -27,7 +27,7 @@ variable "vpc_id" {
 }
 
 variable "vpc_subnet_ids" {
-  type        = map(list(string))
+  type        = list(string)
   description = "The VPC subnet IDs in which to create the file system"
 }
 
