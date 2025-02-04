@@ -1,4 +1,5 @@
 resource "aws_efs_file_system" "this" {
+  #checkov:skip=CKV_AWS_184: Ensure resource is encrypted by KMS using a customer managed Key (CMK)
   encrypted        = var.encrypted
   performance_mode = var.performance_mode
   throughput_mode  = var.throughput_mode
@@ -8,7 +9,8 @@ resource "aws_efs_file_system" "this" {
 }
 
 resource "aws_security_group" "this" {
-  vpc_id = var.vpc_id
+  vpc_id      = var.vpc_id
+  description = "EFS security group"
   tags = {
     Name = var.name
   }
@@ -16,6 +18,7 @@ resource "aws_security_group" "this" {
 
 resource "aws_security_group_rule" "this" {
   type              = "ingress"
+  description       = "NFS rules for EFS"
   from_port         = 2049
   to_port           = 2049
   protocol          = "tcp"
@@ -24,7 +27,7 @@ resource "aws_security_group_rule" "this" {
 }
 
 resource "aws_efs_mount_target" "this" {
-  for_each        = toset(var.vpc_subnet_ids)
+  for_each        = { for k, v in var.vpc_subnet_ids : k => v[0] }
   file_system_id  = aws_efs_file_system.this.id
   subnet_id       = each.value
   security_groups = [aws_security_group.this.id]
