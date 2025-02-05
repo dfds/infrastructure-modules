@@ -867,7 +867,8 @@ module "onepassword_connect" {
   workload_account_id     = var.aws_workload_account_id
   oidc_issuer             = local.oidc_issuer
   aws_region              = local.aws_region
-
+  credentials_json        = var.onepassword_credentials_json
+  token_for_atlantis      = var.onepassword_token_for_atlantis
 
   providers = {
     github = github.fluxcd

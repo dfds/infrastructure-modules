@@ -1177,6 +1177,19 @@ variable "onepassword-connect_deploy" {
   description = "Feature toggle for 1password connect module"
 }
 
+variable "onepassword_credentials_json" {
+  type        = string
+  default     = ""
+  description = "The 1Password Connect credentials JSON"
+}
+
+variable "onepassword_token_for_atlantis" {
+  type        = string
+  sensitive   = true
+  default     = ""
+  description = "The 1Password Connect tokens to be stored in SSM if Atlantis is enabled"
+}
+
 # --------------------------------------------------
 # Nvidia device plugin
 # --------------------------------------------------
