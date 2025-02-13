@@ -861,10 +861,10 @@ variable "velero_image_tag" {
 
 variable "velero_plugin_for_aws_version" {
   type        = string
-  default     = "v1.4.1"
+  default     = "v1.14.1"
   description = "The version of velero-plugin-for-aws to use as initContainer"
   validation {
-    condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.velero_plugin_for_aws_version)) || var.velero_plugin_for_aws_version == ""
+    condition     = can(regex("^v(\\d+\\.\\d+)(\\.\\d+)?(-rc\\.\\d+|-beta\\.\\d+)?$", var.velero_plugin_for_aws_version)) || var.velero_plugin_for_aws_version == ""
     error_message = "Velero plugin for AWS must specify a version. The version must start with the letter v and followed by a semantic version number."
   }
 }
