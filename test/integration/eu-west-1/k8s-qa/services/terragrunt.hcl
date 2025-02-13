@@ -243,7 +243,7 @@ inputs = {
   velero_deploy                               = true
   velero_bucket_arn                           = "arn:aws:s3:::dfds-velero-qa"
   velero_helm_chart_version                   = "8.1.0"
-  velero_plugin_for_aws_version               = "v1.7.0"
+  velero_plugin_for_aws_version               = "v1.11.1"
   velero_excluded_namespace_scoped_resources  = ["secrets"]
 
   # --------------------------------------------------
