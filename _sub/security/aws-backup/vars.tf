@@ -67,7 +67,7 @@ variable "backup_plans" {
     }))
   }))
   description = "A list of backup plans."
-  default = []
+  default     = []
 }
 
 variable "iam_role_arn" {

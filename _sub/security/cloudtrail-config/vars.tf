@@ -39,6 +39,6 @@ variable "create_kms_key" {
 }
 
 variable "kms_key_user_accounts" {
-  type = list(string)
+  type    = list(string)
   default = []
 }

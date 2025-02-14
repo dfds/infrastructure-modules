@@ -9,6 +9,10 @@ spec:
     spec:
       version: "${helm_chart_version}"
   values:
+%{ if !enable_prometheus_crds ~}
+    prometheus-operator-crds:
+      enabled: false
+%{ endif ~}
     cluster:
       name: ${cluster_name}
     alloy:

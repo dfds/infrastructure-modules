@@ -34,4 +34,3 @@ variable "alb_arn_suffix" {
 variable "alb_arn_target_group_suffix" {
   type = string
 }
-

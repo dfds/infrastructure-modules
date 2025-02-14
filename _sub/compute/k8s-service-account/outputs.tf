@@ -9,4 +9,3 @@ output "deploy_user_kubeconfig" {
     }
   )
 }
-

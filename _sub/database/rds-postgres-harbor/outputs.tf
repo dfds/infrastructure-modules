@@ -5,4 +5,3 @@ output "db_address" {
 output "db_port" {
   value = element(concat(aws_db_instance.instance[*].port, [""]), 0)
 }
-

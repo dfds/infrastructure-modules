@@ -24,7 +24,7 @@ pr:
 resources:
   containers:
     - container: prime
-      image: dfdsdk/prime-pipeline:2.1.1
+      image: dfdsdk/prime-pipeline:2.1.2
       env:
         AWS_DEFAULT_REGION: eu-west-1
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
@@ -39,6 +39,8 @@ resources:
         TF_VAR_grafana_agent_loki_username: $(TF_VAR_grafana_agent_loki_username)
         TF_VAR_grafana_agent_tempo_url: $(TF_VAR_grafana_agent_tempo_url)
         TF_VAR_grafana_agent_tempo_username: $(TF_VAR_grafana_agent_tempo_username)
+        TF_VAR_onepassword_credentials_json: $(TF_VAR_onepassword_credentials_json)
+        TF_VAR_onepassword_token_for_atlantis: $(TF_VAR_onepassword_token_for_atlantis)
         TF_IN_AUTOMATION: "true"
         TERRAGRUNT_TFPATH: /usr/local/bin/tofu
     - container: aws-nuke
@@ -47,7 +49,7 @@ resources:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
     - container: go-build
-      image: golang:1.23.5-bullseye
+      image: golang:1.23.6-bullseye
   repositories:
     - repository: Origin
       type: github

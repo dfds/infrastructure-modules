@@ -75,4 +75,3 @@ resource "aws_db_instance" "postgres" {
     ignore_changes = [snapshot_identifier]
   }
 }
-

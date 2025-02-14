@@ -861,10 +861,10 @@ variable "velero_image_tag" {
 
 variable "velero_plugin_for_aws_version" {
   type        = string
-  default     = "v1.4.1"
+  default     = "v1.14.1"
   description = "The version of velero-plugin-for-aws to use as initContainer"
   validation {
-    condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.velero_plugin_for_aws_version)) || var.velero_plugin_for_aws_version == ""
+    condition     = can(regex("^v(\\d+\\.\\d+)(\\.\\d+)?(-rc\\.\\d+|-beta\\.\\d+)?$", var.velero_plugin_for_aws_version)) || var.velero_plugin_for_aws_version == ""
     error_message = "Velero plugin for AWS must specify a version. The version must start with the letter v and followed by a semantic version number."
   }
 }
@@ -962,12 +962,6 @@ variable "disable_inactivity_cleanup" {
 # --------------------------------------------------
 # Grafana Agent for Kubernetes monitoring
 # --------------------------------------------------
-
-variable "grafana_agent_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for Grafana Agent module"
-}
 
 variable "grafana_deploy" {
   type        = string
@@ -1079,10 +1073,11 @@ variable "grafana_agent_namespace" {
   default     = "grafana"
 }
 
-variable "grafana_agent_helm_install_timeout" {
-  type        = number
-  description = "Timeout for helm install command"
-  default     = 600
+
+variable "grafana_agent_enable_prometheus_crds" {
+  type        = bool
+  description = "Enable Prometheus CRDs"
+  default     = true
 }
 
 variable "observability_tolerations" {
@@ -1180,6 +1175,19 @@ variable "onepassword-connect_deploy" {
   type        = string
   default     = false
   description = "Feature toggle for 1password connect module"
+}
+
+variable "onepassword_credentials_json" {
+  type        = string
+  default     = ""
+  description = "The 1Password Connect credentials JSON"
+}
+
+variable "onepassword_token_for_atlantis" {
+  type        = string
+  sensitive   = true
+  default     = ""
+  description = "The 1Password Connect tokens to be stored in SSM if Atlantis is enabled"
 }
 
 # --------------------------------------------------

@@ -207,3 +207,9 @@ variable "priority_class" {
   description = "Name of priority class to apply"
   default     = "cluster-monitoring" # TODO: remove default and change to monitoring_kube_prometheus_stack_priority_class
 }
+
+variable "enable_prometheus_crds" {
+  type        = bool
+  description = "Enable Prometheus CRDs"
+  default     = true
+}

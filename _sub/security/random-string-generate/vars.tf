@@ -7,4 +7,3 @@ variable "special_character_enabled" {
   type    = bool
   default = true
 }
-

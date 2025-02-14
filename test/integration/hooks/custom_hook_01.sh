@@ -37,6 +37,3 @@ TENANT_NS=$(kubectl get namespace --no-headers | grep -w flux-tenant-test | wc -
 if [[ ${TENANT_NS} -eq 0 ]]; then
   kubectl create namespace flux-tenant-test
 fi
-
-
-

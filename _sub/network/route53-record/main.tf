@@ -6,4 +6,3 @@ resource "aws_route53_record" "record" {
   ttl     = var.record_ttl
   records = [var.record_value]
 }
-

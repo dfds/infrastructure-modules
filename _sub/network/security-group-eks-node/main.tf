@@ -60,4 +60,3 @@ resource "aws_security_group_rule" "ssh-access-to-worker-nodes" {
   to_port           = 22
   type              = "ingress"
 }
-

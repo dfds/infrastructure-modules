@@ -11,4 +11,3 @@ resource "aws_iam_role_policy" "policy" {
   role   = aws_iam_role.role.id
   policy = var.role_policy_document
 }
-

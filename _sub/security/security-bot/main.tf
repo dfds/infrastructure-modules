@@ -317,23 +317,23 @@ resource "aws_lambda_function" "bot" {
 
   logging_config {
     log_format = "Text"
-    log_group = aws_cloudwatch_log_group.lambda_log_group[0].name
+    log_group  = aws_cloudwatch_log_group.lambda_log_group[0].name
   }
 
   environment {
     variables = {
-      AWS_ACCOUNT_NAME                  = var.account_name
-      SLACK_TOKEN                       = aws_ssm_parameter.slack_token[0].name
-      SLACK_CHANNEL                     = var.slack_channel
-      CLOUD_WATCH_LOGS_GROUP_NAME       = var.cloudwatch_logs_group_name
-      SNS_TOPIC_ARN_CIS_CONTROLS        = var.sns_topic_arn_cis_controls
-      SNS_TOPIC_ARN_COMPLIANCE_CHANGES  = var.sns_topic_arn_compliance_changes
-      SNS_TOPIC_ARN_GUARD_DUTY_FINDINGS = var.sns_topic_arn_guard_duty_findings
+      AWS_ACCOUNT_NAME                    = var.account_name
+      SLACK_TOKEN                         = aws_ssm_parameter.slack_token[0].name
+      SLACK_CHANNEL                       = var.slack_channel
+      CLOUD_WATCH_LOGS_GROUP_NAME         = var.cloudwatch_logs_group_name
+      SNS_TOPIC_ARN_CIS_CONTROLS          = var.sns_topic_arn_cis_controls
+      SNS_TOPIC_ARN_COMPLIANCE_CHANGES    = var.sns_topic_arn_compliance_changes
+      SNS_TOPIC_ARN_GUARD_DUTY_FINDINGS   = var.sns_topic_arn_guard_duty_findings
       SNS_TOPIC_ARN_GUARD_DUTY_FINDINGS_2 = var.sns_topic_arn_guard_duty_findings_2
-      SQS_FOLLOW_UP_QUEUE_URL           = aws_sqs_queue.queue[0].id # `id` provides the URL
+      SQS_FOLLOW_UP_QUEUE_URL             = aws_sqs_queue.queue[0].id # `id` provides the URL
     }
   }
-    depends_on = [
+  depends_on = [
     aws_cloudwatch_log_group.lambda_log_group,
   ]
 }

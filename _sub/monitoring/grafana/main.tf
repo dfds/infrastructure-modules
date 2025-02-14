@@ -51,6 +51,7 @@ resource "github_repository_file" "grafana_helm_patch" {
     open_cost_enabled                      = var.open_cost_enabled
     kube_state_metrics_priorityclass       = var.priority_class
     prometheus_node_exporter_priorityclass = var.priority_class
+    enable_prometheus_crds                 = var.enable_prometheus_crds
   })
   overwrite_on_create = var.overwrite_on_create
 }

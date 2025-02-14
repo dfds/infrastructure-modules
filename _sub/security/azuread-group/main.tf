@@ -10,11 +10,9 @@ locals {
 }
 
 resource "azuread_group" "this" {
-  display_name     = var.display_name
-  security_enabled = true
-  owners           = local.owners
+  display_name            = var.display_name
+  security_enabled        = true
+  owners                  = local.owners
   administrative_unit_ids = var.administrative_unit_ids
   prevent_duplicate_names = true
 }
-
-

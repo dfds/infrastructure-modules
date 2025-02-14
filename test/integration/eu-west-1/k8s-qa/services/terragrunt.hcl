@@ -11,7 +11,7 @@ terraform {
 
 # Include all settings from the root terraform.tfvars file
 include {
-  path = find_in_parent_folders()
+  path = find_in_parent_folders("root.hcl")
 }
 
 dependencies {
@@ -173,7 +173,7 @@ inputs = {
   atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
   atlantis_chart_version       = "5.7.0"
   atlantis_environment         = "qa"
-  atlantis_image_tag           = "2.0.2"
+  atlantis_image_tag           = "2.0.4"
   atlantis_add_secret_volumes  = true
 
   # --------------------------------------------------
@@ -243,14 +243,13 @@ inputs = {
   velero_deploy                               = true
   velero_bucket_arn                           = "arn:aws:s3:::dfds-velero-qa"
   velero_helm_chart_version                   = "8.1.0"
-  velero_plugin_for_aws_version               = "v1.7.0"
+  velero_plugin_for_aws_version               = "v1.11.1"
   velero_excluded_namespace_scoped_resources  = ["secrets"]
 
   # --------------------------------------------------
   # Grafana Agent for Kubernetes monitoring
   # --------------------------------------------------
 
-  grafana_agent_deploy = false
   grafana_deploy = true
   grafana_agent_chart_version = "1.4.4"
   grafana_agent_resource_memory_request = "4Gi"

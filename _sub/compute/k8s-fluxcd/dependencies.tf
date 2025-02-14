@@ -95,4 +95,3 @@ spec:
 Place custom manifests in here. Make sure to place them in a folder named after the application
   EOT
 }
-

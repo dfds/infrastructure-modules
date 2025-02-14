@@ -7,4 +7,3 @@ resource "aws_route53_record" "ns" {
 
   records = var.dns_zone_ns
 }
-

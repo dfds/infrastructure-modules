@@ -13,4 +13,3 @@ variable "autoscale_security_group" {
 variable "ssh_ip_whitelist" {
   type = list(string)
 }
-

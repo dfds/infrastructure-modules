@@ -58,4 +58,3 @@ variable "aws_managed_policy" {
   description = "The name of the AWS managed IAM policy to attach to the instance IAM role"
   default     = ""
 }
-

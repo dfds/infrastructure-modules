@@ -83,7 +83,7 @@ variable "plugin_for_aws_version" {
   type        = string
   description = "The version of velero-plugin-for-aws to use as initContainer"
   validation {
-    condition     = can(regex("^v[[:digit:]].[[:digit:]].[[:digit:]]+", var.plugin_for_aws_version))
+    condition     = can(regex("^v(\\d+\\.\\d+)(\\.\\d+)?(-rc\\.\\d+|-beta\\.\\d+)?$", var.plugin_for_aws_version))
     error_message = "Velero plugin for AWS must specify a version. The version must start with the letter v and followed by a semantic version number."
   }
 }

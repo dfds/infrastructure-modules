@@ -20,7 +20,7 @@ jobs:
         uses: actions/labeler@v5
         with:
           configuration-path: ".github/pr-labels.yml"
-      
+
       # Tried using a matrix for this but that floaded the PR checks
       - name: Remove patch release
         if: |

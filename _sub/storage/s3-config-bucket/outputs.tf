@@ -5,4 +5,3 @@ output "bucket_name" {
 output "bucket_arn" {
   value = try(aws_s3_bucket.bucket[0].arn, null)
 }
-

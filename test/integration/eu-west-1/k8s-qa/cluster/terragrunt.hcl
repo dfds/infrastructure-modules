@@ -6,7 +6,7 @@ terraform {
 
 # Include all settings from the root terraform.tfvars file
 include {
-  path = "${find_in_parent_folders()}"
+  path = "${find_in_parent_folders("root.hcl")}"
 }
 
 dependencies {
@@ -21,7 +21,7 @@ inputs = {
   # --------------------------------------------------
 
   eks_cluster_name                           = "qa"
-  eks_cluster_version                        = "1.31"
+  eks_cluster_version                        = "1.32"
   eks_cluster_zones                          = 2
   eks_addon_vpccni_prefix_delegation_enabled = true
   eks_addon_most_recent                      = true
@@ -93,9 +93,9 @@ inputs = {
       disk_type               = "gp3"
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
-      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.31-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.31-v20250116
-      ami_id             = "ami-0a257e3c805be0ce8"
+      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.32-*"]}]
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.32-v20250203
+      ami_id             = "ami-07e42ab98d9960e21"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
     }
@@ -105,9 +105,9 @@ inputs = {
       desired_size_per_subnet = 1
       max_unavailable         = 1
       # This comment configures the renovate bot to automatically update this variable:
-      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.31-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.31-v20250116
-      ami_id             = "ami-0a257e3c805be0ce8"
+      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.32-*"]}]
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.32-v20250203
+      ami_id             = "ami-07e42ab98d9960e21"
       availability_zones = ["eu-west-1c"]
       taints = [
         {

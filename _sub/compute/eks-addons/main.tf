@@ -41,12 +41,12 @@ resource "aws_eks_addon" "aws-ebs-csi-driver" {
 }
 
 resource "aws_eks_addon" "aws-efs-csi-driver" {
-  cluster_name = var.cluster_name
-  addon_name   = "aws-efs-csi-driver"
-  addon_version = local.awsefscsidriver_version
+  cluster_name                = var.cluster_name
+  addon_name                  = "aws-efs-csi-driver"
+  addon_version               = local.awsefscsidriver_version
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
-  service_account_role_arn = aws_iam_role.efs-csi-driver-role.arn
+  service_account_role_arn    = aws_iam_role.efs-csi-driver-role.arn
 
   depends_on = [
     aws_iam_role_policy_attachment.managed-efs-csi-driver-policy
@@ -207,15 +207,15 @@ resource "kubernetes_storage_class" "csi-efs" {
   volume_binding_mode    = "WaitForFirstConsumer"
   allow_volume_expansion = "true"
   parameters = {
-    provisioningMode = "efs-ap"
-    fileSystemId = var.efs_fs_id
-    directoryPerms = "700"
-    gidRangeStart =  "1000"
-    gidRangeEnd = "2000000"
-    basePath = "/namespaces"
-    subPathPattern = "$${.PVC.namespace}/$${.PVC.name}"
-    ensureUniqueDirectory =  "true"
-    reuseAccessPoint = "false"
+    provisioningMode      = "efs-ap"
+    fileSystemId          = var.efs_fs_id
+    directoryPerms        = "700"
+    gidRangeStart         = "1000"
+    gidRangeEnd           = "2000000"
+    basePath              = "/namespaces"
+    subPathPattern        = "$${.PVC.namespace}/$${.PVC.name}"
+    ensureUniqueDirectory = "true"
+    reuseAccessPoint      = "false"
   }
   mount_options = ["tls"]
   depends_on = [

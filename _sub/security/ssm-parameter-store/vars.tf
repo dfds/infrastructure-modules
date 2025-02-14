@@ -25,7 +25,7 @@ variable "deploy" {
 }
 
 variable "tags" {
-  type = map(string)
+  type        = map(string)
   description = "A map of tags to apply to the ssm parameter"
-  default = {}
+  default     = {}
 }

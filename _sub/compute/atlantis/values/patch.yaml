@@ -23,7 +23,7 @@ spec:
       - name: kubeconfigs
         secret:
           defaultMode: 420
-          secretName: kubeconfigs
+          secretName: kubeconfigs # pragma: allowlist secret
 %{ endif ~}
     github:
       secret: ${github_secret}

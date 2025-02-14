@@ -31,8 +31,8 @@ resource "azuread_application" "app" {
 }
 
 resource "azuread_service_principal" "sp" {
-  client_id = azuread_application.app.client_id
-  owners    = [data.azuread_client_config.current.object_id]
+  client_id                    = azuread_application.app.client_id
+  owners                       = [data.azuread_client_config.current.object_id]
   app_role_assignment_required = var.assignment_is_required
 }
 
@@ -48,10 +48,10 @@ resource "azuread_service_principal_password" "key" {
 
 
 resource "azuread_application_api_access" "azure_app" {
-  count = length(local.scope_ids) > 0 || length(local.roles_ids) > 0 ? 1 : 0
+  count          = length(local.scope_ids) > 0 || length(local.roles_ids) > 0 ? 1 : 0
   application_id = "/applications/${azuread_application.app.object_id}"
   api_client_id  = data.azuread_application_published_app_ids.well_known.result["MicrosoftGraph"]
 
-  role_ids = local.roles_ids
+  role_ids  = local.roles_ids
   scope_ids = local.scope_ids
 }

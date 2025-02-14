@@ -85,3 +85,20 @@ variable "aws_region" {
   type        = string
   description = "The AWS region"
 }
+
+# --------------------------------------------------
+# SSM variables
+# --------------------------------------------------
+
+variable "credentials_json" {
+  type        = string
+  sensitive   = true
+  description = "The 1Password Connect credentials JSON"
+}
+
+variable "token_for_atlantis" {
+  type        = string
+  sensitive   = true
+  default     = ""
+  description = "The 1Password Connect tokens to be stored in SSM if Atlantis is enabled"
+}

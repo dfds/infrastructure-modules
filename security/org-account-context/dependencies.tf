@@ -58,14 +58,14 @@ data "aws_iam_policy_document" "assume_role_policy_master_account" {
   }
 }
 
- ########################################################################
-  # Tagging
-  ########################################################################
+########################################################################
+# Tagging
+########################################################################
 
-  locals {
-    all_tags = {
-      "dfds.automation.tool" : "Terraform",
-      "dfds.owner" : "Cloud Engineering",
-      "dfds.automation.initiator.location" : "https://github.com/dfds/aws-account-manifests"
-    }
+locals {
+  all_tags = {
+    "dfds.automation.tool" : "Terraform",
+    "dfds.owner" : "Cloud Engineering",
+    "dfds.automation.initiator.location" : "https://github.com/dfds/aws-account-manifests"
   }
+}

@@ -52,4 +52,3 @@ variable "port" {
 variable "subnet_ids" {
   type = list(string)
 }
-

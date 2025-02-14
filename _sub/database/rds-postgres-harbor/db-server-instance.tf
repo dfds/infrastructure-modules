@@ -19,4 +19,3 @@ resource "aws_db_instance" "instance" {
   deletion_protection         = false #tfsec:ignore:AVD-AWS-0177
   skip_final_snapshot         = true
 }
-

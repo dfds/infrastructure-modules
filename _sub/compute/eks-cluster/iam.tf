@@ -50,4 +50,3 @@ resource "aws_iam_role_policy" "deny_elb" {
 POLICY
 
 }
-

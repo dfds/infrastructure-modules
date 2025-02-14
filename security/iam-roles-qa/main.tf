@@ -21,4 +21,3 @@ resource "aws_iam_role_policy" "qa_role_policy" {
 
   provider = aws.workload
 }
-

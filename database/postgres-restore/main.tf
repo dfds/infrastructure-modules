@@ -55,4 +55,3 @@ module "param_store_pgconnection_string" {
   key_description = "PG connection string for postgres database ${var.application}-${var.environment}"
   key_value       = module.postgres_restore.pgconnection_string
 }
-

@@ -25,4 +25,3 @@ resource "aws_budgets_budget" "total_monthly_cost" {
     subscriber_sns_topic_arns = [var.sns_topic_arn]
   }
 }
-

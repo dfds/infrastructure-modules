@@ -17,4 +17,3 @@ resource "aws_iam_role_policy" "create_org_account" {
   role   = aws_iam_role.master_role.id
   policy = module.iam_policies.create_org_account
 }
-

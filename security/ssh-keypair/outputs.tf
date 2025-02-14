@@ -4,4 +4,3 @@ output "ssh_keypair_publickey" {
     0,
   )
 }
-

@@ -34,4 +34,3 @@ resource "aws_ssm_parameter" "putPrivateKey" {
     ]
   }
 }
-
