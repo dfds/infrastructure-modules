@@ -34,7 +34,7 @@ inputs = {
   # Since rebooting the cluster after inactivity at the moment requires first
   # running `terragrunt apply -target=module.eks_cluster` the QA cluster is
   # excluded from the inactivity clean up on this step.
-  disable_inactivity_cleanup = true
+  enable_inactivity_cleanup = true
 
   # --------------------------------------------------
   # Managed nodes
