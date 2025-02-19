@@ -953,10 +953,10 @@ variable "subnet_exporter_iam_role_name" {
 # Inactivity based clean up for sandboxes
 # --------------------------------------------------
 
-variable "disable_inactivity_cleanup" {
+variable "enable_inactivity_cleanup" {
   type        = bool
   default     = false
-  description = "Disables automated clean up of ELB resources based on inactivity. Only applicable to sandboxes."
+  description = "Enables automated clean up of ELB resources based on inactivity. Only applicable to sandboxes."
 }
 
 # --------------------------------------------------
