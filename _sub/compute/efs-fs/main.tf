@@ -24,7 +24,7 @@ resource "aws_security_group_rule" "this" {
 }
 
 resource "aws_efs_mount_target" "this" {
-  for_each        = { for k, v in var.vpc_subnet_ids : k => v[0] }
+  for_each = { for idx, subnet_id in flatten([for k, v in var.vpc_subnet_ids : v]) : idx => subnet_id }
   file_system_id  = aws_efs_file_system.this.id
   subnet_id       = each.value
   security_groups = [aws_security_group.this.id]
