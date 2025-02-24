@@ -36,6 +36,10 @@ data "aws_iam_policy_document" "assume_role_policy_selfservice_api" {
 }
 
 // Gives access to role through the individual Capability account
+locals {
+  oidc_issuer = trim(var.oidc_provider_url, "https://")
+}
+
 data "aws_iam_policy_document" "shared_role_cap_acc" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -43,6 +47,27 @@ data "aws_iam_policy_document" "shared_role_cap_acc" {
     principals {
       type        = "AWS"
       identifiers = ["arn:aws:iam::${module.org_account.id}:root"]
+    }
+  }
+
+  #dynamic "statement" {
+  statement {
+    sid     = "AssumeRoleWithWebIdentity"
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect  = "Allow"
+
+    principals {
+      type = "Federated"
+
+      identifiers = [
+        "arn:aws:iam::${var.shared_account_id}:oidc-provider/${local.oidc_issuer}",
+      ]
+    }
+
+    condition {
+      test     = "StringEquals"
+      values   = ["system:serviceaccount:${var.capability_root_id}:ssm-shared-platform-secrets"]
+      variable = "${local.oidc_issuer}:sub"
     }
   }
 }
