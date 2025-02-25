@@ -17,12 +17,15 @@ data "aws_route_tables" "alternate" {
     name   = "route.gateway-id"
     values = ["local"]
   }
+  filter {
+    name   = "tag:Name"
+    values = ["eks-*-sub*"]
+  }
 }
 
 locals {
   len     = length(data.aws_route_tables.preferred.ids)
   alt_len = length(data.aws_route_tables.alternate.ids)
-
 }
 
 # If the preferred route table has routes, use it. Otherwise, use the alternate route table.
