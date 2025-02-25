@@ -28,6 +28,12 @@ module "eks_nat_gateway" {
   depends_on = [module.eks_internet_gateway]
 }
 
+locals {
+  eks_route_table_tags = merge(var.tags, {
+    "vpc.peering.actor" = "accepter"
+  })
+}
+
 # Control Plane Route Table
 module "eks_route_table" {
   count      = !var.use_worker_nat_gateway ? 1 : 0
@@ -35,6 +41,7 @@ module "eks_route_table" {
   name       = "eks-${var.eks_cluster_name}-subnet"
   vpc_id     = module.eks_cluster.vpc_id
   gateway_id = module.eks_internet_gateway.id
+  tags       = local.eks_route_table_tags
 }
 
 # Control Plane Route Table with NAT Gateway
@@ -44,6 +51,7 @@ module "eks_route_table_nat_gateway" {
   name       = "eks-${var.eks_cluster_name}-subnet-control-plane-${count.index}"
   vpc_id     = module.eks_cluster.vpc_id
   gateway_id = module.eks_internet_gateway.id
+  tags       = local.eks_route_table_tags
 }
 
 # Worker Node Route Table with NAT Gateway
@@ -54,6 +62,7 @@ module "eks_route_table_workers_nat_gateway" {
   vpc_id = module.eks_cluster.vpc_id
   # nat_gateway_id = module.eks_nat_gateway[count.index].gateway_id
   nat_gateway_id = count.index < length(module.eks_nat_gateway) ? module.eks_nat_gateway[count.index].gateway_id : module.eks_nat_gateway[count.index - 1].gateway_id
+  tags           = local.eks_route_table_tags
 }
 
 data "aws_availability_zones" "available" {
