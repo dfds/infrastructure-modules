@@ -7,7 +7,7 @@ module "eks_cluster" {
   cluster_name       = var.eks_cluster_name
   cluster_version    = var.eks_cluster_version
   cluster_zones      = var.eks_cluster_zones
-  cluster_subnets = var.use_worker_nat_gateway ? var.eks_cluster_subnets : var.eks_cluster_zones
+  cluster_subnets    = var.use_worker_nat_gateway ? var.eks_cluster_subnets : var.eks_cluster_zones
   log_types          = var.eks_cluster_log_types
   log_retention_days = var.eks_cluster_log_retention_days
 }
@@ -20,17 +20,17 @@ module "eks_internet_gateway" {
 
 # NAT Gateway (place in control plane subnet)
 module "eks_nat_gateway" {
-  source = "../../_sub/network/nat-gateway"
-  count  = var.use_worker_nat_gateway ? length(module.eks_cluster.subnet_ids) : 0
+  source    = "../../_sub/network/nat-gateway"
+  count     = var.use_worker_nat_gateway ? length(module.eks_cluster.subnet_ids) : 0
   subnet_id = module.eks_cluster.subnet_ids[count.index]
-  tags = var.tags
+  tags      = var.tags
 
-  depends_on = [ module.eks_internet_gateway ]
+  depends_on = [module.eks_internet_gateway]
 }
 
 # Control Plane Route Table
 module "eks_route_table" {
-  count  = !var.use_worker_nat_gateway ? 1 : 0
+  count      = !var.use_worker_nat_gateway ? 1 : 0
   source     = "../../_sub/network/route-table"
   name       = "eks-${var.eks_cluster_name}-subnet"
   vpc_id     = module.eks_cluster.vpc_id
@@ -39,9 +39,9 @@ module "eks_route_table" {
 
 # Control Plane Route Table with NAT Gateway
 module "eks_route_table_nat_gateway" {
-  count  = var.use_worker_nat_gateway ? length(module.eks_cluster.subnet_ids) : 0
+  count      = var.use_worker_nat_gateway ? length(module.eks_cluster.subnet_ids) : 0
   source     = "../../_sub/network/route-table"
-  name       = "eks-${var.eks_cluster_name}-subnet-control-plane"
+  name       = "eks-${var.eks_cluster_name}-subnet-control-plane-${count.index}"
   vpc_id     = module.eks_cluster.vpc_id
   gateway_id = module.eks_internet_gateway.id
 }
@@ -49,9 +49,9 @@ module "eks_route_table_nat_gateway" {
 # Worker Node Route Table with NAT Gateway
 module "eks_route_table_workers_nat_gateway" {
   count  = var.use_worker_nat_gateway ? length(module.eks_managed_workers_subnet.subnet_ids) : 0
-  source     = "../../_sub/network/route-table"
-  name       = "eks-${var.eks_cluster_name}-subnet-worker-node-${count.index}"
-  vpc_id     = module.eks_cluster.vpc_id
+  source = "../../_sub/network/route-table"
+  name   = "eks-${var.eks_cluster_name}-subnet-worker-node-${count.index}"
+  vpc_id = module.eks_cluster.vpc_id
   # nat_gateway_id = module.eks_nat_gateway[count.index].gateway_id
   nat_gateway_id = count.index < length(module.eks_nat_gateway) ? module.eks_nat_gateway[count.index].gateway_id : module.eks_nat_gateway[count.index - 1].gateway_id
 }
@@ -114,8 +114,8 @@ module "eks_workers" {
 
 # Control Plane Route Table Association
 module "eks_workers_route_table_assoc" {
-  source = "../../_sub/network/route-table-assoc"
-  count = !var.use_worker_nat_gateway ? 1 : 0
+  source         = "../../_sub/network/route-table-assoc"
+  count          = !var.use_worker_nat_gateway ? 1 : 0
   subnet_ids     = module.eks_cluster.subnet_ids
   route_table_id = module.eks_route_table[0].id
 }
@@ -123,7 +123,7 @@ module "eks_workers_route_table_assoc" {
 # Control Plante Route Table Assocation with NAT Gateway
 module "eks_workers_route_table_assoc_nat_gateway" {
   source = "../../_sub/network/route-table-assoc"
-  count = var.use_worker_nat_gateway ? length(module.eks_cluster.subnet_ids) : 0
+  count  = var.use_worker_nat_gateway ? length(module.eks_cluster.subnet_ids) : 0
 
   subnet_ids     = tolist([module.eks_cluster.subnet_ids[count.index]])
   route_table_id = module.eks_route_table_nat_gateway[count.index].id
@@ -132,7 +132,7 @@ module "eks_workers_route_table_assoc_nat_gateway" {
 # Worker Node Route Table Assocation
 module "eks_managed_workers_route_table_assoc" {
   source = "../../_sub/network/route-table-assoc"
-  count = !var.use_worker_nat_gateway ? 1 : 0
+  count  = !var.use_worker_nat_gateway ? 1 : 0
 
   subnet_ids     = module.eks_managed_workers_subnet.subnet_ids
   route_table_id = module.eks_route_table[0].id
@@ -141,7 +141,7 @@ module "eks_managed_workers_route_table_assoc" {
 # Worker Node Route Table Association with NAT Gateway
 module "eks_managed_workers_route_table_assoc_nat_gateway" {
   source = "../../_sub/network/route-table-assoc"
-  count = var.use_worker_nat_gateway ? length(module.eks_managed_workers_subnet.subnet_ids) : 0
+  count  = var.use_worker_nat_gateway ? length(module.eks_managed_workers_subnet.subnet_ids) : 0
 
   subnet_ids     = tolist([tostring(module.eks_managed_workers_subnet.subnet_ids[count.index])])
   route_table_id = module.eks_route_table_workers_nat_gateway[count.index].id
