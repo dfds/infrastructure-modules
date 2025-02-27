@@ -16,6 +16,8 @@ variable "peering_connection_id" {
 
 variable "route_table_id" {
   description = "The ID of the route table"
+  type        = string
+  default     = ""
 }
 
 variable "tags" {
