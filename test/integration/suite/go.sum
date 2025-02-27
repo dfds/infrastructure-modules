@@ -42,6 +42,8 @@ github.com/go-acme/lego/v4 v4.20.4 h1:yCQGBX9jOfMbriEQUocdYm7EBapdTp8nLXYG8k6SqS
 github.com/go-acme/lego/v4 v4.20.4/go.mod h1:foauPlhnhoq8WUphaWx5U04uDc+JGhk4ZZtPz/Vqsjg=
 github.com/go-acme/lego/v4 v4.21.0 h1:arEW+8o5p7VI8Bk1kr/PDlgD1DrxtTH1gJ4b7mehL8o=
 github.com/go-acme/lego/v4 v4.21.0/go.mod h1:HrSWzm3Ckj45Ie3i+p1zKVobbQoMOaGu9m4up0dUeDI=
+github.com/go-acme/lego/v4 v4.22.2 h1:ck+HllWrV/rZGeYohsKQ5iKNnU/WAZxwOdiu6cxky+0=
+github.com/go-acme/lego/v4 v4.22.2/go.mod h1:E2FndyI3Ekv0usNJt46mFb9LVpV/XBYT+4E3tz02Tzo=
 github.com/go-jose/go-jose/v4 v4.0.2 h1:R3l3kkBds16bO7ZFAEEcofK0MkrAJt3jlJznWZG0nvk=
 github.com/go-jose/go-jose/v4 v4.0.2/go.mod h1:WVf9LFMHh/QVrmqrOfqun0C45tMe3RoiKJMPvgWwLfY=
 github.com/go-jose/go-jose/v4 v4.0.4 h1:VsjPI33J0SB9vQM6PLmNjoHqMQNGPiZ0rHL7Ni7Q6/E=
@@ -149,6 +151,8 @@ github.com/traefik/paerser v0.2.0 h1:zqCLGSXoNlcBd+mzqSCLjon/I6phqIjeJL2xFB2ysgQ
 github.com/traefik/paerser v0.2.0/go.mod h1:afzaVcgF8A+MpTnPG4wBr4whjanCSYA6vK5RwaYVtRc=
 github.com/traefik/paerser v0.2.1 h1:LFgeak1NmjEHF53c9ENdXdL1UMkF/lD5t+7Evsz4hH4=
 github.com/traefik/paerser v0.2.1/go.mod h1:7BBDd4FANoVgaTZG+yh26jI6CA2nds7D/4VTEdIsh24=
+github.com/traefik/paerser v0.2.2 h1:cpzW/ZrQrBh3mdwD/jnp6aXASiUFKOVr6ldP+keJTcQ=
+github.com/traefik/paerser v0.2.2/go.mod h1:7BBDd4FANoVgaTZG+yh26jI6CA2nds7D/4VTEdIsh24=
 github.com/traefik/traefik/v2 v2.11.6 h1:+PCf9wGMLqfOyOUu7WZWxkjrzNvvEp1WANMXiYZCF2U=
 github.com/traefik/traefik/v2 v2.11.6/go.mod h1:dAWTe9bpVKrF2wUyysEXY9Jm+I0NJr0IBnpRY7LSwac=
 github.com/traefik/traefik/v2 v2.11.7 h1:wI74PQyB7ySXiYPZomZM6/hVl3lkdYC2WnZiYSvH3oc=
@@ -179,6 +183,8 @@ github.com/traefik/traefik/v2 v2.11.19 h1:vgGPCxOBE50dFhY/TqcpX8DFUBNBlZ8kJim0Xd
 github.com/traefik/traefik/v2 v2.11.19/go.mod h1:MnIv8lbvljiRR3NIrF4F/RfkUtHovQ8C9nHhKRFnA6U=
 github.com/traefik/traefik/v2 v2.11.20 h1:22xF9h9/X6V4753ICTNHS6UnkwfHMy8+I9Swb4nEBt4=
 github.com/traefik/traefik/v2 v2.11.20/go.mod h1:MnIv8lbvljiRR3NIrF4F/RfkUtHovQ8C9nHhKRFnA6U=
+github.com/traefik/traefik/v2 v2.11.21 h1:0GrpskLLNvt7fDcnvScPw2uAokllzkSBmWzX0aj+Xmk=
+github.com/traefik/traefik/v2 v2.11.21/go.mod h1:l9HrOOZy3umBypb85Eo5s/yRV9NJqUR/qZFOIYfwarY=
 github.com/x448/float16 v0.8.4 h1:qLwI1I70+NjRFUR3zs1JPUCgaCXSh3SW62uAKT1mSBM=
 github.com/x448/float16 v0.8.4/go.mod h1:14CWIYCyZA/cWjXOioeEpHeN/83MdbZDRQHoFcYsOfg=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=

@@ -74,6 +74,11 @@ type Meta struct {
 	// then the CA requires that all new-account requests include an "externalAccountBinding" field
 	// associating the new account with an external account.
 	ExternalAccountRequired bool `json:"externalAccountRequired"`
+
+	// profiles (optional, object):
+	// A map of profile names to human-readable descriptions of those profiles.
+	// https://www.ietf.org/id/draft-aaron-acme-profiles-00.html#section-3
+	Profiles map[string]string `json:"profiles"`
 }
 
 // ExtendedAccount an extended Account.
@@ -148,6 +153,12 @@ type Order struct {
 	// An array of identifier objects that the order pertains to.
 	Identifiers []Identifier `json:"identifiers"`
 
+	// profile (string, optional):
+	// A string uniquely identifying the profile
+	// which will be used to affect issuance of the certificate requested by this Order.
+	// https://www.ietf.org/id/draft-aaron-acme-profiles-00.html#section-4
+	Profile string `json:"profile,omitempty"`
+
 	// notBefore (optional, string):
 	// The requested value of the notBefore field in the certificate,
 	// in the date format defined in [RFC3339].
@@ -187,6 +198,14 @@ type Order struct {
 	// previously-issued certificate which this order is intended to replace.
 	// - https://datatracker.ietf.org/doc/html/draft-ietf-acme-ari-03#section-5
 	Replaces string `json:"replaces,omitempty"`
+}
+
+func (r *Order) Err() error {
+	if r.Error != nil {
+		return r.Error
+	}
+
+	return nil
 }
 
 // Authorization the ACME authorization object.
@@ -272,6 +291,14 @@ type Challenge struct {
 
 	// https://www.rfc-editor.org/rfc/rfc8555.html#section-8.1
 	KeyAuthorization string `json:"keyAuthorization"`
+}
+
+func (c *Challenge) Err() error {
+	if c.Error != nil {
+		return c.Error
+	}
+
+	return nil
 }
 
 // Identifier the ACME identifier object.
