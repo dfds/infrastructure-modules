@@ -1,7 +1,7 @@
 locals {
   asg_desired_size = length(var.subnet_ids) * var.desired_size_per_subnet
   # A sandbox should be able to be put scaled down to 0 at the end of the workday.
-  asg_min_size = var.is_sandbox ? 0 : local.asg_desired_size
+  asg_min_size = var.eks_is_sandbox ? 0 : local.asg_desired_size
   asg_max_size = 2 * local.asg_desired_size
 }
 
@@ -38,4 +38,16 @@ locals {
 
 data "aws_eks_cluster" "this" {
   name = var.cluster_name
+}
+
+# --------------------------------------------------
+# Inactivity based clean up for sandboxes
+# --------------------------------------------------
+
+locals {
+  enable_inactivity_cleanup = (
+    var.enable_inactivity_cleanup != null 
+    ? var.enable_inactivity_cleanup 
+    : var.eks_is_sandbox
+  )
 }

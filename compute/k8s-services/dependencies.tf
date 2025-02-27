@@ -251,3 +251,15 @@ locals {
 locals {
   fluxcd_apps_repo_url = "${var.fluxcd_apps_git_provider_url}${var.fluxcd_apps_repo_owner}/${var.fluxcd_apps_repo_name}"
 }
+
+# --------------------------------------------------
+# Inactivity based clean up for sandboxes
+# --------------------------------------------------
+
+locals {
+  enable_inactivity_cleanup = (
+    var.enable_inactivity_cleanup != null 
+    ? var.enable_inactivity_cleanup 
+    : var.eks_is_sandbox
+  )
+}

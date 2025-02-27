@@ -209,7 +209,6 @@ variable "eks_worker_cur_bucket_arn" {
 
 variable "enable_inactivity_cleanup" {
   type        = bool
-  default     = false
   description = "Enables automated clean up of EKS resources based on inactivity. Only applicable to sandboxes."
 }
 

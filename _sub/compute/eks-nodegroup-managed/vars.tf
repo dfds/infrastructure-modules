@@ -93,10 +93,19 @@ variable "worker_inotify_max_user_watches" {
   type = number
 }
 
-variable "is_sandbox" {
+variable "eks_is_sandbox" {
   type        = bool
   description = "Indicates a sandbox cluster, causing ASG to scale to zero every night"
   default     = false
+}
+
+# --------------------------------------------------
+# Inactivity based clean up for sandboxes
+# --------------------------------------------------
+
+variable "enable_inactivity_cleanup" {
+  type        = bool
+  description = "Enables automated clean up of ELB resources based on inactivity. Only applicable to sandboxes."
 }
 
 variable "scale_to_zero_cron" {
