@@ -103,9 +103,9 @@ module "eks_managed_workers_node_group" {
 
   for_each = var.eks_managed_nodegroups
 
-  cluster_name    = var.eks_cluster_name
-  cluster_version = var.eks_cluster_version
-  is_sandbox      = var.eks_is_sandbox
+  cluster_name              = var.eks_cluster_name
+  cluster_version           = var.eks_cluster_version
+  enable_inactivity_cleanup = local.enable_inactivity_cleanup
 
   node_role_arn                     = module.eks_workers.worker_role_arn
   security_groups                   = [module.eks_workers_security_group.id]
