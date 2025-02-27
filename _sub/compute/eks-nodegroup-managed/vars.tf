@@ -105,6 +105,7 @@ variable "eks_is_sandbox" {
 
 variable "enable_inactivity_cleanup" {
   type        = bool
+  default     = true
   description = "Enables automated clean up of ELB resources based on inactivity. Only applicable to sandboxes."
 }
 

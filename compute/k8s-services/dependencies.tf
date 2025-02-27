@@ -258,8 +258,6 @@ locals {
 
 locals {
   enable_inactivity_cleanup = (
-    var.enable_inactivity_cleanup != null 
-    ? var.enable_inactivity_cleanup 
-    : var.eks_is_sandbox
+    var.enable_inactivity_cleanup && var.eks_is_sandbox ? true : false
   )
 }
