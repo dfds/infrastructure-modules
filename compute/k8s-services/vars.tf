@@ -52,6 +52,12 @@ variable "eks_cluster_name" {
   type = string
 }
 
+variable "eks_is_sandbox" {
+  type        = bool
+  description = "Specifies this is a sandbox cluster, which currently just scales ASG to zero every night"
+  default     = false
+}
+
 # --------------------------------------------------
 # CloudWatch Logs
 # --------------------------------------------------
