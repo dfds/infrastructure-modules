@@ -322,7 +322,7 @@ resource "aws_cloudwatch_metric_alarm" "inactivity" {
 }
 
 module "eks_inactivity_cleanup" {
-  count                = var.eks_is_sandbox && local.enable_inactivity_cleanup ? 1 : 0
+  count                = local.enable_inactivity_cleanup ? 1 : 0
   source               = "../../_sub/compute/eks-inactivity-cleanup"
   eks_cluster_name     = var.eks_cluster_name
   eks_cluster_arn      = module.eks_cluster.eks_cluster_arn

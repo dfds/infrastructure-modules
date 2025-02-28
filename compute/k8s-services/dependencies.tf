@@ -258,6 +258,6 @@ locals {
 
 locals {
   enable_inactivity_cleanup = (
-    var.enable_inactivity_cleanup && var.eks_is_sandbox ? true : false
+    var.enable_inactivity_cleanup && data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? true : false
   )
 }
