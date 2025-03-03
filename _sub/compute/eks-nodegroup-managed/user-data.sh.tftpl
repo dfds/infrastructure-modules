@@ -25,6 +25,10 @@ spec:
         cidr: ${cidr}
     kubelet:
         config:
+            kernelMemcgNotification: true
+            evictionHard:
+                memory:
+                    available: "500Mi"
 %{ if vpc_cni_prefix_delegation_enabled }
             maxPods: ${max_pods}
 %{ endif ~}
