@@ -93,12 +93,6 @@ variable "worker_inotify_max_user_watches" {
   type = number
 }
 
-variable "eks_is_sandbox" {
-  type        = bool
-  description = "Indicates a sandbox cluster, causing ASG to scale to zero every night"
-  default     = false
-}
-
 # --------------------------------------------------
 # Inactivity based clean up for sandboxes
 # --------------------------------------------------
