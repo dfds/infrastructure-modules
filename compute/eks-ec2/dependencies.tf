@@ -36,3 +36,13 @@ locals {
 data "aws_eks_cluster_auth" "eks" {
   name = var.eks_cluster_name
 }
+
+# --------------------------------------------------
+# Inactivity based clean up for sandboxes
+# --------------------------------------------------
+
+locals {
+  enable_inactivity_cleanup = (
+    var.enable_inactivity_cleanup && var.eks_is_sandbox ? true : false
+  )
+}

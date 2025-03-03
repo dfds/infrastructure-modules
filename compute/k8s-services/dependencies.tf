@@ -251,3 +251,13 @@ locals {
 locals {
   fluxcd_apps_repo_url = "${var.fluxcd_apps_git_provider_url}${var.fluxcd_apps_repo_owner}/${var.fluxcd_apps_repo_name}"
 }
+
+# --------------------------------------------------
+# Inactivity based clean up for sandboxes
+# --------------------------------------------------
+
+locals {
+  enable_inactivity_cleanup = (
+    var.enable_inactivity_cleanup && data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? true : false
+  )
+}
