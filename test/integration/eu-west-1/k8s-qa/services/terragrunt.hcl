@@ -51,7 +51,7 @@ inputs = {
   # Blue variant
   traefik_blue_variant_deploy             = true
   traefik_blue_variant_dashboard_deploy   = true
-  traefik_blue_variant_helm_chart_version = "23.1.0"
+  traefik_blue_variant_helm_chart_version = "34.4.0"
   traefik_blue_variant_additional_args = [
     "--metrics.prometheus",
     "--providers.kubernetescrd.allowCrossNamespace=true",
@@ -62,7 +62,7 @@ inputs = {
   # Green variant
   traefik_green_variant_deploy             = false
   traefik_green_variant_dashboard_deploy   = false
-  traefik_green_variant_helm_chart_version = "20.8.0"
+  traefik_green_variant_helm_chart_version = "34.4.0"
   traefik_green_variant_additional_args = [
     "--metrics.prometheus",
     "--providers.kubernetescrd.allowCrossNamespace=true",
