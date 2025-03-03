@@ -52,6 +52,12 @@ variable "eks_cluster_name" {
   type = string
 }
 
+variable "eks_is_sandbox" {
+  type        = bool
+  description = "Specifies this is a sandbox cluster, which currently just scales ASG to zero every night"
+  default     = false
+}
+
 # --------------------------------------------------
 # CloudWatch Logs
 # --------------------------------------------------
@@ -953,10 +959,10 @@ variable "subnet_exporter_iam_role_name" {
 # Inactivity based clean up for sandboxes
 # --------------------------------------------------
 
-variable "disable_inactivity_cleanup" {
+variable "enable_inactivity_cleanup" {
   type        = bool
-  default     = false
-  description = "Disables automated clean up of ELB resources based on inactivity. Only applicable to sandboxes."
+  default     = true
+  description = "Enables automated clean up of ELB resources based on inactivity. Only applicable to sandboxes."
 }
 
 # --------------------------------------------------
