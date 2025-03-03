@@ -55,7 +55,6 @@ inputs = {
   traefik_blue_variant_additional_args = [
     "--metrics.prometheus",
     "--providers.kubernetescrd.allowCrossNamespace=true",
-    "--providers.kubernetesingress=true",
   ]
   traefik_blue_variant_weight = 1
 
@@ -66,7 +65,6 @@ inputs = {
   traefik_green_variant_additional_args = [
     "--metrics.prometheus",
     "--providers.kubernetescrd.allowCrossNamespace=true",
-    "--providers.kubernetesingress=true",
   ]
   traefik_green_variant_weight = 0
 
@@ -160,7 +158,7 @@ inputs = {
   # --------------------------------------------------
 
   atlantis_deploy       = true
-  atlantis_ingress      = "atlantis.qa-alias1.dfds.cloud"
+  atlantis_ingress      = "atlantis.qa.qa.dfds.cloud"
   atlantis_data_storage = "1Gi"
 
   atlantis_resources_requests_cpu    = "10m"
