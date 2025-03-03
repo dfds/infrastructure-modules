@@ -136,6 +136,10 @@ module "eks_managed_workers_node_group" {
   cpu      = each.value.cpu
   memory   = each.value.memory
 
+  # Docker Hub credentials
+  docker_hub_username = var.docker_hub_username
+  docker_hub_password = var.docker_hub_password
+
   depends_on = [module.eks_cluster]
 }
 

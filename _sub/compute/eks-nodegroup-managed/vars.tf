@@ -99,6 +99,20 @@ variable "eks_is_sandbox" {
   default     = false
 }
 
+variable "docker_hub_username" {
+  type        = string
+  description = "Docker Hub username for pulling images"
+  sensitive   = true
+  default     = ""
+}
+
+variable "docker_hub_password" {
+  type        = string
+  description = "Docker Hub password for pulling images"
+  sensitive   = true
+  default     = ""
+}
+
 # --------------------------------------------------
 # Inactivity based clean up for sandboxes
 # --------------------------------------------------

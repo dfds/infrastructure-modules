@@ -15,7 +15,9 @@ resource "aws_launch_template" "eks" {
     cidr : data.aws_eks_cluster.this.kubernetes_network_config[0].service_ipv4_cidr
     max_pods : var.max_pods,
     cpu : var.cpu,
-    memory : var.memory
+    memory : var.memory,
+    docker_hub_username : var.docker_hub_username,
+    docker_hub_password : var.docker_hub_password
   }))
   key_name               = var.ec2_ssh_key
   update_default_version = true
