@@ -55,7 +55,6 @@ inputs = {
   traefik_blue_variant_additional_args = [
     "--metrics.prometheus",
     "--providers.kubernetescrd.allowCrossNamespace=true",
-    "--providers.kubernetesingress=true",
   ]
   traefik_blue_variant_weight = 1
 
@@ -66,7 +65,6 @@ inputs = {
   traefik_green_variant_additional_args = [
     "--metrics.prometheus",
     "--providers.kubernetescrd.allowCrossNamespace=true",
-    "--providers.kubernetesingress=true",
   ]
   traefik_green_variant_weight = 0
 
