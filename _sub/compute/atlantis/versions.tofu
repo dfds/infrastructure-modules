@@ -8,7 +8,7 @@ terraform {
     }
     github = {
       source  = "integrations/github"
-      version = "~> 6.5.0"
+      version = "~> 6.6.0"
     }
     htpasswd = {
       source  = "loafoe/htpasswd"
@@ -16,7 +16,7 @@ terraform {
     }
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.6.0"
+      version = "~> 3.7.0"
     }
   }
 }
