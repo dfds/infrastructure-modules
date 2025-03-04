@@ -10,11 +10,11 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.88.0"
+      version = "~> 5.89.0"
     }
     github = {
       source  = "integrations/github"
-      version = "~> 6.5.0"
+      version = "~> 6.6.0"
     }
     htpasswd = {
       source  = "loafoe/htpasswd"
@@ -22,7 +22,7 @@ terraform {
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "~> 2.35.0"
+      version = "~> 2.36.0"
     }
     helm = {
       source  = "hashicorp/helm"
@@ -30,7 +30,7 @@ terraform {
     }
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.6.0"
+      version = "~> 3.7.0"
     }
   }
 }
