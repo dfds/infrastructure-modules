@@ -15,7 +15,9 @@ resource "aws_launch_template" "eks" {
     cidr : data.aws_eks_cluster.this.kubernetes_network_config[0].service_ipv4_cidr
     max_pods : var.max_pods,
     cpu : var.cpu,
-    memory : var.memory
+    memory : var.memory,
+    docker_hub_username : var.docker_hub_username,
+    docker_hub_password : var.docker_hub_password
   }))
   key_name               = var.ec2_ssh_key
   update_default_version = true
@@ -89,7 +91,7 @@ resource "aws_eks_node_group" "group" {
 }
 
 resource "aws_autoscaling_schedule" "eks" {
-  count                  = local.enable_inactivity_cleanup ? signum(var.desired_size_per_subnet) : 0
+  count                  = var.enable_inactivity_cleanup ? signum(var.desired_size_per_subnet) : 0
   autoscaling_group_name = aws_eks_node_group.group[0].resources[0].autoscaling_groups[0].name
   scheduled_action_name  = "Scale to zero"
   recurrence             = var.scale_to_zero_cron

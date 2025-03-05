@@ -785,6 +785,18 @@ variable "blackbox_exporter_namespace" {
   default     = "monitoring"
 }
 
+variable "blackbox_exporter_monitoring_traefik_blue_variant_port" {
+  type        = number
+  description = "Port to monitor for the blue variant of Traefik"
+  default     = 8080
+}
+
+variable "blackbox_exporter_monitoring_traefik_green_variant_port" {
+  type        = number
+  description = "Port to monitor for the green variant of Traefik"
+  default     = 8080
+}
+
 # --------------------------------------------------
 # Helm Exporter
 # --------------------------------------------------

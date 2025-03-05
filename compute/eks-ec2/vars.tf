@@ -228,3 +228,21 @@ variable "efs_automated_backup_enabled" {
   default     = true
   description = "Whether to enable automated backups for the EFS file system"
 }
+
+# --------------------------------------------------
+# Docker Hub credentials
+# --------------------------------------------------
+
+variable "docker_hub_username" {
+  type        = string
+  description = "Docker Hub username for pulling images"
+  sensitive   = true
+  default     = ""
+}
+
+variable "docker_hub_password" {
+  type        = string
+  description = "Docker Hub password for pulling images"
+  sensitive   = true
+  default     = ""
+}
