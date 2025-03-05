@@ -4,7 +4,7 @@ github.com/cenkalti/backoff/v4
 # github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 ## explicit
 github.com/davecgh/go-spew/spew
-# github.com/emicklei/go-restful/v3 v3.11.0
+# github.com/emicklei/go-restful/v3 v3.12.0
 ## explicit; go 1.13
 github.com/emicklei/go-restful/v3
 github.com/emicklei/go-restful/v3/log
@@ -42,8 +42,8 @@ github.com/go-logr/logr
 # github.com/go-openapi/jsonpointer v0.21.0
 ## explicit; go 1.20
 github.com/go-openapi/jsonpointer
-# github.com/go-openapi/jsonreference v0.20.2
-## explicit; go 1.13
+# github.com/go-openapi/jsonreference v0.21.0
+## explicit; go 1.20
 github.com/go-openapi/jsonreference
 github.com/go-openapi/jsonreference/internal
 # github.com/go-openapi/swag v0.23.0
@@ -143,6 +143,8 @@ github.com/traefik/traefik/v2/pkg/safe
 github.com/traefik/traefik/v2/pkg/tls
 github.com/traefik/traefik/v2/pkg/tls/generate
 github.com/traefik/traefik/v2/pkg/types
+# github.com/traefik/traefik/v3 v3.3.4
+## explicit; go 1.23.0
 # github.com/x448/float16 v0.8.4
 ## explicit; go 1.11
 github.com/x448/float16
