@@ -41,6 +41,8 @@ resources:
         TF_VAR_grafana_agent_tempo_username: $(TF_VAR_grafana_agent_tempo_username)
         TF_VAR_onepassword_credentials_json: $(TF_VAR_onepassword_credentials_json)
         TF_VAR_onepassword_token_for_atlantis: $(TF_VAR_onepassword_token_for_atlantis)
+        TF_VAR_docker_hub_username: $(TF_VAR_docker_hub_username)
+        TF_VAR_docker_hub_password: $(TF_VAR_docker_hub_password)
         TF_IN_AUTOMATION: "true"
         TERRAGRUNT_TFPATH: /usr/local/bin/tofu
     - container: aws-nuke
