@@ -893,6 +893,12 @@ variable "velero_snapshots_enabled" {
   description = "Should Velero create snapshot on backups?"
 }
 
+variable "velero_filesystem_backup_enabled" {
+  type        = bool
+  default     = false
+  description = "Should Velero have filesystem backups enabled?"
+}
+
 variable "velero_service_account" {
   type        = string
   default     = "velero-server"

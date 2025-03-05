@@ -18,6 +18,7 @@ spec:
       repository: velero/velero
       tag: ${image_tag}
     snapshotsEnabled: ${snapshots_enabled}
+    deployNodeAgent: ${filesystem_backup_enabled}
     initContainers:
       - name: velero-plugin-for-aws
         image: velero/velero-plugin-for-aws:${plugin_for_aws_version}
