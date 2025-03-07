@@ -91,7 +91,7 @@ resource "aws_eks_node_group" "group" {
 }
 
 resource "aws_autoscaling_schedule" "eks" {
-  count                  = var.enable_inactivity_cleanup ? signum(var.desired_size_per_subnet) : 0
+  count                  = var.enable_scale_to_zero_after_business_hours ? signum(var.desired_size_per_subnet) : 0
   autoscaling_group_name = aws_eks_node_group.group[0].resources[0].autoscaling_groups[0].name
   scheduled_action_name  = "Scale to zero"
   recurrence             = var.scale_to_zero_cron

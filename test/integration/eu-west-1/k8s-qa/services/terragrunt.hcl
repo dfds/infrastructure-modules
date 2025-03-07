@@ -29,8 +29,9 @@ inputs = {
   # EKS
   # --------------------------------------------------
 
-  eks_is_sandbox   = true
-  eks_cluster_name = "qa"
+  eks_is_sandbox            = true
+  eks_cluster_name          = "qa"
+  enable_inactivity_cleanup = false
 
   # --------------------------------------------------
   # Load Balancers in front of Traefik
