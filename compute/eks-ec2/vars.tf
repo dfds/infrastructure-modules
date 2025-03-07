@@ -203,14 +203,20 @@ variable "eks_worker_cur_bucket_arn" {
   description = "S3 ARN for Billing Cost and Usage Report (CUR)"
 }
 
-# --------------------------------------------------
-# Inactivity based clean up for sandboxes
-# --------------------------------------------------
+# ------------------------------------------------------
+# Inactivity based clean up and scale down for sandboxes
+# ------------------------------------------------------
 
 variable "enable_inactivity_cleanup" {
   type        = bool
   default     = true
   description = "Enables automated clean up of EKS resources based on inactivity. Only applicable to sandboxes."
+}
+
+variable "enable_scale_to_zero_after_business_hours" {
+  type        = bool
+  default     = true
+  description = "Enables automated scale to zero of EC2 instance after business hours. Only applicable to sandboxes."
 }
 
 # --------------------------------------------------
