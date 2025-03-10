@@ -342,3 +342,22 @@ module "eks_version_endpoint" {
   kubeconfig_path = local.kubeconfig_path
   depends_on      = [module.eks_heptio]
 }
+
+# --------------------------------------------------
+# NAT Gateway
+# --------------------------------------------------
+
+module "eks_nat_gateway" {
+  source    = "../../_sub/network/nat-gateway"
+  count     = var.use_worker_nat_gateway ? length(module.eks_cluster.subnet_ids) : 0
+  subnet_id = module.eks_cluster.subnet_ids[count.index]
+  tags      = var.tags
+
+  depends_on = [module.eks_internet_gateway]
+}
+
+locals {
+  eks_route_table_tags = merge(var.tags, {
+    "vpc.peering.actor" = "accepter"
+  })
+}
