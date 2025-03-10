@@ -203,14 +203,20 @@ variable "eks_worker_cur_bucket_arn" {
   description = "S3 ARN for Billing Cost and Usage Report (CUR)"
 }
 
-# --------------------------------------------------
-# Inactivity based clean up for sandboxes
-# --------------------------------------------------
+# ------------------------------------------------------
+# Inactivity based clean up and scale down for sandboxes
+# ------------------------------------------------------
 
-variable "disable_inactivity_cleanup" {
+variable "enable_inactivity_cleanup" {
   type        = bool
-  default     = false
-  description = "Disables automated clean up of EKS resources based on inactivity. Only applicable to sandboxes."
+  default     = true
+  description = "Enables automated clean up of EKS resources based on inactivity. Only applicable to sandboxes."
+}
+
+variable "enable_scale_to_zero_after_business_hours" {
+  type        = bool
+  default     = true
+  description = "Enables automated scale to zero of EC2 instance after business hours. Only applicable to sandboxes."
 }
 
 # --------------------------------------------------
@@ -241,7 +247,24 @@ variable "use_worker_nat_gateway" {
 }
 
 variable "eks_cluster_subnets" {
-  type = number
-  default = 3
+  type        = number
+  default     = 3
   description = "Number of subnets to use for the Cluster Control Plane"
+}
+# --------------------------------------------------
+# Docker Hub credentials
+# --------------------------------------------------
+
+variable "docker_hub_username" {
+  type        = string
+  description = "Docker Hub username for pulling images"
+  sensitive   = true
+  default     = ""
+}
+
+variable "docker_hub_password" {
+  type        = string
+  description = "Docker Hub password for pulling images"
+  sensitive   = true
+  default     = ""
 }

@@ -93,10 +93,28 @@ variable "worker_inotify_max_user_watches" {
   type = number
 }
 
-variable "is_sandbox" {
+variable "docker_hub_username" {
+  type        = string
+  description = "Docker Hub username for pulling images"
+  sensitive   = true
+  default     = ""
+}
+
+variable "docker_hub_password" {
+  type        = string
+  description = "Docker Hub password for pulling images"
+  sensitive   = true
+  default     = ""
+}
+
+# ------------------------------------------------------
+# Inactivity based scale down for sandboxes
+# ------------------------------------------------------
+
+variable "enable_scale_to_zero_after_business_hours" {
   type        = bool
-  description = "Indicates a sandbox cluster, causing ASG to scale to zero every night"
-  default     = false
+  default     = true
+  description = "Enables automated scale to zero of EC2 instance after business hours. Only applicable to sandboxes."
 }
 
 variable "scale_to_zero_cron" {

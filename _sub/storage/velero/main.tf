@@ -42,6 +42,7 @@ resource "github_repository_file" "velero_flux_helm_patch_yaml" {
     helm_repo_name                      = var.helm_repo_name
     image_tag                           = var.image_tag
     snapshots_enabled                   = var.snapshots_enabled
+    filesystem_backup_enabled           = var.filesystem_backup_enabled
     plugin_for_aws_version              = var.plugin_for_aws_version
     log_level                           = var.log_level
     bucket_name                         = local.bucket_name

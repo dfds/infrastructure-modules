@@ -225,13 +225,13 @@ locals {
 
   blackbox_exporter_monitoring_traefik_blue_variant = var.traefik_blue_variant_deploy ? [{
     "name"   = "traefik-blue-variant"
-    "url"    = "http://traefik-blue-variant.traefik-blue-variant:9000/ping"
+    "url"    = "http://traefik-blue-variant.traefik-blue-variant:${var.blackbox_exporter_monitoring_traefik_blue_variant_port}/ping"
     "module" = "http_2xx"
   }] : []
 
   blackbox_exporter_monitoring_traefik_green_variant = var.traefik_green_variant_deploy ? [{
     "name"   = "traefik-green-variant"
-    "url"    = "http://traefik-green-variant.traefik-green-variant:9000/ping"
+    "url"    = "http://traefik-green-variant.traefik-green-variant:${var.blackbox_exporter_monitoring_traefik_green_variant_port}/ping"
     "module" = "http_2xx"
   }] : []
 
@@ -250,4 +250,14 @@ locals {
 
 locals {
   fluxcd_apps_repo_url = "${var.fluxcd_apps_git_provider_url}${var.fluxcd_apps_repo_owner}/${var.fluxcd_apps_repo_name}"
+}
+
+# --------------------------------------------------
+# Inactivity based clean up for sandboxes
+# --------------------------------------------------
+
+locals {
+  enable_inactivity_cleanup = (
+    var.enable_inactivity_cleanup && data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? true : false
+  )
 }

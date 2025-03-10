@@ -29,8 +29,9 @@ inputs = {
   # EKS
   # --------------------------------------------------
 
-  eks_is_sandbox   = true
-  eks_cluster_name = "qa"
+  eks_is_sandbox            = true
+  eks_cluster_name          = "qa"
+  enable_inactivity_cleanup = false
 
   # --------------------------------------------------
   # Load Balancers in front of Traefik
@@ -51,22 +52,20 @@ inputs = {
   # Blue variant
   traefik_blue_variant_deploy             = true
   traefik_blue_variant_dashboard_deploy   = true
-  traefik_blue_variant_helm_chart_version = "23.1.0"
+  traefik_blue_variant_helm_chart_version = "34.4.0"
   traefik_blue_variant_additional_args = [
     "--metrics.prometheus",
     "--providers.kubernetescrd.allowCrossNamespace=true",
-    "--providers.kubernetesingress=true",
   ]
   traefik_blue_variant_weight = 1
 
   # Green variant
   traefik_green_variant_deploy             = false
   traefik_green_variant_dashboard_deploy   = false
-  traefik_green_variant_helm_chart_version = "20.8.0"
+  traefik_green_variant_helm_chart_version = "34.4.0"
   traefik_green_variant_additional_args = [
     "--metrics.prometheus",
     "--providers.kubernetescrd.allowCrossNamespace=true",
-    "--providers.kubernetesingress=true",
   ]
   traefik_green_variant_weight = 0
 
@@ -160,7 +159,7 @@ inputs = {
   # --------------------------------------------------
 
   atlantis_deploy       = true
-  atlantis_ingress      = "atlantis.qa-alias1.dfds.cloud"
+  atlantis_ingress      = "atlantis.qa.qa.dfds.cloud"
   atlantis_data_storage = "1Gi"
 
   atlantis_resources_requests_cpu    = "10m"
@@ -245,6 +244,7 @@ inputs = {
   velero_helm_chart_version                   = "8.1.0"
   velero_plugin_for_aws_version               = "v1.11.1"
   velero_excluded_namespace_scoped_resources  = ["secrets"]
+  velero_filesystem_backup_enabled            = true
 
   # --------------------------------------------------
   # Grafana Agent for Kubernetes monitoring

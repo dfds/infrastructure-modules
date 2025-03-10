@@ -4,7 +4,7 @@ terraform {
   required_providers {
     github = {
       source  = "integrations/github"
-      version = "~> 6.5.0"
+      version = "~> 6.6.0"
     }
     tls = {
       source  = "hashicorp/tls"
@@ -12,7 +12,7 @@ terraform {
     }
     flux = {
       source  = "fluxcd/flux"
-      version = "~> 1.4.0"
+      version = "~> 1.5.0"
     }
   }
 

@@ -656,6 +656,7 @@ module "velero" {
   image_tag                           = var.velero_image_tag
   plugin_for_aws_version              = var.velero_plugin_for_aws_version
   snapshots_enabled                   = var.velero_snapshots_enabled
+  filesystem_backup_enabled           = var.velero_filesystem_backup_enabled
   overwrite_on_create                 = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url                = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch             = var.fluxcd_apps_repo_branch
@@ -713,7 +714,7 @@ module "kyverno" {
 # --------------------------------------------------
 
 module "elb_inactivity_cleanup_anon" {
-  count                = data.terraform_remote_state.cluster.outputs.eks_is_sandbox && !var.disable_inactivity_cleanup && var.traefik_alb_anon_deploy && (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy) ? 1 : 0
+  count                = data.terraform_remote_state.cluster.outputs.eks_is_sandbox && local.enable_inactivity_cleanup && var.traefik_alb_anon_deploy && (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy) ? 1 : 0
   source               = "../../_sub/compute/elb-inactivity-cleanup"
   inactivity_alarm_arn = data.terraform_remote_state.cluster.outputs.eks_inactivity_alarm_arn
   elb_name             = module.traefik_alb_anon.alb_name
@@ -721,7 +722,7 @@ module "elb_inactivity_cleanup_anon" {
 }
 
 module "elb_inactivity_cleanup_auth" {
-  count                = data.terraform_remote_state.cluster.outputs.eks_is_sandbox && !var.disable_inactivity_cleanup && var.traefik_alb_auth_deploy && (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy) ? 1 : 0
+  count                = data.terraform_remote_state.cluster.outputs.eks_is_sandbox && local.enable_inactivity_cleanup && var.traefik_alb_auth_deploy && (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy) ? 1 : 0
   source               = "../../_sub/compute/elb-inactivity-cleanup"
   inactivity_alarm_arn = data.terraform_remote_state.cluster.outputs.eks_inactivity_alarm_arn
   elb_name             = module.traefik_alb_auth.alb_name

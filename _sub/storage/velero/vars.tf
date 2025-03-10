@@ -36,7 +36,12 @@ variable "snapshots_enabled" {
   type        = bool
   default     = false
   description = "Should Velero use snapshot backups?"
+}
 
+variable "filesystem_backup_enabled" {
+  type        = bool
+  default     = false
+  description = "Should Velero have filesystem backups enabled?"
 }
 
 variable "log_level" {
