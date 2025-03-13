@@ -3,6 +3,12 @@ locals {
 }
 
 locals {
+  eks_route_table_tags = merge(var.tags, {
+    "vpc.peering.actor" = "accepter"
+  })
+}
+
+locals {
   priority_class = [
     {
       "name"        = "service-critical"
