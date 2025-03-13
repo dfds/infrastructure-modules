@@ -7,6 +7,7 @@ module "eks_cluster" {
   cluster_name       = var.eks_cluster_name
   cluster_version    = var.eks_cluster_version
   cluster_zones      = var.eks_cluster_zones
+  cluster_subnets    = var.use_worker_nat_gateway ? var.eks_cluster_subnets : var.eks_cluster_zones
   log_types          = var.eks_cluster_log_types
   log_retention_days = var.eks_cluster_log_retention_days
 }
