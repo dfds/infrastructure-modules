@@ -212,6 +212,7 @@ data "aws_iam_policy_document" "restrictive" {
       "trustedadvisor:DescribeAccount*",
       "trustedadvisor:DescribeChecks",
       "trustedadvisor:DescribeCheckSummaries",
+      "trustedadvisor:DescribeCheckRefreshStatuses",
       "trustedadvisor:DescribeCheckRefreshStatuses"
     ]
     resources = ["*"]
