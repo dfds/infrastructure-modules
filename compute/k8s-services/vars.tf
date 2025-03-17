@@ -1526,3 +1526,13 @@ variable "falco_custom_rules" {
   default     = ""
   description = "Custom rules to be added to the falco config"
 }
+
+# --------------------------------------------------
+# NAT Gateway
+# --------------------------------------------------
+
+variable "use_worker_nat_gateway" {
+  type        = bool
+  default     = false
+  description = "Whether to use NAT Gateway for worker nodes"
+}
