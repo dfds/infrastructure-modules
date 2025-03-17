@@ -211,6 +211,7 @@ data "aws_iam_policy_document" "restrictive" {
       "s3:DescribeMultiRegionAccessPointOperation",
       "trustedadvisor:DescribeAccount*",
       "trustedadvisor:DescribeChecks",
+      "trustedadvisor:DescribeCheckSummaries"
     ]
     resources = ["*"]
     condition {
