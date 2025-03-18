@@ -33,11 +33,3 @@ module "org_policy_reservation_policy" {
   policy         = jsonencode(jsondecode(data.aws_iam_policy_document.reservation.json))
   attach_targets = var.reservation_policy_attach_targets
 }
-
-module "org_policy_trustedadvisor_policy" {
-  source         = "../../_sub/security/org-service-control-policy"
-  name           = "TrustedAdvisorPolicy"
-  description    = "Used to control which actions can be performed with Trusted Advisor"
-  policy         = jsonencode(jsondecode(data.aws_iam_policy_document.trustedadvisor.json))
-  attach_targets = var.trustedadvisor_policy_attach_targets
-}
