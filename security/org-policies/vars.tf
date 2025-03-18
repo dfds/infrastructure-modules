@@ -18,6 +18,10 @@ variable "reservation_policy_attach_targets" {
   type = list(string)
 }
 
+variable "trustedadvisor_policy_attach_targets" {
+  type = list(string)
+}
+
 variable "resource_owner_tag_value" {
   type = string
 }

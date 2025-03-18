@@ -208,11 +208,7 @@ data "aws_iam_policy_document" "restrictive" {
       "s3:GetMultiRegionAccessPointPolicyStatus",
       "s3:GetMultiRegionAccessPointPolicy",
       "s3:GetMultiRegionAccessPoint",
-      "s3:DescribeMultiRegionAccessPointOperation",
-      "trustedadvisor:DescribeAccount*",
-      "trustedadvisor:DescribeChecks",
-      "trustedadvisor:DescribeCheckSummaries",
-      "trustedadvisor:DescribeCheckRefreshStatuses"
+      "s3:DescribeMultiRegionAccessPointOperation"
     ]
     resources = ["*"]
     condition {
