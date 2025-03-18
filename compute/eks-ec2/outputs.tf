@@ -63,3 +63,7 @@ output "eks_cluster_nodes_sg_id" {
 output "blaster_configmap_bucket" {
   value = module.blaster_configmap_bucket.bucket_name
 }
+
+output "eks_control_subnet_ids" {
+  value = module.eks_cluster.subnet_ids
+}
