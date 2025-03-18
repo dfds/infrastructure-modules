@@ -23,5 +23,5 @@ spec:
     ingressRoute:
       dashboard:
         enabled: true
-        matchRule: Host(`${dashboard_ingress_host}`) && PathPrefix(`/dashboard`) || PathPrefix(`/api`)
+        matchRule: Host(`${dashboard_ingress_host}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
         entryPoints: [traefik, web]
