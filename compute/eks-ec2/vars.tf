@@ -252,3 +252,29 @@ variable "docker_hub_password" {
   sensitive   = true
   default     = ""
 }
+
+# --------------------------------------------------
+# NAT Gateway
+# --------------------------------------------------
+
+variable "enable_worker_nat_gateway" {
+  type        = bool
+  default     = false
+  description = <<EOF
+  Whether to enable dormant NAT Gateway for worker nodes.
+  To be used in conjunction with use_worker_nat_gateway later.
+  This is to ensure the NAT Gateway available before it is used, and hence reduce downtime.
+EOF
+}
+
+variable "use_worker_nat_gateway" {
+  type        = bool
+  default     = false
+  description = "Whether to use NAT Gateway for worker nodes"
+}
+
+variable "eks_cluster_subnets" {
+  type        = number
+  default     = 3
+  description = "Number of subnets to use for the Cluster Control Plane"
+}
