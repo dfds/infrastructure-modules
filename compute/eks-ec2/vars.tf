@@ -231,7 +231,7 @@ variable "secure_eks_version_endpoint" {
 
 variable "efs_automated_backup_enabled" {
   type        = bool
-  default     = true
+  default     = false
   description = "Whether to enable automated backups for the EFS file system"
 }
 
