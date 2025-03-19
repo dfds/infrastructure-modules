@@ -52,12 +52,6 @@ variable "eks_cluster_name" {
   type = string
 }
 
-variable "eks_is_sandbox" {
-  type        = bool
-  description = "Specifies this is a sandbox cluster, which currently just scales ASG to zero every night"
-  default     = false
-}
-
 # --------------------------------------------------
 # CloudWatch Logs
 # --------------------------------------------------
@@ -1531,4 +1525,14 @@ variable "falco_custom_rules" {
   type        = string
   default     = ""
   description = "Custom rules to be added to the falco config"
+}
+
+# --------------------------------------------------
+# NAT Gateway
+# --------------------------------------------------
+
+variable "use_worker_nat_gateway" {
+  type        = bool
+  default     = false
+  description = "Whether to use NAT Gateway for worker nodes"
 }

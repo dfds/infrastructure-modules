@@ -203,14 +203,20 @@ variable "eks_worker_cur_bucket_arn" {
   description = "S3 ARN for Billing Cost and Usage Report (CUR)"
 }
 
-# --------------------------------------------------
-# Inactivity based clean up for sandboxes
-# --------------------------------------------------
+# ------------------------------------------------------
+# Inactivity based clean up and scale down for sandboxes
+# ------------------------------------------------------
 
 variable "enable_inactivity_cleanup" {
   type        = bool
   default     = true
   description = "Enables automated clean up of EKS resources based on inactivity. Only applicable to sandboxes."
+}
+
+variable "enable_scale_to_zero_after_business_hours" {
+  type        = bool
+  default     = true
+  description = "Enables automated scale to zero of EC2 instance after business hours. Only applicable to sandboxes."
 }
 
 # --------------------------------------------------
@@ -245,4 +251,30 @@ variable "docker_hub_password" {
   description = "Docker Hub password for pulling images"
   sensitive   = true
   default     = ""
+}
+
+# --------------------------------------------------
+# NAT Gateway
+# --------------------------------------------------
+
+variable "enable_worker_nat_gateway" {
+  type        = bool
+  default     = false
+  description = <<EOF
+  Whether to enable dormant NAT Gateway for worker nodes.
+  To be used in conjunction with use_worker_nat_gateway later.
+  This is to ensure the NAT Gateway available before it is used, and hence reduce downtime.
+EOF
+}
+
+variable "use_worker_nat_gateway" {
+  type        = bool
+  default     = false
+  description = "Whether to use NAT Gateway for worker nodes"
+}
+
+variable "eks_cluster_subnets" {
+  type        = number
+  default     = 3
+  description = "Number of subnets to use for the Cluster Control Plane"
 }

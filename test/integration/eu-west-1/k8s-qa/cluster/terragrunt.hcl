@@ -34,7 +34,7 @@ inputs = {
   # Since rebooting the cluster after inactivity at the moment requires first
   # running `terragrunt apply -target=module.eks_cluster` the QA cluster is
   # excluded from the inactivity clean up on this step.
-  enable_inactivity_cleanup = true
+  enable_inactivity_cleanup = false
 
   # --------------------------------------------------
   # Managed nodes
@@ -94,8 +94,8 @@ inputs = {
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.32-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.32-v20250228
-      ami_id             = "ami-03378472383870f22"
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.32-v20250304
+      ami_id             = "ami-07f6e1dfbf631e447"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
     }
@@ -106,8 +106,8 @@ inputs = {
       max_unavailable         = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.32-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.32-v20250228
-      ami_id             = "ami-03378472383870f22"
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.32-v20250304
+      ami_id             = "ami-07f6e1dfbf631e447"
       availability_zones = ["eu-west-1c"]
       taints = [
         {

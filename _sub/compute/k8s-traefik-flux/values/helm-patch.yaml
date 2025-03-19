@@ -20,3 +20,8 @@ spec:
   %{~ endfor ~}
     deployment:
       replicas: ${replicas}
+    ingressRoute:
+      dashboard:
+        enabled: true
+        matchRule: Host(`${dashboard_ingress_host}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+        entryPoints: [traefik, web]
