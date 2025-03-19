@@ -10,6 +10,10 @@ variable "cluster_zones" {
   type = number
 }
 
+variable "cluster_subnets" {
+  type = number
+}
+
 variable "log_types" {
   type        = list(string)
   description = "A list of the desired control plane logging to enable: api, audit, authenticator, controllerManager, scheduler. See also https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html."
