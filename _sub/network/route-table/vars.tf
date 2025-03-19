@@ -7,5 +7,17 @@ variable "vpc_id" {
 }
 
 variable "gateway_id" {
-  type = string
+  type    = string
+  default = null
+}
+
+variable "nat_gateway_id" {
+  type    = string
+  default = null
+}
+
+variable "tags" {
+  description = "The tags to apply to the resources"
+  type        = map(string)
+  default     = {}
 }
