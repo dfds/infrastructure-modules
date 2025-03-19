@@ -182,7 +182,7 @@ module "traefik_alb_anon" {
   name                  = "${var.eks_cluster_name}-traefik-alb"
   cluster_name          = var.eks_cluster_name
   vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
-  subnet_ids            = data.terraform_remote_state.cluster.outputs.eks_control_subnet_ids
+  subnet_ids            = var.use_worker_nat_gateway ? data.terraform_remote_state.cluster.outputs.eks_control_subnet_ids : data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
   autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
   alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
   nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
