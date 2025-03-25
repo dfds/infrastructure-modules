@@ -127,7 +127,7 @@ inputs = {
       max_pods = 30
       kube_memory                     = "585Mi"
       kube_cpu                        = "90m"
-      sys_memory                     = "585i"
+      sys_memory                     = "585Mi"
       sys_cpu                        = "90m"
     }
   }
