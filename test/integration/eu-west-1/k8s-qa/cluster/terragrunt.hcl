@@ -98,6 +98,10 @@ inputs = {
       ami_id             = "ami-07afb5fd28d8564d1"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
+      kube_memory                     = "1024Mi"
+      kube_cpu                        = "500m"
+      sys_memory                     = "768Mi"
+      sys_cpu                        = "300m"
     }
     "observability" = {
       instance_types          = ["t3.large"]
@@ -119,8 +123,10 @@ inputs = {
         dedicated = "observability"
       }
       max_pods = 30
-      memory = "585Mi"
-      cpu = "90m"
+      kube_memory                     = "585Mi"
+      kube_cpu                        = "90m"
+      sys_memory                     = "585Mi"
+      sys_cpu                        = "90m"
     }
   }
 
