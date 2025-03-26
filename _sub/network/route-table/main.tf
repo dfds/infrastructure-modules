@@ -31,7 +31,7 @@ data "aws_vpc_peering_connection" "pc" {
 }
 
 resource "aws_route" "peering" {
-  count                     = length(data.aws_vpc_peering_connections.pcs.ids)
+  count                     = var.migrate_vpc_peering_routes ? length(data.aws_vpc_peering_connections.pcs.ids) : 0
   route_table_id            = aws_route_table.table.id
   destination_cidr_block    = data.aws_vpc_peering_connection.pc[count.index].cidr_block
   vpc_peering_connection_id = data.aws_vpc_peering_connection.pc[count.index].id
