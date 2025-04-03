@@ -1536,3 +1536,33 @@ variable "use_worker_nat_gateway" {
   default     = false
   description = "Whether to use NAT Gateway for worker nodes"
 }
+
+# --------------------------------------------------
+# Cluster Autoscaler
+# --------------------------------------------------
+
+variable "cluster_autoscaler_deploy" {
+  type        = bool
+  default     = false
+  description = "Deploy cluster autoscaler"
+}
+
+variable "cluster_autoscaler_namespace" {
+  type = string
+}
+
+variable "cluster_autoscaler_service_account" {
+  type = string
+}
+
+variable "cluster_autoscaler_deploy_name" {
+  type        = string
+  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
+  default     = "autoscaler"
+}
+
+variable "cluster_autoscaler_chart_version" {
+  type        = string
+  description = "Autoscaler helm chart version"
+  default     = ""
+}

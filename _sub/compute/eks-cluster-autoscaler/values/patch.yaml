@@ -1,0 +1,18 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ${deploy_name}
+  namespace: ${namespace}
+spec:
+  serviceAccountName: helm-controller
+  chart:
+    spec:
+      version: "${chart_version}"
+  values:
+    autoDiscovery:
+      clusterName: "${cluster_name}"
+    rbac:
+      serviceAccount:
+        name: "${service_account_name}"
+        annotations:
+          eks.amazonaws.com/role-arn: "${cluster_autoscaler_role_arn}"

@@ -1061,3 +1061,34 @@ module "falco" {
     module.platform_fluxcd
   ]
 }
+
+# ---------------------------------------------------
+# Cluster Autoscaler
+# ---------------------------------------------------
+
+module "cluster_autoscaler" {
+  source        = "../../_sub/compute/eks-cluster-autoscaler"
+  count         = var.cluster_autoscaler_deploy ? 1 : 0
+  cluster_name  = var.eks_cluster_name
+  oidc_provider = local.oidc_issuer
+  autoscaler_namespace = var.cluster_autoscaler_namespace
+  autoscaler_service_account = var.cluster_autoscaler_service_account
+  aws_account_id = var.aws_workload_account_id
+  namespace                    = var.cluster_autoscaler_namespace
+  chart_version                = var.cluster_autoscaler_chart_version
+  github_token                 = var.fluxcd_bootstrap_repo_owner_token
+  repo_owner                   = var.fluxcd_bootstrap_repo_owner
+  repo_name                    = var.fluxcd_bootstrap_repo_name
+  repo_branch                  = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create          = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url         = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch      = var.fluxcd_apps_repo_branch
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [
+    module.platform_fluxcd
+  ]
+}
