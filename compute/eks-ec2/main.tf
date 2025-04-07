@@ -74,6 +74,12 @@ module "eks_workers" {
   cur_bucket_arn                 = var.eks_worker_cur_bucket_arn
 }
 
+module "ssm" {
+  source  = "../../_sub/network/vpc-ssm"
+  vpc_id  = module.eks_cluster.vpc_id
+  subnets = [for sn in module.eks_managed_workers_subnet.subnets : sn.id]
+}
+
 # --------------------------------------------------
 # NAT Gateway - with or without
 # --------------------------------------------------
