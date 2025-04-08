@@ -91,7 +91,7 @@ inputs = {
     "general" = {
       instance_types          = ["m6a.xlarge"]
       disk_type               = "gp3"
-      desired_size_per_subnet = 0
+      desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.32-*"]}]
       # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.32-v20250317
@@ -102,7 +102,7 @@ inputs = {
     "observability" = {
       instance_types          = ["t3.large"]
       disk_type               = "gp3"
-      desired_size_per_subnet = 0
+      desired_size_per_subnet = 1
       max_unavailable         = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.32-*"]}]
