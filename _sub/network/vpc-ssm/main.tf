@@ -60,31 +60,3 @@ resource "aws_vpc_endpoint" "ssmmessages" {
     Name = "peering-com.amazonaws.${data.aws_region.current.name}.ssmmessages"
   })
 }
-
-resource "aws_vpc_endpoint" "ec2" {
-  vpc_id            = var.vpc_id
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.ec2"
-  vpc_endpoint_type = "Interface"
-
-  private_dns_enabled = true
-
-  subnet_ids = var.subnets
-
-  tags = merge(var.tags, {
-    Name = "peering-com.amazonaws.${data.aws_region.current.name}.ec2"
-  })
-}
-
-resource "aws_vpc_endpoint" "ec2messages" {
-  vpc_id            = var.vpc_id
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.ec2messages"
-  vpc_endpoint_type = "Interface"
-
-  private_dns_enabled = true
-
-  subnet_ids = var.subnets
-
-  tags = merge(var.tags, {
-    Name = "peering-com.amazonaws.${data.aws_region.current.name}.ec2messages"
-  })
-}
