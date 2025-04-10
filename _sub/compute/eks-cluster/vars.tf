@@ -31,3 +31,7 @@ variable "sleep_after" {
   default     = 120
   description = "The AWS API will return OK before the Kubernetes cluster is actually available. Wait an arbitrary amount of time for cluster to become ready. Workaround for https://github.com/aws/containers-roadmap/issues/654"
 }
+
+variable "assume_role_arn" {
+  type = string
+}

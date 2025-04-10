@@ -67,3 +67,11 @@ output "blaster_configmap_bucket" {
 output "eks_control_subnet_ids" {
   value = module.eks_cluster.subnet_ids
 }
+
+output "debug_host" {
+  value = module.eks_cluster.eks_endpoint
+}
+
+output "debug_cert" {
+  value = module.eks_cluster.eks_certificate_authority
+}

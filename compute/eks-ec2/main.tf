@@ -10,6 +10,7 @@ module "eks_cluster" {
   cluster_subnets    = var.enable_worker_nat_gateway || var.use_worker_nat_gateway ? var.eks_cluster_subnets : var.eks_cluster_zones
   log_types          = var.eks_cluster_log_types
   log_retention_days = var.eks_cluster_log_retention_days
+  assume_role_arn = var.aws_assume_role_arn
 }
 
 module "eks_internet_gateway" {

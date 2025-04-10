@@ -4,6 +4,9 @@ resource "aws_cloudwatch_log_group" "eks" {
   retention_in_days = var.log_retention_days
 }
 
+
+
+
 #tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr tfsec:ignore:aws-eks-no-public-cluster-access tfsec:ignore:aws-eks-encrypt-secrets tfsec:ignore:aws-eks-enable-control-plane-logging
 resource "aws_eks_cluster" "eks" {
   name     = var.cluster_name
@@ -17,10 +20,38 @@ resource "aws_eks_cluster" "eks" {
     subnet_ids         = slice(aws_subnet.eks[*].id, 0, var.cluster_zones)
   }
 
+  access_config {
+    authentication_mode = "API_AND_CONFIG_MAP"
+  }
+
+  compute_config {
+    enabled = true
+  }
+
+  kubernetes_network_config {
+    elastic_load_balancing {
+      enabled = true
+    }
+  }
+
+  storage_config {
+    block_storage {
+      enabled = true
+    }
+  }
+
+  bootstrap_self_managed_addons = false
+
+
+
   depends_on = [
     aws_cloudwatch_log_group.eks,
     aws_iam_role_policy_attachment.cluster,
     aws_iam_role_policy_attachment.service,
+    aws_iam_role_policy_attachment.cluster_AmazonEKSComputePolicy,
+    aws_iam_role_policy_attachment.cluster_AmazonEKSBlockStoragePolicy,
+    aws_iam_role_policy_attachment.cluster_AmazonEKSLoadBalancingPolicy,
+    aws_iam_role_policy_attachment.cluster_AmazonEKSNetworkingPolicy,
   ]
 
   # The AWS API will return OK before the Kubernetes cluster is actually available
