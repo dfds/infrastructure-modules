@@ -25,6 +25,11 @@ variable "shared_account_id" {
   description = "The AWS account ID of the Organizations Shared account (e.g. Oxygen)"
 }
 
+variable "ssu_account_id" {
+  type        = string
+  description = "The AWS account ID of the selfservice management account (e.g. ssu)"
+}
+
 variable "security_account_id" {
   type        = string
   description = "The AWS account ID of the Organizations Security account"
