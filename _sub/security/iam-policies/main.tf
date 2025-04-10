@@ -189,6 +189,27 @@ data "aws_iam_policy_document" "ssoreader" {
   }
 }
 
+# ssu ssm
+data "aws_iam_policy_document" "ssussm" {
+  statement {
+    sid    = "SsuSsmTf"
+    effect = "Allow"
+    actions = [
+      "ssm:PutParameter",
+      "ssm:DeleteParameter",
+      "ssm:RemoveTagsFromResource",
+      "ssm:AddTagsToResource",
+      "ssm:GetParametersByPath",
+      "ssm:GetParameters",
+      "ssm:GetParameter",
+      "ssm:DescribeParameters"
+    ]
+    resources = [
+      "arn:aws:ssm:*:*:parameter/managed/ssu/*"
+    ]
+  }
+}
+
 # VPCReader
 data "aws_iam_policy_document" "vpcreader" {
   statement {
