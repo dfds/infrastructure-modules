@@ -81,3 +81,9 @@ variable "tenants" {
   description = "List of tenants' namespaces and repository URLs"
   default     = []
 }
+
+variable "source_controller_role_arn" {
+  type        = string
+  default     = ""
+  description = "The ARN of the IAM role for the source controller. Used for IAM roles for service accounts (IRSA). Optional."
+}

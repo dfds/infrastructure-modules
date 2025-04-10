@@ -501,6 +501,12 @@ variable "fluxcd_tenants" {
   default     = []
 }
 
+variable "fluxcd_source_controller_role_arn" {
+  type        = string
+  default     = ""
+  description = "The ARN of the IAM role for the source controller. Used for IAM roles for service accounts (IRSA). Optional."
+}
+
 # --------------------------------------------------
 # GitOps apps used by Flux CD
 # --------------------------------------------------

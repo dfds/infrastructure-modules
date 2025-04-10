@@ -24,10 +24,12 @@ resource "github_repository_deploy_key" "main" {
 }
 
 resource "flux_bootstrap_git" "this" {
-  depends_on             = [github_repository_deploy_key.main]
-  path                   = local.cluster_target_path
-  version                = var.release_tag
-  kustomization_override = file("${path.module}/values/flux-system-patch.yaml")
+  depends_on = [github_repository_deploy_key.main]
+  path       = local.cluster_target_path
+  version    = var.release_tag
+  kustomization_override = templatefile("${path.module}/values/flux-system-patch.yaml", {
+    src_ctrl_arn = var.source_controller_role_arn
+  })
 }
 
 
