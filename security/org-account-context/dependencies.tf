@@ -24,6 +24,17 @@ data "aws_iam_policy_document" "assume_role_policy_selfservice" {
   }
 }
 
+data "aws_iam_policy_document" "assume_role_policy_ssuk8s" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.ssu_account_id}:role/ssu-k8s"]
+    }
+  }
+}
+
 data "aws_iam_policy_document" "assume_role_policy_selfservice_api" {
   statement {
     actions = ["sts:AssumeRole"]
