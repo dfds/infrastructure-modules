@@ -6,6 +6,10 @@ output "ssoreader" {
   value = data.aws_iam_policy_document.ssoreader.json
 }
 
+output "ssussm" {
+  value = data.aws_iam_policy_document.ssussm.json
+}
+
 output "vpcreader" {
   value = data.aws_iam_policy_document.vpcreader.json
 }
