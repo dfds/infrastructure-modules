@@ -12,28 +12,39 @@ variable "prime_role_name" {
   default = ""
 }
 
-variable "qa_iam_role_name" {
-  description = "Name of IAM role"
-  type        = string
-}
-
-variable "qa_iam_role_description" {
-  description = "Description for IAM role"
-  type        = string
-}
-
-variable "qa_iam_policy_name" {
-  description = "Policy granting access to create new AWS Organization accounts"
-  type        = string
-}
-
-variable "qa_iam_role_trusted_account_root_arn" {
-  description = "The ARN of the account trusted to assume the role"
-  type        = list(string)
-}
-
 variable "tags" {
   type        = map(string)
   description = "A map of tags to apply to all the resources deployed by the module"
   default     = {}
+}
+
+variable "fluxcd_role_name" {
+  description = "IAM role for ECR access from FluxCD source controller"
+  type        = string
+  default     = "fluxcd-source-controller-ecr-reader"
+}
+
+variable "fluxcd_role_prod_trust" {
+  description = "A map of the trust relationship for the IAM role. Mandatory."
+  type = map(object({
+    oidc_fqdn_url      = optional(string, "")
+    action             = optional(string, "sts:AssumeRoleWithWebIdentity")
+    effect             = optional(string, "Allow")
+    condition_operator = optional(string, "StringEquals")
+    condition_variable = optional(string, "sub")
+    condition_values   = optional(string, "system:serviceaccount:flux-system:source-controller")
+  }))
+}
+
+variable "fluxcd_role_nonprod_trust" {
+  description = "A map of the trust relationship for the IAM role. Optional."
+  type = map(object({
+    oidc_fqdn_url      = optional(string, "")
+    action             = optional(string, "sts:AssumeRoleWithWebIdentity")
+    effect             = optional(string, "Allow")
+    condition_operator = optional(string, "StringEquals")
+    condition_variable = optional(string, "sub")
+    condition_values   = optional(string, "system:serviceaccount:flux-system:source-controller")
+  }))
+  default = {}
 }
