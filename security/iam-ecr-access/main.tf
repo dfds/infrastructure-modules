@@ -27,8 +27,6 @@ data "aws_iam_policy_document" "fluxcd_role_trust" {
       }
     }
   }
-
-  provider = aws.workload
 }
 
 resource "aws_iam_role" "fluxcd_role" {
@@ -67,4 +65,6 @@ resource "aws_iam_openid_connect_provider" "default" {
   thumbprint_list = [data.tls_certificate.cert[each.key].certificates[0].sha1_fingerprint]
 
   tags = merge(var.tags, { Cluster = each.key })
+
+  provider = aws.workload
 }
