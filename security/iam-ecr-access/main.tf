@@ -1,3 +1,7 @@
+# --------------------------------------------------
+# Flux CD source controller ECR access through IRSA
+# --------------------------------------------------
+
 locals {
   fluxcd_role_trust = merge(
     var.fluxcd_role_prod_trust,
@@ -41,4 +45,26 @@ resource "aws_iam_role_policy_attachment" "fluxcd_read_only" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 
   provider = aws.workload
+}
+
+# --------------------------------------------------
+# OIDC providers for non-prod EKS clusters
+# --------------------------------------------------
+
+data "tls_certificate" "cert" {
+  for_each = var.fluxcd_role_nonprod_trust
+  url      = format("https://%s", each.value["oidc_fqdn_url"])
+}
+
+resource "aws_iam_openid_connect_provider" "default" {
+  for_each = var.fluxcd_role_nonprod_trust
+  url      = format("https://%s", each.value["oidc_fqdn_url"])
+
+  client_id_list = [
+    "sts.amazonaws.com",
+  ]
+
+  thumbprint_list = [data.tls_certificate.cert[each.key].certificates[0].sha1_fingerprint]
+
+  tags = merge(var.tags, { Cluster = each.key })
 }
