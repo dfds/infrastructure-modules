@@ -122,6 +122,15 @@ module "hardened-account" {
   security_contact_phone_number   = var.hardened_security_contact_phone_number
   sso_support_permission_set_name = var.sso_support_permission_set_name
   sso_support_group_name          = var.sso_support_group_name
+
+  depends_on = [
+    module.iam_identity_center_assignment,
+    module.iam_identity_center_assignment_IAMRA,
+    module.cloudtrail_local,
+    module.iam_account_alias,
+    module.org_account,
+    module.iam_policies
+  ]
 }
 
 # --------------------------------------------------
