@@ -8,7 +8,7 @@ data "aws_region" "workload" {
 
 resource "aws_securityhub_account" "workload" {
   count                    = var.harden ? 1 : 0
-  enable_default_standards = true
+  enable_default_standards = var.enable_default_standards
   provider                 = aws.workload
 }
 
