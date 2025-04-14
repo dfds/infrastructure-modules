@@ -6,18 +6,24 @@ data "aws_region" "workload" {
   provider = aws.workload
 }
 
+resource "aws_securityhub_account" "workload" {
+  count                    = var.harden ? 1 : 0
+  enable_default_standards = true
+  provider                 = aws.workload
+}
+
 resource "aws_securityhub_standards_subscription" "cis_1_2" {
   count         = var.harden ? 1 : 0
   standards_arn = "arn:aws:securityhub:::ruleset/cis-aws-foundations-benchmark/v/1.2.0"
-
-  provider = aws.workload
+  provider      = aws.workload
+  depends_on    = [aws_securityhub_account.workload]
 }
 
 resource "aws_securityhub_standards_subscription" "cis_1_4" {
   count         = var.harden ? 1 : 0
   standards_arn = "arn:aws:securityhub:${data.aws_region.workload[0].name}::standards/cis-aws-foundations-benchmark/v/1.4.0"
-
-  provider = aws.workload
+  provider      = aws.workload
+  depends_on    = [aws_securityhub_account.workload]
 }
 
 resource "aws_sns_topic" "cis_controls" {
