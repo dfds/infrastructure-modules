@@ -144,6 +144,11 @@ variable "hardened_security_contact_phone_number" {
   type = string
 }
 
+variable "hardened_enable_default_standards" {
+  type    = bool
+  default = false
+}
+
 variable "tags" {
   type        = map(string)
   description = "A map of tags to apply to all the resources deployed by the module"
