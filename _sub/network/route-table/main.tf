@@ -26,7 +26,7 @@ data "aws_vpc_peering_connections" "pcs" {
 }
 
 data "aws_vpc_peering_connection" "pc" {
-  count = length(data.aws_vpc_peering_connections.pcs.ids)
+  count = var.migrate_vpc_peering_routes ? length(data.aws_vpc_peering_connections.pcs.ids) : 0
   id    = data.aws_vpc_peering_connections.pcs.ids[count.index]
 }
 
