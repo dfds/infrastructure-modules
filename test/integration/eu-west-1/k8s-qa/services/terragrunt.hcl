@@ -32,6 +32,7 @@ inputs = {
   eks_is_sandbox            = true
   eks_cluster_name          = "qa"
   enable_inactivity_cleanup = false
+  use_worker_nat_gateway    = true
 
   # --------------------------------------------------
   # Load Balancers in front of Traefik
