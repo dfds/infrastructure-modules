@@ -70,6 +70,7 @@ data "aws_iam_policy_document" "create_org_account" {
       "sso:ListPermissionSetsProvisionedToAccount",
       "sso:ListAccountAssignments",
       "sso:DescribeAccountAssignmentCreationStatus",
+      "sso:DescribeAccountAssignmentDeletionStatus",
     ]
 
     resources = ["*"]
