@@ -57,3 +57,22 @@ resource "aws_ssoadmin_permission_set_inline_policy" "IAMRA" {
   instance_arn       = aws_ssoadmin_permission_set.IAMRA[0].instance_arn
   permission_set_arn = aws_ssoadmin_permission_set.IAMRA[0].arn
 }
+
+resource "aws_ssoadmin_permission_set" "netsec-mgmt" {
+  name             = "NetworkSecurityManagement"
+  description      = "The permission set for handling network security management"
+  instance_arn     = tolist(data.aws_ssoadmin_instances.dfds.arns)[0]
+  session_duration = "PT1H"
+}
+
+resource "aws_ssoadmin_managed_policy_attachment" "aws-waf-full-access" {
+  instance_arn       = aws_ssoadmin_permission_set.netsec-mgmt.instance_arn
+  permission_set_arn = aws_ssoadmin_permission_set.netsec-mgmt.arn
+  managed_policy_arn = "arn:aws:iam::aws:policy/AWSWAFFullAccess"
+}
+
+resource "aws_ssoadmin_managed_policy_attachment" "aws-waf-console-full-access" {
+  instance_arn       = aws_ssoadmin_permission_set.netsec-mgmt.instance_arn
+  permission_set_arn = aws_ssoadmin_permission_set.netsec-mgmt.arn
+  managed_policy_arn = "arn:aws:iam::aws:policy/AWSWAFConsoleFullAccess"
+}
