@@ -66,6 +66,19 @@ module "iam_identity_center_assignment_IAMRA" {
   }
 }
 
+module "iam_identity_center_assignment_netsec_mgmt" {
+  source = "../../_sub/security/iam-identity-center-assignment"
+  count  = var.sso_netsec_mgmt_permission_set_name != "" && var.sso_netsec_mgmt_group_name != "" ? 1 : 0
+
+  permission_set_name = var.sso_netsec_mgmt_permission_set_name
+  group_name          = var.sso_netsec_mgmt_group_name
+  aws_account_id      = module.org_account.id
+
+  providers = {
+    aws = aws.sso
+  }
+}
+
 resource "aws_iam_role" "prime" {
   name                 = var.prime_role_name
   description          = "Admin role to be assumed by Prime"

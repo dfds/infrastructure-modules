@@ -98,6 +98,18 @@ variable "sso_support_group_name" {
   default = null
 }
 
+variable "sso_netsec_mgmt_permission_set_name" {
+  type        = string
+  description = "The name of the IAM Identity Center permission set for the Network Security Management group."
+  default     = ""
+}
+
+variable "sso_netsec_mgmt_group_name" {
+  type        = string
+  description = "The name of the IAM Identity Center group for the Network Security Management group."
+  default     = ""
+}
+
 variable "harden" {
   type    = bool
   default = false
