@@ -39,7 +39,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_encryption
 resource "aws_s3_bucket_ownership_controls" "bucket_ownership_controls" {
   bucket = aws_s3_bucket.bucket.id
   rule {
-    object_ownership = "BucketOwnerPreferred"
+    object_ownership = var.object_ownership
   }
 }
 
@@ -57,7 +57,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket_liftecycle" {
   bucket = aws_s3_bucket.bucket.id
 
   rule {
-    id     = "retention_policy"
+    id     = var.lifecycle_rule_name
     status = "Enabled"
 
     abort_incomplete_multipart_upload {
@@ -88,7 +88,7 @@ resource "aws_s3_bucket_replication_configuration" "bucket_replication" {
   role   = var.replication_source_role_arn
 
   rule {
-    id     = "datalake"
+    id     = var.replication_rule_name
     status = "Enabled"
 
     destination {
