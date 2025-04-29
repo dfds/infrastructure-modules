@@ -1,6 +1,11 @@
 variable "retention_days" {
   type        = number
   description = "Retention days set on bucket."
+  default     = 30
+  validation {
+    condition     = var.retention_days > 0
+    error_message = "Retention days must be greater than 0."
+  }
 }
 
 variable "lifecycle_rule_name" {
@@ -75,4 +80,22 @@ variable "object_ownership" {
     condition     = contains(["BucketOwnerPreferred", "BucketOwnerEnforced", "ObjectWriter"], var.object_ownership)
     error_message = "Ownership controls must be either 'BucketOwnerPreferred', 'BucketOwnerEnforced' or 'ObjectWriter'."
   }
+}
+
+variable "force_bucket_destroy" {
+  type        = bool
+  default     = true
+  description = "Destroy bucket without error"
+}
+
+variable "versioning_enabled" {
+  type        = bool
+  description = "Enable S3 bucket versioning."
+  default     = false
+}
+
+variable "lifecycle_enabled" {
+  type        = bool
+  description = "Enable S3 bucket lifecycle."
+  default     = true
 }

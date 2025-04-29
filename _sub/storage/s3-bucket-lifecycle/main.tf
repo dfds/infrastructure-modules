@@ -1,7 +1,7 @@
-# tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-specify-public-access-block tfsec:ignore:aws-s3-no-public-buckets tfsec:ignore:aws-s3-encryption-customer-key tfsec:ignore:aws-s3-block-public-acls tfsec:ignore:aws-s3-block-public-policy tfsec:ignore:aws-s3-enable-bucket-logging
+# tfsec:ignore:AVD-AWS-0089 tfsec:ignore:AVD-AWS-0090
 resource "aws_s3_bucket" "bucket" {
   bucket        = var.name
-  force_destroy = true
+  force_destroy = var.force_bucket_destroy
 
   tags = merge(
     var.additional_tags,
@@ -9,11 +9,6 @@ resource "aws_s3_bucket" "bucket" {
       "Managed by" = "Terraform"
     }
   )
-}
-
-resource "aws_s3_bucket_policy" "bucketpolicy" {
-  bucket = aws_s3_bucket.bucket.id
-  policy = var.policy
 }
 
 resource "aws_s3_bucket_public_access_block" "block_public_access" {
@@ -53,12 +48,23 @@ resource "aws_s3_bucket_acl" "bucket_acl" {
   ]
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "bucket_liftecycle" {
+resource "aws_s3_bucket_versioning" "bucket" {
+  count  = var.replication_enabled || var.versioning_enabled ? 1 : 0
+  bucket = aws_s3_bucket.bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle" {
+  count  = var.lifecycle_enabled ? 1 : 0
   bucket = aws_s3_bucket.bucket.id
 
   rule {
     id     = var.lifecycle_rule_name
     status = "Enabled"
+
+    filter {}
 
     abort_incomplete_multipart_upload {
       days_after_initiation = var.retention_days
@@ -71,14 +77,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket_liftecycle" {
     expiration {
       days = var.retention_days
     }
-  }
-}
-
-resource "aws_s3_bucket_versioning" "bucket" {
-  count  = var.replication_enabled ? 1 : 0
-  bucket = aws_s3_bucket.bucket.id
-  versioning_configuration {
-    status = "Enabled"
   }
 }
 
@@ -112,4 +110,9 @@ resource "aws_s3_bucket_replication_configuration" "bucket_replication" {
   }
 
   depends_on = [aws_s3_bucket_versioning.bucket]
+}
+
+resource "aws_s3_bucket_policy" "bucketpolicy" {
+  bucket = aws_s3_bucket.bucket.id
+  policy = var.policy
 }
