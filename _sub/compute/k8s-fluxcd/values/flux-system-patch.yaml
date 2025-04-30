@@ -22,6 +22,14 @@ patches:
       name: "(kustomize-controller|helm-controller)"
   - patch: |
       - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --concurrent=40
+    target:
+      kind: Deployment
+      # trunk-ignore(yamllint/quoted-strings)
+      name: "helm-controller"
+  - patch: |
+      - op: add
         path: /spec/serviceAccountName
         value: kustomize-controller
     target:
