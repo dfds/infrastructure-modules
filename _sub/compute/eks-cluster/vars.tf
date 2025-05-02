@@ -14,6 +14,10 @@ variable "cluster_subnets" {
   type = number
 }
 
+variable "worker_subnet_ids" {
+  type = list(string)
+}
+
 variable "log_types" {
   type        = list(string)
   description = "A list of the desired control plane logging to enable: api, audit, authenticator, controllerManager, scheduler. See also https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html."
@@ -34,4 +38,16 @@ variable "sleep_after" {
 
 variable "assume_role_arn" {
   type = string
+}
+
+variable "migrate_to_eks_automode" {
+  type        = bool
+  description = "Has/is this cluster been/being migrated to EKS Auto Mode?"
+  default     = false
+}
+
+variable "additional_security_groups" {
+  type        = list(string)
+  description = "A list of additional security groups to attach to the EKS cluster VPC for Auto Mode."
+  default     = []
 }

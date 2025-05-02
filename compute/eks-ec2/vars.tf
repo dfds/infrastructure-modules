@@ -284,3 +284,13 @@ variable "migrate_vpc_peering_routes" {
   type        = bool
   default     = false
 }
+
+# --------------------------------------------------
+# EKS Auto Mode
+# --------------------------------------------------
+
+variable "migrate_to_eks_automode" {
+  type        = bool
+  description = "Has/is this cluster been/being migrated to EKS Auto Mode?"
+  default     = false
+}

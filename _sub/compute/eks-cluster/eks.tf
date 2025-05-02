@@ -16,16 +16,24 @@ resource "aws_eks_cluster" "eks" {
   enabled_cluster_log_types = var.log_types
 
   vpc_config {
-    security_group_ids = [aws_security_group.eks-cluster.id]
-    subnet_ids         = slice(aws_subnet.eks[*].id, 0, var.cluster_zones)
+    security_group_ids = var.additional_security_groups
+    subnet_ids         = concat(["${var.worker_subnet_ids[0]}"], ["${var.worker_subnet_ids[1]}"])
+    endpoint_private_access = true
+    endpoint_public_access  = true
   }
 
+## -- EKS Auto Mode
   access_config {
     authentication_mode = "API_AND_CONFIG_MAP"
+    bootstrap_cluster_creator_admin_permissions = var.migrate_to_eks_automode ? true : false 
   }
 
   compute_config {
     enabled = true
+    node_pools = [
+      "general-purpose",
+      "system"]
+    node_role_arn = aws_iam_role.node.arn
   }
 
   kubernetes_network_config {
@@ -40,7 +48,7 @@ resource "aws_eks_cluster" "eks" {
     }
   }
 
-  bootstrap_self_managed_addons = false
+  bootstrap_self_managed_addons = var.migrate_to_eks_automode ? true : false 
 
 
 

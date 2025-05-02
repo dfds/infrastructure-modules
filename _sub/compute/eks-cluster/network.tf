@@ -37,5 +37,6 @@ resource "aws_subnet" "eks" {
     "Name"                                      = "eks-${var.cluster_name}-control-plane-${data.aws_availability_zones.available.names[count.index]}"
     "Description"                               = "Subnet reserved for the EKS control plane of the ${var.cluster_name} cluster."
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                    = "1"
   }
 }

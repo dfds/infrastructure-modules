@@ -11,6 +11,9 @@ module "eks_cluster" {
   log_types          = var.eks_cluster_log_types
   log_retention_days = var.eks_cluster_log_retention_days
   assume_role_arn = var.aws_assume_role_arn
+  worker_subnet_ids = module.eks_managed_workers_subnet.subnet_ids
+  migrate_to_eks_automode = var.migrate_to_eks_automode
+  # additional_security_groups = [module.eks_workers_security_group.id]
 }
 
 module "eks_internet_gateway" {

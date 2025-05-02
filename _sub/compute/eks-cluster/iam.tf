@@ -10,7 +10,10 @@ resource "aws_iam_role" "eks" {
       "Principal": {
         "Service": "eks.amazonaws.com"
       },
-      "Action": "sts:AssumeRole"
+      "Action": [
+        "sts:AssumeRole",
+        "sts:TagSession"
+      ]
     }
   ]
 }
@@ -48,25 +51,51 @@ resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSNetworkingPolicy" {
   role       = aws_iam_role.eks.name
 }
 
-resource "aws_iam_role_policy" "deny_elb" {
-  name = "deny_elb"
-  role = aws_iam_role.eks.id
+# resource "aws_iam_role_policy" "deny_elb" {
+#   name = "deny_elb"
+#   role = aws_iam_role.eks.id
 
-  policy = <<POLICY
-{
-    "Version": "2012-10-17",
-    "Statement": [
-                {
-            "Effect": "Deny",
-            "Action": [
-                "elasticloadbalancing:CreateLoadBalancer",
-                "elasticloadbalancing:ModifyLoadBalancerAttributes",
-                "elasticloadbalancing:CreateLoadBalancerPolicy"
-            ],
-            "Resource": "*"
+#   policy = <<POLICY
+# {
+#     "Version": "2012-10-17",
+#     "Statement": [
+#                 {
+#             "Effect": "Deny",
+#             "Action": [
+#                 "elasticloadbalancing:CreateLoadBalancer",
+#                 "elasticloadbalancing:ModifyLoadBalancerAttributes",
+#                 "elasticloadbalancing:CreateLoadBalancerPolicy"
+#             ],
+#             "Resource": "*"
+#         }
+#     ]
+# }
+# POLICY
+
+# }
+
+resource "aws_iam_role" "node" {
+  name = "eks-auto-node-example"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = ["sts:AssumeRole"]
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
         }
+      },
     ]
+  })
 }
-POLICY
 
+resource "aws_iam_role_policy_attachment" "node_AmazonEKSWorkerNodeMinimalPolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodeMinimalPolicy"
+  role       = aws_iam_role.node.name
+}
+
+resource "aws_iam_role_policy_attachment" "node_AmazonEC2ContainerRegistryPullOnly" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPullOnly"
+  role       = aws_iam_role.node.name
 }

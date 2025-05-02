@@ -8,6 +8,7 @@ resource "aws_subnet" "subnet" {
     "Name"                                      = "${var.name}-${data.aws_availability_zones.available.names[count.index]}"
     "Description"                               = "Subnet for worker nodes and Kubernetes resource in the ${var.cluster_name} cluster."
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb"           = "1"
   }
 }
 
