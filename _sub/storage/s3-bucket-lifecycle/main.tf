@@ -26,7 +26,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_encryption
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm = "aws:kms"
+      sse_algorithm = var.sse_algorithm
     }
   }
 }
@@ -81,7 +81,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle" {
 }
 
 resource "aws_s3_bucket_replication_configuration" "bucket_replication" {
-  count  = var.replication_enabled ? 1 : 0
+  count  = var.replication_enabled && var.sse_algorithm != "AES256" ? 1 : 0
   bucket = aws_s3_bucket.bucket.id
   role   = var.replication_source_role_arn
 
@@ -106,6 +106,28 @@ resource "aws_s3_bucket_replication_configuration" "bucket_replication" {
       sse_kms_encrypted_objects {
         status = "Enabled"
       }
+    }
+  }
+
+  depends_on = [aws_s3_bucket_versioning.bucket]
+}
+
+resource "aws_s3_bucket_replication_configuration" "bucket_replication_simplified" {
+  count  = var.replication_enabled && var.sse_algorithm == "AES256" ? 1 : 0
+  bucket = aws_s3_bucket.bucket.id
+  role   = var.replication_source_role_arn
+
+  rule {
+    id     = var.replication_rule_name
+    status = "Enabled"
+
+    destination {
+      access_control_translation {
+        owner = "Destination"
+      }
+
+      account = var.replication_destination_account_id
+      bucket  = var.replication_destination_bucket_arn
     }
   }
 

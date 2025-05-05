@@ -38,5 +38,6 @@ module "velero_storage" {
   replication_destination_account_id  = var.replication_destination_account_id
   replication_destination_bucket_arn  = var.replication_destination_bucket_arn
   replication_destination_kms_key_arn = var.replication_destination_kms_key_arn
+  sse_algorithm                       = var.sse_algorithm
   versioning_enabled                  = true
 }

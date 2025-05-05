@@ -25,6 +25,7 @@ module "traefik_alb_s3_access_logs" {
   replication_destination_bucket_arn  = var.alb_access_logs_replication_destination_bucket_arn
   replication_destination_kms_key_arn = var.alb_access_logs_replication_destination_kms_key_arn
   replication_rule_name               = "datalake"
+  sse_algorithm                       = "aws:kms"
 }
 
 # --------------------------------------------------

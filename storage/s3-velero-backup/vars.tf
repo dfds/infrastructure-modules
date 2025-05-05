@@ -68,9 +68,19 @@ variable "replication_destination_kms_key_arn" {
 variable "retention_days" {
   type        = number
   description = "Retention days set on bucket."
-  default     = 30
+  default     = 15
   validation {
     condition     = var.retention_days > 0
     error_message = "Retention days must be greater than 0."
+  }
+}
+
+variable "sse_algorithm" {
+  type        = string
+  description = "The server-side encryption algorithm to use."
+  default     = "AES256"
+  validation {
+    condition     = contains(["aws:kms", "aws:kms:dsse", "AES256"], var.sse_algorithm)
+    error_message = "SSE algorithm must be either 'aws:kms', 'aws:kms:dsse' or 'AES256'."
   }
 }

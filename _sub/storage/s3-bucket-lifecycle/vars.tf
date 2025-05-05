@@ -99,3 +99,13 @@ variable "lifecycle_enabled" {
   description = "Enable S3 bucket lifecycle."
   default     = true
 }
+
+variable "sse_algorithm" {
+  type        = string
+  description = "The server-side encryption algorithm to use."
+  default     = "AES256"
+  validation {
+    condition     = contains(["aws:kms", "aws:kms:dsse", "AES256"], var.sse_algorithm)
+    error_message = "SSE algorithm must be either 'aws:kms', 'aws:kms:dsse' or 'AES256'."
+  }
+}
