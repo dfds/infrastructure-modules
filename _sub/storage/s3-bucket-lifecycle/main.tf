@@ -1,26 +1,18 @@
 # tfsec:ignore:AVD-AWS-0089 tfsec:ignore:AVD-AWS-0090
 resource "aws_s3_bucket" "bucket" {
-  bucket        = var.name
-  force_destroy = var.force_bucket_destroy
-
-  tags = merge(
-    var.additional_tags,
-    {
-      "Managed by" = "Terraform"
-    }
-  )
+  bucket        = var.bucket_name
+  force_destroy = var.force_destroy
 }
 
 resource "aws_s3_bucket_public_access_block" "block_public_access" {
-  bucket = aws_s3_bucket.bucket.id
-
+  bucket                  = aws_s3_bucket.bucket.id
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
 
-# tfsec:ignore:aws-s3-encryption-customer-key
+# tfsec:ignore:AVD-AWS-0132
 resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_encryption" {
   bucket = aws_s3_bucket.bucket.id
 
@@ -49,8 +41,9 @@ resource "aws_s3_bucket_acl" "bucket_acl" {
 }
 
 resource "aws_s3_bucket_versioning" "bucket" {
-  count  = var.replication_enabled || var.versioning_enabled ? 1 : 0
+  count  = length(var.replication) > 0 || var.versioning_enabled ? 1 : 0
   bucket = aws_s3_bucket.bucket.id
+
   versioning_configuration {
     status = "Enabled"
   }
@@ -61,7 +54,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle" {
   bucket = aws_s3_bucket.bucket.id
 
   rule {
-    id     = var.lifecycle_rule_name
+    id     = "lifecycle_policy"
     status = "Enabled"
 
     filter {}
@@ -81,29 +74,44 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle" {
 }
 
 resource "aws_s3_bucket_replication_configuration" "bucket_replication" {
-  count  = var.replication_enabled && var.sse_algorithm != "AES256" ? 1 : 0
   bucket = aws_s3_bucket.bucket.id
-  role   = var.replication_source_role_arn
+  role   = var.replication_role_arn
 
-  rule {
-    id     = var.replication_rule_name
-    status = "Enabled"
+  dynamic "rule" {
+    for_each = var.replication
+    content {
+      id       = "replication_rule_${rule.key}"
+      status   = "Enabled"
+      priority = index(keys(var.replication), rule.key)
 
-    destination {
-      access_control_translation {
-        owner = "Destination"
+      filter {}
+
+      destination {
+        access_control_translation {
+          owner = "Destination"
+        }
+
+        account = rule.value["destination_account_id"]
+        bucket  = rule.value["destination_bucket_arn"]
+
+        dynamic "encryption_configuration" {
+          for_each = rule.value["kms_encryption_key_arn"] != "" ? [1] : []
+          content {
+            replica_kms_key_id = rule.value["kms_encryption_key_arn"]
+          }
+        }
       }
 
-      account = var.replication_destination_account_id
-      bucket  = var.replication_destination_bucket_arn
-
-      encryption_configuration {
-        replica_kms_key_id = var.replication_destination_kms_key_arn
+      dynamic "source_selection_criteria" {
+        for_each = rule.value["kms_encryption_key_arn"] != "" ? [1] : []
+        content {
+          sse_kms_encrypted_objects {
+            status = "Enabled"
+          }
+        }
       }
-    }
 
-    source_selection_criteria {
-      sse_kms_encrypted_objects {
+      delete_marker_replication {
         status = "Enabled"
       }
     }
@@ -112,29 +120,7 @@ resource "aws_s3_bucket_replication_configuration" "bucket_replication" {
   depends_on = [aws_s3_bucket_versioning.bucket]
 }
 
-resource "aws_s3_bucket_replication_configuration" "bucket_replication_simplified" {
-  count  = var.replication_enabled && var.sse_algorithm == "AES256" ? 1 : 0
+resource "aws_s3_bucket_policy" "bucket_policy" {
   bucket = aws_s3_bucket.bucket.id
-  role   = var.replication_source_role_arn
-
-  rule {
-    id     = var.replication_rule_name
-    status = "Enabled"
-
-    destination {
-      access_control_translation {
-        owner = "Destination"
-      }
-
-      account = var.replication_destination_account_id
-      bucket  = var.replication_destination_bucket_arn
-    }
-  }
-
-  depends_on = [aws_s3_bucket_versioning.bucket]
-}
-
-resource "aws_s3_bucket_policy" "bucketpolicy" {
-  bucket = aws_s3_bucket.bucket.id
-  policy = var.policy
+  policy = var.bucket_policy
 }

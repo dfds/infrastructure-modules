@@ -11,57 +11,24 @@ variable "bucket_name" {
   description = "Velero storage bucket name"
 }
 
-variable "additional_tags" {
-  description = "Add additional tags to s3 bucket"
-  type        = map(any)
-  default     = {}
-}
-
 variable "velero_role_arn" {
   description = "Which role arn can use the bucket?"
   type        = string
   default     = null
 }
 
-variable "tags" {
-  type        = map(string)
-  description = "A map of tags to apply to all the resources deployed by the module"
-  default     = {}
+variable "replication" {
+  type = map(object({
+    destination_account_id = string
+    destination_bucket_arn = string
+    kms_encryption_key_arn = optional(string, "")
+  }))
+  default = {}
 }
 
-variable "data_tags" {
-  type        = map(string)
-  description = "A map of tags to apply to all the data and/or storage deployed by the module"
-  default     = {}
-}
-
-variable "replication_enabled" {
-  type        = bool
-  description = "Enable S3 bucket replication."
-  default     = false
-}
-
-variable "replication_source_role_arn" {
+variable "replication_role_arn" {
   type        = string
   description = "The ARN of the IAM role to use for S3 bucket replication."
-  default     = null
-}
-
-variable "replication_destination_account_id" {
-  type        = string
-  description = "The account ID of the destination bucket."
-  default     = null
-}
-
-variable "replication_destination_bucket_arn" {
-  type        = string
-  description = "The ARN of the destination bucket."
-  default     = null
-}
-
-variable "replication_destination_kms_key_arn" {
-  type        = string
-  description = "The ARN of the KMS key to use for encryption of the destination bucket."
   default     = null
 }
 
@@ -83,4 +50,16 @@ variable "sse_algorithm" {
     condition     = contains(["aws:kms", "aws:kms:dsse", "AES256"], var.sse_algorithm)
     error_message = "SSE algorithm must be either 'aws:kms', 'aws:kms:dsse' or 'AES256'."
   }
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "A map of tags to apply to all the resources deployed by the module"
+  default     = {}
+}
+
+variable "data_tags" {
+  type        = map(string)
+  description = "A map of tags to apply to all the data and/or storage deployed by the module"
+  default     = {}
 }

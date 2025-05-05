@@ -1,75 +1,29 @@
-variable "retention_days" {
-  type        = number
-  description = "Retention days set on bucket."
-  default     = 30
-  validation {
-    condition     = var.retention_days > 0
-    error_message = "Retention days must be greater than 0."
-  }
-}
-
-variable "lifecycle_rule_name" {
-  type        = string
-  description = "The name of the lifecycle rule."
-  default     = "retention_policy"
-}
-
-variable "name" {
-  type        = string
-  description = "Bucket name."
-}
-
 variable "acl" {
   type        = string
   description = "The canned ACL to apply. Defaults to 'private'."
   default     = "private"
 }
 
-variable "policy" {
+variable "bucket_name" {
+  type        = string
+  description = "Bucket name."
+}
+
+variable "bucket_policy" {
   type        = string
   description = "Bucket policy."
 }
 
-variable "additional_tags" {
-  description = "Add additional tags to s3 bucket"
-  type        = map(any)
-  default     = {}
-}
-
-variable "replication_enabled" {
+variable "force_destroy" {
   type        = bool
-  description = "Enable S3 bucket replication."
-  default     = false
+  default     = true
+  description = "Destroy bucket without error"
 }
 
-variable "replication_source_role_arn" {
-  type        = string
-  description = "The ARN of the IAM role to use for S3 bucket replication."
-  default     = null
-}
-
-variable "replication_destination_account_id" {
-  type        = string
-  description = "The account ID of the destination bucket."
-  default     = null
-}
-
-variable "replication_destination_bucket_arn" {
-  type        = string
-  description = "The ARN of the destination bucket."
-  default     = null
-}
-
-variable "replication_destination_kms_key_arn" {
-  type        = string
-  description = "The ARN of the KMS key to use for encryption of the destination bucket."
-  default     = null
-}
-
-variable "replication_rule_name" {
-  type        = string
-  description = "The name of the replication rule."
-  default     = "replication_rule"
+variable "lifecycle_enabled" {
+  type        = bool
+  description = "Enable S3 bucket lifecycle."
+  default     = true
 }
 
 variable "object_ownership" {
@@ -82,22 +36,29 @@ variable "object_ownership" {
   }
 }
 
-variable "force_bucket_destroy" {
-  type        = bool
-  default     = true
-  description = "Destroy bucket without error"
+variable "replication" {
+  type = map(object({
+    destination_account_id = string
+    destination_bucket_arn = string
+    kms_encryption_key_arn = optional(string, "")
+  }))
+  default = {}
 }
 
-variable "versioning_enabled" {
-  type        = bool
-  description = "Enable S3 bucket versioning."
-  default     = false
+variable "replication_role_arn" {
+  type        = string
+  description = "The ARN of the IAM role to use for S3 bucket replication."
+  default     = null
 }
 
-variable "lifecycle_enabled" {
-  type        = bool
-  description = "Enable S3 bucket lifecycle."
-  default     = true
+variable "retention_days" {
+  type        = number
+  description = "Retention days set on bucket."
+  default     = 30
+  validation {
+    condition     = var.retention_days > 0
+    error_message = "Retention days must be greater than 0."
+  }
 }
 
 variable "sse_algorithm" {
@@ -108,4 +69,10 @@ variable "sse_algorithm" {
     condition     = contains(["aws:kms", "aws:kms:dsse", "AES256"], var.sse_algorithm)
     error_message = "SSE algorithm must be either 'aws:kms', 'aws:kms:dsse' or 'AES256'."
   }
+}
+
+variable "versioning_enabled" {
+  type        = bool
+  description = "Enable S3 bucket versioning."
+  default     = false
 }
