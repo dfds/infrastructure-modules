@@ -73,6 +73,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle" {
   }
 }
 
+# TODO: Create a new IAM role for replication
+# https://repost.aws/knowledge-center/s3-cross-account-replication-object-lock
+# https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-batch-replication-policies.html
+
 resource "aws_s3_bucket_replication_configuration" "bucket_replication" {
   bucket = aws_s3_bucket.bucket.id
   role   = var.replication_role_arn
