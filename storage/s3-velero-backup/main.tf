@@ -11,7 +11,7 @@ data "aws_iam_policy_document" "policy" {
       identifiers = [local.velero_role_arn]
     }
 
-    sid     = "Bucket permissions"
+    sid     = "BucketPermissions"
     effect  = "Allow"
     actions = ["s3:*"]
 

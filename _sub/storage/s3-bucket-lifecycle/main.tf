@@ -74,7 +74,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle" {
 }
 
 data "aws_iam_policy_document" "replication_role_trust_policy" {
-  count = length(var.replication) > 0 ? 1 : 0
   statement {
     actions = ["sts:AssumeRole"]
 
@@ -93,8 +92,10 @@ locals {
   ]
 }
 
+# In order to use the replication role, we need to create a policy that allows the source bucket to replicate objects to the destination bucket.
+# This policy must be attached to the source bucket's IAM role.
+# However, in order to avoid a circular dependency, we need to create the policy and role first before replication can be enabled.
 data "aws_iam_policy_document" "replication_policy" {
-  count = length(var.replication) > 0 ? 1 : 0
   statement {
     sid    = "SourceBucketPermissions"
     effect = "Allow"
@@ -145,27 +146,24 @@ data "aws_iam_policy_document" "replication_policy" {
 }
 
 resource "aws_iam_role" "replication_role" {
-  count              = length(var.replication) > 0 ? 1 : 0
   name               = "S3Replication-${var.bucket_name}"
-  assume_role_policy = data.aws_iam_policy_document.replication_role_trust_policy[count.index].json
+  assume_role_policy = data.aws_iam_policy_document.replication_role_trust_policy.json
 }
 
 resource "aws_iam_policy" "replication_policy" {
-  count  = length(var.replication) > 0 ? 1 : 0
   name   = "S3ReplicationPolicy-${var.bucket_name}"
-  policy = data.aws_iam_policy_document.replication_policy[count.index].json
+  policy = data.aws_iam_policy_document.replication_policy.json
 }
 
 resource "aws_iam_role_policy_attachment" "replication_policy_attachment" {
-  count      = length(var.replication) > 0 ? 1 : 0
-  role       = aws_iam_role.replication_role[count.index].name
-  policy_arn = aws_iam_policy.replication_policy[count.index].arn
+  role       = aws_iam_role.replication_role.name
+  policy_arn = aws_iam_policy.replication_policy.arn
 }
 
 resource "aws_s3_bucket_replication_configuration" "bucket_replication" {
   count  = length(var.replication) > 0 ? 1 : 0
   bucket = aws_s3_bucket.bucket.id
-  role   = aws_iam_role.replication_role[count.index].arn
+  role   = aws_iam_role.replication_role.arn
 
   dynamic "rule" {
     for_each = var.replication
