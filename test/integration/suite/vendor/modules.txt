@@ -136,7 +136,7 @@ github.com/traefik/traefik/v2/pkg/safe
 github.com/traefik/traefik/v2/pkg/tls
 github.com/traefik/traefik/v2/pkg/tls/generate
 github.com/traefik/traefik/v2/pkg/types
-# github.com/traefik/traefik/v3 v3.3.6
+# github.com/traefik/traefik/v3 v3.4.0
 ## explicit; go 1.23.0
 # github.com/x448/float16 v0.8.4
 ## explicit; go 1.11
