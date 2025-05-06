@@ -25,8 +25,8 @@ variable "retention_days" {
   description = "Retention days set on bucket."
   default     = 15
   validation {
-    condition     = var.retention_days > 1
-    error_message = "Retention days must be greater than 1."
+    condition     = var.retention_days > 0
+    error_message = "Retention days must be greater than 0."
   }
 }
 
