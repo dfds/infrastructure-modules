@@ -28,12 +28,11 @@ resource "aws_s3_bucket_policy" "policy" {
 }
 
 module "velero_storage" {
-  source               = "../../_sub/storage/s3-bucket-lifecycle"
-  bucket_name          = var.bucket_name
-  bucket_policy        = data.aws_iam_policy_document.policy.json
-  replication          = var.replication
-  replication_role_arn = var.replication_role_arn
-  sse_algorithm        = var.sse_algorithm
-  retention_days       = var.retention_days
-  versioning_enabled   = true
+  source             = "../../_sub/storage/s3-bucket-lifecycle"
+  bucket_name        = var.bucket_name
+  bucket_policy      = data.aws_iam_policy_document.policy.json
+  replication        = var.replication
+  sse_algorithm      = var.sse_algorithm
+  retention_days     = var.retention_days
+  versioning_enabled = true
 }

@@ -45,19 +45,13 @@ variable "replication" {
   default = {}
 }
 
-variable "replication_role_arn" {
-  type        = string
-  description = "The ARN of the IAM role to use for S3 bucket replication."
-  default     = null
-}
-
 variable "retention_days" {
   type        = number
   description = "Retention days set on bucket."
   default     = 30
   validation {
-    condition     = var.retention_days > 0
-    error_message = "Retention days must be greater than 0."
+    condition     = var.retention_days > 1
+    error_message = "Retention days must be greater than 1."
   }
 }
 

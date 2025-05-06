@@ -73,13 +73,99 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle" {
   }
 }
 
-# TODO: Create a new IAM role for replication
-# https://repost.aws/knowledge-center/s3-cross-account-replication-object-lock
-# https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-batch-replication-policies.html
+data "aws_iam_policy_document" "replication_role_trust_policy" {
+  count = length(var.replication) > 0 ? 1 : 0
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["s3.amazonaws.com", "batchoperations.s3.amazonaws.com"]
+    }
+  }
+}
+
+locals {
+  destination_bucket_arns = [for r in values(var.replication) : r.destination_bucket_arn]
+  kms_encryption_key_arns = [
+    for r in values(var.replication) : r.kms_encryption_key_arn
+    if r.kms_encryption_key_arn != ""
+  ]
+}
+
+data "aws_iam_policy_document" "replication_policy" {
+  count = length(var.replication) > 0 ? 1 : 0
+  statement {
+    sid    = "SourceBucketPermissions"
+    effect = "Allow"
+    resources = [
+      format("arn:aws:s3:::%s/*", var.bucket_name),
+      format("arn:aws:s3:::%s", var.bucket_name)
+    ]
+    actions = [
+      "s3:GetObjectRetention",
+      "s3:GetObjectVersionTagging",
+      "s3:GetObjectVersionAcl",
+      "s3:ListBucket",
+      "s3:GetObjectVersionForReplication",
+      "s3:GetObjectLegalHold",
+      "s3:GetReplicationConfiguration"
+    ]
+  }
+
+  dynamic "statement" {
+    for_each = length(local.destination_bucket_arns) > 0 ? [1] : []
+    content {
+      sid       = "DestinationBucketPermissions"
+      effect    = "Allow"
+      resources = formatlist("%s/*", local.destination_bucket_arns)
+      actions = [
+        "s3:ReplicateObject",
+        "s3:ObjectOwnerOverrideToBucketOwner",
+        "s3:GetObjectVersionTagging",
+        "s3:ReplicateTags",
+        "s3:ReplicateDelete"
+      ]
+    }
+  }
+
+  dynamic "statement" {
+    for_each = length(local.kms_encryption_key_arns) > 0 ? [1] : []
+    content {
+      sid       = "KMSPermissions"
+      effect    = "Allow"
+      resources = local.kms_encryption_key_arns
+      actions = [
+        "kms:Decrypt",
+        "kms:GenerateDataKey",
+        "kms:DescribeKey"
+      ]
+    }
+  }
+}
+
+resource "aws_iam_role" "replication_role" {
+  count              = length(var.replication) > 0 ? 1 : 0
+  name               = "S3Replication-${var.bucket_name}"
+  assume_role_policy = data.aws_iam_policy_document.replication_role_trust_policy[count.index].json
+}
+
+resource "aws_iam_policy" "replication_policy" {
+  count  = length(var.replication) > 0 ? 1 : 0
+  name   = "S3ReplicationPolicy-${var.bucket_name}"
+  policy = data.aws_iam_policy_document.replication_policy[count.index].json
+}
+
+resource "aws_iam_role_policy_attachment" "replication_policy_attachment" {
+  count      = length(var.replication) > 0 ? 1 : 0
+  role       = aws_iam_role.replication_role[count.index].name
+  policy_arn = aws_iam_policy.replication_policy[count.index].arn
+}
 
 resource "aws_s3_bucket_replication_configuration" "bucket_replication" {
+  count  = length(var.replication) > 0 ? 1 : 0
   bucket = aws_s3_bucket.bucket.id
-  role   = var.replication_role_arn
+  role   = aws_iam_role.replication_role[count.index].arn
 
   dynamic "rule" {
     for_each = var.replication

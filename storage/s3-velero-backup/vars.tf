@@ -11,12 +11,6 @@ variable "bucket_name" {
   description = "Velero storage bucket name"
 }
 
-variable "velero_role_arn" {
-  description = "Which role arn can use the bucket?"
-  type        = string
-  default     = null
-}
-
 variable "replication" {
   type = map(object({
     destination_account_id = string
@@ -26,19 +20,13 @@ variable "replication" {
   default = {}
 }
 
-variable "replication_role_arn" {
-  type        = string
-  description = "The ARN of the IAM role to use for S3 bucket replication."
-  default     = null
-}
-
 variable "retention_days" {
   type        = number
   description = "Retention days set on bucket."
   default     = 15
   validation {
-    condition     = var.retention_days > 0
-    error_message = "Retention days must be greater than 0."
+    condition     = var.retention_days > 1
+    error_message = "Retention days must be greater than 1."
   }
 }
 
@@ -50,6 +38,12 @@ variable "sse_algorithm" {
     condition     = contains(["aws:kms", "aws:kms:dsse", "AES256"], var.sse_algorithm)
     error_message = "SSE algorithm must be either 'aws:kms', 'aws:kms:dsse' or 'AES256'."
   }
+}
+
+variable "velero_role_arn" {
+  description = "Which role arn can use the bucket?"
+  type        = string
+  default     = null
 }
 
 variable "tags" {
