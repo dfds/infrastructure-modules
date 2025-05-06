@@ -146,14 +146,26 @@ variable "max_pods" {
   default     = 110
 }
 
-variable "cpu" {
+variable "kube_reserved_cpu" {
   type        = string
   description = "CPU reserved for kubernetes system components"
   default     = null
 }
 
-variable "memory" {
+variable "kube_reserved_memory" {
   type        = string
   description = "Memory reserved for kubernetes system components"
+  default     = null
+}
+
+variable "system_reserved_cpu" {
+  type        = string
+  description = "CPU reserved for system components"
+  default     = null
+}
+
+variable "system_reserved_memory" {
+  type        = string
+  description = "Memory reserved for system components"
   default     = null
 }
