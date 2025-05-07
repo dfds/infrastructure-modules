@@ -8,16 +8,12 @@ variable "aws_assume_role_arn" {
 
 variable "bucket_name" {
   type        = string
-  description = "Velero storage bucket name"
+  description = "Replication destination bucket name"
 }
 
-variable "replication" {
-  type = map(object({
-    destination_account_id = string
-    destination_bucket_arn = string
-    kms_encryption_key_arn = optional(string, "")
-  }))
-  default = {}
+variable "replication_role_arn" {
+  description = "Which role arn can write to the bucket?"
+  type        = string
 }
 
 variable "retention_days" {
@@ -38,12 +34,6 @@ variable "sse_algorithm" {
     condition     = contains(["aws:kms", "aws:kms:dsse", "AES256"], var.sse_algorithm)
     error_message = "SSE algorithm must be either 'aws:kms', 'aws:kms:dsse' or 'AES256'."
   }
-}
-
-variable "velero_role_arn" {
-  description = "Which role arn can use the bucket?"
-  type        = string
-  default     = null
 }
 
 variable "tags" {

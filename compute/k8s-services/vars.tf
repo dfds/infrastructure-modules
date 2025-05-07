@@ -35,15 +35,6 @@ variable "tags" {
   default     = {}
 }
 
-# Optional
-# --------------------------------------------------
-
-variable "s3_bucket_additional_tags" {
-  description = "Add additional tags to s3 bucket"
-  type        = map(any)
-  default     = {}
-}
-
 # --------------------------------------------------
 # EKS
 # --------------------------------------------------
@@ -70,40 +61,23 @@ variable "traefik_alb_s3_access_logs_retiontion_days" {
   default = 30
 }
 
-variable "alb_access_logs_replication_enabled" {
-  type        = bool
-  description = "Enable S3 bucket replication."
-  default     = false
+variable "alb_access_logs_replication" {
+  type = map(object({
+    destination_account_id = string
+    destination_bucket_arn = string
+    kms_encryption_key_arn = optional(string, "")
+  }))
+  default = {}
 }
 
-variable "alb_access_logs_replication_destination_bucket_arn" {
+variable "alb_access_logs_sse_algorithm" {
   type        = string
-  description = "The ARN of the destination bucket."
-  default     = null
-}
-
-variable "alb_access_logs_replication_source_role_name" {
-  type        = string
-  description = "Name of the role to create"
-  default     = null
-}
-
-variable "alb_access_logs_replication_source_kms_key_arn" {
-  type        = string
-  description = "The ARN of the KMS key to allow decryption of the source bucket"
-  default     = null
-}
-
-variable "alb_access_logs_replication_destination_kms_key_arn" {
-  type        = string
-  description = "The ARN of the KMS key to allow encryption of the destination bucket"
-  default     = null
-}
-
-variable "alb_access_logs_replication_destination_account_id" {
-  type        = string
-  description = "The account ID of the destination bucket."
-  default     = null
+  description = "The server-side encryption algorithm to use."
+  default     = "aws:kms"
+  validation {
+    condition     = contains(["aws:kms", "aws:kms:dsse", "AES256"], var.alb_access_logs_sse_algorithm)
+    error_message = "SSE algorithm must be either 'aws:kms', 'aws:kms:dsse' or 'AES256'."
+  }
 }
 
 

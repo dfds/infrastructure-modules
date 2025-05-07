@@ -2,28 +2,13 @@
 # ALB access logs S3 bucket
 # --------------------------------------------------
 
-module "alb_access_logs_bucket_replication_role" {
-  source                              = "../../_sub/security/iam-bucket-replication"
-  count                               = var.alb_access_logs_replication_source_role_name != null ? 1 : 0
-  replication_source_role_name        = var.alb_access_logs_replication_source_role_name
-  replication_source_bucket_arn       = "arn:aws:s3:::${local.alb_access_log_bucket_name}"
-  replication_destination_bucket_arn  = var.alb_access_logs_replication_destination_bucket_arn
-  replication_source_kms_key_arn      = var.alb_access_logs_replication_source_kms_key_arn
-  replication_destination_kms_key_arn = var.alb_access_logs_replication_destination_kms_key_arn
-  tags                                = var.tags
-}
-
 module "traefik_alb_s3_access_logs" {
-  source                              = "../../_sub/storage/s3-bucket-lifecycle"
-  name                                = local.alb_access_log_bucket_name
-  retention_days                      = var.traefik_alb_s3_access_logs_retiontion_days
-  policy                              = local.alb_access_log_bucket_policy
-  additional_tags                     = var.s3_bucket_additional_tags
-  replication_enabled                 = var.alb_access_logs_replication_enabled
-  replication_source_role_arn         = var.alb_access_logs_replication_enabled ? module.alb_access_logs_bucket_replication_role[0].role_arn : null
-  replication_destination_account_id  = var.alb_access_logs_replication_destination_account_id
-  replication_destination_bucket_arn  = var.alb_access_logs_replication_destination_bucket_arn
-  replication_destination_kms_key_arn = var.alb_access_logs_replication_destination_kms_key_arn
+  source         = "../../_sub/storage/s3-bucket-lifecycle"
+  bucket_name    = local.alb_access_log_bucket_name
+  retention_days = var.traefik_alb_s3_access_logs_retiontion_days
+  bucket_policy  = local.alb_access_log_bucket_policy
+  replication    = var.alb_access_logs_replication
+  sse_algorithm  = var.alb_access_logs_sse_algorithm
 }
 
 # --------------------------------------------------
