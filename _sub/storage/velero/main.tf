@@ -53,6 +53,7 @@ resource "github_repository_file" "velero_flux_helm_patch_yaml" {
     schedules_template_ttl              = var.schedules_template_ttl
     excluded_cluster_scoped_resources   = var.excluded_cluster_scoped_resources
     excluded_namespace_scoped_resources = var.excluded_namespace_scoped_resources
+    read_only                           = var.read_only
   })
   overwrite_on_create = var.overwrite_on_create
 }

@@ -653,6 +653,7 @@ module "velero" {
   workload_account_id                 = var.aws_workload_account_id
   excluded_cluster_scoped_resources   = var.velero_excluded_cluster_scoped_resources
   excluded_namespace_scoped_resources = var.velero_excluded_namespace_scoped_resources
+  read_only                           = var.velero_read_only
 
   providers = {
     github = github.fluxcd
