@@ -158,3 +158,12 @@ variable "excluded_namespace_scoped_resources" {
   default     = []
   description = "List of namespace-scoped resources to exclude from backup"
 }
+
+variable "read_only" {
+  type        = bool
+  default     = false
+  description = <<EOF
+    Set to true to access the backup storage location in read-only mode.
+    This is useful for restoring from a backup without modifying the backup storage location.
+EOF
+}
