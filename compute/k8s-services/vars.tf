@@ -113,6 +113,12 @@ variable "traefik_nlb_deploy" {
   default = false
 }
 
+variable "alb_az_app_registration_identifier_urls" {
+  type = list(string)
+  default = null
+  nullable = true
+}
+
 # --------------------------------------------------
 # Blaster
 # --------------------------------------------------

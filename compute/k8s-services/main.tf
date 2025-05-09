@@ -84,7 +84,7 @@ module "traefik_alb_auth_appreg" {
   source          = "../../_sub/security/azure-app-registration"
   count           = var.traefik_alb_auth_deploy ? 1 : 0
   name            = "Kubernetes EKS ${local.eks_fqdn} cluster"
-  identifier_uris = ["https://${local.eks_fqdn}"]
+  identifier_uris = var.alb_az_app_registration_identifier_urls != null ? var.alb_az_app_registration_identifier_urls : ["https://${local.eks_fqdn}"]
   homepage_url    = "https://${local.eks_fqdn}"
   redirect_uris   = local.traefik_alb_auth_appreg_reply_urls
 }
