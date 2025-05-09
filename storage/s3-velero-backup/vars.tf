@@ -15,7 +15,6 @@ variable "replication" {
   type = map(object({
     destination_account_id = string
     destination_bucket_arn = string
-    kms_encryption_key_arn = optional(string, "")
   }))
   default = {}
 }
