@@ -86,9 +86,13 @@ data "aws_iam_policy_document" "replication_role_trust_policy" {
 
 locals {
   destination_bucket_arns = [for r in values(var.replication) : r.destination_bucket_arn]
-  kms_encryption_key_arns = [
-    for r in values(var.replication) : r.kms_encryption_key_arn
-    if r.kms_encryption_key_arn != ""
+  destination_kms_key_arns = [
+    for r in values(var.replication) : r.destination_kms_key_arn
+    if r.destination_kms_key_arn != ""
+  ]
+  source_kms_key_arns = [
+    for r in values(var.replication) : r.source_kms_key_arn
+    if r.source_kms_key_arn != ""
   ]
 }
 
@@ -131,13 +135,27 @@ data "aws_iam_policy_document" "replication_policy" {
   }
 
   dynamic "statement" {
-    for_each = length(local.kms_encryption_key_arns) > 0 ? [1] : []
+    for_each = length(local.source_kms_key_arns) > 0 ? [1] : []
     content {
-      sid       = "KMSPermissions"
+      sid       = "SourceBucketKMSKey"
       effect    = "Allow"
-      resources = local.kms_encryption_key_arns
+      resources = local.source_kms_key_arns
       actions = [
         "kms:Decrypt",
+        "kms:GenerateDataKey",
+        "kms:DescribeKey"
+      ]
+    }
+  }
+
+  dynamic "statement" {
+    for_each = length(local.destination_kms_key_arns) > 0 ? [1] : []
+    content {
+      sid       = "DestinationBucketKMSKey"
+      effect    = "Allow"
+      resources = local.destination_kms_key_arns
+      actions = [
+        "kms:Encrypt",
         "kms:GenerateDataKey",
         "kms:DescribeKey"
       ]
@@ -183,15 +201,15 @@ resource "aws_s3_bucket_replication_configuration" "bucket_replication" {
         bucket  = rule.value["destination_bucket_arn"]
 
         dynamic "encryption_configuration" {
-          for_each = rule.value["kms_encryption_key_arn"] != "" ? [1] : []
+          for_each = rule.value["destination_kms_key_arn"] != "" ? [1] : []
           content {
-            replica_kms_key_id = rule.value["kms_encryption_key_arn"]
+            replica_kms_key_id = rule.value["destination_kms_key_arn"]
           }
         }
       }
 
       dynamic "source_selection_criteria" {
-        for_each = rule.value["kms_encryption_key_arn"] != "" ? [1] : []
+        for_each = rule.value["source_kms_key_arn"] != "" ? [1] : []
         content {
           sse_kms_encrypted_objects {
             status = "Enabled"

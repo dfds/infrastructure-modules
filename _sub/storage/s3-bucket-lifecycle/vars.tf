@@ -38,9 +38,10 @@ variable "object_ownership" {
 
 variable "replication" {
   type = map(object({
-    destination_account_id = string
-    destination_bucket_arn = string
-    kms_encryption_key_arn = optional(string, "")
+    destination_account_id  = string
+    destination_bucket_arn  = string
+    destination_kms_key_arn = optional(string, "")
+    source_kms_key_arn      = optional(string, "")
   }))
   default = {}
 }
