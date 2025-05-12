@@ -173,7 +173,7 @@ inputs = {
   atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
   atlantis_chart_version       = "5.7.0"
   atlantis_environment         = "qa"
-  atlantis_image_tag           = "2.0.4"
+  atlantis_image_tag           = "2.1.0"
   atlantis_add_secret_volumes  = true
 
   # --------------------------------------------------
