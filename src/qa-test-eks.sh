@@ -1,10 +1,10 @@
 #!/bin/bash
 set -eux #-o pipefail
 
-if [[ -z ${TERRAGRUNT_TFPATH+x} ]]; then
-	echo "TERRAGRUNT_TFPATH is unset"
+if [[ -z ${TG_TF_PATH+x} ]]; then
+	echo "TG_TF_PATH is unset"
 else
-	echo "TERRAGRUNT_TFPATH is set to ${TERRAGRUNT_TFPATH}"
+	echo "TG_TF_PATH is set to ${TG_TF_PATH}"
 fi
 
 BASEPATH=./test/integration
@@ -15,7 +15,7 @@ if [ "$ACTION" = "apply-shared" ]; then
 	WORKDIR="${BASEPATH}/${SUBPATH}"
 
 	# Apply the configuration
-	terragrunt run-all apply --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
+	terragrunt apply --all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve
 fi
 
 if [ "$ACTION" = "apply-cluster" ]; then
@@ -24,7 +24,7 @@ if [ "$ACTION" = "apply-cluster" ]; then
 	WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}"
 
 	# Apply the configuration
-	terragrunt run-all apply --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
+	terragrunt apply --all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve
 fi
 
 if [ "$ACTION" = "test-build" ]; then
@@ -43,7 +43,7 @@ if [ "$ACTION" = "test-run" ]; then
 	REGION=$2
 	CLUSTERNAME=$3
 	WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}/cluster"
-	export KUBECONFIG=$(terragrunt output --raw kubeconfig_path --terragrunt-working-dir "$WORKDIR")
+	export KUBECONFIG=$(terragrunt output --raw kubeconfig_path --working-dir "$WORKDIR")
 	TEST_BINARY_PATH=$4
 
 	# Make executable
@@ -59,7 +59,7 @@ if [ "$ACTION" = "destroy-cluster" ]; then
 	WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}"
 
 	# Destroy resources
-	terragrunt destroy-all --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
+	terragrunt destroy -all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve
 fi
 
 if [ "$ACTION" = "destroy-public-bucket" ]; then
@@ -68,7 +68,7 @@ if [ "$ACTION" = "destroy-public-bucket" ]; then
 	WORKDIR="${BASEPATH}/${SUBPATH}"
 
 	# Destroy resources
-	terragrunt run-all destroy --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
+	terragrunt destroy --all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve
 fi
 
 if [ "$ACTION" = "destroy-velero-bucket" ]; then
@@ -78,5 +78,5 @@ if [ "$ACTION" = "destroy-velero-bucket" ]; then
 	WORKDIR="${BASEPATH}/${SUBPATH}"
 
 	# Destroy resources
-	terragrunt run-all destroy --terragrunt-working-dir "$WORKDIR" --terragrunt-source-update --terragrunt-non-interactive -input=false -auto-approve
+	terragrunt destroy --all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve
 fi

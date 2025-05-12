@@ -45,7 +45,7 @@ resources:
         TF_VAR_docker_hub_username: $(TF_VAR_docker_hub_username)
         TF_VAR_docker_hub_password: $(TF_VAR_docker_hub_password)
         TF_IN_AUTOMATION: "true"
-        TERRAGRUNT_TFPATH: /usr/local/bin/tofu
+        TG_TF_PATH: /usr/local/bin/tofu
     - container: aws-nuke
       image: dfdsdk/aws-nuke:0.0.26
       env:
