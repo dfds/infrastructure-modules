@@ -59,7 +59,7 @@ if [ "$ACTION" = "destroy-cluster" ]; then
 	WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}"
 
 	# Destroy resources
-	terragrunt destroy -all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve
+	terragrunt destroy --all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve
 fi
 
 if [ "$ACTION" = "destroy-public-bucket" ]; then
