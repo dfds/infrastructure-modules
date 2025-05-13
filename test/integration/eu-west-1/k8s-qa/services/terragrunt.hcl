@@ -53,7 +53,7 @@ inputs = {
   # Blue variant
   traefik_blue_variant_deploy             = true
   traefik_blue_variant_dashboard_deploy   = true
-  traefik_blue_variant_helm_chart_version = "34.4.0"
+  traefik_blue_variant_helm_chart_version = "35.2.0"
   traefik_blue_variant_additional_args = [
     "--metrics.prometheus",
     "--providers.kubernetescrd.allowCrossNamespace=true",
@@ -63,7 +63,7 @@ inputs = {
   # Green variant
   traefik_green_variant_deploy             = false
   traefik_green_variant_dashboard_deploy   = false
-  traefik_green_variant_helm_chart_version = "34.4.0"
+  traefik_green_variant_helm_chart_version = "35.2.0"
   traefik_green_variant_additional_args = [
     "--metrics.prometheus",
     "--providers.kubernetescrd.allowCrossNamespace=true",
@@ -171,7 +171,7 @@ inputs = {
   atlantis_github_repositories = ["dfds/qa-dummy-atlantis"]
   atlantis_github_owner        = "dfds"
   atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
-  atlantis_chart_version       = "5.7.0"
+  atlantis_chart_version       = "5.17.2"
   atlantis_environment         = "qa"
   atlantis_image_tag           = "2.1.0"
   atlantis_add_secret_volumes  = true
@@ -242,10 +242,10 @@ inputs = {
 
   velero_deploy                               = true
   velero_bucket_arn                           = "arn:aws:s3:::dfds-velero-qa"
-  velero_helm_chart_version                   = "8.1.0"
-  velero_plugin_for_aws_version               = "v1.11.1"
+  velero_helm_chart_version                   = "9.1.2"
+  velero_plugin_for_aws_version               = "v1.12.0"
   velero_excluded_namespace_scoped_resources  = ["secrets"]
-  velero_filesystem_backup_enabled            = true
+  velero_filesystem_backup_enabled            = false
 
   # --------------------------------------------------
   # Grafana Agent for Kubernetes monitoring
