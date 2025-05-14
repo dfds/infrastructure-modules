@@ -381,15 +381,24 @@ locals {
 }
 
 resource "aws_iam_role" "backup" {
-  provider = aws.workload
-  count    = var.deploy_backup ? 1 : 0
-
+  provider           = aws.workload
+  count              = var.deploy_backup ? 1 : 0
   name               = "backup-role"
   assume_role_policy = data.aws_iam_policy_document.backup_trust.json
-  managed_policy_arns = [
-    "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup",
-    "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForRestores"
-  ]
+}
+
+resource "aws_iam_role_policy_attachment" "backup" {
+  provider   = aws.workload
+  count      = var.deploy_backup ? 1 : 0
+  role       = aws_iam_role.backup[count.index].name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
+}
+
+resource "aws_iam_role_policy_attachment" "restore" {
+  provider   = aws.workload
+  count      = var.deploy_backup ? 1 : 0
+  role       = aws_iam_role.backup[count.index].name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForRestores"
 }
 
 data "aws_iam_policy_document" "backup_trust" {
