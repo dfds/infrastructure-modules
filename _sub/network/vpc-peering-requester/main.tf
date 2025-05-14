@@ -272,10 +272,14 @@ data "aws_iam_policy_document" "ssm_trust" {
 }
 
 resource "aws_iam_role" "ssm_tunnel" {
-  name                = "ssm-tunnel${local.regional_postfix}"
-  assume_role_policy  = data.aws_iam_policy_document.ssm_trust.json
-  managed_policy_arns = ["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]
-  tags                = var.tags
+  name               = "ssm-tunnel${local.regional_postfix}"
+  assume_role_policy = data.aws_iam_policy_document.ssm_trust.json
+  tags               = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "ssm" {
+  role       = aws_iam_role.ssm_tunnel.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 resource "aws_iam_instance_profile" "ssm_tunnel" {
