@@ -36,22 +36,6 @@ variable "monitoring_slack_token" {
   default   = null
 }
 
-variable "security_contact_name" {
-  type = string
-}
-
-variable "security_contact_title" {
-  type = string
-}
-
-variable "security_contact_email" {
-  type = string
-}
-
-variable "security_contact_phone_number" {
-  type = string
-}
-
 variable "sso_support_permission_set_name" {
   type    = string
   default = null

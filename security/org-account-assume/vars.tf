@@ -54,6 +54,15 @@ variable "email" {
   type = string
 }
 
+variable "primary_phone_number" {
+  type = string
+}
+
+variable "email_security" {
+  type    = string
+  default = null
+}
+
 variable "cloudtrail_local_s3_bucket" {
   type    = string
   default = ""
@@ -138,22 +147,6 @@ variable "hardened_monitoring_slack_token" {
   type      = string
   sensitive = true
   default   = null
-}
-
-variable "hardened_security_contact_name" {
-  type = string
-}
-
-variable "hardened_security_contact_title" {
-  type = string
-}
-
-variable "hardened_security_contact_email" {
-  type = string
-}
-
-variable "hardened_security_contact_phone_number" {
-  type = string
 }
 
 variable "hardened_enable_default_standards" {
