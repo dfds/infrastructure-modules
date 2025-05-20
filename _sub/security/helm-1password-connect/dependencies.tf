@@ -73,7 +73,7 @@ metadata:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::${var.workload_account_id}:role/${var.deploy_name}-irsa
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: SecretStore
 metadata:
   name: 1password-connect-ssm
