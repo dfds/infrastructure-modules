@@ -86,6 +86,7 @@ resource "aws_kms_replica_key" "this" {
   count                   = var.multi_region ? 1 : 0
   description             = var.description
   deletion_window_in_days = var.deletion_window_in_days
+  policy                  = data.aws_iam_policy_document.this.json
   primary_key_arn         = aws_kms_key.this.arn
   provider                = aws.workload_2
 }
