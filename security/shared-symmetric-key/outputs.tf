@@ -9,3 +9,7 @@ output "id" {
 output "alias" {
   value = module.shared_symmetric_key.alias
 }
+
+output "replica_arn" {
+  value = module.shared_symmetric_key.replica_arn
+}

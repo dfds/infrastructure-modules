@@ -2,6 +2,10 @@ variable "aws_region" {
   type = string
 }
 
+variable "aws_region_2" {
+  type = string
+}
+
 variable "aws_assume_role_arn" {
   type = string
 }
