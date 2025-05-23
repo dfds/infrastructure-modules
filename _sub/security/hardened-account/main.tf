@@ -474,6 +474,18 @@ resource "aws_ebs_encryption_by_default" "default_2" {
   provider = aws.workload_2
 }
 
+resource "aws_ebs_default_kms_key" "default" {
+  count    = var.harden && var.kms_primary_key_arn != null ? 1 : 0
+  key_arn  = var.kms_primary_key_arn
+  provider = aws.workload
+}
+
+resource "aws_ebs_default_kms_key" "default_2" {
+  count    = var.harden && var.kms_replica_key_arn != null ? 1 : 0
+  key_arn  = var.kms_replica_key_arn
+  provider = aws.workload_2
+}
+
 # --------------------------------------------------
 # Password policy
 # --------------------------------------------------

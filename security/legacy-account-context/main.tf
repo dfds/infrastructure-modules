@@ -59,6 +59,8 @@ module "hardened-account" {
   monitoring_slack_token          = var.hardened_monitoring_slack_token
   sso_support_permission_set_name = var.sso_support_permission_set_name
   sso_support_group_name          = var.sso_support_group_name
+  kms_primary_key_arn             = var.hardened_kms_primary_key_arn
+  kms_replica_key_arn             = var.hardened_kms_replica_key_arn
 }
 
 # --------------------------------------------------

@@ -149,6 +149,8 @@ module "hardened-account" {
   enable_default_standards        = var.hardened_enable_default_standards
   sso_support_permission_set_name = var.sso_support_permission_set_name
   sso_support_group_name          = var.sso_support_group_name
+  kms_primary_key_arn             = var.hardened_kms_primary_key_arn
+  kms_replica_key_arn             = var.hardened_kms_replica_key_arn
 
   depends_on = [
     module.iam_identity_center_assignment,

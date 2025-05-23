@@ -154,6 +154,16 @@ variable "hardened_enable_default_standards" {
   default = false
 }
 
+variable "hardened_kms_primary_key_arn" {
+  type    = string
+  default = null
+}
+
+variable "hardened_kms_replica_key_arn" {
+  type    = string
+  default = null
+}
+
 variable "tags" {
   type        = map(string)
   description = "A map of tags to apply to all the resources deployed by the module"
