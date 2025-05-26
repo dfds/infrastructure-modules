@@ -156,4 +156,6 @@ inputs = {
 
   blaster_configmap_bucket = "dfds-qa-k8s-configmap"
 
+  eks_addon_awsebscsidriver_kms_arn = "arn:aws:kms:eu-west-1:490910914506:key/mrk-ce027648e74042b8a150a487b4d1e4fe"
+
 }
