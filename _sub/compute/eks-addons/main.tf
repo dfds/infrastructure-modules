@@ -101,8 +101,8 @@ resource "aws_iam_role_policy_attachment" "managed-ebs-csi-driver-policy" {
 
 resource "aws_iam_role_policy" "name" {
   count = var.ebs_csi_kms_arn != "" ? 1 : 0
-  name = "ebs-csi-driver-kms-policy"
-  role = aws_iam_role.ebs-csi-driver-role.name
+  name  = "ebs-csi-driver-kms-policy"
+  role  = aws_iam_role.ebs-csi-driver-role.name
 
   policy = data.aws_iam_policy_document.ebs-csi-driver-kms-policy[0].json
 }

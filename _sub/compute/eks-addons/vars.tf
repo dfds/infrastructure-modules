@@ -53,7 +53,7 @@ variable "efs_fs_id" {
 }
 
 variable "ebs_csi_kms_arn" {
-  type    = string
+  type        = string
   description = "ARN of the KMS key to use for the EBS CSI StorageClass"
-  default = ""
+  default     = ""
 }
