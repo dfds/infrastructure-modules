@@ -287,6 +287,6 @@ variable "migrate_vpc_peering_routes" {
 
 variable "eks_addon_awsebscsidriver_kms_arn" {
   type        = string
-  description = "ARN of the KMS key to use for the EBS CSI StorageClass"
+  description = "ARN of the KMS key to use for the EBS Volumes"
   default     = ""
 }
