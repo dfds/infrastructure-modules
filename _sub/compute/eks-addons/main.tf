@@ -99,7 +99,7 @@ resource "aws_iam_role_policy_attachment" "managed-ebs-csi-driver-policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
 
-resource "aws_iam_role_policy" "name" {
+resource "aws_iam_role_policy" "ebs-csi-driver-kms" {
   count = var.ebs_csi_kms_arn != "" ? 1 : 0
   name  = "ebs-csi-driver-kms-policy"
   role  = aws_iam_role.ebs-csi-driver-role.name

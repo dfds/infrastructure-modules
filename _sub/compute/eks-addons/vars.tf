@@ -49,7 +49,7 @@ variable "most_recent" {
 
 variable "efs_fs_id" {
   type    = string
-  default = "ID of the EFS file system to use for the EFS CSI StorageClass"
+  default = "ID of the EFS file system to use for the EFS CSI StorageClass" # TODO: Use this for description!
 }
 
 variable "ebs_csi_kms_arn" {
