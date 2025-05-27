@@ -155,5 +155,4 @@ inputs = {
   # --------------------------------------------------
 
   blaster_configmap_bucket = "dfds-qa-k8s-configmap"
-
 }
