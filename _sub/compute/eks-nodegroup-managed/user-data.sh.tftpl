@@ -67,7 +67,9 @@ spec:
     kubelet:
         flags:
           - "--image-credential-provider-bin-dir=/etc/eks/image-credential-provider/"
+%{ if docker_hub_password != "" && docker_hub_username != "" && essentials_url != "" ~}
           - "--image-credential-provider-config=/etc/eks/image-credential-provider/dfds-config.json"
+%{ endif ~}
         config:
 %{ if vpc_cni_prefix_delegation_enabled }
             maxPods: ${max_pods}
