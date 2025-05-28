@@ -17,7 +17,8 @@ resource "aws_launch_template" "eks" {
     cpu : var.cpu,
     memory : var.memory,
     docker_hub_username : var.docker_hub_username,
-    docker_hub_password : var.docker_hub_password
+    docker_hub_password : var.docker_hub_password,
+    essentials_url : var.essentials_url,
   }))
   key_name               = var.ec2_ssh_key
   update_default_version = true

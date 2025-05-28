@@ -107,6 +107,12 @@ variable "docker_hub_password" {
   default     = ""
 }
 
+variable "essentials_url" {
+  type = string
+  description = "HTTP server that provides essentials"
+  default = ""
+}
+
 # ------------------------------------------------------
 # Inactivity based scale down for sandboxes
 # ------------------------------------------------------
