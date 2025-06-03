@@ -486,6 +486,14 @@ resource "aws_ebs_default_kms_key" "default_2" {
   provider = aws.workload_2
 }
 
+resource "aws_kms_grant" "allow_autoscaling_role_use_of_kms_key" {
+  count              = var.harden && var.hardened_kms_replica_key_arn != null ? 1 : 0
+  grantee_principal = "arn:aws:iam::${data.aws_caller_identity.this.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+  key_id             = var.hardened_kms_replica_key_arn
+  operations = ["Encrypt", "Decrypt", "GenerateDataKey"]
+  name    = "Allow_AWSServiceRoleForAutoScaling_use_of_KMS_key"
+}
+
 # --------------------------------------------------
 # Password policy
 # --------------------------------------------------
