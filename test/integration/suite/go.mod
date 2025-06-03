@@ -7,12 +7,12 @@ toolchain go1.24.3
 require (
 	github.com/fluxcd/pkg/apis/meta v1.12.0
 	github.com/stretchr/testify v1.10.0
-	github.com/traefik/traefik/v2 v2.11.24
-	github.com/traefik/traefik/v3 v3.4.0
+	github.com/traefik/traefik/v2 v2.11.25
+	github.com/traefik/traefik/v3 v3.4.1
 	k8s.io/api v0.33.1
 	k8s.io/apimachinery v0.33.1
 	k8s.io/client-go v0.33.1
-	sigs.k8s.io/controller-runtime v0.20.4
+	sigs.k8s.io/controller-runtime v0.21.0
 )
 
 require (
@@ -37,7 +37,7 @@ require (
 	golang.org/x/sync v0.13.0 // indirect
 	golang.org/x/tools v0.30.0 // indirect
 	gopkg.in/evanphx/json-patch.v4 v4.12.0 // indirect
-	k8s.io/apiextensions-apiserver v0.32.1 // indirect
+	k8s.io/apiextensions-apiserver v0.33.0 // indirect
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3 // indirect
 	sigs.k8s.io/randfill v1.0.0 // indirect
 )

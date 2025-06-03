@@ -207,10 +207,13 @@ github.com/traefik/traefik/v2 v2.11.22 h1:KVZyMB/2usOQ269yaEHTqSxuNerI8Wx3zOc9FO
 github.com/traefik/traefik/v2 v2.11.22/go.mod h1:4wI43OMYc5nL8LNc/6coJeAw+KPLYFGrtJQeERL1X/8=
 github.com/traefik/traefik/v2 v2.11.24 h1:VldVbvK3Z1fu/siaWdkZdfe4mv+d/JcbJYbiTTtaWSU=
 github.com/traefik/traefik/v2 v2.11.24/go.mod h1:dXFZCSuGOXqr25Pp2x2L9VcGaVk9mFJKA++9dEi1fTE=
+github.com/traefik/traefik/v2 v2.11.25 h1:gkWvq7zhnLqJJlivFfnITWiDwTmph2EQt1XI8pWCnKI=
+github.com/traefik/traefik/v2 v2.11.25/go.mod h1:OFifHrTIFq/UUHvtXtSrNSAxqA6Cgmh+Gcq7eiGC4iA=
 github.com/traefik/traefik/v3 v3.3.4/go.mod h1:Zml3KqgpxNEKFh/jNHcLQm9ehJKNKIulLLQbbPQbp6s=
 github.com/traefik/traefik/v3 v3.3.5/go.mod h1:MDK1Rs8jUuWlNnNptx6c/w8GquaY5Ons3QDTcmavVFw=
 github.com/traefik/traefik/v3 v3.3.6/go.mod h1:Xb812TIm7Gt5XTAQpWI8+aODfQGrG8np1rPoSXwM+TM=
 github.com/traefik/traefik/v3 v3.4.0/go.mod h1:qZMqfdT077jnnWD14jnD10imucqdPFmCTBlOHrjNCfk=
+github.com/traefik/traefik/v3 v3.4.1/go.mod h1:8FHoFbX5P+zMQ3UUjjfrDH87BDSbHllcUQyiI2wCP3o=
 github.com/x448/float16 v0.8.4 h1:qLwI1I70+NjRFUR3zs1JPUCgaCXSh3SW62uAKT1mSBM=
 github.com/x448/float16 v0.8.4/go.mod h1:14CWIYCyZA/cWjXOioeEpHeN/83MdbZDRQHoFcYsOfg=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
@@ -422,6 +425,8 @@ k8s.io/apiextensions-apiserver v0.32.0 h1:S0Xlqt51qzzqjKPxfgX1xh4HBZE+p8KKBq+k2S
 k8s.io/apiextensions-apiserver v0.32.0/go.mod h1:86hblMvN5yxMvZrZFX2OhIHAuFIMJIZ19bTvzkP+Fmw=
 k8s.io/apiextensions-apiserver v0.32.1 h1:hjkALhRUeCariC8DiVmb5jj0VjIc1N0DREP32+6UXZw=
 k8s.io/apiextensions-apiserver v0.32.1/go.mod h1:sxWIGuGiYov7Io1fAS2X06NjMIk5CbRHc2StSmbaQto=
+k8s.io/apiextensions-apiserver v0.33.0 h1:d2qpYL7Mngbsc1taA4IjJPRJ9ilnsXIrndH+r9IimOs=
+k8s.io/apiextensions-apiserver v0.33.0/go.mod h1:VeJ8u9dEEN+tbETo+lFkwaaZPg6uFKLGj5vyNEwwSzc=
 k8s.io/apimachinery v0.30.3 h1:q1laaWCmrszyQuSQCfNB8cFgCuDAoPszKY4ucAjDwHc=
 k8s.io/apimachinery v0.30.3/go.mod h1:iexa2somDaxdnj7bha06bhb43Zpa6eWH8N8dbqVjTUc=
 k8s.io/apimachinery v0.31.0 h1:m9jOiSr3FoSSL5WO9bjm1n6B9KROYYgNZOb4tyZ1lBc=
@@ -510,6 +515,8 @@ sigs.k8s.io/controller-runtime v0.20.3 h1:I6Ln8JfQjHH7JbtCD2HCYHoIzajoRxPNuvhvcD
 sigs.k8s.io/controller-runtime v0.20.3/go.mod h1:xg2XB0K5ShQzAgsoujxuKN4LNXR2LfwwHsPj7Iaw+XY=
 sigs.k8s.io/controller-runtime v0.20.4 h1:X3c+Odnxz+iPTRobG4tp092+CvBU9UK0t/bRf+n0DGU=
 sigs.k8s.io/controller-runtime v0.20.4/go.mod h1:xg2XB0K5ShQzAgsoujxuKN4LNXR2LfwwHsPj7Iaw+XY=
+sigs.k8s.io/controller-runtime v0.21.0 h1:CYfjpEuicjUecRk+KAeyYh+ouUBn4llGyDYytIGcJS8=
+sigs.k8s.io/controller-runtime v0.21.0/go.mod h1:OSg14+F65eWqIu4DceX7k/+QRAbTTvxeQSNSOQpukWM=
 sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd h1:EDPBXCAspyGV4jQlpZSudPeMmr1bNJefnuqLsRAsHZo=
 sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd/go.mod h1:B8JuhiUyNFVKdsE8h686QcCxMaH6HrOAZj4vswFpcB0=
 sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3 h1:/Rv+M11QRah1itp8VhT6HoVx1Ray9eB4DBr+K+/sCJ8=
