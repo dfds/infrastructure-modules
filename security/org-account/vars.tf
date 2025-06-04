@@ -22,6 +22,12 @@ variable "email" {
   type = string
 }
 
+variable "parent_id" {
+  type        = string
+  description = "The ID of the parent AWS Organization OU. Defaults to the root."
+  default     = "r-65k1"
+}
+
 variable "cloudtrail_local_s3_bucket" {
   type    = string
   default = ""

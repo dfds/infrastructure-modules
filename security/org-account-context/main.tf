@@ -111,6 +111,20 @@ module "iam_role_sso_reader" {
   }
 }
 
+module "iam_role_ssu_ssm" {
+  source               = "../../_sub/security/iam-role"
+  role_name            = "ssu-ssm"
+  role_description     = "Allows ssu-k8s to maintain managed selfservice parameters"
+  max_session_duration = 28800 # 8 hours
+  assume_role_policy   = data.aws_iam_policy_document.assume_role_policy_ssuk8s.json
+  role_policy_name     = "ssuSsm"
+  role_policy_document = module.iam_policies.ssussm
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
 module "iam_role_vpc_reader" {
   source               = "../../_sub/security/iam-role"
   role_name            = "vpc-reader"
@@ -334,12 +348,10 @@ module "hardened-account" {
   monitoring_email                = var.hardened_monitoring_email
   monitoring_slack_channel        = var.hardened_monitoring_slack_channel
   monitoring_slack_token          = var.hardened_monitoring_slack_token
-  security_contact_name           = var.hardened_security_contact_name
-  security_contact_title          = var.hardened_security_contact_title
-  security_contact_email          = var.hardened_security_contact_email
-  security_contact_phone_number   = var.hardened_security_contact_phone_number
   sso_support_permission_set_name = var.sso_support_permission_set_name
   sso_support_group_name          = var.sso_support_group_name
+  kms_primary_key_arn             = var.hardened_kms_primary_key_arn
+  kms_replica_key_arn             = var.hardened_kms_replica_key_arn
 }
 
 # --------------------------------------------------
@@ -367,15 +379,24 @@ locals {
 }
 
 resource "aws_iam_role" "backup" {
-  provider = aws.workload
-  count    = var.deploy_backup ? 1 : 0
-
+  provider           = aws.workload
+  count              = var.deploy_backup ? 1 : 0
   name               = "backup-role"
   assume_role_policy = data.aws_iam_policy_document.backup_trust.json
-  managed_policy_arns = [
-    "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup",
-    "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForRestores"
-  ]
+}
+
+resource "aws_iam_role_policy_attachment" "backup" {
+  provider   = aws.workload
+  count      = var.deploy_backup ? 1 : 0
+  role       = aws_iam_role.backup[count.index].name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
+}
+
+resource "aws_iam_role_policy_attachment" "restore" {
+  provider   = aws.workload
+  count      = var.deploy_backup ? 1 : 0
+  role       = aws_iam_role.backup[count.index].name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForRestores"
 }
 
 data "aws_iam_policy_document" "backup_trust" {

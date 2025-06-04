@@ -54,6 +54,15 @@ variable "email" {
   type = string
 }
 
+variable "primary_phone_number" {
+  type = string
+}
+
+variable "email_security" {
+  type    = string
+  default = null
+}
+
 variable "cloudtrail_local_s3_bucket" {
   type    = string
   default = ""
@@ -98,6 +107,18 @@ variable "sso_support_group_name" {
   default = null
 }
 
+variable "sso_netsec_mgmt_permission_set_name" {
+  type        = string
+  description = "The name of the IAM Identity Center permission set for the Network Security Management group."
+  default     = ""
+}
+
+variable "sso_netsec_mgmt_group_name" {
+  type        = string
+  description = "The name of the IAM Identity Center group for the Network Security Management group."
+  default     = ""
+}
+
 variable "harden" {
   type    = bool
   default = false
@@ -128,20 +149,19 @@ variable "hardened_monitoring_slack_token" {
   default   = null
 }
 
-variable "hardened_security_contact_name" {
-  type = string
+variable "hardened_enable_default_standards" {
+  type    = bool
+  default = false
 }
 
-variable "hardened_security_contact_title" {
-  type = string
+variable "hardened_kms_primary_key_arn" {
+  type    = string
+  default = null
 }
 
-variable "hardened_security_contact_email" {
-  type = string
-}
-
-variable "hardened_security_contact_phone_number" {
-  type = string
+variable "hardened_kms_replica_key_arn" {
+  type    = string
+  default = null
 }
 
 variable "tags" {

@@ -70,6 +70,7 @@ data "aws_iam_policy_document" "create_org_account" {
       "sso:ListPermissionSetsProvisionedToAccount",
       "sso:ListAccountAssignments",
       "sso:DescribeAccountAssignmentCreationStatus",
+      "sso:DescribeAccountAssignmentDeletionStatus",
     ]
 
     resources = ["*"]
@@ -185,6 +186,27 @@ data "aws_iam_policy_document" "ssoreader" {
     ]
     resources = [
       "*"
+    ]
+  }
+}
+
+# ssu ssm
+data "aws_iam_policy_document" "ssussm" {
+  statement {
+    sid    = "SsuSsmTf"
+    effect = "Allow"
+    actions = [
+      "ssm:PutParameter",
+      "ssm:DeleteParameter",
+      "ssm:RemoveTagsFromResource",
+      "ssm:AddTagsToResource",
+      "ssm:GetParametersByPath",
+      "ssm:GetParameters",
+      "ssm:GetParameter",
+      "ssm:DescribeParameters"
+    ]
+    resources = [
+      "arn:aws:ssm:*:*:parameter/managed/ssu/*"
     ]
   }
 }

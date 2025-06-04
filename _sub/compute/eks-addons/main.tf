@@ -99,6 +99,47 @@ resource "aws_iam_role_policy_attachment" "managed-ebs-csi-driver-policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
 
+resource "aws_iam_role_policy" "ebs-csi-driver-kms" {
+  count = var.ebs_csi_kms_arn != "" ? 1 : 0
+  name  = "ebs-csi-driver-kms-policy"
+  role  = aws_iam_role.ebs-csi-driver-role.name
+
+  policy = data.aws_iam_policy_document.ebs-csi-driver-kms-policy[0].json
+}
+
+data "aws_iam_policy_document" "ebs-csi-driver-kms-policy" {
+  count = var.ebs_csi_kms_arn != "" ? 1 : 0
+  statement {
+    actions = [
+      "kms:CreateGrant",
+      "kms:ListGrants",
+      "kms:RevokeGrant"
+    ]
+
+    resources = [var.ebs_csi_kms_arn]
+    effect    = "Allow"
+
+    condition {
+      test     = "Bool"
+      variable = "kms:GrantIsForAWSResource"
+      values   = ["true"]
+    }
+  }
+  statement {
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:DescribeKey"
+    ]
+    resources = [var.ebs_csi_kms_arn]
+    effect    = "Allow"
+  }
+}
+
+
+
 ### AWS EFS CSI driver
 data "aws_iam_policy_document" "efs-csi-driver-assume-role-policy" {
   statement {

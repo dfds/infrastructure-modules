@@ -280,3 +280,15 @@ variable "eks_cluster_subnets" {
   default     = 3
   description = "Number of subnets to use for the Cluster Control Plane"
 }
+
+variable "migrate_vpc_peering_routes" {
+  description = "If true, migrate the peering connection to the new route table"
+  type        = bool
+  default     = false
+}
+
+variable "eks_addon_awsebscsidriver_kms_arn" {
+  type        = string
+  description = "ARN of the KMS key to use for the EBS Volumes"
+  default     = ""
+}

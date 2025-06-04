@@ -207,6 +207,7 @@ data "aws_iam_policy_document" "preventive" {
       test = "StringNotLike"
       values = [
         "arn:aws:iam::*:role/EKSAdmin",
+        "arn:aws:iam::*:role/OrgRole",
       ]
       variable = "aws:PrincipalArn"
     }

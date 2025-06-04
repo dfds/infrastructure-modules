@@ -2,28 +2,13 @@
 # ALB access logs S3 bucket
 # --------------------------------------------------
 
-module "alb_access_logs_bucket_replication_role" {
-  source                              = "../../_sub/security/iam-bucket-replication"
-  count                               = var.alb_access_logs_replication_source_role_name != null ? 1 : 0
-  replication_source_role_name        = var.alb_access_logs_replication_source_role_name
-  replication_source_bucket_arn       = "arn:aws:s3:::${local.alb_access_log_bucket_name}"
-  replication_destination_bucket_arn  = var.alb_access_logs_replication_destination_bucket_arn
-  replication_source_kms_key_arn      = var.alb_access_logs_replication_source_kms_key_arn
-  replication_destination_kms_key_arn = var.alb_access_logs_replication_destination_kms_key_arn
-  tags                                = var.tags
-}
-
 module "traefik_alb_s3_access_logs" {
-  source                              = "../../_sub/storage/s3-bucket-lifecycle"
-  name                                = local.alb_access_log_bucket_name
-  retention_days                      = var.traefik_alb_s3_access_logs_retiontion_days
-  policy                              = local.alb_access_log_bucket_policy
-  additional_tags                     = var.s3_bucket_additional_tags
-  replication_enabled                 = var.alb_access_logs_replication_enabled
-  replication_source_role_arn         = var.alb_access_logs_replication_enabled ? module.alb_access_logs_bucket_replication_role[0].role_arn : null
-  replication_destination_account_id  = var.alb_access_logs_replication_destination_account_id
-  replication_destination_bucket_arn  = var.alb_access_logs_replication_destination_bucket_arn
-  replication_destination_kms_key_arn = var.alb_access_logs_replication_destination_kms_key_arn
+  source         = "../../_sub/storage/s3-bucket-lifecycle"
+  bucket_name    = local.alb_access_log_bucket_name
+  retention_days = var.traefik_alb_s3_access_logs_retiontion_days
+  bucket_policy  = local.alb_access_log_bucket_policy
+  replication    = var.alb_access_logs_replication
+  sse_algorithm  = var.alb_access_logs_sse_algorithm
 }
 
 # --------------------------------------------------
@@ -99,7 +84,7 @@ module "traefik_alb_auth_appreg" {
   source          = "../../_sub/security/azure-app-registration"
   count           = var.traefik_alb_auth_deploy ? 1 : 0
   name            = "Kubernetes EKS ${local.eks_fqdn} cluster"
-  identifier_uris = ["https://${local.eks_fqdn}"]
+  identifier_uris = var.alb_az_app_registration_identifier_urls != null ? var.alb_az_app_registration_identifier_urls : ["https://${local.eks_fqdn}"]
   homepage_url    = "https://${local.eks_fqdn}"
   redirect_uris   = local.traefik_alb_auth_appreg_reply_urls
 }
@@ -182,7 +167,7 @@ module "traefik_alb_anon" {
   name                  = "${var.eks_cluster_name}-traefik-alb"
   cluster_name          = var.eks_cluster_name
   vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
-  subnet_ids            = var.use_worker_nat_gateway ? data.terraform_remote_state.cluster.outputs.eks_control_subnet_ids : data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
+  subnet_ids            = data.terraform_remote_state.cluster.outputs.eks_control_subnet_ids
   autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
   alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
   nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
@@ -462,21 +447,22 @@ module "aws_node_service" {
 # --------------------------------------------------
 
 module "platform_fluxcd" {
-  source                  = "../../_sub/compute/k8s-fluxcd"
-  release_tag             = var.fluxcd_version
-  repository_name         = var.fluxcd_bootstrap_repo_name
-  branch                  = var.fluxcd_bootstrap_repo_branch
-  github_owner            = var.fluxcd_bootstrap_repo_owner
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
-  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
-  cluster_name            = var.eks_cluster_name
-  prune                   = var.fluxcd_prune
-  endpoint                = data.aws_eks_cluster.eks.endpoint
-  token                   = data.aws_eks_cluster_auth.eks.token
-  cluster_ca_certificate  = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
-  enable_monitoring       = var.monitoring_kube_prometheus_stack_deploy || var.grafana_deploy ? true : false
-  tenants                 = var.fluxcd_tenants
+  source                     = "../../_sub/compute/k8s-fluxcd"
+  release_tag                = var.fluxcd_version
+  repository_name            = var.fluxcd_bootstrap_repo_name
+  branch                     = var.fluxcd_bootstrap_repo_branch
+  github_owner               = var.fluxcd_bootstrap_repo_owner
+  overwrite_on_create        = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url       = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch    = var.fluxcd_apps_repo_branch
+  cluster_name               = var.eks_cluster_name
+  prune                      = var.fluxcd_prune
+  endpoint                   = data.aws_eks_cluster.eks.endpoint
+  token                      = data.aws_eks_cluster_auth.eks.token
+  cluster_ca_certificate     = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+  enable_monitoring          = var.monitoring_kube_prometheus_stack_deploy || var.grafana_deploy ? true : false
+  tenants                    = var.fluxcd_tenants
+  source_controller_role_arn = var.fluxcd_source_controller_role_arn
 
   providers = {
     github = github.fluxcd
@@ -667,6 +653,7 @@ module "velero" {
   workload_account_id                 = var.aws_workload_account_id
   excluded_cluster_scoped_resources   = var.velero_excluded_cluster_scoped_resources
   excluded_namespace_scoped_resources = var.velero_excluded_namespace_scoped_resources
+  read_only                           = var.velero_read_only
 
   providers = {
     github = github.fluxcd

@@ -6,18 +6,24 @@ data "aws_region" "workload" {
   provider = aws.workload
 }
 
+resource "aws_securityhub_account" "workload" {
+  count                    = var.harden ? 1 : 0
+  enable_default_standards = var.enable_default_standards
+  provider                 = aws.workload
+}
+
 resource "aws_securityhub_standards_subscription" "cis_1_2" {
   count         = var.harden ? 1 : 0
   standards_arn = "arn:aws:securityhub:::ruleset/cis-aws-foundations-benchmark/v/1.2.0"
-
-  provider = aws.workload
+  provider      = aws.workload
+  depends_on    = [aws_securityhub_account.workload]
 }
 
 resource "aws_securityhub_standards_subscription" "cis_1_4" {
   count         = var.harden ? 1 : 0
   standards_arn = "arn:aws:securityhub:${data.aws_region.workload[0].name}::standards/cis-aws-foundations-benchmark/v/1.4.0"
-
-  provider = aws.workload
+  provider      = aws.workload
+  depends_on    = [aws_securityhub_account.workload]
 }
 
 resource "aws_sns_topic" "cis_controls" {
@@ -416,17 +422,6 @@ module "config_local_2" {
   }
 }
 
-resource "aws_account_alternate_contact" "security" {
-  count                  = var.harden ? 1 : 0
-  alternate_contact_type = "SECURITY"
-  name                   = var.security_contact_name
-  title                  = var.security_contact_title
-  email_address          = join("+${var.account_name}@", split("@", var.security_contact_email))
-  phone_number           = var.security_contact_phone_number
-
-  provider = aws.workload
-}
-
 # --------------------------------------------------
 # Default VPC flow logging
 # --------------------------------------------------
@@ -476,6 +471,28 @@ resource "aws_ebs_encryption_by_default" "default" {
 resource "aws_ebs_encryption_by_default" "default_2" {
   count    = var.harden ? 1 : 0
   enabled  = true
+  provider = aws.workload_2
+}
+
+resource "aws_ebs_default_kms_key" "default" {
+  count    = var.harden && var.kms_primary_key_arn != null ? 1 : 0
+  key_arn  = var.kms_primary_key_arn
+  provider = aws.workload
+}
+
+resource "aws_ebs_default_kms_key" "default_2" {
+  count    = var.harden && var.kms_replica_key_arn != null ? 1 : 0
+  key_arn  = var.kms_replica_key_arn
+  provider = aws.workload_2
+}
+
+resource "aws_kms_grant" "allow_autoscaling_role_use_of_kms_key" {
+  count              = var.harden && var.kms_replica_key_arn != null ? 1 : 0
+  grantee_principal = "arn:aws:iam::${var.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+  key_id             = var.kms_replica_key_arn
+  operations = ["Encrypt", "Decrypt", "ReEncryptFrom", "ReEncryptTo", "GenerateDataKey", "GenerateDataKeyWithoutPlaintext", "DescribeKey", "CreateGrant"]
+  name    = "Allow_AWSServiceRoleForAutoScaling_use_of_KMS_key"
+
   provider = aws.workload_2
 }
 

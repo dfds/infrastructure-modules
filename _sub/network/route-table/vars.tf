@@ -21,3 +21,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "migrate_vpc_peering_routes" {
+  description = "If true, migrate the peering connection to the new route table"
+  type        = bool
+  default     = false
+}

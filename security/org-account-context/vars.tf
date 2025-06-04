@@ -25,6 +25,11 @@ variable "shared_account_id" {
   description = "The AWS account ID of the Organizations Shared account (e.g. Oxygen)"
 }
 
+variable "ssu_account_id" {
+  type        = string
+  description = "The AWS account ID of the selfservice management account (e.g. ssu)"
+}
+
 variable "security_account_id" {
   type        = string
   description = "The AWS account ID of the Organizations Security account"
@@ -150,20 +155,14 @@ variable "hardened_monitoring_slack_token" {
   default   = null
 }
 
-variable "hardened_security_contact_name" {
-  type = string
+variable "hardened_kms_primary_key_arn" {
+  type    = string
+  default = null
 }
 
-variable "hardened_security_contact_title" {
-  type = string
-}
-
-variable "hardened_security_contact_email" {
-  type = string
-}
-
-variable "hardened_security_contact_phone_number" {
-  type = string
+variable "hardened_kms_replica_key_arn" {
+  type    = string
+  default = null
 }
 
 variable "primary_phone_number" {

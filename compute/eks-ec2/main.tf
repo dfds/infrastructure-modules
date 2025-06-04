@@ -74,6 +74,12 @@ module "eks_workers" {
   cur_bucket_arn                 = var.eks_worker_cur_bucket_arn
 }
 
+module "ssm" {
+  source  = "../../_sub/network/vpc-ssm"
+  vpc_id  = module.eks_cluster.vpc_id
+  subnets = [for sn in module.eks_managed_workers_subnet.subnets : sn.id]
+}
+
 # --------------------------------------------------
 # NAT Gateway - with or without
 # --------------------------------------------------
@@ -88,32 +94,35 @@ module "eks_nat_gateway" {
 }
 
 module "eks_route_table" {
-  count      = var.use_worker_nat_gateway ? 0 : 1
-  source     = "../../_sub/network/route-table"
-  name       = "eks-${var.eks_cluster_name}-subnet"
-  vpc_id     = module.eks_cluster.vpc_id
-  gateway_id = module.eks_internet_gateway.id
-  tags       = local.eks_route_table_tags
+  count                      = var.use_worker_nat_gateway ? 0 : 1
+  source                     = "../../_sub/network/route-table"
+  name                       = "eks-${var.eks_cluster_name}-subnet"
+  vpc_id                     = module.eks_cluster.vpc_id
+  gateway_id                 = module.eks_internet_gateway.id
+  migrate_vpc_peering_routes = var.migrate_vpc_peering_routes
+  tags                       = local.eks_route_table_tags
 }
 
 # Control Plane Route Table with NAT Gateway
 module "eks_route_table_nat_gateway" {
-  count      = var.use_worker_nat_gateway ? length(module.eks_cluster.subnet_ids) : 0
-  source     = "../../_sub/network/route-table"
-  name       = "eks-${var.eks_cluster_name}-subnet-control-plane-${count.index}"
-  vpc_id     = module.eks_cluster.vpc_id
-  gateway_id = module.eks_internet_gateway.id
-  tags       = local.eks_route_table_tags
+  count                      = var.use_worker_nat_gateway ? length(module.eks_cluster.subnet_ids) : 0
+  source                     = "../../_sub/network/route-table"
+  name                       = "eks-${var.eks_cluster_name}-subnet-control-plane-${count.index}"
+  vpc_id                     = module.eks_cluster.vpc_id
+  gateway_id                 = module.eks_internet_gateway.id
+  migrate_vpc_peering_routes = var.migrate_vpc_peering_routes
+  tags                       = local.eks_route_table_tags
 }
 
 # Worker Node Route Table with NAT Gateway
 module "eks_route_table_workers_nat_gateway" {
-  count          = var.use_worker_nat_gateway ? length(module.eks_managed_workers_subnet.subnet_ids) : 0
-  source         = "../../_sub/network/route-table"
-  name           = "eks-${var.eks_cluster_name}-subnet-worker-node-${count.index}"
-  vpc_id         = module.eks_cluster.vpc_id
-  nat_gateway_id = count.index < length(module.eks_nat_gateway) ? module.eks_nat_gateway[count.index].gateway_id : module.eks_nat_gateway[count.index - 1].gateway_id
-  tags           = local.eks_route_table_tags
+  count                      = var.use_worker_nat_gateway ? length(module.eks_managed_workers_subnet.subnet_ids) : 0
+  source                     = "../../_sub/network/route-table"
+  name                       = "eks-${var.eks_cluster_name}-subnet-worker-node-${count.index}"
+  vpc_id                     = module.eks_cluster.vpc_id
+  nat_gateway_id             = count.index < length(module.eks_nat_gateway) ? module.eks_nat_gateway[count.index].gateway_id : module.eks_nat_gateway[count.index - 1].gateway_id
+  migrate_vpc_peering_routes = var.migrate_vpc_peering_routes
+  tags                       = local.eks_route_table_tags
 }
 
 # Control Plane Route Table Association
@@ -244,6 +253,7 @@ module "eks_addons" {
   cluster_version                  = var.eks_cluster_version
   eks_openid_connect_provider_url  = module.eks_cluster.eks_openid_connect_provider_url
   efs_fs_id                        = module.efs_fs.id
+  ebs_csi_kms_arn                  = var.eks_addon_awsebscsidriver_kms_arn
 }
 
 module "k8s_priority_class" {

@@ -66,6 +66,19 @@ module "iam_identity_center_assignment_IAMRA" {
   }
 }
 
+module "iam_identity_center_assignment_netsec_mgmt" {
+  source = "../../_sub/security/iam-identity-center-assignment"
+  count  = var.sso_netsec_mgmt_permission_set_name != "" && var.sso_netsec_mgmt_group_name != "" ? 1 : 0
+
+  permission_set_name = var.sso_netsec_mgmt_permission_set_name
+  group_name          = var.sso_netsec_mgmt_group_name
+  aws_account_id      = module.org_account.id
+
+  providers = {
+    aws = aws.sso
+  }
+}
+
 resource "aws_iam_role" "prime" {
   name                 = var.prime_role_name
   description          = "Admin role to be assumed by Prime"
@@ -97,6 +110,23 @@ module "iam_role_certero" {
 }
 
 # --------------------------------------------------
+# AWS Account - Alternate contact
+# --------------------------------------------------
+
+module "alternate_contact_security" {
+  source = "../../_sub/security/alternate-contact"
+  count  = var.email_security != null ? 1 : 0
+
+  contact_type = "SECURITY"
+  email        = join("+${var.name}@", split("@", var.email_security))
+  phone_number = var.primary_phone_number
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+# --------------------------------------------------
 # Account hardening
 # --------------------------------------------------
 module "hardened-account" {
@@ -116,12 +146,20 @@ module "hardened-account" {
   monitoring_email                = var.hardened_monitoring_email
   monitoring_slack_channel        = var.hardened_monitoring_slack_channel
   monitoring_slack_token          = var.hardened_monitoring_slack_token
-  security_contact_name           = var.hardened_security_contact_name
-  security_contact_title          = var.hardened_security_contact_title
-  security_contact_email          = var.hardened_security_contact_email
-  security_contact_phone_number   = var.hardened_security_contact_phone_number
+  enable_default_standards        = var.hardened_enable_default_standards
   sso_support_permission_set_name = var.sso_support_permission_set_name
   sso_support_group_name          = var.sso_support_group_name
+  kms_primary_key_arn             = var.hardened_kms_primary_key_arn
+  kms_replica_key_arn             = var.hardened_kms_replica_key_arn
+
+  depends_on = [
+    module.iam_identity_center_assignment,
+    module.iam_identity_center_assignment_IAMRA,
+    module.cloudtrail_local,
+    module.iam_account_alias,
+    module.org_account,
+    module.iam_policies
+  ]
 }
 
 # --------------------------------------------------

@@ -36,28 +36,27 @@ variable "monitoring_slack_token" {
   default   = null
 }
 
-variable "security_contact_name" {
-  type = string
-}
-
-variable "security_contact_title" {
-  type = string
-}
-
-variable "security_contact_email" {
-  type = string
-}
-
-variable "security_contact_phone_number" {
-  type = string
-}
-
 variable "sso_support_permission_set_name" {
   type    = string
   default = null
 }
 
 variable "sso_support_group_name" {
+  type    = string
+  default = null
+}
+
+variable "enable_default_standards" {
+  type    = bool
+  default = false
+}
+
+variable "kms_primary_key_arn" {
+  type    = string
+  default = null
+}
+
+variable "kms_replica_key_arn" {
   type    = string
   default = null
 }

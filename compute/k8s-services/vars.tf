@@ -35,15 +35,6 @@ variable "tags" {
   default     = {}
 }
 
-# Optional
-# --------------------------------------------------
-
-variable "s3_bucket_additional_tags" {
-  description = "Add additional tags to s3 bucket"
-  type        = map(any)
-  default     = {}
-}
-
 # --------------------------------------------------
 # EKS
 # --------------------------------------------------
@@ -70,40 +61,24 @@ variable "traefik_alb_s3_access_logs_retiontion_days" {
   default = 30
 }
 
-variable "alb_access_logs_replication_enabled" {
-  type        = bool
-  description = "Enable S3 bucket replication."
-  default     = false
+variable "alb_access_logs_replication" {
+  type = map(object({
+    destination_account_id  = string
+    destination_bucket_arn  = string
+    destination_kms_key_arn = optional(string, "")
+    source_kms_key_arn      = optional(string, "")
+  }))
+  default = {}
 }
 
-variable "alb_access_logs_replication_destination_bucket_arn" {
+variable "alb_access_logs_sse_algorithm" {
   type        = string
-  description = "The ARN of the destination bucket."
-  default     = null
-}
-
-variable "alb_access_logs_replication_source_role_name" {
-  type        = string
-  description = "Name of the role to create"
-  default     = null
-}
-
-variable "alb_access_logs_replication_source_kms_key_arn" {
-  type        = string
-  description = "The ARN of the KMS key to allow decryption of the source bucket"
-  default     = null
-}
-
-variable "alb_access_logs_replication_destination_kms_key_arn" {
-  type        = string
-  description = "The ARN of the KMS key to allow encryption of the destination bucket"
-  default     = null
-}
-
-variable "alb_access_logs_replication_destination_account_id" {
-  type        = string
-  description = "The account ID of the destination bucket."
-  default     = null
+  description = "The server-side encryption algorithm to use."
+  default     = "aws:kms"
+  validation {
+    condition     = contains(["aws:kms", "aws:kms:dsse", "AES256"], var.alb_access_logs_sse_algorithm)
+    error_message = "SSE algorithm must be either 'aws:kms', 'aws:kms:dsse' or 'AES256'."
+  }
 }
 
 
@@ -136,6 +111,12 @@ variable "traefik_alb_auth_core_alias" {
 variable "traefik_nlb_deploy" {
   type    = bool
   default = false
+}
+
+variable "alb_az_app_registration_identifier_urls" {
+  type = list(string)
+  default = null
+  nullable = true
 }
 
 # --------------------------------------------------
@@ -499,6 +480,12 @@ variable "fluxcd_tenants" {
   }))
   description = "List of tenants' namespaces and repository URLs"
   default     = []
+}
+
+variable "fluxcd_source_controller_role_arn" {
+  type        = string
+  default     = ""
+  description = "The ARN of the IAM role for the source controller. Used for IAM roles for service accounts (IRSA). Optional."
 }
 
 # --------------------------------------------------
@@ -923,6 +910,14 @@ variable "velero_excluded_namespace_scoped_resources" {
   description = "List of namespace-scoped resources to exclude from backup"
 }
 
+variable "velero_read_only" {
+  type        = bool
+  default     = false
+  description = <<EOF
+    Set to true to access the backup storage location in read-only mode.
+    This is useful for restoring from a backup without modifying the backup storage location.
+EOF
+}
 
 # --------------------------------------------------
 # Kyverno

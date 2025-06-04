@@ -56,6 +56,15 @@ variable "email" {
   type = string
 }
 
+variable "primary_phone_number" {
+  type = string
+}
+
+variable "email_security" {
+  type    = string
+  default = null
+}
+
 variable "parent_id" {
   type        = string
   description = "The ID of the parent AWS Organization OU."
@@ -107,20 +116,14 @@ variable "hardened_monitoring_slack_token" {
   default   = null
 }
 
-variable "hardened_security_contact_name" {
-  type = string
+variable "hardened_kms_primary_key_arn" {
+  type    = string
+  default = null
 }
 
-variable "hardened_security_contact_title" {
-  type = string
-}
-
-variable "hardened_security_contact_email" {
-  type = string
-}
-
-variable "hardened_security_contact_phone_number" {
-  type = string
+variable "hardened_kms_replica_key_arn" {
+  type    = string
+  default = null
 }
 
 variable "deploy_backup" {
