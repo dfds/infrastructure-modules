@@ -138,15 +138,6 @@ data "aws_iam_policy_document" "ebs-csi-driver-kms-policy" {
   }
 }
 
-resource "aws_kms_grant" "allow_autoscaling_role_use_of_kms_key" {
-  count              = var.ebs_csi_kms_arn != "" ? 1 : 0
-  grantee_principal = "arn:aws:iam::${data.aws_caller_identity.this.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
-  key_id             = var.ebs_csi_kms_arn
-  operations = ["Encrypt", "Decrypt", "GenerateDataKey"]
-  name    = "Allow_AWSServiceRoleForAutoScaling_use_of_KMS_key"
-}
-
-
 ### AWS EFS CSI driver
 data "aws_iam_policy_document" "efs-csi-driver-assume-role-policy" {
   statement {
