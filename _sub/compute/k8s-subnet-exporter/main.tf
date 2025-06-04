@@ -2,14 +2,14 @@ resource "aws_iam_role" "this" {
   name                 = local.iam_role_name
   path                 = "/"
   description          = "Role for subnet-exporter to describe ec2 subnets"
-  assume_role_policy   = data.aws_iam_policy_document.subnet_exporter_trust.json
+  assume_role_policy   = jsonencode(jsondecode(data.aws_iam_policy_document.subnet_exporter_trust.json))
   max_session_duration = 3600
 }
 
 resource "aws_iam_role_policy" "this" {
   name   = local.iam_role_name
   role   = aws_iam_role.this.id
-  policy = data.aws_iam_policy_document.subnet_exporter.json
+  policy = jsonencode(jsondecode(data.aws_iam_policy_document.subnet_exporter.json))
 }
 
 resource "kubernetes_service_account" "this" {
