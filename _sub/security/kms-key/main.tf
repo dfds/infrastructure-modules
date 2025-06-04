@@ -51,7 +51,10 @@ data "aws_iam_policy_document" "this" {
       "kms:Decrypt",
       "kms:ReEncrypt*",
       "kms:GenerateDataKey",
-      "kms:GenerateDataKeyWithoutPlaintext"
+      "kms:GenerateDataKeyWithoutPlaintext",
+      "kms:CreateGrant",
+      "kms:ListGrants",
+      "kms:RevokeGrant"
     ]
     resources = ["*"]
     dynamic "principals" {
