@@ -29,25 +29,22 @@ locals {
   path_default_configmap = "${path.cwd}/default-auth-cm.yaml"
 }
 
-resource "null_resource" "apply_default_configmap" {
+resource "kubernetes_config_map" "default_auth" {
   count = var.blaster_configmap_apply ? 0 : 1
 
-  triggers = {
-    content_hash = sha1(local.default_auth_cm_template)
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
   }
 
-  provisioner "local-exec" {
-    command = <<EOT
-      echo '${local.default_auth_cm_template}' > ${local.path_default_configmap}
-      kubectl --kubeconfig ${var.kubeconfig_path} apply -f ${local.path_default_configmap}
-    EOT
+  data = {
+    "default-auth.yaml" = local.default_auth_cm_template
   }
 
   depends_on = [
     null_resource.kubeconfig_admin
   ]
 }
-
 
 resource "null_resource" "enable-workers-from-s3" {
   count = var.blaster_configmap_apply ? 1 : 0
@@ -64,6 +61,6 @@ resource "null_resource" "enable-workers-from-s3" {
 
   depends_on = [
     null_resource.kubeconfig_admin,
-    null_resource.apply_default_configmap,
+    kubernetes_config_map.default_auth,
   ]
 }
