@@ -167,3 +167,9 @@ variable "read_only" {
     This is useful for restoring from a backup without modifying the backup storage location.
 EOF
 }
+
+variable "ebs_csi_kms_arn" {
+  type        = string
+  default     = ""
+  description = "The ARN of the KMS key used for EBS CSI encryption"
+}

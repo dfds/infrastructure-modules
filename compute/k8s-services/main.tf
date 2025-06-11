@@ -654,6 +654,7 @@ module "velero" {
   excluded_cluster_scoped_resources   = var.velero_excluded_cluster_scoped_resources
   excluded_namespace_scoped_resources = var.velero_excluded_namespace_scoped_resources
   read_only                           = var.velero_read_only
+  ebs_csi_kms_arn                     = var.velero_ebs_csi_kms_arn
 
   providers = {
     github = github.fluxcd
