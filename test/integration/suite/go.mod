@@ -5,7 +5,7 @@ go 1.24.0
 toolchain go1.24.4
 
 require (
-	github.com/fluxcd/pkg/apis/meta v1.12.0
+	github.com/fluxcd/pkg/apis/meta v1.13.0
 	github.com/stretchr/testify v1.10.0
 	github.com/traefik/traefik/v2 v2.11.25
 	github.com/traefik/traefik/v3 v3.4.1
