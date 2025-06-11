@@ -34,6 +34,8 @@ github.com/fluxcd/pkg/apis/meta v1.11.0 h1:h8q95k6ZEK1HCfsLkt8Np3i6ktb6ZzcWJ6hg+
 github.com/fluxcd/pkg/apis/meta v1.11.0/go.mod h1:+son1Va60x2eiDcTwd7lcctbI6C+K3gM7R+ULmEq1SI=
 github.com/fluxcd/pkg/apis/meta v1.12.0 h1:XW15TKZieC2b7MN8VS85stqZJOx+/b8jATQ/xTUhVYg=
 github.com/fluxcd/pkg/apis/meta v1.12.0/go.mod h1:+son1Va60x2eiDcTwd7lcctbI6C+K3gM7R+ULmEq1SI=
+github.com/fluxcd/pkg/apis/meta v1.13.0 h1:KKYdXFzEmSuM8CP1Zqpt68IF+jqQILeiDiTmXI7DMTM=
+github.com/fluxcd/pkg/apis/meta v1.13.0/go.mod h1:+son1Va60x2eiDcTwd7lcctbI6C+K3gM7R+ULmEq1SI=
 github.com/fxamacker/cbor/v2 v2.7.0 h1:iM5WgngdRBanHcxugY4JySA0nk1wZorNOpTgCMedv5E=
 github.com/fxamacker/cbor/v2 v2.7.0/go.mod h1:pxXPTn3joSm21Gbwsv0w9OSA2y1HFR9qXEeXQVeNoDQ=
 github.com/go-acme/lego/v4 v4.17.4 h1:h0nePd3ObP6o7kAkndtpTzCw8shOZuWckNYeUQwo36Q=
