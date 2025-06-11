@@ -12,7 +12,7 @@ github.com/emicklei/go-restful/v3/log
 ## explicit; go 1.18
 github.com/evanphx/json-patch/v5
 github.com/evanphx/json-patch/v5/internal/json
-# github.com/fluxcd/pkg/apis/meta v1.12.0
+# github.com/fluxcd/pkg/apis/meta v1.13.0
 ## explicit; go 1.24.0
 github.com/fluxcd/pkg/apis/meta
 # github.com/fxamacker/cbor/v2 v2.7.0
