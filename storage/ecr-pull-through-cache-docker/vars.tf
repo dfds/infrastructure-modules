@@ -1,11 +1,11 @@
 
-variable "docker_username" {
+variable "docker_hub_username" {
   type        = string
   sensitive   = true
   description = "Username for pulling images from Docker Hub."
 }
 
-variable "docker_token" {
+variable "docker_hub_token" {
   type        = string
   description = "Access token for pulling images from Docker Hub."
 }

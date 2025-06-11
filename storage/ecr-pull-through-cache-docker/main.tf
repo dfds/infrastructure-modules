@@ -5,8 +5,8 @@ module "pull_through_cache_for_docker" {
   upstream_registry_url   = "registry-1.docker.io"
   recovery_window_in_days = 7
   cache_lifecycle_days    = 7
-  username                = var.docker_username
-  token                   = var.docker_token
+  username                = var.docker_hub_username
+  token                   = var.docker_hub_token
   aws_org_id              = var.aws_org_id
   aws_region              = var.aws_region
 }
