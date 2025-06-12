@@ -246,6 +246,7 @@ inputs = {
   velero_plugin_for_aws_version               = "v1.12.1"
   velero_excluded_namespace_scoped_resources  = ["secrets"]
   velero_filesystem_backup_enabled            = false
+  velero_snapshots_enabled                    = true
 
   # --------------------------------------------------
   # Grafana Agent for Kubernetes monitoring
