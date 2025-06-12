@@ -9,3 +9,7 @@ output "key_id" {
 output "alias" {
   value = aws_kms_alias.this.name
 }
+
+output "replica_arn" {
+  value = try(aws_kms_replica_key.this[0].arn, "No replica key created")
+}

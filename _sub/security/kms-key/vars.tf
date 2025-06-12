@@ -31,6 +31,12 @@ variable "key_usage" {
   default     = "ENCRYPT_DECRYPT"
 }
 
+variable "multi_region" {
+  description = "Whether the KMS key is multi-region."
+  type        = bool
+  default     = false
+}
+
 variable "enable_key_rotation" {
   description = "Whether to enable key rotation for the KMS key."
   type        = bool

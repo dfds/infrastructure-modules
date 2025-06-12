@@ -251,6 +251,7 @@ module "eks_addons" {
   cluster_version                  = var.eks_cluster_version
   eks_openid_connect_provider_url  = module.eks_cluster.eks_openid_connect_provider_url
   efs_fs_id                        = module.efs_fs.id
+  ebs_csi_kms_arn                  = var.eks_addon_awsebscsidriver_kms_arn
 }
 
 module "k8s_priority_class" {

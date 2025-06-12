@@ -44,6 +44,7 @@ resources:
         TF_VAR_onepassword_token_for_atlantis: $(TF_VAR_onepassword_token_for_atlantis)
         TF_VAR_docker_hub_username: $(TF_VAR_docker_hub_username)
         TF_VAR_docker_hub_password: $(TF_VAR_docker_hub_password)
+        TF_VAR_eks_addon_awsebscsidriver_kms_arn: $(TF_VAR_eks_addon_awsebscsidriver_kms_arn)
         TF_IN_AUTOMATION: "true"
         TG_TF_PATH: /usr/local/bin/tofu
     - container: aws-nuke
@@ -52,7 +53,7 @@ resources:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
     - container: go-build
-      image: golang:1.24.3-bullseye
+      image: golang:1.24.4-bullseye
   repositories:
     - repository: Origin
       type: github
