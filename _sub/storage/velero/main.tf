@@ -145,7 +145,7 @@ resource "aws_iam_role_policy_attachment" "velero_policy_attach" {
 
 resource "aws_iam_policy" "kms_policy" {
   count       = var.ebs_csi_kms_arn != "" ? 1 : 0
-  name        = "kms-access"
+  name        = "KMSAccess"
   description = "Policy for KMS access"
   policy      = <<EOF
 {
