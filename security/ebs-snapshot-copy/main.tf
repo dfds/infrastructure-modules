@@ -6,7 +6,7 @@ module "lambda" {
   name = "ebs-snapshot-share"
   function_environment_variables = {
     RUN_AWS_REGION = var.aws_region
-    DESTINATION_ACCOUNTS = join(",", var.destination_accounts)
+    DESTINATION_ACCOUNTS = join(",", var.snapshot_share_destination_accounts)
   }
 }
 
