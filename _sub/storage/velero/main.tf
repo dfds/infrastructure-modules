@@ -142,3 +142,47 @@ resource "aws_iam_role_policy_attachment" "velero_policy_attach" {
   role       = aws_iam_role.velero_role.name
   policy_arn = aws_iam_policy.velero_policy.arn
 }
+
+resource "aws_iam_policy" "kms_policy" {
+  count       = var.ebs_csi_kms_arn != "" ? 1 : 0
+  name        = "KMSAccess"
+  description = "Policy for KMS access"
+  policy      = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "kms:RevokeGrant",
+                "kms:ListGrants",
+                "kms:CreateGrant"
+            ],
+            "Condition": {
+                "Bool": {
+                    "kms:GrantIsForAWSResource": "true"
+                }
+            },
+            "Effect": "Allow",
+            "Resource": "${var.ebs_csi_kms_arn}"
+        },
+        {
+            "Action": [
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:Encrypt",
+                "kms:DescribeKey",
+                "kms:Decrypt"
+            ],
+            "Effect": "Allow",
+            "Resource": "${var.ebs_csi_kms_arn}"
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "kms_policy_attach" {
+  count      = var.ebs_csi_kms_arn != "" ? 1 : 0
+  role       = aws_iam_role.velero_role.name
+  policy_arn = aws_iam_policy.kms_policy[count.index].arn
+}
