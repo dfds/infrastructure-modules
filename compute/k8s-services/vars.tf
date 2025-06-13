@@ -919,6 +919,12 @@ variable "velero_read_only" {
 EOF
 }
 
+variable "velero_ebs_csi_kms_arn" {
+  type        = string
+  default     = null
+  description = "The KMS ARN to use for EBS CSI volumes."
+}
+
 # --------------------------------------------------
 # Kyverno
 # --------------------------------------------------

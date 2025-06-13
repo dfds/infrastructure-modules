@@ -242,10 +242,11 @@ inputs = {
 
   velero_deploy                               = true
   velero_bucket_arn                           = "arn:aws:s3:::dfds-velero-qa"
-  velero_helm_chart_version                   = "9.1.2"
-  velero_plugin_for_aws_version               = "v1.12.0"
+  velero_helm_chart_version                   = "10.0.4"
+  velero_plugin_for_aws_version               = "v1.12.1"
   velero_excluded_namespace_scoped_resources  = ["secrets"]
   velero_filesystem_backup_enabled            = false
+  velero_snapshots_enabled                    = true
 
   # --------------------------------------------------
   # Grafana Agent for Kubernetes monitoring

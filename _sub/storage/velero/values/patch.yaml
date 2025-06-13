@@ -35,6 +35,10 @@ spec:
 %{ if read_only ~}
           accessMode: ReadOnly
 %{ endif ~}
+      VolumeSnapshotLocation:
+        - provider: aws
+          config:
+            region: ${bucket_region}
     serviceAccount:
       server:
         create: true
