@@ -6,21 +6,28 @@ export const handler = async (event, context) => {
   const match = str.match(regex);
   if (match) {
     const snapshotId = match[0];
-    const att_input = {
-      Attribute: "createVolumePermission",
-      UserIds: process.env.DESTINATION_ACCOUNTS.split(","),
-      OperationType: "add",
-      SnapshotId: snapshotId
+    const tag_input = {
+      Resources: [
+        snapshotId
+      ],
+      Tags: [
+        {
+          Key: "ebs.csi.aws.com/cluster",
+          Value: "true"
+        }
+      ]
     };
     try {
-      const att_command = new ModifySnapshotAttributeCommand(att_input);
-      const att_response = await client.send(att_command);
-      console.log(att_response);
+      // const tag_command = new CreateTagsCommand(tag_input);
+      // const tag_response = await client.send(tag_command);
+      // console.log(tag_response);
+      console.log(event)
     }
     catch (err) {
       console.log(err, err.stack);
       throw err;
     }
+
     return {
       statusCode: 200,
       body: JSON.stringify({
