@@ -114,8 +114,8 @@ variable "traefik_nlb_deploy" {
 }
 
 variable "alb_az_app_registration_identifier_urls" {
-  type = list(string)
-  default = null
+  type     = list(string)
+  default  = null
   nullable = true
 }
 
@@ -921,7 +921,7 @@ EOF
 
 variable "velero_ebs_csi_kms_arn" {
   type        = string
-  default     = null
+  default     = ""
   description = "The KMS ARN to use for EBS CSI volumes."
 }
 
