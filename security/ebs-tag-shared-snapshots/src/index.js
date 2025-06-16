@@ -5,6 +5,7 @@ export const handler = async (event, context) => {
   const regex = /snap-\w+/;
   const match = str.match(regex);
   if (match) {
+    console.log(event)
     const snapshotId = match[0];
     const tag_input = {
       Resources: [
@@ -18,16 +19,13 @@ export const handler = async (event, context) => {
       ]
     };
     try {
-      // const tag_command = new CreateTagsCommand(tag_input);
-      // const tag_response = await client.send(tag_command);
-      // console.log(tag_response);
-      console.log(event)
+      const tag_command = new CreateTagsCommand(tag_input);
+      const tag_response = await client.send(tag_command);
     }
     catch (err) {
       console.log(err, err.stack);
       throw err;
     }
-
     return {
       statusCode: 200,
       body: JSON.stringify({
