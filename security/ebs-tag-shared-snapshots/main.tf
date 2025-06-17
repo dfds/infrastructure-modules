@@ -8,7 +8,7 @@ module "lambda" {
     RUN_AWS_REGION = var.aws_region
   }
 }
-
+# test
 resource "aws_cloudwatch_event_rule" "this" {
   name        = "capture-snapshot-shared-event"
   description = "Capture each EBS Snapshot Shared"
