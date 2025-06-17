@@ -7,16 +7,16 @@ export const handler = async (event, context) => {
   if (match) {
     console.log(event)
     const snapshotId = match[0];
+    const snapshot_tags = process.env.SNAPSHOT_TAGS.split(',').map(tag => {
+        var [Key, Value] = tag.split('=');
+        return { Key, Value };
+        })
+    console.log(snapshot_tags);
     const tag_input = {
       Resources: [
         snapshotId
       ],
-      Tags: [
-        {
-          Key: "ebs.csi.aws.com/cluster",
-          Value: "true"
-        }
-      ]
+      Tags: snapshot_tags
     };
     try {
       const tag_command = new CreateTagsCommand(tag_input);

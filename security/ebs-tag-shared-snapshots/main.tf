@@ -6,6 +6,7 @@ module "lambda" {
   name = "ebs-snapshot-tag"
   function_environment_variables = {
     RUN_AWS_REGION = var.aws_region
+    SNAPSHOT_TAGS = join(",", [for k, v in var.snapshot_tags : "${k}=${v}"])
   }
 }
 
