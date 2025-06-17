@@ -5,17 +5,22 @@ export const handler = async (event, context) => {
   const regex = /snap-\w+/;
   const match = str.match(regex);
   if (match) {
+    console.log(event)
     const snapshotId = match[0];
-    const att_input = {
-      Attribute: "createVolumePermission",
-      UserIds: process.env.DESTINATION_ACCOUNTS.split(","),
-      OperationType: "add",
-      SnapshotId: snapshotId
+    const snapshot_tags = process.env.SNAPSHOT_TAGS.split(',').map(tag => {
+        var [Key, Value] = tag.split('=');
+        return { Key, Value };
+        })
+    console.log(snapshot_tags);
+    const tag_input = {
+      Resources: [
+        snapshotId
+      ],
+      Tags: snapshot_tags
     };
     try {
-      const att_command = new ModifySnapshotAttributeCommand(att_input);
-      const att_response = await client.send(att_command);
-      console.log(att_response);
+      const tag_command = new CreateTagsCommand(tag_input);
+      const tag_response = await client.send(tag_command);
     }
     catch (err) {
       console.log(err, err.stack);
