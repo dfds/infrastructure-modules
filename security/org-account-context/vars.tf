@@ -340,7 +340,7 @@ variable "vpc_peering_settings_eu_west_1" {
     peer_vpc_id                  = string
     peer_region                  = string
     peer_route_table_id          = optional(string, "")
-    cidr_block_peer              = string
+    peer_cidr_block              = string
     assigned_cidr_block_vpc      = optional(string, "")
     assigned_cidr_block_subnet_a = optional(string, "")
     assigned_cidr_block_subnet_b = optional(string, "")
@@ -367,7 +367,7 @@ EOF
       peer_vpc_id                  = ""
       peer_region                  = ""
       peer_route_table_id          = ""
-      cidr_block_peer              = ""
+      peer_cidr_block              = ""
       assigned_cidr_block_vpc      = ""
       assigned_cidr_block_subnet_a = ""
       assigned_cidr_block_subnet_b = ""
@@ -384,7 +384,7 @@ variable "vpc_peering_settings_eu_central_1" {
     peer_vpc_id                  = string
     peer_region                  = string
     peer_route_table_id          = optional(string, "")
-    cidr_block_peer              = string
+    peer_cidr_block              = string
     assigned_cidr_block_vpc      = optional(string, "")
     assigned_cidr_block_subnet_a = optional(string, "")
     assigned_cidr_block_subnet_b = optional(string, "")
@@ -411,7 +411,7 @@ EOF
       peer_vpc_id                  = ""
       peer_region                  = ""
       peer_route_table_id          = ""
-      cidr_block_peer              = ""
+      peer_cidr_block              = ""
       assigned_cidr_block_vpc      = ""
       assigned_cidr_block_subnet_a = ""
       assigned_cidr_block_subnet_b = ""
