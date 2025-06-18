@@ -38,6 +38,12 @@ variable "eks_cluster_version" {
   type = string
 }
 
+variable "eks_cluster_cidr_block" {
+  type        = string
+  description = "The CIDR block for the VPC. This is used to create the VPC and subnets for the EKS cluster."
+  default     = "10.0.0.0/16"
+}
+
 variable "eks_worker_ssh_public_key" {
   type = string
 }

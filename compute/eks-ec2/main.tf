@@ -6,6 +6,7 @@ module "eks_cluster" {
   source             = "../../_sub/compute/eks-cluster"
   cluster_name       = var.eks_cluster_name
   cluster_version    = var.eks_cluster_version
+  cidr_block         = var.eks_cluster_cidr_block
   cluster_zones      = var.eks_cluster_zones
   cluster_subnets    = var.enable_worker_nat_gateway || var.use_worker_nat_gateway ? var.eks_cluster_subnets : var.eks_cluster_zones
   log_types          = var.eks_cluster_log_types
