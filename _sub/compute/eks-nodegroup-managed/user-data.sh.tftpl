@@ -32,23 +32,23 @@ spec:
             maxPods: ${max_pods}
 %{ endif ~}
             registryPullQPS: 0
-%{ if cpu != null || memory != null }
+%{ if kube_cpu != null || kube_memory != null }
             kubeReserved:
 %{ endif ~}
-%{ if cpu != null }
-                cpu: ${cpu}
+%{ if kube_cpu != null }
+                cpu: ${kube_cpu}
 %{ endif ~}
-%{ if memory != null }
-                memory: ${memory}
+%{ if kube_memory != null }
+                memory: ${kube_memory}
 %{ endif ~}
-%{ if cpu != null || memory != null }
+%{ if sys_cpu != null || sys_memory != null }
             systemReserved:
 %{ endif ~}
-%{ if cpu != null }
-                cpu: ${cpu}
+%{ if sys_cpu != null }
+                cpu: ${sys_cpu}
 %{ endif ~}
-%{ if memory != null }
-                memory: ${memory}
+%{ if sys_memory != null }
+                memory: ${sys_memory}
 %{ endif ~}
 
 --BOUNDARY--
