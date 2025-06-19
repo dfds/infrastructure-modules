@@ -14,15 +14,17 @@ resource "helm_release" "kyverno" {
   recreate_pods = true
   force_update  = false
 
-  set {
-    name  = "resources.limits.memory"
-    value = "2048Mi"
-  }
+  set = [
+    {
+      name  = "resources.limits.memory"
+      value = "2048Mi"
+    },
+    {
+      name  = "replicaCount"
+      value = var.replicas
+    }
+  ]
 
-  set {
-    name  = "replicaCount"
-    value = var.replicas
-  }
 }
 
 resource "kubernetes_config_map" "configmap" {
