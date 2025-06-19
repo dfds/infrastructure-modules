@@ -71,6 +71,10 @@ spec:
           - "--image-credential-provider-config=/etc/eks/image-credential-provider/dfds-config.json"
 %{ endif ~}
         config:
+            kernelMemcgNotification: true
+            evictionHard:
+                memory:
+                    available: "500Mi"
 %{ if vpc_cni_prefix_delegation_enabled }
             maxPods: ${max_pods}
 %{ endif ~}
