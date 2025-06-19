@@ -473,7 +473,7 @@ module "vpc_peering_capability_eu_west_1" {
   cidr_block_subnet_a          = each.value.assigned_cidr_block_subnet_a
   cidr_block_subnet_b          = each.value.assigned_cidr_block_subnet_b
   cidr_block_subnet_c          = each.value.assigned_cidr_block_subnet_c
-  cidr_block_peer              = each.value.cidr_block_peer
+  peer_cidr_block              = each.value.peer_cidr_block
   peer_owner_id                = var.shared_account_id
   peer_vpc_id                  = each.value.peer_vpc_id
   peer_region                  = each.value.peer_region
@@ -514,7 +514,7 @@ module "vpc_peering_capability_eu_central_1" {
   cidr_block_subnet_a          = each.value.assigned_cidr_block_subnet_a
   cidr_block_subnet_b          = each.value.assigned_cidr_block_subnet_b
   cidr_block_subnet_c          = each.value.assigned_cidr_block_subnet_c
-  cidr_block_peer              = each.value.cidr_block_peer
+  peer_cidr_block              = each.value.peer_cidr_block
   peer_owner_id                = var.shared_account_id
   peer_vpc_id                  = each.value.peer_vpc_id
   peer_region                  = each.value.peer_region

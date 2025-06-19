@@ -25,7 +25,7 @@ variable "cidr_block_subnet_c" {
   default     = ""
 }
 
-variable "cidr_block_peer" {
+variable "peer_cidr_block" {
   description = "The CIDR block of the peer VPC"
   type        = string
 }

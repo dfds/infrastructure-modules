@@ -31,3 +31,8 @@ variable "sleep_after" {
   default     = 120
   description = "The AWS API will return OK before the Kubernetes cluster is actually available. Wait an arbitrary amount of time for cluster to become ready. Workaround for https://github.com/aws/containers-roadmap/issues/654"
 }
+
+variable "cidr_block" {
+  type        = string
+  description = "The CIDR block for the VPC. This is used to create the VPC and subnets for the EKS cluster."
+}

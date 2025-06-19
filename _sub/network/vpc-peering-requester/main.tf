@@ -289,7 +289,7 @@ resource "aws_iam_instance_profile" "ssm_tunnel" {
 
 resource "aws_vpc_security_group_ingress_rule" "postgres" {
   security_group_id = aws_default_security_group.default.id
-  cidr_ipv4         = var.cidr_block_peer
+  cidr_ipv4         = var.peer_cidr_block
   ip_protocol       = "tcp"
   from_port         = 5432
   to_port           = 5432
@@ -300,7 +300,7 @@ resource "aws_vpc_security_group_ingress_rule" "postgres" {
 
 resource "aws_vpc_security_group_ingress_rule" "redis" {
   security_group_id = aws_default_security_group.default.id
-  cidr_ipv4         = var.cidr_block_peer
+  cidr_ipv4         = var.peer_cidr_block
   ip_protocol       = "tcp"
   from_port         = 6379
   to_port           = 6379
@@ -338,7 +338,7 @@ resource "aws_vpc_peering_connection" "capability" {
 
 resource "aws_route" "capability_to_shared" {
   route_table_id            = aws_vpc.peering.main_route_table_id
-  destination_cidr_block    = var.cidr_block_peer
+  destination_cidr_block    = var.peer_cidr_block
   vpc_peering_connection_id = aws_vpc_peering_connection.capability.id
 }
 
