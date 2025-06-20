@@ -29,6 +29,10 @@ resource "aws_ssm_parameter" "param_grafana_username" {
   }
 }
 
+locals {
+  description = coalesce(var.chart_version, "unknown")
+}
+
 resource "helm_release" "kube_prometheus_stack" {
   name          = "monitoring"
   chart         = "kube-prometheus-stack"
@@ -37,6 +41,7 @@ resource "helm_release" "kube_prometheus_stack" {
   namespace     = var.namespace
   recreate_pods = true
   force_update  = false
+  description   = "Helm chart version is ${local.description}"
 
   values = [
     templatefile("${path.module}/values/components.yaml", {
