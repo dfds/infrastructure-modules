@@ -37,6 +37,7 @@ resource "helm_release" "kube_prometheus_stack" {
   namespace     = var.namespace
   recreate_pods = true
   force_update  = false
+  description   = "Helm chart version: ${var.chart_version}"
 
   values = [
     templatefile("${path.module}/values/components.yaml", {
