@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.99.0"
+      version = "~> 5.100.0"
     }
     github = {
       source  = "integrations/github"
@@ -12,7 +12,7 @@ terraform {
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "~> 2.17.0"
+      version = "~> 3.0.0"
     }
     random = {
       source  = "hashicorp/random"

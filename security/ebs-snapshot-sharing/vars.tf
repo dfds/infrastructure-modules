@@ -15,7 +15,6 @@ variable "aws_assume_role_arn" {
 variable "snapshot_share_destination_accounts" {
   description = "The destination account IDs for the EBS snapshot copy."
   type        = list(string)
-  default     = []
 }
 
 variable "snapshot_share_kms_arn" {

@@ -14,10 +14,13 @@ resource "aws_launch_template" "eks" {
     vpc_cni_prefix_delegation_enabled : var.vpc_cni_prefix_delegation_enabled,
     cidr : data.aws_eks_cluster.this.kubernetes_network_config[0].service_ipv4_cidr
     max_pods : var.max_pods,
-    cpu : var.cpu,
-    memory : var.memory,
+    kube_cpu : var.kube_reserved_cpu,
+    kube_memory : var.kube_reserved_memory,
+    sys_cpu : var.system_reserved_cpu,
+    sys_memory : var.system_reserved_memory,
     docker_hub_username : var.docker_hub_username,
-    docker_hub_password : var.docker_hub_password
+    docker_hub_password : var.docker_hub_password,
+    essentials_url : var.essentials_url,
   }))
   key_name               = var.ec2_ssh_key
   update_default_version = true

@@ -6,6 +6,7 @@ module "eks_cluster" {
   source             = "../../_sub/compute/eks-cluster"
   cluster_name       = var.eks_cluster_name
   cluster_version    = var.eks_cluster_version
+  cidr_block         = var.eks_cluster_cidr_block
   cluster_zones      = var.eks_cluster_zones
   cluster_subnets    = var.enable_worker_nat_gateway || var.use_worker_nat_gateway ? var.eks_cluster_subnets : var.eks_cluster_zones
   log_types          = var.eks_cluster_log_types
@@ -194,12 +195,15 @@ module "eks_managed_workers_node_group" {
     for sn in module.eks_managed_workers_subnet.subnets : sn.id if contains(each.value.availability_zones, sn.availability_zone)
   ]
   max_pods = each.value.max_pods
-  cpu      = each.value.cpu
-  memory   = each.value.memory
+  kube_reserved_cpu      = each.value.kube_cpu
+  kube_reserved_memory   = each.value.kube_memory
+  system_reserved_cpu      = each.value.sys_cpu
+  system_reserved_memory   = each.value.sys_memory
 
   # Docker Hub credentials
   docker_hub_username = var.docker_hub_username
   docker_hub_password = var.docker_hub_password
+  essentials_url = var.essentials_url
 
   depends_on = [module.eks_cluster]
 }

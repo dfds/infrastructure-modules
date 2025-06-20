@@ -12,30 +12,15 @@ export const handler = async (event, context) => {
       OperationType: "add",
       SnapshotId: snapshotId
     };
-    const tag_input = {
-      Resources: [
-        snapshotId
-      ],
-      Tags: [
-        {
-          Key: "ebs.csi.aws.com/cluster",
-          Value: "true"
-        }
-      ]
-    };
     try {
       const att_command = new ModifySnapshotAttributeCommand(att_input);
       const att_response = await client.send(att_command);
       console.log(att_response);
-      const tag_command = new CreateTagsCommand(tag_input);
-      const tag_response = await client.send(tag_command);
-      console.log(tag_response);
     }
     catch (err) {
       console.log(err, err.stack);
       throw err;
     }
-
     return {
       statusCode: 200,
       body: JSON.stringify({
@@ -45,6 +30,6 @@ export const handler = async (event, context) => {
     }
   }
   else {
-    console.log("no match!")
+    console.log("no snapshot ID was found!")
   }
 };

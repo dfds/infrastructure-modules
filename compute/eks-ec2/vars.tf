@@ -38,6 +38,12 @@ variable "eks_cluster_version" {
   type = string
 }
 
+variable "eks_cluster_cidr_block" {
+  type        = string
+  description = "The CIDR block for the VPC. This is used to create the VPC and subnets for the EKS cluster."
+  default     = "10.0.0.0/16"
+}
+
 variable "eks_worker_ssh_public_key" {
   type = string
 }
@@ -163,8 +169,10 @@ variable "eks_managed_nodegroups" {
     })), [])
     labels   = optional(map(string), {})
     max_pods = optional(number, 110)
-    cpu      = optional(string, null)
-    memory   = optional(string, null)
+    sys_cpu      = optional(string, null)
+    sys_memory   = optional(string, null)
+    kube_cpu      = optional(string, null)
+    kube_memory   = optional(string, null)
   }))
   default = {}
 }
@@ -251,6 +259,12 @@ variable "docker_hub_password" {
   description = "Docker Hub password for pulling images"
   sensitive   = true
   default     = ""
+}
+
+variable "essentials_url" {
+  type = string
+  description = "HTTP server that provides essentials"
+  default = ""
 }
 
 # --------------------------------------------------
