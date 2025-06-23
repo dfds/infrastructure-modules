@@ -35,8 +35,9 @@ spec:
 %{ if read_only ~}
           accessMode: ReadOnly
 %{ endif ~}
-      VolumeSnapshotLocation:
-        - provider: aws
+      volumeSnapshotLocation:
+        - name: velero-snapshot
+          provider: aws
           config:
             region: ${bucket_region}
     serviceAccount:
