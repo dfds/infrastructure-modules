@@ -32,7 +32,6 @@ resources:
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
         TF_VAR_fluxcd_bootstrap_repo_owner_token: $(TF_VAR_fluxcd_bootstrap_repo_owner_token)
         TF_VAR_atlantis_github_token: $(TF_VAR_atlantis_github_token)
-        TF_VAR_monitoring_kube_prometheus_stack_azure_tenant_id: $(ARM_TENANT_ID)
         TF_VAR_grafana_agent_api_token: $(TF_VAR_grafana_agent_api_token)
         TF_VAR_grafana_agent_prometheus_url: $(TF_VAR_grafana_agent_prometheus_url)
         TF_VAR_grafana_agent_prometheus_username: $(TF_VAR_grafana_agent_prometheus_username)
