@@ -187,14 +187,6 @@ inputs = {
     },
     {
       registry = {
-        url = "https://prometheus-community.github.io/helm-charts/index.yaml"
-      }
-      "charts" = [
-        "kube-prometheus-stack"
-      ]
-    },
-    {
-      registry = {
         url = "https://shanestarcher.com/helm-charts/index.yaml"
       }
       "charts" = [
