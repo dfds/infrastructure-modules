@@ -925,33 +925,6 @@ variable "velero_ebs_csi_kms_arn" {
   description = "The KMS ARN to use for EBS CSI volumes."
 }
 
-# --------------------------------------------------
-# Kyverno
-# --------------------------------------------------
-
-variable "kyverno_chart_version" {
-  type        = string
-  default     = ""
-  description = "Helm chart version of Kyverno"
-}
-
-variable "kyverno_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for Kyverno module"
-}
-
-variable "kyverno_replicas" {
-  type        = number
-  default     = 3
-  description = "Number of replica pods for Kyverno"
-}
-
-variable "kyverno_namespace_labels" {
-  type    = map(any)
-  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/enforce" = "privileged" }
-}
-
 
 # --------------------------------------------------
 # Subnet Exporter
