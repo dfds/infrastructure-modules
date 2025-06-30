@@ -194,16 +194,16 @@ module "eks_managed_workers_node_group" {
   subnet_ids = length(each.value.availability_zones) == 0 ? module.eks_managed_workers_subnet.subnet_ids : [
     for sn in module.eks_managed_workers_subnet.subnets : sn.id if contains(each.value.availability_zones, sn.availability_zone)
   ]
-  max_pods = each.value.max_pods
+  max_pods               = each.value.max_pods
   kube_reserved_cpu      = each.value.kube_cpu
   kube_reserved_memory   = each.value.kube_memory
-  system_reserved_cpu      = each.value.sys_cpu
-  system_reserved_memory   = each.value.sys_memory
+  system_reserved_cpu    = each.value.sys_cpu
+  system_reserved_memory = each.value.sys_memory
 
   # Docker Hub credentials
   docker_hub_username = var.docker_hub_username
   docker_hub_password = var.docker_hub_password
-  essentials_url = var.essentials_url
+  essentials_url      = var.essentials_url
 
   depends_on = [module.eks_cluster]
 }
