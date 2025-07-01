@@ -117,66 +117,10 @@ locals {
   traefik_alb_auth_appreg_reply_urls = split(",", local.traefik_alb_auth_appreg_reply_replace_end)
 }
 
-# --------------------------------------------------
-# Monitoring namespace iam role annotations
-# --------------------------------------------------
-
-locals {
-  grafana_iam_role_name = "${var.eks_cluster_name}-monitoring-grafana-cloudwatch"
-  grafana_iam_role_arn  = "arn:aws:iam::${var.aws_workload_account_id}:role/${local.grafana_iam_role_name}"
-}
-
-# --------------------------------------------------
-# Grafana Cloudwatch IAM role
-# --------------------------------------------------
-
-data "aws_iam_policy_document" "cloudwatch_metrics" {
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "tag:GetResources",
-      "ec2:DescribeTags",
-      "ec2:DescribeRegions",
-      "ec2:DescribeInstances",
-      "cloudwatch:ListMetrics",
-      "cloudwatch:GetMetricStatistics",
-      "cloudwatch:GetMetricData",
-      "cloudwatch:DescribeAlarmsForMetric"
-    ]
-
-    resources = ["*"]
-  }
-}
-
-data "aws_caller_identity" "workload_account" {
-}
-
 locals {
   oidc_issuer = trim(data.aws_eks_cluster.eks.identity[0].oidc[0].issuer, "https://")
 }
 
-data "aws_iam_policy_document" "cloudwatch_metrics_trust" {
-  statement {
-    effect = "Allow"
-
-    principals {
-      type = "Federated"
-
-      identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.workload_account.account_id}:oidc-provider/${local.oidc_issuer}",
-      ]
-    }
-
-    condition {
-      test     = "StringEquals"
-      values   = ["system:serviceaccount:${local.monitoring_namespace_name}:${var.monitoring_kube_prometheus_stack_grafana_serviceaccount_name}"]
-      variable = "${local.oidc_issuer}:sub"
-    }
-
-    actions = ["sts:AssumeRoleWithWebIdentity"]
-  }
-}
 
 # --------------------------------------------------
 # Loadbalancer service account

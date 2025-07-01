@@ -227,191 +227,6 @@ variable "goldpinger_priority_class" {
 }
 
 # --------------------------------------------------
-# Kube-prometheus-stack
-# --------------------------------------------------
-
-variable "monitoring_kube_prometheus_stack_deploy" {
-  type        = bool
-  description = "Deploy kube-prometheus-stack helm chart switch"
-  default     = false
-}
-
-variable "monitoring_kube_prometheus_stack_chart_version" {
-  type        = string
-  description = "Kube-prometheus-stack helm chart version"
-  default     = ""
-}
-
-variable "monitoring_kube_prometheus_stack_priority_class" {
-  type        = string
-  description = "Kube-prometheus-stack components priority class name"
-  default     = "cluster-monitoring"
-}
-
-variable "monitoring_kube_prometheus_stack_grafana_enabled" {
-  type        = bool
-  description = "Feature toogle for Grafana deployment or not"
-  default     = true
-}
-
-variable "monitoring_kube_prometheus_stack_grafana_admin_password" {
-  type        = string
-  description = "Grafana admin password"
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-  sensitive   = true
-}
-
-variable "monitoring_kube_prometheus_stack_grafana_ingress_path" {
-  type        = string
-  description = "Grafana ingress path"
-  default     = "/infrastructure"
-}
-
-variable "monitoring_kube_prometheus_stack_grafana_serviceaccount_name" {
-  type        = string
-  description = "Grafana serviceaccount to be used for pod"
-  default     = "grafana-cloudwatch"
-}
-
-variable "monitoring_kube_prometheus_stack_grafana_storage_enabled" {
-  type        = bool
-  description = "Enable persistence in Grafana using Persistent Volume Claims"
-  default     = false
-}
-
-variable "monitoring_kube_prometheus_stack_grafana_storageclass" {
-  type        = string
-  description = "Storage class for Grafana Persistent Volume"
-  default     = "csi-gp2"
-}
-
-variable "monitoring_kube_prometheus_stack_grafana_storage_size" {
-  type        = string
-  description = "Storage size for Grafana Persistent Volume"
-  default     = ""
-}
-
-variable "monitoring_kube_prometheus_stack_grafana_serve_from_sub_path" {
-  type        = bool
-  default     = false
-  description = "Serve Grafana from subpath specified in root_url setting. By default it is set to false for compatibility reasons"
-}
-
-variable "monitoring_kube_prometheus_stack_azure_tenant_id" {
-  type        = string
-  default     = ""
-  description = "Azure Tenant ID"
-}
-
-variable "monitoring_kube_prometheus_stack_slack_webhook" {
-  type        = string
-  description = "Kube-prometheus-stack alert slack webhook"
-  default     = ""
-}
-
-variable "monitoring_kube_prometheus_stack_prometheus_storageclass" {
-  type        = string
-  description = "Prometheus storage class"
-  default     = "csi-gp2"
-}
-
-variable "monitoring_kube_prometheus_stack_prometheus_storage_size" {
-  type        = string
-  description = "Promehteus storage size"
-  default     = "50Gi"
-}
-
-variable "monitoring_kube_prometheus_stack_prometheus_retention" {
-  type        = string
-  description = "Promehteus retention"
-  default     = "30d"
-}
-
-variable "monitoring_kube_prometheus_stack_slack_channel" {
-  type        = string
-  description = "Kube-prometheus-stack alert slack channel"
-  default     = ""
-}
-
-variable "monitoring_kube_prometheus_stack_target_namespaces" {
-  type        = string
-  description = "Alert target namespaces filter"
-  default     = ".*"
-}
-
-variable "monitoring_kube_prometheus_stack_prometheus_request_memory" {
-  type        = string
-  description = "Prometheus resource setting for memory request"
-  default     = "512Mi"
-}
-
-variable "monitoring_kube_prometheus_stack_prometheus_request_cpu" {
-  type        = string
-  description = "Prometheus resource setting for cpu request"
-  default     = "500m"
-}
-
-variable "monitoring_kube_prometheus_stack_prometheus_limit_memory" {
-  type        = string
-  description = "Prometheus resource setting for limit memory"
-  default     = "2Gi"
-}
-
-variable "monitoring_kube_prometheus_stack_prometheus_limit_cpu" {
-  type        = string
-  description = "Prometheus resource setting for limit cpu"
-  default     = "1000m"
-}
-
-variable "monitoring_kube_prometheus_stack_prometheus_query_log_file_enabled" {
-  type        = bool
-  description = "Whether to enable the query logging in Prometheus."
-  default     = false
-}
-
-variable "monitoring_kube_prometheus_stack_prometheus_enable_features" {
-  type        = list(string)
-  description = "Prometheus feature flags to enable."
-  default     = []
-}
-
-variable "monitoring_kube_prometheus_stack_prometheus_confluent_metrics_scrape_enabled" {
-  type        = string
-  description = "Whether to enable scraping of Confluent metrics in Prometheus."
-  default     = false
-}
-variable "monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_key" {
-  type        = string
-  description = "Confluent metrics API key."
-  default     = null
-}
-
-variable "monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_secret" {
-  type        = string
-  description = "Confluent metrics API secret."
-  default     = null
-}
-
-variable "monitoring_kube_prometheus_stack_prometheus_confluent_metrics_scrape_interval" {
-  type        = string
-  description = "Confluent metrics scrape interval."
-  default     = "1m"
-}
-
-variable "monitoring_kube_prometheus_stack_prometheus_confluent_metrics_scrape_timeout" {
-  type        = string
-  description = "Confluent metrics scrape timeout."
-  default     = "1m"
-}
-
-variable "monitoring_kube_prometheus_stack_prometheus_confluent_metrics_resource_kafka_id_list" {
-  type        = list(string)
-  description = "List of Kafka cluster IDs to scrape metrics from"
-  default     = []
-}
-
-
-# --------------------------------------------------
 # Metrics-Server
 # --------------------------------------------------
 
@@ -615,12 +430,6 @@ variable "atlantis_enable_github_secrets" {
 # Atlantis variables
 # --------------------------------------------------
 # Used as env variables within the Atlantis process.
-
-variable "atlantis_arm_tenant_id" {
-  type        = string
-  description = "Used to set environment variable for ARM tenant ID"
-  default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-}
 
 variable "atlantis_resources_requests_cpu" {
   type        = string
@@ -925,33 +734,6 @@ variable "velero_ebs_csi_kms_arn" {
   description = "The KMS ARN to use for EBS CSI volumes."
 }
 
-# --------------------------------------------------
-# Kyverno
-# --------------------------------------------------
-
-variable "kyverno_chart_version" {
-  type        = string
-  default     = ""
-  description = "Helm chart version of Kyverno"
-}
-
-variable "kyverno_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for Kyverno module"
-}
-
-variable "kyverno_replicas" {
-  type        = number
-  default     = 3
-  description = "Number of replica pods for Kyverno"
-}
-
-variable "kyverno_namespace_labels" {
-  type    = map(any)
-  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/enforce" = "privileged" }
-}
-
 
 # --------------------------------------------------
 # Subnet Exporter
@@ -1092,11 +874,16 @@ variable "grafana_agent_namespace" {
   default     = "grafana"
 }
 
-
 variable "grafana_agent_enable_prometheus_crds" {
   type        = bool
   description = "Enable Prometheus CRDs"
   default     = true
+}
+
+variable "grafana_agent_priority_class" {
+  type        = string
+  description = "Prometheus components priority class name"
+  default     = "cluster-monitoring"
 }
 
 variable "observability_tolerations" {
@@ -1324,28 +1111,6 @@ variable "github_arc_runners_max_runners" {
   type        = number
   description = "Maximum number of runners to scale to"
   default     = 5
-}
-
-variable "github_arc_runners_memory_request" {
-  type        = string
-  description = "Memory request for the runner pods"
-  default     = "128Mi"
-}
-
-variable "github_arc_runners_memory_limit" {
-  type        = string
-  description = "Memory request for the runner pods"
-  default     = "8Gi"
-}
-
-# --------------------------------------------------
-# Optional
-# --------------------------------------------------
-
-variable "ssm_param_createdby" {
-  type        = string
-  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
-  default     = null
 }
 
 # --------------------------------------------------

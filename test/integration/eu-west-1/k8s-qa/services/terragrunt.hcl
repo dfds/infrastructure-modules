@@ -123,33 +123,6 @@ inputs = {
   ]
 
   # --------------------------------------------------
-  # Kube-prometheus-stack
-  # --------------------------------------------------
-
-  monitoring_kube_prometheus_stack_deploy                            = false
-  monitoring_kube_prometheus_stack_chart_version                     = "55.4.1"
-  monitoring_kube_prometheus_stack_target_namespaces                 = "kube-system|monitoring"
-  monitoring_kube_prometheus_stack_prometheus_storage_size           = "5Gi"
-  monitoring_kube_prometheus_stack_prometheus_storageclass           = "gp2"
-  monitoring_kube_prometheus_stack_prometheus_retention              = "1d"
-  monitoring_kube_prometheus_stack_slack_webhook                     = ""
-  monitoring_kube_prometheus_stack_slack_channel                     = "#hellman-alerting"
-  monitoring_kube_prometheus_stack_prometheus_request_memory         = "500Mi"
-  monitoring_kube_prometheus_stack_prometheus_request_cpu            = "500m"
-  monitoring_kube_prometheus_stack_prometheus_limit_memory           = "2Gi"
-  monitoring_kube_prometheus_stack_prometheus_limit_cpu              = "1000m"
-  monitoring_kube_prometheus_stack_grafana_enabled                   = false
-  monitoring_kube_prometheus_stack_grafana_storage_enabled           = false
-  monitoring_kube_prometheus_stack_grafana_storage_size              = "5Gi"
-  monitoring_kube_prometheus_stack_grafana_storageclass              = "gp2"
-  monitoring_kube_prometheus_stack_prometheus_query_log_file_enabled = true
-  monitoring_kube_prometheus_stack_prometheus_enable_features        = ["memory-snapshot-on-shutdown"]
-  monitoring_kube_prometheus_stack_prometheus_confluent_metrics_scrape_enabled = true
-  monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_key = "fake"      # pragma: allowlist secret
-  monitoring_kube_prometheus_stack_prometheus_confluent_metrics_api_secret = "fake"   # pragma: allowlist secret
-
-
-  # --------------------------------------------------
   # Goldpinger
   # --------------------------------------------------
 
@@ -210,14 +183,6 @@ inputs = {
       }
       "charts" = [
         "metrics-server"
-      ]
-    },
-    {
-      registry = {
-        url = "https://prometheus-community.github.io/helm-charts/index.yaml"
-      }
-      "charts" = [
-        "kube-prometheus-stack"
       ]
     },
     {

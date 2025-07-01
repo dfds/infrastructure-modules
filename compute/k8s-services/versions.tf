@@ -18,11 +18,6 @@ terraform {
       version = "~> 1.19.0"
     }
 
-    helm = {
-      source  = "hashicorp/helm"
-      version = "~> 3.0.0"
-    }
-
     azuread = {
       source  = "hashicorp/azuread"
       version = "~> 3.4.0"

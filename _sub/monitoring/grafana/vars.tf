@@ -205,7 +205,7 @@ variable "open_cost_enabled" {
 variable "priority_class" {
   type        = string
   description = "Name of priority class to apply"
-  default     = "cluster-monitoring" # TODO: remove default and change to monitoring_kube_prometheus_stack_priority_class
+  default     = "cluster-monitoring"
 }
 
 variable "enable_prometheus_crds" {

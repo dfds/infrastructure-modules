@@ -1,17 +1,4 @@
 # --------------------------------------------------
-# Prometheus Stack
-# --------------------------------------------------
-
-output "grafana_admin_password" {
-  value = var.monitoring_kube_prometheus_stack_deploy && var.monitoring_kube_prometheus_stack_grafana_enabled ? try(module.monitoring_kube_prometheus_stack[0].grafana_admin_password, "") : "Not enabled in service configuration."
-}
-
-output "grafana_url" {
-  value = var.monitoring_kube_prometheus_stack_deploy && var.monitoring_kube_prometheus_stack_grafana_enabled ? "https://grafana.${var.eks_cluster_name}.${var.workload_dns_zone_name}${var.monitoring_kube_prometheus_stack_grafana_ingress_path}" : "Not enabled in service configuration."
-}
-
-
-# --------------------------------------------------
 # Traefik
 # --------------------------------------------------
 
