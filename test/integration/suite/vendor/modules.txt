@@ -169,8 +169,8 @@ github.com/stretchr/testify/assert/yaml
 github.com/traefik/paerser/types
 # github.com/traefik/traefik/v2 v2.11.25
 ## explicit; go 1.23.0
-# github.com/traefik/traefik/v3 v3.4.1
-## explicit; go 1.23.0
+# github.com/traefik/traefik/v3 v3.4.3
+## explicit; go 1.24.0
 github.com/traefik/traefik/v3/pkg/config/dynamic
 github.com/traefik/traefik/v3/pkg/ip
 github.com/traefik/traefik/v3/pkg/logs
