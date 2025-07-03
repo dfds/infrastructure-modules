@@ -2,15 +2,24 @@
 # EKS Cluster
 # --------------------------------------------------
 
+locals {
+  managed_subnets_calculated = cidrsubnets(var.eks_cluster_cidr_block, 2, 2, 2, 2)
+  cluster_reserved_cidr      = local.managed_subnets_calculated[0] # Reserved for the control plane subnets
+  managed_subnet_1           = local.managed_subnets_calculated[1]
+  managed_subnet_2           = local.managed_subnets_calculated[2]
+  managed_subnet_3           = local.managed_subnets_calculated[3]
+}
+
 module "eks_cluster" {
-  source             = "../../_sub/compute/eks-cluster"
-  cluster_name       = var.eks_cluster_name
-  cluster_version    = var.eks_cluster_version
-  cidr_block         = var.eks_cluster_cidr_block
-  cluster_zones      = var.eks_cluster_zones
-  cluster_subnets    = var.enable_worker_nat_gateway || var.use_worker_nat_gateway ? var.eks_cluster_subnets : var.eks_cluster_zones
-  log_types          = var.eks_cluster_log_types
-  log_retention_days = var.eks_cluster_log_retention_days
+  source                = "../../_sub/compute/eks-cluster"
+  cluster_name          = var.eks_cluster_name
+  cluster_version       = var.eks_cluster_version
+  cidr_block            = var.eks_cluster_cidr_block
+  cluster_zones         = var.eks_cluster_zones
+  cluster_reserved_cidr = local.cluster_reserved_cidr
+  cluster_subnets       = var.enable_worker_nat_gateway || var.use_worker_nat_gateway ? var.eks_cluster_subnets : var.eks_cluster_zones
+  log_types             = var.eks_cluster_log_types
+  log_retention_days    = var.eks_cluster_log_retention_days
 }
 
 module "eks_internet_gateway" {
@@ -19,6 +28,7 @@ module "eks_internet_gateway" {
   vpc_id = module.eks_cluster.vpc_id
 }
 
+# tflint-ignore: terraform_unused_declarations
 data "aws_availability_zones" "available" {
   # At the moment, this is the best way to validate multiple variables against
   # each other:

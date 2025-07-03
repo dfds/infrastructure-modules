@@ -26,11 +26,17 @@ module "flow_log" {
   vpc_id   = aws_vpc.eks.id
 }
 
+locals {
+  prefix             = substr(var.cluster_reserved_cidr, -3, -1)               # Find the last octet of the reserved CIDR block
+  subnets_pool       = replace(var.cluster_reserved_cidr, local.prefix, "/22") # Replace the last octet with /22 to create a subnet pool
+  calculated_subnets = cidrsubnets(local.subnets_pool, 2, 2, 2)
+}
+
 resource "aws_subnet" "eks" {
-  count = var.cluster_subnets
+  count = length(local.calculated_subnets)
 
   availability_zone = data.aws_availability_zones.available.names[count.index]
-  cidr_block        = "10.0.${count.index}.0/24"
+  cidr_block        = local.calculated_subnets[count.index]
   vpc_id            = aws_vpc.eks.id
 
   tags = {

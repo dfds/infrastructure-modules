@@ -1,4 +1,6 @@
+#trivy:ignore:AVD-AWS-0104 Security group rule allows unrestricted egress to any IP address
 resource "aws_security_group" "eks-cluster" {
+  #checkov:skip=CKV_AWS_382: Ensure no security groups allow egress from 0.0.0.0:0 to port -1
   name_prefix = "eks-${var.cluster_name}-cluster-"
   description = "Cluster communication with worker nodes"
   vpc_id      = aws_vpc.eks.id
@@ -8,7 +10,7 @@ resource "aws_security_group" "eks-cluster" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg tfsec:ignore:aws-ec2-no-public-egress-sgr
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
@@ -16,7 +18,6 @@ resource "aws_security_group" "eks-cluster" {
   }
 }
 
-#tfsec:ignore:aws-vpc-disallow-mixed-sgr tfsec:ignore:no-public-ingress-sgr tfsec:ignore:aws-vpc-no-public-ingress-sg tfsec:ignore:aws-vpc-no-public-ingress-sgr
 resource "aws_security_group_rule" "eks-ingress-workstation-https" {
   cidr_blocks       = ["0.0.0.0/0"]
   description       = "Allow workstation to communicate with the cluster API Server"

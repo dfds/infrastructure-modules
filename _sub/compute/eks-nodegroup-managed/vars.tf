@@ -108,9 +108,9 @@ variable "docker_hub_password" {
 }
 
 variable "essentials_url" {
-  type = string
+  type        = string
   description = "HTTP server that provides essentials"
-  default = ""
+  default     = ""
 }
 
 # ------------------------------------------------------

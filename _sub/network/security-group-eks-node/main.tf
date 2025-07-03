@@ -1,4 +1,6 @@
+#trivy:ignore:AVD-AWS-0104 Security group rule allows unrestricted egress to any IP address
 resource "aws_security_group" "eks-node" {
+  #checkov:skip=CKV_AWS_382: Ensure no security groups allow egress from 0.0.0.0:0 to port -1
   name        = "eks-${var.cluster_name}-node"
   description = "Security group for all nodes in the cluster"
   vpc_id      = var.vpc_id
@@ -8,7 +10,7 @@ resource "aws_security_group" "eks-node" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg tfsec:ignore:aws-ec2-no-public-egress-sgr
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
@@ -17,7 +19,6 @@ resource "aws_security_group" "eks-node" {
   }
 }
 
-#tfsec:ignore:aws-vpc-disallow-mixed-sgr
 resource "aws_security_group_rule" "eks-node-ingress-self" {
   description              = "Allow node to communicate with each other"
   from_port                = 0
@@ -28,7 +29,6 @@ resource "aws_security_group_rule" "eks-node-ingress-self" {
   type                     = "ingress"
 }
 
-#tfsec:ignore:aws-vpc-disallow-mixed-sgr
 resource "aws_security_group_rule" "eks-node-ingress-cluster" {
   description              = "Allow worker Kubelets and pods to receive communication from the cluster control plane"
   from_port                = 1024
@@ -50,8 +50,8 @@ resource "aws_security_group_rule" "eks-cluster-ingress-node-https" {
 }
 
 #Enable SSH access to nodes by tfvars set to 1
-#tfsec:ignore:aws-vpc-disallow-mixed-sgr
 resource "aws_security_group_rule" "ssh-access-to-worker-nodes" {
+  #checkov:skip=CKV_AWS_24: Ensure no security groups allow ingress from 0.0.0.0:0 to port 22
   description       = "Allow SSH access to worker nodes"
   cidr_blocks       = var.ssh_ip_whitelist
   from_port         = 22

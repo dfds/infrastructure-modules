@@ -14,6 +14,11 @@ variable "cluster_subnets" {
   type = number
 }
 
+variable "cluster_reserved_cidr" {
+  type        = string
+  description = "The CIDR block reserved for the control plane subnets. This is used to create the subnets for the EKS cluster control plane."
+}
+
 variable "log_types" {
   type        = list(string)
   description = "A list of the desired control plane logging to enable: api, audit, authenticator, controllerManager, scheduler. See also https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html."
