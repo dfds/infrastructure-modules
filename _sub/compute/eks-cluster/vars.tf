@@ -10,9 +10,6 @@ variable "cluster_zones" {
   type = number
 }
 
-variable "cluster_subnets" {
-  type = number
-}
 
 variable "cluster_reserved_cidr" {
   type        = string

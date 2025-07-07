@@ -291,12 +291,6 @@ variable "use_worker_nat_gateway" {
   description = "Whether to use NAT Gateway for worker nodes"
 }
 
-variable "eks_cluster_subnets" {
-  type        = number
-  default     = 3
-  description = "Number of subnets to use for the Cluster Control Plane"
-}
-
 variable "migrate_vpc_peering_routes" {
   description = "If true, migrate the peering connection to the new route table"
   type        = bool

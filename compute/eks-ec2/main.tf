@@ -64,7 +64,6 @@ module "eks_cluster" {
   cidr_block            = var.eks_cluster_cidr_block
   cluster_zones         = var.eks_cluster_zones
   cluster_reserved_cidr = local.cluster_reserved_cidr
-  cluster_subnets       = var.enable_worker_nat_gateway || var.use_worker_nat_gateway ? var.eks_cluster_subnets : var.eks_cluster_zones
   log_types             = var.eks_cluster_log_types
   log_retention_days    = var.eks_cluster_log_retention_days
 }
