@@ -43,7 +43,7 @@ variable "eks_cluster_cidr_block" {
   description = "The CIDR block for the VPC. This is used to create the VPC and subnets for the EKS cluster."
   default     = "10.0.0.0/16"
   validation {
-    condition     = can(cidrhost(var.eks_cluster_cidr_block, 1)) && substr(var.eks_cluster_cidr_block, -2, -1) <= 20
+    condition     = can(cidrhost(var.eks_cluster_cidr_block, 1)) && tonumber(substr(var.eks_cluster_cidr_block, -2, -1)) <= 20
     error_message = "The CIDR block must be a valid CIDR block, and at least /20 in size."
   }
 }
