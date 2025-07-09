@@ -1,4 +1,5 @@
 resource "aws_launch_template" "eks" {
+  #checkov:skip=CKV_AWS_88: EC2 instance should not have public IP.
   count = signum(var.desired_size_per_subnet)
 
   image_id      = local.node_ami

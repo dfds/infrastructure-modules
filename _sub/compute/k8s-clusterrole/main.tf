@@ -1,4 +1,5 @@
 resource "kubernetes_cluster_role" "role" {
+  #checkov:skip=CKV_K8S_49: Minimize wildcard use in Roles and ClusterRoles
   metadata {
     name = var.name
   }

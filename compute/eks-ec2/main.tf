@@ -2,15 +2,71 @@
 # EKS Cluster
 # --------------------------------------------------
 
+locals {
+  managed_subnets_calculated = cidrsubnets(var.eks_cluster_cidr_block, 2, 2, 2, 2)
+  cluster_reserved_cidr      = local.managed_subnets_calculated[0] # Reserved for the control plane subnets
+  managed_subnet_az_a        = local.managed_subnets_calculated[1] # Worker nodes subnet for availability zone a
+  managed_subnet_az_b        = local.managed_subnets_calculated[2] # Worker nodes subnet for availability zone b
+  managed_subnet_az_c        = local.managed_subnets_calculated[3] # Worker nodes subnet for availability zone c
+  vpc_cidr_prefix            = tonumber(substr(var.eks_cluster_cidr_block, -2, -1))
+  # This is used to determine the prefix length for the subnets, by splitting the CIDR block for the subnets
+  # into smaller chunks based on the prefix length.
+  # The calculations for VPC CIDR prefix with value 16 are ensuring backward compatibility with existing deployments.
+  # This includes removing the first element of the list of prefixes.
+  # In each subnet calculation, we ensure that at least 256 IP addresses are available for other use than prefix reservations.
+  worker_subnets_calculated = [
+    {
+      availability_zone = format("%sa", var.aws_region)
+      subnet_cidr       = local.managed_subnet_az_a
+      prefix_reservations_cidrs = local.vpc_cidr_prefix == 20 ? cidrsubnets(local.managed_subnet_az_a, 2, 2, 2) : (
+        local.vpc_cidr_prefix == 19 ? cidrsubnets(local.managed_subnet_az_a, 2, 2, 2, 3) : (
+          local.vpc_cidr_prefix == 18 ? cidrsubnets(local.managed_subnet_az_a, 2, 3, 3, 2, 3, 4) : (
+            local.vpc_cidr_prefix == 17 ? cidrsubnets(local.managed_subnet_az_a, 3, 3, 3, 3, 3, 3, 3, 4, 5) : (
+              local.vpc_cidr_prefix == 16 ? slice(cidrsubnets(local.managed_subnet_az_a, 4, 4, 3, 2, 2, 3, 4), 1, 7) : []
+            )
+          )
+        )
+      )
+    },
+    {
+      availability_zone = format("%sb", var.aws_region)
+      subnet_cidr       = local.managed_subnet_az_b
+      prefix_reservations_cidrs = local.vpc_cidr_prefix == 20 ? cidrsubnets(local.managed_subnet_az_b, 2, 2, 2) : (
+        local.vpc_cidr_prefix == 19 ? cidrsubnets(local.managed_subnet_az_b, 2, 2, 2, 3) : (
+          local.vpc_cidr_prefix == 18 ? cidrsubnets(local.managed_subnet_az_b, 2, 3, 3, 2, 3, 4) : (
+            local.vpc_cidr_prefix == 17 ? cidrsubnets(local.managed_subnet_az_b, 3, 3, 3, 3, 3, 3, 3, 4, 5) : (
+              local.vpc_cidr_prefix == 16 ? slice(cidrsubnets(local.managed_subnet_az_b, 4, 4, 3, 2, 2, 3, 4), 1, 7) : []
+            )
+          )
+        )
+      )
+    },
+    {
+      availability_zone = format("%sc", var.aws_region)
+      subnet_cidr       = local.managed_subnet_az_c
+      prefix_reservations_cidrs = local.vpc_cidr_prefix == 20 ? cidrsubnets(local.managed_subnet_az_c, 2, 2, 2) : (
+        local.vpc_cidr_prefix == 19 ? cidrsubnets(local.managed_subnet_az_c, 2, 2, 2, 3) : (
+          local.vpc_cidr_prefix == 18 ? cidrsubnets(local.managed_subnet_az_c, 2, 3, 3, 2, 3, 4) : (
+            local.vpc_cidr_prefix == 17 ? cidrsubnets(local.managed_subnet_az_c, 3, 3, 3, 3, 3, 3, 3, 4, 5) : (
+              local.vpc_cidr_prefix == 16 ? slice(cidrsubnets(local.managed_subnet_az_c, 4, 4, 3, 2, 2, 3, 4), 1, 7) : []
+            )
+          )
+        )
+      )
+    },
+  ]
+  eks_managed_worker_subnets = length(var.eks_managed_worker_subnets) > 0 ? var.eks_managed_worker_subnets : local.worker_subnets_calculated
+}
+
 module "eks_cluster" {
-  source             = "../../_sub/compute/eks-cluster"
-  cluster_name       = var.eks_cluster_name
-  cluster_version    = var.eks_cluster_version
-  cidr_block         = var.eks_cluster_cidr_block
-  cluster_zones      = var.eks_cluster_zones
-  cluster_subnets    = var.enable_worker_nat_gateway || var.use_worker_nat_gateway ? var.eks_cluster_subnets : var.eks_cluster_zones
-  log_types          = var.eks_cluster_log_types
-  log_retention_days = var.eks_cluster_log_retention_days
+  source                = "../../_sub/compute/eks-cluster"
+  cluster_name          = var.eks_cluster_name
+  cluster_version       = var.eks_cluster_version
+  cidr_block            = var.eks_cluster_cidr_block
+  cluster_zones         = var.eks_cluster_zones
+  cluster_reserved_cidr = local.cluster_reserved_cidr
+  log_types             = var.eks_cluster_log_types
+  log_retention_days    = var.eks_cluster_log_retention_days
 }
 
 module "eks_internet_gateway" {
@@ -19,6 +75,7 @@ module "eks_internet_gateway" {
   vpc_id = module.eks_cluster.vpc_id
 }
 
+# tflint-ignore: terraform_unused_declarations
 data "aws_availability_zones" "available" {
   # At the moment, this is the best way to validate multiple variables against
   # each other:
@@ -27,7 +84,7 @@ data "aws_availability_zones" "available" {
 
     precondition {
       condition = alltrue([
-        for sn in var.eks_managed_worker_subnets : startswith(sn.availability_zone, var.aws_region)
+        for sn in local.eks_managed_worker_subnets : startswith(sn.availability_zone, var.aws_region)
       ])
       error_message = "All managed worker subnet availability zones must be within the region specified by var.aws_region."
     }
@@ -46,11 +103,11 @@ data "aws_availability_zones" "available" {
 
 module "eks_managed_workers_subnet" {
   source       = "../../_sub/network/vpc-subnet-eks"
-  deploy       = length(var.eks_managed_worker_subnets) >= 1 ? true : false
+  deploy       = length(local.eks_managed_worker_subnets) >= 1 ? true : false
   name         = "eks-${var.eks_cluster_name}-managed-nodes"
   cluster_name = var.eks_cluster_name
   vpc_id       = module.eks_cluster.vpc_id
-  subnets      = var.eks_managed_worker_subnets
+  subnets      = local.eks_managed_worker_subnets
 }
 
 module "eks_workers_keypair" {

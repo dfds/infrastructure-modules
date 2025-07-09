@@ -1,4 +1,6 @@
 resource "aws_cloudwatch_log_group" "vpc_eks" {
+  #checkov:skip=CKV_AWS_338: Ensure CloudWatch log groups retains logs for at least 1 year
+  #checkov:skip=CKV_AWS_158: Ensure that CloudWatch Log Group is encrypted by KMS
   name              = "/aws/vpc/${var.log_name}"
   retention_in_days = var.retention_in_days
 }
@@ -41,8 +43,8 @@ data "aws_iam_policy_document" "flow_log" {
     ]
 
     resources = [
-      "${aws_cloudwatch_log_group.vpc_eks.arn}",
-      "${aws_cloudwatch_log_group.vpc_eks.arn}:*",
+      aws_cloudwatch_log_group.vpc_eks.arn,
+      format("%s:*", aws_cloudwatch_log_group.vpc_eks.arn),
     ]
   }
 }

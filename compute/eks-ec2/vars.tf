@@ -42,6 +42,10 @@ variable "eks_cluster_cidr_block" {
   type        = string
   description = "The CIDR block for the VPC. This is used to create the VPC and subnets for the EKS cluster."
   default     = "10.0.0.0/16"
+  validation {
+    condition     = can(cidrhost(var.eks_cluster_cidr_block, 1)) && tonumber(substr(var.eks_cluster_cidr_block, -2, -1)) <= 20
+    error_message = "The CIDR block must be a valid CIDR block, and at least /20 in size."
+  }
 }
 
 variable "eks_worker_ssh_public_key" {
@@ -285,12 +289,6 @@ variable "use_worker_nat_gateway" {
   type        = bool
   default     = false
   description = "Whether to use NAT Gateway for worker nodes"
-}
-
-variable "eks_cluster_subnets" {
-  type        = number
-  default     = 3
-  description = "Number of subnets to use for the Cluster Control Plane"
 }
 
 variable "migrate_vpc_peering_routes" {
