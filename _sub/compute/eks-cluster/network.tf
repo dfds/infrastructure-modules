@@ -27,8 +27,8 @@ module "flow_log" {
 }
 
 locals {
-  prefix             = substr(var.cluster_reserved_cidr, -3, -1)               # Find the last octet of the reserved CIDR block
-  subnets_pool       = replace(var.cluster_reserved_cidr, local.prefix, "/22") # Replace the last octet with /22 to create a subnet pool
+  prefix             = substr(var.cluster_reserved_cidr, -3, -1)               # Find the prefix of the reserved CIDR block
+  subnets_pool       = replace(var.cluster_reserved_cidr, local.prefix, "/22") # Replace the prefix with /22 to create a subnet pool
   calculated_subnets = cidrsubnets(local.subnets_pool, 2, 2, 2)
 }
 

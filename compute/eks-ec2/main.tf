@@ -11,17 +11,21 @@ locals {
   vpc_cidr_prefix            = tonumber(substr(var.eks_cluster_cidr_block, -2, -1))
   # This is used to determine the prefix length for the subnets, by splitting the CIDR block for the subnets
   # into smaller chunks based on the prefix length.
-  # The calculations for VPC CIDR prefix with value 16 are ensuring backward compatibility with existing deployments.
-  # This includes removing the first element of the list of prefixes.
-  # In each subnet calculation, we ensure that at least 256 IP addresses are available for other use than prefix reservations.
+  # In each subnet calculation, we need to ensure that first and last IP addresses are reserved for the VPC and broadcast address respectively.
+  # This is calculated by using slice to remove the first element of the list of prefixes, and simply omit to create the last possible prefix.
+  # For VPC cidr prefixes with values 18, 19, and 20, we are reserving the first and last 126 IP addresses.
+  # For VPC cidr prefix with /17, we are reserving the first and last 254 IP addresses.
+  # For VPC cidr prefix with /16, we are keeping backward compatibility with existing deployments.
+  # Tool for calculating the subnets: https://www.davidc.net/sites/default/subnets/subnets.html?network=10.0.64.0&mask=18&division=15.f051
+
   worker_subnets_calculated = [
     {
       availability_zone = format("%sa", var.aws_region)
       subnet_cidr       = local.managed_subnet_az_a
-      prefix_reservations_cidrs = local.vpc_cidr_prefix == 20 ? cidrsubnets(local.managed_subnet_az_a, 2, 2, 2) : (
-        local.vpc_cidr_prefix == 19 ? cidrsubnets(local.managed_subnet_az_a, 2, 2, 2, 3) : (
-          local.vpc_cidr_prefix == 18 ? cidrsubnets(local.managed_subnet_az_a, 2, 3, 3, 2, 3, 4) : (
-            local.vpc_cidr_prefix == 17 ? cidrsubnets(local.managed_subnet_az_a, 3, 3, 3, 3, 3, 3, 3, 4, 5) : (
+      prefix_reservations_cidrs = local.vpc_cidr_prefix == 20 ? slice(cidrsubnets(local.managed_subnet_az_a, 3, 3, 2, 2, 3), 1, 5) : (
+        local.vpc_cidr_prefix == 19 ? slice(cidrsubnets(local.managed_subnet_az_a, 4, 4, 3, 2, 2, 3, 4), 1, 7) : (
+          local.vpc_cidr_prefix == 18 ? slice(cidrsubnets(local.managed_subnet_az_a, 5, 5, 4, 3, 2, 2, 3, 4, 5), 1, 9) : (
+            local.vpc_cidr_prefix == 17 ? slice(cidrsubnets(local.managed_subnet_az_a, 5, 5, 4, 3, 3, 3, 3, 3, 3, 4, 5), 1, 11) : (
               local.vpc_cidr_prefix == 16 ? slice(cidrsubnets(local.managed_subnet_az_a, 4, 4, 3, 2, 2, 3, 4), 1, 7) : []
             )
           )
@@ -31,10 +35,10 @@ locals {
     {
       availability_zone = format("%sb", var.aws_region)
       subnet_cidr       = local.managed_subnet_az_b
-      prefix_reservations_cidrs = local.vpc_cidr_prefix == 20 ? cidrsubnets(local.managed_subnet_az_b, 2, 2, 2) : (
-        local.vpc_cidr_prefix == 19 ? cidrsubnets(local.managed_subnet_az_b, 2, 2, 2, 3) : (
-          local.vpc_cidr_prefix == 18 ? cidrsubnets(local.managed_subnet_az_b, 2, 3, 3, 2, 3, 4) : (
-            local.vpc_cidr_prefix == 17 ? cidrsubnets(local.managed_subnet_az_b, 3, 3, 3, 3, 3, 3, 3, 4, 5) : (
+      prefix_reservations_cidrs = local.vpc_cidr_prefix == 20 ? slice(cidrsubnets(local.managed_subnet_az_b, 3, 3, 2, 2, 3), 1, 5) : (
+        local.vpc_cidr_prefix == 19 ? slice(cidrsubnets(local.managed_subnet_az_b, 4, 4, 3, 2, 2, 3, 4), 1, 7) : (
+          local.vpc_cidr_prefix == 18 ? slice(cidrsubnets(local.managed_subnet_az_b, 5, 5, 4, 3, 2, 2, 3, 4, 5), 1, 9) : (
+            local.vpc_cidr_prefix == 17 ? slice(cidrsubnets(local.managed_subnet_az_b, 5, 5, 4, 3, 3, 3, 3, 3, 3, 4, 5), 1, 11) : (
               local.vpc_cidr_prefix == 16 ? slice(cidrsubnets(local.managed_subnet_az_b, 4, 4, 3, 2, 2, 3, 4), 1, 7) : []
             )
           )
@@ -44,10 +48,10 @@ locals {
     {
       availability_zone = format("%sc", var.aws_region)
       subnet_cidr       = local.managed_subnet_az_c
-      prefix_reservations_cidrs = local.vpc_cidr_prefix == 20 ? cidrsubnets(local.managed_subnet_az_c, 2, 2, 2) : (
-        local.vpc_cidr_prefix == 19 ? cidrsubnets(local.managed_subnet_az_c, 2, 2, 2, 3) : (
-          local.vpc_cidr_prefix == 18 ? cidrsubnets(local.managed_subnet_az_c, 2, 3, 3, 2, 3, 4) : (
-            local.vpc_cidr_prefix == 17 ? cidrsubnets(local.managed_subnet_az_c, 3, 3, 3, 3, 3, 3, 3, 4, 5) : (
+      prefix_reservations_cidrs = local.vpc_cidr_prefix == 20 ? slice(cidrsubnets(local.managed_subnet_az_c, 3, 3, 2, 2, 3), 1, 5) : (
+        local.vpc_cidr_prefix == 19 ? slice(cidrsubnets(local.managed_subnet_az_c, 4, 4, 3, 2, 2, 3, 4), 1, 7) : (
+          local.vpc_cidr_prefix == 18 ? slice(cidrsubnets(local.managed_subnet_az_c, 5, 5, 4, 3, 2, 2, 3, 4, 5), 1, 9) : (
+            local.vpc_cidr_prefix == 17 ? slice(cidrsubnets(local.managed_subnet_az_c, 5, 5, 4, 3, 3, 3, 3, 3, 3, 4, 5), 1, 11) : (
               local.vpc_cidr_prefix == 16 ? slice(cidrsubnets(local.managed_subnet_az_c, 4, 4, 3, 2, 2, 3, 4), 1, 7) : []
             )
           )
