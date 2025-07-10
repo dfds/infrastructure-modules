@@ -97,8 +97,17 @@ module "ram_share_with_platform" {
   resource_arns = [
     for pool in values(module.regional_platform_pools) : pool.arn
   ]
-  principals = var.ipam_platform_principals
+  principals = [for ous in module.org-account-query.organizational_units : ous.arn if contains(var.platform_pool_sharing_ou_names, ous.name)]
   tags       = var.tags
+}
+
+locals {
+  # If var.capabilities_pool_sharing_ou_names is empty, we use the ipam_role_patterns to generate a list of principals based on the account IDs from the org-account-query module.
+  # If it is not empty, we filter the organizational units to find those that match the specified names.
+  # This allows for flexibility in sharing the capabilities pools either with specific OUs or with all accounts under the specified OU using the role patterns.
+  capabilities_pool_sharing_principals = length(var.capabilities_pool_sharing_ou_names) == 0 ? flatten([
+    for pattern in var.ipam_role_patterns : formatlist(pattern, module.org-account-query.account_ids)
+  ]) : [for ous in module.org-account-query.organizational_units : ous.arn if contains(var.capabilities_pool_sharing_ou_names, ous.name)]
 }
 
 module "ram_share_with_capabilities" {
@@ -107,8 +116,6 @@ module "ram_share_with_capabilities" {
   resource_arns = [
     for pool in values(module.regional_capabilities_pools) : pool.arn
   ]
-  principals = flatten([
-    for pattern in var.ipam_role_patterns : formatlist(pattern, module.org-account-query.account_ids)
-  ])
-  tags = var.tags
+  principals = local.capabilities_pool_sharing_principals
+  tags       = var.tags
 }

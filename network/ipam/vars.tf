@@ -76,12 +76,6 @@ variable "ipam_prefix" {
   default     = ""
 }
 
-variable "ipam_platform_principals" {
-  type        = list(string)
-  description = "The ARNs of the principals to associate with a Resource Manager share for the regional platform pools"
-  default     = []
-}
-
 variable "ipam_ou_id" {
   type        = string
   description = "The ID of the AWS Organization OU that you want to query for accounts. This is used for sharing access to the IPAM pools."
@@ -95,6 +89,18 @@ variable "ipam_role_patterns" {
     the OU specified by var.ipam_ou_id.
 EOF
   default     = ["arn:aws:iam::%s:role/aws-service-role/ipam.amazonaws.com/AWSServiceRoleForIPAM"]
+}
+
+variable "platform_pool_sharing_ou_names" {
+  type        = list(string)
+  description = "A list of OU names that should be granted access to the platform IPAM pools."
+  default     = []
+}
+
+variable "capabilities_pool_sharing_ou_names" {
+  type        = list(string)
+  description = "A list of OU names that should be granted access to the capabilities IPAM pools."
+  default     = []
 }
 
 variable "tags" {
