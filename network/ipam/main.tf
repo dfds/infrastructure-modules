@@ -97,7 +97,7 @@ module "ram_share_with_platform" {
   resource_arns = [
     for pool in values(module.regional_platform_pools) : pool.arn
   ]
-  principals = var.ipam_platform_principals
+  principals = [for ous in module.org-account-query.organizational_units : ous.arn if contains(var.platform_sharing_ou_names, ous.name)]
   tags       = var.tags
 }
 
