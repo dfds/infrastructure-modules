@@ -22,7 +22,9 @@ inputs = {
 
   eks_cluster_name                           = "qa"
   eks_cluster_version                        = "1.32"
+  eks_cluster_cidr_block                     = "10.228.0.0/16"
   eks_cluster_zones                          = 2
+  eks_cluster_log_types                      = ["api", "authenticator", "scheduler", "controllerManager"]
   eks_addon_vpccni_prefix_delegation_enabled = true
   eks_addon_most_recent                      = true
   enable_worker_nat_gateway                  = true
@@ -42,53 +44,8 @@ inputs = {
   # Managed nodes
   # --------------------------------------------------
 
-  eks_managed_worker_subnets = [
-    {
-      availability_zone = "eu-west-1a",
-      subnet_cidr       = "10.0.64.0/18",
-      # Subnetting:
-      # https://www.davidc.net/sites/default/subnets/subnets.html?network=10.0.64.0&mask=18&division=15.f051
-      prefix_reservations_cidrs = [
-        "10.0.68.0/22",
-        "10.0.72.0/21",
-        "10.0.80.0/20",
-        "10.0.96.0/20",
-        "10.0.112.0/21",
-        "10.0.120.0/22"
-      ],
-    },
-    {
-      availability_zone = "eu-west-1b",
-      subnet_cidr       = "10.0.128.0/18",
-      # Subnetting:
-      # https://www.davidc.net/sites/default/subnets/subnets.html?network=10.0.128.0&mask=18&division=15.f051
-      prefix_reservations_cidrs = [
-        "10.0.132.0/22",
-        "10.0.136.0/21",
-        "10.0.144.0/20",
-        "10.0.160.0/20",
-        "10.0.176.0/21",
-        "10.0.184.0/22"
-      ],
-    },
-    {
-      availability_zone = "eu-west-1c",
-      subnet_cidr       = "10.0.192.0/18",
-      # Subnetting:
-      # https://www.davidc.net/sites/default/subnets/subnets.html?network=10.0.192.0&mask=18&division=15.f051
-      prefix_reservations_cidrs = [
-        "10.0.196.0/22",
-        "10.0.200.0/21",
-        "10.0.208.0/20",
-        "10.0.224.0/20",
-        "10.0.240.0/21",
-        "10.0.248.0/22",
-      ],
-    }
-  ]
-
   # Find compatible AMI
-  # aws ssm get-parameter --name /aws/service/eks/optimized-ami/1.27/amazon-linux-2/recommended/image_id --region eu-west-1 --query "Parameter.Value" --output text
+  # aws ssm get-parameter --name /aws/service/eks/optimized-ami/1.32/amazon-linux-2023/x86_64/standard/recommended/image_id --region eu-west-1 --query "Parameter.Value" --output text
   eks_managed_nodegroups = {
     "general" = {
       instance_types          = ["m6a.xlarge"]
@@ -100,10 +57,10 @@ inputs = {
       ami_id             = "ami-08d58031276a2986b"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
-      kube_memory                     = "1024Mi"
-      kube_cpu                        = "500m"
-      sys_memory                     = "768Mi"
-      sys_cpu                        = "300m"
+      kube_memory                = "1024Mi"
+      kube_cpu                   = "500m"
+      sys_memory                 = "768Mi"
+      sys_cpu                    = "300m"
     }
     "observability" = {
       instance_types          = ["t3.large"]
@@ -124,11 +81,11 @@ inputs = {
       labels = {
         dedicated = "observability"
       }
-      max_pods = 30
-      kube_memory                     = "585Mi"
-      kube_cpu                        = "90m"
-      sys_memory                     = "585Mi"
-      sys_cpu                        = "90m"
+      max_pods      = 30
+      kube_memory   = "585Mi"
+      kube_cpu      = "90m"
+      sys_memory    = "585Mi"
+      sys_cpu       = "90m"
     }
   }
 
