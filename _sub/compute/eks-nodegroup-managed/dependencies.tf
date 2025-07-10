@@ -8,7 +8,7 @@ locals {
 data "aws_ami" "eks-node" {
   filter {
     name   = "name"
-    values = ["amazon-eks-node-${var.cluster_version}-*"]
+    values = ["amazon-eks-node-al2023-x86_64-standard-${var.cluster_version}-*"]
   }
 
   most_recent = true
@@ -19,7 +19,7 @@ data "aws_ami" "eks-node" {
 data "aws_ami" "eks-gpu-node" {
   filter {
     name   = "name"
-    values = ["amazon-eks-gpu-node-${var.cluster_version}-*"]
+    values = ["amazon-eks-node-al2023-x86_64-nvidia-${var.cluster_version}-*"]
   }
 
   most_recent = true
