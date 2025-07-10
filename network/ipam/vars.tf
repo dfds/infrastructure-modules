@@ -91,9 +91,15 @@ EOF
   default     = ["arn:aws:iam::%s:role/aws-service-role/ipam.amazonaws.com/AWSServiceRoleForIPAM"]
 }
 
-variable "platform_sharing_ou_names" {
+variable "platform_pool_sharing_ou_names" {
   type        = list(string)
   description = "A list of OU names that should be granted access to the platform IPAM pools."
+  default     = []
+}
+
+variable "capabilities_pool_sharing_ou_names" {
+  type        = list(string)
+  description = "A list of OU names that should be granted access to the capabilities IPAM pools."
   default     = []
 }
 
