@@ -36,6 +36,8 @@ inputs = {
   eks_addon_kubeproxy_version_override = "v1.33.0-eksbuild.2"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.33","addonName":"aws-efs-csi-driver"}
   eks_addon_awsefscsidriver_version_override = "v2.1.9-eksbuild.1"
+  # renovate: eksAddonsFilter={"kubernetesVersion":"1.33","addonName":"aws-ebs-csi-driver"}
+  eks_addon_awsebscsidriver_version_override = "v1.45.0-eksbuild.2"
 
   enable_worker_nat_gateway                  = true
   use_worker_nat_gateway                     = true
