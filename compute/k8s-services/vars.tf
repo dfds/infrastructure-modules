@@ -677,6 +677,16 @@ variable "velero_plugin_for_aws_version" {
   }
 }
 
+variable "velero_plugin_for_azure_version" {
+  type        = string
+  default     = "v1.12.1"
+  description = "The version of velero-plugin-for-azure to use as initContainer"
+  validation {
+    condition     = can(regex("^v(\\d+\\.\\d+)(\\.\\d+)?(-rc\\.\\d+|-beta\\.\\d+)?$", var.velero_plugin_for_azure_version)) || var.velero_plugin_for_azure_version == ""
+    error_message = "Velero plugin for Azure must specify a version. The version must start with the letter v and followed by a semantic version number."
+  }
+}
+
 variable "velero_snapshots_enabled" {
   type        = bool
   default     = false
@@ -732,6 +742,32 @@ variable "velero_ebs_csi_kms_arn" {
   type        = string
   default     = ""
   description = "The KMS ARN to use for EBS CSI volumes."
+}
+
+variable "velero_enable_azure_storage" {
+  type        = bool
+  default     = true
+  description = "Enable Azure storage for Velero backups"
+}
+
+variable "velero_azure_resource_group_name" {
+  type        = string
+  default     = ""
+  description = "The name of the Azure resource group where the storage account is located"
+}
+  
+variable "velero_azure_storage_account_name" {
+  type        = string
+  default     = ""
+  description = "The name of the Azure storage account where the Velero backups will be stored"
+
+}
+
+variable "velero_azure_subscription_id" {
+  type        = string
+  default     = ""
+  description = "The Azure subscription ID where the storage account is located"
+
 }
 
 

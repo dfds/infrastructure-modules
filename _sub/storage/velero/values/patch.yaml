@@ -20,20 +20,41 @@ spec:
     snapshotsEnabled: ${snapshots_enabled}
     deployNodeAgent: ${filesystem_backup_enabled}
     initContainers:
-      - name: velero-plugin-for-aws
-        image: velero/velero-plugin-for-aws:${plugin_for_aws_version}
+      # - name: velero-plugin-for-aws
+      #   image: velero/velero-plugin-for-aws:${plugin_for_aws_version}
+      #   volumeMounts:
+      #     - mountPath: /target
+      #       name: plugins
+      - name: velero-plugin-for-microsoft-azure
+        image: velero/velero-plugin-for-microsoft-azure:${plugin_for_azure_version}
         volumeMounts:
           - mountPath: /target
             name: plugins
     configuration:
       logLevel: ${log_level}
       backupStorageLocation:
-        - provider: aws
-          bucket: ${bucket_name}
-          config:
-            region: ${bucket_region}
+        # - name: aws
+        #   provider: aws
+        #   bucket: ${bucket_name}
+        #   config:
+        #     region: ${bucket_region}
 %{ if read_only ~}
           accessMode: ReadOnly
+%{ endif ~}
+%{ if enable_azure_storage ~}
+        - name: azure
+          provider: azure
+          bucket: velero-backup
+          credential:
+            name: velero-credentials
+            key: cloud
+          config:
+            resourceGroup: ${azure_resource_group_name}
+            storageAccount: ${azure_storage_account_name}
+            subscriptionId: ${azure_subscription_id}
+%{ if read_only ~}
+          accessMode: ReadOnly
+%{ endif ~}
 %{ endif ~}
       volumeSnapshotLocation:
         - name: velero-snapshot
@@ -43,9 +64,9 @@ spec:
     serviceAccount:
       server:
         create: true
-        annotations:
-          eks.amazonaws.com/role-arn: "${velero_role_arn}"
-          eks.amazonaws.com/sts-regional-endpoints: "true"
+        # annotations:
+        #   eks.amazonaws.com/role-arn: "${velero_role_arn}"
+        #   eks.amazonaws.com/sts-regional-endpoints: "true"
 %{ if !read_only ~}
     schedules:
       ${cluster_name}-cluster-backup:

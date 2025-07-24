@@ -44,6 +44,7 @@ resource "github_repository_file" "velero_flux_helm_patch_yaml" {
     snapshots_enabled                   = var.snapshots_enabled
     filesystem_backup_enabled           = var.filesystem_backup_enabled
     plugin_for_aws_version              = var.plugin_for_aws_version
+    plugin_for_azure_version            = var.plugin_for_azure_version
     log_level                           = var.log_level
     bucket_name                         = local.bucket_name
     bucket_region                       = var.bucket_region
@@ -54,6 +55,10 @@ resource "github_repository_file" "velero_flux_helm_patch_yaml" {
     excluded_cluster_scoped_resources   = var.excluded_cluster_scoped_resources
     excluded_namespace_scoped_resources = var.excluded_namespace_scoped_resources
     read_only                           = var.read_only
+    azure_resource_group_name           = var.azure_resource_group_name
+    azure_storage_account_name          = var.azure_storage_account_name
+    azure_subscription_id               = var.azure_subscription_id
+    enable_azure_storage                = var.enable_azure_storage
   })
   overwrite_on_create = var.overwrite_on_create
 }
