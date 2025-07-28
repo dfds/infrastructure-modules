@@ -25,8 +25,20 @@ inputs = {
   eks_cluster_cidr_block                     = "10.228.0.0/16"
   eks_cluster_zones                          = 2
   eks_cluster_log_types                      = ["api", "authenticator", "scheduler", "controllerManager"]
+
   eks_addon_vpccni_prefix_delegation_enabled = true
-  eks_addon_most_recent                      = true
+  eks_addon_most_recent                      = false
+  # renovate: eksAddonsFilter={"kubernetesVersion":"1.33","addonName":"vpc-cni"}
+  eks_addon_vpccni_version_override = "v1.19.6-eksbuild.7"
+  # renovate: eksAddonsFilter={"kubernetesVersion":"1.33","addonName":"coredns"}
+  eks_addon_coredns_version_override = "v1.12.2-eksbuild.4"
+  # renovate: eksAddonsFilter={"kubernetesVersion":"1.33","addonName":"kube-proxy"}
+  eks_addon_kubeproxy_version_override = "v1.33.0-eksbuild.2"
+  # renovate: eksAddonsFilter={"kubernetesVersion":"1.33","addonName":"aws-efs-csi-driver"}
+  eks_addon_awsefscsidriver_version_override = "v2.1.9-eksbuild.1"
+  # renovate: eksAddonsFilter={"kubernetesVersion":"1.33","addonName":"aws-ebs-csi-driver"}
+  eks_addon_awsebscsidriver_version_override = "v1.45.0-eksbuild.2"
+
   enable_worker_nat_gateway                  = true
   use_worker_nat_gateway                     = true
 
@@ -53,8 +65,8 @@ inputs = {
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.33-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.33-v20250627
-      ami_id             = "ami-02dd8c7997feda797"
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.33-v20250715
+      ami_id             = "ami-01e91e4b5486e215c"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
       kube_memory                = "1024Mi"
@@ -69,8 +81,8 @@ inputs = {
       max_unavailable         = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.33-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.33-v20250627
-      ami_id             = "ami-02dd8c7997feda797"
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.33-v20250715
+      ami_id             = "ami-01e91e4b5486e215c"
       availability_zones = ["eu-west-1c"]
       taints = [
         {
