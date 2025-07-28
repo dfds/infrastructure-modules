@@ -967,3 +967,30 @@ module "falco" {
     module.platform_fluxcd
   ]
 }
+
+# --------------------------------------------------
+# Keda
+# --------------------------------------------------
+
+module "keda" {
+  source                       = "../../_sub/compute/keda"
+  count                        = var.keda_deploy ? 1 : 0
+  cluster_name                 = var.eks_cluster_name
+  deploy_name                  = var.keda_deploy_name
+  namespace                    = var.keda_namespace
+  chart_version                = var.keda_chart_version
+  repo_owner                   = var.fluxcd_bootstrap_repo_owner
+  repo_name                    = var.fluxcd_bootstrap_repo_name
+  repo_branch                  = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create          = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url         = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch      = var.fluxcd_apps_repo_branch
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [
+    module.platform_fluxcd
+  ]
+}
