@@ -88,9 +88,21 @@ type RouterTLSConfig struct {
 
 // RouterObservabilityConfig holds the observability configuration for a router.
 type RouterObservabilityConfig struct {
+	// AccessLogs enables access logs for this router.
 	AccessLogs *bool `json:"accessLogs,omitempty" toml:"accessLogs,omitempty" yaml:"accessLogs,omitempty" export:"true"`
-	Tracing    *bool `json:"tracing,omitempty" toml:"tracing,omitempty" yaml:"tracing,omitempty" export:"true"`
-	Metrics    *bool `json:"metrics,omitempty" toml:"metrics,omitempty" yaml:"metrics,omitempty" export:"true"`
+	// Metrics enables metrics for this router.
+	Metrics *bool `json:"metrics,omitempty" toml:"metrics,omitempty" yaml:"metrics,omitempty" export:"true"`
+	// Tracing enables tracing for this router.
+	Tracing *bool `json:"tracing,omitempty" toml:"tracing,omitempty" yaml:"tracing,omitempty" export:"true"`
+	// TraceVerbosity defines the verbosity level of the tracing for this router.
+	// +kubebuilder:validation:Enum=minimal;detailed
+	// +kubebuilder:default=minimal
+	TraceVerbosity types.TracingVerbosity `json:"traceVerbosity,omitempty" toml:"traceVerbosity,omitempty" yaml:"traceVerbosity,omitempty" export:"true"`
+}
+
+// SetDefaults Default values for a RouterObservabilityConfig.
+func (r *RouterObservabilityConfig) SetDefaults() {
+	r.TraceVerbosity = types.MinimalVerbosity
 }
 
 // +k8s:deepcopy-gen=true
@@ -299,17 +311,18 @@ type Server struct {
 
 // ServerHealthCheck holds the HealthCheck configuration.
 type ServerHealthCheck struct {
-	Scheme          string            `json:"scheme,omitempty" toml:"scheme,omitempty" yaml:"scheme,omitempty" export:"true"`
-	Mode            string            `json:"mode,omitempty" toml:"mode,omitempty" yaml:"mode,omitempty" export:"true"`
-	Path            string            `json:"path,omitempty" toml:"path,omitempty" yaml:"path,omitempty" export:"true"`
-	Method          string            `json:"method,omitempty" toml:"method,omitempty" yaml:"method,omitempty" export:"true"`
-	Status          int               `json:"status,omitempty" toml:"status,omitempty" yaml:"status,omitempty" export:"true"`
-	Port            int               `json:"port,omitempty" toml:"port,omitempty,omitzero" yaml:"port,omitempty" export:"true"`
-	Interval        ptypes.Duration   `json:"interval,omitempty" toml:"interval,omitempty" yaml:"interval,omitempty" export:"true"`
-	Timeout         ptypes.Duration   `json:"timeout,omitempty" toml:"timeout,omitempty" yaml:"timeout,omitempty" export:"true"`
-	Hostname        string            `json:"hostname,omitempty" toml:"hostname,omitempty" yaml:"hostname,omitempty"`
-	FollowRedirects *bool             `json:"followRedirects,omitempty" toml:"followRedirects,omitempty" yaml:"followRedirects,omitempty" export:"true"`
-	Headers         map[string]string `json:"headers,omitempty" toml:"headers,omitempty" yaml:"headers,omitempty" export:"true"`
+	Scheme            string            `json:"scheme,omitempty" toml:"scheme,omitempty" yaml:"scheme,omitempty" export:"true"`
+	Mode              string            `json:"mode,omitempty" toml:"mode,omitempty" yaml:"mode,omitempty" export:"true"`
+	Path              string            `json:"path,omitempty" toml:"path,omitempty" yaml:"path,omitempty" export:"true"`
+	Method            string            `json:"method,omitempty" toml:"method,omitempty" yaml:"method,omitempty" export:"true"`
+	Status            int               `json:"status,omitempty" toml:"status,omitempty" yaml:"status,omitempty" export:"true"`
+	Port              int               `json:"port,omitempty" toml:"port,omitempty,omitzero" yaml:"port,omitempty" export:"true"`
+	Interval          ptypes.Duration   `json:"interval,omitempty" toml:"interval,omitempty" yaml:"interval,omitempty" export:"true"`
+	UnhealthyInterval *ptypes.Duration  `json:"unhealthyInterval,omitempty" toml:"unhealthyInterval,omitempty" yaml:"unhealthyInterval,omitempty" export:"true"`
+	Timeout           ptypes.Duration   `json:"timeout,omitempty" toml:"timeout,omitempty" yaml:"timeout,omitempty" export:"true"`
+	Hostname          string            `json:"hostname,omitempty" toml:"hostname,omitempty" yaml:"hostname,omitempty"`
+	FollowRedirects   *bool             `json:"followRedirects,omitempty" toml:"followRedirects,omitempty" yaml:"followRedirects,omitempty" export:"true"`
+	Headers           map[string]string `json:"headers,omitempty" toml:"headers,omitempty" yaml:"headers,omitempty" export:"true"`
 }
 
 // SetDefaults Default values for a HealthCheck.
