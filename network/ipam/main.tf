@@ -86,6 +86,19 @@ module "regional_capabilities_pools" {
   tags                = var.tags
 }
 
+module "regional_reserve_pools" {
+  source   = "../../_sub/network/ipam-pool"
+  for_each = var.ipam_pools["reserve"].sub_pools
+  scope_id = module.ipam_scope.id
+  pool = {
+    name   = length(var.ipam_prefix) > 0 ? "${var.ipam_prefix}-reserve-${each.key}" : "reserve-${each.key}"
+    cidr   = each.value.cidr
+    locale = each.key
+  }
+  source_ipam_pool_id = module.reserve_pool.id
+  tags                = var.tags
+}
+
 module "org-account-query" {
   source = "../../_sub/security/org-account-query"
   ou_id  = var.ipam_ou_id
@@ -117,5 +130,15 @@ module "ram_share_with_capabilities" {
     for pool in values(module.regional_capabilities_pools) : pool.arn
   ]
   principals = local.capabilities_pool_sharing_principals
+  tags       = var.tags
+}
+
+module "ram_share_with_reserve" {
+  source              = "../../_sub/security/resource-access-manager"
+  resource_share_name = length(var.ipam_prefix) > 0 ? "ipam-${var.ipam_prefix}-reserve" : "ipam-reserve"
+  resource_arns = [
+    for pool in values(module.regional_reserve_pools) : pool.arn
+  ]
+  principals = [for ous in module.org-account-query.organizational_units : ous.arn if contains(var.reserve_pool_sharing_ou_names, ous.name)]
   tags       = var.tags
 }
