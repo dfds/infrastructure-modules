@@ -9,7 +9,7 @@ resource "aws_ram_resource_share" "this" {
 }
 
 resource "aws_ram_resource_association" "this" {
-  for_each           = toset(var.resource_arns)
+  for_each           = { for idx, arn in var.resource_arns : idx => arn }
   resource_share_arn = aws_ram_resource_share.this.arn
   resource_arn       = each.value
 }
