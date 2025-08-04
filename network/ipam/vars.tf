@@ -103,6 +103,12 @@ variable "capabilities_pool_sharing_ou_names" {
   default     = []
 }
 
+variable "reserve_pool_sharing_ou_names" {
+  type        = list(string)
+  description = "A list of OU names that should be granted access to the reserve IPAM pools."
+  default     = []
+}
+
 variable "tags" {
   type        = map(string)
   description = "A map of tags to apply to all the resources deployed by the module"
