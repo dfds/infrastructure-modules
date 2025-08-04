@@ -48,12 +48,12 @@ module "capabilities_pool" {
   tags                = var.tags
 }
 
-module "unused_pool" {
+module "reserve_pool" {
   source   = "../../_sub/network/ipam-pool"
   scope_id = module.ipam_scope.id
   pool = {
-    name = length(var.ipam_prefix) > 0 ? "${var.ipam_prefix}-unused" : "unused"
-    cidr = var.ipam_pools["unused"].cidr
+    name = length(var.ipam_prefix) > 0 ? "${var.ipam_prefix}-reserve" : "reserve"
+    cidr = var.ipam_pools["reserve"].cidr
   }
   source_ipam_pool_id = module.main_pool.id
   cascade             = var.ipam_pools_cascade
