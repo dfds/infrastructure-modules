@@ -18,26 +18,28 @@ spec:
       repository: velero/velero
       tag: ${image_tag}
     snapshotsEnabled: ${snapshots_enabled}
-    deployNodeAgent: ${filesystem_backup_enabled}
+    deployNodeAgent: ${node_agent_enabled}
     initContainers:
-      # - name: velero-plugin-for-aws
-      #   image: velero/velero-plugin-for-aws:${plugin_for_aws_version}
-      #   volumeMounts:
-      #     - mountPath: /target
-      #       name: plugins
+      - name: velero-plugin-for-aws
+        image: velero/velero-plugin-for-aws:${plugin_for_aws_version}
+        volumeMounts:
+          - mountPath: /target
+            name: plugins
       - name: velero-plugin-for-microsoft-azure
         image: velero/velero-plugin-for-microsoft-azure:${plugin_for_azure_version}
         volumeMounts:
           - mountPath: /target
             name: plugins
     configuration:
+      features: EnableCSI
       logLevel: ${log_level}
       backupStorageLocation:
-        # - name: aws
-        #   provider: aws
-        #   bucket: ${bucket_name}
-        #   config:
-        #     region: ${bucket_region}
+        - name: aws
+          provider: aws
+          default : true
+          bucket: ${bucket_name}
+          config:
+            region: ${bucket_region}
 %{ if read_only ~}
           accessMode: ReadOnly
 %{ endif ~}
@@ -61,12 +63,23 @@ spec:
           provider: aws
           config:
             region: ${bucket_region}
+%{ if enable_azure_storage ~}
+        - name: azure-snapshot
+          provider: azure
+          bucket: velero-backup
+          credential:
+            name: velero-credentials
+            key: cloud
+          config:
+            resourceGroup: ${azure_resource_group_name}
+            subscriptionId: ${azure_subscription_id}
+%{ endif ~}
     serviceAccount:
       server:
         create: true
-        # annotations:
-        #   eks.amazonaws.com/role-arn: "${velero_role_arn}"
-        #   eks.amazonaws.com/sts-regional-endpoints: "true"
+        annotations:
+          eks.amazonaws.com/role-arn: "${velero_role_arn}"
+          eks.amazonaws.com/sts-regional-endpoints: "true"
 %{ if !read_only ~}
     schedules:
       ${cluster_name}-cluster-backup:
@@ -86,4 +99,18 @@ spec:
             - ${ex_cl}
 %{ endfor ~}
 %{ endif ~}
+          excludedNamespaces:
+            - velero
+      ${cluster_name}-cluster-backup-offsite:
+        disabled: false
+        schedule: "${ cron_schedule_offsite ~}"
+        template:
+          storageLocation: "azure"
+          ttl: "${ cron_schedule_offsite_ttl ~}"
+          snapshotVolumes: ${snapshots_enabled}
+          volumeSnapshotLocations:
+            - "azure-snapshot"
+          snapshotMoveData: true
+          excludedNamespaces: 
+            - velero
 %{ endif ~}

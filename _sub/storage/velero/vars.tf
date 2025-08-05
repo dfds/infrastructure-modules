@@ -38,10 +38,10 @@ variable "snapshots_enabled" {
   description = "Should Velero use snapshot backups?"
 }
 
-variable "filesystem_backup_enabled" {
+variable "node_agent_enabled" {
   type        = bool
   default     = false
-  description = "Should Velero have filesystem backups enabled?"
+  description = "Should Velero deploy the node agent?"
 }
 
 variable "log_level" {
@@ -207,4 +207,16 @@ variable "azure_subscription_id" {
   default     = ""
   description = "The Azure subscription ID where the storage account is located"
 
+}
+
+variable "cron_schedule_offsite" {
+  type        = string
+  default     = "0 2 1 * *"
+  description = "Cron-formatted scheduled time for offsite backups."
+}
+
+variable "cron_schedule_offsite_ttl" {
+  type        = string
+  default     = "8640h"
+  description = "Time to live for the scheduled offsite backup."
 }

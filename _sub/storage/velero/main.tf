@@ -42,7 +42,7 @@ resource "github_repository_file" "velero_flux_helm_patch_yaml" {
     helm_repo_name                      = var.helm_repo_name
     image_tag                           = var.image_tag
     snapshots_enabled                   = var.snapshots_enabled
-    filesystem_backup_enabled           = var.filesystem_backup_enabled
+    node_agent_enabled           = var.node_agent_enabled
     plugin_for_aws_version              = var.plugin_for_aws_version
     plugin_for_azure_version            = var.plugin_for_azure_version
     log_level                           = var.log_level
@@ -59,6 +59,8 @@ resource "github_repository_file" "velero_flux_helm_patch_yaml" {
     azure_storage_account_name          = var.azure_storage_account_name
     azure_subscription_id               = var.azure_subscription_id
     enable_azure_storage                = var.enable_azure_storage
+    cron_schedule_offsite               = var.cron_schedule_offsite
+    cron_schedule_offsite_ttl           = var.cron_schedule_offsite_ttl
   })
   overwrite_on_create = var.overwrite_on_create
 }
