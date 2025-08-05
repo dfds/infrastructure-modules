@@ -1350,3 +1350,32 @@ variable "use_worker_nat_gateway" {
   default     = false
   description = "Whether to use NAT Gateway for worker nodes"
 }
+
+
+# --------------------------------------------------
+# KEDA
+# --------------------------------------------------
+
+variable "keda_deploy" {
+  type        = bool
+  description = "Deploy KEDA helm chart switch"
+  default     = false
+}
+
+variable "keda_deploy_name" {
+  type        = string
+  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
+  default     = "keda"
+}
+
+variable "keda_chart_version" {
+  type        = string
+  description = "KEDA helm chart version"
+  default     = ""
+}
+
+variable "keda_namespace" {
+  type        = string
+  description = "The namespace to deploy KEDA in"
+  default     = "keda"
+}

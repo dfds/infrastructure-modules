@@ -15,22 +15,33 @@
     "gomodUpdateImportPaths"
   ],
   "terraform": {
-    "fileMatch": [
-      "\\.tf$",
-      "\\.tofu$"
+    "managerFilePatterns": [
+      "/\\.tf$/",
+      "/\\.tofu$/"
     ]
   },
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": [
-        ".*"
+      "managerFilePatterns": [
+        "/.*/"
       ],
       "matchStrings": [
         ".*amiFilter=(?<packageName>.*?)\n(.*currentImageName=(?<currentDigest>.*?)\n)?(.*\n)?.*?(?<depName>[a-zA-Z0-9-_:]*)[ ]*?[:|=][ ]*?[\"|']?(?<currentValue>ami-[a-z0-9]{17})[\"|']?.*"
       ],
       "datasourceTemplate": "aws-machine-image",
       "versioningTemplate": "aws-machine-image"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/.*/"
+      ],
+      "matchStrings": [
+        ".*# renovate: eksAddonsFilter=(?<packageName>.*?)\n.*?[a-zA-Z0-9-_:]*[ ]*?[:|=][ ]*?[\"|']?(?<currentValue>[a-zA-Z0-9-_.]+)[\"|']?.*"
+      ],
+      "datasourceTemplate": "aws-eks-addon",
+      "versioningTemplate": "aws-eks-addon"
     }
   ],
   "packageRules": [
@@ -93,6 +104,13 @@
       "addLabels": [
         "norelease"
       ]
+    },
+    {
+      "description": "EKS Add-ons.",
+      "matchDatasources": [
+        "aws-eks-addon"
+      ],
+      "overrideDepName": "{{replace '.*\"addonName\":\"([^\"]+)\".*' '$1' depName}}"
     }
   ],
   "azure-pipelines": {
