@@ -39,9 +39,8 @@ variable "ipam_pools_cascade" {
 
 variable "ipam_pools" {
   type = map(object({
-    cidr           = string
-    address_family = optional(string, "ipv4")
-    locale         = optional(string, null)
+    cidr             = string
+    sharing_ou_names = optional(list(string), [])
     sub_pools = optional(map(object({
       cidr = string
     })), {})
@@ -57,6 +56,7 @@ variable "ipam_pools" {
       }
       "platform" = {
         cidr = "192.168.0.0/15"
+        sharing_ou_names = ["Platform OU", "Infrastructure OU"]
         sub_pools = {
           "us-east-1" = {
             cidr = "192.168.0.0/17"
@@ -79,34 +79,6 @@ variable "ipam_prefix" {
 variable "ipam_ou_id" {
   type        = string
   description = "The ID of the AWS Organization OU that you want to query for accounts. This is used for sharing access to the IPAM pools."
-}
-
-variable "ipam_role_patterns" {
-  type        = list(string)
-  description = <<EOF
-    The pattern of a role ARNs that are1 allowed to request IP addresses from the IPAM pools.
-    The %s placeholders will be replaced with the AWS account ID from accounts under
-    the OU specified by var.ipam_ou_id.
-EOF
-  default     = ["arn:aws:iam::%s:role/aws-service-role/ipam.amazonaws.com/AWSServiceRoleForIPAM"]
-}
-
-variable "platform_pool_sharing_ou_names" {
-  type        = list(string)
-  description = "A list of OU names that should be granted access to the platform IPAM pools."
-  default     = []
-}
-
-variable "capabilities_pool_sharing_ou_names" {
-  type        = list(string)
-  description = "A list of OU names that should be granted access to the capabilities IPAM pools."
-  default     = []
-}
-
-variable "reserve_pool_sharing_ou_names" {
-  type        = list(string)
-  description = "A list of OU names that should be granted access to the reserve IPAM pools."
-  default     = []
 }
 
 variable "tags" {
