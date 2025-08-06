@@ -25,11 +25,13 @@ spec:
         volumeMounts:
           - mountPath: /target
             name: plugins
+%{ if enable_azure_storage ~}
       - name: velero-plugin-for-microsoft-azure
         image: velero/velero-plugin-for-microsoft-azure:${plugin_for_azure_version}
         volumeMounts:
           - mountPath: /target
             name: plugins
+%{ endif ~}
     configuration:
       features: EnableCSI
       logLevel: ${log_level}
@@ -101,6 +103,7 @@ spec:
 %{ endif ~}
           excludedNamespaces:
             - velero
+%{ if enable_azure_storage ~}
       ${cluster_name}-cluster-backup-offsite:
         disabled: false
         schedule: "${ cron_schedule_offsite ~}"
@@ -113,4 +116,17 @@ spec:
           snapshotMoveData: true
           excludedNamespaces: 
             - velero
+%{ if length(excluded_namespace_scoped_resources) > 0 ~}
+          excludedNamespaceScopedResources:
+%{ for ex_ns in excluded_namespace_scoped_resources ~}
+            - ${ex_ns}
+%{ endfor ~}
+%{ endif ~}
+%{ if length(excluded_cluster_scoped_resources) > 0 ~}
+          excludedClusterScopedResources:
+%{ for ex_cl in excluded_cluster_scoped_resources ~}
+            - ${ex_cl}
+%{ endfor ~}
+%{ endif ~}
+%{ endif ~}
 %{ endif ~}
