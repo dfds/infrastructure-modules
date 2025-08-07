@@ -2,6 +2,14 @@
 # EKS Cluster
 # --------------------------------------------------
 
+module "ipam_pool_query" {
+  count                 = var.eks_ipam_enabled ? 1 : 0
+  source                = "../../_sub/network/ipam-pool-query"
+  ipam_pool_description = var.eks_ipam_pool_description
+  aws_region            = var.aws_region
+  ipam_cidr_prefix      = var.eks_ipam_prefix_size
+}
+
 locals {
   managed_subnets_calculated = cidrsubnets(var.eks_cluster_cidr_block, 2, 2, 2, 2)
   cluster_reserved_cidr      = local.managed_subnets_calculated[0] # Reserved for the control plane subnets
