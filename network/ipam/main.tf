@@ -24,78 +24,37 @@ module "main_pool" {
   tags    = var.tags
 }
 
-module "platform_pool" {
+module "sub_pools" {
   source   = "../../_sub/network/ipam-pool"
+  for_each = { for k, v in var.ipam_pools : k => v if k != "main" }
   scope_id = module.ipam_scope.id
   pool = {
-    name = length(var.ipam_prefix) > 0 ? "${var.ipam_prefix}-platform" : "platform"
-    cidr = var.ipam_pools["platform"].cidr
+    name = length(var.ipam_prefix) > 0 ? "${var.ipam_prefix}-${each.key}" : each.key
+    cidr = each.value.cidr
   }
   source_ipam_pool_id = module.main_pool.id
   cascade             = var.ipam_pools_cascade
   tags                = var.tags
 }
 
-module "capabilities_pool" {
-  source   = "../../_sub/network/ipam-pool"
+module "regional_pools" {
+  source = "../../_sub/network/ipam-pool"
+  for_each = merge([
+    for pool_type, pool_config in var.ipam_pools : {
+      for region, region_config in pool_config.sub_pools : "${pool_type}-${region}" => {
+        pool_type     = pool_type
+        region        = region
+        region_config = region_config
+      }
+    } if pool_type != "main" && can(pool_config.sub_pools)
+  ]...)
   scope_id = module.ipam_scope.id
   pool = {
-    name = length(var.ipam_prefix) > 0 ? "${var.ipam_prefix}-capabilities" : "capabilities"
-    cidr = var.ipam_pools["capabilities"].cidr
+    name   = length(var.ipam_prefix) > 0 ? "${var.ipam_prefix}-${each.value.pool_type}-${each.value.region}" : "${each.value.pool_type}-${each.value.region}"
+    cidr   = each.value.region_config.cidr
+    locale = each.value.region
   }
-  source_ipam_pool_id = module.main_pool.id
-  cascade             = var.ipam_pools_cascade
-  tags                = var.tags
-}
-
-module "reserve_pool" {
-  source   = "../../_sub/network/ipam-pool"
-  scope_id = module.ipam_scope.id
-  pool = {
-    name = length(var.ipam_prefix) > 0 ? "${var.ipam_prefix}-reserve" : "reserve"
-    cidr = var.ipam_pools["reserve"].cidr
-  }
-  source_ipam_pool_id = module.main_pool.id
-  cascade             = var.ipam_pools_cascade
-  tags                = var.tags
-}
-
-module "regional_platform_pools" {
-  source   = "../../_sub/network/ipam-pool"
-  for_each = var.ipam_pools["platform"].sub_pools
-  scope_id = module.ipam_scope.id
-  pool = {
-    name   = length(var.ipam_prefix) > 0 ? "${var.ipam_prefix}-platform-${each.key}" : "platform-${each.key}"
-    cidr   = each.value.cidr
-    locale = each.key
-  }
-  source_ipam_pool_id = module.platform_pool.id
-  tags                = var.tags
-}
-
-module "regional_capabilities_pools" {
-  source   = "../../_sub/network/ipam-pool"
-  for_each = var.ipam_pools["capabilities"].sub_pools
-  scope_id = module.ipam_scope.id
-  pool = {
-    name   = length(var.ipam_prefix) > 0 ? "${var.ipam_prefix}-capabilities-${each.key}" : "capabilities-${each.key}"
-    cidr   = each.value.cidr
-    locale = each.key
-  }
-  source_ipam_pool_id = module.capabilities_pool.id
-  tags                = var.tags
-}
-
-module "regional_reserve_pools" {
-  source   = "../../_sub/network/ipam-pool"
-  for_each = var.ipam_pools["reserve"].sub_pools
-  scope_id = module.ipam_scope.id
-  pool = {
-    name   = length(var.ipam_prefix) > 0 ? "${var.ipam_prefix}-reserve-${each.key}" : "reserve-${each.key}"
-    cidr   = each.value.cidr
-    locale = each.key
-  }
-  source_ipam_pool_id = module.reserve_pool.id
+  source_ipam_pool_id = module.sub_pools[each.value.pool_type].id
   tags                = var.tags
 }
 
@@ -104,41 +63,14 @@ module "org-account-query" {
   ou_id  = var.ipam_ou_id
 }
 
-module "ram_share_with_platform" {
-  source              = "../../_sub/security/resource-access-manager"
-  resource_share_name = length(var.ipam_prefix) > 0 ? "ipam-${var.ipam_prefix}-platform" : "ipam-platform"
-  resource_arns = [
-    for pool in values(module.regional_platform_pools) : pool.arn
-  ]
-  principals = [for ous in module.org-account-query.organizational_units : ous.arn if contains(var.platform_pool_sharing_ou_names, ous.name)]
-  tags       = var.tags
-}
+module "ram_share" {
+  source   = "../../_sub/security/resource-access-manager"
+  for_each = { for k, v in var.ipam_pools : k => v if k != "main" && can(v.sub_pools) && can(v.sharing_ou_names) }
 
-locals {
-  # If var.capabilities_pool_sharing_ou_names is empty, we use the ipam_role_patterns to generate a list of principals based on the account IDs from the org-account-query module.
-  # If it is not empty, we filter the organizational units to find those that match the specified names.
-  # This allows for flexibility in sharing the capabilities pools either with specific OUs or with all accounts under the specified OU using the role patterns.
-  capabilities_pool_sharing_principals = length(var.capabilities_pool_sharing_ou_names) == 0 ? flatten([
-    for pattern in var.ipam_role_patterns : formatlist(pattern, module.org-account-query.account_ids)
-  ]) : [for ous in module.org-account-query.organizational_units : ous.arn if contains(var.capabilities_pool_sharing_ou_names, ous.name)]
-}
-
-module "ram_share_with_capabilities" {
-  source              = "../../_sub/security/resource-access-manager"
-  resource_share_name = length(var.ipam_prefix) > 0 ? "ipam-${var.ipam_prefix}-capabilities" : "ipam-capabilities"
+  resource_share_name = length(var.ipam_prefix) > 0 ? "ipam-${var.ipam_prefix}-${each.key}" : "ipam-${each.key}"
   resource_arns = [
-    for pool in values(module.regional_capabilities_pools) : pool.arn
+    for key, pool in module.regional_pools : pool.arn if startswith(key, "${each.key}-")
   ]
-  principals = local.capabilities_pool_sharing_principals
-  tags       = var.tags
-}
-
-module "ram_share_with_reserve" {
-  source              = "../../_sub/security/resource-access-manager"
-  resource_share_name = length(var.ipam_prefix) > 0 ? "ipam-${var.ipam_prefix}-reserve" : "ipam-reserve"
-  resource_arns = [
-    for pool in values(module.regional_reserve_pools) : pool.arn
-  ]
-  principals = [for ous in module.org-account-query.organizational_units : ous.arn if contains(var.reserve_pool_sharing_ou_names, ous.name)]
+  principals = [for ous in module.org-account-query.organizational_units : ous.arn if contains(each.value.sharing_ou_names, ous.name)]
   tags       = var.tags
 }
