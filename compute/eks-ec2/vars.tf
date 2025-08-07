@@ -57,7 +57,7 @@ variable "eks_ipam_enabled" {
 variable "eks_ipam_pool_description" {
   type        = string
   description = "The description of the IPAM pool for AWS IPAM assignment. Used to filter out the correct pool."
-  default     = "EKS Cluster CIDR Pool"
+  default     = "platform-eks-ipam-pool"
 }
 
 variable "eks_ipam_prefix_size" {
