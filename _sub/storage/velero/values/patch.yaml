@@ -48,10 +48,10 @@ spec:
 %{ if enable_azure_storage ~}
         - name: azure
           provider: azure
-          bucket: velero-backup
+          bucket: ${azure_bucket_name}
           credential:
-            name: velero-credentials
-            key: cloud
+            name: ${azure_credentials_secret_name}
+            key: ${azure_credentials_secret_key}
           config:
             resourceGroup: ${azure_resource_group_name}
             storageAccount: ${azure_storage_account_name}
@@ -68,10 +68,10 @@ spec:
 %{ if enable_azure_storage ~}
         - name: azure-snapshot
           provider: azure
-          bucket: velero-backup
+          bucket: ${azure_bucket_name}
           credential:
-            name: velero-credentials
-            key: cloud
+            name: ${azure_credentials_secret_name}
+            key: ${azure_credentials_secret_key}
           config:
             resourceGroup: ${azure_resource_group_name}
             subscriptionId: ${azure_subscription_id}

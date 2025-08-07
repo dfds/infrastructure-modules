@@ -770,6 +770,24 @@ variable "velero_azure_subscription_id" {
 
 }
 
+variable "velero_azure_bucket_name" {
+  type        = string
+  default     = "velero-backup"
+  description = "The name of the Azure storage container where Velero backups will be stored"
+}
+
+variable "velero_azure_credentials_secret_name" {
+  type        = string
+  default     = "velero-credentials"
+  description = "The name of the Kubernetes secret containing Azure credentials for Velero"
+}
+
+variable "velero_azure_credentials_secret_key" {
+  type        = string
+  default     = "cloud"
+  description = "The key in the Kubernetes secret containing Azure credentials for Velero"
+}
+
 variable "velero_cron_schedule_offsite" {
   type        = string
   default     = "0 2 1 * *"

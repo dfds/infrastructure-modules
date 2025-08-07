@@ -590,6 +590,9 @@ module "velero" {
   azure_subscription_id               = var.velero_azure_subscription_id
   azure_resource_group_name           = var.velero_azure_resource_group_name
   azure_storage_account_name          = var.velero_azure_storage_account_name
+  azure_bucket_name                   = var.velero_azure_bucket_name
+  azure_credentials_secret_name       = var.velero_azure_credentials_secret_name
+  azure_credentials_secret_key        = var.velero_azure_credentials_secret_key
   cron_schedule_offsite               = var.velero_cron_schedule_offsite
   cron_schedule_offsite_ttl           = var.velero_cron_schedule_offsite_ttl
 
@@ -980,18 +983,18 @@ module "falco" {
 # --------------------------------------------------
 
 module "keda" {
-  source                       = "../../_sub/compute/keda"
-  count                        = var.keda_deploy ? 1 : 0
-  cluster_name                 = var.eks_cluster_name
-  deploy_name                  = var.keda_deploy_name
-  namespace                    = var.keda_namespace
-  chart_version                = var.keda_chart_version
-  repo_owner                   = var.fluxcd_bootstrap_repo_owner
-  repo_name                    = var.fluxcd_bootstrap_repo_name
-  repo_branch                  = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create          = var.fluxcd_bootstrap_overwrite_on_create
-  gitops_apps_repo_url         = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch      = var.fluxcd_apps_repo_branch
+  source                  = "../../_sub/compute/keda"
+  count                   = var.keda_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  deploy_name             = var.keda_deploy_name
+  namespace               = var.keda_namespace
+  chart_version           = var.keda_chart_version
+  repo_owner              = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
 
   providers = {
     github = github.fluxcd
