@@ -33,7 +33,7 @@ locals {
 }
 
 resource "aws_subnet" "eks" {
-  count = length(local.calculated_subnets)
+  count = 3
 
   availability_zone = data.aws_availability_zones.available.names[count.index]
   cidr_block        = local.calculated_subnets[count.index]
