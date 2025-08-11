@@ -48,6 +48,28 @@ variable "eks_cluster_cidr_block" {
   }
 }
 
+variable "eks_ipam_enabled" {
+  type        = bool
+  description = "Whether to use AWS IPAM for EKS cluster CIDR allocation"
+  default     = false
+}
+
+variable "eks_ipam_pool_description" {
+  type        = string
+  description = "The description of the IPAM pool for AWS IPAM assignment. Used to filter out the correct pool."
+  default     = "platform-eks-ipam-pool"
+}
+
+variable "eks_ipam_prefix_size" {
+  type        = number
+  description = "The CIDR block prefix to use for IPAM assignment"
+  default     = 20
+  validation {
+    condition     = var.eks_ipam_prefix_size >= 16 && var.eks_ipam_prefix_size <= 20
+    error_message = "The CIDR block prefix must be a valid number, and have a value between 16 and 20 (inclusive)."
+  }
+}
+
 variable "eks_worker_ssh_public_key" {
   type = string
 }
