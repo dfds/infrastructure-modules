@@ -129,6 +129,29 @@ func AssertK8sDeployment(t *testing.T, clientset *kubernetes.Clientset, namespac
 		name, namespace, numberAvailable)
 }
 
+func AssertK8sDeploymentWithScaling(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, minNumberAvailable int) {
+	check := func() bool {
+		resp, err := clientset.AppsV1().Deployments(namespace).Get(
+			context.Background(), name, metav1.GetOptions{})
+		if err != nil {
+			t.Log(err.Error())
+			return false
+		}
+
+		// Assertions
+		if int(resp.Status.AvailableReplicas) < minNumberAvailable {
+			t.Logf("expecting number of available replicas to be greater than or equal %d, found %d",
+				minNumberAvailable, resp.Status.AvailableReplicas)
+			return false
+		}
+		return true
+	}
+
+	assert.Eventuallyf(t, check, defaultEventualTimeout, defaultEventualPeriod,
+		"deployment %q in namespace %q and %d minimum available replicas not found",
+		name, namespace, minNumberAvailable)
+}
+
 func AssertK8sStatefulSet(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberAvailable int) {
 	check := func() bool {
 		resp, err := clientset.AppsV1().StatefulSets(namespace).Get(
