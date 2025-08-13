@@ -48,7 +48,7 @@ resources:
         TF_IN_AUTOMATION: "true"
         TG_TF_PATH: /usr/local/bin/tofu
     - container: aws-nuke
-      image: dfdsdk/aws-nuke:0.0.26
+      image: dfdsdk/aws-nuke:0.0.27
       env:
         AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
         ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
