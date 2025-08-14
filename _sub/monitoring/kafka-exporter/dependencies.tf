@@ -55,9 +55,12 @@ metadata:
 spec:
   releaseName: ${var.deploy_name}-${item.id}
   serviceAccountName: helm-controller
+  driftDetection:
+    mode: enabled
   chart:
     spec:
       chart: chart
+      reconcileStrategy: Revision
       sourceRef:
         kind: GitRepository
         name: kafka-exporter
