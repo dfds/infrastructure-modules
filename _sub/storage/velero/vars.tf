@@ -38,10 +38,10 @@ variable "snapshots_enabled" {
   description = "Should Velero use snapshot backups?"
 }
 
-variable "filesystem_backup_enabled" {
+variable "node_agent_enabled" {
   type        = bool
   default     = false
-  description = "Should Velero have filesystem backups enabled?"
+  description = "Should Velero deploy the node agent?"
 }
 
 variable "log_level" {
@@ -90,6 +90,15 @@ variable "plugin_for_aws_version" {
   validation {
     condition     = can(regex("^v(\\d+\\.\\d+)(\\.\\d+)?(-rc\\.\\d+|-beta\\.\\d+)?$", var.plugin_for_aws_version))
     error_message = "Velero plugin for AWS must specify a version. The version must start with the letter v and followed by a semantic version number."
+  }
+}
+
+variable "plugin_for_azure_version" {
+  type        = string
+  description = "The version of velero-plugin-for-azure to use as initContainer"
+  validation {
+    condition     = can(regex("^v(\\d+\\.\\d+)(\\.\\d+)?(-rc\\.\\d+|-beta\\.\\d+)?$", var.plugin_for_azure_version))
+    error_message = "Velero plugin for Azure must specify a version. The version must start with the letter v and followed by a semantic version number."
   }
 }
 
@@ -172,4 +181,58 @@ variable "ebs_csi_kms_arn" {
   type        = string
   default     = ""
   description = "The ARN of the KMS key used for EBS CSI encryption"
+}
+
+variable "enable_azure_storage" {
+  type        = bool
+  default     = false
+  description = "Enable Azure storage for Velero backups"
+}
+
+variable "azure_resource_group_name" {
+  type        = string
+  default     = ""
+  description = "The name of the Azure resource group where the storage account is located"
+}
+  
+variable "azure_storage_account_name" {
+  type        = string
+  default     = ""
+  description = "The name of the Azure storage account where the Velero backups will be stored"
+}
+
+variable "azure_subscription_id" {
+  type        = string
+  default     = ""
+  description = "The Azure subscription ID where the storage account is located"
+}
+
+variable "azure_bucket_name" {
+  type        = string
+  default     = "velero-backup"
+  description = "The name of the Azure storage container where Velero backups will be stored"
+}
+
+variable "azure_credentials_secret_name" {
+  type        = string
+  default     = "velero-credentials"
+  description = "The name of the Kubernetes secret containing Azure credentials for Velero"
+}
+
+variable "azure_credentials_secret_key" {
+  type        = string
+  default     = "cloud"
+  description = "The key in the Kubernetes secret that contains Azure credentials for Velero"
+}
+
+variable "cron_schedule_offsite" {
+  type        = string
+  default     = "0 2 1 * *"
+  description = "Cron-formatted scheduled time for offsite backups."
+}
+
+variable "cron_schedule_offsite_ttl" {
+  type        = string
+  default     = "8640h"
+  description = "Time to live for the scheduled offsite backup."
 }
