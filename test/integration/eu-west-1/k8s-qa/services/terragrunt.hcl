@@ -245,6 +245,7 @@ inputs = {
   # --------------------------------------------------
 
   external_secrets_deploy = true
+  external_secrets_helm_chart_version = "0.19.2"
 
   # --------------------------------------------------
   # External Secrets with SSM
