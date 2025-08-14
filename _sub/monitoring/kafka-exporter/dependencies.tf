@@ -60,6 +60,7 @@ spec:
   chart:
     spec:
       chart: chart
+      reconcileStrategy: Revision
       sourceRef:
         kind: GitRepository
         name: kafka-exporter
