@@ -331,7 +331,6 @@ module "eks_addons" {
 
 module "k8s_priority_class" {
   source         = "../../_sub/compute/k8s-priority-class"
-  priority_class = local.priority_class
 }
 
 module "param_kubeconfig_admin" {
