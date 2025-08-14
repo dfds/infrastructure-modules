@@ -55,6 +55,8 @@ metadata:
 spec:
   releaseName: ${var.deploy_name}-${item.id}
   serviceAccountName: helm-controller
+  driftDetection:
+    mode: enabled
   chart:
     spec:
       chart: chart
