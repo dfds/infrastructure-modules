@@ -373,10 +373,6 @@ module "github_oidc_provider" {
 # AWS Backup
 # --------------------------------------------------
 
-locals {
-  kms_key_admins = [module.org_account.org_role_arn]
-}
-
 resource "aws_iam_role" "backup" {
   provider           = aws.workload
   count              = var.deploy_backup ? 1 : 0
@@ -419,7 +415,6 @@ module "backup_eu_central_1" {
   resource_type_management_preference      = var.aws_backup_resource_type_management_preference
 
   new_vault_name = var.aws_backup_vault_name_new
-  kms_key_admins = local.kms_key_admins
   backup_plans   = var.aws_backup_plans
   iam_role_arn   = aws_iam_role.backup[0].arn
   tags           = var.aws_backup_tags
@@ -436,7 +431,6 @@ module "backup_eu_west_1" {
   resource_type_management_preference      = var.aws_backup_resource_type_management_preference
 
   new_vault_name = var.aws_backup_vault_name_new
-  kms_key_admins = local.kms_key_admins
   backup_plans   = var.aws_backup_plans
   iam_role_arn   = aws_iam_role.backup[0].arn
   tags           = var.aws_backup_tags
