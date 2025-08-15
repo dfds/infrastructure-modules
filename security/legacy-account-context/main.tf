@@ -148,7 +148,6 @@ resource "aws_resourceexplorer2_index" "eu-west-1" {
 # --------------------------------------------------
 
 locals {
-  deploy_kms_key = true
   kms_key_admins = [module.org_account.org_role_arn]
 }
 

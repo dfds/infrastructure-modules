@@ -374,7 +374,6 @@ module "github_oidc_provider" {
 # --------------------------------------------------
 
 locals {
-  deploy_kms_key = false
   kms_key_admins = [module.org_account.org_role_arn]
 }
 
