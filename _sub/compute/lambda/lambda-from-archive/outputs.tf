@@ -9,5 +9,5 @@ output "name" {
 
 output "role_name" {
   description = "The name of the lambda function role"
-  value = aws_iam_role.this.name
+  value       = aws_iam_role.this.name
 }
