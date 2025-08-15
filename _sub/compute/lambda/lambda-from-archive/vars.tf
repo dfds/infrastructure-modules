@@ -18,7 +18,7 @@ variable "filename_out" {
 variable "templatefile_vars" {
   description = "The variables to pass to the template file"
   type        = map(string)
-  default = {}
+  default     = {}
 }
 
 variable "function_handler" {

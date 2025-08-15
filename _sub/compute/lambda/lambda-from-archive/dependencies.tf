@@ -3,7 +3,7 @@ data "archive_file" "this" {
   output_path = var.filename_out
 
   source {
-    content = templatefile(var.path_to_index_file, var.templatefile_vars)
+    content  = templatefile(var.path_to_index_file, var.templatefile_vars)
     filename = "index.mjs"
   }
 }

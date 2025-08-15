@@ -36,12 +36,6 @@ variable "repo_branch" {
   default     = null
 }
 
-variable "helm_chart_version" {
-  type        = string
-  description = "The version of the chart that should be used"
-  default     = ""
-}
-
 variable "overwrite_on_create" {
   type        = bool
   default     = true

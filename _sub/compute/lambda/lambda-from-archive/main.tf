@@ -36,13 +36,13 @@ data "aws_iam_policy_document" "cloudwatch_logs" {
 }
 
 resource "aws_iam_role_policy" "cloudwatch_logs" {
-  name = "cw-log-access"
-  role = aws_iam_role.this.name
+  name   = "cw-log-access"
+  role   = aws_iam_role.this.name
   policy = data.aws_iam_policy_document.cloudwatch_logs.json
 }
 
 resource "aws_iam_role" "this" {
-  name = var.name
+  name                  = var.name
   force_detach_policies = true
 
   assume_role_policy = <<POLICY

@@ -20,7 +20,7 @@ resource "aws_iam_policy" "resourceexplorer_read" {
   policy      = data.aws_iam_policy_document.resourceexplorer_read.json
 }
 
-#tfsec:ignore:aws-iam-no-policy-wildcards
+#checkov:skip=CKV_AWS_356: Ensure no IAM policies documents allow "*" as a statement's resource for restrictable actions
 data "aws_iam_policy_document" "resourceexplorer_read" {
   statement {
     effect = "Allow"

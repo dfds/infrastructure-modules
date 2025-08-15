@@ -20,12 +20,6 @@ variable "namespace" {
   default     = "falco"
 }
 
-variable "github_token" {
-  type        = string
-  description = "Github token to authenticate with"
-  sensitive   = true
-}
-
 variable "repo_owner" {
   type        = string
   description = "Name of the repo owner (previously: organization)"
