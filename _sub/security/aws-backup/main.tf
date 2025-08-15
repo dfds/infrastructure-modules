@@ -1,6 +1,3 @@
-data "aws_region" "current" {}
-data "aws_caller_identity" "current" {}
-
 resource "aws_backup_region_settings" "this" {
   count = length(var.settings_resource_type_opt_in_preference) > 0 ? 1 : 0
 
