@@ -2,13 +2,22 @@
 # EKS Cluster
 # --------------------------------------------------
 
+module "ipam_pool_query" {
+  count                 = var.eks_ipam_enabled ? 1 : 0
+  source                = "../../_sub/network/ipam-pool-query"
+  ipam_pool_description = var.eks_ipam_pool_description
+  aws_region            = var.aws_region
+  ipam_cidr_prefix      = var.eks_ipam_prefix_size
+}
+
 locals {
-  managed_subnets_calculated = cidrsubnets(var.eks_cluster_cidr_block, 2, 2, 2, 2)
+  eks_cluster_cidr_block     = var.eks_ipam_enabled && length(var.eks_managed_worker_subnets) == 0 ? try(module.ipam_pool_query[0].cidr, var.eks_cluster_cidr_block) : var.eks_cluster_cidr_block
+  managed_subnets_calculated = cidrsubnets(local.eks_cluster_cidr_block, 2, 2, 2, 2)
   cluster_reserved_cidr      = local.managed_subnets_calculated[0] # Reserved for the control plane subnets
   managed_subnet_az_a        = local.managed_subnets_calculated[1] # Worker nodes subnet for availability zone a
   managed_subnet_az_b        = local.managed_subnets_calculated[2] # Worker nodes subnet for availability zone b
   managed_subnet_az_c        = local.managed_subnets_calculated[3] # Worker nodes subnet for availability zone c
-  vpc_cidr_prefix            = tonumber(substr(var.eks_cluster_cidr_block, -2, -1))
+  vpc_cidr_prefix            = tonumber(substr(local.eks_cluster_cidr_block, -2, -1))
   # This is used to determine the prefix length for the subnets, by splitting the CIDR block for the subnets
   # into smaller chunks based on the prefix length.
   # In each subnet calculation, we need to ensure that first and last IP addresses are reserved for the VPC and broadcast address respectively.
@@ -66,11 +75,12 @@ module "eks_cluster" {
   source                = "../../_sub/compute/eks-cluster"
   cluster_name          = var.eks_cluster_name
   cluster_version       = var.eks_cluster_version
-  cidr_block            = var.eks_cluster_cidr_block
+  cidr_block            = local.eks_cluster_cidr_block
   cluster_zones         = var.eks_cluster_zones
   cluster_reserved_cidr = local.cluster_reserved_cidr
   log_types             = var.eks_cluster_log_types
   log_retention_days    = var.eks_cluster_log_retention_days
+  depends_on            = [module.ipam_pool_query]
 }
 
 module "eks_internet_gateway" {
@@ -321,7 +331,6 @@ module "eks_addons" {
 
 module "k8s_priority_class" {
   source         = "../../_sub/compute/k8s-priority-class"
-  priority_class = local.priority_class
 }
 
 module "param_kubeconfig_admin" {
