@@ -329,7 +329,6 @@ module "goldpinger" {
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   namespace               = var.goldpinger_namespace
   chart_version           = var.goldpinger_chart_version
-  priority_class          = var.goldpinger_priority_class
 
   depends_on = [module.grafana, module.platform_fluxcd]
 

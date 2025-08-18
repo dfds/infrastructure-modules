@@ -220,12 +220,6 @@ variable "goldpinger_chart_version" {
   default     = ""
 }
 
-variable "goldpinger_priority_class" {
-  type        = string
-  description = "Goldpinger daemonset priority class name"
-  default     = "cluster-monitoring"
-}
-
 # --------------------------------------------------
 # Metrics-Server
 # --------------------------------------------------
