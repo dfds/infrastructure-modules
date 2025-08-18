@@ -132,6 +132,17 @@ resource "aws_vpc_security_group_egress_rule" "ssm_postgres" {
   tags = var.tags
 }
 
+resource "aws_vpc_security_group_egress_rule" "ssm_mariadb" {
+  security_group_id = aws_security_group.ssm.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "tcp"
+  from_port         = 3306
+  to_port           = 3306
+  description       = "Allow SSM to MariaDB/MySQL"
+
+  tags = var.tags
+}
+
 resource "aws_vpc_security_group_egress_rule" "ssm_https" {
   security_group_id = aws_security_group.ssm.id
   cidr_ipv4         = "0.0.0.0/0"
