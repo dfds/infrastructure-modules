@@ -298,6 +298,18 @@ resource "aws_vpc_security_group_ingress_rule" "postgres" {
   tags = var.tags
 }
 
+resource "aws_vpc_security_group_ingress_rule" "mariadb" {
+  security_group_id = aws_default_security_group.default.id
+  cidr_ipv4         = var.peer_cidr_block
+  ip_protocol       = "tcp"
+  from_port         = 3306
+  to_port           = 3306
+  description       = "MariaDB/MySQL access from Hellman Kubernetes cluster"
+
+  tags = var.tags
+}
+
+
 resource "aws_vpc_security_group_ingress_rule" "redis" {
   security_group_id = aws_default_security_group.default.id
   cidr_ipv4         = var.peer_cidr_block
