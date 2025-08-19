@@ -35,7 +35,6 @@ resource "github_repository_file" "goldpinger_helm_patch" {
     namespace      = var.namespace
     chart_version  = var.chart_version
     deploy_name    = var.deploy_name
-    priority_class = var.priority_class
   })
   overwrite_on_create = var.overwrite_on_create
 }
