@@ -868,18 +868,6 @@ variable "grafana_agent_namespace" {
   default     = "grafana"
 }
 
-variable "grafana_agent_enable_prometheus_crds" {
-  type        = bool
-  description = "Enable Prometheus CRDs"
-  default     = true
-}
-
-variable "grafana_agent_priority_class" {
-  type        = string
-  description = "Prometheus components priority class name"
-  default     = "cluster-monitoring"
-}
-
 variable "observability_tolerations" {
   type = list(object({
     key      = string,
