@@ -201,15 +201,3 @@ variable "open_cost_enabled" {
   description = "Enable scraping cost metrics Grafana Cloud Prometheus or not. Default: false"
   default     = false
 }
-
-variable "priority_class" {
-  type        = string
-  description = "Name of priority class to apply"
-  default     = "cluster-monitoring"
-}
-
-variable "enable_prometheus_crds" {
-  type        = bool
-  description = "Enable Prometheus CRDs"
-  default     = true
-}
