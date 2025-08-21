@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-master
-          path: ${{ github.workspace }}/test-master.bin
+          path: ${{ env.GITHUB_WORKSPACE }}/test-master.bin
 
   build_test_feature:
     name: Build test binary from feature branch
@@ -75,7 +75,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-feature
-          path: ${{ github.workspace }}/test-feature.bin
+          path: ${{ env.GITHUB_WORKSPACE }}/test-feature.bin
 
   apply_test_master:
     name: Provision from master branch
@@ -125,9 +125,9 @@ jobs:
       - name: Provision Velero S3 bucket
         run: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
       - name: Wait for managed node groups to become active
-        run: ./wait-for-ngs.sh qa
+        run: /usr/local/bin/wait-for-ngs.sh qa
       - name: Wait for auto scaling groups's instances to be in service
-        run: ./wait-for-asgs.sh qa
+        run: /usr/local/bin/wait-for-asgs.sh qa
       - name: Download test binary
         uses: actions/download-artifact@v4
         with:
@@ -181,9 +181,9 @@ jobs:
       - name: Provision Velero S3 bucket
         run: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
       - name: Wait for managed node groups to become active
-        run: ./wait-for-ngs.sh qa
+        run: /usr/local/bin/wait-for-ngs.sh qa
       - name: Wait for auto scaling groups's instances to be in service
-        run: ./wait-for-asgs.sh qa
+        run: /usr/local/bin/wait-for-asgs.sh qa
       - name: Download test binary
         uses: actions/download-artifact@v4
         with:
