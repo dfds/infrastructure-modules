@@ -149,7 +149,7 @@ jobs:
           name: test-master
           path: /tmp
       - name: Run tests
-        run: ./src/qa-test-eks.sh test-run eu-west-1 qa /tmp/test-master/test-master.bin
+        run: ./src/qa-test-eks.sh test-run eu-west-1 qa /tmp/test-master.bin
 
   apply_test_feature:
     name: Apply from feature branch
@@ -206,4 +206,4 @@ jobs:
           name: test-feature
           path: /tmp
       - name: Run tests
-        run: ./src/qa-test-eks.sh test-run eu-west-1 qa /tmp/test-feature/test-feature.bin
+        run: ./src/qa-test-eks.sh test-run eu-west-1 qa /tmp/test-feature.bin
