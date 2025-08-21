@@ -582,38 +582,6 @@ variable "blackbox_exporter_monitoring_traefik_green_variant_port" {
 }
 
 # --------------------------------------------------
-# Helm Exporter
-# --------------------------------------------------
-
-variable "helm_exporter_deploy" {
-  type        = bool
-  description = "Should the helm Exporter be deployed through Flux?"
-  default     = false
-}
-
-variable "helm_exporter_helm_chart_version" {
-  type        = string
-  description = "Helm Chart version to be used to deploy Helm Exporter"
-  default     = ""
-}
-
-variable "helm_exporter_target_namespaces" {
-  type        = string
-  description = "target namespaces filter"
-  default     = ""
-}
-
-variable "helm_exporter_target_charts" {
-  type = list(object({
-    registry = object({
-      url = string
-    })
-    charts = list(string)
-  }))
-  default = []
-}
-
-# --------------------------------------------------
 # Podinfo through Flux CD
 # --------------------------------------------------
 

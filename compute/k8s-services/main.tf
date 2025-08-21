@@ -483,33 +483,6 @@ module "blackbox_exporter_flux_manifests" {
 }
 
 # --------------------------------------------------
-# Helm Exporter
-# --------------------------------------------------
-
-module "helm_exporter_flux_manifests" {
-  source                  = "../../_sub/monitoring/helm-exporter"
-  count                   = var.helm_exporter_deploy ? 1 : 0
-  cluster_name            = var.eks_cluster_name
-  helm_chart_version      = var.helm_exporter_helm_chart_version
-  github_owner            = var.fluxcd_bootstrap_repo_owner
-  repo_name               = var.fluxcd_bootstrap_repo_name
-  repo_branch             = var.fluxcd_bootstrap_repo_branch
-  namespace               = module.monitoring_namespace[0].name
-  target_namespaces       = var.helm_exporter_target_namespaces
-  target_charts           = var.helm_exporter_target_charts
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
-  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
-  prune                   = var.fluxcd_prune
-
-  providers = {
-    github = github.fluxcd
-  }
-
-  depends_on = [module.platform_fluxcd]
-}
-
-# --------------------------------------------------
 # podinfo
 # --------------------------------------------------
 
