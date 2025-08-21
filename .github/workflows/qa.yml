@@ -132,6 +132,7 @@ jobs:
           TF_VAR_onepassword_credentials_json: op://CloudEng-General/1Password Connect/nonprod_json
           TF_VAR_onepassword_token_for_atlantis: op://CloudEng-General/1Password Connect/nonprod_atlantis_token
           TF_VAR_velero_ebs_csi_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn
+          SLACK_WEBHOOK: op://CloudEng-General/Slack dfds.slack.com webhooks/jdm5vktylqnczrlkkbvsveyp5e
 
       - name: Provision shared EKS S3 bucket
         run: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
@@ -150,6 +151,13 @@ jobs:
           path: /tmp
       - name: Run tests
         run: ./src/qa-test-eks.sh test-run eu-west-1 qa /tmp/test-master.bin
+
+      - name: Send alert if job fails
+        if: failure()
+        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
+        with:
+          slack_webhook: ${{ env.SLACK_WEBHOOK }}
+          slack_message: "QA pipeline failed in master branch"
 
   apply_test_feature:
     name: Apply from feature branch
@@ -189,6 +197,7 @@ jobs:
           TF_VAR_onepassword_credentials_json: op://CloudEng-General/1Password Connect/nonprod_json
           TF_VAR_onepassword_token_for_atlantis: op://CloudEng-General/1Password Connect/nonprod_atlantis_token
           TF_VAR_velero_ebs_csi_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn
+          SLACK_WEBHOOK: op://CloudEng-General/Slack dfds.slack.com webhooks/jdm5vktylqnczrlkkbvsveyp5e
 
       - name: Provision shared EKS S3 bucket
         run: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
@@ -207,3 +216,10 @@ jobs:
           path: /tmp
       - name: Run tests
         run: ./src/qa-test-eks.sh test-run eu-west-1 qa /tmp/test-feature.bin
+
+      - name: Send alert if job fails
+        if: failure()
+        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
+        with:
+          slack_webhook: ${{ env.SLACK_WEBHOOK }}
+          slack_message: "QA pipeline failed in feature branch"
