@@ -59,14 +59,14 @@ jobs:
           path: ${{ github.workspace }}/.cache/go-build/
           key: go-${{ runner.os }}-${{ hashFiles('test/integration/suite/go.sum', 'src/qa-test-eks.sh') }}
       - name: Build test binary
-        run: ./src/qa-test-eks.sh test-build eu-west-1 qa test-master.bin
+        run: ./src/qa-test-eks.sh test-build eu-west-1 qa /tmp/test-master.bin
         env:
           GOCACHE: ${{ github.workspace }}/.cache/go-build/
       - name: Upload test binary
         uses: actions/upload-artifact@v4
         with:
           name: test-master
-          path: test-master.bin
+          path: /tmp/test-master.bin
 
   build_test_feature:
     name: Build test binary from feature branch
@@ -83,14 +83,14 @@ jobs:
           path: ${{ github.workspace }}/.cache/go-build/
           key: go-${{ runner.os }}-${{ hashFiles('test/integration/suite/go.sum', 'src/qa-test-eks.sh') }}
       - name: Build test binary
-        run: ./src/qa-test-eks.sh test-build eu-west-1 qa ${{ github.workspace }}/test-feature.bin
+        run: ./src/qa-test-eks.sh test-build eu-west-1 qa /tmp/test-feature.bin
         env:
           GOCACHE: ${{ github.workspace }}/.cache/go-build/
       - name: Upload test binary
         uses: actions/upload-artifact@v4
         with:
           name: test-feature
-          path: ${{ env.GITHUB_WORKSPACE }}/test-feature.bin
+          path: /tmp/test-feature.bin
 
   apply_test_master:
     name: Provision from master branch
