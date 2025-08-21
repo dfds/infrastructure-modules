@@ -1,0 +1,4 @@
+[tools]
+terragrunt = "0.84.1"
+opentofu = "1.10.5"
+fetch_remote_versions_timeout = "60s"

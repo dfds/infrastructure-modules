@@ -12,6 +12,7 @@ on:
       - .gitignore
       - .pre-commit-config.yaml
       - .tflint.hcl
+      - mise.toml
       - LICENSE
       - README.md
       - renovate.json
@@ -24,6 +25,7 @@ on:
       - .gitignore
       - .pre-commit-config.yaml
       - .tflint.hcl
+      - mise.toml
       - LICENSE
       - README.md
       - renovate.json
@@ -45,14 +47,16 @@ jobs:
   build_test_master:
     name: Build test binary from master branch
     runs-on: ubuntu-latest
-    container:
-      image: golang:1.24.6-bullseye
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           repository: dfds/infrastructure-modules
           ref: master
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.24.6
       - name: Restore Go build cache
         uses: actions/cache@v4
         with:
@@ -71,12 +75,14 @@ jobs:
   build_test_feature:
     name: Build test binary from feature branch
     runs-on: ubuntu-latest
-    container:
-      image: golang:1.24.6-bullseye
     if: github.ref != 'refs/heads/master'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.24.6
       - name: Restore Go build cache
         uses: actions/cache@v4
         with:
@@ -96,14 +102,17 @@ jobs:
     name: Provision from master branch
     runs-on: ubuntu-latest
     needs: build_test_master
-    container:
-      image: dfdsdk/prime-pipeline:2.2.1
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           repository: dfds/infrastructure-modules
           ref: master
+
+      - name: Install Terragrunt and OpenTofu
+        uses: gruntwork-io/terragrunt-action@v3
+        with:
+          github_token: ${{ secrets.SHARED_WORKFLOW_HOUSEKEEPING }}
 
       - name: Load secrets
         uses: 1password/load-secrets-action@v2
@@ -164,11 +173,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: [apply_test_master, build_test_feature]
     if: github.ref != 'refs/heads/master'
-    container:
-      image: dfdsdk/prime-pipeline:2.2.1
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Install Terragrunt and OpenTofu
+        uses: gruntwork-io/terragrunt-action@v3
+        with:
+          github_token: ${{ secrets.SHARED_WORKFLOW_HOUSEKEEPING }}
 
       - name: Load secrets
         uses: 1password/load-secrets-action@v2
