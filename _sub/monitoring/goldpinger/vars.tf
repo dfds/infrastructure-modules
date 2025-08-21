@@ -19,12 +19,6 @@ variable "namespace" {
   description = "The namespace in which to deploy Helm resources"
 }
 
-variable "priority_class" {
-  type        = string
-  description = "Goldpinger daemonset priority class name"
-  default     = "cluster-monitoring"
-}
-
 variable "repo_owner" {
   type        = string
   description = "Name of the repo owner (previously: organization)"

@@ -220,12 +220,6 @@ variable "goldpinger_chart_version" {
   default     = ""
 }
 
-variable "goldpinger_priority_class" {
-  type        = string
-  description = "Goldpinger daemonset priority class name"
-  default     = "cluster-monitoring"
-}
-
 # --------------------------------------------------
 # Metrics-Server
 # --------------------------------------------------
@@ -872,18 +866,6 @@ variable "grafana_agent_namespace" {
   type        = string
   description = "Namespace for hosting monitoring components"
   default     = "grafana"
-}
-
-variable "grafana_agent_enable_prometheus_crds" {
-  type        = bool
-  description = "Enable Prometheus CRDs"
-  default     = true
-}
-
-variable "grafana_agent_priority_class" {
-  type        = string
-  description = "Prometheus components priority class name"
-  default     = "cluster-monitoring"
 }
 
 variable "observability_tolerations" {

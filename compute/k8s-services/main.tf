@@ -329,7 +329,6 @@ module "goldpinger" {
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   namespace               = var.goldpinger_namespace
   chart_version           = var.goldpinger_chart_version
-  priority_class          = var.goldpinger_priority_class
 
   depends_on = [module.grafana, module.platform_fluxcd]
 
@@ -668,9 +667,7 @@ module "grafana" {
   storage_enabled               = var.grafana_agent_storage_enabled
   storage_class                 = var.grafana_agent_storage_class
   storage_size                  = var.grafana_agent_storage_size
-  priority_class                = var.grafana_agent_priority_class
   namespace                     = var.grafana_agent_namespace
-  enable_prometheus_crds        = var.grafana_agent_enable_prometheus_crds
 
   providers = {
     github = github.fluxcd
