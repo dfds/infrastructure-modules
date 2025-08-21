@@ -149,9 +149,9 @@ jobs:
       - name: Provision Velero S3 bucket
         run: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
       - name: Wait for managed node groups to become active
-        run: /usr/local/bin/wait-for-ngs.sh qa
+        run: ./src/wait-for-ngs.sh qa
       - name: Wait for auto scaling groups's instances to be in service
-        run: /usr/local/bin/wait-for-asgs.sh qa
+        run: ./src/wait-for-asgs.sh qa
       - name: Download test binary
         uses: actions/download-artifact@v4
         with:
@@ -217,9 +217,9 @@ jobs:
       - name: Provision Velero S3 bucket
         run: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
       - name: Wait for managed node groups to become active
-        run: /usr/local/bin/wait-for-ngs.sh qa
+        run: ./src/wait-for-ngs.sh qa
       - name: Wait for auto scaling groups's instances to be in service
-        run: /usr/local/bin/wait-for-asgs.sh qa
+        run: ./src/wait-for-asgs.sh qa
       - name: Download test binary
         uses: actions/download-artifact@v4
         with:
