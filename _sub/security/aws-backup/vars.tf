@@ -5,12 +5,6 @@ variable "new_vault_name" {
   default     = null
 }
 
-variable "kms_key_arn" {
-  type        = string
-  description = "The ARN of a the KMS key."
-  default     = null
-}
-
 variable "backup_plans" {
   type = list(object({
     plan_name = string
@@ -79,12 +73,6 @@ variable "tags" {
   type        = map(string)
   description = "A set of key-value pairs as tags for the resources."
 }
-
-variable "kms_key_admins" {
-  type        = list(string)
-  description = "List of IAM Roles ARNs administrator access of the KMS Key."
-}
-
 
 variable "settings_resource_type_opt_in_preference" {
   description = "A map of services along with the opt-in preferences for the Region."
