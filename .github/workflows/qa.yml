@@ -6,6 +6,15 @@ permissions:
 on:
   push:
     branches: [master]
+    paths-ignore:
+      - ".github/workflows/*"
+      - ".trunk/*"
+      - .gitignore
+      - .pre-commit-config.yaml
+      - .tflint.hcl
+      - LICENSE
+      - README.md
+      - renovate.json
   pull_request:
     types: [opened, reopened, synchronize]
     branches: [master]
@@ -20,6 +29,12 @@ on:
       - renovate.json
 
   workflow_dispatch:
+
+concurrency: terragrunt-qa
+
+defaults:
+  run:
+    shell: bash
 
 env:
   AWS_DEFAULT_REGION: eu-west-1
@@ -44,14 +59,14 @@ jobs:
           path: ${{ github.workspace }}/.cache/go-build/
           key: go-${{ runner.os }}-${{ hashFiles('test/integration/suite/go.sum', 'src/qa-test-eks.sh') }}
       - name: Build test binary
-        run: ./src/qa-test-eks.sh test-build eu-west-1 qa ${{ github.workspace }}/test-master.bin
+        run: ./src/qa-test-eks.sh test-build eu-west-1 qa test-master.bin
         env:
           GOCACHE: ${{ github.workspace }}/.cache/go-build/
       - name: Upload test binary
         uses: actions/upload-artifact@v4
         with:
           name: test-master
-          path: ${{ env.GITHUB_WORKSPACE }}/test-master.bin
+          path: test-master.bin
 
   build_test_feature:
     name: Build test binary from feature branch
