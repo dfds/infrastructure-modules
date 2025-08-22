@@ -109,6 +109,8 @@ jobs:
           ref: master
 
       - name: Install Terragrunt and OpenTofu
+        env:
+          MISE_FETCH_REMOTE_VERSIONS_TIMEOUT: 60s
         uses: gruntwork-io/terragrunt-action@v3
         with:
           github_token: ${{ secrets.SHARED_WORKFLOW_HOUSEKEEPING }}
@@ -182,6 +184,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Terragrunt and OpenTofu
+        env:
+          MISE_FETCH_REMOTE_VERSIONS_TIMEOUT: 60s
         uses: gruntwork-io/terragrunt-action@v3
         with:
           github_token: ${{ secrets.SHARED_WORKFLOW_HOUSEKEEPING }}
