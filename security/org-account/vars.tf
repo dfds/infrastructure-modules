@@ -71,10 +71,6 @@ variable "iam_github_oidc_repositories" {
   }))
   default     = []
   description = "List of repositories to authenticate to AWS from. Each object contains repository name and list of git refs that should be allowed to deploy from"
-  validation {
-    condition     = alltrue([for v in flatten(values({ for repo in var.iam_github_oidc_repositories : repo.repository_name => repo.refs })) : startswith(v, "refs/heads/") || startswith(v, "refs/tags/")])
-    error_message = "The ref needs to start with `refs/heads/` for branches and `refs/tags/` for tags."
-  }
 }
 
 variable "iam_github_oidc_policy_json" {
