@@ -167,12 +167,12 @@ jobs:
       - name: Run tests
         run: ./src/qa-test-eks.sh test-run eu-west-1 qa /tmp/test-master.bin
 
-      # - name: Send alert if job fails
-      #   if: failure()
-      #   uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
-      #   with:
-      #     slack_webhook: ${{ env.SLACK_WEBHOOK }}
-      #     slack_message: "QA pipeline failed in master branch"
+      - name: Send alert if job fails
+        if: failure()
+        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
+        with:
+          slack_webhook: ${{ env.SLACK_WEBHOOK }}
+          slack_message: "QA pipeline failed in master branch"
 
   apply_test_feature:
     name: Apply from feature branch
@@ -242,9 +242,9 @@ jobs:
       - name: Run tests
         run: ./src/qa-test-eks.sh test-run eu-west-1 qa /tmp/test-feature.bin
 
-      # - name: Send alert if job fails
-      #   if: failure()
-      #   uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
-      #   with:
-      #     slack_webhook: ${{ env.SLACK_WEBHOOK }}
-      #     slack_message: "QA pipeline failed in feature branch"
+      - name: Send alert if job fails
+        if: failure()
+        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
+        with:
+          slack_webhook: ${{ env.SLACK_WEBHOOK }}
+          slack_message: "QA pipeline failed in feature branch"
