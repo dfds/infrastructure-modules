@@ -113,6 +113,13 @@ jobs:
         with:
           github_token: ${{ secrets.SHARED_WORKFLOW_HOUSEKEEPING }}
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_QA_ROLE_TO_ASSUME }}
+          role-session-name: run-qa-pipeline
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
       - name: Load secrets
         uses: 1password/load-secrets-action@v2
         with:
@@ -123,8 +130,6 @@ jobs:
           ARM_CLIENT_SECRET: op://CloudEng-General/Terraform Azure App Service Principal/password
           ARM_SUBSCRIPTION_ID: op://CloudEng-General/Terraform Azure App Service Principal/subscription_id
           ARM_TENANT_ID: op://CloudEng-General/Terraform Azure App Service Principal/tenant_id
-          AWS_ACCESS_KEY_ID: op://CloudEng-General/AWS account dfds-qa IAM user terratest-qa-user/username
-          AWS_SECRET_ACCESS_KEY: op://CloudEng-General/AWS account dfds-qa IAM user terratest-qa-user/password
           TF_VAR_atlantis_github_token: op://CloudEng-General/Github account devex-sa/Tokens/atlantis-qa
           TF_VAR_docker_hub_password: op://CloudEng-General/Docker Cloud/username
           TF_VAR_docker_hub_username: op://CloudEng-General/Docker Cloud/password
@@ -160,12 +165,12 @@ jobs:
       - name: Run tests
         run: ./src/qa-test-eks.sh test-run eu-west-1 qa /tmp/test-master.bin
 
-      - name: Send alert if job fails
-        if: failure()
-        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
-        with:
-          slack_webhook: ${{ env.SLACK_WEBHOOK }}
-          slack_message: "QA pipeline failed in master branch"
+      # - name: Send alert if job fails
+      #   if: failure()
+      #   uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
+      #   with:
+      #     slack_webhook: ${{ env.SLACK_WEBHOOK }}
+      #     slack_message: "QA pipeline failed in master branch"
 
   apply_test_feature:
     name: Apply from feature branch
@@ -181,6 +186,13 @@ jobs:
         with:
           github_token: ${{ secrets.SHARED_WORKFLOW_HOUSEKEEPING }}
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_QA_ROLE_TO_ASSUME }}
+          role-session-name: run-qa-pipeline
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
       - name: Load secrets
         uses: 1password/load-secrets-action@v2
         with:
@@ -191,8 +203,6 @@ jobs:
           ARM_CLIENT_SECRET: op://CloudEng-General/Terraform Azure App Service Principal/password
           ARM_SUBSCRIPTION_ID: op://CloudEng-General/Terraform Azure App Service Principal/subscription_id
           ARM_TENANT_ID: op://CloudEng-General/Terraform Azure App Service Principal/tenant_id
-          AWS_ACCESS_KEY_ID: op://CloudEng-General/AWS account dfds-qa IAM user terratest-qa-user/username
-          AWS_SECRET_ACCESS_KEY: op://CloudEng-General/AWS account dfds-qa IAM user terratest-qa-user/password
           TF_VAR_atlantis_github_token: op://CloudEng-General/Github account devex-sa/Tokens/atlantis-qa
           TF_VAR_docker_hub_password: op://CloudEng-General/Docker Cloud/username
           TF_VAR_docker_hub_username: op://CloudEng-General/Docker Cloud/password
@@ -228,9 +238,9 @@ jobs:
       - name: Run tests
         run: ./src/qa-test-eks.sh test-run eu-west-1 qa /tmp/test-feature.bin
 
-      - name: Send alert if job fails
-        if: failure()
-        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
-        with:
-          slack_webhook: ${{ env.SLACK_WEBHOOK }}
-          slack_message: "QA pipeline failed in feature branch"
+      # - name: Send alert if job fails
+      #   if: failure()
+      #   uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
+      #   with:
+      #     slack_webhook: ${{ env.SLACK_WEBHOOK }}
+      #     slack_message: "QA pipeline failed in feature branch"
