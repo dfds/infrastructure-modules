@@ -109,9 +109,18 @@ jobs:
           ref: master
 
       - name: Install Terragrunt and OpenTofu
+        env:
+          MISE_FETCH_REMOTE_VERSIONS_TIMEOUT: 60s
         uses: gruntwork-io/terragrunt-action@v3
         with:
           github_token: ${{ secrets.SHARED_WORKFLOW_HOUSEKEEPING }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_QA_ROLE_TO_ASSUME }}
+          role-session-name: run-qa-pipeline
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
       - name: Load secrets
         uses: 1password/load-secrets-action@v2
@@ -123,8 +132,6 @@ jobs:
           ARM_CLIENT_SECRET: op://CloudEng-General/Terraform Azure App Service Principal/password
           ARM_SUBSCRIPTION_ID: op://CloudEng-General/Terraform Azure App Service Principal/subscription_id
           ARM_TENANT_ID: op://CloudEng-General/Terraform Azure App Service Principal/tenant_id
-          AWS_ACCESS_KEY_ID: op://CloudEng-General/AWS account dfds-qa IAM user terratest-qa-user/username
-          AWS_SECRET_ACCESS_KEY: op://CloudEng-General/AWS account dfds-qa IAM user terratest-qa-user/password
           TF_VAR_atlantis_github_token: op://CloudEng-General/Github account devex-sa/Tokens/atlantis-qa
           TF_VAR_docker_hub_password: op://CloudEng-General/Docker Cloud/username
           TF_VAR_docker_hub_username: op://CloudEng-General/Docker Cloud/password
@@ -177,9 +184,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Terragrunt and OpenTofu
+        env:
+          MISE_FETCH_REMOTE_VERSIONS_TIMEOUT: 60s
         uses: gruntwork-io/terragrunt-action@v3
         with:
           github_token: ${{ secrets.SHARED_WORKFLOW_HOUSEKEEPING }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_QA_ROLE_TO_ASSUME }}
+          role-session-name: run-qa-pipeline
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
       - name: Load secrets
         uses: 1password/load-secrets-action@v2
@@ -191,8 +207,6 @@ jobs:
           ARM_CLIENT_SECRET: op://CloudEng-General/Terraform Azure App Service Principal/password
           ARM_SUBSCRIPTION_ID: op://CloudEng-General/Terraform Azure App Service Principal/subscription_id
           ARM_TENANT_ID: op://CloudEng-General/Terraform Azure App Service Principal/tenant_id
-          AWS_ACCESS_KEY_ID: op://CloudEng-General/AWS account dfds-qa IAM user terratest-qa-user/username
-          AWS_SECRET_ACCESS_KEY: op://CloudEng-General/AWS account dfds-qa IAM user terratest-qa-user/password
           TF_VAR_atlantis_github_token: op://CloudEng-General/Github account devex-sa/Tokens/atlantis-qa
           TF_VAR_docker_hub_password: op://CloudEng-General/Docker Cloud/username
           TF_VAR_docker_hub_username: op://CloudEng-General/Docker Cloud/password
