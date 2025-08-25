@@ -746,6 +746,7 @@ module "onepassword_connect" {
   aws_region              = local.aws_region
   credentials_json        = var.onepassword_credentials_json
   token_for_atlantis      = var.onepassword_token_for_atlantis
+  chart_version           = var.onepassword_connect_chart_version
 
   providers = {
     github = github.fluxcd
