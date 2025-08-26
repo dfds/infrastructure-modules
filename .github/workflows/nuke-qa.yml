@@ -95,4 +95,4 @@ jobs:
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
       - name: Nuke resources in QA account
-        run: /usr/local/bin/aws-nuke run --config ./qa-nuke-config/nuke-config-ekristen.yaml --force --no-dry-run
+        run: /usr/local/bin/aws-nuke run --config ./qa-nuke-config/nuke-config.yaml --log-level error --force --no-dry-run
