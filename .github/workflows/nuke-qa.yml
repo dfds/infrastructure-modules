@@ -77,7 +77,7 @@ jobs:
     needs: nuke
     if: always()
     container:
-      image: dfdsdk/aws-nuke:0.0.27
+      image: dfdsdk/aws-nuke:0.0.28
     steps:
       - name: Checkout Nuke config
         uses: actions/checkout@v4
@@ -95,4 +95,4 @@ jobs:
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
       - name: Nuke resources in QA account
-        run: /usr/local/bin/aws-nuke -c ./qa-nuke-config/nuke-config.yaml --force --force-sleep 5 --no-dry-run
+        run: /usr/local/bin/aws-nuke -c ./qa-nuke-config/nuke-config-ekristen.yaml --force --force-sleep 5 --no-dry-run
