@@ -94,13 +94,5 @@ jobs:
           role-session-name: nuke-qa-session
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
-      - name: Load secrets
-        uses: 1password/load-secrets-action@v2
-        with:
-          export-env: true
-        env:
-          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_GITHUB_TOKEN }}
-          SLACK_WEBHOOK: op://CloudEng-General/Slack dfds.slack.com webhooks/jdm5vktylqnczrlkkbvsveyp5e
-
       - name: Nuke resources in QA account
         run: /usr/local/bin/aws-nuke -c ./qa-nuke-config/nuke-config.yaml --force --force-sleep 5 --no-dry-run
