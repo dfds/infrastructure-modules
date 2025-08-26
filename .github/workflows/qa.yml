@@ -160,7 +160,7 @@ jobs:
       - name: Wait for auto scaling groups's instances to be in service
         run: ./src/wait-for-asgs.sh qa
       - name: Download test binary
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: test-master
           path: /tmp
@@ -235,7 +235,7 @@ jobs:
       - name: Wait for auto scaling groups's instances to be in service
         run: ./src/wait-for-asgs.sh qa
       - name: Download test binary
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: test-feature
           path: /tmp
