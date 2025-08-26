@@ -94,12 +94,6 @@ jobs:
           role-session-name: nuke-qa-session
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
-      - name: Privilege escalation
-        run: aws iam attach-role-policy --role-name oidc-from-github --policy-arn arn:aws:iam::aws:policy/AdministratorAccess || true
-
       - name: Nuke resources in QA account
         timeout-minutes: 60
         run: /usr/local/bin/aws-nuke run --config ./qa-nuke-config/nuke-config.yaml --log-level info --force --no-dry-run
-
-      - name: Privilege de-escalation
-        run: aws iam detach-role-policy --role-name oidc-from-github --policy-arn arn:aws:iam::aws:policy/AdministratorAccess || true
