@@ -71,13 +71,6 @@ jobs:
       - name: Terraform destroy shared resources
         run: ./src/qa-test-eks.sh destroy-public-bucket eu-west-1 _global/eks-public-s3-bucket
 
-    #   - name: Send alert if job fails
-    #     if: failure()
-    #     uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
-    #     with:
-    #       slack_webhook: ${{ env.SLACK_WEBHOOK }}
-    #       slack_message: "QA pipeline failed in master branch"
-
   nuke_account:
     name: Nuke QA's AWS account
     runs-on: ubuntu-latest
@@ -91,7 +84,7 @@ jobs:
         with:
           repository: dfds/qa-nuke-config
           ref: main
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.SHARED_WORKFLOW_HOUSEKEEPING }}
           path: ./qa-nuke-config
 
       - name: Configure AWS credentials
@@ -111,10 +104,3 @@ jobs:
 
       - name: Nuke resources in QA account
         run: /usr/local/bin/aws-nuke -c ./qa-nuke-config/nuke-config.yaml --force --force-sleep 5 --no-dry-run
-
-    #   - name: Send alert if job fails
-    #     if: failure()
-    #     uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
-    #     with:
-    #       slack_webhook: ${{ env.SLACK_WEBHOOK }}
-    #       slack_message: "QA pipeline failed in master branch"
