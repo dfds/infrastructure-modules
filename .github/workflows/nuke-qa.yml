@@ -91,6 +91,8 @@ jobs:
         with:
           repository: dfds/qa-nuke-config
           ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./qa-nuke-config
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -108,7 +110,7 @@ jobs:
           SLACK_WEBHOOK: op://CloudEng-General/Slack dfds.slack.com webhooks/jdm5vktylqnczrlkkbvsveyp5e
 
       - name: Nuke resources in QA account
-        run: /usr/local/bin/aws-nuke -c ./nuke-config.yaml --force --force-sleep 5 --no-dry-run
+        run: /usr/local/bin/aws-nuke -c ./qa-nuke-config/nuke-config.yaml --force --force-sleep 5 --no-dry-run
 
     #   - name: Send alert if job fails
     #     if: failure()
