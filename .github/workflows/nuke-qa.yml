@@ -15,7 +15,6 @@ defaults:
 env:
   AWS_DEFAULT_REGION: eu-west-1
   TF_IN_AUTOMATION: "true"
-  TG_TF_PATH: /usr/local/bin/tofu
 
 jobs:
   nuke:
