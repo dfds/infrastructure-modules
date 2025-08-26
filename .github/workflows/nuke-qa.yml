@@ -77,7 +77,7 @@ jobs:
     needs: nuke
     if: always()
     container:
-      image: dfdsdk/aws-nuke:0.0.28
+      image: dfdsdk/aws-nuke:0.0.29
     steps:
       - name: Checkout Nuke config
         uses: actions/checkout@v4
