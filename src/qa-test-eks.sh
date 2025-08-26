@@ -57,6 +57,16 @@ if [ "$ACTION" = "destroy-cluster" ]; then
 	REGION=$2
 	CLUSTERNAME=$3
 	WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}"
+	export KUBECONFIG=$(terragrunt output --raw kubeconfig_path --working-dir "${WORKDIR}/cluster")
+
+	kubectl delete APIServices v1beta1.metrics.k8s.io
+
+	NAMESPACES=$(kubectl get namespaces --no-headers -o custom-columns=NAME:.metadata.name | awk '{print $1}' | tail -n +2)
+	NAMESPACES=($(echo $NAMESPACES))
+
+	for ns in "${NAMESPACES[@]}"; do
+		kubectl patch namespace $ns -p '{"metadata":{"finalizers":null}}'
+	done
 
 	# Destroy resources
 	terragrunt destroy --all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve
