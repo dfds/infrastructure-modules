@@ -96,3 +96,7 @@ jobs:
 
       - name: Nuke resources in QA account
         run: /usr/local/bin/aws-nuke -c ./qa-nuke-config/nuke-config.yaml --force --force-sleep 5 --no-dry-run
+
+      - name: Important information
+        run: |
+          echo "You need to recreate the OIDC role in the QA account by running the prime pipeline."
