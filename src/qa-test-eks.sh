@@ -62,16 +62,16 @@ if [ "$ACTION" = "destroy-cluster" ]; then
 
 	export KUBECONFIG=$PWD/qa.yaml
 
-	cat $KUBECONFIG
+	if [[ -f $KUBECONFIG ]]; then
+		kubectl delete APIServices v1beta1.metrics.k8s.io
 
-	kubectl delete APIServices v1beta1.metrics.k8s.io
+		NAMESPACES=$(kubectl get namespaces --no-headers -o custom-columns=NAME:.metadata.name | awk '{print $1}' | tail -n +2)
+		NAMESPACES=($(echo $NAMESPACES))
 
-	NAMESPACES=$(kubectl get namespaces --no-headers -o custom-columns=NAME:.metadata.name | awk '{print $1}' | tail -n +2)
-	NAMESPACES=($(echo $NAMESPACES))
-
-	for ns in "${NAMESPACES[@]}"; do
-		kubectl patch namespace $ns -p '{"metadata":{"finalizers":null}}'
-	done
+		for ns in "${NAMESPACES[@]}"; do
+			kubectl patch namespace $ns -p '{"metadata":{"finalizers":null}}'
+		done
+	fi
 
 	# Destroy resources
 	terragrunt destroy --all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve
