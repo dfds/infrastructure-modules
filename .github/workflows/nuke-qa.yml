@@ -20,6 +20,7 @@ jobs:
   nuke:
     name: Nuke QA Terraform resources
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     steps:
       - name: Checkout code
