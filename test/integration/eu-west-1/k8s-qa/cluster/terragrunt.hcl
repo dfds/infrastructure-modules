@@ -37,7 +37,7 @@ inputs = {
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.33","addonName":"aws-efs-csi-driver"}
   eks_addon_awsefscsidriver_version_override = "v2.1.10-eksbuild.1"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.33","addonName":"aws-ebs-csi-driver"}
-  eks_addon_awsebscsidriver_version_override = "v1.47.0-eksbuild.1"
+  eks_addon_awsebscsidriver_version_override = "v1.48.0-eksbuild.1"
 
   enable_worker_nat_gateway                  = true
   use_worker_nat_gateway                     = true
@@ -65,8 +65,8 @@ inputs = {
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.33-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.33-v20250813
-      ami_id             = "ami-0f71a200ebba9e4ab"
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.33-v20250821
+      ami_id             = "ami-0b4f0090458caff9b"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
       kube_memory                = "1024Mi"
@@ -81,8 +81,8 @@ inputs = {
       max_unavailable         = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.33-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.33-v20250813
-      ami_id             = "ami-0f71a200ebba9e4ab"
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.33-v20250821
+      ami_id             = "ami-0b4f0090458caff9b"
       availability_zones = ["eu-west-1c"]
       taints = [
         {

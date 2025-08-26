@@ -946,6 +946,12 @@ variable "onepassword_token_for_atlantis" {
   description = "The 1Password Connect tokens to be stored in SSM if Atlantis is enabled"
 }
 
+variable "onepassword_connect_chart_version" {
+  type        = string
+  default     = ""
+  description = "The 1Password Connect helm chart version"
+}
+
 # --------------------------------------------------
 # Nvidia device plugin
 # --------------------------------------------------

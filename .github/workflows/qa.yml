@@ -48,14 +48,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: dfds/infrastructure-modules
           ref: master
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: 1.24.6
+          go-version: 1.25.0
       - name: Restore Go build cache
         uses: actions/cache@v4
         with:
@@ -77,11 +77,11 @@ jobs:
     if: github.ref != 'refs/heads/master'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: 1.24.6
+          go-version: 1.25.0
       - name: Restore Go build cache
         uses: actions/cache@v4
         with:
@@ -103,7 +103,7 @@ jobs:
     needs: build_test_master
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: dfds/infrastructure-modules
           ref: master
@@ -123,7 +123,7 @@ jobs:
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
       - name: Load secrets
-        uses: 1password/load-secrets-action@v2
+        uses: 1password/load-secrets-action@v3
         with:
           export-env: true
         env:
@@ -160,7 +160,7 @@ jobs:
       - name: Wait for auto scaling groups's instances to be in service
         run: ./src/wait-for-asgs.sh qa
       - name: Download test binary
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: test-master
           path: /tmp
@@ -181,7 +181,7 @@ jobs:
     if: github.ref != 'refs/heads/master'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install Terragrunt and OpenTofu
         env:
@@ -198,7 +198,7 @@ jobs:
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
       - name: Load secrets
-        uses: 1password/load-secrets-action@v2
+        uses: 1password/load-secrets-action@v3
         with:
           export-env: true
         env:
@@ -235,7 +235,7 @@ jobs:
       - name: Wait for auto scaling groups's instances to be in service
         run: ./src/wait-for-asgs.sh qa
       - name: Download test binary
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: test-feature
           path: /tmp
