@@ -27,6 +27,8 @@ type Doer struct {
 
 // NewDoer Creates a new Doer.
 func NewDoer(client *http.Client, userAgent string) *Doer {
+	client.Transport = newHTTPSOnly(client)
+
 	return &Doer{
 		httpClient: client,
 		userAgent:  userAgent,
@@ -35,7 +37,7 @@ func NewDoer(client *http.Client, userAgent string) *Doer {
 
 // Get performs a GET request with a proper User-Agent string.
 // If "response" is not provided, callers should close resp.Body when done reading from it.
-func (d *Doer) Get(url string, response interface{}) (*http.Response, error) {
+func (d *Doer) Get(url string, response any) (*http.Response, error) {
 	req, err := d.newRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -57,7 +59,7 @@ func (d *Doer) Head(url string) (*http.Response, error) {
 
 // Post performs a POST request with a proper User-Agent string.
 // If "response" is not provided, callers should close resp.Body when done reading from it.
-func (d *Doer) Post(url string, body io.Reader, bodyType string, response interface{}) (*http.Response, error) {
+func (d *Doer) Post(url string, body io.Reader, bodyType string, response any) (*http.Response, error) {
 	req, err := d.newRequest(http.MethodPost, url, body, contentType(bodyType))
 	if err != nil {
 		return nil, err
@@ -84,7 +86,7 @@ func (d *Doer) newRequest(method, uri string, body io.Reader, opts ...RequestOpt
 	return req, nil
 }
 
-func (d *Doer) do(req *http.Request, response interface{}) (*http.Response, error) {
+func (d *Doer) do(req *http.Request, response any) (*http.Response, error) {
 	resp, err := d.httpClient.Do(req)
 	if err != nil {
 		return nil, err
@@ -149,4 +151,29 @@ func checkError(req *http.Request, resp *http.Response) error {
 		return errorDetails
 	}
 	return nil
+}
+
+type httpsOnly struct {
+	rt http.RoundTripper
+}
+
+func newHTTPSOnly(client *http.Client) *httpsOnly {
+	if client.Transport == nil {
+		return &httpsOnly{rt: http.DefaultTransport}
+	}
+
+	return &httpsOnly{rt: client.Transport}
+}
+
+// RoundTrip ensure HTTPS is used.
+// Each ACME function is accomplished by the client sending a sequence of HTTPS requests to the server [RFC2818],
+// carrying JSON messages [RFC8259].
+// Use of HTTPS is REQUIRED.
+// https://datatracker.ietf.org/doc/html/rfc8555#section-6.1
+func (r *httpsOnly) RoundTrip(req *http.Request) (*http.Response, error) {
+	if req.URL.Scheme != "https" {
+		return nil, fmt.Errorf("HTTPS is required: %s", req.URL)
+	}
+
+	return r.rt.RoundTrip(req)
 }
