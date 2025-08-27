@@ -110,13 +110,11 @@ variable "publish_message" {
 variable "parent_id" {
   type        = string
   description = "The ID of the parent AWS Organization OU."
-  default     = ""
 }
 
 variable "oidc_provider_url" {
   type        = string
   description = "The IAM OpenID Connect Provider url from the EKS production account"
-  default     = ""
 }
 
 variable "oidc_provider_tag" {

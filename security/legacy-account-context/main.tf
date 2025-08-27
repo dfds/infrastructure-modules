@@ -63,28 +63,6 @@ module "hardened-account" {
   kms_replica_key_arn             = var.hardened_kms_replica_key_arn
 }
 
-# --------------------------------------------------
-# Certero
-# --------------------------------------------------
-
-module "iam_policies" {
-  source                            = "../../_sub/security/iam-policies"
-  iam_role_trusted_account_root_arn = ["arn:aws:iam::${var.core_account_id}:root"] # Account ID from variable instead of data.aws_caller_identity - seems to get rate-throttled
-}
-
-module "iam_role_certero" {
-  source               = "../../_sub/security/iam-role"
-  role_name            = "CerteroRole"
-  role_description     = "Used by CerteroRole to make inventory of AWS resources"
-  max_session_duration = 3600
-  assume_role_policy   = data.aws_iam_policy_document.assume_role_policy_master_account.json
-  role_policy_name     = "CerteroEndpoint"
-  role_policy_document = module.iam_policies.certero_endpoint
-
-  providers = {
-    aws = aws.workload
-  }
-}
 
 # --------------------------------------------------
 # AWS Resource Explorer
