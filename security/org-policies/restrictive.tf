@@ -307,7 +307,6 @@ data "aws_iam_policy_document" "restrictive" {
       values = [
         "arn:aws:iam::*:role/OrgRole",
         "arn:aws:iam::*:role/aws-config-recorder*",
-        "arn:aws:iam::*:role/inventory",
       ]
       variable = "aws:PrincipalArn"
     }
