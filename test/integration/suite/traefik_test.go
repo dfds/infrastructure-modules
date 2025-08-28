@@ -66,6 +66,16 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 						{
 							Name:  "nginx",
 							Image: "nginx",
+							LivenessProbe: &apiv1.Probe{
+								ProbeHandler: apiv1.ProbeHandler{
+									HTTPGet: &apiv1.HTTPGetAction{
+										Port: intstr.IntOrString{IntVal: 80},
+										Path: "/",
+									},
+								},
+								InitialDelaySeconds: 3,
+								PeriodSeconds:       3,
+							},
 						},
 					},
 				},
@@ -89,7 +99,7 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 			Namespace: "default",
 		},
 		Spec: apiv1.ServiceSpec{
-			Ports: []apiv1.ServicePort{apiv1.ServicePort{
+			Ports: []apiv1.ServicePort{{
 				Name:       "web",
 				Port:       int32(80),
 				TargetPort: intstr.IntOrString{IntVal: int32(80)},
