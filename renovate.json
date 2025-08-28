@@ -16,8 +16,7 @@
   ],
   "terraform": {
     "managerFilePatterns": [
-      "/\\.tf$/",
-      "/\\.tofu$/"
+      "/\\.tf$/"
     ]
   },
   "customManagers": [
