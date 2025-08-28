@@ -102,7 +102,7 @@ func AssertK8sDaemonSet(t *testing.T, clientset *kubernetes.Clientset, namespace
 	}
 
 	assert.Eventuallyf(t, check, defaultEventualTimeout, defaultEventualPeriod,
-		"daemonset %q in namespace %q and %d available pods not found",
+		"daemonset %q in namespace %q and %d ready pods not found",
 		name, namespace, numberReady)
 }
 
