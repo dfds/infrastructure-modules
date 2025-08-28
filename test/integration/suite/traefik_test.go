@@ -201,22 +201,22 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 
 	// Delete resources
 
-	// if err := k8sClient.Delete(context.TODO(), middleware); err != nil {
-	// 	t.Logf("error deleting Middleware: %v", err)
-	// }
+	if err := k8sClient.Delete(context.TODO(), middleware); err != nil {
+		t.Logf("error deleting Middleware: %v", err)
+	}
 
-	// if err := k8sClient.Delete(context.TODO(), ingressRoute); err != nil {
-	// 	t.Logf("error deleting IngressRoute: %v", err)
-	// }
+	if err := k8sClient.Delete(context.TODO(), ingressRoute); err != nil {
+		t.Logf("error deleting IngressRoute: %v", err)
+	}
 
-	// deletePolicy := metav1.DeletePropagationForeground
-	// if err := deploymentsClient.Delete(context.TODO(), deployment.Name, metav1.DeleteOptions{
-	// 	PropagationPolicy: &deletePolicy,
-	// }); err != nil {
-	// 	t.Logf("error deleting Deployment: %v", err)
-	// }
+	deletePolicy := metav1.DeletePropagationForeground
+	if err := deploymentsClient.Delete(context.TODO(), deployment.Name, metav1.DeleteOptions{
+		PropagationPolicy: &deletePolicy,
+	}); err != nil {
+		t.Logf("error deleting Deployment: %v", err)
+	}
 
-	// if err := serviceClient.Delete(context.TODO(), service.Name, metav1.DeleteOptions{}); err != nil {
-	// 	t.Logf("error deleting Service: %v", err)
-	// }
+	if err := serviceClient.Delete(context.TODO(), service.Name, metav1.DeleteOptions{}); err != nil {
+		t.Logf("error deleting Service: %v", err)
+	}
 }
