@@ -83,7 +83,7 @@ func SetK8sAnnotation(gvr schema.GroupVersionResource, namespace, name, key, val
 	return nil
 }
 
-func AssertK8sDaemonSet(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberAvailable int) {
+func AssertK8sDaemonSet(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberReady int) {
 	check := func() bool {
 		resp, err := clientset.AppsV1().DaemonSets(namespace).Get(
 			context.Background(), name, metav1.GetOptions{})
@@ -93,9 +93,9 @@ func AssertK8sDaemonSet(t *testing.T, clientset *kubernetes.Clientset, namespace
 		}
 
 		// Assertions
-		if int(resp.Status.NumberAvailable) != numberAvailable {
-			t.Logf("expecting number available pods to be %d, found %d",
-				numberAvailable, resp.Status.NumberAvailable)
+		if int(resp.Status.NumberReady) != numberReady {
+			t.Logf("expecting number ready pods to be %d, found %d",
+				numberReady, resp.Status.NumberReady)
 			return false
 		}
 		return true
@@ -103,10 +103,10 @@ func AssertK8sDaemonSet(t *testing.T, clientset *kubernetes.Clientset, namespace
 
 	assert.Eventuallyf(t, check, defaultEventualTimeout, defaultEventualPeriod,
 		"daemonset %q in namespace %q and %d available pods not found",
-		name, namespace, numberAvailable)
+		name, namespace, numberReady)
 }
 
-func AssertK8sDeployment(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberAvailable int) {
+func AssertK8sDeployment(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberReady int) {
 	check := func() bool {
 		resp, err := clientset.AppsV1().Deployments(namespace).Get(
 			context.Background(), name, metav1.GetOptions{})
@@ -116,20 +116,20 @@ func AssertK8sDeployment(t *testing.T, clientset *kubernetes.Clientset, namespac
 		}
 
 		// Assertions
-		if int(resp.Status.AvailableReplicas) != numberAvailable {
-			t.Logf("expecting number of available replicas to be %d, found %d",
-				numberAvailable, resp.Status.AvailableReplicas)
+		if int(resp.Status.ReadyReplicas) != numberReady {
+			t.Logf("expecting number of ready replicas to be %d, found %d",
+				numberReady, resp.Status.ReadyReplicas)
 			return false
 		}
 		return true
 	}
 
 	assert.Eventuallyf(t, check, defaultEventualTimeout, defaultEventualPeriod,
-		"deployment %q in namespace %q and %d available replicas not found",
-		name, namespace, numberAvailable)
+		"deployment %q in namespace %q and %d ready replicas not found",
+		name, namespace, numberReady)
 }
 
-func AssertK8sDeploymentWithScaling(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, minNumberAvailable int) {
+func AssertK8sDeploymentWithScaling(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, minNumberReady int) {
 	check := func() bool {
 		resp, err := clientset.AppsV1().Deployments(namespace).Get(
 			context.Background(), name, metav1.GetOptions{})
@@ -139,20 +139,20 @@ func AssertK8sDeploymentWithScaling(t *testing.T, clientset *kubernetes.Clientse
 		}
 
 		// Assertions
-		if int(resp.Status.AvailableReplicas) < minNumberAvailable {
-			t.Logf("expecting number of available replicas to be greater than or equal %d, found %d",
-				minNumberAvailable, resp.Status.AvailableReplicas)
+		if int(resp.Status.ReadyReplicas) < minNumberReady {
+			t.Logf("expecting number of ready replicas to be greater than or equal %d, found %d",
+				minNumberReady, resp.Status.ReadyReplicas)
 			return false
 		}
 		return true
 	}
 
 	assert.Eventuallyf(t, check, defaultEventualTimeout, defaultEventualPeriod,
-		"deployment %q in namespace %q and %d minimum available replicas not found",
-		name, namespace, minNumberAvailable)
+		"deployment %q in namespace %q and %d minimum ready replicas not found",
+		name, namespace, minNumberReady)
 }
 
-func AssertK8sStatefulSet(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberAvailable int) {
+func AssertK8sStatefulSet(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberReady int) {
 	check := func() bool {
 		resp, err := clientset.AppsV1().StatefulSets(namespace).Get(
 			context.Background(), name, metav1.GetOptions{})
@@ -162,17 +162,17 @@ func AssertK8sStatefulSet(t *testing.T, clientset *kubernetes.Clientset, namespa
 		}
 
 		// Assertions
-		if int(resp.Status.AvailableReplicas) != numberAvailable {
-			t.Logf("expecting number of available replicas to be %d, found %d",
-				numberAvailable, resp.Status.AvailableReplicas)
+		if int(resp.Status.ReadyReplicas) != numberReady {
+			t.Logf("expecting number of ready replicas to be %d, found %d",
+				numberReady, resp.Status.ReadyReplicas)
 			return false
 		}
 		return true
 	}
 
 	assert.Eventuallyf(t, check, defaultEventualTimeout, defaultEventualPeriod,
-		"stateful set %q in namespace %q and %d available replicas not found",
-		name, namespace, numberAvailable)
+		"stateful set %q in namespace %q and %d ready replicas not found",
+		name, namespace, numberReady)
 }
 
 func AssertK8sEvent(t *testing.T, clientset *kubernetes.Clientset, namespace,
