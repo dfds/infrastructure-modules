@@ -6,9 +6,9 @@ require (
 	github.com/fluxcd/pkg/apis/meta v1.20.0
 	github.com/stretchr/testify v1.11.1
 	github.com/traefik/traefik/v3 v3.5.1
-	k8s.io/api v0.33.4
+	k8s.io/api v0.34.0
 	k8s.io/apimachinery v0.34.0
-	k8s.io/client-go v0.33.4
+	k8s.io/client-go v0.34.0
 	sigs.k8s.io/controller-runtime v0.21.0
 )
 
@@ -23,7 +23,6 @@ require (
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/google/gnostic-models v0.7.0 // indirect
-	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/go-github/v28 v28.1.1 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
@@ -70,7 +69,7 @@ require (
 )
 
 require (
-	github.com/emicklei/go-restful/v3 v3.12.0 // indirect; indirect // indirect
+	github.com/emicklei/go-restful/v3 v3.12.2 // indirect; indirect // indirect
 	github.com/go-openapi/jsonpointer v0.21.0 // indirect
 	github.com/go-openapi/jsonreference v0.21.0 // indirect; indirect // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect; indirect // indirect
@@ -100,6 +99,5 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect; indirect // indirect
 	k8s.io/utils v0.0.0-20250604170112-4c0f3b243397 // indirect; indirect // indirect
-	sigs.k8s.io/structured-merge-diff/v4 v4.7.0 // indirect; indirect // indirect
 	sigs.k8s.io/yaml v1.6.0 // indirect; indirect // indirect
 )
