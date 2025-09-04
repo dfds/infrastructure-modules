@@ -1,7 +1,7 @@
 resource "azuread_application" "app" {
   display_name    = var.name
   identifier_uris = var.identifier_uris
-  owners          = [data.azuread_client_config.current.object_id]
+  owners          = local.azuread_application_owner_ids
 
   web {
     homepage_url  = var.homepage_url
