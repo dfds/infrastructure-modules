@@ -330,7 +330,7 @@ module "eks_addons" {
 }
 
 module "k8s_priority_class" {
-  source         = "../../_sub/compute/k8s-priority-class"
+  source = "../../_sub/compute/k8s-priority-class"
 }
 
 module "param_kubeconfig_admin" {
