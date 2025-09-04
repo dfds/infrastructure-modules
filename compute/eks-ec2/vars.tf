@@ -182,7 +182,7 @@ variable "eks_managed_nodegroups" {
     instance_types             = optional(list(string), ["t3.small"])
     use_spot_instances         = optional(bool, false)
     disk_size                  = optional(number, 128)
-    disk_type                  = optional(string, "gp2")
+    disk_type                  = optional(string, "gp3")
     desired_size_per_subnet    = optional(number, 0)
     gpu_ami                    = optional(bool, false)
     availability_zones         = optional(list(string), [])
