@@ -119,6 +119,12 @@ variable "alb_az_app_registration_identifier_urls" {
   nullable = true
 }
 
+variable "alb_az_app_registration_additional_owner_ids" {
+  description = "List of additional owner object ID for the Azure AD application used by the Auth ALB"
+  type        = list(string)
+  default     = []
+}
+
 # --------------------------------------------------
 # Blaster
 # --------------------------------------------------

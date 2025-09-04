@@ -68,3 +68,9 @@ variable "groups_claim" {
     condition     = alltrue([for value in var.groups_claim : contains(["None", "SecurityGroup", "All", "DirectoryRole", "ApplicationGroup"], value)])
   }
 }
+
+variable "additional_owner_ids" {
+  description = "List of additional owner object ID for the Azure AD application"
+  type        = list(string)
+  default     = []
+}
