@@ -32,7 +32,7 @@ jobs:
           github_token: ${{ secrets.SHARED_WORKFLOW_HOUSEKEEPING }}
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: ${{ secrets.AWS_QA_ROLE_TO_ASSUME }}
           role-session-name: nuke-qa-session
@@ -89,7 +89,7 @@ jobs:
           path: ./qa-nuke-config
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: ${{ secrets.AWS_QA_ROLE_TO_ASSUME }}
           role-session-name: nuke-qa-session
