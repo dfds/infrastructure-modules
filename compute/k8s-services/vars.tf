@@ -414,18 +414,6 @@ variable "atlantis_data_storage" {
   default     = "5Gi"
 }
 
-variable "atlantis_environment" {
-  type        = string
-  description = "Environment for atlantis"
-  default     = ""
-}
-
-variable "atlantis_enable_github_secrets" {
-  type        = bool
-  default     = true
-  description = "Enable Github secrets for Atlantis"
-}
-
 # --------------------------------------------------
 # Atlantis variables
 # --------------------------------------------------

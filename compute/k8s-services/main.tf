@@ -81,13 +81,13 @@ module "traefik_alb_cert" {
 }
 
 module "traefik_alb_auth_appreg" {
-  source                = "../../_sub/security/azure-app-registration"
-  count                 = var.traefik_alb_auth_deploy ? 1 : 0
-  name                  = "Kubernetes EKS ${local.eks_fqdn} cluster"
-  identifier_uris       = var.alb_az_app_registration_identifier_urls != null ? var.alb_az_app_registration_identifier_urls : ["https://${local.eks_fqdn}"]
-  homepage_url          = "https://${local.eks_fqdn}"
-  redirect_uris         = local.traefik_alb_auth_appreg_reply_urls
-  additional_owner_ids  = var.alb_az_app_registration_additional_owner_ids
+  source               = "../../_sub/security/azure-app-registration"
+  count                = var.traefik_alb_auth_deploy ? 1 : 0
+  name                 = "Kubernetes EKS ${local.eks_fqdn} cluster"
+  identifier_uris      = var.alb_az_app_registration_identifier_urls != null ? var.alb_az_app_registration_identifier_urls : ["https://${local.eks_fqdn}"]
+  homepage_url         = "https://${local.eks_fqdn}"
+  redirect_uris        = local.traefik_alb_auth_appreg_reply_urls
+  additional_owner_ids = var.alb_az_app_registration_additional_owner_ids
 }
 
 module "traefik_alb_auth" {
@@ -440,15 +440,13 @@ module "atlantis_deployment" {
 }
 
 module "atlantis_github_configuration" {
-  source                = "../../_sub/security/atlantis-github-configuration"
-  count                 = var.atlantis_deploy ? 1 : 0
-  dashboard_password    = module.atlantis_deployment[0].dashboard_password
-  enable_github_secrets = var.atlantis_enable_github_secrets
-  environment           = var.atlantis_environment
-  github_repositories   = var.atlantis_github_repositories
-  ingress_hostname      = var.atlantis_ingress
-  webhook_events        = var.atlantis_webhook_events
-  webhook_secret        = module.atlantis_deployment[0].webhook_secret
+  source              = "../../_sub/security/atlantis-github-configuration"
+  count               = var.atlantis_deploy ? 1 : 0
+  dashboard_password  = module.atlantis_deployment[0].dashboard_password
+  github_repositories = var.atlantis_github_repositories
+  ingress_hostname    = var.atlantis_ingress
+  webhook_events      = var.atlantis_webhook_events
+  webhook_secret      = module.atlantis_deployment[0].webhook_secret
 
   depends_on = [module.atlantis_deployment]
 
