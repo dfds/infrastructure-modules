@@ -3,17 +3,6 @@ variable "dashboard_password" {
   type        = string
 }
 
-variable "enable_github_secrets" {
-  type        = bool
-  default     = true
-  description = "Enable Github secrets for Atlantis"
-}
-
-variable "environment" {
-  type        = string
-  description = "Environment"
-}
-
 variable "github_repositories" {
   description = "List of repositories to whitelist for Atlantis"
   type        = list(string)
