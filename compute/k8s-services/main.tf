@@ -189,6 +189,65 @@ module "traefik_alb_anon" {
   green_variant_weight            = var.traefik_green_variant_weight
 }
 
+module "nlb" {
+  source = "../../_sub/compute/eks-nlb"
+  # deploy  = var.traefik_nlb_deploy ? 1 : 0
+  cluster_name   = "${var.eks_cluster_name}-traefik-nlb"
+  nodes_sg_id = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
+  vpc_id = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
+  subnet_ids =data.terraform_remote_state.cluster.outputs.eks_control_subnet_ids #data.terraform_remote_state.cluster.outputs.eks_control_subnet_ids #
+  autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
+  target_http_port = var.traefik_nlb_http_nodeport
+  target_admin_port = var.traefik_nlb_admin_nodeport
+  health_check_path = "/ping"
+}
+
+module "traefik_nlb_flux_manifests" {
+  source                  = "../../_sub/compute/k8s-traefik-flux"
+  count                   = var.traefik_nlb_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  deploy_name             = "traefik-nlb"
+  namespace               = "traefik-nlb"
+  helm_chart_version      = var.traefik_nlb_helm_chart_version
+  replicas                = 1 # length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids) cannot use the built-in Traefik ACME (Let's Encrypt) provider running multiple replicas
+  http_nodeport           = var.traefik_nlb_http_nodeport
+  admin_nodeport          = var.traefik_nlb_admin_nodeport
+  github_owner            = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  additional_args         = var.traefik_nlb_additional_args
+  enable_certificate_resolver = var.traefik_nlb_enable_certificate_resolver
+  certificate_resolver_email = var.traefik_nlb_certificate_resolver_email
+  certificate_resolver_storage_enabled = var.traefik_nlb_certificate_resolver_storage_enabled
+  certificate_resolver_storage_class = var.traefik_nlb_certificate_resolver_storage_class
+  certificate_resolver_storage_access_mode = var.traefik_nlb_certificate_resolver_storage_access_mode
+  certificate_resolver_storage_size = var.traefik_nlb_certificate_resolver_storage_size
+  certficate_resolver_args = var.traefik_nlb_certficate_resolver_args
+  certificate_resolver_is_staging = var.traefik_nlb_certificate_resolver_is_staging
+  dashboard_ingress_host  = "traefik-nlb.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
+  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  prune                   = var.fluxcd_prune
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
+}
+
+module "traefik_nlb_dns_for_traefik_nlb_dashboard" {
+  source       = "../../_sub/network/route53-record"
+  count        = var.traefik_nlb_deploy ? 1 : 0
+  deploy       = true
+  zone_id      = local.workload_dns_zone_id
+  record_name  = ["traefik-nlb.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = "${module.nlb.nlb_fqdn}."
+}
+
 module "traefik_alb_anon_dns" {
   source       = "../../_sub/network/route53-record"
   deploy       = var.traefik_alb_anon_deploy
