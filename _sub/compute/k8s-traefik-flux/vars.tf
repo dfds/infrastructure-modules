@@ -85,3 +85,48 @@ variable "prune" {
   default     = true
   description = "Enable Garbage collection"
 }
+
+variable "enable_certificate_resolver" {
+  type = bool
+  default = false
+  description = "Enable the use of a certificate resolver (e.g. for Let's Encrypt)"
+}
+
+variable "certificate_resolver_email" {
+  type = string
+  default = ""
+  description = "Email address to use for the certificate resolver registration (e.g. Let's Encrypt)"
+}
+
+variable "certificate_resolver_storage_enabled" {
+  type = bool
+  default = false
+  description = "Enable persistent storage for the certificate resolver (e.g. for Let's Encrypt)"
+}
+variable "certificate_resolver_storage_class" {
+  type = string
+  default = "gp2"
+  description = "Storage class to use for the certificate resolver persistent storage (e.g. for Let's Encrypt)"
+}
+variable "certificate_resolver_storage_access_mode" {
+  type = string
+  default = "ReadWriteOnce"
+  description = "Access mode to use for the certificate resolver persistent storage (e.g. for Let's Encrypt)"
+}
+variable "certificate_resolver_storage_size" {
+  type = string
+  default = "128Mi"
+  description = "Size of the persistent storage to use for the certificate resolver (e.g. for Let's Encrypt)"
+}
+
+variable "certficate_resolver_args" {
+  type = list(any)
+  default = []
+  description = "Additional arguments to configure the certificate resolver (e.g. for Let's Encrypt)"
+}
+
+variable "certificate_resolver_is_staging" {
+  type = bool
+  default = false
+  description = "Use the staging environment for the certificate resolver (e.g. for Let's Encrypt)"
+}
