@@ -83,6 +83,12 @@ data "aws_iam_policy_document" "preventive" {
       "guardduty:UpdateThreatIntelSet",
     ]
     resources = ["*"]
+
+    condition {
+      test     = "StringNotLike"
+      variable = "aws:PrincipalArn"
+      values   = ["arn:aws:iam::*:role/OrgRole"]
+    }
   }
 
   statement {
