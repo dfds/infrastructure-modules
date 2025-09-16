@@ -233,7 +233,7 @@ module "eks_managed_workers_route_table_assoc_nat_gateway" {
 # --------------------------------------------------
 
 resource "aws_ssm_parameter" "dockerhub" {
-  name = "/eks/${var.cluster_name}/dockerhub"
+  name = "/eks/${var.eks_cluster_name}/dockerhub"
   type = "SecureString"
   value = jsonencode({username = var.docker_hub_username, password = var.docker_hub_password})
 }
