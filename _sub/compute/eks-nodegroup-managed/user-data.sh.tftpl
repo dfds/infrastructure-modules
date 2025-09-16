@@ -10,47 +10,17 @@ set -o xtrace
 echo fs.inotify.max_user_watches=${worker_inotify_max_user_watches} | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
 
-%{ if docker_hub_password != "" && docker_hub_username != "" && essentials_url != "" ~}
-cd /tmp
-wget -O static-credential-provider.tar.gz ${essentials_url}/static-credential-provider_0.1.5_linux_amd64.tar.gz
-sudo tar xzf static-credential-provider.tar.gz -C /etc/eks/image-credential-provider/
-rm static-credential-provider.tar.gz
-sudo cat >/etc/eks/image-credential-provider/dfds-config.json <<EOL
-{
-  "apiVersion": "kubelet.config.k8s.io/v1",
-  "kind": "CredentialProviderConfig",
-  "providers": [
-    {
-      "name": "ecr-credential-provider",
-      "matchImages": [
-        "*.dkr.ecr.*.amazonaws.com",
-        "*.dkr-ecr.*.on.aws",
-        "*.dkr.ecr.*.amazonaws.com.cn",
-        "*.dkr-ecr.*.on.amazonwebservices.com.cn",
-        "*.dkr.ecr-fips.*.amazonaws.com",
-        "*.dkr-ecr-fips.*.on.aws",
-        "*.dkr.ecr.*.c2s.ic.gov",
-        "*.dkr.ecr.*.sc2s.sgov.gov",
-        "*.dkr.ecr.*.cloud.adc-e.uk",
-        "*.dkr.ecr.*.csp.hci.ic.gov"
-      ],
-      "defaultCacheDuration": "12h",
-      "apiVersion": "credentialprovider.kubelet.k8s.io/v1"
-    },
-    {
-      "name": "static-credential-provider",
-      "matchImages": ["docker.io", "*.docker.io"],
-      "defaultCacheDuration": "12h",
-      "apiVersion": "credentialprovider.kubelet.k8s.io/v1",
-      "env": [
-        {"name": "KSCP_REGISTRY_USERNAME", "value": "${docker_hub_username}"},
-        {"name": "KSCP_REGISTRY_PASSWORD", "value": "${docker_hub_password}"}
-      ]
-    }
-  ]
-}
-EOL
-%{ endif ~}
+DOCKER_HUB_CREDS=$(aws ssm get-parameter --name ${docker_hub_creds} --with-decrypt --query 'Parameter.Value' --output text)
+DOCKER_HUB_USER=$(echo "$${DOCKER_HUB_CREDS}" | jq .username)
+DOCKER_HUB_PASSWD=$(echo "$${DOCKER_HUB_CREDS}" | jq .password)
+cat << EOF >> /etc/containerd/config.toml
+  [plugins."io.containerd.grpc.v1.cri".registry.configs]
+    [plugins."io.containerd.grpc.v1.cri".registry.configs."registry-1.docker.io".auth]
+      username = $${DOCKER_HUB_USER}
+      password = $${DOCKER_HUB_PASSWD}
+EOF
+
+service containerd restart
 
 --BOUNDARY
 Content-Type: application/node.eks.aws
@@ -65,11 +35,6 @@ spec:
         certificateAuthority: ${eks_certificate_authority}
         cidr: ${cidr}
     kubelet:
-        flags:
-          - "--image-credential-provider-bin-dir=/etc/eks/image-credential-provider/"
-%{ if docker_hub_password != "" && docker_hub_username != "" && essentials_url != "" ~}
-          - "--image-credential-provider-config=/etc/eks/image-credential-provider/dfds-config.json"
-%{ endif ~}
         config:
 %{ if vpc_cni_prefix_delegation_enabled }
             maxPods: ${max_pods}

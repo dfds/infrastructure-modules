@@ -19,9 +19,7 @@ resource "aws_launch_template" "eks" {
     kube_memory : var.kube_reserved_memory,
     sys_cpu : var.system_reserved_cpu,
     sys_memory : var.system_reserved_memory,
-    docker_hub_username : var.docker_hub_username,
-    docker_hub_password : var.docker_hub_password,
-    essentials_url : var.essentials_url,
+    docker_hub_creds : aws_ssm_parameter.dockerhub.name
   }))
   key_name               = var.ec2_ssh_key
   update_default_version = true
@@ -102,4 +100,10 @@ resource "aws_autoscaling_schedule" "eks" {
   min_size               = local.asg_min_size
   max_size               = local.asg_max_size
   desired_capacity       = 0
+}
+
+resource "aws_ssm_parameter" "dockerhub" {
+  name = "/eks/${var.cluster_name}/dockerhub"
+  type = "SecureString"
+  value = jsonencode({username = var.docker_hub_username, password = var.docker_hub_password})
 }

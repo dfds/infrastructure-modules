@@ -274,7 +274,6 @@ module "eks_managed_workers_node_group" {
   # Docker Hub credentials
   docker_hub_username = var.docker_hub_username
   docker_hub_password = var.docker_hub_password
-  essentials_url      = var.essentials_url
 
   depends_on = [module.eks_cluster]
 }
