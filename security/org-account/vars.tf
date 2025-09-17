@@ -58,42 +58,6 @@ variable "tags" {
   default     = {}
 }
 
-variable "iam_github_oidc_enabled" {
-  type        = bool
-  description = "Enable or disable the creation of the IAM role for GitHub OIDC"
-  default     = false
-}
-
-variable "iam_github_oidc_repositories" {
-  type = list(object({
-    repository_name = string
-    refs            = list(string)
-  }))
-  default     = []
-  description = "List of repositories to authenticate to AWS from. Each object contains repository name and list of git refs that should be allowed to deploy from"
-}
-
-variable "iam_github_oidc_policy_json" {
-  type = list(object({
-    actions   = list(string)
-    resources = list(string)
-  }))
-  default     = []
-  description = "List of allowed actions for the oidc-role"
-}
-
-variable "iam_github_oidc_role_name" {
-  type        = string
-  default     = "oidc-role"
-  description = "Name of the role to create"
-}
-
-variable "iam_github_oidc_policy_name" {
-  type        = string
-  default     = "oidc-access"
-  description = "Name of the policy to create"
-}
-
 variable "steampipe_audit_role_name" {
   type        = string
   description = "Name of the IAM role used by Steampipe for reading resources"

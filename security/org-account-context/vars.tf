@@ -203,24 +203,6 @@ variable "aws_region_2" {
   default     = "eu-west-1"
 }
 
-variable "repositories" {
-  type = list(object({
-    repository_name = string
-    refs            = list(string)
-  }))
-  description = "List of repositories to authenticate to AWS from. Each object contains repository name and list of refs that should be allowed to deploy from"
-  default     = []
-}
-
-variable "oidc_role_access" {
-  type = list(object({
-    actions   = list(string)
-    resources = list(string)
-  }))
-  description = "List of allowed actions for the oidc-role"
-  default     = []
-}
-
 variable "deploy_backup" {
   type        = bool
   description = "Whether to deploy AWS Backup"
