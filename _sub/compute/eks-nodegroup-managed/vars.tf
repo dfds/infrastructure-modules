@@ -93,24 +93,15 @@ variable "worker_inotify_max_user_watches" {
   type = number
 }
 
-variable "docker_hub_username" {
+variable "docker_hub_ssm_path" {
   type        = string
-  description = "Docker Hub username for pulling images"
-  sensitive   = true
-  default     = ""
-}
-
-variable "docker_hub_password" {
-  type        = string
-  description = "Docker Hub password for pulling images"
-  sensitive   = true
-  default     = ""
+  description = "Docker Hub AWS SSM Parameter Store path"
 }
 
 variable "essentials_url" {
   type        = string
   description = "HTTP server that provides essentials"
-  default     = ""
+  default = "https://dfds-k8s-cluster-essentials.s3.eu-central-1.amazonaws.com"
 }
 
 # ------------------------------------------------------
