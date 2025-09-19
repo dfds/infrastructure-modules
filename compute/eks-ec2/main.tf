@@ -279,7 +279,7 @@ module "eks_managed_workers_node_group" {
 
   # Docker Hub credentials
   docker_hub_ssm_path = aws_ssm_parameter.dockerhub.name
-  essentials_url      = var.essentials_url == "" ? null : var.essentials_url
+  essentials_url      = var.essentials_url
 
   depends_on = [module.eks_cluster]
 }

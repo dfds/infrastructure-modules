@@ -101,7 +101,6 @@ variable "docker_hub_ssm_path" {
 variable "essentials_url" {
   type        = string
   description = "HTTP server that provides essentials"
-  default = "https://dfds-k8s-cluster-essentials.s3.eu-central-1.amazonaws.com"
 }
 
 # ------------------------------------------------------

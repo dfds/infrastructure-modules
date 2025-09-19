@@ -288,7 +288,7 @@ variable "docker_hub_password" {
 variable "essentials_url" {
   type        = string
   description = "HTTP server that provides essentials"
-  default     = ""
+  default     = "https://dfds-k8s-cluster-essentials.s3.eu-central-1.amazonaws.com"
 }
 
 # --------------------------------------------------
