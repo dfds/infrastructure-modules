@@ -431,9 +431,12 @@ module "vpc_peering_capability_eu_west_1" {
   for_each                     = { for k, v in var.vpc_peering_settings_eu_west_1 : k => v if var.deploy_vpc_peering_eu_west_1 }
   regional_postfix             = var.deploy_vpc_peering_eu_west_1 && var.deploy_vpc_peering_eu_central_1 ? true : false
   ipam_pool                    = lookup(var.ipam_pools, "eu-west-1", "")
+  ipam_pool_natgw              = lookup(var.ipam_pools_natgw, "eu-west-1", "")
   ipam_cidr_enable             = each.value.ipam_cidr_enable
   ipam_cidr_prefix             = each.value.ipam_cidr_prefix
   ipam_subnet_bits             = each.value.ipam_subnet_bits
+  ipam_subnet_bits_natgw       = each.value.ipam_subnet_bits
+  nat_gw_enable                = each.value.nat_gw_enable
   cidr_block_vpc               = each.value.assigned_cidr_block_vpc
   cidr_block_subnet_a          = each.value.assigned_cidr_block_subnet_a
   cidr_block_subnet_b          = each.value.assigned_cidr_block_subnet_b
@@ -472,9 +475,12 @@ module "vpc_peering_capability_eu_central_1" {
   for_each                     = { for k, v in var.vpc_peering_settings_eu_central_1 : k => v if var.deploy_vpc_peering_eu_central_1 }
   regional_postfix             = var.deploy_vpc_peering_eu_west_1 && var.deploy_vpc_peering_eu_central_1 ? true : false
   ipam_pool                    = lookup(var.ipam_pools, "eu-central-1", "")
+  ipam_pool_natgw              = lookup(var.ipam_pools_natgw, "eu-central-1", "")
   ipam_cidr_enable             = each.value.ipam_cidr_enable
   ipam_cidr_prefix             = each.value.ipam_cidr_prefix
   ipam_subnet_bits             = each.value.ipam_subnet_bits
+  ipam_subnet_bits_natgw       = each.value.ipam_subnet_bits
+  nat_gw_enable                = each.value.nat_gw_enable
   cidr_block_vpc               = each.value.assigned_cidr_block_vpc
   cidr_block_subnet_a          = each.value.assigned_cidr_block_subnet_a
   cidr_block_subnet_b          = each.value.assigned_cidr_block_subnet_b

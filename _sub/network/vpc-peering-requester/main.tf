@@ -20,8 +20,10 @@ resource "aws_vpc_ipam_preview_next_cidr" "this" {
 }
 
 locals {
-  subnets            = var.ipam_cidr_enable ? cidrsubnets(aws_vpc_ipam_preview_next_cidr.this[0].cidr, var.ipam_subnet_bits...) : []
+  subnets            = var.ipam_cidr_enable ? slice(cidrsubnets(aws_vpc_ipam_preview_next_cidr.this[0].cidr, concat(var.ipam_subnet_bits, var.ipam_subnet_bits_natgw)...), 0, (length(var.ipam_subnet_bits) + length(var.ipam_subnet_bits_natgw)) - length(var.ipam_subnet_bits_natgw)) : []
   availability_zones = slice(data.aws_availability_zones.available.names, 0, length(var.ipam_subnet_bits))
+  subnets_natgw = var.ipam_cidr_enable && var.nat_gw_enable ? slice(cidrsubnets(aws_vpc_ipam_preview_next_cidr.this[0].cidr, concat(var.ipam_subnet_bits, var.ipam_subnet_bits_natgw)...), length(var.ipam_subnet_bits), ((length(var.ipam_subnet_bits) + length(var.ipam_subnet_bits_natgw)))) : []
+  availability_zones_natgw = slice(data.aws_availability_zones.available.names, 0, length(var.ipam_subnet_bits_natgw))
 }
 
 resource "aws_vpc" "peering" {
@@ -68,6 +70,34 @@ resource "aws_subnet" "this" {
 
   tags = merge(var.tags, {
     Name = "peering-${element(local.availability_zones, count.index)}"
+  })
+}
+
+resource "aws_subnet" "this_natgw" {
+  count                   = var.ipam_cidr_enable && var.nat_gw_enable ? length(var.ipam_subnet_bits_natgw) : 0
+  vpc_id                  = aws_vpc.peering.id
+  map_public_ip_on_launch = var.map_public_ip_on_launch
+  cidr_block              = element(local.subnets_natgw, count.index)
+  availability_zone       = element(local.availability_zones_natgw, count.index)
+
+  tags = merge(var.tags, {
+    Name = "peering-natgw-${element(local.availability_zones_natgw, count.index)}"
+  })
+}
+
+resource "aws_nat_gateway" "natgw" {
+  count                   = var.ipam_cidr_enable && var.nat_gw_enable ? length(var.ipam_subnet_bits_natgw) : 0
+  allocation_id = aws_eip.natgw[count.index].id
+  subnet_id = aws_subnet.this_natgw[count.index].id
+}
+
+resource "aws_eip" "natgw" {
+  count = var.ipam_cidr_enable && var.nat_gw_enable ? length(var.ipam_subnet_bits_natgw) : 0
+
+  domain = "vpc"
+
+  tags = merge(var.tags, {
+    Name = "peering-natgw-${element(local.availability_zones_natgw, count.index)}"
   })
 }
 
@@ -360,7 +390,15 @@ resource "aws_vpc_peering_connection" "capability" {
 }
 
 resource "aws_route" "capability_to_shared" {
+  count = var.nat_gw_enable ? 0 : 1
   route_table_id            = aws_vpc.peering.main_route_table_id
+  destination_cidr_block    = var.peer_cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.capability.id
+}
+
+resource "aws_route" "capability_to_shared_natgw" {
+  count = var.nat_gw_enable && var.ipam_cidr_enable ? length(var.ipam_subnet_bits) : 0
+  route_table_id            = aws_route_table.standard[count.index].id
   destination_cidr_block    = var.peer_cidr_block
   vpc_peering_connection_id = aws_vpc_peering_connection.capability.id
 }
@@ -374,7 +412,54 @@ resource "aws_internet_gateway" "gw" {
 }
 
 resource "aws_route" "default" {
+  count = var.nat_gw_enable ? 0 : 1
   route_table_id         = aws_vpc.peering.main_route_table_id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.gw.id
+}
+
+# Route tables when using NAT Gateway
+resource "aws_route_table" "standard" {
+  count  = var.nat_gw_enable && var.ipam_cidr_enable ? length(var.ipam_subnet_bits) : 0
+  vpc_id = aws_vpc.peering.id
+
+  tags = merge(var.tags, {
+    Name = "peering-${element(local.availability_zones, count.index)}"
+  })
+}
+
+resource "aws_route_table_association" "standard" {
+  count  = var.nat_gw_enable && var.ipam_cidr_enable ? length(var.ipam_subnet_bits) : 0
+  subnet_id = aws_subnet.this[count.index].id
+  route_table_id = aws_route_table.standard[count.index].id
+}
+
+resource "aws_route_table" "natgw" {
+  count  = var.nat_gw_enable && var.ipam_cidr_enable ? length(var.ipam_subnet_bits_natgw) : 0
+  vpc_id = aws_vpc.peering.id
+
+  tags = merge(var.tags, {
+    Name = "natgw-${element(local.availability_zones_natgw, count.index)}"
+  })
+}
+
+resource "aws_route_table_association" "natgw" {
+  count  = var.nat_gw_enable && var.ipam_cidr_enable ? length(var.ipam_subnet_bits_natgw) : 0
+  subnet_id = aws_subnet.this_natgw[count.index].id
+  route_table_id = aws_route_table.natgw[count.index].id
+}
+
+# Default route for standard subnets when using NAT Gateway
+resource "aws_route" "standard" {
+  count = var.nat_gw_enable && var.ipam_cidr_enable ? length(var.ipam_subnet_bits) : 0
+  route_table_id         = aws_route_table.standard[count.index].id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id             = aws_nat_gateway.natgw[count.index].id
+}
+
+resource "aws_route" "natgw" {
+  count = var.nat_gw_enable && var.ipam_cidr_enable ? length(var.ipam_subnet_bits_natgw) : 0
+  route_table_id         = aws_route_table.natgw[count.index].id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.gw.id
 }
