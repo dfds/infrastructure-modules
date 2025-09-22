@@ -11,8 +11,8 @@ echo fs.inotify.max_user_watches=${worker_inotify_max_user_watches} | sudo tee -
 sudo sysctl -p
 
 DOCKER_HUB_CREDS=$(aws ssm get-parameter --name ${docker_hub_ssm_path} --with-decrypt --query 'Parameter.Value' --output text)
-DOCKER_HUB_USER=$(echo "$${DOCKER_HUB_CREDS}" | jq .username)
-DOCKER_HUB_PASSWD=$(echo "$${DOCKER_HUB_CREDS}" | jq .password)
+DOCKER_HUB_USER=$(echo "$${DOCKER_HUB_CREDS}" | jq -r .username)
+DOCKER_HUB_PASSWD=$(echo "$${DOCKER_HUB_CREDS}" | jq -r .password)
 
 cd /tmp
 wget -O static-credential-provider.tar.gz ${essentials_url}/static-credential-provider_0.1.5_linux_amd64.tar.gz
