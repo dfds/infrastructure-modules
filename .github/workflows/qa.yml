@@ -133,8 +133,8 @@ jobs:
           ARM_SUBSCRIPTION_ID: op://CloudEng-General/Terraform Azure App Service Principal/subscription_id
           ARM_TENANT_ID: op://CloudEng-General/Terraform Azure App Service Principal/tenant_id
           TF_VAR_atlantis_github_token: op://CloudEng-General/Github account devex-sa/Tokens/atlantis-qa
-          TF_VAR_docker_hub_password: op://CloudEng-General/Docker Cloud/username
-          TF_VAR_docker_hub_username: op://CloudEng-General/Docker Cloud/password
+          TF_VAR_docker_hub_username: op://CloudEng-General/Docker Cloud/username
+          TF_VAR_docker_hub_password: op://CloudEng-General/Docker Cloud/password
           TF_VAR_eks_addon_awsebscsidriver_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn
           TF_VAR_fluxcd_bootstrap_repo_owner_token: op://CloudEng-General/Github account devex-sa/Tokens/flux-qa
           TF_VAR_grafana_agent_api_token: op://CloudEng-General/Grafana.com - sandbox/grafana_token
