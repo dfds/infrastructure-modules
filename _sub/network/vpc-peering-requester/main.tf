@@ -20,7 +20,7 @@ resource "aws_vpc_ipam_preview_next_cidr" "this" {
 }
 
 locals {
-  subnets            = var.ipam_cidr_enable ? slice(cidrsubnets(aws_vpc_ipam_preview_next_cidr.this[0].cidr, concat(var.ipam_subnet_bits, var.ipam_subnet_bits_natgw)...), 0, (length(var.ipam_subnet_bits) + length(var.ipam_subnet_bits_natgw)) - length(var.ipam_subnet_bits_natgw)) : []
+  subnets = var.ipam_cidr_enable ? cidrsubnets(aws_vpc_ipam_preview_next_cidr.this[0].cidr, var.ipam_subnet_bits...) : []
   availability_zones = slice(data.aws_availability_zones.available.names, 0, length(var.ipam_subnet_bits))
   subnets_natgw = var.ipam_cidr_enable && var.nat_gw_enable ? slice(cidrsubnets(aws_vpc_ipam_preview_next_cidr.this[0].cidr, concat(var.ipam_subnet_bits, var.ipam_subnet_bits_natgw)...), length(var.ipam_subnet_bits), ((length(var.ipam_subnet_bits) + length(var.ipam_subnet_bits_natgw)))) : []
   availability_zones_natgw = slice(data.aws_availability_zones.available.names, 0, length(var.ipam_subnet_bits_natgw))
