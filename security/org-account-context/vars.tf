@@ -337,7 +337,7 @@ variable "vpc_peering_settings_eu_west_1" {
     ipam_cidr_enable             = optional(bool, false)
     ipam_cidr_prefix             = optional(string, "26")
     ipam_subnet_bits             = optional(list(number), [1, 1])
-    ipam_subnet_bits_natgw      = optional(list(number), [1, 1])
+    ipam_subnet_bits_natgw       = optional(list(number), [1, 1])
     nat_gw_enable                = optional(bool, false)
   }))
   description = <<EOF
@@ -366,7 +366,7 @@ EOF
       ipam_cidr_enable             = false
       ipam_cidr_prefix             = "26"
       ipam_subnet_bits             = [1, 1]
-      ipam_subnet_bits_natgw      = [1, 1]
+      ipam_subnet_bits_natgw       = [1, 1]
       nat_gw_enable                = false
     }
   }
@@ -385,7 +385,7 @@ variable "vpc_peering_settings_eu_central_1" {
     ipam_cidr_enable             = optional(bool, false)
     ipam_cidr_prefix             = optional(string, "26")
     ipam_subnet_bits             = optional(list(number), [1, 1])
-    ipam_subnet_bits_natgw      = optional(list(number), [1, 1])
+    ipam_subnet_bits_natgw       = optional(list(number), [1, 1])
     nat_gw_enable                = optional(bool, false)
   }))
   description = <<EOF
@@ -414,7 +414,7 @@ EOF
       ipam_cidr_enable             = false
       ipam_cidr_prefix             = "26"
       ipam_subnet_bits             = [1, 1]
-      ipam_subnet_bits_natgw      = [1, 1]
+      ipam_subnet_bits_natgw       = [1, 1]
       nat_gw_enable                = false
     }
   }
