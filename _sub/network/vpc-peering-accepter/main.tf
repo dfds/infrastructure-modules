@@ -47,6 +47,6 @@ resource "aws_vpc_peering_connection_accepter" "shared" {
   auto_accept               = true
 
   tags = merge(var.tags, {
-    Name = "${var.capability_id}_${data.aws_region.current.name}"
+    Name = "${var.capability_id}_${data.aws_region.current.region}"
   })
 }

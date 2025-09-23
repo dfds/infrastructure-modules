@@ -10,7 +10,7 @@ data "aws_availability_zones" "available" {
 }
 
 locals {
-  regional_postfix = var.regional_postfix ? "-${data.aws_region.current.name}" : ""
+  regional_postfix = var.regional_postfix ? "-${data.aws_region.current.region}" : ""
 }
 
 resource "aws_vpc_ipam_preview_next_cidr" "this" {
@@ -106,7 +106,7 @@ resource "aws_subnet" "a" {
   vpc_id                  = aws_vpc.peering.id
   map_public_ip_on_launch = var.map_public_ip_on_launch
   cidr_block              = var.cidr_block_subnet_a
-  availability_zone       = "${data.aws_region.current.name}a"
+  availability_zone       = "${data.aws_region.current.region}a"
 
   tags = merge(var.tags, {
     Name = "peering-a"
@@ -119,7 +119,7 @@ resource "aws_subnet" "b" {
   vpc_id                  = aws_vpc.peering.id
   map_public_ip_on_launch = var.map_public_ip_on_launch
   cidr_block              = var.cidr_block_subnet_b
-  availability_zone       = "${data.aws_region.current.name}b"
+  availability_zone       = "${data.aws_region.current.region}b"
 
   tags = merge(var.tags, {
     Name = "peering-b"
@@ -198,7 +198,7 @@ resource "aws_vpc_security_group_ingress_rule" "sec_sec" {
 resource "aws_vpc_endpoint" "ssm" {
   count             = var.deploy_vpc_peering_endpoints ? 1 : 0
   vpc_id            = aws_vpc.peering.id
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.ssm"
+  service_name      = "com.amazonaws.${data.aws_region.current.region}.ssm"
   vpc_endpoint_type = "Interface"
 
   private_dns_enabled = true
@@ -217,14 +217,14 @@ resource "aws_vpc_endpoint" "ssm" {
   ]
 
   tags = merge(var.tags, {
-    Name = "peering-com.amazonaws.${data.aws_region.current.name}.ssm"
+    Name = "peering-com.amazonaws.${data.aws_region.current.region}.ssm"
   })
 }
 
 resource "aws_vpc_endpoint" "ssmmessages" {
   count             = var.deploy_vpc_peering_endpoints ? 1 : 0
   vpc_id            = aws_vpc.peering.id
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.ssmmessages"
+  service_name      = "com.amazonaws.${data.aws_region.current.region}.ssmmessages"
   vpc_endpoint_type = "Interface"
 
   private_dns_enabled = true
@@ -243,14 +243,14 @@ resource "aws_vpc_endpoint" "ssmmessages" {
   ]
 
   tags = merge(var.tags, {
-    Name = "peering-com.amazonaws.${data.aws_region.current.name}.ssmmessages"
+    Name = "peering-com.amazonaws.${data.aws_region.current.region}.ssmmessages"
   })
 }
 
 resource "aws_vpc_endpoint" "ec2" {
   count             = var.deploy_vpc_peering_endpoints ? 1 : 0
   vpc_id            = aws_vpc.peering.id
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.ec2"
+  service_name      = "com.amazonaws.${data.aws_region.current.region}.ec2"
   vpc_endpoint_type = "Interface"
 
   private_dns_enabled = true
@@ -269,14 +269,14 @@ resource "aws_vpc_endpoint" "ec2" {
   ]
 
   tags = merge(var.tags, {
-    Name = "peering-com.amazonaws.${data.aws_region.current.name}.ec2"
+    Name = "peering-com.amazonaws.${data.aws_region.current.region}.ec2"
   })
 }
 
 resource "aws_vpc_endpoint" "ec2messages" {
   count             = var.deploy_vpc_peering_endpoints ? 1 : 0
   vpc_id            = aws_vpc.peering.id
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.ec2messages"
+  service_name      = "com.amazonaws.${data.aws_region.current.region}.ec2messages"
   vpc_endpoint_type = "Interface"
 
   private_dns_enabled = true
@@ -295,7 +295,7 @@ resource "aws_vpc_endpoint" "ec2messages" {
   ]
 
   tags = merge(var.tags, {
-    Name = "peering-com.amazonaws.${data.aws_region.current.name}.ec2messages"
+    Name = "peering-com.amazonaws.${data.aws_region.current.region}.ec2messages"
   })
 }
 
