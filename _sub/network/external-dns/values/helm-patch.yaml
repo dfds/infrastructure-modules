@@ -1,0 +1,45 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ${deploy_name}
+  namespace: ${namespace}
+spec:
+  serviceAccountName: helm-controller
+  chart:
+    spec:
+      version: ${helm_chart_version}
+  values:
+    policy: ${deletion_policy}
+
+    env:
+      - name: AWS_DEFAULT_REGION
+        value: ${region}
+
+    serviceAccount:
+      annotations:
+        eks.amazonaws.com/role-arn: ${role_arn}
+
+    logLevel: debug
+
+    domainFilters:
+  %{~ for domain in domain_filters ~}
+      - ${domain}
+  %{~ endfor ~}
+
+    managedRecordTypes:
+  %{~for record_type in mananged_record_types ~}
+      - ${record_type}
+  %{~ endfor ~}
+
+    txtPrefix: ${txt_prefix}
+
+    txtOwnerId: ${txt_owner_id}
+
+    extraArgs:
+      - --aws-prefer-cname # Forces creation of CNAME records instead of A records for LoadBalancer services (default is A).
+      - --aws-assume-role=${assume_role_arn}
+
+    sources:
+    %{~ for source in sources ~}
+      - ${source}
+    %{~ endfor ~}

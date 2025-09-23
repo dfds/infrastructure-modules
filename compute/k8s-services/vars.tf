@@ -902,6 +902,67 @@ variable "external_secrets_ssm_aws_region" {
 }
 
 # --------------------------------------------------
+# External DNS
+# --------------------------------------------------
+
+variable "external_dns_deploy" {
+  type        = string
+  default     = false
+  description = "Feature toggle for External DNS module"
+}
+
+variable "external_dns_helm_chart_version" {
+  type        = string
+  description = "External DNS helm chart version"
+  default     = ""
+}
+
+variable "external_dns_domain_filters" {
+  type        = list(string)
+  description = "List of domain filters for External DNS"
+  default     = []
+}
+
+variable "external_dns_deletion_policy" {
+  type        = string
+  description = "External DNS deletion policy"
+  default     = "sync"
+  validation {
+    condition     = contains(["sync", "upsert-only"], var.external_dns_deletion_policy)
+    error_message = "Deletion policy must be either 'sync' or 'upsert-only'."
+  }
+}
+
+variable "external_dns_domain_filterss" {
+  type        = list(string)
+  description = "List of domain filters for External DNS"
+  default     = []
+}
+
+variable "external_dns_apply_text_prefix" {
+  type        = bool
+  description = "Whether to apply TXT prefix to ownership records"
+  default = false
+}
+
+variable "external_dns_txt_owner_id" {
+  type        = string
+  description = "The identifier to use for ownership of DNS records"
+  default     = ""
+}
+
+variable "external_dns_sources" {
+  type        = list(string)
+  description = "The sources to use for discovering DNS records"
+  default     = ["crd", "traefik-proxy"]
+}
+
+variable "external_dns_allowed_record_types" {
+  type        = list(string)
+  description = "List of allowed DNS record types to be managed by External DNS"
+  default     = ["CNAME", "A"]
+}
+# --------------------------------------------------
 # kafka-exporter
 # --------------------------------------------------
 

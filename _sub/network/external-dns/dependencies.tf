@@ -1,0 +1,13 @@
+data "github_repository" "main" {
+  full_name = "${var.github_owner}/${var.repo_name}"
+}
+
+locals {
+  default_repo_branch = data.github_repository.main.default_branch
+  repo_branch         = length(var.repo_branch) > 0 ? var.repo_branch : local.default_repo_branch
+  cluster_repo_path   = "clusters/${var.cluster_name}"
+  helm_repo_path      = "platform-apps/${var.cluster_name}/${var.deploy_name}/helm"
+  app_install_name    = "platform-apps-${var.deploy_name}"
+  txt_prefix = var.apply_text_prefix ? "${var.cluster_name}_extdns." : "extdns."
+  txt_owner_id = length(var.txt_owner_id) > 0 ? var.txt_owner_id : var.cluster_name
+}
