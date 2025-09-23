@@ -326,10 +326,11 @@ variable "ipam_pools_natgw" {
 
 variable "vpc_peering_settings_eu_west_1" {
   type = map(object({
+    peer_owner_id                = string
     peer_vpc_id                  = string
     peer_region                  = string
-    peer_route_table_id          = optional(string, "")
     peer_cidr_block              = string
+    peer_route_table_id          = optional(string, "")
     assigned_cidr_block_vpc      = optional(string, "")
     assigned_cidr_block_subnet_a = optional(string, "")
     assigned_cidr_block_subnet_b = optional(string, "")
@@ -355,10 +356,11 @@ variable "vpc_peering_settings_eu_west_1" {
 EOF
   default = {
     "instance1" = {
+      peer_owner_id                = ""
       peer_vpc_id                  = ""
       peer_region                  = ""
-      peer_route_table_id          = ""
       peer_cidr_block              = ""
+      peer_route_table_id          = ""
       assigned_cidr_block_vpc      = ""
       assigned_cidr_block_subnet_a = ""
       assigned_cidr_block_subnet_b = ""
@@ -374,10 +376,11 @@ EOF
 
 variable "vpc_peering_settings_eu_central_1" {
   type = map(object({
+    peer_owner_id                = string
     peer_vpc_id                  = string
     peer_region                  = string
-    peer_route_table_id          = optional(string, "")
     peer_cidr_block              = string
+    peer_route_table_id          = optional(string, "")
     assigned_cidr_block_vpc      = optional(string, "")
     assigned_cidr_block_subnet_a = optional(string, "")
     assigned_cidr_block_subnet_b = optional(string, "")
@@ -403,10 +406,11 @@ variable "vpc_peering_settings_eu_central_1" {
 EOF
   default = {
     "instance1" = {
+      peer_owner_id                = ""
       peer_vpc_id                  = ""
       peer_region                  = ""
-      peer_route_table_id          = ""
       peer_cidr_block              = ""
+      peer_route_table_id          = ""
       assigned_cidr_block_vpc      = ""
       assigned_cidr_block_subnet_a = ""
       assigned_cidr_block_subnet_b = ""
