@@ -37,9 +37,15 @@ resource "github_repository_file" "traefik_helm_patch" {
     helm_chart_version     = var.helm_chart_version
     http_nodeport          = var.http_nodeport
     admin_nodeport         = var.admin_nodeport
-    additional_args        = var.additional_args
+    additional_args        = concat(var.additional_args, var.certficate_resolver_args, local.ca_server_arg)
     replicas               = var.replicas
     dashboard_ingress_host = var.dashboard_ingress_host
+    certificateResolverEnabled = var.enable_certificate_resolver
+    certificateResolverEmail = var.certificate_resolver_email
+    certificateResolverStorageEnabled = var.certificate_resolver_storage_enabled
+    certificateResolverStorageClass = var.certificate_resolver_storage_class
+    certificateResolverStorageAccessMode = var.certificate_resolver_storage_access_mode
+    certificateResolverStorageSize = var.certificate_resolver_storage_size
   })
   overwrite_on_create = var.overwrite_on_create
 }

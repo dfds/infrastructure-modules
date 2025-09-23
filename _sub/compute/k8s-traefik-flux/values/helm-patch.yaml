@@ -25,3 +25,21 @@ spec:
         enabled: true
         matchRule: Host(`${dashboard_ingress_host}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
         entryPoints: [traefik, web]
+%{ if certificateResolverEnabled ~}
+    certificatesResolvers:
+      clusterresolver:
+        acme:
+          email: ${certificateResolverEmail}
+          storage: /data/acme.json
+    persistence:
+      enabled: ${certificateResolverStorageEnabled}
+      storageClass: ${certificateResolverStorageClass}
+      accessMode: ${certificateResolverStorageAccessMode}
+      size: ${certificateResolverStorageSize}
+      path: /data
+%{ endif ~}
+    # logs:
+    #   general:
+    #     level: DEBUG
+    #   # access:
+    #   #   enabled: true
