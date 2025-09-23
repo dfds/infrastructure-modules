@@ -441,10 +441,10 @@ module "vpc_peering_capability_eu_west_1" {
   cidr_block_subnet_a          = each.value.assigned_cidr_block_subnet_a
   cidr_block_subnet_b          = each.value.assigned_cidr_block_subnet_b
   cidr_block_subnet_c          = each.value.assigned_cidr_block_subnet_c
-  peer_cidr_block              = each.value.peer_cidr_block
-  peer_owner_id                = each.value.peer_owner_id
-  peer_vpc_id                  = each.value.peer_vpc_id
-  peer_region                  = each.value.peer_region
+  peer_cidr_block              = var.vpc_peering_production.cidr_block
+  peer_owner_id                = var.shared_account_id
+  peer_vpc_id                  = var.vpc_peering_production.vpc_id
+  peer_region                  = var.vpc_peering_production.region
   map_public_ip_on_launch      = var.vpc_peering_map_public_ip_on_launch
   deploy_vpc_peering_endpoints = var.deploy_vpc_peering_endpoints
 
@@ -460,9 +460,9 @@ module "vpc_peering_oxygen_eu_west_1" {
   for_each               = { for k, v in var.vpc_peering_settings_eu_west_1 : k => v if var.deploy_vpc_peering_eu_west_1 }
   capability_id          = var.capability_root_id
   destination_cidr_block = module.vpc_peering_capability_eu_west_1[each.key].vpc_cidr_block
-  vpc_id                 = each.value.peer_vpc_id
+  vpc_id                 = var.vpc_peering_production.vpc_id
   peering_connection_id  = module.vpc_peering_capability_eu_west_1[each.key].vpc_peering_connection_id
-  route_table_id         = each.value.peer_route_table_id
+  route_table_id         = var.vpc_peering_production.route_table_id
   tags                   = local.all_tags
 
   providers = {
@@ -485,10 +485,10 @@ module "vpc_peering_capability_eu_central_1" {
   cidr_block_subnet_a          = each.value.assigned_cidr_block_subnet_a
   cidr_block_subnet_b          = each.value.assigned_cidr_block_subnet_b
   cidr_block_subnet_c          = each.value.assigned_cidr_block_subnet_c
-  peer_cidr_block              = each.value.peer_cidr_block
-  peer_owner_id                = each.value.peer_owner_id
-  peer_vpc_id                  = each.value.peer_vpc_id
-  peer_region                  = each.value.peer_region
+  peer_cidr_block              = var.vpc_peering_production.cidr_block
+  peer_owner_id                = var.shared_account_id
+  peer_vpc_id                  = var.vpc_peering_production.vpc_id
+  peer_region                  = var.vpc_peering_production.region
   map_public_ip_on_launch      = var.vpc_peering_map_public_ip_on_launch
   deploy_vpc_peering_endpoints = var.deploy_vpc_peering_endpoints
   tags                         = local.all_tags
@@ -503,9 +503,9 @@ module "vpc_peering_oxygen_eu_central_1" {
   for_each               = { for k, v in var.vpc_peering_settings_eu_central_1 : k => v if var.deploy_vpc_peering_eu_central_1 }
   capability_id          = var.capability_id
   destination_cidr_block = module.vpc_peering_capability_eu_central_1[each.key].vpc_cidr_block
-  vpc_id                 = each.value.peer_vpc_id
+  vpc_id                 = var.vpc_peering_production.vpc_id
   peering_connection_id  = module.vpc_peering_capability_eu_central_1[each.key].vpc_peering_connection_id
-  route_table_id         = each.value.peer_route_table_id
+  route_table_id         = var.vpc_peering_production.route_table_id
 
   tags = local.all_tags
 
@@ -513,6 +513,42 @@ module "vpc_peering_oxygen_eu_central_1" {
     aws = aws.shared_vpc
   }
 }
+
+# --------------------------------------------------
+# VPC Peering for standby account
+# --------------------------------------------------
+
+module "vpc_peering_hydrogen_eu_west_1_standby" {
+  source                 = "../../_sub/network/vpc-peering-accepter"
+  for_each               = { for k, v in var.vpc_peering_settings_eu_west_1 : k => v if var.deploy_vpc_peering_eu_west_1 }
+  capability_id          = var.capability_root_id
+  destination_cidr_block = module.vpc_peering_capability_eu_west_1[each.key].vpc_cidr_block
+  vpc_id                 = var.vpc_peering_standby.vpc_id
+  peering_connection_id  = module.vpc_peering_capability_eu_west_1[each.key].vpc_peering_connection_id
+  route_table_id         = var.vpc_peering_standby.route_table_id
+  tags                   = local.all_tags
+
+  providers = {
+    aws = aws.standby_vpc
+  }
+}
+
+module "vpc_peering_hydrogen_eu_central_1_standby" {
+  source                 = "../../_sub/network/vpc-peering-accepter"
+  for_each               = { for k, v in var.vpc_peering_settings_eu_central_1 : k => v if var.deploy_vpc_peering_eu_central_1 }
+  capability_id          = var.capability_id
+  destination_cidr_block = module.vpc_peering_capability_eu_central_1[each.key].vpc_cidr_block
+  vpc_id                 = var.vpc_peering_standby.vpc_id
+  peering_connection_id  = module.vpc_peering_capability_eu_central_1[each.key].vpc_peering_connection_id
+  route_table_id         = var.vpc_peering_standby.route_table_id
+
+  tags = local.all_tags
+
+  providers = {
+    aws = aws.standby_vpc
+  }
+}
+
 
 # --------------------------------------------------
 # Steampipe
