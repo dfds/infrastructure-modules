@@ -95,7 +95,7 @@ inputs = {
   fluxcd_version                    = "v2.6.1"
 
   fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
-  fluxcd_bootstrap_repo_branch      = "main"
+  fluxcd_bootstrap_repo_branch      = "feature/external-dns" # "main"
   fluxcd_bootstrap_repo_owner       = "dfds"
 
   fluxcd_apps_repo_name             = "platform-apps"
@@ -303,4 +303,13 @@ inputs = {
   # 1Password Connect
   # --------------------------------------------------
   onepassword-connect_deploy = true
+
+  # --------------------------------------------------
+  # External DNS
+  # --------------------------------------------------
+  external_dns_deploy                     = true
+  external_dns_helm_chart_version         = "1.16.1"
+  external_dns_domain_filters             = ["build.dfds.cloud"]
+  external_dns_apply_text_prefix          = true
+  external_dns_deletion_policy            = "upsert-only"
 }
