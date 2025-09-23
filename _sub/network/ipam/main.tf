@@ -1,7 +1,7 @@
 data "aws_region" "current" {}
 
 locals {
-  all_ipam_regions = distinct(concat([data.aws_region.current.name], var.ipam_regions))
+  all_ipam_regions = distinct(concat([data.aws_region.current.region], var.ipam_regions))
   all_tags         = merge(var.tags, { "Name" = var.ipam_name })
 }
 
