@@ -477,6 +477,7 @@ module "vpc_peering_oxygen_eu_west_1" {
   vpc_id                 = var.vpc_peering_production.vpc_id
   peering_connection_id  = module.vpc_peering_capability_eu_west_1[each.key].vpc_peering_connection_id
   route_table_id         = var.vpc_peering_production.route_table_id
+  aws_region             = "eu-west-1"
   tags                   = local.all_tags
 
   providers = {
@@ -529,11 +530,12 @@ moved {
 module "vpc_peering_oxygen_eu_central_1" {
   source                 = "../../_sub/network/vpc-peering-accepter"
   for_each               = { for k, v in var.vpc_peering_settings_eu_central_1 : k => v if var.deploy_vpc_peering_eu_central_1 }
-  capability_id          = var.capability_id
+  capability_id          = var.capability_root_id
   destination_cidr_block = module.vpc_peering_capability_eu_central_1[each.key].vpc_cidr_block
   vpc_id                 = var.vpc_peering_production.vpc_id
   peering_connection_id  = module.vpc_peering_capability_eu_central_1[each.key].vpc_peering_connection_id
   route_table_id         = var.vpc_peering_production.route_table_id
+  aws_region             = "eu-central-1"
   tags                   = local.all_tags
 
   providers = {
@@ -553,6 +555,7 @@ module "vpc_peering_hydrogen_eu_west_1_standby" {
   vpc_id                 = var.vpc_peering_standby.vpc_id
   peering_connection_id  = module.vpc_peering_capability_eu_west_1[each.key].standby_vpc_peering_connection_id
   route_table_id         = var.vpc_peering_standby.route_table_id
+  aws_region             = "eu-west-1"
   tags                   = local.all_tags
 
   providers = {
@@ -563,11 +566,12 @@ module "vpc_peering_hydrogen_eu_west_1_standby" {
 module "vpc_peering_hydrogen_eu_central_1_standby" {
   source                 = "../../_sub/network/vpc-peering-accepter"
   for_each               = { for k, v in var.vpc_peering_settings_eu_central_1 : k => v if var.deploy_vpc_peering_eu_central_1 }
-  capability_id          = var.capability_id
+  capability_id          = var.capability_root_id
   destination_cidr_block = module.vpc_peering_capability_eu_central_1[each.key].vpc_cidr_block
   vpc_id                 = var.vpc_peering_standby.vpc_id
   peering_connection_id  = module.vpc_peering_capability_eu_central_1[each.key].standby_vpc_peering_connection_id
   route_table_id         = var.vpc_peering_standby.route_table_id
+  aws_region             = "eu-central-1"
   tags                   = local.all_tags
 
   providers = {
