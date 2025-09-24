@@ -320,15 +320,6 @@ variable "ipam_pools" {
   description = "The ID of the IPAM pool when using AWS IPAM assignment."
 }
 
-variable "ipam_pools_natgw" {
-  type = map(string)
-  default = {
-    "eu-west-1"    = ""
-    "eu-central-1" = ""
-  }
-  description = "The ID of the IPAM pool when using AWS IPAM assignment for NAT Gateway."
-}
-
 variable "vpc_peering_production" {
   type        = map(string)
   description = "The details for the production account's VPC to peer with"
