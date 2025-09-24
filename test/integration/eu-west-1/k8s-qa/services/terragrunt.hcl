@@ -309,5 +309,5 @@ inputs = {
   # --------------------------------------------------
   external_dns_deploy                     = true
   external_dns_helm_chart_version         = "1.16.1"
-  external_dns_domain_filters             = ["build.dfds.cloud"]
+  external_dns_domain_filters             = ["test.qa.dfds"]
 }
