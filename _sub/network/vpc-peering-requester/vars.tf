@@ -67,6 +67,11 @@ variable "ipam_pool" {
   description = "The ID of the IPAM pool when using AWS IPAM assignment."
 }
 
+variable "ipam_pool_natgw" {
+  type        = string
+  description = "The ID of the IPAM pool when using AWS IPAM assignment for NAT Gateway. Should not be set the same as ipam_pool."
+}
+
 variable "ipam_cidr_enable" {
   description = "Use IPAM for VPC peering connections"
   type        = bool
@@ -83,4 +88,16 @@ variable "ipam_subnet_bits" {
   description = "The number of bits to use for subnet calculations"
   type        = list(number)
   default     = [1, 1]
+}
+
+variable "ipam_subnet_bits_natgw" {
+  description = "The number of bits to use for subnet calculations with NAT Gateway"
+  type        = list(number)
+  default     = [1, 1]
+}
+
+variable "nat_gw_enable" {
+  description = "Enable NAT Gateway creation"
+  type        = bool
+  default     = false
 }

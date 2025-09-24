@@ -23,7 +23,7 @@ locals {
       endpoint         = var.eks_endpoint
       ca               = var.eks_certificate_authority
       role_arn         = var.aws_assume_role_arn
-      aws_region       = data.aws_region.current.name
+      aws_region       = data.aws_region.current.region
       auth_api_version = var.eks_k8s_auth_api_version
     }
   )

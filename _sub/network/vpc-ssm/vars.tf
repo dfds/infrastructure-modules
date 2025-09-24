@@ -3,11 +3,11 @@ variable "vpc_id" {
 }
 
 variable "subnets" {
-    type = list(string)
-    default = []
+  type    = list(string)
+  default = []
 }
 
 variable "tags" {
-    type = map(string)
-    default = {}
+  type    = map(string)
+  default = {}
 }
