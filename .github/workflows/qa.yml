@@ -17,7 +17,7 @@ on:
       - README.md
       - renovate.json
   pull_request:
-    types: [opened, reopened, synchronize, ready_for_review]
+    types: [opened, reopened, edited, synchronize, ready_for_review]
     branches: [master]
     paths-ignore:
       - ".github/workflows/*"
