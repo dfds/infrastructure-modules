@@ -9,37 +9,24 @@ spec:
     spec:
       version: ${helm_chart_version}
   values:
-    policy: ${deletion_policy}
-
     env:
       - name: AWS_DEFAULT_REGION
         value: ${region}
-
     serviceAccount:
       annotations:
         eks.amazonaws.com/role-arn: ${role_arn}
-
-    logLevel: debug
-
     domainFilters:
   %{~ for domain in domain_filters ~}
       - ${domain}
   %{~ endfor ~}
-
-    managedRecordTypes:
-  %{~for record_type in mananged_record_types ~}
-      - ${record_type}
-  %{~ endfor ~}
-
-    txtPrefix: ${txt_prefix}
-
     txtOwnerId: ${txt_owner_id}
-
     extraArgs:
-      - --aws-prefer-cname # Forces creation of CNAME records instead of A records for LoadBalancer services (default is A).
       - --aws-assume-role=${assume_role_arn}
-
-    sources:
-    %{~ for source in sources ~}
-      - ${source}
-    %{~ endfor ~}
+      - --aws-prefer-cname
+      - --traefik-disable-legacy
+%{ if deletion_policy != "" ~}
+    policy: ${deletion_policy}
+%{ endif ~}
+%{ if is_debug_mode ~}
+    logLevel: debug
+%{ endif ~}

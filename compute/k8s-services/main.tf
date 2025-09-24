@@ -230,7 +230,6 @@ module "external_dns_flux_manifests" {
   deploy_name             = "external-dns"
   namespace               = "external-dns"
   helm_chart_version      = var.external_dns_helm_chart_version
-  #replicas                = 3 # length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)t
   github_owner            = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
@@ -241,12 +240,9 @@ module "external_dns_flux_manifests" {
   cluster_region          = var.aws_region
   role_arn                = module.external_dns_iam_role_assume[0].arn
   assume_role_arn         = module.external_dns_iam_role_core_route53_access[0].arn
-  deletion_policy         = var.external_dns_deletion_policy
+  deletion_policy_override = var.external_deletion_policy_override
   domain_filters          = var.external_dns_domain_filters
-  apply_text_prefix       = var.external_dns_apply_text_prefix
-  txt_owner_id           = var.external_dns_txt_owner_id
-  sources                 = var.external_dns_sources
-  allowed_record_types   = var.external_dns_allowed_record_types
+  is_debug_mode          = var.external_dns_is_debug_mode
   providers = {
     github = github.fluxcd
   }

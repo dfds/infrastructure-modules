@@ -14,11 +14,6 @@ variable "namespace" {
   default     = "external-dns"
 }
 
-# variable "replicas" {
-#   description = "zzzzzzzzzz"
-#   type        = number
-# }
-
 variable "github_owner" {
   type        = string
   description = "Name of the Github owner (previously: organization)"
@@ -80,9 +75,10 @@ variable "assume_role_arn" {
   description = "The ARN of the role to be assumed by external-dns to manage DNS records in other AWS accounts"
 }
 
-variable "deletion_policy" {
+variable "deletion_policy_override" {
   type        = string
-  description = "The deletion policy for the external-dns helm release. Options are: 'sync' and 'upsert-only'"
+  description = "Explictly set the deletion policy for the external-dns helm release. Options are: 'sync' and 'upsert-only'. if not set, the default behavior of external-dns is set by the helm chart"
+  default     = ""
 }
 
 variable "domain_filters" {
@@ -91,25 +87,8 @@ variable "domain_filters" {
   default     = []
 }
 
-variable "apply_text_prefix" {
+variable "is_debug_mode" {
   type        = bool
-  description = "Whether to apply a text prefix to the txt records created by external-dns. Useful to avoid conflicts if multiple external-dns instances are running in the same account"
+  description = "If it is set to true then logLevel will be set to debug."
   default     = false
-}
-
-variable "txt_owner_id" {
-  type        = string
-  description = "The owner id to use for the txt records created by external-dns. Defaults to the cluster name. Useful to avoid conflicts if multiple external-dns instances are running in the same account"
-  default     = ""
-}
-variable "sources" {
-  type        = list(string)
-  description = "The sources to watch for DNS records."
-  default     = ["ingress", "service"]
-}
-
-variable "allowed_record_types" {
-  type        = list(string)
-  description = "List of allowed DNS records to be managed by External DNS."
-  default     = ["CNAME"]
 }

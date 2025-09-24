@@ -37,14 +37,12 @@ resource "github_repository_file" "extdns_helm_patch" {
     helm_chart_version     = var.helm_chart_version
     region                 = var.cluster_region
     role_arn               = var.role_arn
-    assume_role_arn        = var.assume_role_arn
     cluster                = var.cluster_name
-    deletion_policy        = var.deletion_policy
+    deletion_policy        = var.deletion_policy_override
     domain_filters         = var.domain_filters
-    txt_prefix             = local.txt_prefix
     txt_owner_id          = local.txt_owner_id
-    sources                = var.sources
-    mananged_record_types   = var.allowed_record_types
+    is_debug_mode          = var.is_debug_mode
+    assume_role_arn        = var.assume_role_arn
   })
   overwrite_on_create = var.overwrite_on_create
 }
