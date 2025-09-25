@@ -27,22 +27,22 @@ variable "cidr_block_subnet_c" {
 
 variable "peer_cidr_block" {
   description = "The CIDR block of the peer VPC"
-  type        = string
+  type        = map(string)
 }
 
 variable "peer_owner_id" {
   description = "The AWS account ID of the owner of the peer VPC"
-  type        = string
+  type        = map(string)
 }
 
 variable "peer_vpc_id" {
   description = "The ID of the peer VPC"
-  type        = string
+  type        = map(string)
 }
 
 variable "peer_region" {
   description = "The region of the peer VPC"
-  type        = string
+  type        = map(string)
 }
 
 variable "tags" {
@@ -65,11 +65,6 @@ variable "deploy_vpc_peering_endpoints" {
 variable "ipam_pool" {
   type        = string
   description = "The ID of the IPAM pool when using AWS IPAM assignment."
-}
-
-variable "ipam_pool_natgw" {
-  type        = string
-  description = "The ID of the IPAM pool when using AWS IPAM assignment for NAT Gateway. Should not be set the same as ipam_pool."
 }
 
 variable "ipam_cidr_enable" {
