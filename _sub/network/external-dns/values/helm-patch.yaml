@@ -23,7 +23,6 @@ spec:
     extraArgs:
       - --aws-assume-role=${assume_role_arn}
       - --aws-prefer-cname
-      - --traefik-disable-legacy
 %{ if deletion_policy != "" ~}
     policy: ${deletion_policy}
 %{ endif ~}
