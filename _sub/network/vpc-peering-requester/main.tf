@@ -424,14 +424,14 @@ resource "aws_route" "capability_to_standby" {
   count                     = var.nat_gw_enable ? 0 : 1
   route_table_id            = aws_vpc.peering.main_route_table_id
   destination_cidr_block    = var.peer_cidr_block.standby
-  vpc_peering_connection_id = aws_vpc_peering_connection.capability.id
+  vpc_peering_connection_id = aws_vpc_peering_connection.capability_standby.id
 }
 
 resource "aws_route" "capability_to_standby_natgw" {
   count                     = var.nat_gw_enable && var.ipam_cidr_enable ? length(var.ipam_subnet_bits) : 0
   route_table_id            = aws_route_table.standard[count.index].id
   destination_cidr_block    = var.peer_cidr_block.standby
-  vpc_peering_connection_id = aws_vpc_peering_connection.capability.id
+  vpc_peering_connection_id = aws_vpc_peering_connection.capability_standby.id
 }
 
 resource "aws_internet_gateway" "gw" {
