@@ -431,7 +431,6 @@ module "vpc_peering_capability_eu_west_1" {
   for_each                     = { for k, v in var.vpc_peering_settings_eu_west_1 : k => v if var.deploy_vpc_peering_eu_west_1 }
   regional_postfix             = var.deploy_vpc_peering_eu_west_1 && var.deploy_vpc_peering_eu_central_1 ? true : false
   ipam_pool                    = lookup(var.ipam_pools, "eu-west-1", "")
-  ipam_pool_natgw              = lookup(var.ipam_pools_natgw, "eu-west-1", "")
   ipam_cidr_enable             = each.value.ipam_cidr_enable
   ipam_cidr_prefix             = each.value.ipam_cidr_prefix
   ipam_subnet_bits             = each.value.ipam_subnet_bits
@@ -441,10 +440,10 @@ module "vpc_peering_capability_eu_west_1" {
   cidr_block_subnet_a          = each.value.assigned_cidr_block_subnet_a
   cidr_block_subnet_b          = each.value.assigned_cidr_block_subnet_b
   cidr_block_subnet_c          = each.value.assigned_cidr_block_subnet_c
-  peer_cidr_block              = each.value.peer_cidr_block
-  peer_owner_id                = var.shared_account_id
-  peer_vpc_id                  = each.value.peer_vpc_id
-  peer_region                  = each.value.peer_region
+  peer_cidr_block              = { production = var.vpc_peering_production.cidr_block, standby = var.vpc_peering_standby.cidr_block }
+  peer_owner_id                = { production = var.shared_account_id, standby = var.standby_account_id }
+  peer_vpc_id                  = { production = var.vpc_peering_production.vpc_id, standby = var.vpc_peering_standby.vpc_id }
+  peer_region                  = { production = var.vpc_peering_production.region, standby = var.vpc_peering_standby.region }
   map_public_ip_on_launch      = var.vpc_peering_map_public_ip_on_launch
   deploy_vpc_peering_endpoints = var.deploy_vpc_peering_endpoints
 
@@ -455,14 +454,30 @@ module "vpc_peering_capability_eu_west_1" {
   }
 }
 
+moved {
+  from = module.vpc_peering_capability_eu_west_1["peer1"].aws_vpc_security_group_ingress_rule.mariadb
+  to   = module.vpc_peering_capability_eu_west_1["peer1"].aws_vpc_security_group_ingress_rule.mariadb["production"]
+}
+
+moved {
+  from = module.vpc_peering_capability_eu_west_1["peer1"].aws_vpc_security_group_ingress_rule.postgres
+  to   = module.vpc_peering_capability_eu_west_1["peer1"].aws_vpc_security_group_ingress_rule.postgres["production"]
+}
+
+moved {
+  from = module.vpc_peering_capability_eu_west_1["peer1"].aws_vpc_security_group_ingress_rule.redis
+  to   = module.vpc_peering_capability_eu_west_1["peer1"].aws_vpc_security_group_ingress_rule.redis["production"]
+}
+
 module "vpc_peering_oxygen_eu_west_1" {
   source                 = "../../_sub/network/vpc-peering-accepter"
   for_each               = { for k, v in var.vpc_peering_settings_eu_west_1 : k => v if var.deploy_vpc_peering_eu_west_1 }
   capability_id          = var.capability_root_id
   destination_cidr_block = module.vpc_peering_capability_eu_west_1[each.key].vpc_cidr_block
-  vpc_id                 = each.value.peer_vpc_id
+  vpc_id                 = var.vpc_peering_production.vpc_id
   peering_connection_id  = module.vpc_peering_capability_eu_west_1[each.key].vpc_peering_connection_id
-  route_table_id         = each.value.peer_route_table_id
+  route_table_id         = var.vpc_peering_production.route_table_id
+  aws_region             = "eu-west-1"
   tags                   = local.all_tags
 
   providers = {
@@ -475,7 +490,6 @@ module "vpc_peering_capability_eu_central_1" {
   for_each                     = { for k, v in var.vpc_peering_settings_eu_central_1 : k => v if var.deploy_vpc_peering_eu_central_1 }
   regional_postfix             = var.deploy_vpc_peering_eu_west_1 && var.deploy_vpc_peering_eu_central_1 ? true : false
   ipam_pool                    = lookup(var.ipam_pools, "eu-central-1", "")
-  ipam_pool_natgw              = lookup(var.ipam_pools_natgw, "eu-central-1", "")
   ipam_cidr_enable             = each.value.ipam_cidr_enable
   ipam_cidr_prefix             = each.value.ipam_cidr_prefix
   ipam_subnet_bits             = each.value.ipam_subnet_bits
@@ -485,10 +499,10 @@ module "vpc_peering_capability_eu_central_1" {
   cidr_block_subnet_a          = each.value.assigned_cidr_block_subnet_a
   cidr_block_subnet_b          = each.value.assigned_cidr_block_subnet_b
   cidr_block_subnet_c          = each.value.assigned_cidr_block_subnet_c
-  peer_cidr_block              = each.value.peer_cidr_block
-  peer_owner_id                = var.shared_account_id
-  peer_vpc_id                  = each.value.peer_vpc_id
-  peer_region                  = each.value.peer_region
+  peer_cidr_block              = { production = var.vpc_peering_production.cidr_block, standby = var.vpc_peering_standby.cidr_block }
+  peer_owner_id                = { production = var.shared_account_id, standby = var.standby_account_id }
+  peer_vpc_id                  = { production = var.vpc_peering_production.vpc_id, standby = var.vpc_peering_standby.vpc_id }
+  peer_region                  = { production = var.vpc_peering_production.region, standby = var.vpc_peering_standby.region }
   map_public_ip_on_launch      = var.vpc_peering_map_public_ip_on_launch
   deploy_vpc_peering_endpoints = var.deploy_vpc_peering_endpoints
   tags                         = local.all_tags
@@ -498,21 +512,73 @@ module "vpc_peering_capability_eu_central_1" {
   }
 }
 
+moved {
+  from = module.vpc_peering_capability_eu_central_1["peer1"].aws_vpc_security_group_ingress_rule.mariadb
+  to   = module.vpc_peering_capability_eu_central_1["peer1"].aws_vpc_security_group_ingress_rule.mariadb["production"]
+}
+
+moved {
+  from = module.vpc_peering_capability_eu_central_1["peer1"].aws_vpc_security_group_ingress_rule.postgres
+  to   = module.vpc_peering_capability_eu_central_1["peer1"].aws_vpc_security_group_ingress_rule.postgres["production"]
+}
+
+moved {
+  from = module.vpc_peering_capability_eu_central_1["peer1"].aws_vpc_security_group_ingress_rule.redis
+  to   = module.vpc_peering_capability_eu_central_1["peer1"].aws_vpc_security_group_ingress_rule.redis["production"]
+}
+
 module "vpc_peering_oxygen_eu_central_1" {
   source                 = "../../_sub/network/vpc-peering-accepter"
   for_each               = { for k, v in var.vpc_peering_settings_eu_central_1 : k => v if var.deploy_vpc_peering_eu_central_1 }
-  capability_id          = var.capability_id
+  capability_id          = var.capability_root_id
   destination_cidr_block = module.vpc_peering_capability_eu_central_1[each.key].vpc_cidr_block
-  vpc_id                 = each.value.peer_vpc_id
+  vpc_id                 = var.vpc_peering_production.vpc_id
   peering_connection_id  = module.vpc_peering_capability_eu_central_1[each.key].vpc_peering_connection_id
-  route_table_id         = each.value.peer_route_table_id
-
-  tags = local.all_tags
+  route_table_id         = var.vpc_peering_production.route_table_id
+  aws_region             = "eu-central-1"
+  tags                   = local.all_tags
 
   providers = {
     aws = aws.shared_vpc
   }
 }
+
+# --------------------------------------------------
+# VPC Peering for standby account
+# --------------------------------------------------
+
+module "vpc_peering_hydrogen_eu_west_1_standby" {
+  source                 = "../../_sub/network/vpc-peering-accepter"
+  for_each               = { for k, v in var.vpc_peering_settings_eu_west_1 : k => v if var.deploy_vpc_peering_eu_west_1 }
+  capability_id          = var.capability_root_id
+  destination_cidr_block = module.vpc_peering_capability_eu_west_1[each.key].vpc_cidr_block
+  vpc_id                 = var.vpc_peering_standby.vpc_id
+  peering_connection_id  = module.vpc_peering_capability_eu_west_1[each.key].standby_vpc_peering_connection_id
+  route_table_id         = var.vpc_peering_standby.route_table_id
+  aws_region             = "eu-west-1"
+  tags                   = local.all_tags
+
+  providers = {
+    aws = aws.standby_vpc
+  }
+}
+
+module "vpc_peering_hydrogen_eu_central_1_standby" {
+  source                 = "../../_sub/network/vpc-peering-accepter"
+  for_each               = { for k, v in var.vpc_peering_settings_eu_central_1 : k => v if var.deploy_vpc_peering_eu_central_1 }
+  capability_id          = var.capability_root_id
+  destination_cidr_block = module.vpc_peering_capability_eu_central_1[each.key].vpc_cidr_block
+  vpc_id                 = var.vpc_peering_standby.vpc_id
+  peering_connection_id  = module.vpc_peering_capability_eu_central_1[each.key].standby_vpc_peering_connection_id
+  route_table_id         = var.vpc_peering_standby.route_table_id
+  aws_region             = "eu-central-1"
+  tags                   = local.all_tags
+
+  providers = {
+    aws = aws.standby_vpc
+  }
+}
+
 
 # --------------------------------------------------
 # Steampipe
