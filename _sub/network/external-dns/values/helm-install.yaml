@@ -4,3 +4,12 @@ resources:
   - ${gitops_apps_repo_url}/apps/${deploy_name}?ref=${gitops_apps_repo_branch}
 patchesStrategicMerge:
   - patch.yaml
+patches:
+  - path: helm-patch.yaml
+  - patch: |-
+      - op: add
+        path: "/spec/values/extraArgs/-"
+        value: "--aws-assume-role=${assume_role_arn}"
+    target:
+      kind: HelmRelease
+      name: external-dns

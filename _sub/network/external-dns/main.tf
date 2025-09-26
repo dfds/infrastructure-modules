@@ -23,6 +23,7 @@ resource "github_repository_file" "extdns_helm_install" {
     gitops_apps_repo_url    = var.gitops_apps_repo_url
     deploy_name             = var.deploy_name
     gitops_apps_repo_branch = var.gitops_apps_repo_branch
+    assume_role_arn         = var.assume_role_arn
   })
   overwrite_on_create = var.overwrite_on_create
 }
@@ -42,7 +43,6 @@ resource "github_repository_file" "extdns_helm_patch" {
     domain_filters     = var.domain_filters
     txt_owner_id       = local.txt_owner_id
     is_debug_mode      = var.is_debug_mode
-    assume_role_arn    = var.assume_role_arn
   })
   overwrite_on_create = var.overwrite_on_create
 }
