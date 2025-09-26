@@ -93,24 +93,9 @@ variable "worker_inotify_max_user_watches" {
   type = number
 }
 
-variable "docker_hub_username" {
+variable "docker_hub_creds_ssm_path" {
   type        = string
-  description = "Docker Hub username for pulling images"
-  sensitive   = true
-  default     = ""
-}
-
-variable "docker_hub_password" {
-  type        = string
-  description = "Docker Hub password for pulling images"
-  sensitive   = true
-  default     = ""
-}
-
-variable "essentials_url" {
-  type        = string
-  description = "HTTP server that provides essentials"
-  default     = ""
+  description = "Docker Hub credentials SSM Parameter Store path"
 }
 
 # ------------------------------------------------------
