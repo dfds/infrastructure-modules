@@ -5,7 +5,7 @@ variable "cluster_name" {
 variable "deploy_name" {
   type        = string
   description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "traefik"
+  default     = "external-dns"
 }
 
 variable "namespace" {
@@ -61,17 +61,17 @@ variable "prune" {
 }
 
 variable "cluster_region" {
-  type = string
+  type        = string
   description = "The AWS region the EKS cluster is deployed in"
 }
 
 variable "role_arn" {
-  type = string
+  type        = string
   description = "The ARN of the role to be used by external-dns"
 }
 
 variable "assume_role_arn" {
-  type = string
+  type        = string
   description = "The ARN of the role to be assumed by external-dns to manage DNS records in other AWS accounts"
 }
 

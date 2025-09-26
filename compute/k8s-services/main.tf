@@ -224,25 +224,25 @@ module "external_dns_iam_role_assume" {
 }
 
 module "external_dns_flux_manifests" {
-  source                  = "../../_sub/network/external-dns"
-  count                   = var.external_dns_deploy ? 1 : 0
-  cluster_name            = var.eks_cluster_name
-  deploy_name             = "external-dns"
-  namespace               = "external-dns"
-  helm_chart_version      = var.external_dns_helm_chart_version
-  github_owner            = var.fluxcd_bootstrap_repo_owner
-  repo_name               = var.fluxcd_bootstrap_repo_name
-  repo_branch             = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
-  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
-  prune                   = var.fluxcd_prune
-  cluster_region          = var.aws_region
-  role_arn                = module.external_dns_iam_role_assume[0].arn
-  assume_role_arn         = module.external_dns_iam_role_core_route53_access[0].arn
+  source                   = "../../_sub/network/external-dns"
+  count                    = var.external_dns_deploy ? 1 : 0
+  cluster_name             = var.eks_cluster_name
+  deploy_name              = "external-dns"
+  namespace                = "external-dns"
+  helm_chart_version       = var.external_dns_helm_chart_version
+  github_owner             = var.fluxcd_bootstrap_repo_owner
+  repo_name                = var.fluxcd_bootstrap_repo_name
+  repo_branch              = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create      = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url     = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch  = var.fluxcd_apps_repo_branch
+  prune                    = var.fluxcd_prune
+  cluster_region           = var.aws_region
+  role_arn                 = module.external_dns_iam_role_assume[0].arn
+  assume_role_arn          = module.external_dns_iam_role_core_route53_access[0].arn
   deletion_policy_override = var.external_deletion_policy_override
-  domain_filters          = var.external_dns_domain_filters
-  is_debug_mode          = var.external_dns_is_debug_mode
+  domain_filters           = var.external_dns_domain_filters
+  is_debug_mode            = var.external_dns_is_debug_mode
   providers = {
     github = github.fluxcd
   }

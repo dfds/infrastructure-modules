@@ -211,19 +211,19 @@ locals {
 # IAM role for Route53 zone delegation
 # --------------------------------------------------
 data "aws_caller_identity" "hostedzone_account" {
-  provider     = aws.core
+  provider = aws.core
 }
 
 locals {
-  external_dns_role_name = "${var.eks_cluster_name}-external-dns"
-  external_dns_namespace_name = "external-dns"
-  external_dns_serviceaccount_name = "external-dns"
-  external_dns_role_assume_policy_name = "assume-role-external-dns"
-  external_dns_role_name_cross_account = "${var.eks_cluster_name}-external-dns-cross-accounts"
+  external_dns_role_name                                  = "${var.eks_cluster_name}-external-dns"
+  external_dns_namespace_name                             = "external-dns"
+  external_dns_serviceaccount_name                        = "external-dns"
+  external_dns_role_assume_policy_name                    = "assume-role-external-dns"
+  external_dns_role_name_cross_account                    = "${var.eks_cluster_name}-external-dns-cross-accounts"
   external_dns_role_name_cross_account_assume_policy_name = "allowExternalDNSUpdates"
 }
 
-data "aws_iam_policy_document" "external_dns_role_assume_policy" { # only allow production cluster to assume this role
+data "aws_iam_policy_document" "external_dns_role_assume_policy" {
   statement {
     effect = "Allow"
 
@@ -250,7 +250,6 @@ data "aws_iam_policy_document" "external_dns_trust" {
 
       identifiers = [
         "arn:aws:iam::${data.aws_caller_identity.workload_account.account_id}:oidc-provider/${local.oidc_issuer}",
-        #"arn:aws:iam::194351241786:oidc-provider/${local.oidc_issuer}", <---- check if this is correct!!
       ]
     }
 

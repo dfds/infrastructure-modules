@@ -11,13 +11,13 @@ provider "aws" {
   }
 
   assume_role {
-    role_arn = var.aws_assume_role_arn # it is the current workload account - should be the sandbox account role !! se next comment!
+    role_arn = var.aws_assume_role_arn
   }
 }
 
 provider "aws" {
   region = var.aws_region
-  alias  = "core" # but we are using the sandbox account role in sandbox pipeline which is wrong because we need to have the same setup as production pipeline!!
+  alias  = "core"
 
   default_tags {
     tags = var.tags
