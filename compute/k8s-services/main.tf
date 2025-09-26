@@ -213,6 +213,58 @@ module "traefik_alb_anon_dns_core_alias" {
   }
 }
 
+module "external_dns_iam_role_assume" {
+  source               = "../../_sub/security/iam-role"
+  count                = var.external_dns_deploy ? 1 : 0
+  role_name            = local.external_dns_role_name
+  role_description     = "Role for accessing Route53 hosted zone"
+  role_policy_name     = local.external_dns_role_assume_policy_name
+  role_policy_document = data.aws_iam_policy_document.external_dns_role_assume_policy.json
+  assume_role_policy   = data.aws_iam_policy_document.external_dns_trust.json
+}
+
+module "external_dns_flux_manifests" {
+  source                   = "../../_sub/network/external-dns"
+  count                    = var.external_dns_deploy ? 1 : 0
+  cluster_name             = var.eks_cluster_name
+  deploy_name              = "external-dns"
+  namespace                = "external-dns"
+  helm_chart_version       = var.external_dns_helm_chart_version
+  github_owner             = var.fluxcd_bootstrap_repo_owner
+  repo_name                = var.fluxcd_bootstrap_repo_name
+  repo_branch              = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create      = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url     = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch  = var.fluxcd_apps_repo_branch
+  prune                    = var.fluxcd_prune
+  cluster_region           = var.aws_region
+  role_arn                 = module.external_dns_iam_role_assume[0].arn
+  assume_role_arn          = module.external_dns_iam_role_core_route53_access[0].arn
+  deletion_policy_override = var.external_deletion_policy_override
+  domain_filters           = var.external_dns_domain_filters
+  is_debug_mode            = var.external_dns_is_debug_mode
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
+}
+
+
+module "external_dns_iam_role_core_route53_access" {
+  source               = "../../_sub/security/iam-role"
+  count                = var.external_dns_deploy ? 1 : 0
+  role_name            = local.external_dns_role_name_cross_account
+  role_description     = "Role for accessing Route53 hosted zone"
+  role_policy_name     = local.external_dns_role_name_cross_account_assume_policy_name
+  role_policy_document = data.aws_iam_policy_document.external_dns_core_route53_access_policy.json
+  assume_role_policy   = data.aws_iam_policy_document.external_dns_core_route53_access_policy_trust.json
+
+  providers = {
+    aws = aws.core
+  }
+}
+
 # --------------------------------------------------
 # Blaster
 # --------------------------------------------------
