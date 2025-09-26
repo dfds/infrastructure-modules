@@ -20,10 +20,6 @@ spec:
       - ${domain}
   %{~ endfor ~}
     txtOwnerId: ${txt_owner_id}
-    extraArgs:
-      - --aws-assume-role=${assume_role_arn}
-      - --aws-prefer-cname
-      - --namespace=${namespace}
 %{ if deletion_policy != "" ~}
     policy: ${deletion_policy}
 %{ endif ~}
