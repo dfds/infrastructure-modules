@@ -232,12 +232,6 @@ module "eks_managed_workers_route_table_assoc_nat_gateway" {
 # Managed node groups
 # --------------------------------------------------
 
-resource "aws_ssm_parameter" "dockerhub" {
-  name = "/eks/${var.eks_cluster_name}/dockerhub"
-  type = "SecureString"
-  value = jsonencode({username = var.docker_hub_username, password = var.docker_hub_password})
-}
-
 module "eks_managed_workers_node_group" {
   source = "../../_sub/compute/eks-nodegroup-managed"
 
@@ -278,7 +272,9 @@ module "eks_managed_workers_node_group" {
   system_reserved_memory = each.value.sys_memory
 
   # Docker Hub credentials
-  docker_hub_creds_ssm_path = aws_ssm_parameter.dockerhub.name
+  docker_hub_username = var.docker_hub_username
+  docker_hub_password = var.docker_hub_password
+  essentials_url      = var.essentials_url
 
   depends_on = [module.eks_cluster]
 }
