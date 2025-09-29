@@ -67,7 +67,7 @@ data "aws_iam_policy_document" "shared_role_cap_acc" {
         type = "Federated"
 
         identifiers = [
-          "arn:aws:iam::${var.shared_account_id}:oidc-provider/${trim(statement.value["cluster_oidc_url"], "https://")}",
+          "arn:aws:iam::${statement.value["account_id"]}:oidc-provider/${trim(statement.value["cluster_oidc_url"], "https://")}",
         ]
       }
 

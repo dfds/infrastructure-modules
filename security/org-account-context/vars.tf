@@ -121,6 +121,7 @@ variable "oidc_provider" {
   type = map(object({
     cluster_oidc_url = string
     cluster_name     = string
+    account_id       = string
   }))
   description = "IAM OIDC Providers for the capability account to trust EKS clusters service accounts"
 }
