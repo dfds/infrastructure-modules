@@ -27,7 +27,7 @@ resource "aws_vpc_security_group_ingress_rule" "ssm_https" {
 
 resource "aws_vpc_endpoint" "ssm" {
   vpc_id            = var.vpc_id
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.ssm"
+  service_name      = "com.amazonaws.${data.aws_region.current.region}.ssm"
   vpc_endpoint_type = "Interface"
 
   private_dns_enabled = true
@@ -39,13 +39,13 @@ resource "aws_vpc_endpoint" "ssm" {
   ]
 
   tags = merge(var.tags, {
-    Name = "peering-com.amazonaws.${data.aws_region.current.name}.ssm"
+    Name = "peering-com.amazonaws.${data.aws_region.current.region}.ssm"
   })
 }
 
 resource "aws_vpc_endpoint" "ssmmessages" {
   vpc_id            = var.vpc_id
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.ssmmessages"
+  service_name      = "com.amazonaws.${data.aws_region.current.region}.ssmmessages"
   vpc_endpoint_type = "Interface"
 
   private_dns_enabled = true
@@ -57,6 +57,6 @@ resource "aws_vpc_endpoint" "ssmmessages" {
   ]
 
   tags = merge(var.tags, {
-    Name = "peering-com.amazonaws.${data.aws_region.current.name}.ssmmessages"
+    Name = "peering-com.amazonaws.${data.aws_region.current.region}.ssmmessages"
   })
 }

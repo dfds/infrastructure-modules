@@ -27,22 +27,22 @@ variable "cidr_block_subnet_c" {
 
 variable "peer_cidr_block" {
   description = "The CIDR block of the peer VPC"
-  type        = string
+  type        = map(string)
 }
 
 variable "peer_owner_id" {
   description = "The AWS account ID of the owner of the peer VPC"
-  type        = string
+  type        = map(string)
 }
 
 variable "peer_vpc_id" {
   description = "The ID of the peer VPC"
-  type        = string
+  type        = map(string)
 }
 
 variable "peer_region" {
   description = "The region of the peer VPC"
-  type        = string
+  type        = map(string)
 }
 
 variable "tags" {
@@ -83,4 +83,16 @@ variable "ipam_subnet_bits" {
   description = "The number of bits to use for subnet calculations"
   type        = list(number)
   default     = [1, 1]
+}
+
+variable "ipam_subnet_bits_natgw" {
+  description = "The number of bits to use for subnet calculations with NAT Gateway"
+  type        = list(number)
+  default     = [1, 1]
+}
+
+variable "nat_gw_enable" {
+  description = "Enable NAT Gateway creation"
+  type        = bool
+  default     = false
 }

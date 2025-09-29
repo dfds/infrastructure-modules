@@ -52,6 +52,21 @@ provider "aws" {
 }
 
 provider "aws" {
+  region = "eu-west-1"
+  alias  = "standby_vpc"
+
+  default_tags {
+    tags = var.tags
+  }
+
+  # Assume role in Standby account
+  assume_role {
+    role_arn     = "arn:aws:iam::${var.standby_account_id}:role/${var.prime_role_name}"
+    session_name = var.aws_session_name
+  }
+}
+
+provider "aws" {
   region = var.aws_region
   alias  = "workload"
 

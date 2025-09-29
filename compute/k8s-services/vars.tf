@@ -902,6 +902,49 @@ variable "external_secrets_ssm_aws_region" {
 }
 
 # --------------------------------------------------
+# External DNS
+# --------------------------------------------------
+
+variable "external_dns_deploy" {
+  type        = string
+  default     = false
+  description = "Feature toggle for External DNS module"
+}
+
+variable "external_dns_helm_chart_version" {
+  type        = string
+  description = "External DNS helm chart version"
+  default     = ""
+}
+
+variable "external_dns_domain_filters" {
+  type        = list(string)
+  description = "List of domain filters for External DNS"
+  default     = []
+}
+
+variable "external_deletion_policy_override" {
+  type        = string
+  description = "External DNS deletion policy"
+  default     = ""
+  validation {
+    condition     = contains(["", "sync", "upsert-only"], var.external_deletion_policy_override)
+    error_message = "Deletion policy must be either '', 'sync', 'upsert-only'."
+  }
+}
+
+variable "external_dns_domain_filterss" {
+  type        = list(string)
+  description = "List of domain filters for External DNS"
+  default     = []
+}
+
+variable "external_dns_is_debug_mode" {
+  type        = bool
+  description = "Enable debug logging for External DNS"
+  default     = false
+}
+# --------------------------------------------------
 # kafka-exporter
 # --------------------------------------------------
 

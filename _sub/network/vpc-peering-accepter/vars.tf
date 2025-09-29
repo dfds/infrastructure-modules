@@ -1,3 +1,8 @@
+variable "aws_region" {
+  type        = string
+  description = "The region to label the peering names with"
+}
+
 variable "destination_cidr_block" {
   type        = string
   description = "The CIDR block of the route"
