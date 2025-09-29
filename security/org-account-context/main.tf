@@ -229,7 +229,7 @@ module "aws_iam_oidc_provider_ssm" { # Add SSM parameter for OIDC provider in eu
   key_name        = "/managed/cluster/oidc-provider"
   key_description = "OIDC Provider URL for EKS cluster"
   key_value       = var.oidc_provider["production"].cluster_oidc_url
-  tag_createdby   = var.ssm_param_createdby
+  tags            = var.tags
 }
 
 # Kept for backward compatibility - single OIDC provider
@@ -241,7 +241,7 @@ module "aws_iam_oidc_provider_ssm_eu_west_1" { # Add SSM parameter for OIDC prov
   key_name        = "/managed/cluster/oidc-provider"
   key_description = "OIDC Provider URL for EKS cluster"
   key_value       = var.oidc_provider["production"].cluster_oidc_url
-  tag_createdby   = var.ssm_param_createdby
+  tags            = var.tags
 }
 
 module "aws_iam_oidc_provider_ssm_multiple" { # Add SSM parameter for OIDC provider in eu-central-1
@@ -253,7 +253,7 @@ module "aws_iam_oidc_provider_ssm_multiple" { # Add SSM parameter for OIDC provi
   key_name        = "/managed/cluster/${each.value.cluster_name}/oidc-provider"
   key_description = "OIDC Provider URL for ${each.value.cluster_name} cluster"
   key_value       = each.value.cluster_oidc_url
-  tag_createdby   = var.ssm_param_createdby
+  tags            = var.tags
 }
 
 module "aws_iam_oidc_provider_ssm_multiple_eu_west_1" { # Add SSM parameter for OIDC provider in eu-west-1
@@ -265,7 +265,7 @@ module "aws_iam_oidc_provider_ssm_multiple_eu_west_1" { # Add SSM parameter for 
   key_name        = "/managed/cluster/${each.value.cluster_name}/oidc-provider"
   key_description = "OIDC Provider URL for ${each.value.cluster_name} cluster"
   key_value       = each.value.cluster_oidc_url
-  tag_createdby   = var.ssm_param_createdby
+  tags            = var.tags
 }
 
 # --------------------------------------------------

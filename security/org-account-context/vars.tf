@@ -301,12 +301,6 @@ variable "tags" {
   default     = {}
 }
 
-
-variable "ssm_param_createdby" {
-  type        = string
-  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
-}
-
 # VPC Peering
 
 variable "ipam_pools" {
