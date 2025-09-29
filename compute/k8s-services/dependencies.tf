@@ -210,8 +210,9 @@ locals {
 # --------------------------------------------------
 # IAM role for Route53 zone delegation
 # --------------------------------------------------
-data "aws_caller_identity" "hostedzone_account" {
-  provider = aws.core
+
+data "aws_caller_identity" "current_account" {
+
 }
 
 locals {
@@ -219,7 +220,7 @@ locals {
   external_dns_namespace_name                             = "external-dns"
   external_dns_serviceaccount_name                        = "external-dns"
   external_dns_role_assume_policy_name                    = "assume-role-external-dns"
-  external_dns_role_name_cross_account                    = "${var.eks_cluster_name}-external-dns-cross-accounts"
+  external_dns_role_name_cross_account                    = "${var.eks_cluster_name}-external-dns-route53-access"
   external_dns_role_name_cross_account_assume_policy_name = "allowExternalDNSUpdates"
 }
 
@@ -232,11 +233,10 @@ data "aws_iam_policy_document" "external_dns_role_assume_policy" {
     ]
 
     resources = [
-      "arn:aws:iam::${data.aws_caller_identity.hostedzone_account.account_id}:role/${local.external_dns_role_name_cross_account}",
+      var.external_dns_core_account_route53_assume_role_arn != "" ? var.external_dns_core_account_route53_assume_role_arn : "arn:aws:iam::${data.aws_caller_identity.current_account.account_id}:role/${local.external_dns_role_name_cross_account}",
     ]
   }
 }
-
 
 # if ingress is annotated with  external-dns.alpha.kubernetes.io/hostname: <loadbalancer dns name>
 # then it will create a record set in route53 with this name pointing to the loadbalancer otherwise there will be no record created
