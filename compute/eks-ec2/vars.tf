@@ -277,20 +277,12 @@ variable "docker_hub_username" {
   type        = string
   description = "Docker Hub username for pulling images"
   sensitive   = true
-  default     = ""
 }
 
 variable "docker_hub_password" {
   type        = string
   description = "Docker Hub password for pulling images"
   sensitive   = true
-  default     = ""
-}
-
-variable "essentials_url" {
-  type        = string
-  description = "HTTP server that provides essentials"
-  default     = ""
 }
 
 # --------------------------------------------------
