@@ -117,15 +117,12 @@ variable "parent_id" {
   description = "The ID of the parent AWS Organization OU."
 }
 
-variable "oidc_provider_url" {
-  type        = string
-  description = "The IAM OpenID Connect Provider url from the EKS production account"
-}
-
-variable "oidc_provider_tag" {
-  type        = string
-  description = "Used for tagging the IAM OpenID Connect Provider for the capability account"
-  default     = ""
+variable "oidc_provider" {
+  type = map(object({
+    cluster_oidc_url = string
+    cluster_name     = string
+  }))
+  description = "IAM OIDC Providers for the capability account to trust EKS clusters service accounts"
 }
 
 variable "harden" {

@@ -94,6 +94,25 @@ module "iam_role_shared" {
 }
 
 # --------------------------------------------------
+# IAM roles - Standby
+# --------------------------------------------------
+
+module "iam_role_standby" {
+  source               = "../../_sub/security/iam-role"
+  role_name            = var.capability_root_id
+  role_path            = var.shared_role_path
+  role_description     = "Namespaced access to resources in standby account, e.g. Parameter Store, CloudWatch Logs etc."
+  max_session_duration = 28800 # 8 hours
+  assume_role_policy   = data.aws_iam_policy_document.shared_role_cap_acc.json
+  role_policy_name     = "NamespacedAccessInStandbyAccount"
+  role_policy_document = module.iam_policies_shared.capability_access_shared
+
+  providers = {
+    aws = aws.standby_vpc
+  }
+}
+
+# --------------------------------------------------
 # IAM roles - Workload (capability context)
 # --------------------------------------------------
 
@@ -187,25 +206,33 @@ module "iam_user_deploy" {
 
 module "aws_iam_oidc_provider" {
   source                          = "../../_sub/security/iam-oidc-provider"
-  eks_openid_connect_provider_url = var.oidc_provider_url
-  eks_cluster_name                = var.oidc_provider_tag
+  for_each                        = var.oidc_provider
+  eks_openid_connect_provider_url = each.value.cluster_oidc_url
+  eks_cluster_name                = each.value.cluster_name
 
   providers = {
     aws = aws.workload
   }
 }
 
-module "aws_iam_oidc_provider_ssm" { # Add SSM parameter for OIDC provider URL TODO: Test!
+moved {
+  from = module.aws_iam_oidc_provider.aws_iam_openid_connect_provider.default
+  to   = module.aws_iam_oidc_provider["production"].aws_iam_openid_connect_provider.default
+}
+
+# Kept for backward compatibility - single OIDC provider
+module "aws_iam_oidc_provider_ssm" { # Add SSM parameter for OIDC provider in eu-central-1
   source = "../../_sub/security/ssm-parameter-store"
   providers = {
     aws = aws.workload
   }
   key_name        = "/managed/cluster/oidc-provider"
   key_description = "OIDC Provider URL for EKS cluster"
-  key_value       = var.oidc_provider_url
+  key_value       = var.oidc_provider["production"].cluster_oidc_url
   tag_createdby   = var.ssm_param_createdby
 }
 
+# Kept for backward compatibility - single OIDC provider
 module "aws_iam_oidc_provider_ssm_eu_west_1" { # Add SSM parameter for OIDC provider in eu-west-1
   source = "../../_sub/security/ssm-parameter-store"
   providers = {
@@ -213,7 +240,31 @@ module "aws_iam_oidc_provider_ssm_eu_west_1" { # Add SSM parameter for OIDC prov
   }
   key_name        = "/managed/cluster/oidc-provider"
   key_description = "OIDC Provider URL for EKS cluster"
-  key_value       = var.oidc_provider_url
+  key_value       = var.oidc_provider["production"].cluster_oidc_url
+  tag_createdby   = var.ssm_param_createdby
+}
+
+module "aws_iam_oidc_provider_ssm_multiple" { # Add SSM parameter for OIDC provider in eu-central-1
+  source   = "../../_sub/security/ssm-parameter-store"
+  for_each = var.oidc_provider
+  providers = {
+    aws = aws.workload
+  }
+  key_name        = "/managed/cluster/${each.value.cluster_name}/oidc-provider"
+  key_description = "OIDC Provider URL for ${each.value.cluster_name} cluster"
+  key_value       = each.value.cluster_oidc_url
+  tag_createdby   = var.ssm_param_createdby
+}
+
+module "aws_iam_oidc_provider_ssm_multiple_eu_west_1" { # Add SSM parameter for OIDC provider in eu-west-1
+  source   = "../../_sub/security/ssm-parameter-store"
+  for_each = var.oidc_provider
+  providers = {
+    aws = aws.workload_2
+  }
+  key_name        = "/managed/cluster/${each.value.cluster_name}/oidc-provider"
+  key_description = "OIDC Provider URL for ${each.value.cluster_name} cluster"
+  key_value       = each.value.cluster_oidc_url
   tag_createdby   = var.ssm_param_createdby
 }
 
