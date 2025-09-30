@@ -944,6 +944,13 @@ variable "external_dns_is_debug_mode" {
   description = "Enable debug logging for External DNS"
   default     = false
 }
+
+variable "external_dns_core_route53_assume_role_arn" {
+  type        = string
+  description = "The ARN of the role to assume in the core account to manage Route53 records"
+  default     = ""
+}
+
 # --------------------------------------------------
 # kafka-exporter
 # --------------------------------------------------
