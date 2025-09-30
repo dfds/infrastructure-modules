@@ -16,16 +16,6 @@ variable "tags" {
   default     = {}
 }
 
-# Optional
-# --------------------------------------------------
-
-variable "ssm_param_createdby" {
-  type        = string
-  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
-  default     = null
-}
-
-
 # --------------------------------------------------
 # EKS
 # --------------------------------------------------

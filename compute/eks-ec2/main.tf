@@ -233,9 +233,9 @@ module "eks_managed_workers_route_table_assoc_nat_gateway" {
 # --------------------------------------------------
 
 resource "aws_ssm_parameter" "dockerhub" {
-  name = "/eks/${var.eks_cluster_name}/dockerhub"
-  type = "SecureString"
-  value = jsonencode({username = var.docker_hub_username, password = var.docker_hub_password})
+  name  = "/eks/${var.eks_cluster_name}/dockerhub"
+  type  = "SecureString"
+  value = jsonencode({ username = var.docker_hub_username, password = var.docker_hub_password })
 }
 
 module "eks_managed_workers_node_group" {
@@ -342,7 +342,7 @@ module "param_kubeconfig_admin" {
   key_name        = "/eks/${var.eks_cluster_name}/kubeconfig-admin"
   key_description = "Kube config file for initial admin"
   key_value       = module.eks_heptio.kubeconfig_admin
-  tag_createdby   = var.ssm_param_createdby != null ? var.ssm_param_createdby : "eks-ec2"
+  tags            = var.tags
 }
 
 module "param_kubeconfig_saml" {
@@ -350,7 +350,7 @@ module "param_kubeconfig_saml" {
   key_name        = "/eks/${var.eks_cluster_name}/kubeconfig-saml"
   key_description = "Kube config file for SAML"
   key_value       = module.eks_heptio.kubeconfig_saml
-  tag_createdby   = var.ssm_param_createdby != null ? var.ssm_param_createdby : "eks-ec2"
+  tags            = var.tags
 }
 
 module "eks_s3_public_kubeconfig" {
@@ -376,7 +376,7 @@ module "k8s_service_account_store_secret" {
   key_name        = "/eks/${var.eks_cluster_name}/kubeconfig-deploy-user"
   key_description = "Kube config file for general deployment user"
   key_value       = module.k8s_service_account.deploy_user_kubeconfig
-  tag_createdby   = var.ssm_param_createdby != null ? var.ssm_param_createdby : "eks-ec2"
+  tags            = var.tags
 }
 
 module "cloudwatch_agent_config_bucket" {
