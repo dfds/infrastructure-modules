@@ -239,7 +239,7 @@ module "external_dns_flux_manifests" {
   prune                    = var.fluxcd_prune
   cluster_region           = var.aws_region
   role_arn                 = module.external_dns_iam_role_assume[0].arn
-  assume_role_arn          = var.external_dns_core_account_route53_assume_role_arn != "" ? var.external_dns_core_account_route53_assume_role_arn : module.external_dns_iam_role_route53_access[0].arn
+  assume_role_arn          = var.external_dns_core_route53_assume_role_arn != "" ? var.external_dns_core_route53_assume_role_arn : module.external_dns_iam_role_route53_access[0].arn
   deletion_policy_override = var.external_deletion_policy_override
   domain_filters           = var.external_dns_domain_filters
   is_debug_mode            = var.external_dns_is_debug_mode
@@ -251,9 +251,9 @@ module "external_dns_flux_manifests" {
 }
 
 
-module "external_dns_iam_role_route53_access" { # create a role if no role is provided to assume in core account
+module "external_dns_iam_role_route53_access" {
   source               = "../../_sub/security/iam-role"
-  count                = var.external_dns_deploy && var.external_dns_core_account_route53_assume_role_arn == "" ? 1 : 0
+  count                = var.external_dns_deploy && var.external_dns_core_route53_assume_role_arn == "" ? 1 : 0
   role_name            = local.external_dns_role_name_cross_account
   role_description     = "Role for accessing Route53 hosted zones"
   role_policy_name     = local.external_dns_role_name_cross_account_assume_policy_name

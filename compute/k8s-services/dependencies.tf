@@ -216,7 +216,7 @@ data "aws_caller_identity" "current_account" {
 }
 
 locals {
-  external_dns_role_name                                  = "${var.eks_cluster_name}-external-dns"
+  external_dns_role_name                                  = "eks-${var.eks_cluster_name}-external-dns"
   external_dns_namespace_name                             = "external-dns"
   external_dns_serviceaccount_name                        = "external-dns"
   external_dns_role_assume_policy_name                    = "assume-role-external-dns"
@@ -233,7 +233,9 @@ data "aws_iam_policy_document" "external_dns_role_assume_policy" {
     ]
 
     resources = [
-      var.external_dns_core_account_route53_assume_role_arn != "" ? var.external_dns_core_account_route53_assume_role_arn : "arn:aws:iam::${data.aws_caller_identity.current_account.account_id}:role/${local.external_dns_role_name_cross_account}",
+      var.external_dns_core_route53_assume_role_arn != "" ?
+      var.external_dns_core_route53_assume_role_arn :
+      "arn:aws:iam::${data.aws_caller_identity.current_account.account_id}:role/${local.external_dns_role_name_cross_account}"
     ]
   }
 }
