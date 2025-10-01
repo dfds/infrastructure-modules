@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.3.0, < 1.6.0"
+  required_version = ">= 1.6.0"
 
   required_providers {
     github = {
@@ -12,7 +12,7 @@ terraform {
     }
     flux = {
       source  = "fluxcd/flux"
-      version = "~> 1.6.0"
+      version = "~> 1.7.0"
     }
   }
 

@@ -58,6 +58,22 @@ if [ "$ACTION" = "destroy-cluster" ]; then
 	CLUSTERNAME=$3
 	WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}"
 
+	aws ssm get-parameter --name /eks/qa/kubeconfig-admin --with-decryption --region eu-west-1 --query 'Parameter.Value' --output text >$PWD/qa.yaml || true
+
+	export KUBECONFIG=$PWD/qa.yaml
+	export KUBECONFIG_SIZE=$(du -k $PWD/qa.yaml | cut -f 1)
+
+	if [[ -f $KUBECONFIG && $KUBECONFIG_SIZE -gt 0 ]]; then
+		kubectl delete APIServices v1beta1.metrics.k8s.io
+
+		NAMESPACES=$(kubectl get namespaces --no-headers -o custom-columns=NAME:.metadata.name | awk '{print $1}' | tail -n +2)
+		NAMESPACES=($(echo $NAMESPACES))
+
+		for ns in "${NAMESPACES[@]}"; do
+			kubectl patch namespace $ns -p '{"metadata":{"finalizers":null}}'
+		done
+	fi
+
 	# Destroy resources
 	terragrunt destroy --all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve
 fi

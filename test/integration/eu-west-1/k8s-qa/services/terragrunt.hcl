@@ -53,7 +53,7 @@ inputs = {
   # Blue variant
   traefik_blue_variant_deploy             = true
   traefik_blue_variant_dashboard_deploy   = true
-  traefik_blue_variant_helm_chart_version = "35.4.0"
+  traefik_blue_variant_helm_chart_version = "37.0.0"
   traefik_blue_variant_additional_args = [
     "--metrics.prometheus",
     "--providers.kubernetescrd.allowCrossNamespace=true",
@@ -63,7 +63,7 @@ inputs = {
   # Green variant
   traefik_green_variant_deploy             = false
   traefik_green_variant_dashboard_deploy   = false
-  traefik_green_variant_helm_chart_version = "35.4.0"
+  traefik_green_variant_helm_chart_version = "37.0.0"
   traefik_green_variant_additional_args = [
     "--metrics.prometheus",
     "--providers.kubernetescrd.allowCrossNamespace=true",
@@ -145,7 +145,6 @@ inputs = {
   atlantis_github_owner        = "dfds"
   atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
   atlantis_chart_version       = "5.17.2"
-  atlantis_environment         = "qa"
   atlantis_image_tag           = "2.1.0"
   atlantis_add_secret_volumes  = true
 
@@ -304,4 +303,12 @@ inputs = {
   # 1Password Connect
   # --------------------------------------------------
   onepassword-connect_deploy = true
+
+  # --------------------------------------------------
+  # External DNS
+  # --------------------------------------------------
+  external_dns_deploy                     = true
+  external_dns_helm_chart_version         = "1.19.0"
+  external_dns_domain_filters             = ["test.qa.dfds"]
+  external_dns_is_debug_mode              = true
 }

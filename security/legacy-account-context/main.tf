@@ -63,28 +63,6 @@ module "hardened-account" {
   kms_replica_key_arn             = var.hardened_kms_replica_key_arn
 }
 
-# --------------------------------------------------
-# Certero
-# --------------------------------------------------
-
-module "iam_policies" {
-  source                            = "../../_sub/security/iam-policies"
-  iam_role_trusted_account_root_arn = ["arn:aws:iam::${var.core_account_id}:root"] # Account ID from variable instead of data.aws_caller_identity - seems to get rate-throttled
-}
-
-module "iam_role_certero" {
-  source               = "../../_sub/security/iam-role"
-  role_name            = "CerteroRole"
-  role_description     = "Used by CerteroRole to make inventory of AWS resources"
-  max_session_duration = 3600
-  assume_role_policy   = data.aws_iam_policy_document.assume_role_policy_master_account.json
-  role_policy_name     = "CerteroEndpoint"
-  role_policy_document = module.iam_policies.certero_endpoint
-
-  providers = {
-    aws = aws.workload
-  }
-}
 
 # --------------------------------------------------
 # AWS Resource Explorer
@@ -147,11 +125,6 @@ resource "aws_resourceexplorer2_index" "eu-west-1" {
 # AWS Backup
 # --------------------------------------------------
 
-locals {
-  deploy_kms_key = true
-  kms_key_admins = [module.org_account.org_role_arn]
-}
-
 resource "aws_iam_role" "backup" {
   provider           = aws.workload
   count              = var.deploy_backup ? 1 : 0
@@ -194,7 +167,6 @@ module "backup_eu_central_1" {
   resource_type_management_preference      = var.aws_backup_resource_type_management_preference
 
   new_vault_name = var.aws_backup_vault_name_new
-  kms_key_admins = local.kms_key_admins
   backup_plans   = var.aws_backup_plans
   iam_role_arn   = aws_iam_role.backup[0].arn
   tags           = var.aws_backup_tags
@@ -211,7 +183,6 @@ module "backup_eu_west_1" {
   resource_type_management_preference      = var.aws_backup_resource_type_management_preference
 
   new_vault_name = var.aws_backup_vault_name_new
-  kms_key_admins = local.kms_key_admins
   backup_plans   = var.aws_backup_plans
   iam_role_arn   = aws_iam_role.backup[0].arn
   tags           = var.aws_backup_tags

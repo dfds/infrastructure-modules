@@ -1,16 +1,25 @@
+variable "aws_region" {
+  type        = string
+  description = "The region to label the peering names with"
+}
+
 variable "destination_cidr_block" {
+  type        = string
   description = "The CIDR block of the route"
 }
 
 variable "capability_id" {
+  type        = string
   description = "The name of the capability peered from"
 }
 
 variable "vpc_id" {
+  type        = string
   description = "The ID of the VPC"
 }
 
 variable "peering_connection_id" {
+  type        = string
   description = "The ID of the peering connection"
 }
 

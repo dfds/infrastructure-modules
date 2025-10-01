@@ -77,6 +77,7 @@ spec:
       cluster:
         id: ${item.id}
         environment: ${item.environment}
+    priorityClassName: cluster-observability
 YAML
   } }
 

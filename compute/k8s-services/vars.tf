@@ -119,6 +119,12 @@ variable "alb_az_app_registration_identifier_urls" {
   nullable = true
 }
 
+variable "alb_az_app_registration_additional_owner_ids" {
+  description = "List of additional owner object ID for the Azure AD application used by the Auth ALB"
+  type        = list(string)
+  default     = []
+}
+
 # --------------------------------------------------
 # Blaster
 # --------------------------------------------------
@@ -218,12 +224,6 @@ variable "goldpinger_chart_version" {
   type        = string
   description = "Goldpinger helm chart version"
   default     = ""
-}
-
-variable "goldpinger_priority_class" {
-  type        = string
-  description = "Goldpinger daemonset priority class name"
-  default     = "cluster-monitoring"
 }
 
 # --------------------------------------------------
@@ -414,18 +414,6 @@ variable "atlantis_data_storage" {
   default     = "5Gi"
 }
 
-variable "atlantis_environment" {
-  type        = string
-  description = "Environment for atlantis"
-  default     = ""
-}
-
-variable "atlantis_enable_github_secrets" {
-  type        = bool
-  default     = true
-  description = "Enable Github secrets for Atlantis"
-}
-
 # --------------------------------------------------
 # Atlantis variables
 # --------------------------------------------------
@@ -585,38 +573,6 @@ variable "blackbox_exporter_monitoring_traefik_green_variant_port" {
   type        = number
   description = "Port to monitor for the green variant of Traefik"
   default     = 8080
-}
-
-# --------------------------------------------------
-# Helm Exporter
-# --------------------------------------------------
-
-variable "helm_exporter_deploy" {
-  type        = bool
-  description = "Should the helm Exporter be deployed through Flux?"
-  default     = false
-}
-
-variable "helm_exporter_helm_chart_version" {
-  type        = string
-  description = "Helm Chart version to be used to deploy Helm Exporter"
-  default     = ""
-}
-
-variable "helm_exporter_target_namespaces" {
-  type        = string
-  description = "target namespaces filter"
-  default     = ""
-}
-
-variable "helm_exporter_target_charts" {
-  type = list(object({
-    registry = object({
-      url = string
-    })
-    charts = list(string)
-  }))
-  default = []
 }
 
 # --------------------------------------------------
@@ -940,18 +896,6 @@ variable "grafana_agent_namespace" {
   default     = "grafana"
 }
 
-variable "grafana_agent_enable_prometheus_crds" {
-  type        = bool
-  description = "Enable Prometheus CRDs"
-  default     = true
-}
-
-variable "grafana_agent_priority_class" {
-  type        = string
-  description = "Prometheus components priority class name"
-  default     = "cluster-monitoring"
-}
-
 variable "observability_tolerations" {
   type = list(object({
     key      = string,
@@ -1024,6 +968,56 @@ variable "external_secrets_ssm_aws_region" {
 }
 
 # --------------------------------------------------
+# External DNS
+# --------------------------------------------------
+
+variable "external_dns_deploy" {
+  type        = string
+  default     = false
+  description = "Feature toggle for External DNS module"
+}
+
+variable "external_dns_helm_chart_version" {
+  type        = string
+  description = "External DNS helm chart version"
+  default     = ""
+}
+
+variable "external_dns_domain_filters" {
+  type        = list(string)
+  description = "List of domain filters for External DNS"
+  default     = []
+}
+
+variable "external_deletion_policy_override" {
+  type        = string
+  description = "External DNS deletion policy"
+  default     = ""
+  validation {
+    condition     = contains(["", "sync", "upsert-only"], var.external_deletion_policy_override)
+    error_message = "Deletion policy must be either '', 'sync', 'upsert-only'."
+  }
+}
+
+variable "external_dns_domain_filterss" {
+  type        = list(string)
+  description = "List of domain filters for External DNS"
+  default     = []
+}
+
+variable "external_dns_is_debug_mode" {
+  type        = bool
+  description = "Enable debug logging for External DNS"
+  default     = false
+}
+
+variable "external_dns_core_route53_assume_role_arn" {
+  type        = string
+  description = "The ARN of the role to assume in the core account to manage Route53 records"
+  default     = ""
+}
+
+# --------------------------------------------------
 # kafka-exporter
 # --------------------------------------------------
 
@@ -1060,6 +1054,12 @@ variable "onepassword_token_for_atlantis" {
   sensitive   = true
   default     = ""
   description = "The 1Password Connect tokens to be stored in SSM if Atlantis is enabled"
+}
+
+variable "onepassword_connect_chart_version" {
+  type        = string
+  default     = ""
+  description = "The 1Password Connect helm chart version"
 }
 
 # --------------------------------------------------

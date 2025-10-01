@@ -1,5 +1,3 @@
-data "aws_region" "current" {}
-
 data "aws_route_tables" "preferred" {
   vpc_id = var.vpc_id
   tags = {
@@ -47,6 +45,6 @@ resource "aws_vpc_peering_connection_accepter" "shared" {
   auto_accept               = true
 
   tags = merge(var.tags, {
-    Name = "${var.capability_id}_${data.aws_region.current.name}"
+    Name = format("%s_%s", var.capability_id, var.aws_region)
   })
 }

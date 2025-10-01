@@ -25,6 +25,11 @@ variable "shared_account_id" {
   description = "The AWS account ID of the Organizations Shared account (e.g. Oxygen)"
 }
 
+variable "standby_account_id" {
+  type        = string
+  description = "The AWS account ID of the Organizations Standby account (e.g. Hydrogen)"
+}
+
 variable "ssu_account_id" {
   type        = string
   description = "The AWS account ID of the selfservice management account (e.g. ssu)"
@@ -110,19 +115,15 @@ variable "publish_message" {
 variable "parent_id" {
   type        = string
   description = "The ID of the parent AWS Organization OU."
-  default     = ""
 }
 
-variable "oidc_provider_url" {
-  type        = string
-  description = "The IAM OpenID Connect Provider url from the EKS production account"
-  default     = ""
-}
-
-variable "oidc_provider_tag" {
-  type        = string
-  description = "Used for tagging the IAM OpenID Connect Provider for the capability account"
-  default     = ""
+variable "oidc_provider" {
+  type = map(object({
+    cluster_oidc_url = string
+    cluster_name     = string
+    account_id       = string
+  }))
+  description = "IAM OIDC Providers for the capability account to trust EKS clusters service accounts"
 }
 
 variable "harden" {
@@ -203,24 +204,6 @@ variable "aws_region_2" {
   type        = string
   description = "Terraform has limitations that prevent us from dynamically creating AWS providers for each region, so instead of providing a list of regions we will specifiy an incremented set of variables to deploy resources across multiple regions."
   default     = "eu-west-1"
-}
-
-variable "repositories" {
-  type = list(object({
-    repository_name = string
-    refs            = list(string)
-  }))
-  description = "List of repositories to authenticate to AWS from. Each object contains repository name and list of refs that should be allowed to deploy from"
-  default     = []
-}
-
-variable "oidc_role_access" {
-  type = list(object({
-    actions   = list(string)
-    resources = list(string)
-  }))
-  description = "List of allowed actions for the oidc-role"
-  default     = []
 }
 
 variable "deploy_backup" {
@@ -318,12 +301,6 @@ variable "tags" {
   default     = {}
 }
 
-
-variable "ssm_param_createdby" {
-  type        = string
-  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
-}
-
 # VPC Peering
 
 variable "ipam_pools" {
@@ -335,12 +312,38 @@ variable "ipam_pools" {
   description = "The ID of the IPAM pool when using AWS IPAM assignment."
 }
 
+variable "vpc_peering_production" {
+  type        = map(string)
+  description = "The details for the production account's VPC to peer with"
+  default = {
+    vpc_id         = ""
+    region         = ""
+    cidr_block     = ""
+    route_table_id = ""
+  }
+  validation {
+    condition     = length(var.vpc_peering_production) == 4
+    error_message = "vpc_peering_production must contain exactly four keys: vpc_id, region, cidr_block, route_table_id where route_table_id can be an empty string."
+  }
+}
+
+variable "vpc_peering_standby" {
+  type        = map(string)
+  description = "The details for the standby account's VPC to peer with"
+  default = {
+    vpc_id         = ""
+    region         = ""
+    cidr_block     = ""
+    route_table_id = ""
+  }
+  validation {
+    condition     = length(var.vpc_peering_standby) == 4
+    error_message = "vpc_peering_standby must contain exactly four keys: vpc_id, region, cidr_block, route_table_id where route_table_id can be an empty string."
+  }
+}
+
 variable "vpc_peering_settings_eu_west_1" {
   type = map(object({
-    peer_vpc_id                  = string
-    peer_region                  = string
-    peer_route_table_id          = optional(string, "")
-    peer_cidr_block              = string
     assigned_cidr_block_vpc      = optional(string, "")
     assigned_cidr_block_subnet_a = optional(string, "")
     assigned_cidr_block_subnet_b = optional(string, "")
@@ -348,6 +351,8 @@ variable "vpc_peering_settings_eu_west_1" {
     ipam_cidr_enable             = optional(bool, false)
     ipam_cidr_prefix             = optional(string, "26")
     ipam_subnet_bits             = optional(list(number), [1, 1])
+    ipam_subnet_bits_natgw       = optional(list(number), [1, 1])
+    nat_gw_enable                = optional(bool, false)
   }))
   description = <<EOF
     Map containing two sets of values for VPC peering settings.
@@ -364,10 +369,6 @@ variable "vpc_peering_settings_eu_west_1" {
 EOF
   default = {
     "instance1" = {
-      peer_vpc_id                  = ""
-      peer_region                  = ""
-      peer_route_table_id          = ""
-      peer_cidr_block              = ""
       assigned_cidr_block_vpc      = ""
       assigned_cidr_block_subnet_a = ""
       assigned_cidr_block_subnet_b = ""
@@ -375,16 +376,14 @@ EOF
       ipam_cidr_enable             = false
       ipam_cidr_prefix             = "26"
       ipam_subnet_bits             = [1, 1]
+      ipam_subnet_bits_natgw       = [1, 1]
+      nat_gw_enable                = false
     }
   }
 }
 
 variable "vpc_peering_settings_eu_central_1" {
   type = map(object({
-    peer_vpc_id                  = string
-    peer_region                  = string
-    peer_route_table_id          = optional(string, "")
-    peer_cidr_block              = string
     assigned_cidr_block_vpc      = optional(string, "")
     assigned_cidr_block_subnet_a = optional(string, "")
     assigned_cidr_block_subnet_b = optional(string, "")
@@ -392,6 +391,8 @@ variable "vpc_peering_settings_eu_central_1" {
     ipam_cidr_enable             = optional(bool, false)
     ipam_cidr_prefix             = optional(string, "26")
     ipam_subnet_bits             = optional(list(number), [1, 1])
+    ipam_subnet_bits_natgw       = optional(list(number), [1, 1])
+    nat_gw_enable                = optional(bool, false)
   }))
   description = <<EOF
   Map containing two sets of values for VPC peering settings.
@@ -408,10 +409,6 @@ variable "vpc_peering_settings_eu_central_1" {
 EOF
   default = {
     "instance1" = {
-      peer_vpc_id                  = ""
-      peer_region                  = ""
-      peer_route_table_id          = ""
-      peer_cidr_block              = ""
       assigned_cidr_block_vpc      = ""
       assigned_cidr_block_subnet_a = ""
       assigned_cidr_block_subnet_b = ""
@@ -419,6 +416,8 @@ EOF
       ipam_cidr_enable             = false
       ipam_cidr_prefix             = "26"
       ipam_subnet_bits             = [1, 1]
+      ipam_subnet_bits_natgw       = [1, 1]
+      nat_gw_enable                = false
     }
   }
 }

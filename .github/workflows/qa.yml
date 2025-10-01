@@ -1,0 +1,252 @@
+name: QA Pipeline
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
+on:
+  push:
+    branches: [master]
+    paths-ignore:
+      - ".github/workflows/*"
+      - ".trunk/*"
+      - .gitignore
+      - .pre-commit-config.yaml
+      - .tflint.hcl
+      - mise.toml
+      - LICENSE
+      - README.md
+      - renovate.json
+  pull_request:
+    types: [opened, reopened, edited, synchronize, ready_for_review]
+    branches: [master]
+    paths-ignore:
+      - ".github/workflows/*"
+      - ".trunk/*"
+      - .gitignore
+      - .pre-commit-config.yaml
+      - .tflint.hcl
+      - mise.toml
+      - LICENSE
+      - README.md
+      - renovate.json
+
+  workflow_dispatch:
+
+concurrency: terragrunt-qa
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  AWS_DEFAULT_REGION: eu-west-1
+  TF_IN_AUTOMATION: "true"
+
+jobs:
+  build_test_master:
+    if: github.event.pull_request.draft == false
+    name: Build test binary from master branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          repository: dfds/infrastructure-modules
+          ref: master
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: 1.25.1
+      - name: Restore Go build cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.cache/go-build/
+          key: go-${{ runner.os }}-${{ hashFiles('test/integration/suite/go.sum', 'src/qa-test-eks.sh') }}
+      - name: Build test binary
+        run: ./src/qa-test-eks.sh test-build eu-west-1 qa /tmp/test-master.bin
+        env:
+          GOCACHE: ${{ github.workspace }}/.cache/go-build/
+      - name: Upload test binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-master
+          path: /tmp/test-master.bin
+
+  build_test_feature:
+    name: Build test binary from feature branch
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/master' && github.event.pull_request.draft == false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: 1.25.1
+      - name: Restore Go build cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.cache/go-build/
+          key: go-${{ runner.os }}-${{ hashFiles('test/integration/suite/go.sum', 'src/qa-test-eks.sh') }}
+      - name: Build test binary
+        run: ./src/qa-test-eks.sh test-build eu-west-1 qa /tmp/test-feature.bin
+        env:
+          GOCACHE: ${{ github.workspace }}/.cache/go-build/
+      - name: Upload test binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-feature
+          path: /tmp/test-feature.bin
+
+  apply_test_master:
+    if: github.event.pull_request.draft == false
+    name: Provision from master branch
+    runs-on: ubuntu-latest
+    needs: build_test_master
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          repository: dfds/infrastructure-modules
+          ref: master
+
+      - name: Install Terragrunt and OpenTofu
+        env:
+          MISE_FETCH_REMOTE_VERSIONS_TIMEOUT: 60s
+        uses: gruntwork-io/terragrunt-action@v3
+        with:
+          github_token: ${{ secrets.SHARED_WORKFLOW_HOUSEKEEPING }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.AWS_QA_ROLE_TO_ASSUME }}
+          role-session-name: run-qa-pipeline
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Load secrets
+        uses: 1password/load-secrets-action@v3
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_GITHUB_TOKEN }}
+          ARM_CLIENT_ID: op://CloudEng-General/Terraform Azure App Service Principal/username
+          ARM_CLIENT_SECRET: op://CloudEng-General/Terraform Azure App Service Principal/password
+          ARM_SUBSCRIPTION_ID: op://CloudEng-General/Terraform Azure App Service Principal/subscription_id
+          ARM_TENANT_ID: op://CloudEng-General/Terraform Azure App Service Principal/tenant_id
+          TF_VAR_atlantis_github_token: op://CloudEng-General/Github account devex-sa/Tokens/atlantis-qa
+          TF_VAR_docker_hub_username: op://CloudEng-General/Docker Cloud/username
+          TF_VAR_docker_hub_password: op://CloudEng-General/Docker Cloud/password
+          TF_VAR_eks_addon_awsebscsidriver_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn
+          TF_VAR_fluxcd_bootstrap_repo_owner_token: op://CloudEng-General/Github account devex-sa/Tokens/flux-qa
+          TF_VAR_grafana_agent_api_token: op://CloudEng-General/Grafana.com - sandbox/grafana_token
+          TF_VAR_grafana_agent_loki_url: op://CloudEng-General/Grafana.com - sandbox/Loki_URL
+          TF_VAR_grafana_agent_loki_username: op://CloudEng-General/Grafana.com - sandbox/Loki_Username
+          TF_VAR_grafana_agent_prometheus_url: op://CloudEng-General/Grafana.com - sandbox/Prometheus_URL
+          TF_VAR_grafana_agent_prometheus_username: op://CloudEng-General/Grafana.com - sandbox/Prometheus_Username
+          TF_VAR_grafana_agent_tempo_url: op://CloudEng-General/Grafana.com - sandbox/Tempo_URL
+          TF_VAR_grafana_agent_tempo_username: op://CloudEng-General/Grafana.com - sandbox/Tempo_Username
+          TF_VAR_onepassword_credentials_json: op://CloudEng-General/1Password Connect/nonprod_json
+          TF_VAR_onepassword_token_for_atlantis: op://CloudEng-General/1Password Connect/nonprod_atlantis_token
+          TF_VAR_velero_ebs_csi_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn
+          SLACK_WEBHOOK: op://CloudEng-General/Slack dfds.slack.com webhooks/jdm5vktylqnczrlkkbvsveyp5e
+
+      - name: Provision shared EKS S3 bucket
+        run: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
+      - name: Provision cluster & services
+        run: ./src/qa-test-eks.sh apply-cluster eu-west-1 qa
+      - name: Provision Velero S3 bucket
+        run: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
+      - name: Wait for managed node groups to become active
+        run: ./src/wait-for-ngs.sh qa
+      - name: Wait for auto scaling groups's instances to be in service
+        run: ./src/wait-for-asgs.sh qa
+      - name: Download test binary
+        uses: actions/download-artifact@v5
+        with:
+          name: test-master
+          path: /tmp
+      - name: Run tests
+        run: ./src/qa-test-eks.sh test-run eu-west-1 qa /tmp/test-master.bin
+
+      # - name: Send alert if job fails
+      #   if: failure()
+      #   uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
+      #   with:
+      #     slack_webhook: ${{ env.SLACK_WEBHOOK }}
+      #     slack_message: "QA pipeline failed in master branch"
+
+  apply_test_feature:
+    name: Apply from feature branch
+    runs-on: ubuntu-latest
+    needs: [apply_test_master, build_test_feature]
+    if: github.ref != 'refs/heads/master' && github.event.pull_request.draft == false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install Terragrunt and OpenTofu
+        env:
+          MISE_FETCH_REMOTE_VERSIONS_TIMEOUT: 60s
+        uses: gruntwork-io/terragrunt-action@v3
+        with:
+          github_token: ${{ secrets.SHARED_WORKFLOW_HOUSEKEEPING }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.AWS_QA_ROLE_TO_ASSUME }}
+          role-session-name: run-qa-pipeline
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Load secrets
+        uses: 1password/load-secrets-action@v3
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_GITHUB_TOKEN }}
+          ARM_CLIENT_ID: op://CloudEng-General/Terraform Azure App Service Principal/username
+          ARM_CLIENT_SECRET: op://CloudEng-General/Terraform Azure App Service Principal/password
+          ARM_SUBSCRIPTION_ID: op://CloudEng-General/Terraform Azure App Service Principal/subscription_id
+          ARM_TENANT_ID: op://CloudEng-General/Terraform Azure App Service Principal/tenant_id
+          TF_VAR_atlantis_github_token: op://CloudEng-General/Github account devex-sa/Tokens/atlantis-qa
+          TF_VAR_docker_hub_username: op://CloudEng-General/Docker Cloud/username
+          TF_VAR_docker_hub_password: op://CloudEng-General/Docker Cloud/password
+          TF_VAR_eks_addon_awsebscsidriver_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn
+          TF_VAR_fluxcd_bootstrap_repo_owner_token: op://CloudEng-General/Github account devex-sa/Tokens/flux-qa
+          TF_VAR_grafana_agent_api_token: op://CloudEng-General/Grafana.com - sandbox/grafana_token
+          TF_VAR_grafana_agent_loki_url: op://CloudEng-General/Grafana.com - sandbox/Loki_URL
+          TF_VAR_grafana_agent_loki_username: op://CloudEng-General/Grafana.com - sandbox/Loki_Username
+          TF_VAR_grafana_agent_prometheus_url: op://CloudEng-General/Grafana.com - sandbox/Prometheus_URL
+          TF_VAR_grafana_agent_prometheus_username: op://CloudEng-General/Grafana.com - sandbox/Prometheus_Username
+          TF_VAR_grafana_agent_tempo_url: op://CloudEng-General/Grafana.com - sandbox/Tempo_URL
+          TF_VAR_grafana_agent_tempo_username: op://CloudEng-General/Grafana.com - sandbox/Tempo_Username
+          TF_VAR_onepassword_credentials_json: op://CloudEng-General/1Password Connect/nonprod_json
+          TF_VAR_onepassword_token_for_atlantis: op://CloudEng-General/1Password Connect/nonprod_atlantis_token
+          TF_VAR_velero_ebs_csi_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn
+          SLACK_WEBHOOK: op://CloudEng-General/Slack dfds.slack.com webhooks/jdm5vktylqnczrlkkbvsveyp5e
+
+      - name: Provision shared EKS S3 bucket
+        run: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
+      - name: Provision cluster & services
+        run: ./src/qa-test-eks.sh apply-cluster eu-west-1 qa
+      - name: Provision Velero S3 bucket
+        run: ./src/qa-test-eks.sh apply-shared _global/s3-bucket-velero
+      - name: Wait for managed node groups to become active
+        run: ./src/wait-for-ngs.sh qa
+      - name: Wait for auto scaling groups's instances to be in service
+        run: ./src/wait-for-asgs.sh qa
+      - name: Download test binary
+        uses: actions/download-artifact@v5
+        with:
+          name: test-feature
+          path: /tmp
+      - name: Run tests
+        run: ./src/qa-test-eks.sh test-run eu-west-1 qa /tmp/test-feature.bin
+
+      - name: Send alert if job fails
+        if: failure()
+        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
+        with:
+          slack_webhook: ${{ env.SLACK_WEBHOOK }}
+          slack_message: "QA pipeline failed in feature branch"

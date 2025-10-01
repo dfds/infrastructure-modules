@@ -312,7 +312,7 @@ resource "aws_lambda_function" "bot" {
   function_name = aws_iam_role.lambda[0].name
   role          = aws_iam_role.lambda[0].arn
   handler       = "bootstrap"
-  runtime       = "provided.al2"
+  runtime       = "provided.al2023"
   timeout       = 300
 
   logging_config {

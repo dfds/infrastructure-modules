@@ -5,12 +5,8 @@ resource "aws_ssm_parameter" "putSecureString" {
   description = var.key_description
   type        = "SecureString"
   value       = var.key_value
-  tags = merge(
-    var.tags,
-    {
-      createdBy = var.tag_createdby != null ? var.tag_createdby : "ssm-parameter-store"
-    }
-  )
+  tags        = var.tags
+
   lifecycle {
     ignore_changes = [
       overwrite,

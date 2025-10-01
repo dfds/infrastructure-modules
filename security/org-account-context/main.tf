@@ -94,6 +94,25 @@ module "iam_role_shared" {
 }
 
 # --------------------------------------------------
+# IAM roles - Standby
+# --------------------------------------------------
+
+module "iam_role_standby" {
+  source               = "../../_sub/security/iam-role"
+  role_name            = var.capability_root_id
+  role_path            = var.shared_role_path
+  role_description     = "Namespaced access to resources in standby account, e.g. Parameter Store, CloudWatch Logs etc."
+  max_session_duration = 28800 # 8 hours
+  assume_role_policy   = data.aws_iam_policy_document.shared_role_cap_acc.json
+  role_policy_name     = "NamespacedAccessInStandbyAccount"
+  role_policy_document = module.iam_policies_shared.capability_access_shared
+
+  providers = {
+    aws = aws.standby_vpc
+  }
+}
+
+# --------------------------------------------------
 # IAM roles - Workload (capability context)
 # --------------------------------------------------
 
@@ -153,19 +172,6 @@ module "iam_role_ecr_push" {
   }
 }
 
-module "iam_role_certero" {
-  source               = "../../_sub/security/iam-role"
-  role_name            = "CerteroRole"
-  role_description     = ""
-  max_session_duration = 3600
-  assume_role_policy   = data.aws_iam_policy_document.assume_role_policy_master_account.json
-  role_policy_name     = "CerteroEndpoint"
-  role_policy_document = module.iam_policies.certero_endpoint
-
-  providers = {
-    aws = aws.workload
-  }
-}
 
 # --------------------------------------------------
 # IAM deployment user
@@ -200,25 +206,33 @@ module "iam_user_deploy" {
 
 module "aws_iam_oidc_provider" {
   source                          = "../../_sub/security/iam-oidc-provider"
-  eks_openid_connect_provider_url = var.oidc_provider_url
-  eks_cluster_name                = var.oidc_provider_tag
+  for_each                        = var.oidc_provider
+  eks_openid_connect_provider_url = each.value.cluster_oidc_url
+  eks_cluster_name                = each.value.cluster_name
 
   providers = {
     aws = aws.workload
   }
 }
 
-module "aws_iam_oidc_provider_ssm" { # Add SSM parameter for OIDC provider URL TODO: Test!
+moved {
+  from = module.aws_iam_oidc_provider.aws_iam_openid_connect_provider.default
+  to   = module.aws_iam_oidc_provider["production"].aws_iam_openid_connect_provider.default
+}
+
+# Kept for backward compatibility - single OIDC provider
+module "aws_iam_oidc_provider_ssm" { # Add SSM parameter for OIDC provider in eu-central-1
   source = "../../_sub/security/ssm-parameter-store"
   providers = {
     aws = aws.workload
   }
   key_name        = "/managed/cluster/oidc-provider"
   key_description = "OIDC Provider URL for EKS cluster"
-  key_value       = var.oidc_provider_url
-  tag_createdby   = var.ssm_param_createdby
+  key_value       = var.oidc_provider["production"].cluster_oidc_url
+  tags            = var.tags
 }
 
+# Kept for backward compatibility - single OIDC provider
 module "aws_iam_oidc_provider_ssm_eu_west_1" { # Add SSM parameter for OIDC provider in eu-west-1
   source = "../../_sub/security/ssm-parameter-store"
   providers = {
@@ -226,8 +240,32 @@ module "aws_iam_oidc_provider_ssm_eu_west_1" { # Add SSM parameter for OIDC prov
   }
   key_name        = "/managed/cluster/oidc-provider"
   key_description = "OIDC Provider URL for EKS cluster"
-  key_value       = var.oidc_provider_url
-  tag_createdby   = var.ssm_param_createdby
+  key_value       = var.oidc_provider["production"].cluster_oidc_url
+  tags            = var.tags
+}
+
+module "aws_iam_oidc_provider_ssm_multiple" { # Add SSM parameter for OIDC provider in eu-central-1
+  source   = "../../_sub/security/ssm-parameter-store"
+  for_each = var.oidc_provider
+  providers = {
+    aws = aws.workload
+  }
+  key_name        = "/managed/cluster/${each.value.cluster_name}/oidc-provider"
+  key_description = "OIDC Provider URL for ${each.value.cluster_name} cluster"
+  key_value       = each.value.cluster_oidc_url
+  tags            = var.tags
+}
+
+module "aws_iam_oidc_provider_ssm_multiple_eu_west_1" { # Add SSM parameter for OIDC provider in eu-west-1
+  source   = "../../_sub/security/ssm-parameter-store"
+  for_each = var.oidc_provider
+  providers = {
+    aws = aws.workload_2
+  }
+  key_name        = "/managed/cluster/${each.value.cluster_name}/oidc-provider"
+  key_description = "OIDC Provider URL for ${each.value.cluster_name} cluster"
+  key_value       = each.value.cluster_oidc_url
+  tags            = var.tags
 }
 
 # --------------------------------------------------
@@ -355,28 +393,8 @@ module "hardened-account" {
 }
 
 # --------------------------------------------------
-# Github OIDC provider
-# --------------------------------------------------
-
-module "github_oidc_provider" {
-  count = length(var.repositories) > 0 && length(var.oidc_role_access) > 0 ? 1 : 0
-  providers = {
-    aws = aws.workload
-  }
-  source = "../../_sub/security/iam-github-oidc-provider"
-
-  repositories     = var.repositories
-  oidc_role_access = var.oidc_role_access
-}
-
-# --------------------------------------------------
 # AWS Backup
 # --------------------------------------------------
-
-locals {
-  deploy_kms_key = false
-  kms_key_admins = [module.org_account.org_role_arn]
-}
 
 resource "aws_iam_role" "backup" {
   provider           = aws.workload
@@ -420,7 +438,6 @@ module "backup_eu_central_1" {
   resource_type_management_preference      = var.aws_backup_resource_type_management_preference
 
   new_vault_name = var.aws_backup_vault_name_new
-  kms_key_admins = local.kms_key_admins
   backup_plans   = var.aws_backup_plans
   iam_role_arn   = aws_iam_role.backup[0].arn
   tags           = var.aws_backup_tags
@@ -437,7 +454,6 @@ module "backup_eu_west_1" {
   resource_type_management_preference      = var.aws_backup_resource_type_management_preference
 
   new_vault_name = var.aws_backup_vault_name_new
-  kms_key_admins = local.kms_key_admins
   backup_plans   = var.aws_backup_plans
   iam_role_arn   = aws_iam_role.backup[0].arn
   tags           = var.aws_backup_tags
@@ -469,14 +485,16 @@ module "vpc_peering_capability_eu_west_1" {
   ipam_cidr_enable             = each.value.ipam_cidr_enable
   ipam_cidr_prefix             = each.value.ipam_cidr_prefix
   ipam_subnet_bits             = each.value.ipam_subnet_bits
+  ipam_subnet_bits_natgw       = each.value.ipam_subnet_bits
+  nat_gw_enable                = each.value.nat_gw_enable
   cidr_block_vpc               = each.value.assigned_cidr_block_vpc
   cidr_block_subnet_a          = each.value.assigned_cidr_block_subnet_a
   cidr_block_subnet_b          = each.value.assigned_cidr_block_subnet_b
   cidr_block_subnet_c          = each.value.assigned_cidr_block_subnet_c
-  peer_cidr_block              = each.value.peer_cidr_block
-  peer_owner_id                = var.shared_account_id
-  peer_vpc_id                  = each.value.peer_vpc_id
-  peer_region                  = each.value.peer_region
+  peer_cidr_block              = { production = var.vpc_peering_production.cidr_block, standby = var.vpc_peering_standby.cidr_block }
+  peer_owner_id                = { production = var.shared_account_id, standby = var.standby_account_id }
+  peer_vpc_id                  = { production = var.vpc_peering_production.vpc_id, standby = var.vpc_peering_standby.vpc_id }
+  peer_region                  = { production = var.vpc_peering_production.region, standby = var.vpc_peering_standby.region }
   map_public_ip_on_launch      = var.vpc_peering_map_public_ip_on_launch
   deploy_vpc_peering_endpoints = var.deploy_vpc_peering_endpoints
 
@@ -487,14 +505,30 @@ module "vpc_peering_capability_eu_west_1" {
   }
 }
 
+moved {
+  from = module.vpc_peering_capability_eu_west_1["peer1"].aws_vpc_security_group_ingress_rule.mariadb
+  to   = module.vpc_peering_capability_eu_west_1["peer1"].aws_vpc_security_group_ingress_rule.mariadb["production"]
+}
+
+moved {
+  from = module.vpc_peering_capability_eu_west_1["peer1"].aws_vpc_security_group_ingress_rule.postgres
+  to   = module.vpc_peering_capability_eu_west_1["peer1"].aws_vpc_security_group_ingress_rule.postgres["production"]
+}
+
+moved {
+  from = module.vpc_peering_capability_eu_west_1["peer1"].aws_vpc_security_group_ingress_rule.redis
+  to   = module.vpc_peering_capability_eu_west_1["peer1"].aws_vpc_security_group_ingress_rule.redis["production"]
+}
+
 module "vpc_peering_oxygen_eu_west_1" {
   source                 = "../../_sub/network/vpc-peering-accepter"
   for_each               = { for k, v in var.vpc_peering_settings_eu_west_1 : k => v if var.deploy_vpc_peering_eu_west_1 }
   capability_id          = var.capability_root_id
   destination_cidr_block = module.vpc_peering_capability_eu_west_1[each.key].vpc_cidr_block
-  vpc_id                 = each.value.peer_vpc_id
+  vpc_id                 = var.vpc_peering_production.vpc_id
   peering_connection_id  = module.vpc_peering_capability_eu_west_1[each.key].vpc_peering_connection_id
-  route_table_id         = each.value.peer_route_table_id
+  route_table_id         = var.vpc_peering_production.route_table_id
+  aws_region             = "eu-west-1"
   tags                   = local.all_tags
 
   providers = {
@@ -510,14 +544,16 @@ module "vpc_peering_capability_eu_central_1" {
   ipam_cidr_enable             = each.value.ipam_cidr_enable
   ipam_cidr_prefix             = each.value.ipam_cidr_prefix
   ipam_subnet_bits             = each.value.ipam_subnet_bits
+  ipam_subnet_bits_natgw       = each.value.ipam_subnet_bits
+  nat_gw_enable                = each.value.nat_gw_enable
   cidr_block_vpc               = each.value.assigned_cidr_block_vpc
   cidr_block_subnet_a          = each.value.assigned_cidr_block_subnet_a
   cidr_block_subnet_b          = each.value.assigned_cidr_block_subnet_b
   cidr_block_subnet_c          = each.value.assigned_cidr_block_subnet_c
-  peer_cidr_block              = each.value.peer_cidr_block
-  peer_owner_id                = var.shared_account_id
-  peer_vpc_id                  = each.value.peer_vpc_id
-  peer_region                  = each.value.peer_region
+  peer_cidr_block              = { production = var.vpc_peering_production.cidr_block, standby = var.vpc_peering_standby.cidr_block }
+  peer_owner_id                = { production = var.shared_account_id, standby = var.standby_account_id }
+  peer_vpc_id                  = { production = var.vpc_peering_production.vpc_id, standby = var.vpc_peering_standby.vpc_id }
+  peer_region                  = { production = var.vpc_peering_production.region, standby = var.vpc_peering_standby.region }
   map_public_ip_on_launch      = var.vpc_peering_map_public_ip_on_launch
   deploy_vpc_peering_endpoints = var.deploy_vpc_peering_endpoints
   tags                         = local.all_tags
@@ -527,21 +563,73 @@ module "vpc_peering_capability_eu_central_1" {
   }
 }
 
+moved {
+  from = module.vpc_peering_capability_eu_central_1["peer1"].aws_vpc_security_group_ingress_rule.mariadb
+  to   = module.vpc_peering_capability_eu_central_1["peer1"].aws_vpc_security_group_ingress_rule.mariadb["production"]
+}
+
+moved {
+  from = module.vpc_peering_capability_eu_central_1["peer1"].aws_vpc_security_group_ingress_rule.postgres
+  to   = module.vpc_peering_capability_eu_central_1["peer1"].aws_vpc_security_group_ingress_rule.postgres["production"]
+}
+
+moved {
+  from = module.vpc_peering_capability_eu_central_1["peer1"].aws_vpc_security_group_ingress_rule.redis
+  to   = module.vpc_peering_capability_eu_central_1["peer1"].aws_vpc_security_group_ingress_rule.redis["production"]
+}
+
 module "vpc_peering_oxygen_eu_central_1" {
   source                 = "../../_sub/network/vpc-peering-accepter"
   for_each               = { for k, v in var.vpc_peering_settings_eu_central_1 : k => v if var.deploy_vpc_peering_eu_central_1 }
-  capability_id          = var.capability_id
+  capability_id          = var.capability_root_id
   destination_cidr_block = module.vpc_peering_capability_eu_central_1[each.key].vpc_cidr_block
-  vpc_id                 = each.value.peer_vpc_id
+  vpc_id                 = var.vpc_peering_production.vpc_id
   peering_connection_id  = module.vpc_peering_capability_eu_central_1[each.key].vpc_peering_connection_id
-  route_table_id         = each.value.peer_route_table_id
-
-  tags = local.all_tags
+  route_table_id         = var.vpc_peering_production.route_table_id
+  aws_region             = "eu-central-1"
+  tags                   = local.all_tags
 
   providers = {
     aws = aws.shared_vpc
   }
 }
+
+# --------------------------------------------------
+# VPC Peering for standby account
+# --------------------------------------------------
+
+module "vpc_peering_hydrogen_eu_west_1_standby" {
+  source                 = "../../_sub/network/vpc-peering-accepter"
+  for_each               = { for k, v in var.vpc_peering_settings_eu_west_1 : k => v if var.deploy_vpc_peering_eu_west_1 }
+  capability_id          = var.capability_root_id
+  destination_cidr_block = module.vpc_peering_capability_eu_west_1[each.key].vpc_cidr_block
+  vpc_id                 = var.vpc_peering_standby.vpc_id
+  peering_connection_id  = module.vpc_peering_capability_eu_west_1[each.key].standby_vpc_peering_connection_id
+  route_table_id         = var.vpc_peering_standby.route_table_id
+  aws_region             = "eu-west-1"
+  tags                   = local.all_tags
+
+  providers = {
+    aws = aws.standby_vpc
+  }
+}
+
+module "vpc_peering_hydrogen_eu_central_1_standby" {
+  source                 = "../../_sub/network/vpc-peering-accepter"
+  for_each               = { for k, v in var.vpc_peering_settings_eu_central_1 : k => v if var.deploy_vpc_peering_eu_central_1 }
+  capability_id          = var.capability_root_id
+  destination_cidr_block = module.vpc_peering_capability_eu_central_1[each.key].vpc_cidr_block
+  vpc_id                 = var.vpc_peering_standby.vpc_id
+  peering_connection_id  = module.vpc_peering_capability_eu_central_1[each.key].standby_vpc_peering_connection_id
+  route_table_id         = var.vpc_peering_standby.route_table_id
+  aws_region             = "eu-central-1"
+  tags                   = local.all_tags
+
+  providers = {
+    aws = aws.standby_vpc
+  }
+}
+
 
 # --------------------------------------------------
 # Steampipe

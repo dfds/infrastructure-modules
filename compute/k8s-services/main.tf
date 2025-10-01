@@ -81,12 +81,13 @@ module "traefik_alb_cert" {
 }
 
 module "traefik_alb_auth_appreg" {
-  source          = "../../_sub/security/azure-app-registration"
-  count           = var.traefik_alb_auth_deploy ? 1 : 0
-  name            = "Kubernetes EKS ${local.eks_fqdn} cluster"
-  identifier_uris = var.alb_az_app_registration_identifier_urls != null ? var.alb_az_app_registration_identifier_urls : ["https://${local.eks_fqdn}"]
-  homepage_url    = "https://${local.eks_fqdn}"
-  redirect_uris   = local.traefik_alb_auth_appreg_reply_urls
+  source               = "../../_sub/security/azure-app-registration"
+  count                = var.traefik_alb_auth_deploy ? 1 : 0
+  name                 = "Kubernetes EKS ${local.eks_fqdn} cluster"
+  identifier_uris      = var.alb_az_app_registration_identifier_urls != null ? var.alb_az_app_registration_identifier_urls : ["https://${local.eks_fqdn}"]
+  homepage_url         = "https://${local.eks_fqdn}"
+  redirect_uris        = local.traefik_alb_auth_appreg_reply_urls
+  additional_owner_ids = var.alb_az_app_registration_additional_owner_ids
 }
 
 module "traefik_alb_auth" {
@@ -212,6 +213,54 @@ module "traefik_alb_anon_dns_core_alias" {
   }
 }
 
+module "external_dns_iam_role_assume" {
+  source               = "../../_sub/security/iam-role"
+  count                = var.external_dns_deploy ? 1 : 0
+  role_name            = local.external_dns_role_name
+  role_description     = "Role for accessing Route53 hosted zone"
+  role_policy_name     = local.external_dns_role_assume_policy_name
+  role_policy_document = data.aws_iam_policy_document.external_dns_role_assume_policy.json
+  assume_role_policy   = data.aws_iam_policy_document.external_dns_trust.json
+}
+
+module "external_dns_flux_manifests" {
+  source                   = "../../_sub/network/external-dns"
+  count                    = var.external_dns_deploy ? 1 : 0
+  cluster_name             = var.eks_cluster_name
+  deploy_name              = "external-dns"
+  namespace                = "external-dns"
+  helm_chart_version       = var.external_dns_helm_chart_version
+  github_owner             = var.fluxcd_bootstrap_repo_owner
+  repo_name                = var.fluxcd_bootstrap_repo_name
+  repo_branch              = var.fluxcd_bootstrap_repo_branch
+  overwrite_on_create      = var.fluxcd_bootstrap_overwrite_on_create
+  gitops_apps_repo_url     = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch  = var.fluxcd_apps_repo_branch
+  prune                    = var.fluxcd_prune
+  cluster_region           = var.aws_region
+  role_arn                 = module.external_dns_iam_role_assume[0].arn
+  assume_role_arn          = var.external_dns_core_route53_assume_role_arn != "" ? var.external_dns_core_route53_assume_role_arn : module.external_dns_iam_role_route53_access[0].arn
+  deletion_policy_override = var.external_deletion_policy_override
+  domain_filters           = var.external_dns_domain_filters
+  is_debug_mode            = var.external_dns_is_debug_mode
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
+}
+
+
+module "external_dns_iam_role_route53_access" {
+  source               = "../../_sub/security/iam-role"
+  count                = var.external_dns_deploy && var.external_dns_core_route53_assume_role_arn == "" ? 1 : 0
+  role_name            = local.external_dns_role_name_cross_account
+  role_description     = "Role for accessing Route53 hosted zones"
+  role_policy_name     = local.external_dns_role_name_cross_account_assume_policy_name
+  role_policy_document = data.aws_iam_policy_document.external_dns_core_route53_access_policy.json
+  assume_role_policy   = data.aws_iam_policy_document.external_dns_core_route53_access_policy_trust.json
+}
+
 # --------------------------------------------------
 # Blaster
 # --------------------------------------------------
@@ -329,7 +378,6 @@ module "goldpinger" {
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   namespace               = var.goldpinger_namespace
   chart_version           = var.goldpinger_chart_version
-  priority_class          = var.goldpinger_priority_class
 
   depends_on = [module.grafana, module.platform_fluxcd]
 
@@ -440,15 +488,13 @@ module "atlantis_deployment" {
 }
 
 module "atlantis_github_configuration" {
-  source                = "../../_sub/security/atlantis-github-configuration"
-  count                 = var.atlantis_deploy ? 1 : 0
-  dashboard_password    = module.atlantis_deployment[0].dashboard_password
-  enable_github_secrets = var.atlantis_enable_github_secrets
-  environment           = var.atlantis_environment
-  github_repositories   = var.atlantis_github_repositories
-  ingress_hostname      = var.atlantis_ingress
-  webhook_events        = var.atlantis_webhook_events
-  webhook_secret        = module.atlantis_deployment[0].webhook_secret
+  source              = "../../_sub/security/atlantis-github-configuration"
+  count               = var.atlantis_deploy ? 1 : 0
+  dashboard_password  = module.atlantis_deployment[0].dashboard_password
+  github_repositories = var.atlantis_github_repositories
+  ingress_hostname    = var.atlantis_ingress
+  webhook_events      = var.atlantis_webhook_events
+  webhook_secret      = module.atlantis_deployment[0].webhook_secret
 
   depends_on = [module.atlantis_deployment]
 
@@ -481,33 +527,6 @@ module "blackbox_exporter_flux_manifests" {
   }
 
   depends_on = [module.grafana, module.platform_fluxcd]
-}
-
-# --------------------------------------------------
-# Helm Exporter
-# --------------------------------------------------
-
-module "helm_exporter_flux_manifests" {
-  source                  = "../../_sub/monitoring/helm-exporter"
-  count                   = var.helm_exporter_deploy ? 1 : 0
-  cluster_name            = var.eks_cluster_name
-  helm_chart_version      = var.helm_exporter_helm_chart_version
-  github_owner            = var.fluxcd_bootstrap_repo_owner
-  repo_name               = var.fluxcd_bootstrap_repo_name
-  repo_branch             = var.fluxcd_bootstrap_repo_branch
-  namespace               = module.monitoring_namespace[0].name
-  target_namespaces       = var.helm_exporter_target_namespaces
-  target_charts           = var.helm_exporter_target_charts
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
-  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
-  prune                   = var.fluxcd_prune
-
-  providers = {
-    github = github.fluxcd
-  }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -678,9 +697,7 @@ module "grafana" {
   storage_enabled               = var.grafana_agent_storage_enabled
   storage_class                 = var.grafana_agent_storage_class
   storage_size                  = var.grafana_agent_storage_size
-  priority_class                = var.grafana_agent_priority_class
   namespace                     = var.grafana_agent_namespace
-  enable_prometheus_crds        = var.grafana_agent_enable_prometheus_crds
 
   providers = {
     github = github.fluxcd
@@ -786,6 +803,7 @@ module "onepassword_connect" {
   aws_region              = local.aws_region
   credentials_json        = var.onepassword_credentials_json
   token_for_atlantis      = var.onepassword_token_for_atlantis
+  chart_version           = var.onepassword_connect_chart_version
 
   providers = {
     github = github.fluxcd
@@ -954,7 +972,6 @@ module "falco" {
   deploy_name                  = var.falco_deploy_name
   namespace                    = var.falco_namespace
   chart_version                = var.falco_chart_version
-  github_token                 = var.fluxcd_bootstrap_repo_owner_token
   repo_owner                   = var.fluxcd_bootstrap_repo_owner
   repo_name                    = var.fluxcd_bootstrap_repo_name
   repo_branch                  = var.fluxcd_bootstrap_repo_branch

@@ -95,20 +95,6 @@ resource "aws_iam_role_policy" "prime-admin" {
   provider = aws.workload
 }
 
-module "iam_role_certero" {
-  source               = "../../_sub/security/iam-role"
-  role_name            = "CerteroRole"
-  role_description     = ""
-  max_session_duration = 3600
-  assume_role_policy   = data.aws_iam_policy_document.assume_role_policy_master_account.json
-  role_policy_name     = "CerteroEndpoint"
-  role_policy_document = module.iam_policies.certero_endpoint
-
-  providers = {
-    aws = aws.workload
-  }
-}
-
 # --------------------------------------------------
 # AWS Account - Alternate contact
 # --------------------------------------------------

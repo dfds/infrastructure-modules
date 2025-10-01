@@ -16,16 +16,6 @@ variable "tags" {
   default     = {}
 }
 
-# Optional
-# --------------------------------------------------
-
-variable "ssm_param_createdby" {
-  type        = string
-  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
-  default     = null
-}
-
-
 # --------------------------------------------------
 # EKS
 # --------------------------------------------------
@@ -182,7 +172,7 @@ variable "eks_managed_nodegroups" {
     instance_types             = optional(list(string), ["t3.small"])
     use_spot_instances         = optional(bool, false)
     disk_size                  = optional(number, 128)
-    disk_type                  = optional(string, "gp2")
+    disk_type                  = optional(string, "gp3")
     desired_size_per_subnet    = optional(number, 0)
     gpu_ami                    = optional(bool, false)
     availability_zones         = optional(list(string), [])
@@ -277,20 +267,12 @@ variable "docker_hub_username" {
   type        = string
   description = "Docker Hub username for pulling images"
   sensitive   = true
-  default     = ""
 }
 
 variable "docker_hub_password" {
   type        = string
   description = "Docker Hub password for pulling images"
   sensitive   = true
-  default     = ""
-}
-
-variable "essentials_url" {
-  type        = string
-  description = "HTTP server that provides essentials"
-  default     = ""
 }
 
 # --------------------------------------------------

@@ -33,17 +33,6 @@ if [[ ${NS} -eq 1 ]]; then
 	fi
 fi
 
-# Check if ESO is installed
-ESO=$(kubectl get helmrelease -n external-secrets -o custom-columns=VERSION:.spec.chart.spec.version --no-headers | wc -l | tr -d ' ')
-if [[ ${ESO} -eq 1 ]]; then
-	# Find desired helm chart version
-	HELMRELEASE=$(grep external_secrets_helm_chart_version terragrunt.hcl | cut -d '"' -f2)
-	if [[ "x${HELMRELEASE}x" != "xx" ]]; then
-		echo "Applying/Upgrading CRDs for ESO"
-		kubectl apply --server-side -f https://raw.githubusercontent.com/external-secrets/external-secrets/refs/tags/v${HELMRELEASE}/deploy/crds/bundle.yaml
-	fi
-fi
-
 TENANT_NS=$(kubectl get namespace --no-headers | grep -w flux-tenant-test | wc -l | tr -d ' ')
 if [[ ${TENANT_NS} -eq 0 ]]; then
 	kubectl create namespace flux-tenant-test

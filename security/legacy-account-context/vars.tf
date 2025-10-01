@@ -9,18 +9,13 @@ variable "aws_region_2" {
 
 variable "aws_session_name" {
   type        = string
-  description = "An identifier for the AWS session name. This can be useful in identifiying which pipeline executed the Terraform."
+  description = "An identifier for the AWS session name. This can be useful in identifying which pipeline executed the Terraform."
   default     = null
 }
 
 variable "master_account_id" {
   type        = string
   description = "The AWS account ID of the Organizations Master account"
-}
-
-variable "core_account_id" {
-  type        = string
-  description = "The AWS account ID of the Organizations Core account"
 }
 
 variable "security_account_id" {
@@ -68,7 +63,6 @@ variable "email_security" {
 variable "parent_id" {
   type        = string
   description = "The ID of the parent AWS Organization OU."
-  default     = ""
 }
 
 variable "aws_region_sso" {

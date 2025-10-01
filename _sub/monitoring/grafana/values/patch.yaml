@@ -9,10 +9,6 @@ spec:
     spec:
       version: "${helm_chart_version}"
   values:
-%{ if !enable_prometheus_crds ~}
-    prometheus-operator-crds:
-      enabled: false
-%{ endif ~}
     cluster:
       name: ${cluster_name}
     alloy:
@@ -102,8 +98,6 @@ spec:
     metrics:
       cost:
         enabled: ${open_cost_enabled}
-    kube-state-metrics:
-      priorityClassName: ${kube_state_metrics_priorityclass}
 %{ if length(tolerations) > 0 ~}
       tolerations:
 %{ for t in tolerations ~}
@@ -131,5 +125,3 @@ spec:
 %{ endfor ~}
 %{ endfor ~}
 %{ endif ~}
-    prometheus-node-exporter:
-      priorityClassName: ${prometheus_node_exporter_priorityclass}

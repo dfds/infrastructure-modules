@@ -24,19 +24,3 @@ resource "github_repository_webhook" "webhook" {
 
   events = var.webhook_events
 }
-
-resource "github_actions_organization_secret" "atlantis_username" {
-  count                   = var.enable_github_secrets ? 1 : 0
-  secret_name             = "${upper(var.environment)}_ATLANTIS_USERNAME"
-  visibility              = "selected"
-  plaintext_value         = local.deploy_name
-  selected_repository_ids = [for repo in data.github_repository.repo : repo.repo_id]
-}
-
-resource "github_actions_organization_secret" "atlantis_password" {
-  count                   = var.enable_github_secrets ? 1 : 0
-  secret_name             = "${upper(var.environment)}_ATLANTIS_PASSWORD"
-  visibility              = "selected"
-  plaintext_value         = var.dashboard_password
-  selected_repository_ids = [for repo in data.github_repository.repo : repo.repo_id]
-}
