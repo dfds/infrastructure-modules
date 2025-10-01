@@ -933,12 +933,6 @@ variable "external_deletion_policy_override" {
   }
 }
 
-variable "external_dns_domain_filterss" {
-  type        = list(string)
-  description = "List of domain filters for External DNS"
-  default     = []
-}
-
 variable "external_dns_is_debug_mode" {
   type        = bool
   description = "Enable debug logging for External DNS"
