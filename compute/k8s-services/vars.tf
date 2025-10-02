@@ -275,12 +275,6 @@ variable "atlantis_webhook_events" {
   type        = list(string)
 }
 
-variable "atlantis_namespace" {
-  type        = string
-  description = "Namespace for Atlantis deployment"
-  default     = "atlantis"
-}
-
 variable "atlantis_chart_version" {
   type        = string
   description = "Version of the helm chart to deploy"

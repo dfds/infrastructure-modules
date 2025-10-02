@@ -428,7 +428,7 @@ module "atlantis_deployment" {
   chart_version             = var.atlantis_chart_version
   cluster_name              = var.eks_cluster_name
   enable_secret_volumes     = var.atlantis_add_secret_volumes
-  github_repositories       = var.atlantis_github_repositories
+  github_repositories       = sort(var.atlantis_github_repositories)
   github_token              = var.atlantis_github_token
   github_username           = var.atlantis_github_username
   gitops_apps_repo_branch   = var.fluxcd_apps_repo_branch

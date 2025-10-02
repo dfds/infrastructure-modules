@@ -154,7 +154,7 @@ POLICY
 locals {
   blackbox_exporter_monitoring_atlantis = var.atlantis_deploy ? [{
     "name"   = "atlantis"
-    "url"    = "http://atlantis.${var.atlantis_namespace}/healthz"
+    "url"    = "http://atlantis.atlantis/healthz"
     "module" = "http_2xx"
   }] : []
 
