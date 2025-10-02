@@ -38,8 +38,6 @@ inputs = {
   # Traefik v2
   # --------------------------------------------------
 
-  traefikv2_test_alb_deploy = true
-
   # Blue variant
   traefik_blue_variant_deploy             = true
   traefik_blue_variant_dashboard_deploy   = true
@@ -79,15 +77,13 @@ inputs = {
   # Flux CD
   # --------------------------------------------------
 
-  fluxcd_version                    = "v2.6.1"
+  fluxcd_version                    = "v2.7.0"
 
   fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
   fluxcd_bootstrap_repo_branch      = "main"
   fluxcd_bootstrap_repo_owner       = "dfds"
 
-  fluxcd_apps_repo_name             = "platform-apps"
   fluxcd_apps_repo_branch           = "qa"
-  fluxcd_apps_repo_owner            = "dfds"
 
 
   # --------------------------------------------------

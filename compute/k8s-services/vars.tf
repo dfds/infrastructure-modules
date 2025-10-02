@@ -218,7 +218,7 @@ variable "fluxcd_apps_git_provider_url" {
 
 variable "fluxcd_apps_repo_name" {
   type        = string
-  default     = ""
+  default     = "platform-apps"
   description = "The repo name for your GitOps manifests"
 }
 
@@ -230,7 +230,7 @@ variable "fluxcd_apps_repo_branch" {
 
 variable "fluxcd_apps_repo_owner" {
   type        = string
-  default     = "main"
+  default     = "dfds"
   description = "The repo owner for your GitOps manifests"
 }
 
