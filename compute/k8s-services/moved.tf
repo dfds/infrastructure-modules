@@ -26,3 +26,33 @@ moved {
   from = module.monitoring_namespace[0].kubernetes_namespace.namespace
   to   = module.monitoring_namespace.kubernetes_namespace.namespace
 }
+
+moved {
+  from = module.monitoring_namespace[0].kubernetes_namespace.namespace
+  to   = module.monitoring_namespace.kubernetes_namespace.namespace
+}
+
+moved {
+  from = module.aws_subnet_exporter[0].aws_iam_role.this
+  to   = module.aws_subnet_exporter.aws_iam_role.this
+}
+
+moved {
+  from = module.aws_subnet_exporter[0].aws_iam_role_policy.this
+  to   = module.aws_subnet_exporter.aws_iam_role_policy.this
+}
+
+moved {
+  from = module.aws_subnet_exporter[0].kubernetes_deployment.this
+  to   = module.aws_subnet_exporter.kubernetes_deployment.this
+}
+
+moved {
+  from = module.aws_subnet_exporter[0].kubernetes_service.this
+  to   = module.aws_subnet_exporter.kubernetes_service.this
+}
+
+moved {
+  from = module.aws_subnet_exporter[0].kubernetes_service_account.this
+  to   = module.aws_subnet_exporter.kubernetes_service_account.this
+}

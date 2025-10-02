@@ -598,14 +598,12 @@ module "velero" {
 
 module "aws_subnet_exporter" {
   source         = "../../_sub/compute/k8s-subnet-exporter"
-  count          = var.subnet_exporter_deploy ? 1 : 0
   namespace_name = var.grafana_deploy ? var.grafana_agent_namespace : "monitoring"
   aws_account_id = var.aws_workload_account_id
   aws_region     = var.aws_region
   image_tag      = "0.3"
   oidc_issuer    = local.oidc_issuer
   cluster_name   = var.eks_cluster_name
-  iam_role_name  = var.subnet_exporter_iam_role_name
   tolerations    = var.monitoring_tolerations
   affinity       = var.monitoring_affinity
 
