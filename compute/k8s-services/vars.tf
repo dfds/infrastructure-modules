@@ -56,11 +56,6 @@ variable "aws_assume_logs_role_arn" {
 # ALB access logs S3 bucket
 # --------------------------------------------------
 
-variable "traefik_alb_s3_access_logs_retiontion_days" {
-  type    = number
-  default = 30
-}
-
 variable "alb_access_logs_replication" {
   type = map(object({
     destination_account_id  = string
@@ -85,42 +80,14 @@ variable "alb_access_logs_sse_algorithm" {
 # --------------------------------------------------
 # Load Balancers in front of Traefik
 # --------------------------------------------------
-
-variable "traefik_alb_anon_deploy" {
-  type    = bool
-  default = false
-}
-
 variable "traefik_alb_anon_core_alias" {
-  description = "A list of aliases/alternative names in the *parent* domain, the certficate should also be valid for. E.g. 'prettyurl.company.tld'"
+  description = "A list of aliases/alternative names in the *parent* domain, the certificate should also be valid for. E.g. 'prettyurl.company.tld'"
   type        = list(string)
   default     = []
-}
-
-variable "traefik_alb_auth_deploy" {
-  type    = bool
-  default = false
 }
 
 variable "traefik_alb_auth_core_alias" {
-  description = "A list of aliases/alternative names in the *parent* domain, the certficate should also be valid for. E.g. 'prettyurl.company.tld'"
-  type        = list(string)
-  default     = []
-}
-
-variable "traefik_nlb_deploy" {
-  type    = bool
-  default = false
-}
-
-variable "alb_az_app_registration_identifier_urls" {
-  type     = list(string)
-  default  = null
-  nullable = true
-}
-
-variable "alb_az_app_registration_additional_owner_ids" {
-  description = "List of additional owner object ID for the Azure AD application used by the Auth ALB"
+  description = "A list of aliases/alternative names in the *parent* domain, the certificate should also be valid for. E.g. 'prettyurl.company.tld'"
   type        = list(string)
   default     = []
 }

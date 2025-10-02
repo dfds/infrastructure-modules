@@ -29,20 +29,10 @@ inputs = {
   # EKS
   # --------------------------------------------------
 
-  eks_is_sandbox            = true
   eks_cluster_name          = "qa"
+  eks_is_sandbox            = true
   enable_inactivity_cleanup = false
   use_worker_nat_gateway    = true
-
-  # --------------------------------------------------
-  # Load Balancers in front of Traefik
-  # --------------------------------------------------
-
-  traefik_alb_auth_deploy = true # triggers Azure App registration
-  traefik_alb_anon_deploy = true
-  # traefik_alb_auth_core_alias = ["qa-alias1.dfds.cloud", "qa-alias2.dfds.cloud"]
-  traefik_alb_auth_core_alias = []
-
 
   # --------------------------------------------------
   # Traefik v2
