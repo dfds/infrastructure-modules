@@ -7,13 +7,13 @@ locals {
 }
 
 data "github_repository" "repo" {
-  count     = length(var.github_repositories)
-  full_name = var.github_repositories[count.index]
+  for_each  = toset(var.github_repositories)
+  full_name = each.value
 }
 
 resource "github_repository_webhook" "webhook" {
-  count      = length(data.github_repository.repo)
-  repository = data.github_repository.repo[count.index].name
+  for_each   = data.github_repository.repo
+  repository = each.value.name
 
   configuration {
     url          = "https://${local.deploy_name}:${urlencode(var.dashboard_password)}@${var.ingress_hostname}/events"

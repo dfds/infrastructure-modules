@@ -242,7 +242,7 @@ variable "fluxcd_apps_repo_owner" {
 variable "atlantis_deploy" {
   type        = bool
   description = "Deploy Atlantis"
-  default     = false
+  default     = true
 }
 
 variable "atlantis_github_token" {
@@ -253,14 +253,14 @@ variable "atlantis_github_token" {
 
 variable "atlantis_github_owner" {
   type        = string
-  default     = null
-  description = "Github owner(username). Conflicts with github_organization. Leaving unset will use GITHUB_OWNER environment variable if exists"
+  default     = "dfds"
+  description = "Github owner(username). Leaving unset will use GITHUB_OWNER environment variable if exists"
 }
 
 variable "atlantis_github_username" {
   type        = string
   default     = null
-  description = "Github username of the account that will post Atlantis comments on PR's"
+  description = "Github username of the account that owns the token. Leaving unset will use GITHUB_USERNAME environment variable if exists"
 }
 
 variable "atlantis_github_repositories" {
