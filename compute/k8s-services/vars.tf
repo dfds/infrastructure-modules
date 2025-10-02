@@ -149,12 +149,6 @@ variable "goldpinger_chart_version" {
 # Metrics-Server
 # --------------------------------------------------
 
-variable "metrics_server_deploy" {
-  type        = bool
-  description = "Deploy metrics-server helm chart switch."
-  default     = true
-}
-
 variable "metrics_server_helm_chart_version" {
   type        = string
   description = "The helm chart version"

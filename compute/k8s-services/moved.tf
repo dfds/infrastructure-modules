@@ -56,3 +56,13 @@ moved {
   from = module.aws_subnet_exporter[0].kubernetes_service_account.this
   to   = module.aws_subnet_exporter.kubernetes_service_account.this
 }
+
+moved {
+  from = module.metrics_server[0].github_repository_file.helm
+  to   = module.metrics_server.github_repository_file.helm
+}
+
+moved {
+  from = module.metrics_server[0].github_repository_file.kustomization
+  to   = module.metrics_server.github_repository_file.kustomization
+}
