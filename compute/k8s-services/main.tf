@@ -341,20 +341,18 @@ module "monitoring_namespace" {
 
 
 # --------------------------------------------------
-# Goldpinger
+# Goldpinger - only when Grafana is also deployed
 # --------------------------------------------------
 
 module "goldpinger" {
   source                  = "../../_sub/monitoring/goldpinger"
-  count                   = var.goldpinger_deploy ? 1 : 0
+  count                   = var.grafana_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
   repo_owner              = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
-  namespace               = var.goldpinger_namespace
   chart_version           = var.goldpinger_chart_version
 
   depends_on = [module.grafana, module.platform_fluxcd]

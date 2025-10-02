@@ -139,18 +139,6 @@ variable "monitoring_affinity" {
 # Goldpinger
 # --------------------------------------------------
 
-variable "goldpinger_deploy" {
-  type        = bool
-  description = "Deploy goldpinger helm chart switch"
-  default     = false
-}
-
-variable "goldpinger_namespace" {
-  type        = string
-  description = "The namespace to deploy goldpinger in"
-  default     = "goldpinger"
-}
-
 variable "goldpinger_chart_version" {
   type        = string
   description = "Goldpinger helm chart version"
