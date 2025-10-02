@@ -265,7 +265,6 @@ module "blaster_namespace" {
   source                   = "../../_sub/compute/k8s-blaster-namespace"
   deploy                   = var.blaster_deploy
   cluster_name             = var.eks_cluster_name
-  namespace_labels         = var.blaster_namespace_labels
   blaster_configmap_bucket = data.terraform_remote_state.cluster.outputs.blaster_configmap_bucket
   oidc_issuer              = local.oidc_issuer
 }
@@ -277,28 +276,13 @@ module "blaster_namespace" {
 
 module "alarm_notifier" {
   source            = "../../_sub/monitoring/alarm-notifier/"
-  deploy            = var.alarm_notifier_deploy
   name              = "eks-${var.eks_cluster_name}-cloudwatch-alarms"
   slack_webhook_url = var.slack_webhook_url
 }
 
-module "cloudwatch_alarm_alb_5XX_anon" {
-  source         = "../../_sub/monitoring/cloudwatch-alarms/alb-5XX/"
-  deploy         = var.cloudwatch_alarm_alb_5XX_deploy && (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy)
-  sns_topic_arn  = module.alarm_notifier.sns_arn
-  alb_arn_suffix = module.traefik_alb_anon.alb_arn_suffix
-}
-
-module "cloudwatch_alarm_alb_5XX_auth" {
-  source         = "../../_sub/monitoring/cloudwatch-alarms/alb-5XX/"
-  deploy         = var.cloudwatch_alarm_alb_5XX_deploy && (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy)
-  sns_topic_arn  = module.alarm_notifier.sns_arn
-  alb_arn_suffix = module.traefik_alb_auth.alb_arn_suffix
-}
-
 module "cloudwatch_alarm_alb_targets_health_anon_blue" {
   source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
-  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_blue_variant_deploy
+  deploy                      = var.traefik_blue_variant_deploy
   sns_topic_arn               = module.alarm_notifier.sns_arn
   alb_arn_suffix              = module.traefik_alb_anon.alb_arn_suffix
   alb_arn_target_group_suffix = module.traefik_alb_anon.alb_target_group_arn_suffix_blue
@@ -306,7 +290,7 @@ module "cloudwatch_alarm_alb_targets_health_anon_blue" {
 
 module "cloudwatch_alarm_alb_targets_health_anon_green" {
   source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
-  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_green_variant_deploy
+  deploy                      = var.traefik_green_variant_deploy
   sns_topic_arn               = module.alarm_notifier.sns_arn
   alb_arn_suffix              = module.traefik_alb_anon.alb_arn_suffix
   alb_arn_target_group_suffix = module.traefik_alb_anon.alb_target_group_arn_suffix_green
@@ -314,7 +298,7 @@ module "cloudwatch_alarm_alb_targets_health_anon_green" {
 
 module "cloudwatch_alarm_alb_targets_health_auth_blue" {
   source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
-  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_blue_variant_deploy
+  deploy                      = var.traefik_blue_variant_deploy
   sns_topic_arn               = module.alarm_notifier.sns_arn
   alb_arn_suffix              = module.traefik_alb_auth.alb_arn_suffix
   alb_arn_target_group_suffix = module.traefik_alb_auth.alb_target_group_arn_suffix_blue
@@ -322,7 +306,7 @@ module "cloudwatch_alarm_alb_targets_health_auth_blue" {
 
 module "cloudwatch_alarm_alb_targets_health_auth_green" {
   source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
-  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_green_variant_deploy
+  deploy                      = var.traefik_green_variant_deploy
   sns_topic_arn               = module.alarm_notifier.sns_arn
   alb_arn_suffix              = module.traefik_alb_auth.alb_arn_suffix
   alb_arn_target_group_suffix = module.traefik_alb_auth.alb_target_group_arn_suffix_green
@@ -330,7 +314,6 @@ module "cloudwatch_alarm_alb_targets_health_auth_green" {
 
 module "alarm_notifier_log_account" {
   source            = "../../_sub/monitoring/alarm-notifier/"
-  deploy            = var.cloudwatch_alarm_log_anomaly_deploy
   name              = "eks-${var.eks_cluster_name}-cloudwatch-alarms"
   slack_webhook_url = var.slack_webhook_url
 
@@ -345,9 +328,8 @@ module "alarm_notifier_log_account" {
 
 module "monitoring_namespace" {
   source           = "../../_sub/compute/k8s-namespace"
-  count            = var.monitoring_namespace_deploy ? 1 : 0
-  name             = local.monitoring_namespace_name
-  namespace_labels = var.monitoring_namespace_labels
+  name             = "monitoring"
+  namespace_labels = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/enforce" = "privileged" }
 
   # The monitoring namespace has resources that are provisioned and
   # deprovisioned from it via Flux. If Flux is removed before the monitoring
@@ -617,7 +599,7 @@ module "velero" {
 module "aws_subnet_exporter" {
   source         = "../../_sub/compute/k8s-subnet-exporter"
   count          = var.subnet_exporter_deploy ? 1 : 0
-  namespace_name = var.grafana_deploy ? var.grafana_agent_namespace : module.monitoring_namespace[0].name
+  namespace_name = var.grafana_deploy ? var.grafana_agent_namespace : "monitoring"
   aws_account_id = var.aws_workload_account_id
   aws_region     = var.aws_region
   image_tag      = "0.3"

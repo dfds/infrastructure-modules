@@ -73,10 +73,7 @@ inputs = {
   # Cloudwatch alarms and alarm notifier (Slack)
   # --------------------------------------------------
 
-  alarm_notifier_deploy                      = true
-  slack_webhook_url                          = "https://dummy.slack.webhook"
-  cloudwatch_alarm_alb_targets_health_deploy = true
-  cloudwatch_alarm_alb_5XX_deploy            = true
+  slack_webhook_url = "https://dummy.slack.webhook"
 
   # --------------------------------------------------
   # Flux CD

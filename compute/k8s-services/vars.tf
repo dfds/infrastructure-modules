@@ -101,11 +101,6 @@ variable "blaster_deploy" {
   default = false
 }
 
-variable "blaster_namespace_labels" {
-  type    = map(any)
-  default = { "pod-security.kubernetes.io/enforce" = "baseline" }
-}
-
 # --------------------------------------------------
 # Cloudwatch alarms and alarm notifier (Slack)
 # --------------------------------------------------
@@ -115,40 +110,9 @@ variable "slack_webhook_url" {
   default = ""
 }
 
-variable "alarm_notifier_deploy" {
-  type    = bool
-  default = false
-}
-
-variable "cloudwatch_alarm_alb_targets_health_deploy" {
-  type    = bool
-  default = false
-}
-
-variable "cloudwatch_alarm_alb_5XX_deploy" {
-  type    = bool
-  default = false
-}
-
-variable "cloudwatch_alarm_log_anomaly_deploy" {
-  type    = bool
-  default = false
-}
-
 # --------------------------------------------------
 # Monitoring namespace
 # --------------------------------------------------
-
-variable "monitoring_namespace_deploy" {
-  type        = bool
-  description = "Deploy monitoring namespace"
-  default     = true
-}
-
-variable "monitoring_namespace_labels" {
-  type    = map(any)
-  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/enforce" = "privileged" }
-}
 
 variable "monitoring_tolerations" {
   type = list(object({
