@@ -22,7 +22,6 @@ variable "repo_branch" {
 
 variable "bucket_arn" {
   type        = string
-  default     = null
   description = "The arn of the S3 bucket that contains the Velero backup. Only used if S3 bucket is in a different account"
 }
 
@@ -91,12 +90,6 @@ variable "plugin_for_aws_version" {
     condition     = can(regex("^v(\\d+\\.\\d+)(\\.\\d+)?(-rc\\.\\d+|-beta\\.\\d+)?$", var.plugin_for_aws_version))
     error_message = "Velero plugin for AWS must specify a version. The version must start with the letter v and followed by a semantic version number."
   }
-}
-
-variable "overwrite_on_create" {
-  type        = bool
-  default     = true
-  description = "Enable overwriting existing files"
 }
 
 variable "gitops_apps_repo_url" {

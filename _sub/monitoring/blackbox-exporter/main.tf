@@ -12,7 +12,7 @@ resource "github_repository_file" "blackbox_exporter_helm" {
     namespace        = var.namespace
     prune            = var.prune
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "blackbox_exporter_helm_install" {
@@ -24,7 +24,7 @@ resource "github_repository_file" "blackbox_exporter_helm_install" {
     deploy_name             = var.deploy_name
     gitops_apps_repo_branch = var.gitops_apps_repo_branch
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "blackbox_exporter_helm_patch" {
@@ -37,5 +37,5 @@ resource "github_repository_file" "blackbox_exporter_helm_patch" {
     replicas           = var.replicas
     monitoring_targets = var.monitoring_targets
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }

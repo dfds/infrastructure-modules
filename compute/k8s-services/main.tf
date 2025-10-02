@@ -30,7 +30,6 @@ module "traefik_blue_variant_flux_manifests" {
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   additional_args         = var.traefik_blue_variant_additional_args
   dashboard_ingress_host  = "traefik-blue-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
@@ -58,7 +57,6 @@ module "traefik_variant_flux_manifests" {
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   additional_args         = var.traefik_green_variant_additional_args
   dashboard_ingress_host  = "traefik-green-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
@@ -229,7 +227,6 @@ module "external_dns_flux_manifests" {
   github_owner             = var.fluxcd_bootstrap_repo_owner
   repo_name                = var.fluxcd_bootstrap_repo_name
   repo_branch              = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create      = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url     = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch  = var.fluxcd_apps_repo_branch
   prune                    = var.fluxcd_prune
@@ -404,7 +401,6 @@ module "platform_fluxcd" {
   repository_name            = var.fluxcd_bootstrap_repo_name
   branch                     = var.fluxcd_bootstrap_repo_branch
   github_owner               = var.fluxcd_bootstrap_repo_owner
-  overwrite_on_create        = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url       = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch    = var.fluxcd_apps_repo_branch
   cluster_name               = var.eks_cluster_name
@@ -441,7 +437,6 @@ module "atlantis_deployment" {
   image_tag                 = var.atlantis_image_tag
   ingress_hostname          = var.atlantis_ingress
   oidc_issuer               = local.oidc_issuer
-  overwrite_on_create       = var.fluxcd_bootstrap_overwrite_on_create
   prune                     = var.fluxcd_prune
   repo_branch               = var.fluxcd_bootstrap_repo_branch
   repo_name                 = var.fluxcd_bootstrap_repo_name
@@ -491,7 +486,6 @@ module "blackbox_exporter_flux_manifests" {
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   monitoring_targets      = local.blackbox_exporter_monitoring_targets
   namespace               = var.blackbox_exporter_namespace
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
@@ -511,12 +505,11 @@ module "blackbox_exporter_flux_manifests" {
 # for everything that is using Flux, so we should fallback to using the same values
 # as flux is using.
 module "podinfo_flux_manifests" {
-  source              = "../../_sub/examples/podinfo"
-  count               = var.podinfo_deploy ? 1 : 0
-  cluster_name        = var.eks_cluster_name
-  repo_name           = var.fluxcd_bootstrap_repo_name
-  repo_branch         = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create = var.fluxcd_bootstrap_overwrite_on_create
+  source       = "../../_sub/examples/podinfo"
+  count        = var.podinfo_deploy ? 1 : 0
+  cluster_name = var.eks_cluster_name
+  repo_name    = var.fluxcd_bootstrap_repo_name
+  repo_branch  = var.fluxcd_bootstrap_repo_branch
 
   providers = {
     github = github.fluxcd
@@ -535,7 +528,6 @@ module "external_snapshotter" {
   cluster_name            = var.eks_cluster_name
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
@@ -566,7 +558,6 @@ module "velero" {
   plugin_for_aws_version              = var.velero_plugin_for_aws_version
   snapshots_enabled                   = var.velero_snapshots_enabled
   filesystem_backup_enabled           = var.velero_filesystem_backup_enabled
-  overwrite_on_create                 = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url                = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch             = var.fluxcd_apps_repo_branch
   prune                               = var.fluxcd_prune
@@ -682,7 +673,6 @@ module "external_secrets" {
   github_owner            = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
@@ -724,17 +714,16 @@ module "external_secrets_ssm" {
 # --------------------------------------------------
 
 module "kafka_exporter" {
-  source              = "../../_sub/monitoring/kafka-exporter"
-  count               = var.kafka_exporter_deploy ? 1 : 0
-  cluster_name        = var.eks_cluster_name
-  deploy_name         = "kafka-exporter"
-  namespace           = "monitoring"
-  github_owner        = var.fluxcd_bootstrap_repo_owner
-  repo_name           = var.fluxcd_bootstrap_repo_name
-  repo_branch         = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create = var.fluxcd_bootstrap_overwrite_on_create
-  prune               = var.fluxcd_prune
-  kafka_clusters      = var.kafka_exporter_clusters
+  source         = "../../_sub/monitoring/kafka-exporter"
+  count          = var.kafka_exporter_deploy ? 1 : 0
+  cluster_name   = var.eks_cluster_name
+  deploy_name    = "kafka-exporter"
+  namespace      = "monitoring"
+  github_owner   = var.fluxcd_bootstrap_repo_owner
+  repo_name      = var.fluxcd_bootstrap_repo_name
+  repo_branch    = var.fluxcd_bootstrap_repo_branch
+  prune          = var.fluxcd_prune
+  kafka_clusters = var.kafka_exporter_clusters
 
   providers = {
     github = github.fluxcd
@@ -756,7 +745,6 @@ module "onepassword_connect" {
   github_owner            = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
@@ -785,7 +773,6 @@ module "eks_nvidia_device_plugin" {
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   cluster_name            = var.eks_cluster_name
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   chart_version           = var.nvidia_chart_version
@@ -814,7 +801,6 @@ module "github_arc_ss_controller" {
   github_owner            = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
@@ -840,7 +826,6 @@ module "github_arc_runners" {
   github_owner            = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
@@ -878,7 +863,6 @@ module "druid_operator" {
   repo_owner                = var.fluxcd_bootstrap_repo_owner
   repo_name                 = var.fluxcd_bootstrap_repo_name
   repo_branch               = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create       = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url      = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch   = var.fluxcd_apps_repo_branch
 
@@ -910,7 +894,6 @@ module "trivy_operator" {
   repo_owner                = var.fluxcd_bootstrap_repo_owner
   repo_name                 = var.fluxcd_bootstrap_repo_name
   repo_branch               = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create       = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url      = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch   = var.fluxcd_apps_repo_branch
 
@@ -937,7 +920,6 @@ module "falco" {
   repo_owner                   = var.fluxcd_bootstrap_repo_owner
   repo_name                    = var.fluxcd_bootstrap_repo_name
   repo_branch                  = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create          = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url         = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch      = var.fluxcd_apps_repo_branch
   slack_alert_webhook_url      = var.falco_slack_alert_webhook_url
@@ -971,7 +953,6 @@ module "keda" {
   repo_owner              = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
 

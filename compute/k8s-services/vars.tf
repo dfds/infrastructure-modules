@@ -161,8 +161,7 @@ variable "metrics_server_helm_chart_version" {
 # --------------------------------------------------
 
 variable "fluxcd_version" {
-  type    = string
-  default = null
+  type = string
 }
 
 variable "fluxcd_prune" {
@@ -172,8 +171,7 @@ variable "fluxcd_prune" {
 }
 
 variable "fluxcd_bootstrap_repo_name" {
-  type    = string
-  default = ""
+  type = string
 }
 
 variable "fluxcd_bootstrap_repo_branch" {
@@ -182,19 +180,11 @@ variable "fluxcd_bootstrap_repo_branch" {
 }
 
 variable "fluxcd_bootstrap_repo_owner" {
-  type    = string
-  default = ""
+  type = string
 }
 
 variable "fluxcd_bootstrap_repo_owner_token" {
-  type    = string
-  default = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-}
-
-variable "fluxcd_bootstrap_overwrite_on_create" {
-  type        = bool
-  default     = true
-  description = "Enable overwriting existing files"
+  type = string
 }
 
 variable "fluxcd_tenants" {

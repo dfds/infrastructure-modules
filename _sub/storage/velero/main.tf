@@ -18,7 +18,7 @@ resource "github_repository_file" "velero_flux_helm_path" {
     namespace        = var.namespace
     prune            = var.prune
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "velero_flux_helm_init" {
@@ -30,7 +30,7 @@ resource "github_repository_file" "velero_flux_helm_init" {
     deploy_name             = var.deploy_name
     gitops_apps_repo_branch = var.gitops_apps_repo_branch
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "velero_flux_helm_patch_yaml" {
@@ -55,7 +55,7 @@ resource "github_repository_file" "velero_flux_helm_patch_yaml" {
     excluded_namespace_scoped_resources = var.excluded_namespace_scoped_resources
     read_only                           = var.read_only
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 
