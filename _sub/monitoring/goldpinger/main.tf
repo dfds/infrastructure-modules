@@ -9,6 +9,7 @@ resource "github_repository_file" "goldpinger_helm" {
     app_install_name = local.app_install_name
     helm_repo_path   = local.helm_repo_path
     deploy_name      = local.deploy_name
+    prune            = var.prune
   })
   overwrite_on_create = true
 }

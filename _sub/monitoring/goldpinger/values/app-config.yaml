@@ -26,4 +26,4 @@ spec:
     kind: GitRepository
     name: flux-system
   path: "./${helm_repo_path}"
-  prune: true
+  prune: ${prune}

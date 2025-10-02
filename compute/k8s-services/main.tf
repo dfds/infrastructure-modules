@@ -351,6 +351,7 @@ module "goldpinger" {
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   chart_version           = var.goldpinger_chart_version
+  prune                   = var.fluxcd_prune
 
   depends_on = [module.grafana, module.platform_fluxcd]
 
@@ -373,6 +374,7 @@ module "metrics_server" {
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   chart_version           = var.metrics_server_helm_chart_version
+  prune                   = var.fluxcd_prune
 
   depends_on = [module.platform_fluxcd]
 
