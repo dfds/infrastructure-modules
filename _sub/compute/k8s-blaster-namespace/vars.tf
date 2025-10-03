@@ -19,8 +19,3 @@ variable "oidc_issuer" {
     error_message = "Oidc_issuer may not contain https:// in the start of the variable."
   }
 }
-
-variable "namespace_labels" {
-  type    = map(any)
-  default = {}
-}

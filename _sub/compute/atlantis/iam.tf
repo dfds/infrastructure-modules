@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "trust" {
 
     condition {
       test     = "StringEquals"
-      values   = ["system:serviceaccount:${local.namespace}:${local.service_account}"]
+      values   = ["system:serviceaccount:atlantis:${local.service_account}"]
       variable = "${var.oidc_issuer}:sub"
     }
   }

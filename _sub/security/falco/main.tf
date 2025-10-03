@@ -8,11 +8,10 @@ resource "github_repository_file" "helm" {
   content = templatefile("${path.module}/values/app-config.yaml", {
     app_install_name = local.app_install_name
     helm_repo_path   = local.helm_repo_path
-    deploy_name      = var.deploy_name
-    namespace        = var.namespace
+    deploy_name      = local.deploy_name
     prune            = var.prune
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "helm_install" {
@@ -21,10 +20,10 @@ resource "github_repository_file" "helm_install" {
   file       = "${local.helm_repo_path}/kustomization.yaml"
   content = templatefile("${path.module}/values/kustomization.yaml", {
     gitops_apps_repo_url    = var.gitops_apps_repo_url
-    deploy_name             = var.deploy_name
+    deploy_name             = local.deploy_name
     gitops_apps_repo_branch = var.gitops_apps_repo_branch
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "helm_patch" {
@@ -32,9 +31,8 @@ resource "github_repository_file" "helm_patch" {
   branch     = local.repo_branch
   file       = "${local.helm_repo_path}/patch.yaml"
   content = templatefile("${path.module}/values/patch.yaml", {
-    namespace                    = var.namespace
     chart_version                = var.chart_version
-    deploy_name                  = var.deploy_name
+    deploy_name                  = local.deploy_name
     slack_alert_webhook_url      = var.slack_alert_webhook_url
     slack_alert_channel_name     = var.slack_alert_channel_name
     slack_alert_minimum_priority = var.slack_alert_minimum_priority
@@ -43,5 +41,5 @@ resource "github_repository_file" "helm_patch" {
     stream_channel_name          = var.stream_channel_name
     custom_rules                 = var.custom_rules
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }

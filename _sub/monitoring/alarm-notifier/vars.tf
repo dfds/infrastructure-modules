@@ -1,8 +1,3 @@
-variable "deploy" {
-  type    = bool
-  default = true
-}
-
 variable "name" {
   type = string
 }

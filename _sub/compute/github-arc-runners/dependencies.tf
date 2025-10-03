@@ -52,8 +52,12 @@ resources:
   - "serviceaccount.yaml"
   - "role.yaml"
   - "rolebinding.yaml"
-patchesStrategicMerge:
-  - "patch.yaml"
+patches:
+  - path: patch.yaml
+    target:
+      kind: HelmRelease
+      name: ${var.deploy_name}
+      namespace: ${var.namespace}
 YAML
 
   helm_patch = <<YAML

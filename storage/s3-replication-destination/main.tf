@@ -7,7 +7,6 @@ module "destination" {
   bucket_name        = var.bucket_name
   bucket_policy      = data.aws_iam_policy_document.policy.json
   sse_algorithm      = var.sse_algorithm
-  retention_days     = var.retention_days
   versioning_enabled = true
 }
 

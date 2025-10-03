@@ -2,15 +2,13 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: prometheus-blackbox-exporter
-  namespace: ${namespace}
+  namespace: monitoring
 spec:
   serviceAccountName: helm-controller
   chart:
     spec:
       version: "${helm_chart_version}"
   values:
-    deployment:
-      replicas: ${replicas}
     serviceMonitor:
       enabled: true
       targets:

@@ -3,18 +3,6 @@ variable "cluster_name" {
   description = "The name of the EKS cluster"
 }
 
-variable "deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment"
-  default     = "metrics-server"
-}
-
-variable "namespace" {
-  type        = string
-  default     = "metrics-server"
-  description = "The namespace to deploy the helm chart"
-}
-
 variable "chart_version" {
   type        = string
   description = "The helm chart version"
@@ -35,12 +23,6 @@ variable "repo_branch" {
   type        = string
   description = "Override the default branch of the repo (optional)"
   default     = null
-}
-
-variable "overwrite_on_create" {
-  type        = bool
-  default     = true
-  description = "Enable overwriting existing files"
 }
 
 variable "gitops_apps_repo_url" {

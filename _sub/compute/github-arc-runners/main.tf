@@ -6,7 +6,7 @@ resource "github_repository_file" "github_arc_runners_helm" {
   branch              = local.repo_branch
   file                = "${local.cluster_repo_path}/${local.app_install_name}-helm.yaml"
   content             = local.app_helm_path
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "github_arc_runners_helm_install" {
@@ -14,7 +14,7 @@ resource "github_repository_file" "github_arc_runners_helm_install" {
   branch              = local.repo_branch
   file                = "${local.helm_repo_path}/kustomization.yaml"
   content             = local.helm_install
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "github_arc_runners_helm_patch" {
@@ -22,7 +22,7 @@ resource "github_repository_file" "github_arc_runners_helm_patch" {
   branch              = local.repo_branch
   file                = "${local.helm_repo_path}/patch.yaml"
   content             = local.helm_patch
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "github_arc_runners_serviceaccount" {
@@ -30,7 +30,7 @@ resource "github_repository_file" "github_arc_runners_serviceaccount" {
   branch              = local.repo_branch
   file                = "${local.helm_repo_path}/serviceaccount.yaml"
   content             = local.serviceaccount
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "github_arc_runners_role" {
@@ -38,7 +38,7 @@ resource "github_repository_file" "github_arc_runners_role" {
   branch              = local.repo_branch
   file                = "${local.helm_repo_path}/role.yaml"
   content             = local.role
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "github_arc_runners_rolebinding" {
@@ -46,5 +46,5 @@ resource "github_repository_file" "github_arc_runners_rolebinding" {
   branch              = local.repo_branch
   file                = "${local.helm_repo_path}/rolebinding.yaml"
   content             = local.rolebinding
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }

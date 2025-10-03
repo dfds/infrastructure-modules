@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: ${deploy_name}
-  namespace: ${namespace}
+  namespace: atlantis
 spec:
   serviceAccountName: helm-controller
   chart:
@@ -12,9 +12,6 @@ spec:
     basicAuth:
       username: ${deploy_name}
       password: ${basic_auth_password}
-    extraArgs:
-      - --parallel-pool-size=${parallel_pool_size}
-%{ if enable_secret_volumes ~}
     extraVolumeMounts:
       - mountPath: /kubeconfigs
         name: kubeconfigs
@@ -24,42 +21,24 @@ spec:
         secret:
           defaultMode: 420
           secretName: kubeconfigs # pragma: allowlist secret
-%{ endif ~}
     github:
       secret: ${github_secret}
       token: ${github_token}
       user: ${github_username}
     image:
-      pullPolicy: IfNotPresent
-      repository: ${image}
       tag: ${image_tag}
     ingress:
       host: ${ingress_hostname}
-    logLevel: info
     orgAllowlist: ${org_allowlist}
-    repoConfig: |
-      ---
-      repos:
-      - id: "/.*/"
-        allowed_overrides: [workflow]
-        allow_custom_workflows: true
     resources:
       limits:
-        cpu: ${resources_limits_cpu}
-        memory: ${resources_limits_memory}
+        memory: ${resources_requests_memory}
       requests:
         cpu: ${resources_requests_cpu}
         memory: ${resources_requests_memory}
-    service:
-      type: ClusterIP
-    statefulSet:
-      securityContext:
-        runAsUser: 200
     volumeClaim:
       dataStorage: ${storage_size}
-      storageClassName: ${storage_class}
     serviceAccount:
-      create: true
       name: ${service_account_name}
       annotations:
         eks.amazonaws.com/role-arn: arn:aws:iam::${workload_account_id}:role/${iam_role_name}

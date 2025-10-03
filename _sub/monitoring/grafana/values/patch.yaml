@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: grafana-k8s-monitoring
-  namespace: ${namespace}
+  namespace: grafana
 spec:
   serviceAccountName: helm-controller
   chart:
@@ -13,7 +13,6 @@ spec:
       name: ${cluster_name}
     alloy:
       alloy:
-%{ if storage_enabled ~}
         clustering:
           enabled: true
         storagePath: /var/lib/agent
@@ -21,13 +20,12 @@ spec:
           extra:
             - mountPath: /var/lib/agent
               name: agent-wal
-%{ endif ~}
         resources:
           requests:
             memory: ${agent_resource_memory_request}
           limits:
             memory: ${agent_resource_memory_limit}
-%{ if length(tolerations) > 0 || length(affinity) > 0 || storage_enabled ~}
+%{ if length(tolerations) > 0 || length(affinity) > 0 ~}
       controller:
 %{ endif ~}
 %{ if length(tolerations) > 0 ~}
@@ -57,18 +55,16 @@ spec:
 %{ endfor ~}
 %{ endfor ~}
 %{ endif ~}
-%{ if storage_enabled ~}
-        replicas: ${agent_replicas}
+        replicas: 2
         volumeClaimTemplates:
           - metadata:
               name: agent-wal
             spec:
               accessModes: [ "ReadWriteOnce" ]
-              storageClassName: ${storage_class}
+              storageClassName: csi-gp3
               resources:
                 requests:
                   storage: ${storage_size}
-%{ endif ~}
     externalServices:
       prometheus:
         host: ${prometheus_url}

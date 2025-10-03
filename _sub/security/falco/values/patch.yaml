@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: ${deploy_name}
-  namespace: ${namespace}
+  namespace: falco
 spec:
   serviceAccountName: helm-controller
   chart:

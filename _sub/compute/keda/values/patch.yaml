@@ -2,6 +2,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: ${deploy_name}
-  namespace: ${namespace}
+  namespace: keda
 spec:
   serviceAccountName: helm-controller

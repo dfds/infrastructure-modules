@@ -10,7 +10,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: helm-controller
-    namespace: ${namespace}
+    namespace: goldpinger
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

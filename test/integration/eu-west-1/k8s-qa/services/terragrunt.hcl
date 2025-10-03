@@ -29,26 +29,14 @@ inputs = {
   # EKS
   # --------------------------------------------------
 
-  eks_is_sandbox            = true
   eks_cluster_name          = "qa"
+  eks_is_sandbox            = true
   enable_inactivity_cleanup = false
   use_worker_nat_gateway    = true
 
   # --------------------------------------------------
-  # Load Balancers in front of Traefik
-  # --------------------------------------------------
-
-  traefik_alb_auth_deploy = true # triggers Azure App registration
-  traefik_alb_anon_deploy = true
-  # traefik_alb_auth_core_alias = ["qa-alias1.dfds.cloud", "qa-alias2.dfds.cloud"]
-  traefik_alb_auth_core_alias = []
-
-
-  # --------------------------------------------------
   # Traefik v2
   # --------------------------------------------------
-
-  traefikv2_test_alb_deploy = true
 
   # Blue variant
   traefik_blue_variant_deploy             = true
@@ -70,134 +58,49 @@ inputs = {
   ]
   traefik_green_variant_weight = 0
 
-
-
   # --------------------------------------------------
   # Blaster
   # --------------------------------------------------
 
   blaster_deploy           = true
-  blaster_configmap_bucket = ""
 
   # --------------------------------------------------
   # Cloudwatch alarms and alarm notifier (Slack)
   # --------------------------------------------------
 
-  alarm_notifier_deploy                      = true
-  slack_webhook_url                          = "https://dummy.slack.webhook"
-  cloudwatch_alarm_alb_targets_health_deploy = true
-  cloudwatch_alarm_alb_5XX_deploy            = true
+  slack_webhook_url = "https://dummy.slack.webhook"
 
   # --------------------------------------------------
   # Flux CD
   # --------------------------------------------------
 
-  fluxcd_version                    = "v2.6.1"
-
-  fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
-  fluxcd_bootstrap_repo_branch      = "main"
-  fluxcd_bootstrap_repo_owner       = "dfds"
-
-  fluxcd_apps_repo_name             = "platform-apps"
   fluxcd_apps_repo_branch           = "qa"
-  fluxcd_apps_repo_owner            = "dfds"
+  fluxcd_bootstrap_repo_branch      = "main"
+  fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
+  fluxcd_bootstrap_repo_owner       = "dfds"
+  fluxcd_version                    = "v2.6.4"
 
-
-  # --------------------------------------------------
-  # Monitoring
-  # --------------------------------------------------
-
-  monitoring_tolerations = [
+  fluxcd_tenants = [
     {
-      key      = "observability.dfds",
-      operator = "Exists",
-      effect   = "NoSchedule",
+      namespace = "flux-tenant-test"
+      repositories = [
+        {
+          url = "https://github.com/dfds/flux-tenant-test"
+          branch = "main"
+        }
+      ]
     }
   ]
-  monitoring_affinity = [
-    {
-      key      = "dedicated",
-      operator = "In",
-      values   = ["observability"],
-    }
-  ]
-
-  # --------------------------------------------------
-  # Goldpinger
-  # --------------------------------------------------
-
-  goldpinger_deploy = true
 
   # --------------------------------------------------
   # Atlantis
   # --------------------------------------------------
 
-  atlantis_deploy       = true
-  atlantis_ingress      = "atlantis.qa.qa.dfds.cloud"
-  atlantis_data_storage = "1Gi"
-
-  atlantis_resources_requests_cpu    = "10m"
-  atlantis_resources_limits_cpu      = "10m"
-  atlantis_resources_requests_memory = "512Mi"
-
-  atlantis_github_username     = "devex-sa"
-  atlantis_github_repositories = ["dfds/qa-dummy-atlantis"]
-  atlantis_github_owner        = "dfds"
-  atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
-  atlantis_chart_version       = "5.17.2"
-  atlantis_image_tag           = "2.1.0"
-  atlantis_add_secret_volumes  = true
-
-  # --------------------------------------------------
-  # Blackbox Exporter
-  # --------------------------------------------------
-
-  blackbox_exporter_deploy = "true"
-  blackbox_exporter_monitoring_targets = [
-    {
-      "name"   = "example"
-      "url"    = "https://example.com/"
-      "module" = "http_2xx"
-    }
-  ]
-
-  # --------------------------------------------------
-  # Helm Exporter
-  # --------------------------------------------------
-
-  helm_exporter_deploy             = "true"
-  helm_exporter_target_namespaces  = "flux-system,monitoring,traefik-blue-variant"
-  helm_exporter_target_charts = [
-    {
-      registry = {
-        url = "https://helm.traefik.io/traefik/index.yaml"
-      }
-      "charts" = [
-        "traefik"
-      ]
-    },
-    {
-      registry = {
-        url = "https://kubernetes-sigs.github.io/metrics-server/index.yaml"
-      }
-      "charts" = [
-        "metrics-server"
-      ]
-    },
-    {
-      registry = {
-        url = "https://shanestarcher.com/helm-charts/index.yaml"
-      }
-      "charts" = [
-        "helm-exporter"
-      ]
-    }
-  ]
-  # --------------------------------------------------
-  # Podinfo
-  # --------------------------------------------------
-
-  podinfo_deploy = true
+  atlantis_chart_version              = "5.17.2"
+  atlantis_github_repositories        = ["dfds/qa-dummy-atlantis"]
+  atlantis_github_username            = "devex-sa"
+  atlantis_resources_requests_cpu     = "10m"
+  atlantis_resources_requests_memory  = "512Mi"
 
   # --------------------------------------------------
   # Velero - requires that s3-bucket-velero module
@@ -220,9 +123,7 @@ inputs = {
   grafana_agent_chart_version = "1.4.4"
   grafana_agent_resource_memory_request = "4Gi"
   grafana_agent_resource_memory_limit   = "4Gi"
-  grafana_agent_storage_enabled = true
   grafana_agent_storage_size = "10Gi"
-  grafana_agent_namespace = "grafana"
 
   observability_tolerations = [
     {
@@ -243,15 +144,7 @@ inputs = {
   # External Secrets
   # --------------------------------------------------
 
-  external_secrets_deploy = true
   external_secrets_helm_chart_version = "0.19.2"
-
-  # --------------------------------------------------
-  # External Secrets with SSM
-  # --------------------------------------------------
-
-  external_secrets_ssm_deploy = true
-  external_secrets_ssm_allowed_namespaces = ["atlantis", "flux-system"]
 
   # --------------------------------------------------
   # Github ARC SS Controller
@@ -264,40 +157,13 @@ inputs = {
   # Apache Druid Operator
   # --------------------------------------------------
 
-  druid_operator_deploy                   = true
   druid_operator_chart_version            = "0.3.7"
-  druid_operator_resources_limits_cpu     = "500m"
-  druid_operator_resources_limits_memory  = "128Mi"
 
   # --------------------------------------------------
   # Trivy Operator
   # --------------------------------------------------
 
   trivy_operator_deploy                   = true
-
-  tenants = [
-    {
-      namespace = "flux-tenant-test"
-      repositories = [
-        {
-          url = "https://github.com/dfds/flux-tenant-test"
-          branch = "main"
-        }
-      ]
-    }
-  ]
-
-  fluxcd_tenants = [
-    {
-      namespace = "flux-tenant-test"
-      repositories = [
-        {
-          url = "https://github.com/dfds/flux-tenant-test"
-          branch = "main"
-        }
-      ]
-    }
-  ]
 
   # --------------------------------------------------
   # 1Password Connect
