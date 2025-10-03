@@ -19,18 +19,15 @@ variable "repo_name" {
 variable "repo_branch" {
   type        = string
   description = "Override the default branch of the repo (optional)"
-  default     = "main"
 }
 
 variable "gitops_apps_repo_url" {
   type        = string
-  default     = ""
   description = "The https url for your GitOps manifests"
 }
 
 variable "gitops_apps_repo_branch" {
   type        = string
-  default     = "main"
   description = "The default branch for your GitOps manifests"
 }
 
@@ -47,7 +44,6 @@ variable "prune" {
 variable "github_repositories" {
   description = "List of repositories to whitelist for Atlantis"
   type        = list(string)
-  default     = []
 }
 
 variable "github_token" {
@@ -87,13 +83,11 @@ variable "aws_region" {
 variable "chart_version" {
   type        = string
   description = "The Helm Chart version that should be used"
-  default     = ""
 }
 
 variable "image_tag" {
   type        = string
   description = "Tag of the Atlantis image to use"
-  default     = "latest"
 }
 
 variable "ingress_hostname" {
@@ -103,18 +97,15 @@ variable "ingress_hostname" {
 
 variable "resources_requests_cpu" {
   type        = string
-  default     = "100m"
   description = "CPU resources request size"
 }
 
 variable "resources_requests_memory" {
   type        = string
-  default     = "1536Mi"
   description = "Memory resources requests size"
 }
 
 variable "storage_size" {
   type        = string
-  default     = "5Gi"
   description = "Size of the persistent volume"
 }
