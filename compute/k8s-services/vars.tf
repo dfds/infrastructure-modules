@@ -746,12 +746,6 @@ variable "nvidia_chart_version" {
   default     = ""
 }
 
-variable "nvidia_namespace" {
-  type        = string
-  description = "Nvidia device plugin namespace"
-  default     = "nvidia-device-plugin"
-}
-
 variable "nvidia_device_plugin_tolerations" {
   type = list(object({
     key      = string

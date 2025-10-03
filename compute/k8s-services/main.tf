@@ -745,7 +745,7 @@ module "eks_nvidia_device_plugin" {
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   chart_version           = var.nvidia_chart_version
-  namespace               = var.nvidia_namespace
+  prune                   = var.fluxcd_prune
   tolerations             = var.nvidia_device_plugin_tolerations
   affinity                = var.nvidia_device_plugin_affinity
 
