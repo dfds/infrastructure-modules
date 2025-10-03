@@ -82,26 +82,6 @@ inputs = {
   fluxcd_bootstrap_repo_owner       = "dfds"
   fluxcd_version                    = "v2.6.4"
 
-
-  # --------------------------------------------------
-  # Monitoring
-  # --------------------------------------------------
-
-  monitoring_tolerations = [
-    {
-      key      = "observability.dfds",
-      operator = "Exists",
-      effect   = "NoSchedule",
-    }
-  ]
-  monitoring_affinity = [
-    {
-      key      = "dedicated",
-      operator = "In",
-      values   = ["observability"],
-    }
-  ]
-
   # --------------------------------------------------
   # Atlantis
   # --------------------------------------------------

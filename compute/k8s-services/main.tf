@@ -569,8 +569,8 @@ module "aws_subnet_exporter" {
   image_tag      = "0.3"
   oidc_issuer    = local.oidc_issuer
   cluster_name   = var.eks_cluster_name
-  tolerations    = var.monitoring_tolerations
-  affinity       = var.monitoring_affinity
+  tolerations    = var.observability_tolerations
+  affinity       = var.observability_affinity
 
   depends_on = [module.grafana]
 }
