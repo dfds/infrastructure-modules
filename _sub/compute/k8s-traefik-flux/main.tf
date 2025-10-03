@@ -22,6 +22,7 @@ resource "github_repository_file" "traefik_helm_install" {
   content = templatefile("${path.module}/values/helm-install.yaml", {
     gitops_apps_repo_url    = var.gitops_apps_repo_url
     deploy_name             = var.deploy_name
+    namespace               = var.namespace
     gitops_apps_repo_branch = var.gitops_apps_repo_branch
   })
   overwrite_on_create = true
