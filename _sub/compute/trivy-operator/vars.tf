@@ -8,18 +8,6 @@ variable "chart_version" {
   default     = ""
 }
 
-variable "deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "trivy-operator"
-}
-
-variable "namespace" {
-  type        = string
-  description = "Namespace to deploy the application into"
-  default     = "trivy-system"
-}
-
 variable "resources_requests_cpu" {
   type        = string
   default     = "100m"

@@ -885,22 +885,10 @@ variable "trivy_operator_deploy" {
   default     = false
 }
 
-variable "trivy_operator_deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "trivy-operator"
-}
-
 variable "trivy_operator_chart_version" {
   type        = string
   description = "Trivy Operator helm chart version"
   default     = ""
-}
-
-variable "trivy_operator_namespace" {
-  type        = string
-  description = "The namespace to deploy Trivy Operator in"
-  default     = "trivy-system"
 }
 
 variable "trivy_operator_resources_requests_cpu" {
