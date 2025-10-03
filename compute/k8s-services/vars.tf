@@ -1018,12 +1018,6 @@ variable "use_worker_nat_gateway" {
 # KEDA
 # --------------------------------------------------
 
-variable "keda_deploy" {
-  type        = bool
-  description = "Deploy KEDA helm chart switch"
-  default     = true
-}
-
 variable "keda_chart_version" {
   type        = string
   description = "KEDA helm chart version"

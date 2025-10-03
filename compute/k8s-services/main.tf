@@ -910,7 +910,6 @@ module "falco" {
 
 module "keda" {
   source                  = "../../_sub/compute/keda"
-  count                   = var.keda_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
   chart_version           = var.keda_chart_version
   repo_owner              = var.fluxcd_bootstrap_repo_owner

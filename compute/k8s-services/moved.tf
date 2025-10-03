@@ -101,3 +101,18 @@ moved {
   from = module.external_secrets_ssm[0].aws_iam_role_policy_attachment.this
   to   = module.external_secrets_ssm.aws_iam_role_policy_attachment.this
 }
+
+moved {
+  from = module.keda[0].github_repository_file.helm
+  to   = module.keda.github_repository_file.helm
+}
+
+moved {
+  from = module.keda[0].github_repository_file.helm_install
+  to   = module.keda.github_repository_file.helm_install
+}
+
+moved {
+  from = module.keda[0].github_repository_file.helm_patch
+  to   = module.keda.github_repository_file.helm_patch
+}
