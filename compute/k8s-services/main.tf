@@ -821,14 +821,10 @@ module "druid_operator" {
   source                    = "../../_sub/compute/druid-operator"
   count                     = var.druid_operator_deploy ? 1 : 0
   cluster_name              = var.eks_cluster_name
-  deploy_name               = var.druid_operator_deploy_name
-  namespace                 = var.druid_operator_namespace
   chart_version             = var.druid_operator_chart_version
   watch_namespace           = var.druid_operator_watch_namespace
   resources_requests_cpu    = var.druid_operator_resources_requests_cpu
   resources_requests_memory = var.druid_operator_resources_requests_memory
-  resources_limits_cpu      = var.druid_operator_resources_limits_cpu
-  resources_limits_memory   = var.druid_operator_resources_limits_memory
   repo_owner                = var.fluxcd_bootstrap_repo_owner
   repo_name                 = var.fluxcd_bootstrap_repo_name
   repo_branch               = var.fluxcd_bootstrap_repo_branch

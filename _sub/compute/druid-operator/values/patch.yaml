@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: ${deploy_name}
-  namespace: ${namespace}
+  namespace: druid-system
 spec:
   serviceAccountName: helm-controller
   chart:
@@ -13,8 +13,7 @@ spec:
       WATCH_NAMESPACE: "${watch_namespace}"
     resources:
       limits:
-        cpu: ${resources_limits_cpu}
-        memory: ${resources_limits_memory}
+        memory: ${resources_requests_memory}
       requests:
         cpu: ${resources_requests_cpu}
         memory: ${resources_requests_memory}

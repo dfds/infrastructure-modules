@@ -157,10 +157,7 @@ inputs = {
   # Apache Druid Operator
   # --------------------------------------------------
 
-  druid_operator_deploy                   = true
   druid_operator_chart_version            = "0.3.7"
-  druid_operator_resources_limits_cpu     = "500m"
-  druid_operator_resources_limits_memory  = "128Mi"
 
   # --------------------------------------------------
   # Trivy Operator
