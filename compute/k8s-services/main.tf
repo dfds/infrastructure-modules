@@ -878,8 +878,6 @@ module "falco" {
   source                       = "../../_sub/security/falco"
   count                        = var.falco_deploy ? 1 : 0
   cluster_name                 = var.eks_cluster_name
-  deploy_name                  = var.falco_deploy_name
-  namespace                    = var.falco_namespace
   chart_version                = var.falco_chart_version
   repo_owner                   = var.fluxcd_bootstrap_repo_owner
   repo_name                    = var.fluxcd_bootstrap_repo_name

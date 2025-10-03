@@ -925,22 +925,10 @@ variable "falco_deploy" {
   default     = false
 }
 
-variable "falco_deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "falco"
-}
-
 variable "falco_chart_version" {
   type        = string
   description = "Falco helm chart version"
   default     = ""
-}
-
-variable "falco_namespace" {
-  type        = string
-  description = "The namespace to deploy Falco in"
-  default     = "falco"
 }
 
 variable "falco_slack_alert_webhook_url" {
