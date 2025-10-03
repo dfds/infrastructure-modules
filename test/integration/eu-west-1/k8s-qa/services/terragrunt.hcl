@@ -110,7 +110,6 @@ inputs = {
   # --------------------------------------------------
 
   atlantis_chart_version              = "5.17.2"
-  atlantis_data_storage               = "1Gi"
   atlantis_github_repositories        = ["dfds/qa-dummy-atlantis"]
   atlantis_github_username            = "devex-sa"
   atlantis_resources_requests_cpu     = "10m"
