@@ -643,10 +643,7 @@ module "grafana" {
 
 module "external_secrets" {
   source                  = "../../_sub/security/external-secrets"
-  count                   = var.external_secrets_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
-  deploy_name             = "external-secrets"
-  namespace               = "external-secrets"
   helm_chart_version      = var.external_secrets_helm_chart_version
   github_owner            = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name

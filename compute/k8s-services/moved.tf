@@ -71,3 +71,18 @@ moved {
   from = module.atlantis_deployment[0].github_repository_file.kubeconfigs[0]
   to   = module.atlantis_deployment[0].github_repository_file.kubeconfigs
 }
+
+moved {
+  from = module.external_secrets[0].github_repository_file.external-secrets_helm
+  to   = module.external_secrets.github_repository_file.external-secrets_helm
+}
+
+moved {
+  from = module.external_secrets[0].github_repository_file.external-secrets_helm_install
+  to   = module.external_secrets.github_repository_file.external-secrets_helm_install
+}
+
+moved {
+  from = module.external_secrets[0].github_repository_file.external-secrets_helm_patch
+  to   = module.external_secrets.github_repository_file.external-secrets_helm_patch
+}
