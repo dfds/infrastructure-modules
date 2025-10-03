@@ -9,9 +9,3 @@ patches:
       group: helm.toolkit.fluxcd.io
       kind: HelmRelease
       name: atlantis
-  - target:
-      kind: HelmRelease
-      name: atlantis
-    patch: |-
-      - op: remove
-        path: /spec/values/resources/limits/cpu
