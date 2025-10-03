@@ -65,7 +65,6 @@ inputs = {
   # --------------------------------------------------
 
   blaster_deploy           = true
-  blaster_configmap_bucket = ""
 
   # --------------------------------------------------
   # Cloudwatch alarms and alarm notifier (Slack)
