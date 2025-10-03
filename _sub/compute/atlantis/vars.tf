@@ -90,18 +90,6 @@ variable "chart_version" {
   default     = ""
 }
 
-variable "enable_secret_volumes" {
-  type        = bool
-  default     = false
-  description = "Add secret volumes to the Atlantis deployment. Requires a secret deployed named 'kubeconfigs'"
-}
-
-variable "image" {
-  type        = string
-  description = "The Atlantis image to use"
-  default     = "dfdsdk/atlantis-prime-pipeline"
-}
-
 variable "image_tag" {
   type        = string
   description = "Tag of the Atlantis image to use"
@@ -111,12 +99,6 @@ variable "image_tag" {
 variable "ingress_hostname" {
   type        = string
   description = "The hostname for the Atlantis ingress"
-}
-
-variable "parallel_pool_size" {
-  type        = number
-  default     = 10
-  description = "The number of concurrent go-routines when running terraform plan"
 }
 
 variable "resources_requests_cpu" {
@@ -129,24 +111,6 @@ variable "resources_requests_memory" {
   type        = string
   default     = "1536Mi"
   description = "Memory resources requests size"
-}
-
-variable "resources_limits_cpu" {
-  type        = string
-  default     = null
-  description = "CPU resources limits size"
-}
-
-variable "resources_limits_memory" {
-  type        = string
-  default     = null
-  description = "Memory resources limits size"
-}
-
-variable "storage_class" {
-  type        = string
-  default     = "csi-gp3"
-  description = "Storage class to use for the persistent volume"
 }
 
 variable "storage_size" {

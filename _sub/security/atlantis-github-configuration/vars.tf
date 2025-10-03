@@ -14,12 +14,6 @@ variable "ingress_hostname" {
   description = "The hostname for the Atlantis ingress"
 }
 
-variable "webhook_events" {
-  description = "A list of events that should trigger the webhook"
-  default     = []
-  type        = list(string)
-}
-
 variable "webhook_secret" {
   description = "The password for the webhook"
   type        = string

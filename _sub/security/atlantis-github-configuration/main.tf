@@ -1,7 +1,3 @@
-# --------------------------------------------------
-# GitHub integration
-# --------------------------------------------------
-
 data "github_repository" "repo" {
   for_each  = toset(var.github_repositories)
   full_name = each.value
@@ -18,5 +14,5 @@ resource "github_repository_webhook" "webhook" {
     insecure_ssl = false
   }
 
-  events = var.webhook_events
+  events = ["issue_comment", "pull_request", "pull_request_review", "push"]
 }

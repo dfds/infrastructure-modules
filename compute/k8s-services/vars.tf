@@ -269,28 +269,10 @@ variable "atlantis_github_repositories" {
   default     = []
 }
 
-variable "atlantis_webhook_events" {
-  description = "A list of events that should trigger the webhook"
-  default     = ["issue_comment", "pull_request", "pull_request_review", "push"]
-  type        = list(string)
-}
-
 variable "atlantis_chart_version" {
   type        = string
   description = "Version of the helm chart to deploy"
   default     = ""
-}
-
-variable "atlantis_ingress" {
-  type        = string
-  description = "URL for Atlantis Ingress"
-  default     = null
-}
-
-variable "atlantis_image" {
-  type        = string
-  description = "Name of the image to use for Atlantis"
-  default     = "dfdsdk/atlantis-prime-pipeline"
 }
 
 variable "atlantis_image_tag" {
@@ -299,22 +281,11 @@ variable "atlantis_image_tag" {
   default     = "latest"
 }
 
-variable "atlantis_storage_class" {
-  type        = string
-  description = "Storage class to use for persistent volume"
-  default     = "csi-gp3"
-}
-
 variable "atlantis_data_storage" {
   type        = string
   description = "Size of the persistent volume"
   default     = "5Gi"
 }
-
-# --------------------------------------------------
-# Atlantis variables
-# --------------------------------------------------
-# Used as env variables within the Atlantis process.
 
 variable "atlantis_resources_requests_cpu" {
   type        = string
@@ -326,29 +297,6 @@ variable "atlantis_resources_requests_memory" {
   type        = string
   default     = "1536Mi"
   description = "Memory resources requests size"
-}
-
-variable "atlantis_resources_limits_cpu" {
-  type        = string
-  default     = null
-  description = "CPU resources limits size"
-}
-
-variable "atlantis_resources_limits_memory" {
-  type        = string
-  default     = null
-  description = "Memory resources limits size"
-}
-
-# --------------------------------------------------
-# Atlantis
-# --------------------------------------------------
-
-variable "atlantis_add_secret_volumes" {
-  type        = bool
-  default     = false
-  description = "Add secret volumes to the Atlantis deployment"
-
 }
 
 # --------------------------------------------------
