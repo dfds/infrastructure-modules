@@ -912,8 +912,6 @@ module "keda" {
   source                  = "../../_sub/compute/keda"
   count                   = var.keda_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
-  deploy_name             = var.keda_deploy_name
-  namespace               = var.keda_namespace
   chart_version           = var.keda_chart_version
   repo_owner              = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name
