@@ -58,8 +58,6 @@ inputs = {
   ]
   traefik_green_variant_weight = 0
 
-
-
   # --------------------------------------------------
   # Blaster
   # --------------------------------------------------
@@ -81,6 +79,18 @@ inputs = {
   fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
   fluxcd_bootstrap_repo_owner       = "dfds"
   fluxcd_version                    = "v2.6.4"
+
+  fluxcd_tenants = [
+    {
+      namespace = "flux-tenant-test"
+      repositories = [
+        {
+          url = "https://github.com/dfds/flux-tenant-test"
+          branch = "main"
+        }
+      ]
+    }
+  ]
 
   # --------------------------------------------------
   # Atlantis
@@ -159,30 +169,6 @@ inputs = {
   # --------------------------------------------------
 
   trivy_operator_deploy                   = true
-
-  tenants = [
-    {
-      namespace = "flux-tenant-test"
-      repositories = [
-        {
-          url = "https://github.com/dfds/flux-tenant-test"
-          branch = "main"
-        }
-      ]
-    }
-  ]
-
-  fluxcd_tenants = [
-    {
-      namespace = "flux-tenant-test"
-      repositories = [
-        {
-          url = "https://github.com/dfds/flux-tenant-test"
-          branch = "main"
-        }
-      ]
-    }
-  ]
 
   # --------------------------------------------------
   # 1Password Connect
