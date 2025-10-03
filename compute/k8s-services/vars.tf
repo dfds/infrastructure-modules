@@ -383,12 +383,6 @@ variable "traefik_green_variant_weight" {
 # Blackbox Exporter
 # --------------------------------------------------
 
-variable "blackbox_exporter_deploy" {
-  type        = bool
-  description = "Should the Blackbox Exporter be deployed through Flux?"
-  default     = false
-}
-
 variable "blackbox_exporter_helm_chart_version" {
   type        = string
   description = "Helm Chart version to be used to deploy Traefik"
@@ -398,34 +392,13 @@ variable "blackbox_exporter_helm_chart_version" {
 variable "blackbox_exporter_monitoring_targets" {
   type        = list(object({ name = string, url = string, module = string }))
   description = "Complex object of what to monitor with Blackbox Exporter"
-  default     = []
-}
-
-variable "blackbox_exporter_namespace" {
-  type        = string
-  description = "Namespace for blackbox exporter"
-  default     = "monitoring"
-}
-
-variable "blackbox_exporter_monitoring_traefik_blue_variant_port" {
-  type        = number
-  description = "Port to monitor for the blue variant of Traefik"
-  default     = 8080
-}
-
-variable "blackbox_exporter_monitoring_traefik_green_variant_port" {
-  type        = number
-  description = "Port to monitor for the green variant of Traefik"
-  default     = 8080
-}
-
-# --------------------------------------------------
-# Podinfo through Flux CD
-# --------------------------------------------------
-
-variable "podinfo_deploy" {
-  type    = bool
-  default = false
+  default = [
+    {
+      "name"   = "example"
+      "url"    = "https://example.com/"
+      "module" = "http_2xx"
+    }
+  ]
 }
 
 # --------------------------------------------------

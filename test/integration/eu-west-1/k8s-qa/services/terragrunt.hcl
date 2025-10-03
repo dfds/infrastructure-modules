@@ -77,13 +77,11 @@ inputs = {
   # Flux CD
   # --------------------------------------------------
 
-  fluxcd_version                    = "v2.7.0"
-
-  fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
-  fluxcd_bootstrap_repo_branch      = "main"
-  fluxcd_bootstrap_repo_owner       = "dfds"
-
   fluxcd_apps_repo_branch           = "qa"
+  fluxcd_bootstrap_repo_branch      = "main"
+  fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
+  fluxcd_bootstrap_repo_owner       = "dfds"
+  fluxcd_version                    = "v2.6.4"
 
 
   # --------------------------------------------------
@@ -114,57 +112,6 @@ inputs = {
   atlantis_github_username            = "devex-sa"
   atlantis_resources_requests_cpu     = "10m"
   atlantis_resources_requests_memory  = "512Mi"
-
-  # --------------------------------------------------
-  # Blackbox Exporter
-  # --------------------------------------------------
-
-  blackbox_exporter_deploy = "true"
-  blackbox_exporter_monitoring_targets = [
-    {
-      "name"   = "example"
-      "url"    = "https://example.com/"
-      "module" = "http_2xx"
-    }
-  ]
-
-  # --------------------------------------------------
-  # Helm Exporter
-  # --------------------------------------------------
-
-  helm_exporter_deploy             = "true"
-  helm_exporter_target_namespaces  = "flux-system,monitoring,traefik-blue-variant"
-  helm_exporter_target_charts = [
-    {
-      registry = {
-        url = "https://helm.traefik.io/traefik/index.yaml"
-      }
-      "charts" = [
-        "traefik"
-      ]
-    },
-    {
-      registry = {
-        url = "https://kubernetes-sigs.github.io/metrics-server/index.yaml"
-      }
-      "charts" = [
-        "metrics-server"
-      ]
-    },
-    {
-      registry = {
-        url = "https://shanestarcher.com/helm-charts/index.yaml"
-      }
-      "charts" = [
-        "helm-exporter"
-      ]
-    }
-  ]
-  # --------------------------------------------------
-  # Podinfo
-  # --------------------------------------------------
-
-  podinfo_deploy = true
 
   # --------------------------------------------------
   # Velero - requires that s3-bucket-velero module
