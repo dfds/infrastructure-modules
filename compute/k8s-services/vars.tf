@@ -656,12 +656,6 @@ variable "observability_affinity" {
 # External Secrets
 # --------------------------------------------------
 
-variable "external_secrets_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for External Secrets module"
-}
-
 variable "external_secrets_helm_chart_version" {
   type        = string
   description = "External Secrets helm chart version"
@@ -671,12 +665,6 @@ variable "external_secrets_helm_chart_version" {
 # --------------------------------------------------
 # External Secrets with SSM
 # --------------------------------------------------
-
-variable "external_secrets_ssm_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for External Secrets module"
-}
 
 variable "external_secrets_ssm_iam_role_name" {
   type        = string
@@ -692,7 +680,7 @@ variable "external_secrets_ssm_service_account" {
 
 variable "external_secrets_ssm_allowed_namespaces" {
   type        = list(string)
-  default     = []
+  default     = ["atlantis", "flux-system"]
   description = "The namespaces that can use IRSA to access external secrets"
 }
 

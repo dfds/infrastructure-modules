@@ -669,7 +669,6 @@ locals {
 
 module "external_secrets_ssm" {
   source              = "../../_sub/security/external-secrets-ssm"
-  count               = var.external_secrets_deploy && var.external_secrets_ssm_deploy ? 1 : 0
   workload_account_id = var.aws_workload_account_id
   aws_region          = local.aws_region
   oidc_issuer         = local.oidc_issuer
