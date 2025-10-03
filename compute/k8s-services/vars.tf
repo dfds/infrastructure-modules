@@ -576,34 +576,10 @@ variable "grafana_agent_resource_memory_request" {
   description = "Set resource memory request on Grafana Agent container"
 }
 
-variable "grafana_agent_replicas" {
-  type        = number
-  default     = 1
-  description = "How many replicas to run Grafana Agent with"
-}
-
-variable "grafana_agent_storage_enabled" {
-  type        = bool
-  default     = false
-  description = "Enable persistence for Write Ahead Logs (WAL) in Grafana using Persistent Volume Claims"
-}
-
-variable "grafana_agent_storage_class" {
-  type        = string
-  description = "Storage class for Grafana Persistent Volume"
-  default     = "csi-gp3"
-}
-
 variable "grafana_agent_storage_size" {
   type        = string
   description = "Storage size for Grafana Persistent Volume"
   default     = "5Gi"
-}
-
-variable "grafana_agent_namespace" {
-  type        = string
-  description = "Namespace for hosting monitoring components"
-  default     = "grafana"
 }
 
 variable "observability_tolerations" {
