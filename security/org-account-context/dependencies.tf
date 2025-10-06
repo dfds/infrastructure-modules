@@ -46,11 +46,6 @@ data "aws_iam_policy_document" "assume_role_policy_selfservice_api" {
   }
 }
 
-// Gives access to role through the individual Capability account
-locals {
-  oidc_issuer = trim(var.oidc_provider_url, "https://")
-}
-
 data "aws_iam_policy_document" "shared_role_cap_acc" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -61,24 +56,26 @@ data "aws_iam_policy_document" "shared_role_cap_acc" {
     }
   }
 
-  #dynamic "statement" {
-  statement {
-    sid     = "AssumeRoleWithWebIdentity"
-    actions = ["sts:AssumeRoleWithWebIdentity"]
-    effect  = "Allow"
+  dynamic "statement" {
+    for_each = var.oidc_provider
+    content {
+      sid     = "AssumeRoleWithWebIdentity4${statement.key}"
+      actions = ["sts:AssumeRoleWithWebIdentity"]
+      effect  = "Allow"
 
-    principals {
-      type = "Federated"
+      principals {
+        type = "Federated"
 
-      identifiers = [
-        "arn:aws:iam::${var.shared_account_id}:oidc-provider/${local.oidc_issuer}",
-      ]
-    }
+        identifiers = [
+          "arn:aws:iam::${statement.value["account_id"]}:oidc-provider/${trim(statement.value["cluster_oidc_url"], "https://")}",
+        ]
+      }
 
-    condition {
-      test     = "StringEquals"
-      values   = ["system:serviceaccount:${var.capability_root_id}:ssm-shared-platform-secrets"]
-      variable = "${local.oidc_issuer}:sub"
+      condition {
+        test     = "StringEquals"
+        values   = ["system:serviceaccount:${var.capability_root_id}:ssm-shared-platform-secrets"]
+        variable = "${trim(statement.value["cluster_oidc_url"], "https://")}:sub"
+      }
     }
   }
 }
