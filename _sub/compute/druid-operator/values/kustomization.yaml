@@ -8,10 +8,3 @@ patches:
       kind: HelmRelease
       name: druid-operator
       namespace: druid-system
-  - patch: |-
-      - op: remove
-        path: /spec/values/resources/limits/cpu
-    target:
-      kind: HelmRelease
-      name: druid-operator
-      namespace: druid-system

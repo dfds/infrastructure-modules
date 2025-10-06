@@ -5,6 +5,7 @@ variable "cluster_name" {
 variable "chart_version" {
   type        = string
   description = "The Helm Chart version that should be used"
+  default     = ""
 }
 
 variable "repo_owner" {
@@ -20,6 +21,7 @@ variable "repo_name" {
 variable "repo_branch" {
   type        = string
   description = "Override the default branch of the repo (optional)"
+  default     = "main"
 }
 
 variable "gitops_apps_repo_url" {
