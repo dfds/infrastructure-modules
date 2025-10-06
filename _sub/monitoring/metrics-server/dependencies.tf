@@ -46,8 +46,17 @@ YAML
     kind: Kustomization
     resources:
       - ${var.gitops_apps_repo_url}/apps/${var.deploy_name}?ref=${var.gitops_apps_repo_branch}
-    patchesStrategicMerge:
-      - patch.yaml
+    patches:
+      - target:
+          kind: HelmRelease
+          name: metrics-server
+        patch: |-
+          - op: add
+            path: /spec/serviceAccountName
+            value: helm-controller
+          - op: replace
+            path: /spec/chart/spec/version
+            value: "${var.chart_version}"
     YAML
 
   helm_patch = <<YAML

@@ -23,6 +23,7 @@ resource "github_repository_file" "traefik_helm_install" {
     gitops_apps_repo_url    = var.gitops_apps_repo_url
     deploy_name             = var.deploy_name
     gitops_apps_repo_branch = var.gitops_apps_repo_branch
+    namespace               = var.namespace
   })
   overwrite_on_create = var.overwrite_on_create
 }
