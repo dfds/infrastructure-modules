@@ -1305,7 +1305,7 @@ variable "use_worker_nat_gateway" {
 variable "keda_deploy" {
   type        = bool
   description = "Deploy KEDA helm chart switch"
-  default     = false
+  default     = true
 }
 
 variable "keda_chart_version" {
