@@ -999,12 +999,6 @@ variable "external_deletion_policy_override" {
   }
 }
 
-variable "external_dns_domain_filterss" {
-  type        = list(string)
-  description = "List of domain filters for External DNS"
-  default     = []
-}
-
 variable "external_dns_is_debug_mode" {
   type        = bool
   description = "Enable debug logging for External DNS"
@@ -1186,55 +1180,13 @@ variable "github_arc_runners_max_runners" {
 variable "druid_operator_deploy" {
   type        = bool
   description = "Deploy druid_operator helm chart switch"
-  default     = false
-}
-
-variable "druid_operator_deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "druid-operator"
+  default     = true
 }
 
 variable "druid_operator_chart_version" {
   type        = string
   description = "Druid Operator helm chart version"
   default     = ""
-}
-
-variable "druid_operator_namespace" {
-  type        = string
-  description = "The namespace to deploy druid_operator in"
-  default     = "druid-system"
-}
-
-variable "druid_operator_watch_namespace" {
-  type        = string
-  description = "Comma seperated string of namespaces to watch for Druid resources"
-  default     = ""
-}
-
-variable "druid_operator_resources_requests_cpu" {
-  type        = string
-  default     = "10m"
-  description = "CPU resources request size"
-}
-
-variable "druid_operator_resources_requests_memory" {
-  type        = string
-  default     = "128Mi"
-  description = "Memory resources requests size"
-}
-
-variable "druid_operator_resources_limits_cpu" {
-  type        = string
-  default     = null
-  description = "CPU resources limits size"
-}
-
-variable "druid_operator_resources_limits_memory" {
-  type        = string
-  default     = null
-  description = "Memory resources limits size"
 }
 
 # --------------------------------------------------
@@ -1377,23 +1329,11 @@ variable "use_worker_nat_gateway" {
 variable "keda_deploy" {
   type        = bool
   description = "Deploy KEDA helm chart switch"
-  default     = false
-}
-
-variable "keda_deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "keda"
+  default     = true
 }
 
 variable "keda_chart_version" {
   type        = string
   description = "KEDA helm chart version"
   default     = ""
-}
-
-variable "keda_namespace" {
-  type        = string
-  description = "The namespace to deploy KEDA in"
-  default     = "keda"
 }

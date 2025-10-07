@@ -48,8 +48,12 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - "${var.gitops_apps_repo_url}/apps/${var.deploy_name}?ref=${var.gitops_apps_repo_branch}"
-patchesStrategicMerge:
-  - "patch.yaml"
+patches:
+  - path: patch.yaml
+    target:
+      kind: HelmRelease
+      name: ${var.deploy_name}
+      namespace: ${var.namespace}
 YAML
 
   helm_patch = <<YAML

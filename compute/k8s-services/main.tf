@@ -491,7 +491,7 @@ module "atlantis_github_configuration" {
   source              = "../../_sub/security/atlantis-github-configuration"
   count               = var.atlantis_deploy ? 1 : 0
   dashboard_password  = module.atlantis_deployment[0].dashboard_password
-  github_repositories = var.atlantis_github_repositories
+  github_repositories = sort(var.atlantis_github_repositories)
   ingress_hostname    = var.atlantis_ingress
   webhook_events      = var.atlantis_webhook_events
   webhook_secret      = module.atlantis_deployment[0].webhook_secret
@@ -902,23 +902,15 @@ module "github_arc_runners" {
 # --------------------------------------------------
 
 module "druid_operator" {
-  source                    = "../../_sub/compute/druid-operator"
-  count                     = var.druid_operator_deploy ? 1 : 0
-  cluster_name              = var.eks_cluster_name
-  deploy_name               = var.druid_operator_deploy_name
-  namespace                 = var.druid_operator_namespace
-  chart_version             = var.druid_operator_chart_version
-  watch_namespace           = var.druid_operator_watch_namespace
-  resources_requests_cpu    = var.druid_operator_resources_requests_cpu
-  resources_requests_memory = var.druid_operator_resources_requests_memory
-  resources_limits_cpu      = var.druid_operator_resources_limits_cpu
-  resources_limits_memory   = var.druid_operator_resources_limits_memory
-  repo_owner                = var.fluxcd_bootstrap_repo_owner
-  repo_name                 = var.fluxcd_bootstrap_repo_name
-  repo_branch               = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create       = var.fluxcd_bootstrap_overwrite_on_create
-  gitops_apps_repo_url      = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch   = var.fluxcd_apps_repo_branch
+  source                  = "../../_sub/compute/druid-operator"
+  count                   = var.druid_operator_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  chart_version           = var.druid_operator_chart_version
+  repo_owner              = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
 
   providers = {
     github = github.fluxcd
@@ -1003,13 +995,10 @@ module "keda" {
   source                  = "../../_sub/compute/keda"
   count                   = var.keda_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
-  deploy_name             = var.keda_deploy_name
-  namespace               = var.keda_namespace
   chart_version           = var.keda_chart_version
   repo_owner              = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
 
