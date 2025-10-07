@@ -20,11 +20,6 @@ resource "aws_eks_cluster" "eks" {
 
   enabled_cluster_log_types = var.log_types
 
-  access_config {
-    authentication_mode = "API_AND_CONFIG_MAP"
-    bootstrap_cluster_creator_admin_permissions = true
-  }
-
   vpc_config {
     security_group_ids = [aws_security_group.eks-cluster.id]
     subnet_ids         = slice(aws_subnet.eks[*].id, 0, var.cluster_zones)
