@@ -134,11 +134,6 @@ variable "blaster_deploy" {
   default = false
 }
 
-variable "blaster_namespace_labels" {
-  type    = map(any)
-  default = { "pod-security.kubernetes.io/enforce" = "baseline" }
-}
-
 # --------------------------------------------------
 # Cloudwatch alarms and alarm notifier (Slack)
 # --------------------------------------------------
@@ -276,12 +271,6 @@ variable "fluxcd_bootstrap_repo_owner" {
 variable "fluxcd_bootstrap_repo_owner_token" {
   type    = string
   default = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-}
-
-variable "fluxcd_bootstrap_overwrite_on_create" {
-  type        = bool
-  default     = true
-  description = "Enable overwriting existing files"
 }
 
 variable "fluxcd_tenants" {
@@ -573,15 +562,6 @@ variable "blackbox_exporter_monitoring_traefik_green_variant_port" {
   type        = number
   description = "Port to monitor for the green variant of Traefik"
   default     = 8080
-}
-
-# --------------------------------------------------
-# Podinfo through Flux CD
-# --------------------------------------------------
-
-variable "podinfo_deploy" {
-  type    = bool
-  default = false
 }
 
 # --------------------------------------------------

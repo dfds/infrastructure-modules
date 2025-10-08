@@ -48,8 +48,6 @@ inputs = {
   # Traefik v2
   # --------------------------------------------------
 
-  traefikv2_test_alb_deploy = true
-
   # Blue variant
   traefik_blue_variant_deploy             = true
   traefik_blue_variant_dashboard_deploy   = true
@@ -77,7 +75,6 @@ inputs = {
   # --------------------------------------------------
 
   blaster_deploy           = true
-  blaster_configmap_bucket = ""
 
   # --------------------------------------------------
   # Cloudwatch alarms and alarm notifier (Slack)
@@ -92,7 +89,7 @@ inputs = {
   # Flux CD
   # --------------------------------------------------
 
-  fluxcd_version                    = "v2.6.1"
+  fluxcd_version                    = "v2.6.4"
 
   fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
   fluxcd_bootstrap_repo_branch      = "main"
@@ -102,6 +99,17 @@ inputs = {
   fluxcd_apps_repo_branch           = "qa"
   fluxcd_apps_repo_owner            = "dfds"
 
+  fluxcd_tenants = [
+    {
+      namespace = "flux-tenant-test"
+      repositories = [
+        {
+          url = "https://github.com/dfds/flux-tenant-test"
+          branch = "main"
+        }
+      ]
+    }
+  ]
 
   # --------------------------------------------------
   # Monitoring
@@ -160,44 +168,6 @@ inputs = {
       "module" = "http_2xx"
     }
   ]
-
-  # --------------------------------------------------
-  # Helm Exporter
-  # --------------------------------------------------
-
-  helm_exporter_deploy             = "true"
-  helm_exporter_target_namespaces  = "flux-system,monitoring,traefik-blue-variant"
-  helm_exporter_target_charts = [
-    {
-      registry = {
-        url = "https://helm.traefik.io/traefik/index.yaml"
-      }
-      "charts" = [
-        "traefik"
-      ]
-    },
-    {
-      registry = {
-        url = "https://kubernetes-sigs.github.io/metrics-server/index.yaml"
-      }
-      "charts" = [
-        "metrics-server"
-      ]
-    },
-    {
-      registry = {
-        url = "https://shanestarcher.com/helm-charts/index.yaml"
-      }
-      "charts" = [
-        "helm-exporter"
-      ]
-    }
-  ]
-  # --------------------------------------------------
-  # Podinfo
-  # --------------------------------------------------
-
-  podinfo_deploy = true
 
   # --------------------------------------------------
   # Velero - requires that s3-bucket-velero module
@@ -271,30 +241,6 @@ inputs = {
   # --------------------------------------------------
 
   trivy_operator_deploy                   = true
-
-  tenants = [
-    {
-      namespace = "flux-tenant-test"
-      repositories = [
-        {
-          url = "https://github.com/dfds/flux-tenant-test"
-          branch = "main"
-        }
-      ]
-    }
-  ]
-
-  fluxcd_tenants = [
-    {
-      namespace = "flux-tenant-test"
-      repositories = [
-        {
-          url = "https://github.com/dfds/flux-tenant-test"
-          branch = "main"
-        }
-      ]
-    }
-  ]
 
   # --------------------------------------------------
   # 1Password Connect

@@ -35,11 +35,7 @@ variable "repo_branch" {
   default     = "main"
 }
 
-variable "overwrite_on_create" {
-  type        = bool
-  default     = true
-  description = "Enable overwriting existing files"
-}
+
 
 variable "gitops_apps_repo_url" {
   type        = string

@@ -13,7 +13,7 @@ resource "github_repository_file" "helm" {
     helm_repo_path   = local.helm_repo_path
     prune            = var.prune
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "install" {
@@ -26,7 +26,7 @@ resource "github_repository_file" "install" {
     gitops_apps_repo_url    = var.gitops_apps_repo_url
     enable_secret_volumes   = var.enable_secret_volumes
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "patch" {
@@ -57,7 +57,7 @@ resource "github_repository_file" "patch" {
     storage_size              = var.storage_size
     workload_account_id       = var.workload_account_id
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "kubeconfigs" {
@@ -68,5 +68,5 @@ resource "github_repository_file" "kubeconfigs" {
   content = templatefile("${path.module}/values/kubeconfigs.yaml", {
     cluster_name = var.cluster_name
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
