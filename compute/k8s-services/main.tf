@@ -530,28 +530,6 @@ module "blackbox_exporter_flux_manifests" {
 }
 
 # --------------------------------------------------
-# podinfo
-# --------------------------------------------------
-
-# It doesn't really make sense to force us to create different github variables
-# for everything that is using Flux, so we should fallback to using the same values
-# as flux is using.
-module "podinfo_flux_manifests" {
-  source              = "../../_sub/examples/podinfo"
-  count               = var.podinfo_deploy ? 1 : 0
-  cluster_name        = var.eks_cluster_name
-  repo_name           = var.fluxcd_bootstrap_repo_name
-  repo_branch         = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create = var.fluxcd_bootstrap_overwrite_on_create
-
-  providers = {
-    github = github.fluxcd
-  }
-
-  depends_on = [module.platform_fluxcd]
-}
-
-# --------------------------------------------------
 # External-Snapshotter adds support for snapshot.storage.k8s.io/v1
 # https://github.com/kubernetes-csi/external-snapshotter/tree/master
 # --------------------------------------------------

@@ -576,15 +576,6 @@ variable "blackbox_exporter_monitoring_traefik_green_variant_port" {
 }
 
 # --------------------------------------------------
-# Podinfo through Flux CD
-# --------------------------------------------------
-
-variable "podinfo_deploy" {
-  type    = bool
-  default = false
-}
-
-# --------------------------------------------------
 # Velero - requires that s3-bucket-velero module
 # is already applied through Terragrunt.
 # --------------------------------------------------
