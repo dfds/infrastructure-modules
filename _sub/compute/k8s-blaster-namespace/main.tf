@@ -7,7 +7,7 @@ resource "kubernetes_namespace" "self_service" {
 
   metadata {
     name   = "selfservice"
-    labels = var.namespace_labels
+    labels = { "pod-security.kubernetes.io/enforce" = "baseline" }
   }
 }
 

@@ -134,11 +134,6 @@ variable "blaster_deploy" {
   default = false
 }
 
-variable "blaster_namespace_labels" {
-  type    = map(any)
-  default = { "pod-security.kubernetes.io/enforce" = "baseline" }
-}
-
 # --------------------------------------------------
 # Cloudwatch alarms and alarm notifier (Slack)
 # --------------------------------------------------
