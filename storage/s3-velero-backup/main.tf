@@ -33,5 +33,6 @@ module "velero_storage" {
   bucket_policy      = data.aws_iam_policy_document.policy.json
   replication        = var.replication
   sse_algorithm      = var.sse_algorithm
+  retention_days     = var.retention_days
   versioning_enabled = true
 }

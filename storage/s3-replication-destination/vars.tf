@@ -16,6 +16,16 @@ variable "replication_role_arn" {
   type        = string
 }
 
+variable "retention_days" {
+  type        = number
+  description = "Retention days set on bucket."
+  default     = 15
+  validation {
+    condition     = var.retention_days > 0
+    error_message = "Retention days must be greater than 0."
+  }
+}
+
 variable "sse_algorithm" {
   type        = string
   description = "The server-side encryption algorithm to use."
