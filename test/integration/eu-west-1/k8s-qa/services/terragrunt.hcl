@@ -107,7 +107,7 @@ inputs = {
 
   atlantis_deploy       = true
   atlantis_ingress      = "atlantis.qa.qa.dfds.cloud"
-  atlantis_data_storage = "1Gi"
+  atlantis_data_storage = "5Gi"
 
   atlantis_resources_requests_cpu    = "10m"
   atlantis_resources_limits_cpu      = "10m"
