@@ -21,20 +21,8 @@ resource "github_repository_file" "goldpinger_helm_install" {
   content = templatefile("${path.module}/values/kustomization.yaml", {
     gitops_apps_repo_url    = var.gitops_apps_repo_url
     deploy_name             = local.deploy_name
-    chart_version           = var.chart_version
     gitops_apps_repo_branch = var.gitops_apps_repo_branch
-  })
-  overwrite_on_create = true
-}
-
-resource "github_repository_file" "goldpinger_helm_patch" {
-  repository = var.repo_name
-  branch     = local.repo_branch
-  file       = "${local.helm_repo_path}/patch.yaml"
-  content = templatefile("${path.module}/values/patch.yaml", {
-    namespace     = var.namespace
-    chart_version = var.chart_version
-    deploy_name   = var.deploy_name
+    chart_version           = var.chart_version
   })
   overwrite_on_create = true
 }

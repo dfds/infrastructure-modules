@@ -4,7 +4,6 @@ metadata:
   name: grafana-k8s-monitoring
   namespace: grafana
 spec:
-  serviceAccountName: helm-controller
   chart:
     spec:
       version: "${helm_chart_version}"
@@ -55,7 +54,7 @@ spec:
 %{ endfor ~}
 %{ endfor ~}
 %{ endif ~}
-        replicas: 2
+        replicas: ${agent_replicas}
         volumeClaimTemplates:
           - metadata:
               name: agent-wal

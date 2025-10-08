@@ -17,7 +17,7 @@ variable "repo_branch" {
   description = "Override the default branch of the repo (optional)"
 }
 
-variable "helm_chart_version" {
+variable "chart_version" {
   type        = string
   description = "The version of the Blackbox Exporter Helm Chart that should be used"
 }
@@ -25,10 +25,7 @@ variable "helm_chart_version" {
 variable "monitoring_targets" {
   type        = list(object({ name = string, url = string, module = string }))
   description = "Complex object of what to monitor with Blackbox Exporter"
-  default     = []
 }
-
-
 
 variable "gitops_apps_repo_url" {
   type        = string

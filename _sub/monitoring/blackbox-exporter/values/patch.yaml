@@ -4,10 +4,9 @@ metadata:
   name: prometheus-blackbox-exporter
   namespace: monitoring
 spec:
-  serviceAccountName: helm-controller
   chart:
     spec:
-      version: "${helm_chart_version}"
+      version: ${chart_version}
   values:
     serviceMonitor:
       enabled: true

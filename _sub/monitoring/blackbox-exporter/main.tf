@@ -31,7 +31,7 @@ resource "github_repository_file" "blackbox_exporter_helm_patch" {
   branch     = local.repo_branch
   file       = "${local.helm_repo_path}/patch.yaml"
   content = templatefile("${path.module}/values/patch.yaml", {
-    helm_chart_version = var.helm_chart_version
+    chart_version      = var.chart_version
     monitoring_targets = var.monitoring_targets
   })
   overwrite_on_create = true

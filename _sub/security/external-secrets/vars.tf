@@ -23,8 +23,6 @@ variable "helm_chart_version" {
   default     = ""
 }
 
-
-
 variable "gitops_apps_repo_url" {
   type        = string
   description = "The https url for your GitOps manifests"

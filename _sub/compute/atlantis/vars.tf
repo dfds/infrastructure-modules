@@ -22,8 +22,6 @@ variable "repo_branch" {
   default     = "main"
 }
 
-
-
 variable "gitops_apps_repo_url" {
   type        = string
   description = "The https url for your GitOps manifests"

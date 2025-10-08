@@ -6,7 +6,6 @@ variable "cluster_name" {
 variable "chart_version" {
   type        = string
   description = "The helm chart version"
-  default     = ""
 }
 
 variable "repo_owner" {
@@ -22,20 +21,15 @@ variable "repo_name" {
 variable "repo_branch" {
   type        = string
   description = "Override the default branch of the repo (optional)"
-  default     = null
 }
-
-
 
 variable "gitops_apps_repo_url" {
   type        = string
-  default     = ""
   description = "The https url for your GitOps manifests"
 }
 
 variable "gitops_apps_repo_branch" {
   type        = string
-  default     = "main"
   description = "The default branch for your GitOps manifests"
 }
 

@@ -6,13 +6,8 @@ patches:
   - target:
       kind: HelmRelease
       name: goldpinger
+      namespace: goldpinger
     patch: |-
-      - op: add
-        path: /spec/serviceAccountName
-        value: helm-controller
       - op: replace
         path: /spec/chart/spec/version
         value: "${chart_version}"
-      - op: replace
-        path: /spec/values/serviceMonitor/enabled
-        value: false

@@ -54,8 +54,6 @@ variable "repo_branch" {
   default     = "main"
 }
 
-
-
 variable "gitops_apps_repo_url" {
   type        = string
   default     = ""

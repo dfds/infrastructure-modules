@@ -23,8 +23,6 @@ variable "prune" {
   description = "Enable Garbage collection"
 }
 
-
-
 variable "gitops_apps_repo_url" {
   type        = string
   description = "The https url for your GitOps manifests"
@@ -67,6 +65,11 @@ variable "affinity" {
     values   = list(string)
   }))
   default = []
+}
+
+variable "agent_replicas" {
+  type        = number
+  description = "How many replicas to run Grafana Agent with"
 }
 
 variable "storage_size" {

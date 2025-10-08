@@ -371,12 +371,6 @@ variable "blackbox_exporter_monitoring_targets" {
   default     = []
 }
 
-variable "blackbox_exporter_namespace" {
-  type        = string
-  description = "Namespace for blackbox exporter"
-  default     = "monitoring"
-}
-
 # --------------------------------------------------
 # Velero - requires that s3-bucket-velero module
 # is already applied through Terragrunt.
@@ -483,6 +477,17 @@ variable "velero_ebs_csi_kms_arn" {
   description = "The KMS ARN to use for EBS CSI volumes."
 }
 
+
+# --------------------------------------------------
+# Subnet Exporter
+# --------------------------------------------------
+
+variable "subnet_exporter_iam_role_name" {
+  type        = string
+  default     = null
+  description = "The IAM role name used for the AWS Subnet Exporter"
+}
+
 # --------------------------------------------------
 # Inactivity based clean up for sandboxes
 # --------------------------------------------------
@@ -564,7 +569,6 @@ variable "grafana_agent_open_cost_enabled" {
   description = "Enable Open Cost or not. Default: false"
 }
 
-
 variable "grafana_agent_resource_memory_limit" {
   type        = string
   default     = "20Gi"
@@ -575,6 +579,12 @@ variable "grafana_agent_resource_memory_request" {
   type        = string
   default     = "4Gi"
   description = "Set resource memory request on Grafana Agent container"
+}
+
+variable "grafana_agent_replicas" {
+  type        = number
+  default     = 1
+  description = "How many replicas to run Grafana Agent with"
 }
 
 variable "grafana_agent_storage_size" {
@@ -689,12 +699,6 @@ variable "external_dns_core_route53_assume_role_arn" {
 # --------------------------------------------------
 # kafka-exporter
 # --------------------------------------------------
-
-variable "kafka_exporter_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for kafka-exporter module"
-}
 
 variable "kafka_exporter_clusters" {
   type        = map(any)

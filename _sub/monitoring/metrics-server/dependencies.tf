@@ -51,10 +51,8 @@ YAML
       - target:
           kind: HelmRelease
           name: metrics-server
+          namespace: metrics-server
         patch: |-
-          - op: add
-            path: /spec/serviceAccountName
-            value: helm-controller
           - op: replace
             path: /spec/chart/spec/version
             value: "${var.chart_version}"

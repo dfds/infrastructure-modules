@@ -100,22 +100,6 @@ inputs = {
   ]
 
   # --------------------------------------------------
-  # Monitoring
-  # --------------------------------------------------
-
-  monitoring_tolerations = [
-    {
-      namespace = "flux-tenant-test"
-      repositories = [
-        {
-          url = "https://github.com/dfds/flux-tenant-test"
-          branch = "main"
-        }
-      ]
-    }
-  ]
-
-  # --------------------------------------------------
   # Atlantis
   # --------------------------------------------------
 
@@ -139,7 +123,6 @@ inputs = {
   # Blackbox Exporter
   # --------------------------------------------------
 
-  blackbox_exporter_deploy = "true"
   blackbox_exporter_monitoring_targets = [
     {
       "name"   = "example"

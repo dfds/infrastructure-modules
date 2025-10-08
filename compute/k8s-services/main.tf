@@ -480,12 +480,11 @@ module "blackbox_exporter_flux_manifests" {
   source                  = "../../_sub/monitoring/blackbox-exporter"
   count                   = var.grafana_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
-  helm_chart_version      = var.blackbox_exporter_helm_chart_version
+  chart_version           = var.blackbox_exporter_helm_chart_version
   github_owner            = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   monitoring_targets      = local.blackbox_exporter_monitoring_targets
-  namespace               = var.blackbox_exporter_namespace
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
@@ -564,12 +563,14 @@ module "velero" {
 
 module "aws_subnet_exporter" {
   source         = "../../_sub/compute/k8s-subnet-exporter"
+  count          = var.grafana_deploy ? 1 : 0
   namespace_name = var.grafana_deploy ? "grafana" : "monitoring"
   aws_account_id = var.aws_workload_account_id
   aws_region     = var.aws_region
   image_tag      = "0.3"
   oidc_issuer    = local.oidc_issuer
   cluster_name   = var.eks_cluster_name
+  iam_role_name  = var.subnet_exporter_iam_role_name
   tolerations    = var.observability_tolerations
   affinity       = var.observability_affinity
 
@@ -624,6 +625,7 @@ module "grafana" {
   agent_resource_memory_request = var.grafana_agent_resource_memory_request
   affinity                      = var.observability_affinity
   tolerations                   = var.observability_tolerations
+  agent_replicas                = var.grafana_agent_replicas
   storage_size                  = var.grafana_agent_storage_size
 
   providers = {
@@ -685,7 +687,7 @@ module "external_secrets_ssm" {
 
 module "kafka_exporter" {
   source         = "../../_sub/monitoring/kafka-exporter"
-  count          = var.kafka_exporter_deploy ? 1 : 0
+  count          = var.grafana_deploy ? 1 : 0
   cluster_name   = var.eks_cluster_name
   deploy_name    = "kafka-exporter"
   namespace      = "monitoring"
