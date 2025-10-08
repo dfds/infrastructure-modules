@@ -5,6 +5,19 @@ variable "cluster_name" {
 variable "chart_version" {
   type        = string
   description = "The Helm Chart version that should be used"
+  default     = ""
+}
+
+variable "deploy_name" {
+  type        = string
+  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
+  default     = "falco"
+}
+
+variable "namespace" {
+  type        = string
+  description = "Namespace to deploy the application into"
+  default     = "falco"
 }
 
 variable "repo_owner" {
@@ -25,11 +38,13 @@ variable "repo_branch" {
 
 variable "gitops_apps_repo_url" {
   type        = string
+  default     = ""
   description = "The https url for your GitOps manifests"
 }
 
 variable "gitops_apps_repo_branch" {
   type        = string
+  default     = "main"
   description = "The default branch for your GitOps manifests"
 }
 
@@ -41,11 +56,13 @@ variable "prune" {
 
 variable "slack_alert_webhook_url" {
   type        = string
+  default     = ""
   description = "Value for slack webhook url to which to send alerts. If not provided, slack alerts will not be sent"
 }
 
 variable "slack_alert_channel_name" {
   type        = string
+  default     = ""
   description = "Channel name for slack alerts. Example: #falco-alerts"
 }
 
@@ -63,15 +80,18 @@ variable "stream_enabled" {
 
 variable "stream_webhook_url" {
   type        = string
+  default     = ""
   description = "Value for webhook url to which to send falco events stream. stream_enabled must be set to true. If not provided, slack stream will not be sent"
 }
 
 variable "stream_channel_name" {
   type        = string
+  default     = ""
   description = "Channel name for falco stream. Example: #falco-stream"
 }
 
 variable "custom_rules" {
   type        = string
+  default     = ""
   description = "Custom rules to be added to the falco config"
 }
