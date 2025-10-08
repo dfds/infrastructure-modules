@@ -40,9 +40,6 @@ inputs = {
 
   traefik_alb_auth_deploy = true # triggers Azure App registration
   traefik_alb_anon_deploy = true
-  # traefik_alb_auth_core_alias = ["qa-alias1.dfds.cloud", "qa-alias2.dfds.cloud"]
-  traefik_alb_auth_core_alias = []
-
 
   # --------------------------------------------------
   # Traefik v2
@@ -88,10 +85,8 @@ inputs = {
   # --------------------------------------------------
 
   fluxcd_apps_repo_branch           = "qa"
-  fluxcd_apps_repo_name             = "platform-apps"
   fluxcd_bootstrap_repo_branch      = "main"
   fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
-  fluxcd_bootstrap_repo_owner       = "dfds"
   fluxcd_version                    = "v2.6.4"
 
   fluxcd_tenants = [

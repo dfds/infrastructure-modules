@@ -202,12 +202,13 @@ variable "fluxcd_bootstrap_repo_branch" {
 }
 
 variable "fluxcd_bootstrap_repo_owner" {
-  type = string
+  type    = string
+  default = "dfds"
 }
 
 variable "fluxcd_bootstrap_repo_owner_token" {
-  type    = string
-  default = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  type      = string
+  sensitive = true
 }
 
 variable "fluxcd_tenants" {
@@ -665,16 +666,10 @@ variable "external_secrets_helm_chart_version" {
 # External Secrets with SSM
 # --------------------------------------------------
 
-variable "external_secrets_ssm_iam_role_name" {
-  type        = string
-  description = "The name of the IAM role to assume"
-  default     = "ssm-secrets-for-kubernetes"
-}
-
 variable "external_secrets_ssm_service_account" {
   type        = string
-  default     = "ssm-secrets"
-  description = "The service account to be used by an SecretStore"
+  default     = "*"
+  description = "The service account (or wildcard) to be used by an SecretStore"
 }
 
 variable "external_secrets_ssm_allowed_namespaces" {

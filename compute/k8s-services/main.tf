@@ -689,7 +689,7 @@ module "external_secrets_ssm" {
   workload_account_id = var.aws_workload_account_id
   aws_region          = local.aws_region
   oidc_issuer         = local.oidc_issuer
-  iam_role_name       = var.external_secrets_ssm_iam_role_name
+  cluster_name        = var.eks_cluster_name
   service_account     = var.external_secrets_ssm_service_account
   allowed_namespaces  = var.external_secrets_ssm_allowed_namespaces
 
