@@ -370,7 +370,6 @@ module "goldpinger" {
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
-  namespace               = var.goldpinger_namespace
   chart_version           = var.goldpinger_chart_version
 
   depends_on = [module.grafana, module.platform_fluxcd]

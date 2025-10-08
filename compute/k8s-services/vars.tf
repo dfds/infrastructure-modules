@@ -167,12 +167,6 @@ variable "cloudwatch_alarm_log_anomaly_deploy" {
 # Goldpinger
 # --------------------------------------------------
 
-variable "goldpinger_namespace" {
-  type        = string
-  description = "The namespace to deploy goldpinger in"
-  default     = "goldpinger"
-}
-
 variable "goldpinger_chart_version" {
   type        = string
   description = "Goldpinger helm chart version"
