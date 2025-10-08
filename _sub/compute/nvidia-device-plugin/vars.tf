@@ -20,7 +20,10 @@ variable "repo_name" {
 variable "repo_branch" {
   type        = string
   description = "Override the default branch of the repo (optional)"
+  default     = "main"
 }
+
+
 
 variable "gitops_apps_repo_url" {
   type        = string

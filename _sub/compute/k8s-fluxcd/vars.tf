@@ -39,6 +39,8 @@ variable "gitops_apps_repo_branch" {
   description = "The default branch for your GitOps manifests"
 }
 
+
+
 variable "prune" {
   type        = bool
   default     = true

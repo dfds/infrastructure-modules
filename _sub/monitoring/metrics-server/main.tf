@@ -16,3 +16,11 @@ resource "github_repository_file" "kustomization" {
   content             = local.helm_install
   overwrite_on_create = true
 }
+
+resource "github_repository_file" "patch" {
+  repository          = var.repo_name
+  branch              = local.repo_branch
+  file                = "${local.helm_repo_path}/patch.yaml"
+  content             = local.helm_patch
+  overwrite_on_create = true
+}

@@ -23,6 +23,8 @@ variable "prune" {
   description = "Enable Garbage collection"
 }
 
+
+
 variable "gitops_apps_repo_url" {
   type        = string
   description = "The https url for your GitOps manifests"

@@ -158,7 +158,8 @@ variable "fluxcd_bootstrap_repo_owner" {
 }
 
 variable "fluxcd_bootstrap_repo_owner_token" {
-  type = string
+  type    = string
+  default = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
 variable "fluxcd_tenants" {
@@ -367,13 +368,13 @@ variable "blackbox_exporter_helm_chart_version" {
 variable "blackbox_exporter_monitoring_targets" {
   type        = list(object({ name = string, url = string, module = string }))
   description = "Complex object of what to monitor with Blackbox Exporter"
-  default = [
-    {
-      "name"   = "example"
-      "url"    = "https://example.com/"
-      "module" = "http_2xx"
-    }
-  ]
+  default     = []
+}
+
+variable "blackbox_exporter_namespace" {
+  type        = string
+  description = "Namespace for blackbox exporter"
+  default     = "monitoring"
 }
 
 # --------------------------------------------------

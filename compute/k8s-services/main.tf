@@ -485,6 +485,7 @@ module "blackbox_exporter_flux_manifests" {
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   monitoring_targets      = local.blackbox_exporter_monitoring_targets
+  namespace               = var.blackbox_exporter_namespace
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
@@ -852,7 +853,6 @@ module "trivy_operator" {
   repo_owner                = var.fluxcd_bootstrap_repo_owner
   repo_name                 = var.fluxcd_bootstrap_repo_name
   repo_branch               = var.fluxcd_bootstrap_repo_branch
-  prune                     = var.fluxcd_prune
   gitops_apps_repo_url      = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch   = var.fluxcd_apps_repo_branch
 

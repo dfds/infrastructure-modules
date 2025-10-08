@@ -92,6 +92,8 @@ variable "plugin_for_aws_version" {
   }
 }
 
+
+
 variable "gitops_apps_repo_url" {
   type        = string
   default     = ""

@@ -36,6 +36,8 @@ variable "helm_chart_version" {
   default     = ""
 }
 
+
+
 variable "gitops_apps_repo_url" {
   type        = string
   default     = ""

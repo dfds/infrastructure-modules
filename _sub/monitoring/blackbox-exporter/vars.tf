@@ -25,7 +25,10 @@ variable "helm_chart_version" {
 variable "monitoring_targets" {
   type        = list(object({ name = string, url = string, module = string }))
   description = "Complex object of what to monitor with Blackbox Exporter"
+  default     = []
 }
+
+
 
 variable "gitops_apps_repo_url" {
   type        = string

@@ -26,3 +26,15 @@ resource "github_repository_file" "goldpinger_helm_install" {
   })
   overwrite_on_create = true
 }
+
+resource "github_repository_file" "goldpinger_helm_patch" {
+  repository = var.repo_name
+  branch     = local.repo_branch
+  file       = "${local.helm_repo_path}/patch.yaml"
+  content = templatefile("${path.module}/values/patch.yaml", {
+    namespace     = var.namespace
+    chart_version = var.chart_version
+    deploy_name   = var.deploy_name
+  })
+  overwrite_on_create = true
+}
