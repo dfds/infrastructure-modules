@@ -102,6 +102,12 @@ variable "traefik_alb_auth_deploy" {
   default = false
 }
 
+variable "traefik_alb_auth_core_alias" {
+  description = "A list of aliases/alternative names in the *parent* domain, the certificate should also be valid for. E.g. 'prettyurl.company.tld'"
+  type        = list(string)
+  default     = []
+}
+
 variable "alb_az_app_registration_identifier_urls" {
   type     = list(string)
   default  = null
@@ -110,12 +116,6 @@ variable "alb_az_app_registration_identifier_urls" {
 
 variable "alb_az_app_registration_additional_owner_ids" {
   description = "List of additional owner object ID for the Azure AD application used by the Auth ALB"
-  type        = list(string)
-  default     = []
-}
-
-variable "traefik_alb_auth_core_alias" {
-  description = "A list of aliases/alternative names in the *parent* domain, the certificate should also be valid for. E.g. 'prettyurl.company.tld'"
   type        = list(string)
   default     = []
 }
