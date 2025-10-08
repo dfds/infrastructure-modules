@@ -266,7 +266,7 @@ variable "fluxcd_apps_repo_owner" {
 variable "atlantis_deploy" {
   type        = bool
   description = "Deploy Atlantis"
-  default     = true
+  default     = false
 }
 
 variable "atlantis_github_token" {
