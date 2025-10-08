@@ -182,12 +182,6 @@ variable "monitoring_namespace_labels" {
 # Goldpinger
 # --------------------------------------------------
 
-variable "goldpinger_deploy" {
-  type        = bool
-  description = "Deploy goldpinger helm chart switch"
-  default     = false
-}
-
 variable "goldpinger_namespace" {
   type        = string
   description = "The namespace to deploy goldpinger in"
@@ -507,12 +501,6 @@ variable "traefik_green_variant_weight" {
 # Blackbox Exporter
 # --------------------------------------------------
 
-variable "blackbox_exporter_deploy" {
-  type        = bool
-  description = "Should the Blackbox Exporter be deployed through Flux?"
-  default     = false
-}
-
 variable "blackbox_exporter_helm_chart_version" {
   type        = string
   description = "Helm Chart version to be used to deploy Traefik"
@@ -653,11 +641,6 @@ variable "velero_ebs_csi_kms_arn" {
 # --------------------------------------------------
 # Subnet Exporter
 # --------------------------------------------------
-variable "subnet_exporter_deploy" {
-  type        = bool
-  default     = true
-  description = "Feature toggle for Subnet Exporter module"
-}
 
 variable "subnet_exporter_iam_role_name" {
   type        = string
@@ -907,12 +890,6 @@ variable "external_dns_core_route53_assume_role_arn" {
 # --------------------------------------------------
 # kafka-exporter
 # --------------------------------------------------
-
-variable "kafka_exporter_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for kafka-exporter module"
-}
 
 variable "kafka_exporter_clusters" {
   type        = map(any)

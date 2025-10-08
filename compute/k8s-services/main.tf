@@ -364,7 +364,7 @@ module "monitoring_namespace" {
 
 module "goldpinger" {
   source                  = "../../_sub/monitoring/goldpinger"
-  count                   = var.goldpinger_deploy ? 1 : 0
+  count                   = var.grafana_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
   repo_owner              = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name
@@ -501,7 +501,7 @@ module "atlantis_github_configuration" {
 
 module "blackbox_exporter_flux_manifests" {
   source                  = "../../_sub/monitoring/blackbox-exporter"
-  count                   = var.blackbox_exporter_deploy ? 1 : 0
+  count                   = var.grafana_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
   helm_chart_version      = var.blackbox_exporter_helm_chart_version
   github_owner            = var.fluxcd_bootstrap_repo_owner
@@ -587,7 +587,7 @@ module "velero" {
 
 module "aws_subnet_exporter" {
   source         = "../../_sub/compute/k8s-subnet-exporter"
-  count          = var.subnet_exporter_deploy ? 1 : 0
+  count          = var.grafana_deploy ? 1 : 0
   namespace_name = var.grafana_deploy ? var.grafana_agent_namespace : module.monitoring_namespace[0].name
   aws_account_id = var.aws_workload_account_id
   aws_region     = var.aws_region
@@ -719,7 +719,7 @@ module "external_secrets_ssm" {
 
 module "kafka_exporter" {
   source         = "../../_sub/monitoring/kafka-exporter"
-  count          = var.kafka_exporter_deploy ? 1 : 0
+  count          = var.grafana_deploy ? 1 : 0
   cluster_name   = var.eks_cluster_name
   deploy_name    = "kafka-exporter"
   namespace      = "monitoring"
