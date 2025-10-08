@@ -178,27 +178,6 @@ variable "monitoring_namespace_labels" {
   default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/enforce" = "privileged" }
 }
 
-variable "monitoring_tolerations" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    value    = optional(string),
-    effect   = string,
-  }))
-  description = "Tolerations to apply to the cluster-wide monitoring workloads."
-  default     = []
-}
-
-variable "monitoring_affinity" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    values   = list(string)
-  }))
-  description = "Affinities to apply to the cluster-wide monitoring workloads."
-  default     = []
-}
-
 # --------------------------------------------------
 # Goldpinger
 # --------------------------------------------------

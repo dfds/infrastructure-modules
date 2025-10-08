@@ -112,25 +112,6 @@ inputs = {
   ]
 
   # --------------------------------------------------
-  # Monitoring
-  # --------------------------------------------------
-
-  monitoring_tolerations = [
-    {
-      key      = "observability.dfds",
-      operator = "Exists",
-      effect   = "NoSchedule",
-    }
-  ]
-  monitoring_affinity = [
-    {
-      key      = "dedicated",
-      operator = "In",
-      values   = ["observability"],
-    }
-  ]
-
-  # --------------------------------------------------
   # Goldpinger
   # --------------------------------------------------
 

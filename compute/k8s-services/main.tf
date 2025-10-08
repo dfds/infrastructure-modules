@@ -595,8 +595,8 @@ module "aws_subnet_exporter" {
   oidc_issuer    = local.oidc_issuer
   cluster_name   = var.eks_cluster_name
   iam_role_name  = var.subnet_exporter_iam_role_name
-  tolerations    = var.monitoring_tolerations
-  affinity       = var.monitoring_affinity
+  tolerations    = var.observability_tolerations
+  affinity       = var.observability_affinity
 
   depends_on = [module.grafana]
 }
