@@ -525,17 +525,6 @@ variable "velero_ebs_csi_kms_arn" {
   description = "The KMS ARN to use for EBS CSI volumes."
 }
 
-
-# --------------------------------------------------
-# Subnet Exporter
-# --------------------------------------------------
-
-variable "subnet_exporter_iam_role_name" {
-  type        = string
-  default     = null
-  description = "The IAM role name used for the AWS Subnet Exporter"
-}
-
 # --------------------------------------------------
 # Inactivity based clean up for sandboxes
 # --------------------------------------------------
