@@ -3,8 +3,11 @@ kind: Kustomization
 resources:
   - ${gitops_apps_repo_url}/apps/${deploy_name}?ref=${gitops_apps_repo_branch}
 patches:
-  - path: patch.yaml
-    target:
+  - target:
       kind: HelmRelease
       name: druid-operator
       namespace: druid-system
+    patch: |-
+      - op: replace
+        path: /spec/chart/spec/version
+        value: "${chart_version}"

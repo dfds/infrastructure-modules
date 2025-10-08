@@ -857,24 +857,6 @@ variable "druid_operator_chart_version" {
   default     = ""
 }
 
-variable "druid_operator_watch_namespace" {
-  type        = string
-  description = "Comma seperated string of namespaces to watch for Druid resources"
-  default     = ""
-}
-
-variable "druid_operator_resources_requests_cpu" {
-  type        = string
-  default     = "10m"
-  description = "CPU resources request size"
-}
-
-variable "druid_operator_resources_requests_memory" {
-  type        = string
-  default     = "128Mi"
-  description = "Memory resources requests size"
-}
-
 # --------------------------------------------------
 # Trivy Operator
 # --------------------------------------------------

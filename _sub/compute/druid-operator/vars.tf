@@ -7,21 +7,6 @@ variable "chart_version" {
   description = "The Helm Chart version that should be used"
 }
 
-variable "watch_namespace" {
-  type        = string
-  description = "Comma separated string of namespaces to watch for Druid resources"
-}
-
-variable "resources_requests_cpu" {
-  type        = string
-  description = "CPU resources request size"
-}
-
-variable "resources_requests_memory" {
-  type        = string
-  description = "Memory resources requests size"
-}
-
 variable "repo_owner" {
   type        = string
   description = "Name of the repo owner (previously: organization)"
