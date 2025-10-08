@@ -345,9 +345,8 @@ module "alarm_notifier_log_account" {
 
 module "monitoring_namespace" {
   source           = "../../_sub/compute/k8s-namespace"
-  count            = var.monitoring_namespace_deploy ? 1 : 0
-  name             = local.monitoring_namespace_name
-  namespace_labels = var.monitoring_namespace_labels
+  name             = "monitoring"
+  namespace_labels = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/enforce" = "privileged" }
 
   # The monitoring namespace has resources that are provisioned and
   # deprovisioned from it via Flux. If Flux is removed before the monitoring
@@ -364,14 +363,13 @@ module "monitoring_namespace" {
 
 module "goldpinger" {
   source                  = "../../_sub/monitoring/goldpinger"
-  count                   = var.goldpinger_deploy ? 1 : 0
+  count                   = var.grafana_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
   repo_owner              = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
-  namespace               = var.goldpinger_namespace
   chart_version           = var.goldpinger_chart_version
 
   depends_on = [module.grafana, module.platform_fluxcd]
@@ -501,14 +499,13 @@ module "atlantis_github_configuration" {
 
 module "blackbox_exporter_flux_manifests" {
   source                  = "../../_sub/monitoring/blackbox-exporter"
-  count                   = var.blackbox_exporter_deploy ? 1 : 0
+  count                   = var.grafana_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
-  helm_chart_version      = var.blackbox_exporter_helm_chart_version
+  chart_version           = var.blackbox_exporter_helm_chart_version
   github_owner            = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   monitoring_targets      = local.blackbox_exporter_monitoring_targets
-  namespace               = var.blackbox_exporter_namespace
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
@@ -587,16 +584,16 @@ module "velero" {
 
 module "aws_subnet_exporter" {
   source         = "../../_sub/compute/k8s-subnet-exporter"
-  count          = var.subnet_exporter_deploy ? 1 : 0
-  namespace_name = var.grafana_deploy ? var.grafana_agent_namespace : module.monitoring_namespace[0].name
+  count          = var.grafana_deploy ? 1 : 0
+  namespace_name = var.grafana_deploy ? "grafana" : module.monitoring_namespace[0].name
   aws_account_id = var.aws_workload_account_id
   aws_region     = var.aws_region
   image_tag      = "0.3"
   oidc_issuer    = local.oidc_issuer
   cluster_name   = var.eks_cluster_name
   iam_role_name  = var.subnet_exporter_iam_role_name
-  tolerations    = var.monitoring_tolerations
-  affinity       = var.monitoring_affinity
+  tolerations    = var.observability_tolerations
+  affinity       = var.observability_affinity
 
   depends_on = [module.grafana]
 }
@@ -627,9 +624,8 @@ module "elb_inactivity_cleanup_auth" {
 # --------------------------------------------------
 
 module "grafana" {
-  source = "../../_sub/monitoring/grafana"
-  count  = var.grafana_deploy ? 1 : 0
-
+  source                        = "../../_sub/monitoring/grafana"
+  count                         = var.grafana_deploy ? 1 : 0
   cluster_name                  = var.eks_cluster_name
   github_owner                  = var.fluxcd_bootstrap_repo_owner
   repo_name                     = var.fluxcd_bootstrap_repo_name
@@ -651,10 +647,7 @@ module "grafana" {
   affinity                      = var.observability_affinity
   tolerations                   = var.observability_tolerations
   agent_replicas                = var.grafana_agent_replicas
-  storage_enabled               = var.grafana_agent_storage_enabled
-  storage_class                 = var.grafana_agent_storage_class
   storage_size                  = var.grafana_agent_storage_size
-  namespace                     = var.grafana_agent_namespace
 
   providers = {
     github = github.fluxcd
@@ -719,7 +712,7 @@ module "external_secrets_ssm" {
 
 module "kafka_exporter" {
   source         = "../../_sub/monitoring/kafka-exporter"
-  count          = var.kafka_exporter_deploy ? 1 : 0
+  count          = var.grafana_deploy ? 1 : 0
   cluster_name   = var.eks_cluster_name
   deploy_name    = "kafka-exporter"
   namespace      = "monitoring"

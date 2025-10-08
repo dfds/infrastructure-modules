@@ -164,56 +164,8 @@ variable "cloudwatch_alarm_log_anomaly_deploy" {
 }
 
 # --------------------------------------------------
-# Monitoring namespace
-# --------------------------------------------------
-
-variable "monitoring_namespace_deploy" {
-  type        = bool
-  description = "Deploy monitoring namespace"
-  default     = true
-}
-
-variable "monitoring_namespace_labels" {
-  type    = map(any)
-  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/enforce" = "privileged" }
-}
-
-variable "monitoring_tolerations" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    value    = optional(string),
-    effect   = string,
-  }))
-  description = "Tolerations to apply to the cluster-wide monitoring workloads."
-  default     = []
-}
-
-variable "monitoring_affinity" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    values   = list(string)
-  }))
-  description = "Affinities to apply to the cluster-wide monitoring workloads."
-  default     = []
-}
-
-# --------------------------------------------------
 # Goldpinger
 # --------------------------------------------------
-
-variable "goldpinger_deploy" {
-  type        = bool
-  description = "Deploy goldpinger helm chart switch"
-  default     = false
-}
-
-variable "goldpinger_namespace" {
-  type        = string
-  description = "The namespace to deploy goldpinger in"
-  default     = "goldpinger"
-}
 
 variable "goldpinger_chart_version" {
   type        = string
@@ -528,12 +480,6 @@ variable "traefik_green_variant_weight" {
 # Blackbox Exporter
 # --------------------------------------------------
 
-variable "blackbox_exporter_deploy" {
-  type        = bool
-  description = "Should the Blackbox Exporter be deployed through Flux?"
-  default     = false
-}
-
 variable "blackbox_exporter_helm_chart_version" {
   type        = string
   description = "Helm Chart version to be used to deploy Traefik"
@@ -544,24 +490,6 @@ variable "blackbox_exporter_monitoring_targets" {
   type        = list(object({ name = string, url = string, module = string }))
   description = "Complex object of what to monitor with Blackbox Exporter"
   default     = []
-}
-
-variable "blackbox_exporter_namespace" {
-  type        = string
-  description = "Namespace for blackbox exporter"
-  default     = "monitoring"
-}
-
-variable "blackbox_exporter_monitoring_traefik_blue_variant_port" {
-  type        = number
-  description = "Port to monitor for the blue variant of Traefik"
-  default     = 8080
-}
-
-variable "blackbox_exporter_monitoring_traefik_green_variant_port" {
-  type        = number
-  description = "Port to monitor for the green variant of Traefik"
-  default     = 8080
 }
 
 # --------------------------------------------------
@@ -674,11 +602,6 @@ variable "velero_ebs_csi_kms_arn" {
 # --------------------------------------------------
 # Subnet Exporter
 # --------------------------------------------------
-variable "subnet_exporter_deploy" {
-  type        = bool
-  default     = true
-  description = "Feature toggle for Subnet Exporter module"
-}
 
 variable "subnet_exporter_iam_role_name" {
   type        = string
@@ -767,7 +690,6 @@ variable "grafana_agent_open_cost_enabled" {
   description = "Enable Open Cost or not. Default: false"
 }
 
-
 variable "grafana_agent_resource_memory_limit" {
   type        = string
   default     = "20Gi"
@@ -786,28 +708,10 @@ variable "grafana_agent_replicas" {
   description = "How many replicas to run Grafana Agent with"
 }
 
-variable "grafana_agent_storage_enabled" {
-  type        = bool
-  default     = false
-  description = "Enable persistence for Write Ahead Logs (WAL) in Grafana using Persistent Volume Claims"
-}
-
-variable "grafana_agent_storage_class" {
-  type        = string
-  description = "Storage class for Grafana Persistent Volume"
-  default     = "csi-gp3"
-}
-
 variable "grafana_agent_storage_size" {
   type        = string
   description = "Storage size for Grafana Persistent Volume"
   default     = "5Gi"
-}
-
-variable "grafana_agent_namespace" {
-  type        = string
-  description = "Namespace for hosting monitoring components"
-  default     = "grafana"
 }
 
 variable "observability_tolerations" {
@@ -928,12 +832,6 @@ variable "external_dns_core_route53_assume_role_arn" {
 # --------------------------------------------------
 # kafka-exporter
 # --------------------------------------------------
-
-variable "kafka_exporter_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for kafka-exporter module"
-}
 
 variable "kafka_exporter_clusters" {
   type        = map(any)
