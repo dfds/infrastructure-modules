@@ -10,7 +10,6 @@ variable "cluster_zones" {
   type = number
 }
 
-
 variable "cluster_reserved_cidr" {
   type        = string
   description = "The CIDR block reserved for the control plane subnets. This is used to create the subnets for the EKS cluster control plane."

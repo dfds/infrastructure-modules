@@ -44,8 +44,6 @@ variable "helm_chart_version" {
   default     = ""
 }
 
-
-
 variable "prune" {
   type        = bool
   default     = true
