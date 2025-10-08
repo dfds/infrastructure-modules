@@ -564,7 +564,7 @@ module "velero" {
 module "aws_subnet_exporter" {
   source         = "../../_sub/compute/k8s-subnet-exporter"
   count          = var.grafana_deploy ? 1 : 0
-  namespace_name = var.grafana_deploy ? "grafana" : "monitoring"
+  namespace_name = var.grafana_deploy ? "grafana" : module.monitoring_namespace[0].name
   aws_account_id = var.aws_workload_account_id
   aws_region     = var.aws_region
   image_tag      = "0.3"

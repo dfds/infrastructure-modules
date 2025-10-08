@@ -110,6 +110,26 @@ variable "slack_webhook_url" {
   default = ""
 }
 
+variable "alarm_notifier_deploy" {
+  type    = bool
+  default = false
+}
+
+variable "cloudwatch_alarm_alb_targets_health_deploy" {
+  type    = bool
+  default = false
+}
+
+variable "cloudwatch_alarm_alb_5XX_deploy" {
+  type    = bool
+  default = false
+}
+
+variable "cloudwatch_alarm_log_anomaly_deploy" {
+  type    = bool
+  default = false
+}
+
 # --------------------------------------------------
 # Goldpinger
 # --------------------------------------------------
