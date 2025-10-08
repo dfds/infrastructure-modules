@@ -164,21 +164,6 @@ variable "cloudwatch_alarm_log_anomaly_deploy" {
 }
 
 # --------------------------------------------------
-# Monitoring namespace
-# --------------------------------------------------
-
-variable "monitoring_namespace_deploy" {
-  type        = bool
-  description = "Deploy monitoring namespace"
-  default     = true
-}
-
-variable "monitoring_namespace_labels" {
-  type    = map(any)
-  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/enforce" = "privileged" }
-}
-
-# --------------------------------------------------
 # Goldpinger
 # --------------------------------------------------
 
@@ -511,24 +496,6 @@ variable "blackbox_exporter_monitoring_targets" {
   type        = list(object({ name = string, url = string, module = string }))
   description = "Complex object of what to monitor with Blackbox Exporter"
   default     = []
-}
-
-variable "blackbox_exporter_namespace" {
-  type        = string
-  description = "Namespace for blackbox exporter"
-  default     = "monitoring"
-}
-
-variable "blackbox_exporter_monitoring_traefik_blue_variant_port" {
-  type        = number
-  description = "Port to monitor for the blue variant of Traefik"
-  default     = 8080
-}
-
-variable "blackbox_exporter_monitoring_traefik_green_variant_port" {
-  type        = number
-  description = "Port to monitor for the green variant of Traefik"
-  default     = 8080
 }
 
 # --------------------------------------------------

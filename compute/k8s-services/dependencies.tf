@@ -49,14 +49,6 @@ locals {
   core_dns_zone_name = join(".", local.core_dns_zone_list)
 }
 
-# --------------------------------------------------
-# Monitoring namespace name
-# --------------------------------------------------
-
-locals {
-  monitoring_namespace_name = "monitoring"
-}
-
 
 # --------------------------------------------------
 # Get Route 53 zones and ids
@@ -169,13 +161,13 @@ locals {
 
   blackbox_exporter_monitoring_traefik_blue_variant = var.traefik_blue_variant_deploy ? [{
     "name"   = "traefik-blue-variant"
-    "url"    = "http://traefik-blue-variant.traefik-blue-variant:${var.blackbox_exporter_monitoring_traefik_blue_variant_port}/ping"
+    "url"    = "http://traefik-blue-variant.traefik-blue-variant:8080/ping"
     "module" = "http_2xx"
   }] : []
 
   blackbox_exporter_monitoring_traefik_green_variant = var.traefik_green_variant_deploy ? [{
     "name"   = "traefik-green-variant"
-    "url"    = "http://traefik-green-variant.traefik-green-variant:${var.blackbox_exporter_monitoring_traefik_green_variant_port}/ping"
+    "url"    = "http://traefik-green-variant.traefik-green-variant:8080/ping"
     "module" = "http_2xx"
   }] : []
 

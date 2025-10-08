@@ -345,9 +345,8 @@ module "alarm_notifier_log_account" {
 
 module "monitoring_namespace" {
   source           = "../../_sub/compute/k8s-namespace"
-  count            = var.monitoring_namespace_deploy ? 1 : 0
-  name             = local.monitoring_namespace_name
-  namespace_labels = var.monitoring_namespace_labels
+  name             = "monitoring"
+  namespace_labels = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/enforce" = "privileged" }
 
   # The monitoring namespace has resources that are provisioned and
   # deprovisioned from it via Flux. If Flux is removed before the monitoring
@@ -503,12 +502,11 @@ module "blackbox_exporter_flux_manifests" {
   source                  = "../../_sub/monitoring/blackbox-exporter"
   count                   = var.grafana_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
-  helm_chart_version      = var.blackbox_exporter_helm_chart_version
+  chart_version           = var.blackbox_exporter_helm_chart_version
   github_owner            = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   monitoring_targets      = local.blackbox_exporter_monitoring_targets
-  namespace               = var.blackbox_exporter_namespace
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
