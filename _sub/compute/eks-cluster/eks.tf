@@ -20,6 +20,13 @@ resource "aws_eks_cluster" "eks" {
 
   enabled_cluster_log_types = var.log_types
 
+  bootstrap_self_managed_addons = false
+
+  access_config {
+    authentication_mode                         = "API_AND_CONFIG_MAP"
+    bootstrap_cluster_creator_admin_permissions = false
+  }
+
   vpc_config {
     security_group_ids = [aws_security_group.eks-cluster.id]
     subnet_ids         = slice(aws_subnet.eks[*].id, 0, var.cluster_zones)
@@ -36,6 +43,13 @@ resource "aws_eks_cluster" "eks" {
   # Workaround for https://github.com/aws/containers-roadmap/issues/654"
   provisioner "local-exec" {
     command = "sleep ${var.sleep_after}"
+  }
+
+  lifecycle {
+    ignore_changes = [
+      access_config[0].bootstrap_cluster_creator_admin_permissions,
+      bootstrap_self_managed_addons,
+    ]
   }
 
 }
