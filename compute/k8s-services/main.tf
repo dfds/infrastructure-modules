@@ -5,7 +5,7 @@
 module "traefik_alb_s3_access_logs" {
   source         = "../../_sub/storage/s3-bucket-lifecycle"
   bucket_name    = local.alb_access_log_bucket_name
-  retention_days = 30
+  retention_days = var.traefik_alb_s3_access_logs_retiontion_days
   bucket_policy  = local.alb_access_log_bucket_policy
   replication    = var.alb_access_logs_replication
   sse_algorithm  = var.alb_access_logs_sse_algorithm
@@ -70,6 +70,7 @@ module "traefik_variant_flux_manifests" {
 
 module "traefik_alb_cert" {
   source              = "../../_sub/network/acm-certificate-san"
+  deploy              = var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy ? true : false
   domain_name         = "*.${local.eks_fqdn}"
   dns_zone_name       = var.workload_dns_zone_name
   core_alias          = concat(var.traefik_alb_auth_core_alias, var.traefik_alb_anon_core_alias)
@@ -78,11 +79,13 @@ module "traefik_alb_cert" {
 }
 
 module "traefik_alb_auth_appreg" {
-  source          = "../../_sub/security/azure-app-registration"
-  name            = "Kubernetes EKS ${local.eks_fqdn} cluster"
-  identifier_uris = ["https://${local.eks_fqdn}"]
-  homepage_url    = "https://${local.eks_fqdn}"
-  redirect_uris   = local.traefik_alb_auth_appreg_reply_urls
+  source               = "../../_sub/security/azure-app-registration"
+  count                = var.traefik_alb_auth_deploy ? 1 : 0
+  name                 = "Kubernetes EKS ${local.eks_fqdn} cluster"
+  identifier_uris      = var.alb_az_app_registration_identifier_urls != null ? var.alb_az_app_registration_identifier_urls : ["https://${local.eks_fqdn}"]
+  homepage_url         = "https://${local.eks_fqdn}"
+  redirect_uris        = local.traefik_alb_auth_appreg_reply_urls
+  additional_owner_ids = var.alb_az_app_registration_additional_owner_ids
 }
 
 module "traefik_alb_auth" {
@@ -94,20 +97,20 @@ module "traefik_alb_auth" {
   autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
   alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
   nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
-  azure_tenant_id       = try(module.traefik_alb_auth_appreg.tenant_id, "")
-  azure_client_id       = try(module.traefik_alb_auth_appreg.client_id, "")
-  azure_client_secret   = try(module.traefik_alb_auth_appreg.application_key, "")
+  azure_tenant_id       = try(module.traefik_alb_auth_appreg[0].tenant_id, "")
+  azure_client_id       = try(module.traefik_alb_auth_appreg[0].client_id, "")
+  azure_client_secret   = try(module.traefik_alb_auth_appreg[0].application_key, "")
   access_logs_bucket    = module.traefik_alb_s3_access_logs.name
 
   # Blue variant
-  deploy_blue_variant            = var.traefik_blue_variant_deploy
+  deploy_blue_variant            = var.traefik_alb_auth_deploy && var.traefik_blue_variant_deploy
   blue_variant_target_http_port  = var.traefik_blue_variant_http_nodeport
   blue_variant_target_admin_port = var.traefik_blue_variant_admin_nodeport
   blue_variant_health_check_path = "/ping"
   blue_variant_weight            = var.traefik_blue_variant_weight
 
   # Green variant
-  deploy_green_variant            = var.traefik_green_variant_deploy
+  deploy_green_variant            = var.traefik_alb_auth_deploy && var.traefik_green_variant_deploy
   green_variant_target_http_port  = var.traefik_green_variant_http_nodeport
   green_variant_target_admin_port = var.traefik_green_variant_admin_nodeport
   green_variant_health_check_path = "/ping"
@@ -116,7 +119,7 @@ module "traefik_alb_auth" {
 
 module "traefik_alb_auth_dns" {
   source       = "../../_sub/network/route53-record"
-  deploy       = (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy) ? true : false
+  deploy       = (var.traefik_alb_auth_deploy && (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy)) ? true : false
   zone_id      = local.workload_dns_zone_id
   record_name  = ["internal.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
   record_type  = "CNAME"
@@ -126,7 +129,7 @@ module "traefik_alb_auth_dns" {
 
 module "traefik_alb_auth_dns_for_traefik_blue_variant_dashboard" {
   source       = "../../_sub/network/route53-record"
-  deploy       = var.traefik_blue_variant_deploy ? true : false
+  deploy       = (var.traefik_blue_variant_deploy && var.traefik_alb_auth_deploy) ? true : false
   zone_id      = local.workload_dns_zone_id
   record_name  = ["traefik-blue-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
   record_type  = "CNAME"
@@ -136,7 +139,7 @@ module "traefik_alb_auth_dns_for_traefik_blue_variant_dashboard" {
 
 module "traefik_alb_auth_dns_for_traefik_green_variant_dashboard" {
   source       = "../../_sub/network/route53-record"
-  deploy       = var.traefik_green_variant_deploy ? true : false
+  deploy       = (var.traefik_green_variant_deploy && var.traefik_alb_auth_deploy) ? true : false
   zone_id      = local.workload_dns_zone_id
   record_name  = ["traefik-green-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
   record_type  = "CNAME"
@@ -146,7 +149,7 @@ module "traefik_alb_auth_dns_for_traefik_green_variant_dashboard" {
 
 module "traefik_alb_auth_dns_core_alias" {
   source       = "../../_sub/network/route53-record"
-  deploy       = length(var.traefik_alb_auth_core_alias) >= 1 ? true : false
+  deploy       = var.traefik_alb_auth_deploy ? length(var.traefik_alb_auth_core_alias) >= 1 : false
   zone_id      = local.core_dns_zone_id
   record_name  = var.traefik_alb_auth_core_alias
   record_type  = "CNAME"
@@ -170,14 +173,14 @@ module "traefik_alb_anon" {
   access_logs_bucket    = module.traefik_alb_s3_access_logs.name
 
   # Blue variant
-  deploy_blue_variant            = var.traefik_blue_variant_deploy
+  deploy_blue_variant            = var.traefik_alb_anon_deploy && var.traefik_blue_variant_deploy
   blue_variant_target_http_port  = var.traefik_blue_variant_http_nodeport
   blue_variant_target_admin_port = var.traefik_blue_variant_admin_nodeport
   blue_variant_health_check_path = "/ping"
   blue_variant_weight            = var.traefik_blue_variant_weight
 
   # Green variant
-  deploy_green_variant            = var.traefik_green_variant_deploy
+  deploy_green_variant            = var.traefik_alb_anon_deploy && var.traefik_green_variant_deploy
   green_variant_target_http_port  = var.traefik_green_variant_http_nodeport
   green_variant_target_admin_port = var.traefik_green_variant_admin_nodeport
   green_variant_health_check_path = "/ping"
@@ -186,6 +189,7 @@ module "traefik_alb_anon" {
 
 module "traefik_alb_anon_dns" {
   source       = "../../_sub/network/route53-record"
+  deploy       = var.traefik_alb_anon_deploy
   zone_id      = local.workload_dns_zone_id
   record_name  = ["*.${var.eks_cluster_name}"]
   record_type  = "CNAME"
@@ -195,7 +199,7 @@ module "traefik_alb_anon_dns" {
 
 module "traefik_alb_anon_dns_core_alias" {
   source       = "../../_sub/network/route53-record"
-  deploy       = length(var.traefik_alb_anon_core_alias) >= 1 ? true : false
+  deploy       = var.traefik_alb_anon_deploy ? length(var.traefik_alb_anon_core_alias) >= 1 : false
   zone_id      = local.core_dns_zone_id
   record_name  = var.traefik_alb_anon_core_alias
   record_type  = "CNAME"
@@ -273,13 +277,28 @@ module "blaster_namespace" {
 
 module "alarm_notifier" {
   source            = "../../_sub/monitoring/alarm-notifier/"
+  deploy            = var.alarm_notifier_deploy
   name              = "eks-${var.eks_cluster_name}-cloudwatch-alarms"
   slack_webhook_url = var.slack_webhook_url
 }
 
+module "cloudwatch_alarm_alb_5XX_anon" {
+  source         = "../../_sub/monitoring/cloudwatch-alarms/alb-5XX/"
+  deploy         = var.cloudwatch_alarm_alb_5XX_deploy && var.traefik_alb_anon_deploy && (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy)
+  sns_topic_arn  = module.alarm_notifier.sns_arn
+  alb_arn_suffix = module.traefik_alb_anon.alb_arn_suffix
+}
+
+module "cloudwatch_alarm_alb_5XX_auth" {
+  source         = "../../_sub/monitoring/cloudwatch-alarms/alb-5XX/"
+  deploy         = var.cloudwatch_alarm_alb_5XX_deploy && var.traefik_alb_auth_deploy && (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy)
+  sns_topic_arn  = module.alarm_notifier.sns_arn
+  alb_arn_suffix = module.traefik_alb_auth.alb_arn_suffix
+}
+
 module "cloudwatch_alarm_alb_targets_health_anon_blue" {
   source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
-  deploy                      = var.traefik_blue_variant_deploy
+  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_alb_anon_deploy && var.traefik_blue_variant_deploy
   sns_topic_arn               = module.alarm_notifier.sns_arn
   alb_arn_suffix              = module.traefik_alb_anon.alb_arn_suffix
   alb_arn_target_group_suffix = module.traefik_alb_anon.alb_target_group_arn_suffix_blue
@@ -287,7 +306,7 @@ module "cloudwatch_alarm_alb_targets_health_anon_blue" {
 
 module "cloudwatch_alarm_alb_targets_health_anon_green" {
   source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
-  deploy                      = var.traefik_green_variant_deploy
+  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_alb_anon_deploy && var.traefik_green_variant_deploy
   sns_topic_arn               = module.alarm_notifier.sns_arn
   alb_arn_suffix              = module.traefik_alb_anon.alb_arn_suffix
   alb_arn_target_group_suffix = module.traefik_alb_anon.alb_target_group_arn_suffix_green
@@ -295,7 +314,7 @@ module "cloudwatch_alarm_alb_targets_health_anon_green" {
 
 module "cloudwatch_alarm_alb_targets_health_auth_blue" {
   source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
-  deploy                      = var.traefik_blue_variant_deploy
+  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_alb_auth_deploy && var.traefik_blue_variant_deploy
   sns_topic_arn               = module.alarm_notifier.sns_arn
   alb_arn_suffix              = module.traefik_alb_auth.alb_arn_suffix
   alb_arn_target_group_suffix = module.traefik_alb_auth.alb_target_group_arn_suffix_blue
@@ -303,7 +322,7 @@ module "cloudwatch_alarm_alb_targets_health_auth_blue" {
 
 module "cloudwatch_alarm_alb_targets_health_auth_green" {
   source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
-  deploy                      = var.traefik_green_variant_deploy
+  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_alb_auth_deploy && var.traefik_green_variant_deploy
   sns_topic_arn               = module.alarm_notifier.sns_arn
   alb_arn_suffix              = module.traefik_alb_auth.alb_arn_suffix
   alb_arn_target_group_suffix = module.traefik_alb_auth.alb_target_group_arn_suffix_green
@@ -311,6 +330,7 @@ module "cloudwatch_alarm_alb_targets_health_auth_green" {
 
 module "alarm_notifier_log_account" {
   source            = "../../_sub/monitoring/alarm-notifier/"
+  deploy            = var.cloudwatch_alarm_log_anomaly_deploy
   name              = "eks-${var.eks_cluster_name}-cloudwatch-alarms"
   slack_webhook_url = var.slack_webhook_url
 
