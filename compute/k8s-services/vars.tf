@@ -926,10 +926,22 @@ variable "trivy_operator_deploy" {
   default     = false
 }
 
+variable "trivy_operator_deploy_name" {
+  type        = string
+  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
+  default     = "trivy-operator"
+}
+
 variable "trivy_operator_chart_version" {
   type        = string
   description = "Trivy Operator helm chart version"
   default     = ""
+}
+
+variable "trivy_operator_namespace" {
+  type        = string
+  description = "The namespace to deploy Trivy Operator in"
+  default     = "trivy-system"
 }
 
 variable "trivy_operator_resources_requests_cpu" {
@@ -966,10 +978,22 @@ variable "falco_deploy" {
   default     = false
 }
 
+variable "falco_deploy_name" {
+  type        = string
+  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
+  default     = "falco"
+}
+
 variable "falco_chart_version" {
   type        = string
   description = "Falco helm chart version"
   default     = ""
+}
+
+variable "falco_namespace" {
+  type        = string
+  description = "The namespace to deploy Falco in"
+  default     = "falco"
 }
 
 variable "falco_slack_alert_webhook_url" {
@@ -1028,6 +1052,12 @@ variable "use_worker_nat_gateway" {
 # --------------------------------------------------
 # KEDA
 # --------------------------------------------------
+
+variable "keda_deploy" {
+  type        = bool
+  description = "Deploy KEDA helm chart switch"
+  default     = true
+}
 
 variable "keda_chart_version" {
   type        = string
