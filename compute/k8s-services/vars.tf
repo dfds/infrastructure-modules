@@ -690,7 +690,6 @@ variable "grafana_agent_open_cost_enabled" {
   description = "Enable Open Cost or not. Default: false"
 }
 
-
 variable "grafana_agent_resource_memory_limit" {
   type        = string
   default     = "20Gi"
@@ -709,28 +708,10 @@ variable "grafana_agent_replicas" {
   description = "How many replicas to run Grafana Agent with"
 }
 
-variable "grafana_agent_storage_enabled" {
-  type        = bool
-  default     = false
-  description = "Enable persistence for Write Ahead Logs (WAL) in Grafana using Persistent Volume Claims"
-}
-
-variable "grafana_agent_storage_class" {
-  type        = string
-  description = "Storage class for Grafana Persistent Volume"
-  default     = "csi-gp3"
-}
-
 variable "grafana_agent_storage_size" {
   type        = string
   description = "Storage size for Grafana Persistent Volume"
   default     = "5Gi"
-}
-
-variable "grafana_agent_namespace" {
-  type        = string
-  description = "Namespace for hosting monitoring components"
-  default     = "grafana"
 }
 
 variable "observability_tolerations" {

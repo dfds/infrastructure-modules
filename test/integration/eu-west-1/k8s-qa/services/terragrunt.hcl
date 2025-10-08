@@ -164,9 +164,7 @@ inputs = {
   grafana_agent_chart_version = "1.4.4"
   grafana_agent_resource_memory_request = "4Gi"
   grafana_agent_resource_memory_limit   = "4Gi"
-  grafana_agent_storage_enabled = true
   grafana_agent_storage_size = "10Gi"
-  grafana_agent_namespace = "grafana"
 
   observability_tolerations = [
     {

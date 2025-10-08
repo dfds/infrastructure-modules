@@ -11,17 +11,10 @@ variable "repo_name" {
 variable "repo_branch" {
   type        = string
   description = "Override the default branch of the repo (optional)"
-  default     = null
 }
 
 variable "cluster_name" {
   type = string
-}
-
-variable "deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "grafana"
 }
 
 variable "prune" {
@@ -30,51 +23,28 @@ variable "prune" {
   description = "Enable Garbage collection"
 }
 
-
-
 variable "gitops_apps_repo_url" {
   type        = string
-  default     = ""
   description = "The https url for your GitOps manifests"
 }
 
 variable "gitops_apps_repo_branch" {
-  type = string
-  #   default     = "main"
-  description = "The default branch for your GitOps manifests"
-}
-
-variable "namespace" {
   type        = string
-  description = "Namespace to apply monitoring components in"
-  default     = "grafana"
-  validation {
-    condition     = can(regex("[a-z]+", var.namespace))
-    error_message = "Namespace must contain at least one letter."
-  }
+  description = "The default branch for your GitOps manifests"
 }
 
 variable "chart_version" {
   type        = string
   description = "Grafana Agent helm chart version"
-  default     = ""
-}
-
-variable "storage_enabled" {
-  type        = bool
-  default     = false
-  description = "Enable persistence for Write Ahead Logs (WAL) in Grafana using Persistent Volume Claims"
 }
 
 variable "agent_resource_memory_request" {
   type        = string
-  default     = null
   description = "Set resource memory request on Grafana Agent container"
 }
 
 variable "agent_resource_memory_limit" {
   type        = string
-  default     = null
   description = "Set resource memory limits on Grafana Agent container"
 }
 
@@ -99,14 +69,7 @@ variable "affinity" {
 
 variable "agent_replicas" {
   type        = number
-  default     = 1
   description = "How many replicas to run Grafana Agent with"
-}
-
-variable "storage_class" {
-  type        = string
-  description = "Storage class for Grafana Persistent Volume"
-  default     = "csi-gp3"
 }
 
 variable "storage_size" {

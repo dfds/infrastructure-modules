@@ -585,7 +585,7 @@ module "velero" {
 module "aws_subnet_exporter" {
   source         = "../../_sub/compute/k8s-subnet-exporter"
   count          = var.grafana_deploy ? 1 : 0
-  namespace_name = var.grafana_deploy ? var.grafana_agent_namespace : module.monitoring_namespace[0].name
+  namespace_name = var.grafana_deploy ? "grafana" : module.monitoring_namespace[0].name
   aws_account_id = var.aws_workload_account_id
   aws_region     = var.aws_region
   image_tag      = "0.3"
@@ -624,9 +624,8 @@ module "elb_inactivity_cleanup_auth" {
 # --------------------------------------------------
 
 module "grafana" {
-  source = "../../_sub/monitoring/grafana"
-  count  = var.grafana_deploy ? 1 : 0
-
+  source                        = "../../_sub/monitoring/grafana"
+  count                         = var.grafana_deploy ? 1 : 0
   cluster_name                  = var.eks_cluster_name
   github_owner                  = var.fluxcd_bootstrap_repo_owner
   repo_name                     = var.fluxcd_bootstrap_repo_name
@@ -648,10 +647,7 @@ module "grafana" {
   affinity                      = var.observability_affinity
   tolerations                   = var.observability_tolerations
   agent_replicas                = var.grafana_agent_replicas
-  storage_enabled               = var.grafana_agent_storage_enabled
-  storage_class                 = var.grafana_agent_storage_class
   storage_size                  = var.grafana_agent_storage_size
-  namespace                     = var.grafana_agent_namespace
 
   providers = {
     github = github.fluxcd
