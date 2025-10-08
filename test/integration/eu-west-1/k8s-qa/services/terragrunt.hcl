@@ -29,10 +29,20 @@ inputs = {
   # EKS
   # --------------------------------------------------
 
-  eks_cluster_name          = "qa"
   eks_is_sandbox            = true
+  eks_cluster_name          = "qa"
   enable_inactivity_cleanup = false
   use_worker_nat_gateway    = true
+
+  # --------------------------------------------------
+  # Load Balancers in front of Traefik
+  # --------------------------------------------------
+
+  traefik_alb_auth_deploy = true # triggers Azure App registration
+  traefik_alb_anon_deploy = true
+  # traefik_alb_auth_core_alias = ["qa-alias1.dfds.cloud", "qa-alias2.dfds.cloud"]
+  traefik_alb_auth_core_alias = []
+
 
   # --------------------------------------------------
   # Traefik v2
@@ -68,20 +78,18 @@ inputs = {
   # Cloudwatch alarms and alarm notifier (Slack)
   # --------------------------------------------------
 
+  alarm_notifier_deploy                      = true
+  slack_webhook_url                          = "https://dummy.slack.webhook"
+  cloudwatch_alarm_alb_targets_health_deploy = true
+  cloudwatch_alarm_alb_5XX_deploy            = true
   slack_webhook_url = "https://dummy.slack.webhook"
 
   # --------------------------------------------------
   # Flux CD
   # --------------------------------------------------
 
-  fluxcd_version                    = "v2.6.4"
-
-  fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
-  fluxcd_bootstrap_repo_branch      = "main"
-  fluxcd_bootstrap_repo_owner       = "dfds"
-
-  fluxcd_apps_repo_name             = "platform-apps"
   fluxcd_apps_repo_branch           = "qa"
+  fluxcd_apps_repo_name             = "platform-apps"
   fluxcd_bootstrap_repo_branch      = "main"
   fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
   fluxcd_bootstrap_repo_owner       = "dfds"
