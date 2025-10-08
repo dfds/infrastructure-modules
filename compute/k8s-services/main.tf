@@ -779,12 +779,9 @@ module "onepassword_connect" {
   source                  = "../../_sub/security/helm-1password-connect"
   count                   = var.onepassword-connect_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
-  deploy_name             = "1password-connect"
-  namespace               = "1password-connect"
   github_owner            = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
-  overwrite_on_create     = var.fluxcd_bootstrap_overwrite_on_create
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune

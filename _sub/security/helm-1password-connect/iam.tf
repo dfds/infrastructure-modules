@@ -3,7 +3,7 @@
 # --------------------------------------------------
 
 locals {
-  iam_role_name = "${var.deploy_name}-irsa"
+  iam_role_name = "${local.deploy_name}-irsa"
 }
 
 # tfsec:ignore:aws-iam-no-policy-wildcards
@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "trust" {
 
     condition {
       test     = "StringEquals"
-      values   = ["system:serviceaccount:${var.namespace}:${var.deploy_name}"]
+      values   = ["system:serviceaccount:1password-connect:${local.deploy_name}"]
       variable = "${var.oidc_issuer}:sub"
     }
   }
