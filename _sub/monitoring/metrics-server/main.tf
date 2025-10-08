@@ -6,7 +6,7 @@ resource "github_repository_file" "helm" {
   branch              = local.repo_branch
   file                = "${local.cluster_repo_path}/${local.app_install_name}-helm.yaml"
   content             = local.app_helm_path
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "kustomization" {
@@ -14,7 +14,7 @@ resource "github_repository_file" "kustomization" {
   branch              = local.repo_branch
   file                = "${local.helm_repo_path}/kustomization.yaml"
   content             = local.helm_install
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "patch" {
@@ -22,5 +22,5 @@ resource "github_repository_file" "patch" {
   branch              = local.repo_branch
   file                = "${local.helm_repo_path}/patch.yaml"
   content             = local.helm_patch
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }

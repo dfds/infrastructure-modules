@@ -43,7 +43,7 @@ resource "github_repository_file" "flux_monitoring_config_path" {
   branch              = data.github_branch.flux_branch.branch
   file                = "${local.cluster_target_path}/${local.app_install_name}.yaml"
   content             = jsonencode(local.flux_monitoring)
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 
@@ -56,7 +56,7 @@ resource "github_repository_file" "platform_apps_init" {
   branch              = data.github_branch.flux_branch.branch
   file                = "${local.cluster_target_path}/platform-apps.yaml"
   content             = local.platform_apps_yaml
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "custom_kustomization" {
@@ -64,7 +64,7 @@ resource "github_repository_file" "custom_kustomization" {
   branch              = data.github_branch.flux_branch.branch
   file                = "${local.cluster_target_path}/custom.yaml"
   content             = local.custom_kustomization_yaml
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "custom_folder" {
@@ -72,7 +72,7 @@ resource "github_repository_file" "custom_folder" {
   branch              = data.github_branch.flux_branch.branch
   file                = "platform-apps/${var.cluster_name}/custom/README.md"
   content             = local.custom_folder_readme
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 # --------------------------------------------------
@@ -88,7 +88,7 @@ resource "github_repository_file" "tenants" {
     tenants      = var.tenants
     cluster_name = var.cluster_name
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "tenant_rbac" {
@@ -99,7 +99,7 @@ resource "github_repository_file" "tenant_rbac" {
   content = templatefile("${path.module}/values/rbac.yaml", {
     namespace = each.value.namespace
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "tenant_kustomization" {
@@ -110,7 +110,7 @@ resource "github_repository_file" "tenant_kustomization" {
   content = templatefile("${path.module}/values/kustomization.yaml", {
     namespace = each.value.namespace
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "tenant_sync" {
@@ -124,5 +124,5 @@ resource "github_repository_file" "tenant_sync" {
       merge(v, { name = element((split("/", v.url)), length((split("/", v.url))) - 1) })
     ]
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }

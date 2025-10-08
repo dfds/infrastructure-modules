@@ -273,12 +273,6 @@ variable "fluxcd_bootstrap_repo_owner_token" {
   default = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
-variable "fluxcd_bootstrap_overwrite_on_create" {
-  type        = bool
-  default     = true
-  description = "Enable overwriting existing files"
-}
-
 variable "fluxcd_tenants" {
   type = list(object({
     namespace = string

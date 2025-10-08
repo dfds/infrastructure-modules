@@ -12,7 +12,7 @@ resource "github_repository_file" "helm" {
     namespace        = var.namespace
     prune            = var.prune
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "helm_install" {
@@ -24,7 +24,7 @@ resource "github_repository_file" "helm_install" {
     deploy_name             = var.deploy_name
     gitops_apps_repo_branch = var.gitops_apps_repo_branch
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "helm_patch" {
@@ -41,5 +41,5 @@ resource "github_repository_file" "helm_patch" {
     resources_requests_cpu    = var.resources_requests_cpu
     resources_requests_memory = var.resources_requests_memory
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
