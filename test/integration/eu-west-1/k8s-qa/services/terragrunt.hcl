@@ -40,9 +40,6 @@ inputs = {
 
   traefik_alb_auth_deploy = true # triggers Azure App registration
   traefik_alb_anon_deploy = true
-  # traefik_alb_auth_core_alias = ["qa-alias1.dfds.cloud", "qa-alias2.dfds.cloud"]
-  traefik_alb_auth_core_alias = []
-
 
   # --------------------------------------------------
   # Traefik v2
@@ -68,8 +65,6 @@ inputs = {
   ]
   traefik_green_variant_weight = 0
 
-
-
   # --------------------------------------------------
   # Blaster
   # --------------------------------------------------
@@ -89,15 +84,10 @@ inputs = {
   # Flux CD
   # --------------------------------------------------
 
-  fluxcd_version                    = "v2.6.4"
-
-  fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
-  fluxcd_bootstrap_repo_branch      = "main"
-  fluxcd_bootstrap_repo_owner       = "dfds"
-
-  fluxcd_apps_repo_name             = "platform-apps"
   fluxcd_apps_repo_branch           = "qa"
-  fluxcd_apps_repo_owner            = "dfds"
+  fluxcd_bootstrap_repo_branch      = "main"
+  fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
+  fluxcd_version                    = "v2.6.4"
 
   fluxcd_tenants = [
     {
@@ -117,7 +107,7 @@ inputs = {
 
   atlantis_deploy       = true
   atlantis_ingress      = "atlantis.qa.qa.dfds.cloud"
-  atlantis_data_storage = "1Gi"
+  atlantis_data_storage = "5Gi"
 
   atlantis_resources_requests_cpu    = "10m"
   atlantis_resources_limits_cpu      = "10m"
@@ -185,15 +175,7 @@ inputs = {
   # External Secrets
   # --------------------------------------------------
 
-  external_secrets_deploy = true
   external_secrets_helm_chart_version = "0.19.2"
-
-  # --------------------------------------------------
-  # External Secrets with SSM
-  # --------------------------------------------------
-
-  external_secrets_ssm_deploy = true
-  external_secrets_ssm_allowed_namespaces = ["atlantis", "flux-system"]
 
   # --------------------------------------------------
   # Github ARC SS Controller

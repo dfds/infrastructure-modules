@@ -3,11 +3,12 @@ data "github_repository" "main" {
 }
 
 locals {
+  deploy_name         = "external-secrets"
   default_repo_branch = data.github_repository.main.default_branch
   repo_branch         = length(var.repo_branch) > 0 ? var.repo_branch : local.default_repo_branch
   cluster_repo_path   = "clusters/${var.cluster_name}"
-  helm_repo_path      = "platform-apps/${var.cluster_name}/${var.deploy_name}/helm"
-  app_install_name    = "platform-apps-${var.deploy_name}"
+  helm_repo_path      = "platform-apps/${var.cluster_name}/${local.deploy_name}/helm"
+  app_install_name    = "platform-apps-${local.deploy_name}"
 }
 
 locals {
@@ -16,7 +17,7 @@ locals {
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: cluster-reconciler-${var.deploy_name}
+  name: cluster-reconciler-${local.deploy_name}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -24,7 +25,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: helm-controller
-  namespace: ${var.namespace}
+  namespace: external-secrets
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -47,21 +48,21 @@ YAML
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - "${var.gitops_apps_repo_url}/apps/${var.deploy_name}?ref=${var.gitops_apps_repo_branch}"
+  - "${var.gitops_apps_repo_url}/apps/${local.deploy_name}?ref=${var.gitops_apps_repo_branch}"
 patches:
   - path: patch.yaml
     target:
       kind: HelmRelease
-      name: ${var.deploy_name}
-      namespace: ${var.namespace}
+      name: ${local.deploy_name}
+      namespace: external-secrets
 YAML
 
   helm_patch = <<YAML
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: ${var.deploy_name}
-  namespace: ${var.namespace}
+  name: ${local.deploy_name}
+  namespace: external-secrets
 spec:
   serviceAccountName: helm-controller
   chart:
