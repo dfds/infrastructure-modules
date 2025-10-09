@@ -252,7 +252,7 @@ module "eks_managed_workers_node_group" {
   ec2_ssh_key                               = module.eks_workers_keypair.key_name
   eks_endpoint                              = module.eks_cluster.eks_endpoint
   eks_certificate_authority                 = module.eks_cluster.eks_certificate_authority
-  eks_service_cidr = module.eks_cluster.eks_service_cidr
+  eks_service_cidr                          = module.eks_cluster.eks_service_cidr
   vpc_cni_prefix_delegation_enabled         = var.eks_addon_vpccni_prefix_delegation_enabled
   worker_inotify_max_user_watches           = var.eks_worker_inotify_max_user_watches
 
