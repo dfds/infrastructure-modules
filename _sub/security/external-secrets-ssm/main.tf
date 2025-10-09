@@ -2,6 +2,10 @@
 # IAM policy and role for external secrets operator
 # --------------------------------------------------
 
+locals {
+  iam_role_name = format("ssm-secrets-for-kubernetes-%s", var.cluster_name)
+}
+
 # tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "ssm" {
   statement {
@@ -12,7 +16,7 @@ data "aws_iam_policy_document" "ssm" {
 }
 
 resource "aws_iam_policy" "this" {
-  name        = "${var.iam_role_name}-policy"
+  name        = "${local.iam_role_name}-policy"
   description = "Used by IRSA for external secrets operator"
   policy      = data.aws_iam_policy_document.ssm.json
 }
@@ -43,7 +47,7 @@ data "aws_iam_policy_document" "trust" {
 }
 
 resource "aws_iam_role" "this" {
-  name               = var.iam_role_name
+  name               = local.iam_role_name
   description        = "Used by IRSA for external secrets operator"
   assume_role_policy = data.aws_iam_policy_document.trust.json
 }
