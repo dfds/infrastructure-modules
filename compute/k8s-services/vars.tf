@@ -92,7 +92,7 @@ variable "traefik_alb_anon_deploy" {
 }
 
 variable "traefik_alb_anon_core_alias" {
-  description = "A list of aliases/alternative names in the *parent* domain, the certficate should also be valid for. E.g. 'prettyurl.company.tld'"
+  description = "A list of aliases/alternative names in the *parent* domain, the certificate should also be valid for. E.g. 'prettyurl.company.tld'"
   type        = list(string)
   default     = []
 }
@@ -103,14 +103,9 @@ variable "traefik_alb_auth_deploy" {
 }
 
 variable "traefik_alb_auth_core_alias" {
-  description = "A list of aliases/alternative names in the *parent* domain, the certficate should also be valid for. E.g. 'prettyurl.company.tld'"
+  description = "A list of aliases/alternative names in the *parent* domain, the certificate should also be valid for. E.g. 'prettyurl.company.tld'"
   type        = list(string)
   default     = []
-}
-
-variable "traefik_nlb_deploy" {
-  type    = bool
-  default = false
 }
 
 variable "alb_az_app_registration_identifier_urls" {
@@ -177,26 +172,18 @@ variable "goldpinger_chart_version" {
 # Metrics-Server
 # --------------------------------------------------
 
-variable "metrics_server_deploy" {
-  type        = bool
-  description = "Deploy metrics-server helm chart switch."
-  default     = true
-}
-
 variable "metrics_server_helm_chart_version" {
   type        = string
   description = "The helm chart version"
   default     = ""
 }
 
-
 # --------------------------------------------------
 # Flux CD
 # --------------------------------------------------
 
 variable "fluxcd_version" {
-  type    = string
-  default = null
+  type = string
 }
 
 variable "fluxcd_prune" {
@@ -206,8 +193,7 @@ variable "fluxcd_prune" {
 }
 
 variable "fluxcd_bootstrap_repo_name" {
-  type    = string
-  default = ""
+  type = string
 }
 
 variable "fluxcd_bootstrap_repo_branch" {
@@ -217,12 +203,12 @@ variable "fluxcd_bootstrap_repo_branch" {
 
 variable "fluxcd_bootstrap_repo_owner" {
   type    = string
-  default = ""
+  default = "dfds"
 }
 
 variable "fluxcd_bootstrap_repo_owner_token" {
-  type    = string
-  default = "" #tfsec:ignore:general-secrets-sensitive-in-variable
+  type      = string
+  sensitive = true
 }
 
 variable "fluxcd_tenants" {
@@ -256,7 +242,7 @@ variable "fluxcd_apps_git_provider_url" {
 
 variable "fluxcd_apps_repo_name" {
   type        = string
-  default     = ""
+  default     = "platform-apps"
   description = "The repo name for your GitOps manifests"
 }
 
@@ -268,7 +254,7 @@ variable "fluxcd_apps_repo_branch" {
 
 variable "fluxcd_apps_repo_owner" {
   type        = string
-  default     = "main"
+  default     = "dfds"
   description = "The repo owner for your GitOps manifests"
 }
 
@@ -291,14 +277,14 @@ variable "atlantis_github_token" {
 
 variable "atlantis_github_owner" {
   type        = string
-  default     = null
-  description = "Github owner(username). Conflicts with github_organization. Leaving unset will use GITHUB_OWNER environment variable if exists"
+  default     = "dfds"
+  description = "Github owner(username). Leaving unset will use GITHUB_OWNER environment variable if exists"
 }
 
 variable "atlantis_github_username" {
   type        = string
   default     = null
-  description = "Github username of the account that will post Atlantis comments on PR's"
+  description = "Github username of the account that owns the token. Leaving unset will use GITHUB_USERNAME environment variable if exists"
 }
 
 variable "atlantis_github_repositories" {
@@ -307,34 +293,10 @@ variable "atlantis_github_repositories" {
   default     = []
 }
 
-variable "atlantis_webhook_events" {
-  description = "A list of events that should trigger the webhook"
-  default     = ["issue_comment", "pull_request", "pull_request_review", "push"]
-  type        = list(string)
-}
-
-variable "atlantis_namespace" {
-  type        = string
-  description = "Namespace for Atlantis deployment"
-  default     = "atlantis"
-}
-
 variable "atlantis_chart_version" {
   type        = string
   description = "Version of the helm chart to deploy"
   default     = ""
-}
-
-variable "atlantis_ingress" {
-  type        = string
-  description = "URL for Atlantis Ingress"
-  default     = null
-}
-
-variable "atlantis_image" {
-  type        = string
-  description = "Name of the image to use for Atlantis"
-  default     = "dfdsdk/atlantis-prime-pipeline"
 }
 
 variable "atlantis_image_tag" {
@@ -343,22 +305,11 @@ variable "atlantis_image_tag" {
   default     = "latest"
 }
 
-variable "atlantis_storage_class" {
-  type        = string
-  description = "Storage class to use for persistent volume"
-  default     = "csi-gp3"
-}
-
 variable "atlantis_data_storage" {
   type        = string
   description = "Size of the persistent volume"
   default     = "5Gi"
 }
-
-# --------------------------------------------------
-# Atlantis variables
-# --------------------------------------------------
-# Used as env variables within the Atlantis process.
 
 variable "atlantis_resources_requests_cpu" {
   type        = string
@@ -370,29 +321,6 @@ variable "atlantis_resources_requests_memory" {
   type        = string
   default     = "1536Mi"
   description = "Memory resources requests size"
-}
-
-variable "atlantis_resources_limits_cpu" {
-  type        = string
-  default     = null
-  description = "CPU resources limits size"
-}
-
-variable "atlantis_resources_limits_memory" {
-  type        = string
-  default     = null
-  description = "Memory resources limits size"
-}
-
-# --------------------------------------------------
-# Atlantis
-# --------------------------------------------------
-
-variable "atlantis_add_secret_volumes" {
-  type        = bool
-  default     = false
-  description = "Add secret volumes to the Atlantis deployment"
-
 }
 
 # --------------------------------------------------
@@ -598,15 +526,13 @@ variable "velero_ebs_csi_kms_arn" {
   description = "The KMS ARN to use for EBS CSI volumes."
 }
 
-
 # --------------------------------------------------
 # Subnet Exporter
 # --------------------------------------------------
-
-variable "subnet_exporter_iam_role_name" {
-  type        = string
-  default     = null
-  description = "The IAM role name used for the AWS Subnet Exporter"
+variable "subnet_exporter_deploy" {
+  type        = bool
+  default     = true
+  description = "Feature toggle for Subnet Exporter module"
 }
 
 # --------------------------------------------------
@@ -739,12 +665,6 @@ variable "observability_affinity" {
 # External Secrets
 # --------------------------------------------------
 
-variable "external_secrets_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for External Secrets module"
-}
-
 variable "external_secrets_helm_chart_version" {
   type        = string
   description = "External Secrets helm chart version"
@@ -755,27 +675,15 @@ variable "external_secrets_helm_chart_version" {
 # External Secrets with SSM
 # --------------------------------------------------
 
-variable "external_secrets_ssm_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for External Secrets module"
-}
-
-variable "external_secrets_ssm_iam_role_name" {
-  type        = string
-  description = "The name of the IAM role to assume"
-  default     = "ssm-secrets-for-kubernetes"
-}
-
 variable "external_secrets_ssm_service_account" {
   type        = string
-  default     = "ssm-secrets"
-  description = "The service account to be used by an SecretStore"
+  default     = "*"
+  description = "The service account (or wildcard) to be used by an SecretStore"
 }
 
 variable "external_secrets_ssm_allowed_namespaces" {
   type        = list(string)
-  default     = []
+  default     = ["atlantis", "flux-system"]
   description = "The namespaces that can use IRSA to access external secrets"
 }
 
@@ -832,6 +740,12 @@ variable "external_dns_core_route53_assume_role_arn" {
 # --------------------------------------------------
 # kafka-exporter
 # --------------------------------------------------
+
+variable "kafka_exporter_deploy" {
+  type        = string
+  default     = false
+  description = "Feature toggle for kafka-exporter module"
+}
 
 variable "kafka_exporter_clusters" {
   type        = map(any)

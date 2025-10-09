@@ -70,7 +70,7 @@ module "traefik_variant_flux_manifests" {
 
 module "traefik_alb_cert" {
   source              = "../../_sub/network/acm-certificate-san"
-  deploy              = var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy || var.traefik_nlb_deploy ? true : false
+  deploy              = var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy ? true : false
   domain_name         = "*.${local.eks_fqdn}"
   dns_zone_name       = var.workload_dns_zone_name
   core_alias          = concat(var.traefik_alb_auth_core_alias, var.traefik_alb_anon_core_alias)
@@ -358,7 +358,7 @@ module "monitoring_namespace" {
 
 
 # --------------------------------------------------
-# Goldpinger
+# Goldpinger - only when Grafana is also deployed
 # --------------------------------------------------
 
 module "goldpinger" {
@@ -371,6 +371,7 @@ module "goldpinger" {
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   chart_version           = var.goldpinger_chart_version
+  prune                   = var.fluxcd_prune
 
   depends_on = [module.grafana, module.platform_fluxcd]
 
@@ -386,7 +387,6 @@ module "goldpinger" {
 
 module "metrics_server" {
   source                  = "../../_sub/monitoring/metrics-server"
-  count                   = var.metrics_server_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
   repo_owner              = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name
@@ -394,6 +394,7 @@ module "metrics_server" {
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   chart_version           = var.metrics_server_helm_chart_version
+  prune                   = var.fluxcd_prune
 
   depends_on = [module.platform_fluxcd]
 
@@ -442,31 +443,30 @@ module "platform_fluxcd" {
 # Atlantis
 # --------------------------------------------------
 
+locals {
+  atlantis_ingress = format("atlantis.%s.%s", var.eks_cluster_name, var.workload_dns_zone_name)
+}
+
 module "atlantis_deployment" {
   source                    = "../../_sub/compute/atlantis"
   count                     = var.atlantis_deploy ? 1 : 0
   aws_region                = local.aws_region
   chart_version             = var.atlantis_chart_version
   cluster_name              = var.eks_cluster_name
-  enable_secret_volumes     = var.atlantis_add_secret_volumes
-  github_repositories       = var.atlantis_github_repositories
+  github_repositories       = sort(var.atlantis_github_repositories)
   github_token              = var.atlantis_github_token
   github_username           = var.atlantis_github_username
   gitops_apps_repo_branch   = var.fluxcd_apps_repo_branch
   gitops_apps_repo_url      = local.fluxcd_apps_repo_url
-  image                     = var.atlantis_image
   image_tag                 = var.atlantis_image_tag
-  ingress_hostname          = var.atlantis_ingress
+  ingress_hostname          = local.atlantis_ingress
   oidc_issuer               = local.oidc_issuer
   prune                     = var.fluxcd_prune
   repo_branch               = var.fluxcd_bootstrap_repo_branch
   repo_name                 = var.fluxcd_bootstrap_repo_name
   repo_owner                = var.fluxcd_bootstrap_repo_owner
-  resources_limits_cpu      = var.atlantis_resources_limits_cpu
-  resources_limits_memory   = var.atlantis_resources_limits_memory
   resources_requests_cpu    = var.atlantis_resources_requests_cpu
   resources_requests_memory = var.atlantis_resources_requests_memory
-  storage_class             = var.atlantis_storage_class
   storage_size              = var.atlantis_data_storage
   workload_account_id       = var.aws_workload_account_id
 
@@ -482,8 +482,7 @@ module "atlantis_github_configuration" {
   count               = var.atlantis_deploy ? 1 : 0
   dashboard_password  = module.atlantis_deployment[0].dashboard_password
   github_repositories = sort(var.atlantis_github_repositories)
-  ingress_hostname    = var.atlantis_ingress
-  webhook_events      = var.atlantis_webhook_events
+  ingress_hostname    = local.atlantis_ingress
   webhook_secret      = module.atlantis_deployment[0].webhook_secret
 
   depends_on = [module.atlantis_deployment]
@@ -584,14 +583,13 @@ module "velero" {
 
 module "aws_subnet_exporter" {
   source         = "../../_sub/compute/k8s-subnet-exporter"
-  count          = var.grafana_deploy ? 1 : 0
-  namespace_name = var.grafana_deploy ? "grafana" : module.monitoring_namespace[0].name
+  count          = var.subnet_exporter_deploy ? 1 : 0
+  namespace_name = var.grafana_deploy ? "grafana" : "monitoring"
   aws_account_id = var.aws_workload_account_id
   aws_region     = var.aws_region
   image_tag      = "0.3"
   oidc_issuer    = local.oidc_issuer
   cluster_name   = var.eks_cluster_name
-  iam_role_name  = var.subnet_exporter_iam_role_name
   tolerations    = var.observability_tolerations
   affinity       = var.observability_affinity
 
@@ -662,10 +660,7 @@ module "grafana" {
 
 module "external_secrets" {
   source                  = "../../_sub/security/external-secrets"
-  count                   = var.external_secrets_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
-  deploy_name             = "external-secrets"
-  namespace               = "external-secrets"
   helm_chart_version      = var.external_secrets_helm_chart_version
   github_owner            = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name
@@ -691,11 +686,10 @@ locals {
 
 module "external_secrets_ssm" {
   source              = "../../_sub/security/external-secrets-ssm"
-  count               = var.external_secrets_deploy && var.external_secrets_ssm_deploy ? 1 : 0
   workload_account_id = var.aws_workload_account_id
   aws_region          = local.aws_region
   oidc_issuer         = local.oidc_issuer
-  iam_role_name       = var.external_secrets_ssm_iam_role_name
+  cluster_name        = var.eks_cluster_name
   service_account     = var.external_secrets_ssm_service_account
   allowed_namespaces  = var.external_secrets_ssm_allowed_namespaces
 
@@ -712,7 +706,7 @@ module "external_secrets_ssm" {
 
 module "kafka_exporter" {
   source         = "../../_sub/monitoring/kafka-exporter"
-  count          = var.grafana_deploy ? 1 : 0
+  count          = var.kafka_exporter_deploy ? 1 : 0
   cluster_name   = var.eks_cluster_name
   deploy_name    = "kafka-exporter"
   namespace      = "monitoring"
