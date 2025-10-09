@@ -2,17 +2,15 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: ${deploy_name}
-  namespace: ${namespace}
+  namespace: "trivy-system"
 spec:
-  serviceAccountName: helm-controller
   chart:
     spec:
       version: "${chart_version}"
   values:
     resources:
       limits:
-        cpu: ${resources_limits_cpu}
-        memory: ${resources_limits_memory}
+        memory: ${resources_requests_memory}
       requests:
         cpu: ${resources_requests_cpu}
         memory: ${resources_requests_memory}
@@ -20,8 +18,7 @@ spec:
       githubToken: ${github_token}
       resources:
         limits:
-          cpu: ${resources_limits_cpu}
-          memory: ${resources_limits_memory}
+          memory: ${scan_resources_requests_memory}
         requests:
-          cpu: ${resources_requests_cpu}
-          memory: ${resources_requests_memory}
+          cpu: ${scan_resources_requests_cpu}
+          memory: ${scan_resources_requests_memory}
