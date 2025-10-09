@@ -194,7 +194,12 @@ inputs = {
   # Trivy Operator
   # --------------------------------------------------
 
-  trivy_operator_deploy                   = true
+  trivy_operator_deploy                     = true
+  trivy_operator_chart_version              = "0.31.0"
+  trivy_operator_resources_requests_cpu     = "10m"
+  trivy_operator_resources_requests_memory  = "768Mi"
+  trivy_scan_resources_requests_cpu         = "10m"
+  trivy_scan_resources_requests_memory      = "386Mi"
 
   # --------------------------------------------------
   # 1Password Connect
