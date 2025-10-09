@@ -527,6 +527,15 @@ variable "velero_ebs_csi_kms_arn" {
 }
 
 # --------------------------------------------------
+# Subnet Exporter
+# --------------------------------------------------
+variable "subnet_exporter_deploy" {
+  type        = bool
+  default     = true
+  description = "Feature toggle for Subnet Exporter module"
+}
+
+# --------------------------------------------------
 # Inactivity based clean up for sandboxes
 # --------------------------------------------------
 
@@ -731,6 +740,12 @@ variable "external_dns_core_route53_assume_role_arn" {
 # --------------------------------------------------
 # kafka-exporter
 # --------------------------------------------------
+
+variable "kafka_exporter_deploy" {
+  type        = string
+  default     = false
+  description = "Feature toggle for kafka-exporter module"
+}
 
 variable "kafka_exporter_clusters" {
   type        = map(any)
