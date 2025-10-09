@@ -925,22 +925,10 @@ variable "trivy_operator_deploy" {
   default     = false
 }
 
-variable "trivy_operator_deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "trivy-operator"
-}
-
 variable "trivy_operator_chart_version" {
   type        = string
   description = "Trivy Operator helm chart version"
   default     = ""
-}
-
-variable "trivy_operator_namespace" {
-  type        = string
-  description = "The namespace to deploy Trivy Operator in"
-  default     = "trivy-system"
 }
 
 variable "trivy_operator_resources_requests_cpu" {
@@ -951,20 +939,20 @@ variable "trivy_operator_resources_requests_cpu" {
 
 variable "trivy_operator_resources_requests_memory" {
   type        = string
-  default     = "128Mi"
+  default     = "1Gi"
   description = "Memory resources requests size"
 }
 
-variable "trivy_operator_resources_limits_cpu" {
+variable "trivy_scan_resources_requests_cpu" {
   type        = string
-  default     = "500m"
-  description = "CPU resources limits size"
+  default     = "100m"
+  description = "CPU resources request size"
 }
 
-variable "trivy_operator_resources_limits_memory" {
+variable "trivy_scan_resources_requests_memory" {
   type        = string
-  default     = "1024Mi"
-  description = "Memory resources limits size"
+  default     = "512Mi"
+  description = "Memory resources requests size"
 }
 
 # --------------------------------------------------
