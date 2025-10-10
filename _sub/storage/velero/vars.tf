@@ -236,3 +236,15 @@ variable "cron_schedule_offsite_ttl" {
   default     = "8640h"
   description = "Time to live for the scheduled offsite backup."
 }
+
+variable "enable_azure_storage_external_secret" {
+  type        = bool
+  default     = true
+  description = "Enable creating an ExternalSecret for Azure credentials"
+}
+
+variable "velero_ssm_role_arn" {
+  type        = string
+  default = ""
+  description = "The IAM role for the Velero service account to assume for accessing AWS SSM Parameter Store"
+}

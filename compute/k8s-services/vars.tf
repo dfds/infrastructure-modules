@@ -756,6 +756,12 @@ variable "velero_cron_schedule_offsite_ttl" {
   description = "Time to live for the scheduled offsite backup."
 }
 
+variable "velero_ssm_role_arn" {
+  type        = string
+  default     = ""
+  description = "The ARN of the IAM role for the SSM secrets."
+}
+
 
 # --------------------------------------------------
 # Subnet Exporter

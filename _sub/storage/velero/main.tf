@@ -29,6 +29,7 @@ resource "github_repository_file" "velero_flux_helm_init" {
     gitops_apps_repo_url    = var.gitops_apps_repo_url
     deploy_name             = var.deploy_name
     gitops_apps_repo_branch = var.gitops_apps_repo_branch
+    enable_azure_storage_external_secret = var.enable_azure_storage_external_secret
   })
   overwrite_on_create = var.overwrite_on_create
 }
@@ -66,6 +67,36 @@ resource "github_repository_file" "velero_flux_helm_patch_yaml" {
     cron_schedule_offsite_ttl           = var.cron_schedule_offsite_ttl
   })
   overwrite_on_create = var.overwrite_on_create
+}
+
+resource "github_repository_file" "velero_flux_helm_secret_store" {
+  count      = var.enable_azure_storage_external_secret ? 1 : 0
+  repository = var.repo_name
+  branch     = data.github_branch.flux_branch.branch
+  file       = "${local.helm_repo_path}/secret-store.yaml"
+  content = templatefile("${path.module}/values/secret-store.yaml", {})
+  overwrite_on_create = var.overwrite_on_create
+}
+
+resource "github_repository_file" "velero_flux_helm_external_secret" {
+  count      = var.enable_azure_storage_external_secret ? 1 : 0
+  repository = var.repo_name
+  branch     = data.github_branch.flux_branch.branch
+  file       = "${local.helm_repo_path}/external-secret.yaml"
+  content = templatefile("${path.module}/values/external-secret.yaml", {})
+  overwrite_on_create = var.overwrite_on_create
+}
+
+resource "github_repository_file" "velero_flux_helm_service_account" {
+  count      = var.enable_azure_storage_external_secret ? 1 : 0
+  repository = var.repo_name
+  branch     = data.github_branch.flux_branch.branch
+  file       = "${local.helm_repo_path}/service-account.yaml"
+  content = templatefile("${path.module}/values/service-account.yaml", {
+    velero_ssm_role_arn = var.velero_ssm_role_arn
+  })
+  overwrite_on_create = var.overwrite_on_create
+  
 }
 
 
