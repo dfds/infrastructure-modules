@@ -16,16 +16,6 @@ variable "tags" {
   default     = {}
 }
 
-# Optional
-# --------------------------------------------------
-
-variable "ssm_param_createdby" {
-  type        = string
-  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
-  default     = null
-}
-
-
 # --------------------------------------------------
 # EKS
 # --------------------------------------------------
@@ -283,20 +273,12 @@ variable "docker_hub_username" {
   type        = string
   description = "Docker Hub username for pulling images"
   sensitive   = true
-  default     = ""
 }
 
 variable "docker_hub_password" {
   type        = string
   description = "Docker Hub password for pulling images"
   sensitive   = true
-  default     = ""
-}
-
-variable "essentials_url" {
-  type        = string
-  description = "HTTP server that provides essentials"
-  default     = ""
 }
 
 # --------------------------------------------------

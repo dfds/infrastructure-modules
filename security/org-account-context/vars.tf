@@ -117,15 +117,13 @@ variable "parent_id" {
   description = "The ID of the parent AWS Organization OU."
 }
 
-variable "oidc_provider_url" {
-  type        = string
-  description = "The IAM OpenID Connect Provider url from the EKS production account"
-}
-
-variable "oidc_provider_tag" {
-  type        = string
-  description = "Used for tagging the IAM OpenID Connect Provider for the capability account"
-  default     = ""
+variable "oidc_provider" {
+  type = map(object({
+    cluster_oidc_url = string
+    cluster_name     = string
+    account_id       = string
+  }))
+  description = "IAM OIDC Providers for the capability account to trust EKS clusters service accounts"
 }
 
 variable "harden" {
@@ -232,7 +230,6 @@ variable "aws_backup_vault_name_new" {
   default     = null
 }
 
-
 variable "aws_backup_plans" {
   type = list(object({
     plan_name = string
@@ -301,12 +298,6 @@ variable "tags" {
   type        = map(string)
   description = "A map of tags to apply to all the resources deployed by the module"
   default     = {}
-}
-
-
-variable "ssm_param_createdby" {
-  type        = string
-  description = "The value that will be used for the createdBy key when tagging any SSM parameters"
 }
 
 # VPC Peering

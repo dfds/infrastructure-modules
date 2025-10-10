@@ -40,15 +40,10 @@ inputs = {
 
   traefik_alb_auth_deploy = true # triggers Azure App registration
   traefik_alb_anon_deploy = true
-  # traefik_alb_auth_core_alias = ["qa-alias1.dfds.cloud", "qa-alias2.dfds.cloud"]
-  traefik_alb_auth_core_alias = []
-
 
   # --------------------------------------------------
   # Traefik v2
   # --------------------------------------------------
-
-  traefikv2_test_alb_deploy = true
 
   # Blue variant
   traefik_blue_variant_deploy             = true
@@ -70,14 +65,11 @@ inputs = {
   ]
   traefik_green_variant_weight = 0
 
-
-
   # --------------------------------------------------
   # Blaster
   # --------------------------------------------------
 
   blaster_deploy           = true
-  blaster_configmap_bucket = ""
 
   # --------------------------------------------------
   # Cloudwatch alarms and alarm notifier (Slack)
@@ -92,41 +84,22 @@ inputs = {
   # Flux CD
   # --------------------------------------------------
 
-  fluxcd_version                    = "v2.6.1"
-
-  fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
-  fluxcd_bootstrap_repo_branch      = "main"
-  fluxcd_bootstrap_repo_owner       = "dfds"
-
-  fluxcd_apps_repo_name             = "platform-apps"
   fluxcd_apps_repo_branch           = "qa"
-  fluxcd_apps_repo_owner            = "dfds"
+  fluxcd_bootstrap_repo_branch      = "main"
+  fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
+  fluxcd_version                    = "v2.6.4"
 
-
-  # --------------------------------------------------
-  # Monitoring
-  # --------------------------------------------------
-
-  monitoring_tolerations = [
+  fluxcd_tenants = [
     {
-      key      = "observability.dfds",
-      operator = "Exists",
-      effect   = "NoSchedule",
+      namespace = "flux-tenant-test"
+      repositories = [
+        {
+          url = "https://github.com/dfds/flux-tenant-test"
+          branch = "main"
+        }
+      ]
     }
   ]
-  monitoring_affinity = [
-    {
-      key      = "dedicated",
-      operator = "In",
-      values   = ["observability"],
-    }
-  ]
-
-  # --------------------------------------------------
-  # Goldpinger
-  # --------------------------------------------------
-
-  goldpinger_deploy = true
 
   # --------------------------------------------------
   # Atlantis
@@ -134,7 +107,7 @@ inputs = {
 
   atlantis_deploy       = true
   atlantis_ingress      = "atlantis.qa.qa.dfds.cloud"
-  atlantis_data_storage = "1Gi"
+  atlantis_data_storage = "5Gi"
 
   atlantis_resources_requests_cpu    = "10m"
   atlantis_resources_limits_cpu      = "10m"
@@ -152,7 +125,6 @@ inputs = {
   # Blackbox Exporter
   # --------------------------------------------------
 
-  blackbox_exporter_deploy = "true"
   blackbox_exporter_monitoring_targets = [
     {
       "name"   = "example"
@@ -160,44 +132,6 @@ inputs = {
       "module" = "http_2xx"
     }
   ]
-
-  # --------------------------------------------------
-  # Helm Exporter
-  # --------------------------------------------------
-
-  helm_exporter_deploy             = "true"
-  helm_exporter_target_namespaces  = "flux-system,monitoring,traefik-blue-variant"
-  helm_exporter_target_charts = [
-    {
-      registry = {
-        url = "https://helm.traefik.io/traefik/index.yaml"
-      }
-      "charts" = [
-        "traefik"
-      ]
-    },
-    {
-      registry = {
-        url = "https://kubernetes-sigs.github.io/metrics-server/index.yaml"
-      }
-      "charts" = [
-        "metrics-server"
-      ]
-    },
-    {
-      registry = {
-        url = "https://shanestarcher.com/helm-charts/index.yaml"
-      }
-      "charts" = [
-        "helm-exporter"
-      ]
-    }
-  ]
-  # --------------------------------------------------
-  # Podinfo
-  # --------------------------------------------------
-
-  podinfo_deploy = true
 
   # --------------------------------------------------
   # Velero - requires that s3-bucket-velero module
@@ -220,9 +154,7 @@ inputs = {
   grafana_agent_chart_version = "1.4.4"
   grafana_agent_resource_memory_request = "4Gi"
   grafana_agent_resource_memory_limit   = "4Gi"
-  grafana_agent_storage_enabled = true
   grafana_agent_storage_size = "10Gi"
-  grafana_agent_namespace = "grafana"
 
   observability_tolerations = [
     {
@@ -243,15 +175,7 @@ inputs = {
   # External Secrets
   # --------------------------------------------------
 
-  external_secrets_deploy = true
   external_secrets_helm_chart_version = "0.19.2"
-
-  # --------------------------------------------------
-  # External Secrets with SSM
-  # --------------------------------------------------
-
-  external_secrets_ssm_deploy = true
-  external_secrets_ssm_allowed_namespaces = ["atlantis", "flux-system"]
 
   # --------------------------------------------------
   # Github ARC SS Controller
@@ -264,43 +188,29 @@ inputs = {
   # Apache Druid Operator
   # --------------------------------------------------
 
-  druid_operator_deploy                   = true
   druid_operator_chart_version            = "0.3.7"
-  druid_operator_resources_limits_cpu     = "500m"
-  druid_operator_resources_limits_memory  = "128Mi"
 
   # --------------------------------------------------
   # Trivy Operator
   # --------------------------------------------------
 
-  trivy_operator_deploy                   = true
-
-  tenants = [
-    {
-      namespace = "flux-tenant-test"
-      repositories = [
-        {
-          url = "https://github.com/dfds/flux-tenant-test"
-          branch = "main"
-        }
-      ]
-    }
-  ]
-
-  fluxcd_tenants = [
-    {
-      namespace = "flux-tenant-test"
-      repositories = [
-        {
-          url = "https://github.com/dfds/flux-tenant-test"
-          branch = "main"
-        }
-      ]
-    }
-  ]
+  trivy_operator_deploy                     = true
+  trivy_operator_chart_version              = "0.31.0"
+  trivy_operator_resources_requests_cpu     = "10m"
+  trivy_operator_resources_requests_memory  = "768Mi"
+  trivy_scan_resources_requests_cpu         = "10m"
+  trivy_scan_resources_requests_memory      = "386Mi"
 
   # --------------------------------------------------
   # 1Password Connect
   # --------------------------------------------------
   onepassword-connect_deploy = true
+
+  # --------------------------------------------------
+  # External DNS
+  # --------------------------------------------------
+  external_dns_deploy                     = true
+  external_dns_helm_chart_version         = "1.19.0"
+  external_dns_domain_filters             = ["test.qa.dfds"]
+  external_dns_is_debug_mode              = true
 }

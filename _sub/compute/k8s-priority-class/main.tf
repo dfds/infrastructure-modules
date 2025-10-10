@@ -1,24 +1,9 @@
 locals {
   priority_classes_v0 = [
     {
-      name        = "service-critical"
-      description = "DEPRECATED use cluster-infrastructure or node-infrastructure instead! Used for service critical pods, e.g. ingress controllers."
-      priority    = 1000000
-    },
-    {
-      name        = "cluster-monitoring"
-      description = "DEPRECATED use cluster-observability or node-observability instead! Used for pods responsible for cluster-wide monitoring, alerting, and logging."
-      priority    = 100000
-    },
-    {
       name        = "selfservice"
       description = "DEPRECATED! Used for pods necessary to support the DevEx self-service system."
       priority    = 10000
-    },
-    {
-      name        = "high"
-      description = "DEPRECATED! Used for production-grade workloads."
-      priority    = 1000
     },
     {
       name        = "low" # this is the default priority class

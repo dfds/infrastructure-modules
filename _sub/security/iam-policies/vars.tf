@@ -10,7 +10,6 @@ variable "replace_token" {
   default     = "" #tfsec:ignore:general-secrets-sensitive-in-variable
 }
 
-
 variable "core_account_role_arns" {
   description = "List of core account (e.g. Core, QA, Master, Security) root ARNs"
   type        = list(string)

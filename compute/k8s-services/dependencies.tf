@@ -50,15 +50,6 @@ locals {
 }
 
 # --------------------------------------------------
-# Monitoring namespace name
-# --------------------------------------------------
-
-locals {
-  monitoring_namespace_name = "monitoring"
-}
-
-
-# --------------------------------------------------
 # Get Route 53 zones and ids
 # --------------------------------------------------
 
@@ -163,19 +154,19 @@ POLICY
 locals {
   blackbox_exporter_monitoring_atlantis = var.atlantis_deploy ? [{
     "name"   = "atlantis"
-    "url"    = "http://atlantis.${var.atlantis_namespace}/healthz"
+    "url"    = "http://atlantis.atlantis/healthz"
     "module" = "http_2xx"
   }] : []
 
   blackbox_exporter_monitoring_traefik_blue_variant = var.traefik_blue_variant_deploy ? [{
     "name"   = "traefik-blue-variant"
-    "url"    = "http://traefik-blue-variant.traefik-blue-variant:${var.blackbox_exporter_monitoring_traefik_blue_variant_port}/ping"
+    "url"    = "http://traefik-blue-variant.traefik-blue-variant:8080/ping"
     "module" = "http_2xx"
   }] : []
 
   blackbox_exporter_monitoring_traefik_green_variant = var.traefik_green_variant_deploy ? [{
     "name"   = "traefik-green-variant"
-    "url"    = "http://traefik-green-variant.traefik-green-variant:${var.blackbox_exporter_monitoring_traefik_green_variant_port}/ping"
+    "url"    = "http://traefik-green-variant.traefik-green-variant:8080/ping"
     "module" = "http_2xx"
   }] : []
 
@@ -204,4 +195,104 @@ locals {
   enable_inactivity_cleanup = (
     var.enable_inactivity_cleanup && data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? true : false
   )
+}
+
+
+# --------------------------------------------------
+# IAM role for Route53 zone delegation
+# --------------------------------------------------
+
+data "aws_caller_identity" "current_account" {
+
+}
+
+locals {
+  external_dns_role_name                                  = "eks-${var.eks_cluster_name}-external-dns"
+  external_dns_namespace_name                             = "external-dns"
+  external_dns_serviceaccount_name                        = "external-dns"
+  external_dns_role_assume_policy_name                    = "assume-role-external-dns"
+  external_dns_role_name_cross_account                    = "${var.eks_cluster_name}-external-dns-route53-access"
+  external_dns_role_name_cross_account_assume_policy_name = "allowExternalDNSUpdates"
+}
+
+data "aws_iam_policy_document" "external_dns_role_assume_policy" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    resources = [
+      var.external_dns_core_route53_assume_role_arn != "" ?
+      var.external_dns_core_route53_assume_role_arn :
+      "arn:aws:iam::${data.aws_caller_identity.current_account.account_id}:role/${local.external_dns_role_name_cross_account}"
+    ]
+  }
+}
+
+# if ingress is annotated with  external-dns.alpha.kubernetes.io/hostname: <loadbalancer dns name>
+# then it will create a record set in route53 with this name pointing to the loadbalancer otherwise there will be no record created
+# ---------------------------------------------------
+data "aws_iam_policy_document" "external_dns_trust" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type = "Federated"
+
+      identifiers = [
+        "arn:aws:iam::${data.aws_caller_identity.workload_account.account_id}:oidc-provider/${local.oidc_issuer}",
+      ]
+    }
+
+    condition {
+      test     = "StringEquals"
+      values   = ["system:serviceaccount:${local.external_dns_namespace_name}:${local.external_dns_serviceaccount_name}"]
+      variable = "${local.oidc_issuer}:sub"
+    }
+
+    condition {
+      test     = "StringEquals"
+      values   = ["sts.amazonaws.com"]
+      variable = "${local.oidc_issuer}:aud"
+    }
+
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+  }
+}
+
+data "aws_iam_policy_document" "external_dns_core_route53_access_policy" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "route53:ListHostedZones",
+      "route53:ListResourceRecordSets",
+      "route53:ListTagsForResources",
+      "route53:ChangeResourceRecordSets"
+    ]
+
+    resources = [
+      "*"
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "external_dns_core_route53_access_policy_trust" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type = "AWS"
+      identifiers = [
+        "arn:aws:iam::${data.aws_caller_identity.workload_account.account_id}:root"
+      ]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+data "aws_caller_identity" "workload_account" {
 }
