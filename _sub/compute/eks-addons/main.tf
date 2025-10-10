@@ -270,3 +270,12 @@ resource "kubernetes_storage_class" "csi-efs" {
     aws_eks_addon.aws-efs-csi-driver
   ]
 }
+
+# Pod identity
+resource "aws_eks_addon" "pod_identity" {
+  cluster_name                = var.cluster_name
+  addon_name                  = "eks-pod-identity-agent"
+  addon_version               = local.podidentity_version
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
+}
