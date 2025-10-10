@@ -7,7 +7,7 @@ resource "github_repository_file" "kafka-exporter_helm" {
   branch              = local.repo_branch
   file                = "${local.cluster_repo_path}/${local.app_install_name}-helm.yaml"
   content             = local.app_helm_path
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "kafka-exporter_helm_install" {
@@ -16,7 +16,7 @@ resource "github_repository_file" "kafka-exporter_helm_install" {
   branch              = local.repo_branch
   file                = "${local.helm_repo_path}/kustomization.yaml"
   content             = local.helm_install
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "kafka-exporter_helm_manifest" {
@@ -25,5 +25,5 @@ resource "github_repository_file" "kafka-exporter_helm_manifest" {
   branch              = local.repo_branch
   file                = "${local.helm_repo_path}/manifest-${each.value.original.id}.yaml"
   content             = each.value.manifest
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }

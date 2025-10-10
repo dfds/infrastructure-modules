@@ -36,10 +36,6 @@ locals {
   node_ami = var.ami_id != "" ? var.ami_id : local.latest_ami
 }
 
-data "aws_eks_cluster" "this" {
-  name = var.cluster_name
-}
-
 locals {
   ami_using_containerd_v2 = (tonumber(split(".", var.cluster_version)[0]) == 1 && tonumber(split(".", var.cluster_version)[1]) >= 34) || tonumber(split(".", var.cluster_version)[0]) >= 2 # versions above 1.33 uses containerd v2, which uses different syntaxt for image registry auth
 }

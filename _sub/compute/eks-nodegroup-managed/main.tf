@@ -13,7 +13,7 @@ resource "aws_launch_template" "eks" {
     cluster_name : var.cluster_name,
     worker_inotify_max_user_watches : var.worker_inotify_max_user_watches,
     vpc_cni_prefix_delegation_enabled : var.vpc_cni_prefix_delegation_enabled,
-    cidr : data.aws_eks_cluster.this.kubernetes_network_config[0].service_ipv4_cidr
+    cidr : var.eks_service_cidr,
     max_pods : var.max_pods,
     kube_cpu : var.kube_reserved_cpu,
     kube_memory : var.kube_reserved_memory,

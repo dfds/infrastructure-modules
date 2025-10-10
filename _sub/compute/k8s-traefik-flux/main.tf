@@ -12,7 +12,7 @@ resource "github_repository_file" "traefik_helm" {
     helm_repo_path   = local.helm_repo_path
     prune            = var.prune
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "traefik_helm_install" {
@@ -25,7 +25,7 @@ resource "github_repository_file" "traefik_helm_install" {
     gitops_apps_repo_branch = var.gitops_apps_repo_branch
     namespace               = var.namespace
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "traefik_helm_patch" {
@@ -42,5 +42,5 @@ resource "github_repository_file" "traefik_helm_patch" {
     replicas               = var.replicas
     dashboard_ingress_host = var.dashboard_ingress_host
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
