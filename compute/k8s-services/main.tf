@@ -862,22 +862,20 @@ module "druid_operator" {
 # --------------------------------------------------
 
 module "trivy_operator" {
-  source                    = "../../_sub/compute/trivy-operator"
-  count                     = var.trivy_operator_deploy ? 1 : 0
-  cluster_name              = var.eks_cluster_name
-  deploy_name               = var.trivy_operator_deploy_name
-  namespace                 = var.trivy_operator_namespace
-  chart_version             = var.trivy_operator_chart_version
-  resources_requests_cpu    = var.trivy_operator_resources_requests_cpu
-  resources_requests_memory = var.trivy_operator_resources_requests_memory
-  resources_limits_cpu      = var.trivy_operator_resources_limits_cpu
-  resources_limits_memory   = var.trivy_operator_resources_limits_memory
-  github_token              = var.fluxcd_bootstrap_repo_owner_token
-  repo_owner                = var.fluxcd_bootstrap_repo_owner
-  repo_name                 = var.fluxcd_bootstrap_repo_name
-  repo_branch               = var.fluxcd_bootstrap_repo_branch
-  gitops_apps_repo_url      = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch   = var.fluxcd_apps_repo_branch
+  source                         = "../../_sub/compute/trivy-operator"
+  count                          = var.trivy_operator_deploy ? 1 : 0
+  cluster_name                   = var.eks_cluster_name
+  chart_version                  = var.trivy_operator_chart_version
+  resources_requests_cpu         = var.trivy_operator_resources_requests_cpu
+  resources_requests_memory      = var.trivy_operator_resources_requests_memory
+  scan_resources_requests_cpu    = var.trivy_scan_resources_requests_cpu
+  scan_resources_requests_memory = var.trivy_scan_resources_requests_memory
+  github_token                   = var.fluxcd_bootstrap_repo_owner_token
+  repo_owner                     = var.fluxcd_bootstrap_repo_owner
+  repo_name                      = var.fluxcd_bootstrap_repo_name
+  repo_branch                    = var.fluxcd_bootstrap_repo_branch
+  gitops_apps_repo_url           = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch        = var.fluxcd_apps_repo_branch
 
   providers = {
     github = github.fluxcd
