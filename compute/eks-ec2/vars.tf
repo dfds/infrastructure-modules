@@ -156,8 +156,9 @@ variable "eks_addon_awsefscsidriver_version_override" {
 }
 
 variable "eks_addon_podidentity_version_override" {
-  type = string
-  default = ""
+  type        = string
+  description = "Option to override the version of the eks-pod-identity-agent add-on"
+  default     = ""
 }
 
 variable "eks_addon_most_recent" {
