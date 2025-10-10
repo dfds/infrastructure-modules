@@ -29,3 +29,7 @@ output "eks_role_arn" {
 output "eks_openid_connect_provider_url" {
   value = aws_eks_cluster.eks.identity[0].oidc[0].issuer
 }
+
+output "eks_service_cidr" {
+  value = aws_eks_cluster.eks.kubernetes_network_config[0].service_ipv4_cidr
+}
