@@ -40,9 +40,6 @@ inputs = {
 
   traefik_alb_auth_deploy = true # triggers Azure App registration
   traefik_alb_anon_deploy = true
-  # traefik_alb_auth_core_alias = ["qa-alias1.dfds.cloud", "qa-alias2.dfds.cloud"]
-  traefik_alb_auth_core_alias = []
-
 
   # --------------------------------------------------
   # Traefik v2
@@ -68,8 +65,6 @@ inputs = {
   ]
   traefik_green_variant_weight = 0
 
-
-
   # --------------------------------------------------
   # Blaster
   # --------------------------------------------------
@@ -89,15 +84,10 @@ inputs = {
   # Flux CD
   # --------------------------------------------------
 
-  fluxcd_version                    = "v2.6.4"
-
-  fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
-  fluxcd_bootstrap_repo_branch      = "main"
-  fluxcd_bootstrap_repo_owner       = "dfds"
-
-  fluxcd_apps_repo_name             = "platform-apps"
   fluxcd_apps_repo_branch           = "qa"
-  fluxcd_apps_repo_owner            = "dfds"
+  fluxcd_bootstrap_repo_branch      = "main"
+  fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
+  fluxcd_version                    = "v2.6.4"
 
   fluxcd_tenants = [
     {
@@ -112,37 +102,12 @@ inputs = {
   ]
 
   # --------------------------------------------------
-  # Monitoring
-  # --------------------------------------------------
-
-  monitoring_tolerations = [
-    {
-      key      = "observability.dfds",
-      operator = "Exists",
-      effect   = "NoSchedule",
-    }
-  ]
-  monitoring_affinity = [
-    {
-      key      = "dedicated",
-      operator = "In",
-      values   = ["observability"],
-    }
-  ]
-
-  # --------------------------------------------------
-  # Goldpinger
-  # --------------------------------------------------
-
-  goldpinger_deploy = true
-
-  # --------------------------------------------------
   # Atlantis
   # --------------------------------------------------
 
   atlantis_deploy       = true
   atlantis_ingress      = "atlantis.qa.qa.dfds.cloud"
-  atlantis_data_storage = "1Gi"
+  atlantis_data_storage = "5Gi"
 
   atlantis_resources_requests_cpu    = "10m"
   atlantis_resources_limits_cpu      = "10m"
@@ -160,7 +125,6 @@ inputs = {
   # Blackbox Exporter
   # --------------------------------------------------
 
-  blackbox_exporter_deploy = "true"
   blackbox_exporter_monitoring_targets = [
     {
       "name"   = "example"
@@ -190,9 +154,7 @@ inputs = {
   grafana_agent_chart_version = "1.4.4"
   grafana_agent_resource_memory_request = "4Gi"
   grafana_agent_resource_memory_limit   = "4Gi"
-  grafana_agent_storage_enabled = true
   grafana_agent_storage_size = "10Gi"
-  grafana_agent_namespace = "grafana"
 
   observability_tolerations = [
     {
@@ -213,15 +175,7 @@ inputs = {
   # External Secrets
   # --------------------------------------------------
 
-  external_secrets_deploy = true
   external_secrets_helm_chart_version = "0.19.2"
-
-  # --------------------------------------------------
-  # External Secrets with SSM
-  # --------------------------------------------------
-
-  external_secrets_ssm_deploy = true
-  external_secrets_ssm_allowed_namespaces = ["atlantis", "flux-system"]
 
   # --------------------------------------------------
   # Github ARC SS Controller
@@ -240,7 +194,12 @@ inputs = {
   # Trivy Operator
   # --------------------------------------------------
 
-  trivy_operator_deploy                   = true
+  trivy_operator_deploy                     = true
+  trivy_operator_chart_version              = "0.31.0"
+  trivy_operator_resources_requests_cpu     = "10m"
+  trivy_operator_resources_requests_memory  = "768Mi"
+  trivy_scan_resources_requests_cpu         = "10m"
+  trivy_scan_resources_requests_memory      = "386Mi"
 
   # --------------------------------------------------
   # 1Password Connect
