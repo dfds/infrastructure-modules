@@ -12,7 +12,7 @@ resource "github_repository_file" "extdns_helm" {
     helm_repo_path   = local.helm_repo_path
     prune            = var.prune
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "extdns_helm_install" {
@@ -24,7 +24,7 @@ resource "github_repository_file" "extdns_helm_install" {
     deploy_name             = var.deploy_name
     gitops_apps_repo_branch = var.gitops_apps_repo_branch
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "extdns_helm_patch" {
@@ -44,5 +44,5 @@ resource "github_repository_file" "extdns_helm_patch" {
     is_debug_mode      = var.is_debug_mode
     assume_role_arn    = var.assume_role_arn
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }

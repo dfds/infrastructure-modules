@@ -35,7 +35,3 @@ locals {
   # Pins AMI to 'ami_id' if it is set, otherwise, sets to the latest AMI.
   node_ami = var.ami_id != "" ? var.ami_id : local.latest_ami
 }
-
-data "aws_eks_cluster" "this" {
-  name = var.cluster_name
-}

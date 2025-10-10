@@ -7,7 +7,7 @@ resource "github_repository_file" "onepassword-connect_helm" {
   branch              = local.repo_branch
   file                = "${local.cluster_repo_path}/${local.app_install_name}-helm.yaml"
   content             = local.app_helm_path
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "onepassword-connect_helm_install" {
@@ -15,20 +15,12 @@ resource "github_repository_file" "onepassword-connect_helm_install" {
   branch              = local.repo_branch
   file                = "${local.helm_repo_path}/kustomization.yaml"
   content             = local.helm_install
-  overwrite_on_create = var.overwrite_on_create
-}
-
-resource "github_repository_file" "onepassword-connect_helm_patch" {
-  repository          = var.repo_name
-  branch              = local.repo_branch
-  file                = "${local.helm_repo_path}/patch.yaml"
-  content             = local.helm_patch
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "aws_ssm_parameter" "onepassword_credentials_json" {
   #checkov:skip=CKV_AWS_337: Ensure SSM parameters are using KMS CMK
-  name  = "/${var.deploy_name}/1password-credentials.json"
+  name  = "/${local.deploy_name}/1password-credentials.json"
   type  = "SecureString"
   value = var.credentials_json
 }

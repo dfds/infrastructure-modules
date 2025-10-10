@@ -89,6 +89,11 @@ variable "eks_certificate_authority" {
   type = string
 }
 
+variable "eks_service_cidr" {
+  type        = string
+  description = "The CIDR block IPv4 used by the cluster to assign Kubernetes service IP addresses. This is derived from the cluster itself."
+}
+
 variable "worker_inotify_max_user_watches" {
   type = number
 }

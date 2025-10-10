@@ -92,7 +92,7 @@ variable "traefik_alb_anon_deploy" {
 }
 
 variable "traefik_alb_anon_core_alias" {
-  description = "A list of aliases/alternative names in the *parent* domain, the certficate should also be valid for. E.g. 'prettyurl.company.tld'"
+  description = "A list of aliases/alternative names in the *parent* domain, the certificate should also be valid for. E.g. 'prettyurl.company.tld'"
   type        = list(string)
   default     = []
 }
@@ -103,14 +103,9 @@ variable "traefik_alb_auth_deploy" {
 }
 
 variable "traefik_alb_auth_core_alias" {
-  description = "A list of aliases/alternative names in the *parent* domain, the certficate should also be valid for. E.g. 'prettyurl.company.tld'"
+  description = "A list of aliases/alternative names in the *parent* domain, the certificate should also be valid for. E.g. 'prettyurl.company.tld'"
   type        = list(string)
   default     = []
-}
-
-variable "traefik_nlb_deploy" {
-  type    = bool
-  default = false
 }
 
 variable "alb_az_app_registration_identifier_urls" {
@@ -132,11 +127,6 @@ variable "alb_az_app_registration_additional_owner_ids" {
 variable "blaster_deploy" {
   type    = bool
   default = false
-}
-
-variable "blaster_namespace_labels" {
-  type    = map(any)
-  default = { "pod-security.kubernetes.io/enforce" = "baseline" }
 }
 
 # --------------------------------------------------
@@ -169,56 +159,8 @@ variable "cloudwatch_alarm_log_anomaly_deploy" {
 }
 
 # --------------------------------------------------
-# Monitoring namespace
-# --------------------------------------------------
-
-variable "monitoring_namespace_deploy" {
-  type        = bool
-  description = "Deploy monitoring namespace"
-  default     = true
-}
-
-variable "monitoring_namespace_labels" {
-  type    = map(any)
-  default = { "pod-security.kubernetes.io/audit" = "baseline", "pod-security.kubernetes.io/enforce" = "privileged" }
-}
-
-variable "monitoring_tolerations" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    value    = optional(string),
-    effect   = string,
-  }))
-  description = "Tolerations to apply to the cluster-wide monitoring workloads."
-  default     = []
-}
-
-variable "monitoring_affinity" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    values   = list(string)
-  }))
-  description = "Affinities to apply to the cluster-wide monitoring workloads."
-  default     = []
-}
-
-# --------------------------------------------------
 # Goldpinger
 # --------------------------------------------------
-
-variable "goldpinger_deploy" {
-  type        = bool
-  description = "Deploy goldpinger helm chart switch"
-  default     = false
-}
-
-variable "goldpinger_namespace" {
-  type        = string
-  description = "The namespace to deploy goldpinger in"
-  default     = "goldpinger"
-}
 
 variable "goldpinger_chart_version" {
   type        = string
@@ -230,26 +172,18 @@ variable "goldpinger_chart_version" {
 # Metrics-Server
 # --------------------------------------------------
 
-variable "metrics_server_deploy" {
-  type        = bool
-  description = "Deploy metrics-server helm chart switch."
-  default     = true
-}
-
 variable "metrics_server_helm_chart_version" {
   type        = string
   description = "The helm chart version"
   default     = ""
 }
 
-
 # --------------------------------------------------
 # Flux CD
 # --------------------------------------------------
 
 variable "fluxcd_version" {
-  type    = string
-  default = null
+  type = string
 }
 
 variable "fluxcd_prune" {
@@ -259,8 +193,7 @@ variable "fluxcd_prune" {
 }
 
 variable "fluxcd_bootstrap_repo_name" {
-  type    = string
-  default = ""
+  type = string
 }
 
 variable "fluxcd_bootstrap_repo_branch" {
@@ -270,18 +203,12 @@ variable "fluxcd_bootstrap_repo_branch" {
 
 variable "fluxcd_bootstrap_repo_owner" {
   type    = string
-  default = ""
+  default = "dfds"
 }
 
 variable "fluxcd_bootstrap_repo_owner_token" {
-  type    = string
-  default = "" #tfsec:ignore:general-secrets-sensitive-in-variable
-}
-
-variable "fluxcd_bootstrap_overwrite_on_create" {
-  type        = bool
-  default     = true
-  description = "Enable overwriting existing files"
+  type      = string
+  sensitive = true
 }
 
 variable "fluxcd_tenants" {
@@ -315,7 +242,7 @@ variable "fluxcd_apps_git_provider_url" {
 
 variable "fluxcd_apps_repo_name" {
   type        = string
-  default     = ""
+  default     = "platform-apps"
   description = "The repo name for your GitOps manifests"
 }
 
@@ -327,7 +254,7 @@ variable "fluxcd_apps_repo_branch" {
 
 variable "fluxcd_apps_repo_owner" {
   type        = string
-  default     = "main"
+  default     = "dfds"
   description = "The repo owner for your GitOps manifests"
 }
 
@@ -350,14 +277,14 @@ variable "atlantis_github_token" {
 
 variable "atlantis_github_owner" {
   type        = string
-  default     = null
-  description = "Github owner(username). Conflicts with github_organization. Leaving unset will use GITHUB_OWNER environment variable if exists"
+  default     = "dfds"
+  description = "Github owner(username). Leaving unset will use GITHUB_OWNER environment variable if exists"
 }
 
 variable "atlantis_github_username" {
   type        = string
   default     = null
-  description = "Github username of the account that will post Atlantis comments on PR's"
+  description = "Github username of the account that owns the token. Leaving unset will use GITHUB_USERNAME environment variable if exists"
 }
 
 variable "atlantis_github_repositories" {
@@ -366,34 +293,10 @@ variable "atlantis_github_repositories" {
   default     = []
 }
 
-variable "atlantis_webhook_events" {
-  description = "A list of events that should trigger the webhook"
-  default     = ["issue_comment", "pull_request", "pull_request_review", "push"]
-  type        = list(string)
-}
-
-variable "atlantis_namespace" {
-  type        = string
-  description = "Namespace for Atlantis deployment"
-  default     = "atlantis"
-}
-
 variable "atlantis_chart_version" {
   type        = string
   description = "Version of the helm chart to deploy"
   default     = ""
-}
-
-variable "atlantis_ingress" {
-  type        = string
-  description = "URL for Atlantis Ingress"
-  default     = null
-}
-
-variable "atlantis_image" {
-  type        = string
-  description = "Name of the image to use for Atlantis"
-  default     = "dfdsdk/atlantis-prime-pipeline"
 }
 
 variable "atlantis_image_tag" {
@@ -402,22 +305,11 @@ variable "atlantis_image_tag" {
   default     = "latest"
 }
 
-variable "atlantis_storage_class" {
-  type        = string
-  description = "Storage class to use for persistent volume"
-  default     = "csi-gp3"
-}
-
 variable "atlantis_data_storage" {
   type        = string
   description = "Size of the persistent volume"
   default     = "5Gi"
 }
-
-# --------------------------------------------------
-# Atlantis variables
-# --------------------------------------------------
-# Used as env variables within the Atlantis process.
 
 variable "atlantis_resources_requests_cpu" {
   type        = string
@@ -429,29 +321,6 @@ variable "atlantis_resources_requests_memory" {
   type        = string
   default     = "1536Mi"
   description = "Memory resources requests size"
-}
-
-variable "atlantis_resources_limits_cpu" {
-  type        = string
-  default     = null
-  description = "CPU resources limits size"
-}
-
-variable "atlantis_resources_limits_memory" {
-  type        = string
-  default     = null
-  description = "Memory resources limits size"
-}
-
-# --------------------------------------------------
-# Atlantis
-# --------------------------------------------------
-
-variable "atlantis_add_secret_volumes" {
-  type        = bool
-  default     = false
-  description = "Add secret volumes to the Atlantis deployment"
-
 }
 
 # --------------------------------------------------
@@ -539,12 +408,6 @@ variable "traefik_green_variant_weight" {
 # Blackbox Exporter
 # --------------------------------------------------
 
-variable "blackbox_exporter_deploy" {
-  type        = bool
-  description = "Should the Blackbox Exporter be deployed through Flux?"
-  default     = false
-}
-
 variable "blackbox_exporter_helm_chart_version" {
   type        = string
   description = "Helm Chart version to be used to deploy Traefik"
@@ -555,33 +418,6 @@ variable "blackbox_exporter_monitoring_targets" {
   type        = list(object({ name = string, url = string, module = string }))
   description = "Complex object of what to monitor with Blackbox Exporter"
   default     = []
-}
-
-variable "blackbox_exporter_namespace" {
-  type        = string
-  description = "Namespace for blackbox exporter"
-  default     = "monitoring"
-}
-
-variable "blackbox_exporter_monitoring_traefik_blue_variant_port" {
-  type        = number
-  description = "Port to monitor for the blue variant of Traefik"
-  default     = 8080
-}
-
-variable "blackbox_exporter_monitoring_traefik_green_variant_port" {
-  type        = number
-  description = "Port to monitor for the green variant of Traefik"
-  default     = 8080
-}
-
-# --------------------------------------------------
-# Podinfo through Flux CD
-# --------------------------------------------------
-
-variable "podinfo_deploy" {
-  type    = bool
-  default = false
 }
 
 # --------------------------------------------------
@@ -772,12 +608,6 @@ variable "subnet_exporter_deploy" {
   description = "Feature toggle for Subnet Exporter module"
 }
 
-variable "subnet_exporter_iam_role_name" {
-  type        = string
-  default     = null
-  description = "The IAM role name used for the AWS Subnet Exporter"
-}
-
 # --------------------------------------------------
 # Inactivity based clean up for sandboxes
 # --------------------------------------------------
@@ -859,7 +689,6 @@ variable "grafana_agent_open_cost_enabled" {
   description = "Enable Open Cost or not. Default: false"
 }
 
-
 variable "grafana_agent_resource_memory_limit" {
   type        = string
   default     = "20Gi"
@@ -878,28 +707,10 @@ variable "grafana_agent_replicas" {
   description = "How many replicas to run Grafana Agent with"
 }
 
-variable "grafana_agent_storage_enabled" {
-  type        = bool
-  default     = false
-  description = "Enable persistence for Write Ahead Logs (WAL) in Grafana using Persistent Volume Claims"
-}
-
-variable "grafana_agent_storage_class" {
-  type        = string
-  description = "Storage class for Grafana Persistent Volume"
-  default     = "csi-gp3"
-}
-
 variable "grafana_agent_storage_size" {
   type        = string
   description = "Storage size for Grafana Persistent Volume"
   default     = "5Gi"
-}
-
-variable "grafana_agent_namespace" {
-  type        = string
-  description = "Namespace for hosting monitoring components"
-  default     = "grafana"
 }
 
 variable "observability_tolerations" {
@@ -927,12 +738,6 @@ variable "observability_affinity" {
 # External Secrets
 # --------------------------------------------------
 
-variable "external_secrets_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for External Secrets module"
-}
-
 variable "external_secrets_helm_chart_version" {
   type        = string
   description = "External Secrets helm chart version"
@@ -943,27 +748,15 @@ variable "external_secrets_helm_chart_version" {
 # External Secrets with SSM
 # --------------------------------------------------
 
-variable "external_secrets_ssm_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for External Secrets module"
-}
-
-variable "external_secrets_ssm_iam_role_name" {
-  type        = string
-  description = "The name of the IAM role to assume"
-  default     = "ssm-secrets-for-kubernetes"
-}
-
 variable "external_secrets_ssm_service_account" {
   type        = string
-  default     = "ssm-secrets"
-  description = "The service account to be used by an SecretStore"
+  default     = "*"
+  description = "The service account (or wildcard) to be used by an SecretStore"
 }
 
 variable "external_secrets_ssm_allowed_namespaces" {
   type        = list(string)
-  default     = []
+  default     = ["atlantis", "flux-system"]
   description = "The namespaces that can use IRSA to access external secrets"
 }
 
@@ -1205,22 +998,10 @@ variable "trivy_operator_deploy" {
   default     = false
 }
 
-variable "trivy_operator_deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "trivy-operator"
-}
-
 variable "trivy_operator_chart_version" {
   type        = string
   description = "Trivy Operator helm chart version"
   default     = ""
-}
-
-variable "trivy_operator_namespace" {
-  type        = string
-  description = "The namespace to deploy Trivy Operator in"
-  default     = "trivy-system"
 }
 
 variable "trivy_operator_resources_requests_cpu" {
@@ -1231,20 +1012,20 @@ variable "trivy_operator_resources_requests_cpu" {
 
 variable "trivy_operator_resources_requests_memory" {
   type        = string
-  default     = "128Mi"
+  default     = "1Gi"
   description = "Memory resources requests size"
 }
 
-variable "trivy_operator_resources_limits_cpu" {
+variable "trivy_scan_resources_requests_cpu" {
   type        = string
-  default     = "500m"
-  description = "CPU resources limits size"
+  default     = "100m"
+  description = "CPU resources request size"
 }
 
-variable "trivy_operator_resources_limits_memory" {
+variable "trivy_scan_resources_requests_memory" {
   type        = string
-  default     = "1024Mi"
-  description = "Memory resources limits size"
+  default     = "512Mi"
+  description = "Memory resources requests size"
 }
 
 # --------------------------------------------------

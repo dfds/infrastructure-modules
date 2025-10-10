@@ -18,7 +18,7 @@ resource "github_repository_file" "velero_flux_helm_path" {
     namespace        = var.namespace
     prune            = var.prune
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "velero_flux_helm_init" {
@@ -31,7 +31,7 @@ resource "github_repository_file" "velero_flux_helm_init" {
     gitops_apps_repo_branch = var.gitops_apps_repo_branch
     enable_azure_storage_external_secret = var.enable_azure_storage_external_secret
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "velero_flux_helm_patch_yaml" {
@@ -66,7 +66,7 @@ resource "github_repository_file" "velero_flux_helm_patch_yaml" {
     cron_schedule_offsite               = var.cron_schedule_offsite
     cron_schedule_offsite_ttl           = var.cron_schedule_offsite_ttl
   })
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "velero_flux_helm_secret_store" {
