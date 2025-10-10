@@ -13,9 +13,15 @@ sudo sysctl -p
 DOCKER_HUB_CREDS=$(aws ssm get-parameter --name ${docker_hub_creds} --with-decrypt --query 'Parameter.Value' --output text)
 DOCKER_HUB_USER=$(echo "$${DOCKER_HUB_CREDS}" | jq -r .username)
 DOCKER_HUB_PASSWD=$(echo "$${DOCKER_HUB_CREDS}" | jq -r .password)
+
 cat << EOF >> /etc/containerd/config.toml
+%{ if ami_using_containerd_v2 }
+  [plugins."io.containerd.cri.v1.images".registry.configs]
+    [plugins."io.containerd.cri.v1.images".registry.configs."registry-1.docker.io".auth]
+%{ else }
   [plugins."io.containerd.grpc.v1.cri".registry.configs]
     [plugins."io.containerd.grpc.v1.cri".registry.configs."registry-1.docker.io".auth]
+%{ endif ~}
       username = "$${DOCKER_HUB_USER}"
       password = "$${DOCKER_HUB_PASSWD}"
 EOF
