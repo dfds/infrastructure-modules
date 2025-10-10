@@ -155,6 +155,11 @@ variable "eks_addon_awsefscsidriver_version_override" {
   default = ""
 }
 
+variable "eks_addon_podidentity_version_override" {
+  type = string
+  default = ""
+}
+
 variable "eks_addon_most_recent" {
   type        = bool
   default     = false
