@@ -14,9 +14,10 @@ resource "aws_eks_cluster" "eks" {
   #checkov:skip=CKV_AWS_38: Ensure Amazon EKS public endpoint not accessible to 0.0.0.0/0
   #checkov:skip=CKV_AWS_39: Ensure Amazon EKS public endpoint disabled
   #checkov:skip=CKV_AWS_58: Ensure EKS Cluster has Secrets Encryption Enabled
-  name     = var.cluster_name
-  role_arn = aws_iam_role.eks.arn
-  version  = var.cluster_version
+  name                = var.cluster_name
+  role_arn            = aws_iam_role.eks.arn
+  version             = var.cluster_version
+  deletion_protection = var.deletion_protection
 
   enabled_cluster_log_types = var.log_types
 
