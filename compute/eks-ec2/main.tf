@@ -485,3 +485,29 @@ module "eks_version_endpoint" {
   kubeconfig_path = local.kubeconfig_path
   depends_on      = [module.eks_heptio]
 }
+
+# --------------------------------------------------
+# Karpenter prerequisites (not Karpenter itself)
+# --------------------------------------------------
+
+module "karpenter" {
+  source                        = "terraform-aws-modules/eks/aws//modules/karpenter"
+  version                       = "21.3.2"
+  create                        = true
+  cluster_name                  = var.eks_cluster_name
+  create_access_entry           = true
+  node_iam_role_use_name_prefix = false
+  node_iam_role_name            = "karpenter-${var.eks_cluster_name}"
+  create_iam_role               = true
+  namespace                     = "karpenter"
+  # Attach additional IAM policies to the Karpenter node IAM role
+  node_iam_role_additional_policies = {
+    AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  }
+  depends_on = [module.eks_cluster]
+}
+
+# Required for spot instances
+resource "aws_iam_service_linked_role" "spot" {
+  aws_service_name = "spot.amazonaws.com"
+}
