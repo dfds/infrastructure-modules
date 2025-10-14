@@ -28,4 +28,4 @@ spec:
     name: flux-system
   postBuild:
     substitute:
-      cluster_name: ${cluster}
+      flux_cluster_name: ${cluster}
