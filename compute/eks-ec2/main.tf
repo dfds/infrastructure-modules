@@ -514,6 +514,6 @@ data "aws_iam_roles" "spot" {
 }
 
 resource "aws_iam_service_linked_role" "spot" {
-  count = lenth(data.aws_iam_roles.spot.arns) == 0 ? 1 : 0 # only create if it doesn't already exist
+  count = length(data.aws_iam_roles.spot.arns) == 0 ? 1 : 0 # only create if it doesn't already exist
   aws_service_name = "spot.amazonaws.com"
 }
