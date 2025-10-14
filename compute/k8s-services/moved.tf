@@ -42,3 +42,8 @@ moved {
   from = module.metrics_server[0].github_repository_file.kustomization
   to   = module.metrics_server.github_repository_file.kustomization
 }
+
+moved {
+  from = module.traefik_variant_flux_manifests
+  to   = module.traefik_green_variant_manifests
+}
