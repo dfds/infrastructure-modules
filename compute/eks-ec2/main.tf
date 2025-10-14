@@ -502,12 +502,18 @@ module "karpenter" {
   namespace                     = "karpenter"
   # Attach additional IAM policies to the Karpenter node IAM role
   node_iam_role_additional_policies = {
-    AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+    AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore" # Enable SSM core functionality
   }
   depends_on = [module.eks_cluster]
 }
 
-# Required for spot instances
+# Required service linked role for spot instances (in some accounts this is already provisioned)
+data "aws_iam_roles" "spot" {
+  path_prefix = "/aws-service-role/spot.amazonaws.com/"
+  name_regex  = "AWSServiceRoleForEC2Spot"
+}
+
 resource "aws_iam_service_linked_role" "spot" {
+  count = lenth(data.aws_iam_roles.spot.arns) == 0 ? 1 : 0 # only create if it doesn't already exist
   aws_service_name = "spot.amazonaws.com"
 }
