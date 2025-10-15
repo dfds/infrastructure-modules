@@ -73,7 +73,7 @@ inputs = {
       sys_memory                 = "768Mi"
       sys_cpu                    = "300m"
       labels = {
-        karpenter.sh/controller = "true" # required for Karpenter
+        "karpenter.sh/controller" = "true" # required for Karpenter
       }
     }
     "observability" = {
