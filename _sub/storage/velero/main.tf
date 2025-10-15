@@ -75,7 +75,7 @@ resource "github_repository_file" "velero_flux_helm_secret_store" {
   branch     = data.github_branch.flux_branch.branch
   file       = "${local.helm_repo_path}/secret-store.yaml"
   content = templatefile("${path.module}/values/secret-store.yaml", {})
-  overwrite_on_create = var.overwrite_on_create
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "velero_flux_helm_external_secret" {
@@ -83,8 +83,11 @@ resource "github_repository_file" "velero_flux_helm_external_secret" {
   repository = var.repo_name
   branch     = data.github_branch.flux_branch.branch
   file       = "${local.helm_repo_path}/external-secret.yaml"
-  content = templatefile("${path.module}/values/external-secret.yaml", {})
-  overwrite_on_create = var.overwrite_on_create
+  content = templatefile("${path.module}/values/external-secret.yaml", {
+    cluster_name   = var.cluster_name
+    azure_credentials_secret_name = var.azure_credentials_secret_name
+  })
+  overwrite_on_create = true
 }
 
 resource "github_repository_file" "velero_flux_helm_service_account" {
@@ -95,8 +98,7 @@ resource "github_repository_file" "velero_flux_helm_service_account" {
   content = templatefile("${path.module}/values/service-account.yaml", {
     velero_ssm_role_arn = var.velero_ssm_role_arn
   })
-  overwrite_on_create = var.overwrite_on_create
-  
+  overwrite_on_create = true
 }
 
 

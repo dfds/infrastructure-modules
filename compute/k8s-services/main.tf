@@ -576,7 +576,7 @@ module "velero" {
   azure_credentials_secret_key        = var.velero_azure_credentials_secret_key
   cron_schedule_offsite               = var.velero_cron_schedule_offsite
   cron_schedule_offsite_ttl           = var.velero_cron_schedule_offsite_ttl
-  velero_ssm_role_arn = var.velero_ssm_role_arn
+  velero_ssm_role_arn = module.external_secrets_ssm.ssm_iam_role_arn
 
   providers = {
     github = github.fluxcd
