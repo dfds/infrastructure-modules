@@ -41,8 +41,7 @@ module "traefik_blue_variant_flux_manifests" {
   depends_on = [module.platform_fluxcd]
 }
 
-# TODO(samdi): Rename to traefik_green_variant_manifests so it is consistent with the b/g traefik naming
-module "traefik_variant_flux_manifests" {
+module "traefik_green_variant_manifests" {
   source                  = "../../_sub/compute/k8s-traefik-flux"
   count                   = var.traefik_green_variant_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
