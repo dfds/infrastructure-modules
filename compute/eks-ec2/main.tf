@@ -75,6 +75,7 @@ module "eks_cluster" {
   source                = "../../_sub/compute/eks-cluster"
   cluster_name          = var.eks_cluster_name
   cluster_version       = var.eks_cluster_version
+  deletion_protection   = !var.eks_is_sandbox
   cidr_block            = local.eks_cluster_cidr_block
   cluster_zones         = var.eks_cluster_zones
   cluster_reserved_cidr = local.cluster_reserved_cidr

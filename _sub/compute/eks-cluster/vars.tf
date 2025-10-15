@@ -37,3 +37,8 @@ variable "cidr_block" {
   type        = string
   description = "The CIDR block for the VPC. This is used to create the VPC and subnets for the EKS cluster."
 }
+
+variable "deletion_protection" {
+  type        = bool
+  description = "If true, the cluster cannot be deleted."
+}
