@@ -150,6 +150,9 @@ jobs:
           TF_VAR_onepassword_token_for_atlantis: op://CloudEng-General/1Password Connect/nonprod_atlantis_token
           TF_VAR_velero_ebs_csi_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn
           SLACK_WEBHOOK: op://CloudEng-General/Slack dfds.slack.com webhooks/jdm5vktylqnczrlkkbvsveyp5e
+          TF_VAR_velero_azure_subscription_id: op://CloudEng-Genreral/Azure - Offsite Backup/qa-subscription-id
+          TF_VAR_velero_azure_resource_group_name: op://CloudEng-Genreral/Azure - Offsite Backup/qa-resource-group-name
+          TF_VAR_velero_azure_storage_account_name: op://CloudEng-Genreral/Azure - Offsite Backup/qa-storage-account-name
 
       - name: Provision shared EKS S3 bucket
         run: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
@@ -225,6 +228,9 @@ jobs:
           TF_VAR_onepassword_token_for_atlantis: op://CloudEng-General/1Password Connect/nonprod_atlantis_token
           TF_VAR_velero_ebs_csi_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn
           SLACK_WEBHOOK: op://CloudEng-General/Slack dfds.slack.com webhooks/jdm5vktylqnczrlkkbvsveyp5e
+          TF_VAR_velero_azure_subscription_id: op://CloudEng-Genreral/Azure - Offsite Backup/qa-subscription-id
+          TF_VAR_velero_azure_resource_group_name: op://CloudEng-Genreral/Azure - Offsite Backup/qa-resource-group-name
+          TF_VAR_velero_azure_storage_account_name: op://CloudEng-Genreral/Azure - Offsite Backup/qa-storage-account-name
 
       - name: Provision shared EKS S3 bucket
         run: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
