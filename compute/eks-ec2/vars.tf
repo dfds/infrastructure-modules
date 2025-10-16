@@ -199,7 +199,7 @@ variable "eks_managed_nodegroups" {
   default = {}
   validation {
     condition     = length(flatten([for ng in var.eks_managed_nodegroups: [for key, value in ng.labels: key if value == "true" && key == "karpenter.sh/controller"] if !ng.use_spot_instances])) > 0
-    error_message = "At least one managed node group must be configured for Karpenter when using the label karpenter.sh/controller with value \"true\" and it cannot be using spot instance."
+    error_message = "At least one managed node group must be configured for Karpenter when using the label karpenter.sh/controller with value \"true\" and it cannot be using spot instance." # see https://github.com/dfds/platform-apps/blob/effb6c19c6a91b44b65054ff701066b1714cb9f0/apps/karpenter/helm.yaml#L29 for nodeSelector
   }
 }
 
