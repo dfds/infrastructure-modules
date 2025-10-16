@@ -36,26 +36,26 @@ spec:
         cidr: ${cidr}
     kubelet:
         config:
-%{ if vpc_cni_prefix_delegation_enabled }
+%{ if vpc_cni_prefix_delegation_enabled ~}
             maxPods: ${max_pods}
 %{ endif ~}
             registryPullQPS: 0
-%{ if kube_cpu != null || kube_memory != null }
+%{ if kube_cpu != null || kube_memory != null ~}
             kubeReserved:
 %{ endif ~}
-%{ if kube_cpu != null }
+%{ if kube_cpu != null ~}
                 cpu: ${kube_cpu}
 %{ endif ~}
-%{ if kube_memory != null }
+%{ if kube_memory != null ~}
                 memory: ${kube_memory}
 %{ endif ~}
-%{ if sys_cpu != null || sys_memory != null }
+%{ if sys_cpu != null || sys_memory != null ~}
             systemReserved:
 %{ endif ~}
-%{ if sys_cpu != null }
+%{ if sys_cpu != null ~}
                 cpu: ${sys_cpu}
 %{ endif ~}
-%{ if sys_memory != null }
+%{ if sys_memory != null ~}
                 memory: ${sys_memory}
 %{ endif ~}
 
