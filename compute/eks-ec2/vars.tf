@@ -197,6 +197,10 @@ variable "eks_managed_nodegroups" {
     kube_memory = optional(string, null)
   }))
   default = {}
+  validation {
+    condition     = length(flatten([for ng in var.eks_managed_nodegroups: [for key, value in ng.labels: key if value == "true" && key == "karpenter.sh/controller"] if !ng.use_spot_instances])) > 0
+    error_message = "At least one managed node group must be configured for Karpenter when using the label karpenter.sh/controller with value \"true\" and it cannot be using spot instance."
+  }
 }
 
 # --------------------------------------------------
