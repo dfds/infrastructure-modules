@@ -185,6 +185,7 @@ inputs = {
   # --------------------------------------------------
 
   external_secrets_helm_chart_version = "0.19.2"
+  external_secrets_ssm_allowed_namespaces = ["atlantis", "flux-system", "velero"]
 
   # --------------------------------------------------
   # Github ARC SS Controller
