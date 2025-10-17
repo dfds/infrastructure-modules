@@ -16,6 +16,7 @@ resource "aws_security_group" "eks-node" {
   tags = {
     "Name"                                      = "eks-${var.cluster_name}-node"
     "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+    "karpenter.sh/discovery"                    = var.cluster_name # making security groups discoverable by karpenter
   }
 }
 

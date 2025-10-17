@@ -72,6 +72,9 @@ inputs = {
       kube_cpu                   = "500m"
       sys_memory                 = "768Mi"
       sys_cpu                    = "300m"
+      labels = {
+        "karpenter.sh/controller" = "true" # required for Karpenter
+      }
     }
     "observability" = {
       instance_types          = ["t3.large"]
