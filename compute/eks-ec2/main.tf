@@ -75,6 +75,7 @@ module "eks_cluster" {
   source                = "../../_sub/compute/eks-cluster"
   cluster_name          = var.eks_cluster_name
   cluster_version       = var.eks_cluster_version
+  deletion_protection   = !var.eks_is_sandbox
   cidr_block            = local.eks_cluster_cidr_block
   cluster_zones         = var.eks_cluster_zones
   cluster_reserved_cidr = local.cluster_reserved_cidr
@@ -327,6 +328,7 @@ module "eks_addons" {
   vpccni_prefix_delegation_enabled = var.eks_addon_vpccni_prefix_delegation_enabled
   awsebscsidriver_version_override = var.eks_addon_awsebscsidriver_version_override
   awsefscsidriver_version_override = var.eks_addon_awsefscsidriver_version_override
+  podidentity_version_override     = var.eks_addon_podidentity_version_override
   most_recent                      = var.eks_addon_most_recent
   cluster_version                  = var.eks_cluster_version
   eks_openid_connect_provider_url  = module.eks_cluster.eks_openid_connect_provider_url
