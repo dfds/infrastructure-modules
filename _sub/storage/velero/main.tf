@@ -15,7 +15,7 @@ resource "github_repository_file" "velero_flux_helm_path" {
     app_install_name = local.app_install_name
     helm_repo_path   = local.helm_repo_path
     deploy_name      = var.deploy_name
-    namespace        = var.namespace
+    namespace        = "velero"
     prune            = var.prune
   })
   overwrite_on_create = true
@@ -61,7 +61,6 @@ resource "github_repository_file" "velero_flux_helm_patch_yaml" {
     azure_subscription_id               = var.azure_subscription_id
     azure_bucket_name                   = var.azure_bucket_name
     azure_credentials_secret_name       = var.azure_credentials_secret_name
-    azure_credentials_secret_key        = var.azure_credentials_secret_key
     enable_azure_storage                = var.enable_azure_storage
     cron_schedule_offsite               = var.cron_schedule_offsite
     cron_schedule_offsite_ttl           = var.cron_schedule_offsite_ttl
@@ -169,7 +168,7 @@ data "aws_iam_policy_document" "assume_role" {
 
     condition {
       test     = "StringEquals"
-      values   = ["system:serviceaccount:${var.namespace}:${var.service_account}"]
+      values   = ["system:serviceaccount:velero:${var.service_account}"]
       variable = "${var.oidc_issuer}:sub"
     }
   }

@@ -51,7 +51,7 @@ spec:
           bucket: ${azure_bucket_name}
           credential:
             name: ${azure_credentials_secret_name}
-            key: ${azure_credentials_secret_key}
+            key: cloud
           config:
             resourceGroup: ${azure_resource_group_name}
             storageAccount: ${azure_storage_account_name}
@@ -71,7 +71,7 @@ spec:
           bucket: ${azure_bucket_name}
           credential:
             name: ${azure_credentials_secret_name}
-            key: ${azure_credentials_secret_key}
+            key: cloud
           config:
             resourceGroup: ${azure_resource_group_name}
             subscriptionId: ${azure_subscription_id}

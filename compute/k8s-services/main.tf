@@ -559,7 +559,6 @@ module "velero" {
   gitops_apps_repo_url                = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch             = var.fluxcd_apps_repo_branch
   prune                               = var.fluxcd_prune
-  namespace                           = var.velero_namespace
   service_account                     = var.velero_service_account
   oidc_issuer                         = local.oidc_issuer
   workload_account_id                 = var.aws_workload_account_id
@@ -573,10 +572,9 @@ module "velero" {
   azure_storage_account_name          = var.velero_azure_storage_account_name
   azure_bucket_name                   = var.velero_azure_bucket_name
   azure_credentials_secret_name       = var.velero_azure_credentials_secret_name
-  azure_credentials_secret_key        = var.velero_azure_credentials_secret_key
   cron_schedule_offsite               = var.velero_cron_schedule_offsite
   cron_schedule_offsite_ttl           = var.velero_cron_schedule_offsite_ttl
-  velero_ssm_role_arn = module.external_secrets_ssm.ssm_iam_role_arn
+  velero_ssm_role_arn                 = module.external_secrets_ssm.ssm_iam_role_arn
 
   providers = {
     github = github.fluxcd

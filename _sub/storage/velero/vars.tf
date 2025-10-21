@@ -131,12 +131,6 @@ variable "service_account" {
   description = "The service account to be used by Velero"
 }
 
-variable "namespace" {
-  type        = string
-  default     = "velero"
-  description = "The namespace where Velero should be installed"
-}
-
 variable "oidc_issuer" {
   type        = string
   default     = null
@@ -210,12 +204,6 @@ variable "azure_credentials_secret_name" {
   type        = string
   default     = "velero-credentials"
   description = "The name of the Kubernetes secret containing Azure credentials for Velero"
-}
-
-variable "azure_credentials_secret_key" {
-  type        = string
-  default     = "cloud"
-  description = "The key in the Kubernetes secret that contains Azure credentials for Velero"
 }
 
 variable "cron_schedule_offsite" {

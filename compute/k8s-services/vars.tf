@@ -497,12 +497,6 @@ variable "velero_service_account" {
   description = "The service account to be used by Velero"
 }
 
-variable "velero_namespace" {
-  type        = string
-  default     = "velero"
-  description = "The namespace where Velero should be installed"
-}
-
 variable "velero_bucket_arn" {
   type        = string
   default     = null
@@ -572,12 +566,6 @@ variable "velero_azure_credentials_secret_name" {
   type        = string
   default     = "velero-credentials"
   description = "The name of the Kubernetes secret containing Azure credentials for Velero"
-}
-
-variable "velero_azure_credentials_secret_key" {
-  type        = string
-  default     = "cloud"
-  description = "The key in the Kubernetes secret containing Azure credentials for Velero"
 }
 
 variable "velero_cron_schedule_offsite" {
