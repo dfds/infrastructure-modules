@@ -73,8 +73,27 @@ variable "helm_repo_name" {
 
 variable "helm_chart_version" {
   type        = string
-  default     = ""
   description = "The Velero Helm chart version to install"
+  validation {
+    condition = (
+      # major
+      tonumber(split(".", var.helm_chart_version)[0]) > 10 ||
+
+      # minor
+      (
+        tonumber(split(".", var.helm_chart_version)[0]) == 10 &&
+        tonumber(split(".", var.helm_chart_version)[1]) > 1
+      ) ||
+
+      # patch
+      (
+        tonumber(split(".", var.helm_chart_version)[0]) == 10 &&
+        tonumber(split(".", var.helm_chart_version)[1]) == 1 &&
+        tonumber(split(".", var.helm_chart_version)[2]) >= 0
+      )
+    )
+    error_message = "Velero helm chart version must be 10.1.0 or higher."
+  }
 }
 
 variable "image_tag" {
@@ -181,7 +200,7 @@ variable "azure_resource_group_name" {
   default     = ""
   description = "The name of the Azure resource group where the storage account is located"
 }
-  
+
 variable "azure_storage_account_name" {
   type        = string
   default     = ""
@@ -224,6 +243,6 @@ variable "enable_azure_storage_external_secret" {
 
 variable "velero_ssm_role_arn" {
   type        = string
-  default = ""
+  default     = ""
   description = "The IAM role for the Velero service account to assume for accessing AWS SSM Parameter Store"
 }
