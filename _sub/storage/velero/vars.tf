@@ -208,13 +208,11 @@ variable "azure_credentials_secret_name" {
 
 variable "cron_schedule_offsite" {
   type        = string
-  default     = "0 2 1 * *"
   description = "Cron-formatted scheduled time for offsite backups."
 }
 
 variable "cron_schedule_offsite_ttl" {
   type        = string
-  default     = "8640h"
   description = "Time to live for the scheduled offsite backup."
 }
 
