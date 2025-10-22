@@ -17,6 +17,10 @@ variable "branch" {
 
 variable "release_tag" {
   type = string
+  validation {
+    condition     = (tonumber(split(".", trim(var.release_tag, "v"))[0]) == 2 && tonumber(split(".", trim(var.release_tag, "v"))[1]) >= 6) || tonumber(split(".", trim(var.release_tag, "v"))[0]) >= 3
+    error_message = "Fluxcd version must be v2.6.0 or higher."
+  }
 }
 
 # --------------------------------------------------
