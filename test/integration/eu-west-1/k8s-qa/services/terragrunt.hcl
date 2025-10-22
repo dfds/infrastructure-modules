@@ -142,7 +142,6 @@ inputs = {
   velero_bucket_arn                           = "arn:aws:s3:::dfds-velero-qa"
   velero_helm_chart_version                   = "10.1.3"
   velero_plugin_for_aws_version               = "v1.12.1"
-  velero_plugin_for_aws_version               = "v1.12.1"
   velero_plugin_for_azure_version             = "v1.12.1"
   velero_excluded_namespace_scoped_resources  = ["secrets"]
   velero_enable_azure_storage                 = true
