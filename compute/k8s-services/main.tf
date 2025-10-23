@@ -67,6 +67,47 @@ module "traefik_green_variant_manifests" {
   depends_on = [module.platform_fluxcd]
 }
 
+module "lb_controller_flux_manifests" {
+  source                  = "../../_sub/network/aws-lb-controller"
+  count                   = var.aws_lb_controller_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  deploy_name             = "aws-lb-controller"
+  namespace               = local.k8s_lb_controller_namespace
+  helm_chart_version      = var.aws_lb_controller_helm_chart_version
+  github_owner            = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  cluster_region          = var.aws_region
+  role_arn                = module.lb_controller_role[0].iam_role_arn
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  prune                   = var.fluxcd_prune
+  vpc_id                  = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
+}
+
+module "lb_controller_role" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  count   = var.aws_lb_controller_deploy ? 1 : 0
+  version = "5.59.0"
+
+  role_name                              = "${var.eks_cluster_name}-lb-controller"
+  policy_name_prefix                     = "${var.eks_cluster_name}-"
+  attach_load_balancer_controller_policy = true
+
+  oidc_providers = {
+    ex = {
+      provider_arn               = "arn:aws:iam::${data.aws_caller_identity.current_account.account_id}:oidc-provider/${local.oidc_issuer}"
+      namespace_service_accounts = ["${local.k8s_lb_controller_namespace}:${local.k8s_lb_controller_sa_name}"]
+    }
+  }
+}
+
 module "traefik_alb_cert" {
   source              = "../../_sub/network/acm-certificate-san"
   deploy              = var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy ? true : false
@@ -947,10 +988,10 @@ module "keda" {
 #--------------------------------------------------
 
 module "karpenter" {
-  source                  = "../../_sub/compute/karpenter"
-  cluster_name            = var.eks_cluster_name
-  repo_name               = var.fluxcd_bootstrap_repo_name
-  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  source           = "../../_sub/compute/karpenter"
+  cluster_name     = var.eks_cluster_name
+  repo_name        = var.fluxcd_bootstrap_repo_name
+  repo_branch      = var.fluxcd_bootstrap_repo_branch
   apps_repo_url    = local.fluxcd_apps_repo_url
   apps_repo_branch = var.fluxcd_apps_repo_branch
 

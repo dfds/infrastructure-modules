@@ -296,3 +296,12 @@ data "aws_iam_policy_document" "external_dns_core_route53_access_policy_trust" {
 
 data "aws_caller_identity" "workload_account" {
 }
+
+
+# --------------------------------------------------
+# AWS Load Balancer Controller
+# --------------------------------------------------
+locals {
+  k8s_lb_controller_namespace = "aws-lb-controller"
+  k8s_lb_controller_sa_name   = "aws-lb-controller"
+}
