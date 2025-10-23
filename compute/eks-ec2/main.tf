@@ -509,12 +509,6 @@ module "karpenter" {
 }
 
 # Required service linked role for spot instances (in some accounts this is already provisioned)
-data "aws_iam_roles" "spot" {
-  path_prefix = "/aws-service-role/spot.amazonaws.com/"
-  name_regex  = "AWSServiceRoleForEC2Spot"
-}
-
 resource "aws_iam_service_linked_role" "spot" {
-  count = length(data.aws_iam_roles.spot.arns) == 0 ? 1 : 0 # only create if it doesn't already exist
   aws_service_name = "spot.amazonaws.com"
 }
