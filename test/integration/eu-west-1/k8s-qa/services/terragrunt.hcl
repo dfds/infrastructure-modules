@@ -140,11 +140,19 @@ inputs = {
 
   velero_deploy                               = true
   velero_bucket_arn                           = "arn:aws:s3:::dfds-velero-qa"
-  velero_helm_chart_version                   = "10.0.4"
+  velero_helm_chart_version                   = "10.1.3"
   velero_plugin_for_aws_version               = "v1.12.1"
+  velero_plugin_for_azure_version             = "v1.12.1"
   velero_excluded_namespace_scoped_resources  = ["secrets"]
-  velero_filesystem_backup_enabled            = false
-  velero_snapshots_enabled                    = true
+  velero_enable_azure_storage                 = true
+  # TF_VAR_velero_azure_subscription_id
+  # TF_VAR_velero_azure_resource_group_name
+  # TF_VAR_velero_azure_storage_account_name
+  velero_cron_schedule_offsite = "0 * * * *"
+  velero_cron_schedule_offsite_ttl = "48h"
+  velero_snapshots_enabled = true
+  velero_node_agent_enabled = true
+
 
   # --------------------------------------------------
   # Grafana Agent for Kubernetes monitoring
@@ -176,6 +184,7 @@ inputs = {
   # --------------------------------------------------
 
   external_secrets_helm_chart_version = "0.19.2"
+  external_secrets_ssm_allowed_namespaces = ["atlantis", "flux-system", "velero"]
 
   # --------------------------------------------------
   # Github ARC SS Controller
