@@ -594,12 +594,12 @@ module "velero" {
   helm_chart_version                  = var.velero_helm_chart_version
   image_tag                           = var.velero_image_tag
   plugin_for_aws_version              = var.velero_plugin_for_aws_version
+  plugin_for_azure_version            = var.velero_plugin_for_azure_version
   snapshots_enabled                   = var.velero_snapshots_enabled
-  filesystem_backup_enabled           = var.velero_filesystem_backup_enabled
+  node_agent_enabled                  = var.velero_node_agent_enabled
   gitops_apps_repo_url                = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch             = var.fluxcd_apps_repo_branch
   prune                               = var.fluxcd_prune
-  namespace                           = var.velero_namespace
   service_account                     = var.velero_service_account
   oidc_issuer                         = local.oidc_issuer
   workload_account_id                 = var.aws_workload_account_id
@@ -607,6 +607,15 @@ module "velero" {
   excluded_namespace_scoped_resources = var.velero_excluded_namespace_scoped_resources
   read_only                           = var.velero_read_only
   ebs_csi_kms_arn                     = var.velero_ebs_csi_kms_arn
+  enable_azure_storage                = var.velero_enable_azure_storage
+  azure_subscription_id               = var.velero_azure_subscription_id
+  azure_resource_group_name           = var.velero_azure_resource_group_name
+  azure_storage_account_name          = var.velero_azure_storage_account_name
+  azure_bucket_name                   = var.velero_azure_bucket_name
+  azure_credentials_secret_name       = var.velero_azure_credentials_secret_name
+  cron_schedule_offsite               = var.velero_cron_schedule_offsite
+  cron_schedule_offsite_ttl           = var.velero_cron_schedule_offsite_ttl
+  velero_ssm_role_arn                 = module.external_secrets_ssm.ssm_iam_role_arn
 
   providers = {
     github = github.fluxcd

@@ -15,7 +15,7 @@ resource "github_repository_file" "velero_flux_helm_path" {
     app_install_name = local.app_install_name
     helm_repo_path   = local.helm_repo_path
     deploy_name      = var.deploy_name
-    namespace        = var.namespace
+    namespace        = "velero"
     prune            = var.prune
   })
   overwrite_on_create = true
@@ -29,6 +29,7 @@ resource "github_repository_file" "velero_flux_helm_init" {
     gitops_apps_repo_url    = var.gitops_apps_repo_url
     deploy_name             = var.deploy_name
     gitops_apps_repo_branch = var.gitops_apps_repo_branch
+    enable_azure_storage_external_secret = var.enable_azure_storage_external_secret
   })
   overwrite_on_create = true
 }
@@ -42,8 +43,9 @@ resource "github_repository_file" "velero_flux_helm_patch_yaml" {
     helm_repo_name                      = var.helm_repo_name
     image_tag                           = var.image_tag
     snapshots_enabled                   = var.snapshots_enabled
-    filesystem_backup_enabled           = var.filesystem_backup_enabled
+    node_agent_enabled                  = var.node_agent_enabled
     plugin_for_aws_version              = var.plugin_for_aws_version
+    plugin_for_azure_version            = var.plugin_for_azure_version
     log_level                           = var.log_level
     bucket_name                         = local.bucket_name
     bucket_region                       = var.bucket_region
@@ -54,6 +56,46 @@ resource "github_repository_file" "velero_flux_helm_patch_yaml" {
     excluded_cluster_scoped_resources   = var.excluded_cluster_scoped_resources
     excluded_namespace_scoped_resources = var.excluded_namespace_scoped_resources
     read_only                           = var.read_only
+    azure_resource_group_name           = var.azure_resource_group_name
+    azure_storage_account_name          = var.azure_storage_account_name
+    azure_subscription_id               = var.azure_subscription_id
+    azure_bucket_name                   = var.azure_bucket_name
+    azure_credentials_secret_name       = var.azure_credentials_secret_name
+    enable_azure_storage                = var.enable_azure_storage
+    cron_schedule_offsite               = var.cron_schedule_offsite
+    cron_schedule_offsite_ttl           = var.cron_schedule_offsite_ttl
+  })
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "velero_flux_helm_secret_store" {
+  count      = var.enable_azure_storage_external_secret ? 1 : 0
+  repository = var.repo_name
+  branch     = data.github_branch.flux_branch.branch
+  file       = "${local.helm_repo_path}/secret-store.yaml"
+  content = templatefile("${path.module}/values/secret-store.yaml", {})
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "velero_flux_helm_external_secret" {
+  count      = var.enable_azure_storage_external_secret ? 1 : 0
+  repository = var.repo_name
+  branch     = data.github_branch.flux_branch.branch
+  file       = "${local.helm_repo_path}/external-secret.yaml"
+  content = templatefile("${path.module}/values/external-secret.yaml", {
+    cluster_name   = var.cluster_name
+    azure_credentials_secret_name = var.azure_credentials_secret_name
+  })
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "velero_flux_helm_service_account" {
+  count      = var.enable_azure_storage_external_secret ? 1 : 0
+  repository = var.repo_name
+  branch     = data.github_branch.flux_branch.branch
+  file       = "${local.helm_repo_path}/service-account.yaml"
+  content = templatefile("${path.module}/values/service-account.yaml", {
+    velero_ssm_role_arn = var.velero_ssm_role_arn
   })
   overwrite_on_create = true
 }
@@ -126,7 +168,7 @@ data "aws_iam_policy_document" "assume_role" {
 
     condition {
       test     = "StringEquals"
-      values   = ["system:serviceaccount:${var.namespace}:${var.service_account}"]
+      values   = ["system:serviceaccount:velero:${var.service_account}"]
       variable = "${var.oidc_issuer}:sub"
     }
   }
