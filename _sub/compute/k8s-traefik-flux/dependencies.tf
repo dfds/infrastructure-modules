@@ -8,4 +8,5 @@ locals {
   cluster_repo_path   = "clusters/${var.cluster_name}"
   helm_repo_path      = "platform-apps/${var.cluster_name}/${var.deploy_name}/helm"
   app_install_name    = "platform-apps-${var.deploy_name}"
+  ca_server_arg           =  var.certificate_resolver_is_staging ? ["--certificatesresolvers.clusterresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"] : []
 }

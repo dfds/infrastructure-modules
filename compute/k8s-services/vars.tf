@@ -404,6 +404,83 @@ variable "traefik_green_variant_weight" {
   default     = 0
 }
 
+# NLB
+variable "traefik_nlb_helm_chart_version" {
+  type        = string
+  description = "Helm Chart version to be used to deploy Traefik"
+  default     = ""
+}
+
+variable "traefik_nlb_http_nodeport" {
+  type        = number
+  description = "Nodeport used by NLB's to connect to the Traefik instance"
+  default     = 30000
+}
+
+variable "traefik_nlb_admin_nodeport" {
+  type        = number
+  description = "Nodeport used by NLB's to connect to the Traefik instance admin page"
+  default     = 30001
+}
+
+variable "traefik_nlb_additional_args" {
+  type        = list(any)
+  description = "Pass arguments to the additionalArguments node in the Traefik Helm chart"
+  default     = ["--metrics.prometheus"]
+}
+
+variable "traefik_nlb_enable_certificate_resolver" {
+  type = bool
+  default = false
+  description = "Enable the use of a certificate resolver (e.g. for Let's Encrypt)"
+}
+
+variable "traefik_nlb_certificate_resolver_email" {
+  type = string
+  default = ""
+  description = "Email address to use for the certificate resolver registration (e.g. Let's Encrypt)"
+}
+
+variable "traefik_nlb_certificate_resolver_storage_enabled" {
+  type = bool
+  default = false
+  description = "Enable persistent storage for the certificate resolver (e.g. for Let's Encrypt)"
+}
+
+variable "traefik_nlb_certificate_resolver_storage_class" {
+  type = string
+  default = "gp2"
+  description = "Storage class to use for the certificate resolver persistent storage (e.g. Let's Encrypt)"
+}
+
+variable "traefik_nlb_certificate_resolver_storage_access_mode" {
+  type = string
+  default = "readWriteOnce"
+  description = "Access mode to use for the certificate resolver persistent storage (e.g. Let's Encrypt)"
+}
+
+variable "traefik_nlb_certificate_resolver_storage_size" {
+  type = string
+  default = "128Mi"
+  description = "Size of the persistent volume to use for the certificate resolver persistent storage (e.g. Let's Encrypt)"
+}
+
+variable "traefik_nlb_certficate_resolver_args" {
+  type        = list(any)
+  description = "Pass arguments to the additionalArguments node in the Traefik Helm chart for the certificate resolver"
+  default     = [
+    "--entryPoints.web.http.redirections.entrypoint.scheme=https",
+    "--entrypoints.web.http.redirections.entryPoint.to=:443",
+    "--certificatesresolvers.clusterresolver.acme.tlschallenge",
+    "--api.insecure=true"
+    ]
+}
+
+variable "traefik_nlb_certificate_resolver_is_staging" {
+  type = bool
+  default = false
+  description = "Use the staging environment for the certificate resolver (e.g. for Let's Encrypt). Should be false in production."
+}
 # --------------------------------------------------
 # Blackbox Exporter
 # --------------------------------------------------
