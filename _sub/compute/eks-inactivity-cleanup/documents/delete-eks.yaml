@@ -33,7 +33,7 @@ mainSteps:
       * DeletedNodeGroups
       * RemainingNodeGroups
     inputs:
-      Runtime: python3.7
+      Runtime: python3.11
       Handler: delete_node_groups_handler
       InputPayload:
         EKSClusterName: "{{EKSClusterName}}"
@@ -127,7 +127,7 @@ mainSteps:
           * EKSClusterName: Deleted EKS Cluster name.
           * DeleteStatus: 'DELETING'
     inputs:
-      Runtime: python3.7
+      Runtime: python3.11
       Handler: delete_eks_cluster_handler
       InputPayload:
         EKSClusterName: "{{EKSClusterName}}"
