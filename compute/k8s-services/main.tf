@@ -82,7 +82,6 @@ module "lb_controller_flux_manifests" {
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
-  vpc_id                  = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
   kubeconfig_path         = local.kubeconfig_path
 
   providers = {
