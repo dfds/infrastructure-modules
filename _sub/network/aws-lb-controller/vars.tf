@@ -64,7 +64,7 @@ variable "role_arn" {
   description = "The ARN of the role to be used by the component"
 }
 
-variable "vpc_id" {
-  type        = string
-  description = "The VPC ID where the EKS cluster is deployed"
+
+variable "kubeconfig_path" {
+  type = string
 }

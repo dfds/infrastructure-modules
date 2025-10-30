@@ -78,11 +78,12 @@ module "lb_controller_flux_manifests" {
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   cluster_region          = var.aws_region
-  role_arn                = module.lb_controller_role[0].iam_role_arn
+  role_arn                = module.lb_controller_role[0].arn
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
   vpc_id                  = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
+  kubeconfig_path         = local.kubeconfig_path
 
   providers = {
     github = github.fluxcd
@@ -92,12 +93,12 @@ module "lb_controller_flux_manifests" {
 }
 
 module "lb_controller_role" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
   count   = var.aws_lb_controller_deploy ? 1 : 0
-  version = "5.59.0"
+  version = "6.2.3"
 
-  role_name                              = "${var.eks_cluster_name}-lb-controller"
-  policy_name_prefix                     = "${var.eks_cluster_name}-"
+  name                              = "${var.eks_cluster_name}-lb-controller"
+  policy_name                       = "${var.eks_cluster_name}-lb-controller"
   attach_load_balancer_controller_policy = true
 
   oidc_providers = {

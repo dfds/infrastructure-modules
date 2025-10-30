@@ -304,4 +304,5 @@ data "aws_caller_identity" "workload_account" {
 locals {
   k8s_lb_controller_namespace = "aws-lb-controller"
   k8s_lb_controller_sa_name   = "aws-lb-controller"
+  kubeconfig_path             = pathexpand("~/.kube/${var.eks_cluster_name}.config")
 }

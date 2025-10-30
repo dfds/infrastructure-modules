@@ -27,6 +27,32 @@ resource "github_repository_file" "helm_install" {
   overwrite_on_create = true
 }
 
+resource "terraform_data" "aws-load-balancer-mutating-webhook-cleanup" {
+  input = var.kubeconfig_path
+
+  provisioner "local-exec" {
+    environment = {
+      K_CONFIG = self.input
+    }
+    when    = destroy
+    command = "kubectl --kubeconfig=$K_CONFIG delete MutatingWebhookConfiguration aws-load-balancer-webhook --ignore-not-found=true"
+  }
+  depends_on = [ github_repository_file.helm_install ]
+}
+
+resource "terraform_data" "aws-load-balancer-validating-webhook-cleanup" {
+  input = var.kubeconfig_path
+
+  provisioner "local-exec" {
+    environment = {
+      K_CONFIG = self.input
+    }
+    when    = destroy
+    command = "kubectl --kubeconfig=$K_CONFIG delete ValidatingWebhookConfiguration aws-load-balancer-webhook --ignore-not-found=true"
+  }
+  depends_on = [ github_repository_file.helm_install ]
+}
+
 resource "github_repository_file" "helm_patch" {
   repository = var.repo_name
   branch     = local.repo_branch
@@ -38,7 +64,6 @@ resource "github_repository_file" "helm_patch" {
     region             = var.cluster_region
     role_arn           = var.role_arn
     cluster            = var.cluster_name
-    vpc_id             = var.vpc_id
   })
   overwrite_on_create = true
 }
