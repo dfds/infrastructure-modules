@@ -252,7 +252,7 @@ module "traefik_nlb_flux_manifests" {
 module "traefik_nlb_dns_for_traefik_nlb_dashboard" {
   source       = "../../_sub/network/route53-record"
   count        = var.traefik_nlb_deploy ? 1 : 0
-  deploy       = true
+  deploy       = true # legacy
   zone_id      = local.workload_dns_zone_id
   record_name  = ["traefik-nlb.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
   record_type  = "CNAME"
