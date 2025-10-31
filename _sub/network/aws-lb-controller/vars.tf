@@ -2,11 +2,6 @@ variable "cluster_name" {
   type = string
 }
 
-variable "deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "aws-lb-controller"
-}
 
 variable "github_owner" {
   type        = string

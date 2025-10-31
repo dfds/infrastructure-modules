@@ -7,7 +7,7 @@ resource "github_repository_file" "helm" {
   file       = "${local.cluster_repo_path}/${local.app_install_name}-helm.yaml"
   content = templatefile("${path.module}/values/app-helm.yaml", {
     app_install_name = local.app_install_name
-    deploy_name      = var.deploy_name
+    deploy_name      = local.deploy_name
     namespace        = local.namespace
     helm_repo_path   = local.helm_repo_path
     prune            = var.prune
@@ -21,7 +21,8 @@ resource "github_repository_file" "helm_install" {
   file       = "${local.helm_repo_path}/kustomization.yaml"
   content = templatefile("${path.module}/values/helm-install.yaml", {
     gitops_apps_repo_url    = var.gitops_apps_repo_url
-    deploy_name             = var.deploy_name
+    deploy_name             = local.deploy_name
+    namespace               = local.namespace
     gitops_apps_repo_branch = var.gitops_apps_repo_branch
   })
   overwrite_on_create = true
@@ -58,7 +59,7 @@ resource "github_repository_file" "helm_patch" {
   branch     = local.repo_branch
   file       = "${local.helm_repo_path}/patch.yaml"
   content = templatefile("${path.module}/values/helm-patch.yaml", {
-    deploy_name        = var.deploy_name
+    deploy_name        = local.deploy_name
     namespace          = local.namespace
     helm_chart_version = var.helm_chart_version
     region             = var.cluster_region

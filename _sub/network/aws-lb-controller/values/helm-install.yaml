@@ -6,5 +6,5 @@ patches:
   - path: patch.yaml
     target:
       kind: HelmRelease
-      name: aws-lb-controller
-      namespace: aws-lb-controller
+      name: ${deploy_name}
+      namespace: ${namespace}
