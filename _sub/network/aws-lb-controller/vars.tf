@@ -2,7 +2,6 @@ variable "cluster_name" {
   type = string
 }
 
-
 variable "github_owner" {
   type        = string
   description = "Name of the Github owner (previously: organization)"
@@ -22,7 +21,6 @@ variable "repo_branch" {
 variable "helm_chart_version" {
   type        = string
   description = "The version of the Traefik v2 Helm Chart that should be used"
-  default     = ""
 }
 
 variable "gitops_apps_repo_url" {
@@ -37,12 +35,6 @@ variable "gitops_apps_repo_branch" {
   description = "The default branch for your GitOps manifests"
 }
 
-variable "prune" {
-  type        = bool
-  default     = true
-  description = "Enable Garbage collection"
-}
-
 variable "cluster_region" {
   type        = string
   description = "The AWS region the EKS cluster is deployed in"
@@ -51,9 +43,4 @@ variable "cluster_region" {
 variable "role_arn" {
   type        = string
   description = "The ARN of the role to be used by the component"
-}
-
-
-variable "kubeconfig_path" {
-  type = string
 }

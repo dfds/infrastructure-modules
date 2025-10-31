@@ -10,7 +10,7 @@ resource "github_repository_file" "helm" {
     deploy_name      = local.deploy_name
     namespace        = local.namespace
     helm_repo_path   = local.helm_repo_path
-    prune            = var.prune
+    prune            = true
   })
   overwrite_on_create = true
 }
@@ -28,32 +28,6 @@ resource "github_repository_file" "helm_install" {
   overwrite_on_create = true
 }
 
-resource "terraform_data" "aws-load-balancer-mutating-webhook-cleanup" {
-  input = var.kubeconfig_path
-
-  provisioner "local-exec" {
-    environment = {
-      K_CONFIG = self.input
-    }
-    when    = destroy
-    command = "kubectl --kubeconfig=$K_CONFIG delete MutatingWebhookConfiguration aws-load-balancer-webhook --ignore-not-found=true"
-  }
-  depends_on = [ github_repository_file.helm_install ]
-}
-
-resource "terraform_data" "aws-load-balancer-validating-webhook-cleanup" {
-  input = var.kubeconfig_path
-
-  provisioner "local-exec" {
-    environment = {
-      K_CONFIG = self.input
-    }
-    when    = destroy
-    command = "kubectl --kubeconfig=$K_CONFIG delete ValidatingWebhookConfiguration aws-load-balancer-webhook --ignore-not-found=true"
-  }
-  depends_on = [ github_repository_file.helm_install ]
-}
-
 resource "github_repository_file" "helm_patch" {
   repository = var.repo_name
   branch     = local.repo_branch
@@ -68,3 +42,35 @@ resource "github_repository_file" "helm_patch" {
   })
   overwrite_on_create = true
 }
+
+
+# ----------------------------------------------------------------------------------------------------
+# On destroy there might be issue with deleting webhooks because of CRs not being removed in time
+# This Terraform code can be a possible workaround to delete the webhooks on destroy
+# ----------------------------------------------------------------------------------------------------
+
+# resource "terraform_data" "aws-load-balancer-mutating-webhook-cleanup" {
+#   input = var.kubeconfig_path
+
+#   provisioner "local-exec" {
+#     environment = {
+#       K_CONFIG = self.input
+#     }
+#     when    = destroy
+#     command = "kubectl --kubeconfig=$K_CONFIG delete MutatingWebhookConfiguration aws-load-balancer-webhook --ignore-not-found=true"
+#   }
+#   depends_on = [ github_repository_file.helm_install ]
+# }
+
+# resource "terraform_data" "aws-load-balancer-validating-webhook-cleanup" {
+#   input = var.kubeconfig_path
+
+#   provisioner "local-exec" {
+#     environment = {
+#       K_CONFIG = self.input
+#     }
+#     when    = destroy
+#     command = "kubectl --kubeconfig=$K_CONFIG delete ValidatingWebhookConfiguration aws-load-balancer-webhook --ignore-not-found=true"
+#   }
+#   depends_on = [ github_repository_file.helm_install ]
+# }
