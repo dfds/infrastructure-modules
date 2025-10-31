@@ -78,8 +78,6 @@ module "lb_controller_flux_manifests" {
   role_arn                = module.lb_controller_role.arn
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
-  prune                   = var.fluxcd_prune
-  kubeconfig_path         = local.kubeconfig_path
 
   providers = {
     github = github.fluxcd
