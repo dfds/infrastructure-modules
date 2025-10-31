@@ -8,12 +8,6 @@ variable "deploy_name" {
   default     = "aws-lb-controller"
 }
 
-variable "namespace" {
-  type        = string
-  description = "The namespace in which to deploy Helm resources"
-  default     = "aws-lb-controller"
-}
-
 variable "github_owner" {
   type        = string
   description = "Name of the Github owner (previously: organization)"

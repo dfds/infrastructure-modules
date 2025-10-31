@@ -71,7 +71,6 @@ module "lb_controller_flux_manifests" {
   source                  = "../../_sub/network/aws-lb-controller"
   cluster_name            = var.eks_cluster_name
   deploy_name             = "aws-lb-controller"
-  namespace               = local.k8s_lb_controller_namespace
   helm_chart_version      = var.aws_lb_controller_helm_chart_version
   github_owner            = var.fluxcd_bootstrap_repo_owner
   repo_name               = var.fluxcd_bootstrap_repo_name
