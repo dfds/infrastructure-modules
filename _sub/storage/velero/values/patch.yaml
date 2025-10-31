@@ -36,7 +36,7 @@ spec:
       features: EnableCSI
       logLevel: ${log_level}
       backupStorageLocation:
-        - name: aws
+        - name: default
           provider: aws
           default : true
           bucket: ${bucket_name}
@@ -87,6 +87,7 @@ spec:
       ${cluster_name}-cluster-backup:
         schedule: "${cron_schedule}"
         template:
+          storageLocation: "default"
           ttl: "${schedules_template_ttl}"
           snapshotVolumes: ${snapshots_enabled}
 %{ if length(excluded_namespace_scoped_resources) > 0 ~}
