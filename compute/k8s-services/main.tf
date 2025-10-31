@@ -69,7 +69,6 @@ module "traefik_green_variant_manifests" {
 
 module "lb_controller_flux_manifests" {
   source                  = "../../_sub/network/aws-lb-controller"
-  count                   = var.aws_lb_controller_deploy ? 1 : 0
   cluster_name            = var.eks_cluster_name
   deploy_name             = "aws-lb-controller"
   namespace               = local.k8s_lb_controller_namespace
@@ -78,7 +77,7 @@ module "lb_controller_flux_manifests" {
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   cluster_region          = var.aws_region
-  role_arn                = module.lb_controller_role[0].arn
+  role_arn                = module.lb_controller_role.arn
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
@@ -93,7 +92,6 @@ module "lb_controller_flux_manifests" {
 
 module "lb_controller_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
-  count   = var.aws_lb_controller_deploy ? 1 : 0
   version = "6.2.3"
 
   name                              = "${var.eks_cluster_name}-lb-controller"

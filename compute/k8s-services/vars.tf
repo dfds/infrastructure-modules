@@ -541,7 +541,7 @@ variable "velero_azure_resource_group_name" {
   default     = ""
   description = "The name of the Azure resource group where the storage account is located"
 }
-  
+
 variable "velero_azure_storage_account_name" {
   type        = string
   default     = ""
@@ -1110,12 +1110,6 @@ variable "keda_chart_version" {
 # --------------------------------------------------
 # AWS Load Balancer Controller
 # --------------------------------------------------
-variable "aws_lb_controller_deploy" {
-  type        = bool
-  description = "Deploy AWS Load Balancer Controller helm chart switch"
-  default     = true
-}
-
 variable "aws_lb_controller_helm_chart_version" {
   type        = string
   description = "AWS Load Balancer Controller helm chart version"
