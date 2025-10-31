@@ -404,6 +404,38 @@ variable "traefik_green_variant_weight" {
   default     = 0
 }
 
+#--------------------------------------------------
+# NLB
+# --------------------------------------------------
+variable "traefik_nlb_deploy" {
+  type    = bool
+  default = false
+}
+
+variable "traefik_nlb_helm_chart_version" {
+  type        = string
+  description = "Helm Chart version to be used to deploy Traefik"
+  default     = ""
+}
+
+variable "traefik_nlb_http_nodeport" {
+  type        = number
+  description = "Nodeport used by NLB's to connect to the Traefik instance"
+  default     = 30000
+}
+
+variable "traefik_nlb_admin_nodeport" {
+  type        = number
+  description = "Nodeport used by NLB's to connect to the Traefik instance admin page"
+  default     = 30001
+}
+
+variable "traefik_nlb_additional_args" {
+  type        = list(any)
+  description = "Pass arguments to the additionalArguments node in the Traefik Helm chart"
+  default     = ["--metrics.prometheus"]
+}
+
 # --------------------------------------------------
 # Blackbox Exporter
 # --------------------------------------------------
