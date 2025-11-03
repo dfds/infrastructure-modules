@@ -60,10 +60,7 @@ func TestTraefikDeployment(t *testing.T) {
     AssertK8sDeployment(t, clientset, *traefikNamespace, *traefikNamespace, 3)
 }
 
-func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
-	clientset := NewK8sClientSet(t)
-	AssertFluxReconciliation(t, clientset)
-
+func DeployTestcase(t *testing.T, clientset *kubernetes.Clientset) (*appsv1.Deployment, *apiv1.Service) {
 	deploymentsClient := clientset.AppsV1().Deployments(apiv1.NamespaceDefault)
 
 	deployment := &appsv1.Deployment{
@@ -122,7 +119,7 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 
 	serviceClient := clientset.CoreV1().Services(apiv1.NamespaceDefault)
 
-	var service = &apiv1.Service{
+	service := &apiv1.Service{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "nginx-test",
 			Namespace: "default",
@@ -148,6 +145,32 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 		t.Log(err)
 	}
 	fmt.Printf("Created service %q.\n", serviceResult.GetObjectMeta().GetName())
+
+	return deployment, service
+}
+
+func CleanupTestcase(t *testing.T, clientset *kubernetes.Clientset, deployment *appsv1.Deployment, service *apiv1.Service) {
+	deploymentsClient := clientset.AppsV1().Deployments(apiv1.NamespaceDefault)
+	serviceClient := clientset.CoreV1().Services(apiv1.NamespaceDefault)
+
+	deletePolicy := metav1.DeletePropagationForeground
+	if err := deploymentsClient.Delete(context.TODO(), deployment.Name, metav1.DeleteOptions{
+		PropagationPolicy: &deletePolicy,
+	}); err != nil {
+		t.Logf("error deleting Deployment: %v", err)
+	}
+
+	if err := serviceClient.Delete(context.TODO(), service.Name, metav1.DeleteOptions{}); err != nil {
+		t.Logf("error deleting Service: %v", err)
+	}
+}
+
+func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
+	clientset := NewK8sClientSet(t)
+	AssertFluxReconciliation(t, clientset)
+
+	// Deploy nginx test resources
+	deployment, service := DeployTestcase(t, clientset)
 
 	// Custom Resources
 
@@ -248,14 +271,6 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 		t.Logf("error deleting IngressRoute: %v", err)
 	}
 
-	deletePolicy := metav1.DeletePropagationForeground
-	if err := deploymentsClient.Delete(context.TODO(), deployment.Name, metav1.DeleteOptions{
-		PropagationPolicy: &deletePolicy,
-	}); err != nil {
-		t.Logf("error deleting Deployment: %v", err)
-	}
-
-	if err := serviceClient.Delete(context.TODO(), service.Name, metav1.DeleteOptions{}); err != nil {
-		t.Logf("error deleting Service: %v", err)
-	}
+	// Clean up nginx resources
+	CleanupTestcase(t, clientset, deployment, service)
 }
