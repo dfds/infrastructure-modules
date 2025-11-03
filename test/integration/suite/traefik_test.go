@@ -345,46 +345,24 @@ func TestTraefikGatewayHTTPRoute(t *testing.T) {
 	// Create HTTPRoute
 	if err := k8sClient.Create(context.TODO(), httpRoute); err != nil {
 		t.Logf("error creating HTTPRoute: %v", err)
-	} else {
-		t.Logf("Created HTTPRoute: %s", httpRoute.GetName())
 	}
-
-	// Wait for deployment to be ready with more debugging
-	t.Logf("Waiting for deployment %s to be ready...", deployment.Name)
 
 	// Check pods status to debug deployment issues
 	podsClient := clientset.CoreV1().Pods("default")
 	pods, err := podsClient.List(context.TODO(), metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("app=%s", service.Name),
 	})
+	_ = pods
 	if err != nil {
 		t.Logf("Error listing pods: %v", err)
-	} else {
-		t.Logf("Found %d pods for deployment %s", len(pods.Items), deployment.Name)
-		for i, pod := range pods.Items {
-			t.Logf("Pod %d: Name=%s, Phase=%s", i, pod.Name, pod.Status.Phase)
-			if len(pod.Status.ContainerStatuses) > 0 {
-				cs := pod.Status.ContainerStatuses[0]
-				t.Logf("  Container Ready=%v, RestartCount=%d", cs.Ready, cs.RestartCount)
-				if cs.State.Waiting != nil {
-					t.Logf("  Waiting: %s - %s", cs.State.Waiting.Reason, cs.State.Waiting.Message)
-				}
-			}
-		}
 	}
-
-	// Wait a bit for the deployment to come up, then check again
-	t.Logf("Waiting 30 seconds for deployment to stabilize...")
-	time.Sleep(30 * time.Second)
 
 	// Check deployment status again
 	deploymentsClient := clientset.AppsV1().Deployments("default")
 	dep, err := deploymentsClient.Get(context.TODO(), deployment.Name, metav1.GetOptions{})
+	_ = dep
 	if err != nil {
 		t.Logf("Error getting deployment: %v", err)
-	} else {
-		t.Logf("Deployment status after wait: Ready replicas: %d, Available replicas: %d, Replicas: %d",
-			dep.Status.ReadyReplicas, dep.Status.AvailableReplicas, dep.Status.Replicas)
 	}
 
 	AssertK8sDeployment(t, clientset, "default", deployment.Name, 1)
@@ -396,11 +374,6 @@ func TestTraefikGatewayHTTPRoute(t *testing.T) {
 	}, httpRoute)
 	if err != nil {
 		t.Logf("Error getting HTTPRoute status: %v", err)
-	} else {
-		t.Logf("HTTPRoute retrieved successfully")
-		if status, found, err := unstructured.NestedMap(httpRoute.Object, "status"); err == nil && found {
-			t.Logf("HTTPRoute status: %+v", status)
-		}
 	}
 
 	// Check if Gateway exists in Traefik namespace
@@ -414,13 +387,10 @@ func TestTraefikGatewayHTTPRoute(t *testing.T) {
 	err = k8sClient.Get(context.TODO(), gatewayKey, gateway)
 	if err != nil {
 		t.Logf("Error getting Gateway %s/%s: %v", *traefikNamespace, "traefik-gateway", err)
-	} else {
-		t.Logf("Found Gateway: %s/%s", *traefikNamespace, "traefik-gateway")
 	}
 
 	// Add a brief wait for HTTPRoute to be processed
 	time.Sleep(10 * time.Second)
-	t.Logf("Testing endpoint: https://nginx-gw-test.qa.qa.dfds.cloud/")
 
 	// Call the test endpoint
 	resp, err := http.Get("https://nginx-gw-test.qa.qa.dfds.cloud/")
@@ -428,7 +398,6 @@ func TestTraefikGatewayHTTPRoute(t *testing.T) {
 		t.Logf("HTTP request error: %v", err)
 	}
 	defer resp.Body.Close()
-	t.Logf("HTTP response status: %d", resp.StatusCode)
 	assert.Equal(t, 200, resp.StatusCode)
 
 	// Delete HTTPRoute
