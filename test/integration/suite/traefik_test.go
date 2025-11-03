@@ -12,6 +12,7 @@ import (
 	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	intstr "k8s.io/apimachinery/pkg/util/intstr"
+	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
 
@@ -24,16 +25,44 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/scheme"
 )
 
+func GetTraefikNamespace(clientset *kubernetes.Clientset) *string {
+    ctx := context.TODO()
+
+    // Get all namespaces
+    namespaces, err := clientset.CoreV1().Namespaces().List(ctx, metav1.ListOptions{})
+    if err != nil {
+        log.Printf("Error listing namespaces: %v", err)
+        return nil
+    }
+
+    // Check for Traefik namespace variants
+    traefikVariants := []string{"traefik-blue-variant", "traefik-green-variant"}
+
+    for _, ns := range namespaces.Items {
+        for _, variant := range traefikVariants {
+            if ns.Name == variant {
+                return &variant
+            }
+        }
+    }
+
+    return nil
+}
+
 func TestTraefikDeployment(t *testing.T) {
 	clientset := NewK8sClientSet(t)
 	AssertFluxReconciliation(t, clientset)
-	AssertK8sDeployment(t, clientset, "traefik-blue-variant", "traefik-blue-variant", 3)
+	traefikNamespace := GetTraefikNamespace(clientset)
+    if traefikNamespace == nil {
+        t.Fatal("Traefik namespace not found")
+    }
+
+    AssertK8sDeployment(t, clientset, *traefikNamespace, *traefikNamespace, 3)
 }
 
 func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 	clientset := NewK8sClientSet(t)
 	AssertFluxReconciliation(t, clientset)
-	AssertK8sDeployment(t, clientset, "traefik-blue-variant", "traefik-blue-variant", 3)
 
 	deploymentsClient := clientset.AppsV1().Deployments(apiv1.NamespaceDefault)
 
