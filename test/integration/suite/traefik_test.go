@@ -52,19 +52,17 @@ func GetTraefikNamespace(clientset *kubernetes.Clientset) *string {
 func TestTraefikDeployment(t *testing.T) {
 	clientset := NewK8sClientSet(t)
 	AssertFluxReconciliation(t, clientset)
-	AssertK8sDeployment(t, clientset, "traefik-blue-variant", "traefik-blue-variant", 3)
-}
-
-func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
-	clientset := NewK8sClientSet(t)
-	AssertFluxReconciliation(t, clientset)
-
 	traefikNamespace := GetTraefikNamespace(clientset)
     if traefikNamespace == nil {
         t.Fatal("Traefik namespace not found")
     }
 
     AssertK8sDeployment(t, clientset, *traefikNamespace, *traefikNamespace, 3)
+}
+
+func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
+	clientset := NewK8sClientSet(t)
+	AssertFluxReconciliation(t, clientset)
 
 	deploymentsClient := clientset.AppsV1().Deployments(apiv1.NamespaceDefault)
 
