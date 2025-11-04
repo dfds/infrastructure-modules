@@ -46,7 +46,7 @@ locals {
     1,
     length(local.workload_dns_zone_list),
   )
-  core_dns_zone_name = var.eks_is_sandbox ? var.workload_dns_zone_name : join(".", local.core_dns_zone_list)
+  core_dns_zone_name = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? var.workload_dns_zone_name : join(".", local.core_dns_zone_list)
 }
 
 # --------------------------------------------------

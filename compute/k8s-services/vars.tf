@@ -43,11 +43,6 @@ variable "eks_cluster_name" {
   type = string
 }
 
-variable "eks_is_sandbox" {
-  type        = bool
-  description = "Specifies this is a sandbox cluster, which currently skips certain resources"
-  default     = false
-}
 # --------------------------------------------------
 # CloudWatch Logs
 # --------------------------------------------------
