@@ -2,7 +2,7 @@
 locals {
   dns_zone_list      = split(".", var.dns_zone_name)
   core_dns_zone_list = slice(local.dns_zone_list, 1, length(local.dns_zone_list))
-  core_dns_zone_name = join(".", local.core_dns_zone_list)
+  core_dns_zone_name = var.eks_is_sandbox ? var.dns_zone_name : join(".", local.core_dns_zone_list)
 }
 
 # Read workload DNS zone

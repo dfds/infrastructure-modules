@@ -37,3 +37,9 @@ variable "tags" {
   description = "A map of tags to apply to all the resources deployed by the module"
   default     = {}
 }
+
+variable "eks_is_sandbox" {
+  type        = bool
+  description = "Specifies this is a sandbox cluster, which currently skips certain resources"
+  default     = false
+}
