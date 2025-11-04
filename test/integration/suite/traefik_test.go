@@ -295,7 +295,7 @@ func TestTraefikGatewayHTTPRoute(t *testing.T) {
 
 	// Create a new scheme and register Gateway API types
 	clientScheme := runtime.NewScheme()
-	err = gwapiv1.AddToScheme(clientScheme)
+	err = gwapiv1.Install(clientScheme)
 	if err != nil {
 		log.Fatalf("Error adding Gateway API to scheme: %v", err)
 	}
