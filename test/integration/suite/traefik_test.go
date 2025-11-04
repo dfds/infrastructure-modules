@@ -11,6 +11,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 	intstr "k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -23,6 +24,7 @@ import (
 	"github.com/traefik/traefik/v3/pkg/config/dynamic"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/scheme"
+	gwapiv1 "sigs.k8s.io/gateway-api/apis/v1"
 )
 
 func GetTraefikNamespace(clientset *kubernetes.Clientset) *string {
@@ -60,18 +62,17 @@ func TestTraefikDeployment(t *testing.T) {
     AssertK8sDeployment(t, clientset, *traefikNamespace, *traefikNamespace, 3)
 }
 
-func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
-	clientset := NewK8sClientSet(t)
-	AssertFluxReconciliation(t, clientset)
-
+func DeployTestcase(t *testing.T, clientset *kubernetes.Clientset, testName string) (*appsv1.Deployment, *apiv1.Service) {
 	deploymentsClient := clientset.AppsV1().Deployments(apiv1.NamespaceDefault)
+
+	resourceName := fmt.Sprintf("nginx-test-%s", testName)
 
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "nginx-test",
+			Name:      resourceName,
 			Namespace: "default",
 			Labels: map[string]string{
-				"app": "nginx-test",
+				"app": resourceName,
 			},
 		},
 		Spec: appsv1.DeploymentSpec{
@@ -81,13 +82,13 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 			Replicas: func() *int32 { i := int32(1); return &i }(),
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"app": "nginx-test",
+					"app": resourceName,
 				},
 			},
 			Template: apiv1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"app": "nginx-test",
+						"app": resourceName,
 					},
 				},
 				Spec: apiv1.PodSpec{
@@ -122,9 +123,9 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 
 	serviceClient := clientset.CoreV1().Services(apiv1.NamespaceDefault)
 
-	var service = &apiv1.Service{
+	service := &apiv1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "nginx-test",
+			Name:      resourceName,
 			Namespace: "default",
 		},
 		Spec: apiv1.ServiceSpec{
@@ -133,7 +134,7 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 				Port:       int32(80),
 				TargetPort: intstr.IntOrString{IntVal: int32(80)},
 			}},
-			Selector: map[string]string{"app": "nginx-test"},
+			Selector: map[string]string{"app": resourceName},
 		},
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "v1",
@@ -148,6 +149,32 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 		t.Log(err)
 	}
 	fmt.Printf("Created service %q.\n", serviceResult.GetObjectMeta().GetName())
+
+	return deployment, service
+}
+
+func CleanupTestcase(t *testing.T, clientset *kubernetes.Clientset, deployment *appsv1.Deployment, service *apiv1.Service) {
+	deploymentsClient := clientset.AppsV1().Deployments(apiv1.NamespaceDefault)
+	serviceClient := clientset.CoreV1().Services(apiv1.NamespaceDefault)
+
+	deletePolicy := metav1.DeletePropagationForeground
+	if err := deploymentsClient.Delete(context.TODO(), deployment.Name, metav1.DeleteOptions{
+		PropagationPolicy: &deletePolicy,
+	}); err != nil {
+		t.Logf("error deleting Deployment: %v", err)
+	}
+
+	if err := serviceClient.Delete(context.TODO(), service.Name, metav1.DeleteOptions{}); err != nil {
+		t.Logf("error deleting Service: %v", err)
+	}
+}
+
+func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
+	clientset := NewK8sClientSet(t)
+	AssertFluxReconciliation(t, clientset)
+
+	// Deploy nginx test resources
+	deployment, service := DeployTestcase(t, clientset, "ingressroute")
 
 	// Custom Resources
 
@@ -195,7 +222,7 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 
 	ingressRoute := &traefikv1alpha1.IngressRoute{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "nginx-test",
+			Name:      service.Name,
 			Namespace: "default",
 		},
 		Spec: traefikv1alpha1.IngressRouteSpec{
@@ -206,7 +233,7 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 					Services: []traefikv1alpha1.Service{
 						{
 							LoadBalancerSpec: traefikv1alpha1.LoadBalancerSpec{
-								Name: "nginx-test",
+								Name: service.Name,
 								Port: intstr.IntOrString{
 									Type:   intstr.Int,
 									IntVal: 80,
@@ -228,7 +255,7 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 		t.Logf("error creating IngressRoute: %v", err)
 	}
 
-	AssertK8sDeployment(t, clientset, "default", "nginx-test", 1)
+	AssertK8sDeployment(t, clientset, "default", deployment.Name, 1)
 
 	// Call the test endpoint
 	resp, err := http.Get("https://nginx-test.qa.qa.dfds.cloud/test")
@@ -248,14 +275,144 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 		t.Logf("error deleting IngressRoute: %v", err)
 	}
 
-	deletePolicy := metav1.DeletePropagationForeground
-	if err := deploymentsClient.Delete(context.TODO(), deployment.Name, metav1.DeleteOptions{
-		PropagationPolicy: &deletePolicy,
-	}); err != nil {
-		t.Logf("error deleting Deployment: %v", err)
+	// Clean up nginx resources
+	CleanupTestcase(t, clientset, deployment, service)
+}
+
+func TestTraefikGatewayHTTPRoute(t *testing.T) {
+	clientset := NewK8sClientSet(t)
+	AssertFluxReconciliation(t, clientset)
+
+	// Deploy nginx test resources
+	deployment, service := DeployTestcase(t, clientset, "httproute")
+
+	// Gateway API Resources
+	kubeconfig := filepath.Join(homedir.HomeDir(), ".kube", "qa.config")
+	cfg, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+	if err != nil {
+		t.Logf("Error building kubeconfig: %v", err)
 	}
 
-	if err := serviceClient.Delete(context.TODO(), service.Name, metav1.DeleteOptions{}); err != nil {
-		t.Logf("error deleting Service: %v", err)
+	// Create a new scheme and register Gateway API types
+	clientScheme := runtime.NewScheme()
+	err = gwapiv1.Install(clientScheme)
+	if err != nil {
+		log.Fatalf("Error adding Gateway API to scheme: %v", err)
 	}
+
+	// Create the controller-runtime client with Gateway API scheme
+	k8sClient, err := client.New(cfg, client.Options{Scheme: clientScheme})
+	if err != nil {
+		t.Logf("Error creating controller-runtime client: %v", err)
+	}
+
+	// First, let's find the Traefik namespace to get the Gateway
+	traefikNamespace := GetTraefikNamespace(clientset)
+	if traefikNamespace == nil {
+		t.Fatal("Traefik namespace not found - Gateway API test requires Traefik Gateway")
+	}
+
+	// Gateway API HTTPRoute using official types
+	pathPrefix := gwapiv1.PathMatchPathPrefix
+	httpRoute := &gwapiv1.HTTPRoute{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "nginx-gw-test",
+			Namespace: "default",
+		},
+		Spec: gwapiv1.HTTPRouteSpec{
+			CommonRouteSpec: gwapiv1.CommonRouteSpec{
+				ParentRefs: []gwapiv1.ParentReference{
+					{
+						Name:      "traefik-gateway",
+						Namespace: (*gwapiv1.Namespace)(traefikNamespace),
+					},
+				},
+			},
+			Hostnames: []gwapiv1.Hostname{"nginx-gw-test.qa.qa.dfds.cloud"},
+			Rules: []gwapiv1.HTTPRouteRule{
+				{
+					Matches: []gwapiv1.HTTPRouteMatch{
+						{
+							Path: &gwapiv1.HTTPPathMatch{
+								Type:  &pathPrefix,
+								Value: func() *string { s := "/"; return &s }(),
+							},
+						},
+					},
+					BackendRefs: []gwapiv1.HTTPBackendRef{
+						{
+							BackendRef: gwapiv1.BackendRef{
+								BackendObjectReference: gwapiv1.BackendObjectReference{
+									Name: gwapiv1.ObjectName(service.Name),
+									Port: func() *gwapiv1.PortNumber { p := gwapiv1.PortNumber(80); return &p }(),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	// Create HTTPRoute
+	if err := k8sClient.Create(context.TODO(), httpRoute); err != nil {
+		t.Logf("error creating HTTPRoute: %v", err)
+	}
+
+	// Check pods status to debug deployment issues
+	podsClient := clientset.CoreV1().Pods("default")
+	pods, err := podsClient.List(context.TODO(), metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("app=%s", service.Name),
+	})
+	_ = pods
+	if err != nil {
+		t.Logf("Error listing pods: %v", err)
+	}
+
+	// Check deployment status again
+	deploymentsClient := clientset.AppsV1().Deployments("default")
+	dep, err := deploymentsClient.Get(context.TODO(), deployment.Name, metav1.GetOptions{})
+	_ = dep
+	if err != nil {
+		t.Logf("Error getting deployment: %v", err)
+	}
+
+	AssertK8sDeployment(t, clientset, "default", deployment.Name, 1)
+
+	// Check HTTPRoute status
+	err = k8sClient.Get(context.TODO(), client.ObjectKey{
+		Namespace: "default",
+		Name:      "nginx-gw-test",
+	}, httpRoute)
+	if err != nil {
+		t.Logf("Error getting HTTPRoute status: %v", err)
+	}
+
+	// Check if Gateway exists in Traefik namespace
+	gateway := &gwapiv1.Gateway{}
+	gatewayKey := client.ObjectKey{
+		Namespace: *traefikNamespace,
+		Name:      "traefik-gateway",
+	}
+	err = k8sClient.Get(context.TODO(), gatewayKey, gateway)
+	if err != nil {
+		t.Logf("Error getting Gateway %s/%s: %v", *traefikNamespace, "traefik-gateway", err)
+	}
+
+
+	// Call the test endpoint
+	resp, err := http.Get("https://nginx-gw-test.qa.qa.dfds.cloud/")
+	if err != nil {
+		t.Logf("HTTP request error: %v", err)
+	}
+	defer resp.Body.Close()
+	assert.Equal(t, 200, resp.StatusCode)
+
+	// Delete HTTPRoute
+	if err := k8sClient.Delete(context.TODO(), httpRoute); err != nil {
+		t.Logf("error deleting HTTPRoute: %v", err)
+	}
+
+	// Clean up nginx resources
+	CleanupTestcase(t, clientset, deployment, service)
 }
