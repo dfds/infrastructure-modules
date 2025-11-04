@@ -11,6 +11,7 @@ const (
 	ServiceName          = "serviceName"
 	MetricsProviderName  = "metricsProviderName"
 	TracingProviderName  = "tracingProviderName"
+	ServerName           = "serverName"
 	ServerIndex          = "serverIndex"
 	TLSStoreName         = "tlsStoreName"
 	ServersTransportName = "serversTransport"
