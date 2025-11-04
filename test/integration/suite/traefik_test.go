@@ -11,7 +11,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime"
 	intstr "k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -24,6 +24,7 @@ import (
 	"github.com/traefik/traefik/v3/pkg/config/dynamic"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/scheme"
+	gwapiv1 "sigs.k8s.io/gateway-api/apis/v1"
 )
 
 func GetTraefikNamespace(clientset *kubernetes.Clientset) *string {
@@ -292,18 +293,18 @@ func TestTraefikGatewayHTTPRoute(t *testing.T) {
 		t.Logf("Error building kubeconfig: %v", err)
 	}
 
-	// Create the controller-runtime client
-	k8sClient, err := client.New(cfg, client.Options{})
+	// Create a new scheme and register Gateway API types
+	clientScheme := runtime.NewScheme()
+	err = gwapiv1.AddToScheme(clientScheme)
+	if err != nil {
+		log.Fatalf("Error adding Gateway API to scheme: %v", err)
+	}
+
+	// Create the controller-runtime client with Gateway API scheme
+	k8sClient, err := client.New(cfg, client.Options{Scheme: clientScheme})
 	if err != nil {
 		t.Logf("Error creating controller-runtime client: %v", err)
 	}
-
-	// Gateway API HTTPRoute using unstructured
-	httpRoute := &unstructured.Unstructured{}
-	httpRoute.SetAPIVersion("gateway.networking.k8s.io/v1")
-	httpRoute.SetKind("HTTPRoute")
-	httpRoute.SetName("nginx-gw-test")
-	httpRoute.SetNamespace("default")
 
 	// First, let's find the Traefik namespace to get the Gateway
 	traefikNamespace := GetTraefikNamespace(clientset)
@@ -311,35 +312,47 @@ func TestTraefikGatewayHTTPRoute(t *testing.T) {
 		t.Fatal("Traefik namespace not found - Gateway API test requires Traefik Gateway")
 	}
 
-	spec := map[string]interface{}{
-		"parentRefs": []map[string]interface{}{
-			{
-				"name":      "traefik-gateway",
-				"namespace": *traefikNamespace,
-			},
+	// Gateway API HTTPRoute using official types
+	pathPrefix := gwapiv1.PathMatchPathPrefix
+	httpRoute := &gwapiv1.HTTPRoute{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "nginx-gw-test",
+			Namespace: "default",
 		},
-		"hostnames": []string{"nginx-gw-test.qa.qa.dfds.cloud"},
-		"rules": []map[string]interface{}{
-			{
-				"matches": []map[string]interface{}{
+		Spec: gwapiv1.HTTPRouteSpec{
+			CommonRouteSpec: gwapiv1.CommonRouteSpec{
+				ParentRefs: []gwapiv1.ParentReference{
 					{
-						"path": map[string]interface{}{
-							"type":  "PathPrefix",
-							"value": "/",
-						},
+						Name:      "traefik-gateway",
+						Namespace: (*gwapiv1.Namespace)(traefikNamespace),
 					},
 				},
-				"backendRefs": []map[string]interface{}{
-					{
-						"name": service.Name,
-						"port": 80,
+			},
+			Hostnames: []gwapiv1.Hostname{"nginx-gw-test.qa.qa.dfds.cloud"},
+			Rules: []gwapiv1.HTTPRouteRule{
+				{
+					Matches: []gwapiv1.HTTPRouteMatch{
+						{
+							Path: &gwapiv1.HTTPPathMatch{
+								Type:  &pathPrefix,
+								Value: func() *string { s := "/"; return &s }(),
+							},
+						},
+					},
+					BackendRefs: []gwapiv1.HTTPBackendRef{
+						{
+							BackendRef: gwapiv1.BackendRef{
+								BackendObjectReference: gwapiv1.BackendObjectReference{
+									Name: gwapiv1.ObjectName(service.Name),
+									Port: func() *gwapiv1.PortNumber { p := gwapiv1.PortNumber(80); return &p }(),
+								},
+							},
+						},
 					},
 				},
 			},
 		},
 	}
-
-	httpRoute.Object["spec"] = spec
 
 	// Create HTTPRoute
 	if err := k8sClient.Create(context.TODO(), httpRoute); err != nil {
@@ -376,9 +389,7 @@ func TestTraefikGatewayHTTPRoute(t *testing.T) {
 	}
 
 	// Check if Gateway exists in Traefik namespace
-	gateway := &unstructured.Unstructured{}
-	gateway.SetAPIVersion("gateway.networking.k8s.io/v1")
-	gateway.SetKind("Gateway")
+	gateway := &gwapiv1.Gateway{}
 	gatewayKey := client.ObjectKey{
 		Namespace: *traefikNamespace,
 		Name:      "traefik-gateway",

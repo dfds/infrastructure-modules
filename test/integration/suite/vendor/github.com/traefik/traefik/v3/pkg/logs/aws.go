@@ -1,16 +1,16 @@
 package logs
 
 import (
-	"github.com/aws/smithy-go/logging"
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/rs/zerolog"
 )
 
-func NewAWSWrapper(logger zerolog.Logger) logging.LoggerFunc {
+func NewAWSWrapper(logger zerolog.Logger) aws.LoggerFunc {
 	if logger.GetLevel() > zerolog.DebugLevel {
-		return func(classification logging.Classification, format string, args ...interface{}) {}
+		return func(args ...interface{}) {}
 	}
 
-	return func(classification logging.Classification, format string, args ...interface{}) {
+	return func(args ...interface{}) {
 		logger.Debug().CallerSkipFrame(2).MsgFunc(msgFunc(args...))
 	}
 }
