@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"path/filepath"
 	"testing"
-	"time"
 
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
@@ -389,8 +388,6 @@ func TestTraefikGatewayHTTPRoute(t *testing.T) {
 		t.Logf("Error getting Gateway %s/%s: %v", *traefikNamespace, "traefik-gateway", err)
 	}
 
-	// Add a brief wait for HTTPRoute to be processed
-	time.Sleep(10 * time.Second)
 
 	// Call the test endpoint
 	resp, err := http.Get("https://nginx-gw-test.qa.qa.dfds.cloud/")
