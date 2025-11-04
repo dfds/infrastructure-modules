@@ -110,6 +110,7 @@ module "traefik_alb_cert" {
   core_alias          = concat(var.traefik_alb_auth_core_alias, var.traefik_alb_anon_core_alias)
   aws_region          = var.aws_region          # Workaround to https://github.com/hashicorp/terraform/issues/21416
   aws_assume_role_arn = var.aws_assume_role_arn # Workaround to https://github.com/hashicorp/terraform/issues/21416
+  eks_is_sandbox      = data.terraform_remote_state.cluster.outputs.eks_is_sandbox
 }
 
 module "traefik_alb_auth_appreg" {
