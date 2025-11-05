@@ -293,7 +293,6 @@ data "aws_iam_policy_document" "restrictive" {
       "codewhisperer:*",
       "codecatalyst:*",
       "gamelift:*",
-      "gamesparks:*",
       "groundstation:*",
       "cloudhsm:*",
       "cloud9:*",
