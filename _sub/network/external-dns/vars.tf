@@ -86,3 +86,27 @@ variable "is_debug_mode" {
   description = "If it is set to true then logLevel will be set to debug."
   default     = false
 }
+
+variable "target_anon" {
+  type        = string
+  description = "The target DNS name for the public records"
+}
+
+variable "target_auth" {
+  type        = string
+  description = "The target DNS name for the authenticated records"
+}
+
+variable "dns_records_anon" {
+  type        = list(string)
+  description = "The DNS records to create for the public services"
+}
+variable "dns_records_auth" {
+  type        = list(string)
+  description = "The DNS records to create for the login-protected services"
+}
+
+variable "domain" {
+  type        = string
+  description = "The domain for the DNS records"
+}

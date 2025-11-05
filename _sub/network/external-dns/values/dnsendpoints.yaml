@@ -5,10 +5,17 @@ metadata:
   namespace: external-dns
 spec:
   endpoints:
-  %{~ for record in dns_records ~}
+  %{~ for record in dns_records_anon ~}
     - dnsName: ${record}
       recordTTL: 300
       recordType: CNAME
       targets:
-      - ${target}
+      - ${target_anon}
+  %{~ endfor ~}
+  %{~ for record in dns_records_auth ~}
+    - dnsName: ${record}
+      recordTTL: 300
+      recordType: CNAME
+      targets:
+      - ${target_auth}
   %{~ endfor ~}

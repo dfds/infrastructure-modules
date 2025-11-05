@@ -38,10 +38,10 @@ inputs = {
   # Load Balancers in front of Traefik
   # --------------------------------------------------
 
-  traefik_alb_auth_deploy = true # triggers Azure App registration
-  traefik_alb_auth_core_alias = ["authtest.qa.dfds.cloud"]
-  traefik_alb_anon_deploy = true
-  traefik_alb_anon_core_alias = ["simpletest.qa.dfds.cloud"]
+  traefik_alb_auth_deploy     = true # triggers Azure App registration
+  traefik_alb_auth_core_alias = ["test1.qa.dfds.cloud"]
+  traefik_alb_anon_deploy     = true
+  traefik_alb_anon_core_alias = ["test2.qa.dfds.cloud"]
   # --------------------------------------------------
   # Traefik v2
   # --------------------------------------------------
@@ -222,6 +222,6 @@ inputs = {
   external_dns_deploy                      = true
   external_dns_helm_chart_version          = "1.19.0"
   external_dns_is_debug_mode               = true
-  external_dns_traefik_alb_auth_core_alias = ["authtest_ext_dns.qa.dfds.cloud"]
-  external_dns_traefik_alb_anon_core_alias = ["simple_ext_dns.qa.dfds.cloud"]
+  external_dns_traefik_alb_auth_core_alias = ["test3.qa.dfds.cloud"]
+  external_dns_traefik_alb_anon_core_alias = ["test4.qa.dfds.cloud"]
 }

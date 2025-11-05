@@ -23,7 +23,7 @@ resource "github_repository_file" "extdns_helm_install" {
     gitops_apps_repo_url    = var.gitops_apps_repo_url
     deploy_name             = var.deploy_name
     gitops_apps_repo_branch = var.gitops_apps_repo_branch
-    dns_records = var.dns_records
+    dns_records             = concat(var.dns_records_anon, var.dns_records_auth)
   })
   overwrite_on_create = true
 }
@@ -53,23 +53,11 @@ resource "github_repository_file" "record" {
   branch     = local.repo_branch
   file       = "${local.helm_repo_path}/dnsendpoints.yaml"
   content = templatefile("${path.module}/values/dnsendpoints.yaml", {
-    deploy_name = "${var.domain}-records"
-    dns_records = var.dns_records
-    target      = var.target
+    deploy_name      = "${var.domain}-records"
+    dns_records_anon = var.dns_records_anon
+    dns_records_auth = var.dns_records_auth
+    target_anon      = var.target_anon
+    target_auth      = var.target_auth
   })
   overwrite_on_create = true
-}
-
-variable "target" {
-  type = string
-  description = "The target DNS name for the records"
-}
-
-variable "dns_records" {
-  type = list(string)
-  description = "The DNS records to create"
-}
-variable "domain" {
-  type = string
-  description = "The domain for the DNS records"
 }
