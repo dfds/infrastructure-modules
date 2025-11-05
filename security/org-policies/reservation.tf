@@ -14,7 +14,7 @@ data "aws_iam_policy_document" "reservation" {
     resources = ["*"]
 
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:role/OrgRole",
         "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
@@ -31,7 +31,7 @@ data "aws_iam_policy_document" "reservation" {
     resources = ["*"]
 
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:role/OrgRole",
         "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
@@ -48,7 +48,7 @@ data "aws_iam_policy_document" "reservation" {
     resources = ["*"]
 
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:role/OrgRole",
         "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
@@ -68,7 +68,7 @@ data "aws_iam_policy_document" "reservation" {
     resources = ["*"]
 
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:role/OrgRole",
         "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
@@ -85,7 +85,7 @@ data "aws_iam_policy_document" "reservation" {
     resources = ["*"]
 
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:role/OrgRole",
         "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
@@ -102,7 +102,7 @@ data "aws_iam_policy_document" "reservation" {
     resources = ["*"]
 
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:role/OrgRole",
         "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",

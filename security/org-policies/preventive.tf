@@ -24,7 +24,7 @@ data "aws_iam_policy_document" "preventive" {
     }
 
     condition {
-      test     = "StringNotLike"
+      test     = "ArnNotLike"
       variable = "aws:PrincipalArn"
       values   = var.ec2_exempted_accounts
     }
@@ -85,7 +85,7 @@ data "aws_iam_policy_document" "preventive" {
     resources = ["*"]
 
     condition {
-      test     = "StringNotLike"
+      test     = "ArnNotLike"
       variable = "aws:PrincipalArn"
       values   = ["arn:aws:iam::*:role/OrgRole"]
     }
@@ -160,7 +160,7 @@ data "aws_iam_policy_document" "preventive" {
       values   = [var.resource_owner_tag_value]
     }
     condition {
-      test     = "StringNotLike"
+      test     = "ArnNotLike"
       variable = "aws:PrincipalArn"
       values   = ["arn:aws:iam::*:role/OrgRole"]
     }
@@ -180,7 +180,7 @@ data "aws_iam_policy_document" "preventive" {
       values   = [var.resource_owner_tag_value]
     }
     condition {
-      test     = "StringNotLike"
+      test     = "ArnNotLike"
       variable = "aws:PrincipalArn"
       values   = ["arn:aws:iam::*:role/OrgRole"]
     }
@@ -193,7 +193,7 @@ data "aws_iam_policy_document" "preventive" {
     actions   = ["*"]
 
     condition {
-      test     = "StringLike"
+      test     = "ArnLike"
       variable = "aws:PrincipalArn"
       values   = ["arn:aws:iam::*:root"]
     }
@@ -210,7 +210,7 @@ data "aws_iam_policy_document" "preventive" {
       "s3:PutBucketPublicAccessBlock",
     ]
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:role/EKSAdmin",
         "arn:aws:iam::*:role/OrgRole",
