@@ -1,0 +1,14 @@
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: ${deploy_name}
+  namespace: external-dns
+spec:
+  endpoints:
+  %{~ for record in dns_records ~}
+    - dnsName: ${record}
+      recordTTL: 300
+      recordType: CNAME
+      targets:
+      - ${target}
+  %{~ endfor ~}

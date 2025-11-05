@@ -2,6 +2,10 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ${gitops_apps_repo_url}/apps/${deploy_name}?ref=${gitops_apps_repo_branch}
+%{ if length(dns_records) > 0 ~}
+  - dnsendpoints.yaml
+%{ endif ~}
+
 patches:
   - path: patch.yaml
     target:

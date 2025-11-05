@@ -221,6 +221,5 @@ inputs = {
   # --------------------------------------------------
   external_dns_deploy                     = true
   external_dns_helm_chart_version         = "1.19.0"
-  external_dns_domain_filters             = ["test.qa.dfds"]
   external_dns_is_debug_mode              = true
 }
