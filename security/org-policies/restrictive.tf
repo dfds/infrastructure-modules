@@ -284,20 +284,27 @@ data "aws_iam_policy_document" "restrictive" {
     sid    = "DenyDisallowedServices"
     effect = "Deny"
     actions = [
-      "codestar:*",
-      "codecommit:*",
+      "bedrock:*",
+      "cloud9:*",
+      "cloudhsm:*",
       "codeartifact:*",
       "codebuild:*",
+      "codecatalyst:*",
+      "codecommit:*",
       "codedeploy:*",
       "codepipeline:*",
+      "codestar:*",
       "codewhisperer:*",
-      "codecatalyst:*",
+      "comprehend:*",
       "gamelift:*",
       "groundstation:*",
-      "cloudhsm:*",
-      "cloud9:*",
+      "lex:*",
       "managedblockchain:*",
+      "polly:*",
+      "sagemaker:*",
       "supportplans:*",
+      "transcribe:*",
+      "translate:*"
     ]
     resources = ["*"]
 
