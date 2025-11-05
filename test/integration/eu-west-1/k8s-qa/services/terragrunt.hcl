@@ -223,5 +223,5 @@ inputs = {
   external_dns_helm_chart_version          = "1.19.0"
   external_dns_is_debug_mode               = true
   external_dns_traefik_alb_auth_core_alias = ["authtest_ext_dns.qa.dfds.cloud"]
-  external_dns_traefik_alb_anon_core_alias = ["simpletest_ext_dns.qa.dfds.cloud"]
+  external_dns_traefik_alb_anon_core_alias = ["simple_ext_dns.qa.dfds.cloud"]
 }
