@@ -764,9 +764,15 @@ variable "external_dns_helm_chart_version" {
   default     = ""
 }
 
-variable "external_dns_domain_filters" {
+variable "external_dns_traefik_alb_anon_core_alias" {
+  description = "A list of aliases/alternative names to be managed by External DNS in the *parent* domain. E.g. 'prettyurl.company.tld'"
   type        = list(string)
-  description = "List of domain filters for External DNS"
+  default     = []
+}
+
+variable "external_dns_traefik_alb_auth_core_alias" {
+  description = "A list of aliases/alternative names for the login-protected services to be managed by External DNS in the *parent* domain. E.g. 'prettyurl.company.tld'"
+  type        = list(string)
   default     = []
 }
 
