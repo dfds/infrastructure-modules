@@ -107,7 +107,7 @@ module "traefik_alb_cert" {
   deploy              = var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy ? true : false
   domain_name         = "*.${local.eks_fqdn}"
   dns_zone_name       = var.workload_dns_zone_name
-  core_alias          = concat(var.traefik_alb_auth_core_alias, var.traefik_alb_anon_core_alias)
+  core_alias          = concat(var.traefik_alb_auth_core_alias, var.traefik_alb_anon_core_alias, var.external_dns_traefik_alb_anon_core_alias, var.external_dns_traefik_alb_auth_core_alias)
   aws_region          = var.aws_region          # Workaround to https://github.com/hashicorp/terraform/issues/21416
   aws_assume_role_arn = var.aws_assume_role_arn # Workaround to https://github.com/hashicorp/terraform/issues/21416
   eks_is_sandbox      = data.terraform_remote_state.cluster.outputs.eks_is_sandbox
@@ -273,8 +273,14 @@ module "external_dns_flux_manifests" {
   role_arn                 = module.external_dns_iam_role_assume[0].arn
   assume_role_arn          = var.external_dns_core_route53_assume_role_arn != "" ? var.external_dns_core_route53_assume_role_arn : module.external_dns_iam_role_route53_access[0].arn
   deletion_policy_override = var.external_deletion_policy_override
-  domain_filters           = var.external_dns_domain_filters
+  domain_filters           = local.external_dns_domain_filters
   is_debug_mode            = var.external_dns_is_debug_mode
+  target_anon              = module.traefik_alb_anon.alb_fqdn
+  target_auth              = module.traefik_alb_auth.alb_fqdn
+  dns_records_anon         = var.external_dns_traefik_alb_anon_core_alias
+  dns_records_auth         = var.external_dns_traefik_alb_auth_core_alias
+  domain                   = local.core_dns_zone_name
+
   providers = {
     github = github.fluxcd
   }
