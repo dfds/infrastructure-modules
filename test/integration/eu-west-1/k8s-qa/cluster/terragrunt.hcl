@@ -64,8 +64,8 @@ inputs = {
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.33-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.33-v20250920
-      ami_id             = "ami-046a1ca9cb9520db5"
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.33-v20251103
+      ami_id             = "ami-035c02db192d3448c"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
       kube_memory                = "1024Mi"
@@ -82,8 +82,8 @@ inputs = {
       max_unavailable         = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.33-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.33-v20250920
-      ami_id             = "ami-046a1ca9cb9520db5"
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.33-v20251103
+      ami_id             = "ami-035c02db192d3448c"
       availability_zones = ["eu-west-1c"]
       taints = [
         {
