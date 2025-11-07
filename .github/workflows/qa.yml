@@ -12,7 +12,6 @@ on:
       - .gitignore
       - .pre-commit-config.yaml
       - .tflint.hcl
-      - mise.toml
       - LICENSE
       - README.md
       - renovate.json
@@ -25,7 +24,6 @@ on:
       - .gitignore
       - .pre-commit-config.yaml
       - .tflint.hcl
-      - mise.toml
       - LICENSE
       - README.md
       - renovate.json
