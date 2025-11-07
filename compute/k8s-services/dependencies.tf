@@ -82,7 +82,7 @@ locals {
       [
         "internal.${local.eks_fqdn}"
       ],
-      var.traefik_alb_auth_core_alias
+      concat(var.traefik_alb_auth_core_alias, var.external_dns_traefik_alb_auth_core_alias)
     ) : [],
     var.traefik_blue_variant_deploy && var.traefik_green_variant_deploy ?
     [
