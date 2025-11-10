@@ -20,6 +20,7 @@ errors {
       ".*connection reset.*",
     ]
     max_attempts = 3
+    sleep_interval_sec = 5
   }
 }
 
