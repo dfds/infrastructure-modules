@@ -19,6 +19,7 @@ errors {
       ".*connection timed out.*",
       ".*connection reset.*",
     ]
+    max_attempts = 3
   }
 }
 
