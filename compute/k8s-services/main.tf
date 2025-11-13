@@ -246,6 +246,56 @@ module "traefik_alb_anon_dns_core_alias" {
   }
 }
 
+module "traefik_nlb" {
+  source                = "../../_sub/compute/eks-nlb"
+  count                 = var.traefik_nlb_deploy ? 1 : 0
+  cluster_name          = "${var.eks_cluster_name}-traefik-nlb"
+  nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
+  vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
+  subnet_ids            = data.terraform_remote_state.cluster.outputs.eks_control_subnet_ids
+  autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
+  target_http_port      = var.traefik_nlb_http_nodeport
+  target_admin_port     = var.traefik_nlb_admin_nodeport
+  health_check_path     = "/ping"
+}
+
+module "traefik_nlb_flux_manifests" {
+  source                 = "../../_sub/compute/k8s-traefik-flux"
+  count                  = var.traefik_nlb_deploy ? 1 : 0
+  cluster_name           = var.eks_cluster_name
+  deploy_name            = "traefik-nlb"
+  namespace              = "traefik-nlb"
+  helm_chart_version     = var.traefik_nlb_helm_chart_version
+  replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
+  http_nodeport          = var.traefik_nlb_http_nodeport
+  admin_nodeport         = var.traefik_nlb_admin_nodeport
+  github_owner           = var.fluxcd_bootstrap_repo_owner
+  repo_name              = var.fluxcd_bootstrap_repo_name
+  repo_branch            = var.fluxcd_bootstrap_repo_branch
+  additional_args        = var.traefik_nlb_additional_args
+  dashboard_ingress_host = "traefik-nlb.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  prune                   = var.fluxcd_prune
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
+}
+
+module "traefik_nlb_dns_for_traefik_nlb_dashboard" {
+  source       = "../../_sub/network/route53-record"
+  count        = var.traefik_nlb_deploy ? 1 : 0
+  deploy       = true # legacy
+  zone_id      = local.workload_dns_zone_id
+  record_name  = ["traefik-nlb.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
+  record_type  = "CNAME"
+  record_ttl   = "900"
+  record_value = "${module.traefik_nlb[0].nlb_fqdn}."
+}
+
 module "external_dns_iam_role_assume" {
   source               = "../../_sub/security/iam-role"
   count                = var.external_dns_deploy ? 1 : 0
