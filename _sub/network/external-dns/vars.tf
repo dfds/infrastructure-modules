@@ -75,11 +75,6 @@ variable "deletion_policy_override" {
   default     = ""
 }
 
-variable "domain_filters" {
-  type        = list(string)
-  description = "List of domain filters for external-dns to manage. Example: ['dfds.cloud', 'example.com']"
-  default     = []
-}
 
 variable "is_debug_mode" {
   type        = bool
@@ -109,4 +104,10 @@ variable "dns_records_auth" {
 variable "domain" {
   type        = string
   description = "The domain for the DNS records"
+}
+
+variable "zone_ids" {
+  type        = list(string)
+  description = "List of Route53 Hosted Zone IDs where external-dns should manage records"
+  default     = []
 }

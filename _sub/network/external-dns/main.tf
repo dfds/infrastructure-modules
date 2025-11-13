@@ -40,7 +40,7 @@ resource "github_repository_file" "extdns_helm_patch" {
     role_arn           = var.role_arn
     cluster            = var.cluster_name
     deletion_policy    = var.deletion_policy_override
-    domain_filters     = var.domain_filters
+    zone_ids           = var.zone_ids
     txt_owner_id       = local.txt_owner_id
     is_debug_mode      = var.is_debug_mode
     assume_role_arn    = var.assume_role_arn

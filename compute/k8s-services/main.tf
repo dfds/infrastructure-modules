@@ -273,14 +273,13 @@ module "external_dns_flux_manifests" {
   role_arn                 = module.external_dns_iam_role_assume[0].arn
   assume_role_arn          = var.external_dns_core_route53_assume_role_arn != "" ? var.external_dns_core_route53_assume_role_arn : module.external_dns_iam_role_route53_access[0].arn
   deletion_policy_override = var.external_deletion_policy_override
-  domain_filters           = local.external_dns_domain_filters
   is_debug_mode            = var.external_dns_is_debug_mode
   target_anon              = module.traefik_alb_anon.alb_fqdn
   target_auth              = module.traefik_alb_auth.alb_fqdn
   dns_records_anon         = var.external_dns_traefik_alb_anon_core_alias
   dns_records_auth         = var.external_dns_traefik_alb_auth_core_alias
   domain                   = local.core_dns_zone_name
-
+  zone_ids                 = local.external_dns_zone_ids
   providers = {
     github = github.fluxcd
   }
