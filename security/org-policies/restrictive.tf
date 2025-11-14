@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "restrictive" {
     ]
 
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:role/OrgRole",
       ]
@@ -36,7 +36,7 @@ data "aws_iam_policy_document" "restrictive" {
     resources = ["*"]
 
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:role/OrgRole",
         "arn:aws:iam::*:root",
@@ -72,7 +72,7 @@ data "aws_iam_policy_document" "restrictive" {
     resources = ["*"]
 
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:role/OrgRole",
       ]
@@ -95,7 +95,7 @@ data "aws_iam_policy_document" "restrictive" {
     ]
 
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:role/OrgRole",
       ]
@@ -237,7 +237,7 @@ data "aws_iam_policy_document" "restrictive" {
     resources = ["*"]
 
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:role/OrgRole",
         "arn:aws:iam::*:user/deploy-prime-core",
@@ -255,7 +255,7 @@ data "aws_iam_policy_document" "restrictive" {
     resources = ["*"]
 
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:role/OrgRole",
         "arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_CloudAdmin_*",
@@ -272,7 +272,7 @@ data "aws_iam_policy_document" "restrictive" {
     resources = ["*"]
 
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:root"
       ]
@@ -284,26 +284,32 @@ data "aws_iam_policy_document" "restrictive" {
     sid    = "DenyDisallowedServices"
     effect = "Deny"
     actions = [
-      "codestar:*",
-      "codecommit:*",
+      "bedrock:*",
+      "cloud9:*",
+      "cloudhsm:*",
       "codeartifact:*",
       "codebuild:*",
+      "codecatalyst:*",
+      "codecommit:*",
       "codedeploy:*",
       "codepipeline:*",
+      "codestar:*",
       "codewhisperer:*",
-      "codecatalyst:*",
+      "comprehend:*",
       "gamelift:*",
-      "gamesparks:*",
       "groundstation:*",
-      "cloudhsm:*",
-      "cloud9:*",
+      "lex:*",
       "managedblockchain:*",
+      "polly:*",
+      "sagemaker:*",
       "supportplans:*",
+      "transcribe:*",
+      "translate:*"
     ]
     resources = ["*"]
 
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:role/OrgRole",
         "arn:aws:iam::*:role/aws-config-recorder*",
