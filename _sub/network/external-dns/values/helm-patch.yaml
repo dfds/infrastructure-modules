@@ -15,15 +15,14 @@ spec:
     serviceAccount:
       annotations:
         eks.amazonaws.com/role-arn: ${role_arn}
-    domainFilters:
-  %{~ for domain in domain_filters ~}
-      - ${domain}
-  %{~ endfor ~}
     txtOwnerId: ${txt_owner_id}
     extraArgs:
       - --aws-assume-role=${assume_role_arn}
       - --aws-prefer-cname
       - --namespace=${namespace}
+     %{~ for zone in zone_ids ~}
+      - --zone-id-filter=${zone}
+     %{~ endfor ~}
 %{ if deletion_policy != "" ~}
     policy: ${deletion_policy}
 %{ endif ~}
