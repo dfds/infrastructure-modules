@@ -4,7 +4,7 @@ terraform {
   required_providers {
     github = {
       source  = "integrations/github"
-      version = "~> 6.8.0"
+      version = "~> 6.8.0,!=6.8.2"
     }
     aws = {
       source  = "hashicorp/aws"
