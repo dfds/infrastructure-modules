@@ -7,7 +7,7 @@ data "aws_iam_policy_document" "integrity" {
     resources = ["*"]
 
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:role/OrgRole",
         "arn:aws:iam::*:role/EKSAdmin",
@@ -26,7 +26,7 @@ data "aws_iam_policy_document" "integrity" {
     resources = ["*"]
 
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:role/EKSAdmin",
         "arn:aws:iam::*:role/OrgRole",
@@ -47,7 +47,7 @@ data "aws_iam_policy_document" "integrity" {
     resources = ["*"]
 
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:role/OrgRole",
       ]
@@ -75,7 +75,7 @@ data "aws_iam_policy_document" "integrity" {
     resources = ["*"]
 
     condition {
-      test = "StringNotLike"
+      test = "ArnNotLike"
       values = [
         "arn:aws:iam::*:role/OrgRole",
       ]
