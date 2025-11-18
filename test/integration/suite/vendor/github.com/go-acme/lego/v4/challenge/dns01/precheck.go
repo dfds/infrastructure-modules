@@ -9,6 +9,10 @@ import (
 	"github.com/miekg/dns"
 )
 
+// defaultNameserverPort used by authoritative NS.
+// This is for tests only.
+var defaultNameserverPort = "53"
+
 // PreCheckFunc checks DNS propagation before notifying ACME that the DNS challenge is ready.
 type PreCheckFunc func(fqdn, value string) (bool, error)
 
@@ -25,6 +29,7 @@ func WrapPreCheck(wrap WrapPreCheckFunc) ChallengeOption {
 }
 
 // DisableCompletePropagationRequirement obsolete.
+//
 // Deprecated: use DisableAuthoritativeNssPropagationRequirement instead.
 func DisableCompletePropagationRequirement() ChallengeOption {
 	return DisableAuthoritativeNssPropagationRequirement()
@@ -121,7 +126,7 @@ func (p preCheck) checkDNSPropagation(fqdn, value string) (bool, error) {
 func checkNameserversPropagation(fqdn, value string, nameservers []string, addPort bool) (bool, error) {
 	for _, ns := range nameservers {
 		if addPort {
-			ns = net.JoinHostPort(ns, "53")
+			ns = net.JoinHostPort(ns, defaultNameserverPort)
 		}
 
 		r, err := dnsQuery(fqdn, dns.TypeTXT, []string{ns}, false)
@@ -136,9 +141,11 @@ func checkNameserversPropagation(fqdn, value string, nameservers []string, addPo
 		var records []string
 
 		var found bool
+
 		for _, rr := range r.Answer {
 			if txt, ok := rr.(*dns.TXT); ok {
 				record := strings.Join(txt.Txt, "")
+
 				records = append(records, record)
 				if record == value {
 					found = true
