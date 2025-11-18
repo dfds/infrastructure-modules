@@ -156,13 +156,20 @@ func (b *BatchProcessor) poll(interval time.Duration) (done chan struct{}) {
 				global.Warn("dropped log records", "dropped", d)
 			}
 
-			qLen := b.q.TryDequeue(buf, func(r []Record) bool {
-				ok := b.exporter.EnqueueExport(r)
-				if ok {
-					buf = slices.Clone(buf)
-				}
-				return ok
-			})
+			var qLen int
+			// Don't copy data from queue unless exporter can accept more, it is very expensive.
+			if b.exporter.Ready() {
+				qLen = b.q.TryDequeue(buf, func(r []Record) bool {
+					ok := b.exporter.EnqueueExport(r)
+					if ok {
+						buf = slices.Clone(buf)
+					}
+					return ok
+				})
+			} else {
+				qLen = b.q.Len()
+			}
+
 			if qLen >= b.batchSize {
 				// There is another full batch ready. Immediately trigger
 				// another export attempt.
@@ -272,6 +279,13 @@ func newQueue(size int) *queue {
 	}
 }
 
+func (q *queue) Len() int {
+	q.Lock()
+	defer q.Unlock()
+
+	return q.len
+}
+
 // Dropped returns the number of Records dropped during enqueueing since the
 // last time Dropped was called.
 func (q *queue) Dropped() uint64 {
@@ -315,7 +329,7 @@ func (q *queue) TryDequeue(buf []Record, write func([]Record) bool) int {
 	origRead := q.read
 
 	n := min(len(buf), q.len)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		buf[i] = q.read.Value
 		q.read = q.read.Next()
 	}

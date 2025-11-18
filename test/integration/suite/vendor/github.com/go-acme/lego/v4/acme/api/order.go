@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"net"
 	"slices"
 	"time"
 
@@ -18,7 +17,7 @@ type OrderOptions struct {
 
 	// A string uniquely identifying the profile
 	// which will be used to affect issuance of the certificate requested by this Order.
-	// - https://www.ietf.org/id/draft-aaron-acme-profiles-00.html#section-4
+	// - https://www.ietf.org/id/draft-ietf-acme-profiles-00.html#section-4
 	Profile string
 
 	// A string uniquely identifying a previously-issued certificate which this
@@ -36,18 +35,7 @@ func (o *OrderService) New(domains []string) (acme.ExtendedOrder, error) {
 
 // NewWithOptions Creates a new order.
 func (o *OrderService) NewWithOptions(domains []string, opts *OrderOptions) (acme.ExtendedOrder, error) {
-	var identifiers []acme.Identifier
-	for _, domain := range domains {
-		ident := acme.Identifier{Value: domain, Type: "dns"}
-
-		if net.ParseIP(domain) != nil {
-			ident.Type = "ip"
-		}
-
-		identifiers = append(identifiers, ident)
-	}
-
-	orderReq := acme.Order{Identifiers: identifiers}
+	orderReq := acme.Order{Identifiers: createIdentifiers(domains)}
 
 	if opts != nil {
 		if !opts.NotAfter.IsZero() {
@@ -68,6 +56,7 @@ func (o *OrderService) NewWithOptions(domains []string, opts *OrderOptions) (acm
 	}
 
 	var order acme.Order
+
 	resp, err := o.core.post(o.core.GetDirectory().NewOrderURL, orderReq, &order)
 	if err != nil {
 		are := &acme.AlreadyReplacedError{}
@@ -86,18 +75,23 @@ func (o *OrderService) NewWithOptions(domains []string, opts *OrderOptions) (acm
 		}
 	}
 
-	// The elements of the "authorizations" and "identifiers" arrays are immutable once set.
-	// The server MUST NOT change the contents of either array after they are created.
-	// If a client observes a change in the contents of either array,
-	// then it SHOULD consider the order invalid.
-	// https://www.rfc-editor.org/rfc/rfc8555#section-7.1.3
+	// The server MUST return an error if it cannot fulfill the request as specified,
+	// and it MUST NOT issue a certificate with contents other than those requested.
+	// If the server requires the request to be modified in a certain way,
+	// it should indicate the required changes using an appropriate error type and description.
+	// https://www.rfc-editor.org/rfc/rfc8555#section-7.4
+	//
+	// Some ACME servers don't return an error,
+	// and/or change the order identifiers in the response,
+	// so we need to ensure that the identifiers are the same as requested.
+	// Deduplication by the server is allowed.
 	if compareIdentifiers(orderReq.Identifiers, order.Identifiers) != 0 {
 		// Sorts identifiers to avoid error message ambiguities about the order of the identifiers.
 		slices.SortStableFunc(orderReq.Identifiers, compareIdentifier)
 		slices.SortStableFunc(order.Identifiers, compareIdentifier)
 
 		return acme.ExtendedOrder{},
-			fmt.Errorf("order identifiers have been by the ACME server (RFC8555 §7.1.3): %+v != %+v",
+			fmt.Errorf("order identifiers have been modified by the ACME server (RFC8555 §7.4): %+v != %+v",
 				orderReq.Identifiers, order.Identifiers)
 	}
 
@@ -114,6 +108,7 @@ func (o *OrderService) Get(orderURL string) (acme.ExtendedOrder, error) {
 	}
 
 	var order acme.Order
+
 	_, err := o.core.postAsGet(orderURL, &order)
 	if err != nil {
 		return acme.ExtendedOrder{}, err
@@ -129,6 +124,7 @@ func (o *OrderService) UpdateForCSR(orderURL string, csr []byte) (acme.ExtendedO
 	}
 
 	var order acme.Order
+
 	_, err := o.core.post(orderURL, csrMsg, &order)
 	if err != nil {
 		return acme.ExtendedOrder{}, err

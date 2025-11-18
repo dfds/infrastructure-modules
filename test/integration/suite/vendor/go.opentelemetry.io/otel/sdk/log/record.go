@@ -42,6 +42,7 @@ func putIndex(index map[string]int) {
 }
 
 // Record is a log record emitted by the Logger.
+// A log record with non-empty event name is interpreted as an event record.
 //
 // Do not create instances of Record on your own in production code.
 // You can use [go.opentelemetry.io/otel/sdk/log/logtest.RecordFactory]
@@ -50,6 +51,7 @@ type Record struct {
 	// Do not embed the log.Record. Attributes need to be overwrite-able and
 	// deep-copying needs to be possible.
 
+	eventName         string
 	timestamp         time.Time
 	observedTimestamp time.Time
 	severity          log.Severity
@@ -91,6 +93,9 @@ type Record struct {
 	attributeValueLengthLimit int
 	attributeCountLimit       int
 
+	// specifies whether we should deduplicate any key value collections or not
+	allowDupKeys bool
+
 	noCmp [0]func() //nolint: unused  // This is indeed used.
 }
 
@@ -102,6 +107,18 @@ func (r *Record) addDropped(n int) {
 func (r *Record) setDropped(n int) {
 	logAttrDropped()
 	r.dropped = n
+}
+
+// EventName returns the event name.
+// A log record with non-empty event name is interpreted as an event record.
+func (r *Record) EventName() string {
+	return r.eventName
+}
+
+// SetEventName sets the event name.
+// A log record with non-empty event name is interpreted as an event record.
+func (r *Record) SetEventName(s string) {
+	r.eventName = s
 }
 
 // Timestamp returns the time when the log record occurred.
@@ -153,7 +170,11 @@ func (r *Record) Body() log.Value {
 
 // SetBody sets the body of the log record.
 func (r *Record) SetBody(v log.Value) {
-	r.body = v
+	if !r.allowDupKeys {
+		r.body = r.dedupeBodyCollections(v)
+	} else {
+		r.body = v
+	}
 }
 
 // WalkAttributes walks all attributes the log record holds by calling f for
@@ -178,56 +199,60 @@ func (r *Record) AddAttributes(attrs ...log.KeyValue) {
 	if n == 0 {
 		// Avoid the more complex duplicate map lookups below.
 		var drop int
-		attrs, drop = dedup(attrs)
-		r.setDropped(drop)
+		if !r.allowDupKeys {
+			attrs, drop = dedup(attrs)
+			r.setDropped(drop)
+		}
 
-		attrs, drop = head(attrs, r.attributeCountLimit)
+		attrs, drop := head(attrs, r.attributeCountLimit)
 		r.addDropped(drop)
 
 		r.addAttrs(attrs)
 		return
 	}
 
-	// Used to find duplicates between attrs and existing attributes in r.
-	rIndex := r.attrIndex()
-	defer putIndex(rIndex)
+	if !r.allowDupKeys {
+		// Used to find duplicates between attrs and existing attributes in r.
+		rIndex := r.attrIndex()
+		defer putIndex(rIndex)
 
-	// Unique attrs that need to be added to r. This uses the same underlying
-	// array as attrs.
-	//
-	// Note, do not iterate attrs twice by just calling dedup(attrs) here.
-	unique := attrs[:0]
-	// Used to find duplicates within attrs itself. The index value is the
-	// index of the element in unique.
-	uIndex := getIndex()
-	defer putIndex(uIndex)
+		// Unique attrs that need to be added to r. This uses the same underlying
+		// array as attrs.
+		//
+		// Note, do not iterate attrs twice by just calling dedup(attrs) here.
+		unique := attrs[:0]
+		// Used to find duplicates within attrs itself. The index value is the
+		// index of the element in unique.
+		uIndex := getIndex()
+		defer putIndex(uIndex)
 
-	// Deduplicate attrs within the scope of all existing attributes.
-	for _, a := range attrs {
-		// Last-value-wins for any duplicates in attrs.
-		idx, found := uIndex[a.Key]
-		if found {
-			r.addDropped(1)
-			unique[idx] = a
-			continue
-		}
-
-		idx, found = rIndex[a.Key]
-		if found {
-			// New attrs overwrite any existing with the same key.
-			r.addDropped(1)
-			if idx < 0 {
-				r.front[-(idx + 1)] = a
-			} else {
-				r.back[idx] = a
+		// Deduplicate attrs within the scope of all existing attributes.
+		for _, a := range attrs {
+			// Last-value-wins for any duplicates in attrs.
+			idx, found := uIndex[a.Key]
+			if found {
+				r.addDropped(1)
+				unique[idx] = a
+				continue
 			}
-		} else {
-			// Unique attribute.
-			unique = append(unique, a)
-			uIndex[a.Key] = len(unique) - 1
+
+			idx, found = rIndex[a.Key]
+			if found {
+				// New attrs overwrite any existing with the same key.
+				r.addDropped(1)
+				if idx < 0 {
+					r.front[-(idx + 1)] = a
+				} else {
+					r.back[idx] = a
+				}
+			} else {
+				// Unique attribute.
+				unique = append(unique, a)
+				uIndex[a.Key] = len(unique) - 1
+			}
 		}
+		attrs = unique
 	}
-	attrs = unique
 
 	if r.attributeCountLimit > 0 && n+len(attrs) > r.attributeCountLimit {
 		// Truncate the now unique attributes to comply with limit.
@@ -283,8 +308,11 @@ func (r *Record) addAttrs(attrs []log.KeyValue) {
 // SetAttributes sets (and overrides) attributes to the log record.
 func (r *Record) SetAttributes(attrs ...log.KeyValue) {
 	var drop int
-	attrs, drop = dedup(attrs)
-	r.setDropped(drop)
+	r.setDropped(0)
+	if !r.allowDupKeys {
+		attrs, drop = dedup(attrs)
+		r.setDropped(drop)
+	}
 
 	attrs, drop = head(attrs, r.attributeCountLimit)
 	r.addDropped(drop)
@@ -373,11 +401,8 @@ func (r *Record) SetTraceFlags(flags trace.TraceFlags) {
 }
 
 // Resource returns the entity that collected the log.
-func (r *Record) Resource() resource.Resource {
-	if r.resource == nil {
-		return *resource.Empty()
-	}
-	return *r.resource
+func (r *Record) Resource() *resource.Resource {
+	return r.resource
 }
 
 // InstrumentationScope returns the scope that the Logger was created with.
@@ -406,7 +431,7 @@ func (r *Record) applyValueLimits(val log.Value) log.Value {
 	case log.KindString:
 		s := val.AsString()
 		if len(s) > r.attributeValueLengthLimit {
-			val = log.StringValue(truncate(s, r.attributeValueLengthLimit))
+			val = log.StringValue(truncate(r.attributeValueLengthLimit, s))
 		}
 	case log.KindSlice:
 		sl := val.AsSlice()
@@ -415,10 +440,14 @@ func (r *Record) applyValueLimits(val log.Value) log.Value {
 		}
 		val = log.SliceValue(sl...)
 	case log.KindMap:
-		// Deduplicate then truncate. Do not do at the same time to avoid
-		// wasted truncation operations.
-		kvs, dropped := dedup(val.AsMap())
-		r.addDropped(dropped)
+		kvs := val.AsMap()
+		if !r.allowDupKeys {
+			// Deduplicate then truncate. Do not do at the same time to avoid
+			// wasted truncation operations.
+			var dropped int
+			kvs, dropped = dedup(kvs)
+			r.addDropped(dropped)
+		}
 		for i := range kvs {
 			kvs[i] = r.applyAttrLimits(kvs[i])
 		}
@@ -427,40 +456,96 @@ func (r *Record) applyValueLimits(val log.Value) log.Value {
 	return val
 }
 
-// truncate returns a copy of str truncated to have a length of at most n
-// characters. If the length of str is less than n, str itself is returned.
-//
-// The truncate of str ensures that no valid UTF-8 code point is split. The
-// copy returned will be less than n if a characters straddles the length
-// limit.
-//
-// No truncation is performed if n is less than zero.
-func truncate(str string, n int) string {
-	if n < 0 {
-		return str
-	}
-
-	// cut returns a copy of the s truncated to not exceed a length of n. If
-	// invalid UTF-8 is encountered, s is returned with false. Otherwise, the
-	// truncated copy will be returned with true.
-	cut := func(s string) (string, bool) {
-		var i int
-		for i = 0; i < n; {
-			r, size := utf8.DecodeRuneInString(s[i:])
-			if r == utf8.RuneError {
-				return s, false
-			}
-			if i+size > n {
-				break
-			}
-			i += size
+func (r *Record) dedupeBodyCollections(val log.Value) log.Value {
+	switch val.Kind() {
+	case log.KindSlice:
+		sl := val.AsSlice()
+		for i := range sl {
+			sl[i] = r.dedupeBodyCollections(sl[i])
 		}
-		return s[:i], true
+		val = log.SliceValue(sl...)
+	case log.KindMap:
+		kvs, _ := dedup(val.AsMap())
+		for i := range kvs {
+			kvs[i].Value = r.dedupeBodyCollections(kvs[i].Value)
+		}
+		val = log.MapValue(kvs...)
+	}
+	return val
+}
+
+// truncate returns a truncated version of s such that it contains less than
+// the limit number of characters. Truncation is applied by returning the limit
+// number of valid characters contained in s.
+//
+// If limit is negative, it returns the original string.
+//
+// UTF-8 is supported. When truncating, all invalid characters are dropped
+// before applying truncation.
+//
+// If s already contains less than the limit number of bytes, it is returned
+// unchanged. No invalid characters are removed.
+func truncate(limit int, s string) string {
+	// This prioritize performance in the following order based on the most
+	// common expected use-cases.
+	//
+	//  - Short values less than the default limit (128).
+	//  - Strings with valid encodings that exceed the limit.
+	//  - No limit.
+	//  - Strings with invalid encodings that exceed the limit.
+	if limit < 0 || len(s) <= limit {
+		return s
 	}
 
-	cp, ok := cut(str)
-	if !ok {
-		cp, _ = cut(strings.ToValidUTF8(str, ""))
+	// Optimistically, assume all valid UTF-8.
+	var b strings.Builder
+	count := 0
+	for i, c := range s {
+		if c != utf8.RuneError {
+			count++
+			if count > limit {
+				return s[:i]
+			}
+			continue
+		}
+
+		_, size := utf8.DecodeRuneInString(s[i:])
+		if size == 1 {
+			// Invalid encoding.
+			b.Grow(len(s) - 1)
+			_, _ = b.WriteString(s[:i])
+			s = s[i:]
+			break
+		}
 	}
-	return cp
+
+	// Fast-path, no invalid input.
+	if b.Cap() == 0 {
+		return s
+	}
+
+	// Truncate while validating UTF-8.
+	for i := 0; i < len(s) && count < limit; {
+		c := s[i]
+		if c < utf8.RuneSelf {
+			// Optimization for single byte runes (common case).
+			_ = b.WriteByte(c)
+			i++
+			count++
+			continue
+		}
+
+		_, size := utf8.DecodeRuneInString(s[i:])
+		if size == 1 {
+			// We checked for all 1-byte runes above, this is a RuneError.
+			i++
+			continue
+		}
+
+		_, _ = b.WriteString(s[i : i+size])
+		i += size
+		count++
+	}
+
+	return b.String()
 }
