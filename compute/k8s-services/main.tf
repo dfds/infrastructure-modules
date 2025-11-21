@@ -12,6 +12,28 @@ module "traefik_alb_s3_access_logs" {
 }
 
 # --------------------------------------------------
+# Traefik CRDs
+# --------------------------------------------------
+
+module "traefik_crds" {
+  source                  = "../../_sub/compute/k8s-traefik-crds"
+  cluster_name            = var.eks_cluster_name
+  chart_version           = var.traefik_crds_helm_chart_version
+  repo_owner              = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  prune                   = var.fluxcd_prune
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
+}
+
+# --------------------------------------------------
 # Load Balancers in front of Traefik
 # --------------------------------------------------
 
@@ -38,7 +60,7 @@ module "traefik_blue_variant_flux_manifests" {
     github = github.fluxcd
   }
 
-  depends_on = [module.platform_fluxcd]
+  depends_on = [module.platform_fluxcd, module.traefik_crds]
 }
 
 module "traefik_green_variant_manifests" {
@@ -64,7 +86,7 @@ module "traefik_green_variant_manifests" {
     github = github.fluxcd
   }
 
-  depends_on = [module.platform_fluxcd]
+  depends_on = [module.platform_fluxcd, module.traefik_crds]
 }
 
 module "lb_controller_flux_manifests" {

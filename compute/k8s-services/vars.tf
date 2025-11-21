@@ -81,6 +81,16 @@ variable "alb_access_logs_sse_algorithm" {
   }
 }
 
+# --------------------------------------------------
+# Traefik CRDs
+# --------------------------------------------------
+
+variable "traefik_crds_helm_chart_version" {
+  type        = string
+  description = "Helm Chart version to be used to deploy Traefik CRDs"
+  default     = ""
+}
+
 
 # --------------------------------------------------
 # Load Balancers in front of Traefik
@@ -352,7 +362,7 @@ variable "traefik_blue_variant_admin_nodeport" {
 variable "traefik_blue_variant_additional_args" {
   type        = list(any)
   description = "Pass arguments to the additionalArguments node in the Traefik Helm chart"
-  default     = ["--metrics.prometheus"]
+  default     = []
 }
 
 variable "traefik_blue_variant_deploy" {
