@@ -31,7 +31,7 @@ module "traefik_blue_variant_flux_manifests" {
   additional_args         = var.traefik_blue_variant_additional_args
   dashboard_ingress_host  = "traefik-blue-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
 
   providers = {
@@ -57,7 +57,7 @@ module "traefik_green_variant_manifests" {
   additional_args         = var.traefik_green_variant_additional_args
   dashboard_ingress_host  = "traefik-green-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
 
   providers = {
@@ -77,7 +77,7 @@ module "lb_controller_flux_manifests" {
   cluster_region          = var.aws_region
   role_arn                = module.lb_controller_role.arn
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
 
   providers = {
     github = github.fluxcd
@@ -267,7 +267,7 @@ module "external_dns_flux_manifests" {
   repo_name                = var.fluxcd_bootstrap_repo_name
   repo_branch              = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url     = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch  = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch  = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                    = var.fluxcd_prune
   cluster_region           = var.aws_region
   role_arn                 = module.external_dns_iam_role_assume[0].arn
@@ -409,7 +409,7 @@ module "goldpinger" {
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   chart_version           = var.goldpinger_chart_version
   prune                   = var.fluxcd_prune
 
@@ -432,7 +432,7 @@ module "metrics_server" {
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   chart_version           = var.metrics_server_helm_chart_version
   prune                   = var.fluxcd_prune
 
@@ -497,7 +497,7 @@ module "atlantis_deployment" {
   github_repositories       = sort(var.atlantis_github_repositories)
   github_token              = var.atlantis_github_token
   github_username           = var.atlantis_github_username
-  gitops_apps_repo_branch   = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch   = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   gitops_apps_repo_url      = local.fluxcd_apps_repo_url
   image_tag                 = var.atlantis_image_tag
   ingress_hostname          = local.atlantis_ingress
@@ -547,7 +547,7 @@ module "blackbox_exporter_flux_manifests" {
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   monitoring_targets      = local.blackbox_exporter_monitoring_targets
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
 
   providers = {
@@ -568,7 +568,7 @@ module "external_snapshotter" {
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
 
   providers = {
@@ -599,7 +599,7 @@ module "velero" {
   snapshots_enabled                   = var.velero_snapshots_enabled
   node_agent_enabled                  = var.velero_node_agent_enabled
   gitops_apps_repo_url                = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch             = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch             = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                               = var.fluxcd_prune
   service_account                     = var.velero_service_account
   oidc_issuer                         = local.oidc_issuer
@@ -678,7 +678,7 @@ module "grafana" {
   github_owner                  = var.fluxcd_bootstrap_repo_owner
   repo_name                     = var.fluxcd_bootstrap_repo_name
   repo_branch                   = var.fluxcd_bootstrap_repo_branch
-  gitops_apps_repo_branch       = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch       = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   gitops_apps_repo_url          = local.fluxcd_apps_repo_url
   chart_version                 = var.grafana_agent_chart_version
   api_token                     = var.grafana_agent_api_token
@@ -716,7 +716,7 @@ module "external_secrets" {
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
 
   providers = {
@@ -785,7 +785,7 @@ module "onepassword_connect" {
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
   workload_account_id     = var.aws_workload_account_id
   oidc_issuer             = local.oidc_issuer
@@ -813,7 +813,7 @@ module "eks_nvidia_device_plugin" {
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   cluster_name            = var.eks_cluster_name
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   chart_version           = var.nvidia_chart_version
   namespace               = var.nvidia_namespace
   tolerations             = var.nvidia_device_plugin_tolerations
@@ -841,7 +841,7 @@ module "github_arc_ss_controller" {
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
 
   providers = {
@@ -866,7 +866,7 @@ module "github_arc_runners" {
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                   = var.fluxcd_prune
   github_config_url       = var.github_arc_runners_github_config_url
   github_config_secret    = var.github_arc_runners_github_config_secret
@@ -896,7 +896,7 @@ module "druid_operator" {
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
 
   providers = {
     github = github.fluxcd
@@ -925,7 +925,7 @@ module "trivy_operator" {
   repo_name                      = var.fluxcd_bootstrap_repo_name
   repo_branch                    = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url           = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch        = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch        = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
 
   providers = {
     github = github.fluxcd
@@ -951,7 +951,7 @@ module "falco" {
   repo_name                    = var.fluxcd_bootstrap_repo_name
   repo_branch                  = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url         = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch      = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch      = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   slack_alert_webhook_url      = var.falco_slack_alert_webhook_url
   slack_alert_channel_name     = var.falco_slack_alert_channel_name
   slack_alert_minimum_priority = var.falco_slack_alert_minimum_priority
@@ -982,7 +982,7 @@ module "keda" {
   repo_name               = var.fluxcd_bootstrap_repo_name
   repo_branch             = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_branch = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
 
   providers = {
     github = github.fluxcd
@@ -1003,7 +1003,7 @@ module "karpenter" {
   repo_name        = var.fluxcd_bootstrap_repo_name
   repo_branch      = var.fluxcd_bootstrap_repo_branch
   apps_repo_url    = local.fluxcd_apps_repo_url
-  apps_repo_branch = var.fluxcd_apps_repo_branch
+  apps_repo_branch = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
 
   providers = {
     github = github.fluxcd
