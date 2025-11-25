@@ -11,7 +11,7 @@ spec:
     tag: ${gitops_apps_repo_tag}
 %{ else ~}
   ref:
-    branch: ${gitops_apps_repo_branch}
+    branch: ${gitops_apps_repo_ref}
 %{ endif ~}
   url: ${gitops_apps_repo_url}
 ---

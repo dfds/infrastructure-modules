@@ -7,8 +7,8 @@ resource "github_repository_file" "apps" {
   branch     = var.repo_branch
   file       = "clusters/${var.cluster_name}/platform-apps-karpenter.yaml"
   content = templatefile("${path.module}/apps.yaml", {
-    path = local.kustomization_path
-    cluster    = var.cluster_name
+    path    = local.kustomization_path
+    cluster = var.cluster_name
   })
   overwrite_on_create = true
 }

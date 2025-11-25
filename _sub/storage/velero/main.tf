@@ -28,7 +28,7 @@ resource "github_repository_file" "velero_flux_helm_init" {
   content = templatefile("${path.module}/values/kustomization.yaml", {
     gitops_apps_repo_url                 = var.gitops_apps_repo_url
     deploy_name                          = var.deploy_name
-    gitops_apps_repo_branch              = var.gitops_apps_repo_branch
+    gitops_apps_repo_ref                 = var.gitops_apps_repo_ref
     enable_azure_storage_external_secret = var.enable_azure_storage_external_secret
   })
   overwrite_on_create = true

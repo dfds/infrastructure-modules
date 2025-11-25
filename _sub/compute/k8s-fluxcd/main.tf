@@ -56,10 +56,10 @@ resource "github_repository_file" "platform_apps_init" {
   branch     = data.github_branch.flux_branch.branch
   file       = "${local.cluster_target_path}/platform-apps.yaml"
   content = templatefile("${path.module}/values/platform-apps.yaml", {
-    gitops_apps_repo_url    = var.gitops_apps_repo_url,
-    gitops_apps_repo_branch = var.gitops_apps_repo_branch,
-    gitops_apps_repo_tag    = var.gitops_apps_repo_tag,
-    prune                   = var.prune,
+    gitops_apps_repo_url = var.gitops_apps_repo_url,
+    gitops_apps_repo_ref = var.gitops_apps_repo_ref,
+    gitops_apps_repo_tag = var.gitops_apps_repo_tag,
+    prune                = var.prune,
   })
   overwrite_on_create = true
 }
