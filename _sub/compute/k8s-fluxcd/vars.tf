@@ -43,6 +43,11 @@ variable "gitops_apps_repo_branch" {
   description = "The default branch for your GitOps manifests"
 }
 
+variable "gitops_apps_repo_tag" {
+  type        = string
+  description = "Use a release tag instead of branch for your GitOps manifests. Tags beat branches if both are set."
+}
+
 variable "prune" {
   type        = bool
   default     = true

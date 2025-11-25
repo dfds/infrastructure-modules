@@ -465,6 +465,7 @@ module "platform_fluxcd" {
   github_owner               = var.fluxcd_bootstrap_repo_owner
   gitops_apps_repo_url       = local.fluxcd_apps_repo_url
   gitops_apps_repo_branch    = var.fluxcd_apps_repo_branch
+  gitops_apps_repo_tag       = var.fluxcd_apps_repo_tag
   cluster_name               = var.eks_cluster_name
   prune                      = var.fluxcd_prune
   endpoint                   = data.aws_eks_cluster.eks.endpoint
