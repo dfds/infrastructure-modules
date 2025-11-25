@@ -24,3 +24,8 @@ variable "apps_repo_branch" {
   default     = "main"
   description = "The default branch for your GitOps manifests"
 }
+
+variable "is_sandbox" {
+  type = bool
+  description = "Is the cluster sandbox/non-prod"
+}

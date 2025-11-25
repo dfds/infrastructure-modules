@@ -1003,6 +1003,7 @@ module "karpenter" {
   repo_branch      = var.fluxcd_bootstrap_repo_branch
   apps_repo_url    = local.fluxcd_apps_repo_url
   apps_repo_branch = var.fluxcd_apps_repo_branch
+  is_sandbox = data.terraform_remote_state.cluster.outputs.eks_is_sandbox
 
   providers = {
     github = github.fluxcd
