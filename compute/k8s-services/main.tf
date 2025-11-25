@@ -998,12 +998,12 @@ module "keda" {
 #--------------------------------------------------
 
 module "karpenter" {
-  source           = "../../_sub/compute/karpenter"
-  cluster_name     = var.eks_cluster_name
-  repo_name        = var.fluxcd_bootstrap_repo_name
-  repo_branch      = var.fluxcd_bootstrap_repo_branch
-  apps_repo_url    = local.fluxcd_apps_repo_url
-  apps_repo_branch = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  source        = "../../_sub/compute/karpenter"
+  cluster_name  = var.eks_cluster_name
+  repo_name     = var.fluxcd_bootstrap_repo_name
+  repo_branch   = var.fluxcd_bootstrap_repo_branch
+  apps_repo_url = local.fluxcd_apps_repo_url
+  apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
 
   providers = {
     github = github.fluxcd
