@@ -20,9 +20,9 @@ resource "github_repository_file" "install" {
   branch     = local.repo_branch
   file       = "${local.helm_repo_path}/kustomization.yaml"
   content = templatefile("${path.module}/values/kustomization.yaml", {
-    deploy_name             = local.deploy_name
-    gitops_apps_repo_branch = var.gitops_apps_repo_branch
-    gitops_apps_repo_url    = var.gitops_apps_repo_url
+    deploy_name          = local.deploy_name
+    gitops_apps_repo_ref = var.gitops_apps_repo_ref
+    gitops_apps_repo_url = var.gitops_apps_repo_url
   })
   overwrite_on_create = true
 }
