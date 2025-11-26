@@ -19,13 +19,14 @@ variable "apps_repo_url" {
   description = "The https url for your GitOps manifests"
 }
 
-variable "apps_repo_branch" {
+variable "apps_repo_ref" {
   type        = string
   default     = "main"
-  description = "The default branch for your GitOps manifests"
+  description = "The default branch or tag for your GitOps manifests"
 }
 
 variable "is_sandbox" {
   type = bool
   description = "Is the cluster sandbox/non-prod"
 }
+

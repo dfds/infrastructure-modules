@@ -252,6 +252,12 @@ variable "fluxcd_apps_repo_branch" {
   description = "The default branch for your GitOps manifests"
 }
 
+variable "fluxcd_apps_repo_tag" {
+  type        = string
+  default     = ""
+  description = "Use a release tag instead of branch for your GitOps manifests. Tags beat branches if both are set."
+}
+
 variable "fluxcd_apps_repo_owner" {
   type        = string
   default     = "dfds"

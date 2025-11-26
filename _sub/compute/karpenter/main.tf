@@ -20,7 +20,7 @@ resource "github_repository_file" "kustomization" {
   file       = "${local.kustomization_path}/kustomization.yaml"
   content = templatefile("${path.module}/kustomization.yaml", {
     apps_repo_url    = var.apps_repo_url
-    apps_repo_branch = var.apps_repo_branch
+    apps_repo_ref = var.apps_repo_ref
     is_sandbox       = var.is_sandbox ? "non-prod" : "prod"
   })
   overwrite_on_create = true
