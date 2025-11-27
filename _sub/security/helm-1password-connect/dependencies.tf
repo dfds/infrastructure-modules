@@ -53,7 +53,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: "1password-connect"
 resources:
-  - ${var.gitops_apps_repo_url}/apps/${local.deploy_name}?ref=${var.gitops_apps_repo_branch}
+  - ${var.gitops_apps_repo_url}/apps/${local.deploy_name}?ref=${var.gitops_apps_repo_ref}
 patches:
   - target:
       kind: HelmRelease

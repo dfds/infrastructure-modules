@@ -59,7 +59,7 @@ variable "ebs_csi_kms_arn" {
 }
 
 variable "podidentity_version_override" {
-  type    = string
+  type        = string
   description = "Option to override the version of the eks-pod-identity-agent add-on"
-  default = ""
+  default     = ""
 }
