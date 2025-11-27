@@ -1126,19 +1126,3 @@ variable "aws_lb_controller_helm_chart_version" {
   description = "AWS Load Balancer Controller helm chart version"
   default     = "1.14.1"
 }
-
-# --------------------------------------------------
-# Kyverno
-# --------------------------------------------------
-
-variable "kyverno_deploy" {
-  type        = bool
-  description = "Deploy Kyverno helm chart switch"
-  default     = true
-}
-
-variable "kyverno_chart_version" {
-  type        = string
-  description = "Kyverno helm chart version"
-  default     = ""
-}

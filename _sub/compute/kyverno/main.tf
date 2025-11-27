@@ -22,8 +22,7 @@ resource "github_repository_file" "helm_install" {
   content = templatefile("${path.module}/values/kustomization.yaml", {
     gitops_apps_repo_url    = var.gitops_apps_repo_url
     deploy_name             = local.deploy_name
-    gitops_apps_repo_branch = var.gitops_apps_repo_branch
-    chart_version           = var.chart_version
+    gitops_apps_repo_ref    = var.gitops_apps_repo_ref
   })
   overwrite_on_create = true
 }
