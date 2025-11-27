@@ -45,18 +45,6 @@ variable "repo_branch" {
   default     = null
 }
 
-variable "helm_chart_version" {
-  type        = string
-  description = "The version of the Traefik v2 Helm Chart that should be used"
-  default     = ""
-}
-
-variable "additional_args" {
-  type        = list(any)
-  description = "Pass arguments to the additionalArguments node in the Traefik Helm chart"
-  default     = []
-}
-
 variable "dashboard_ingress_host" {
   type        = string
   description = "The alb auth dns name for accessing Traefik."

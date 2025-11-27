@@ -2,11 +2,6 @@ variable "cluster_name" {
   type = string
 }
 
-variable "chart_version" {
-  type        = string
-  description = "The Helm Chart version that should be used"
-}
-
 variable "repo_owner" {
   type        = string
   description = "Name of the repo owner (previously: organization)"
@@ -27,13 +22,12 @@ variable "gitops_apps_repo_url" {
   description = "The https url for your GitOps manifests"
 }
 
-variable "gitops_apps_repo_branch" {
+variable "gitops_apps_repo_ref" {
   type        = string
-  description = "The default branch for your GitOps manifests"
+  description = "The default branch or tag for your GitOps manifests"
 }
 
 variable "prune" {
   type        = bool
-  default     = true
   description = "Enable Garbage collection"
 }

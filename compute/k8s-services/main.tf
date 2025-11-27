@@ -16,15 +16,14 @@ module "traefik_alb_s3_access_logs" {
 # --------------------------------------------------
 
 module "traefik_crds" {
-  source                  = "../../_sub/compute/k8s-traefik-crds"
-  cluster_name            = var.eks_cluster_name
-  chart_version           = var.traefik_crds_helm_chart_version
-  repo_owner              = var.fluxcd_bootstrap_repo_owner
-  repo_name               = var.fluxcd_bootstrap_repo_name
-  repo_branch             = var.fluxcd_bootstrap_repo_branch
-  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_branch = var.fluxcd_apps_repo_branch
-  prune                   = var.fluxcd_prune
+  source               = "../../_sub/compute/k8s-traefik-crds"
+  cluster_name         = var.eks_cluster_name
+  repo_owner           = var.fluxcd_bootstrap_repo_owner
+  repo_name            = var.fluxcd_bootstrap_repo_name
+  repo_branch          = var.fluxcd_bootstrap_repo_branch
+  gitops_apps_repo_url = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  prune                = var.fluxcd_prune
 
   providers = {
     github = github.fluxcd
@@ -43,14 +42,12 @@ module "traefik_blue_variant_flux_manifests" {
   cluster_name           = var.eks_cluster_name
   deploy_name            = "traefik-blue-variant"
   namespace              = "traefik-blue-variant"
-  helm_chart_version     = var.traefik_blue_variant_helm_chart_version
   replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
   http_nodeport          = var.traefik_blue_variant_http_nodeport
   admin_nodeport         = var.traefik_blue_variant_admin_nodeport
   github_owner           = var.fluxcd_bootstrap_repo_owner
   repo_name              = var.fluxcd_bootstrap_repo_name
   repo_branch            = var.fluxcd_bootstrap_repo_branch
-  additional_args        = var.traefik_blue_variant_additional_args
   dashboard_ingress_host = "traefik-blue-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
   gitops_apps_repo_url   = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref   = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
@@ -69,14 +66,12 @@ module "traefik_green_variant_manifests" {
   cluster_name           = var.eks_cluster_name
   deploy_name            = "traefik-green-variant"
   namespace              = "traefik-green-variant"
-  helm_chart_version     = var.traefik_green_variant_helm_chart_version
   replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
   http_nodeport          = var.traefik_green_variant_http_nodeport
   admin_nodeport         = var.traefik_green_variant_admin_nodeport
   github_owner           = var.fluxcd_bootstrap_repo_owner
   repo_name              = var.fluxcd_bootstrap_repo_name
   repo_branch            = var.fluxcd_bootstrap_repo_branch
-  additional_args        = var.traefik_green_variant_additional_args
   dashboard_ingress_host = "traefik-green-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
   gitops_apps_repo_url   = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref   = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch

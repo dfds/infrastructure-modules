@@ -47,13 +47,11 @@ inputs = {
   # --------------------------------------------------
 
   # Blue variant
-  traefik_blue_variant_deploy             = true
-  traefik_blue_variant_dashboard_deploy   = true
+  traefik_blue_variant_deploy = true
   traefik_blue_variant_weight = 1
 
   # Green variant
-  traefik_green_variant_deploy             = true
-  traefik_green_variant_dashboard_deploy   = false
+  traefik_green_variant_deploy = true
   traefik_green_variant_weight = 0
 
   # --------------------------------------------------

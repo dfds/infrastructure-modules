@@ -5,19 +5,12 @@ metadata:
   namespace: ${namespace}
 spec:
   serviceAccountName: helm-controller
-  chart:
-    spec:
-      version: ${helm_chart_version}
   values:
     ports:
       web:
         nodePort: ${http_nodeport}
       traefik:
         nodePort: ${admin_nodeport}
-    additionalArguments:
-  %{~ for arg in additional_args ~}
-      - ${arg}
-  %{~ endfor ~}
     deployment:
       replicas: ${replicas}
     ingressRoute:
