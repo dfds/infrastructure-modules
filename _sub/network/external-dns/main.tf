@@ -20,10 +20,10 @@ resource "github_repository_file" "extdns_helm_install" {
   branch     = local.repo_branch
   file       = "${local.helm_repo_path}/kustomization.yaml"
   content = templatefile("${path.module}/values/helm-install.yaml", {
-    gitops_apps_repo_url    = var.gitops_apps_repo_url
-    deploy_name             = var.deploy_name
-    gitops_apps_repo_branch = var.gitops_apps_repo_branch
-    dns_records             = concat(var.dns_records_anon, var.dns_records_auth)
+    gitops_apps_repo_url = var.gitops_apps_repo_url
+    deploy_name          = var.deploy_name
+    gitops_apps_repo_ref = var.gitops_apps_repo_ref
+    dns_records          = concat(var.dns_records_anon, var.dns_records_auth)
   })
   overwrite_on_create = true
 }

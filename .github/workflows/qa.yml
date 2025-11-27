@@ -65,7 +65,7 @@ jobs:
         env:
           GOCACHE: ${{ github.workspace }}/.cache/go-build/
       - name: Upload test binary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-master
           path: /tmp/test-master.bin
@@ -91,7 +91,7 @@ jobs:
         env:
           GOCACHE: ${{ github.workspace }}/.cache/go-build/
       - name: Upload test binary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-feature
           path: /tmp/test-feature.bin
@@ -163,7 +163,7 @@ jobs:
       - name: Wait for auto scaling groups's instances to be in service
         run: ./src/wait-for-asgs.sh qa
       - name: Download test binary
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: test-master
           path: /tmp
@@ -241,7 +241,7 @@ jobs:
       - name: Wait for auto scaling groups's instances to be in service
         run: ./src/wait-for-asgs.sh qa
       - name: Download test binary
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: test-feature
           path: /tmp

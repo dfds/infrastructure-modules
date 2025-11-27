@@ -27,9 +27,9 @@ resource "github_repository_file" "external-snapshotter_crd_init" {
   branch     = data.github_branch.flux_branch.branch
   file       = "${local.crd_repo_path}/kustomization.yaml"
   content = templatefile("${path.module}/values/crd-kustomization.yaml", {
-    gitops_apps_repo_url    = var.gitops_apps_repo_url
-    deploy_name             = var.deploy_name
-    gitops_apps_repo_branch = var.gitops_apps_repo_branch
+    gitops_apps_repo_url = var.gitops_apps_repo_url
+    deploy_name          = var.deploy_name
+    gitops_apps_repo_ref = var.gitops_apps_repo_ref
   })
   overwrite_on_create = true
 }
@@ -56,9 +56,9 @@ resource "github_repository_file" "external-snapshotter_controller_init" {
   branch     = data.github_branch.flux_branch.branch
   file       = "${local.controller_repo_path}/kustomization.yaml"
   content = templatefile("${path.module}/values/controller-kustomization.yaml", {
-    gitops_apps_repo_url    = var.gitops_apps_repo_url
-    deploy_name             = var.deploy_name
-    gitops_apps_repo_branch = var.gitops_apps_repo_branch
+    gitops_apps_repo_url = var.gitops_apps_repo_url
+    deploy_name          = var.deploy_name
+    gitops_apps_repo_ref = var.gitops_apps_repo_ref
   })
   overwrite_on_create = true
 }
@@ -85,9 +85,9 @@ resource "github_repository_file" "external-snapshotter_config_init" {
   branch     = data.github_branch.flux_branch.branch
   file       = "${local.config_repo_path}/kustomization.yaml"
   content = templatefile("${path.module}/values/config-kustomization.yaml", {
-    gitops_apps_repo_url    = var.gitops_apps_repo_url
-    deploy_name             = var.deploy_name
-    gitops_apps_repo_branch = var.gitops_apps_repo_branch
+    gitops_apps_repo_url = var.gitops_apps_repo_url
+    deploy_name          = var.deploy_name
+    gitops_apps_repo_ref = var.gitops_apps_repo_ref
   })
   overwrite_on_create = true
 }
