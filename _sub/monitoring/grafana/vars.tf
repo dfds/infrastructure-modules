@@ -28,9 +28,9 @@ variable "gitops_apps_repo_url" {
   description = "The https url for your GitOps manifests"
 }
 
-variable "gitops_apps_repo_branch" {
+variable "gitops_apps_repo_ref" {
   type        = string
-  description = "The default branch for your GitOps manifests"
+  description = "The default branch or tag for your GitOps manifests"
 }
 
 variable "chart_version" {

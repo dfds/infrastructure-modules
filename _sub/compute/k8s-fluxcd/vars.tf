@@ -37,10 +37,15 @@ variable "gitops_apps_repo_url" {
   description = "The https url for your GitOps manifests"
 }
 
-variable "gitops_apps_repo_branch" {
+variable "gitops_apps_repo_ref" {
   type        = string
   default     = "main"
   description = "The default branch for your GitOps manifests"
+}
+
+variable "gitops_apps_repo_tag" {
+  type        = string
+  description = "Use a release tag instead of branch for your GitOps manifests. Tags beat branches if both are set."
 }
 
 variable "prune" {

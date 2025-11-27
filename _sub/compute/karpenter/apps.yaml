@@ -29,3 +29,4 @@ spec:
   postBuild:
     substitute:
       flux_cluster_name: ${cluster}
+      flux_karpenter_node_volume_size: ${node_volume_size}

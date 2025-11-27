@@ -47,7 +47,7 @@ YAML
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - "${var.gitops_apps_repo_url}/apps/github-arc-ss-controller?ref=${var.gitops_apps_repo_branch}"
+  - "${var.gitops_apps_repo_url}/apps/github-arc-ss-controller?ref=${var.gitops_apps_repo_ref}"
 patches:
   - path: patch.yaml
     target:

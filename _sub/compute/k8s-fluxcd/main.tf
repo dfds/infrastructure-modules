@@ -52,10 +52,15 @@ resource "github_repository_file" "flux_monitoring_config_path" {
 # --------------------------------------------------
 
 resource "github_repository_file" "platform_apps_init" {
-  repository          = var.repository_name
-  branch              = data.github_branch.flux_branch.branch
-  file                = "${local.cluster_target_path}/platform-apps.yaml"
-  content             = local.platform_apps_yaml
+  repository = var.repository_name
+  branch     = data.github_branch.flux_branch.branch
+  file       = "${local.cluster_target_path}/platform-apps.yaml"
+  content = templatefile("${path.module}/values/platform-apps.yaml", {
+    gitops_apps_repo_url = var.gitops_apps_repo_url,
+    gitops_apps_repo_ref = var.gitops_apps_repo_ref,
+    gitops_apps_repo_tag = var.gitops_apps_repo_tag,
+    prune                = var.prune,
+  })
   overwrite_on_create = true
 }
 
