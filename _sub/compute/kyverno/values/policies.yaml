@@ -13,7 +13,7 @@ spec:
     kind: GitRepository
     name: flux-system
   path: "./${policies_repo_path}"
-  prune: ${prune}
+  prune: true
   wait: true
   timeout: 5m
   healthChecks:

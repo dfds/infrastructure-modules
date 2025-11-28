@@ -10,7 +10,6 @@ resource "github_repository_file" "helm" {
     app_install_name = local.app_install_name
     helm_repo_path   = local.helm_repo_path
     deploy_name      = local.deploy_name
-    prune            = var.prune
   })
   overwrite_on_create = true
 }
@@ -34,7 +33,6 @@ resource "github_repository_file" "policies" {
   content = templatefile("${path.module}/values/policies.yaml", {
     app_install_name     = local.app_install_name
     policies_repo_path   = local.policies_repo_path
-    prune                = var.prune
   })
   overwrite_on_create = true
 }

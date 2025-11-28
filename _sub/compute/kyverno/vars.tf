@@ -26,9 +26,3 @@ variable "gitops_apps_repo_ref" {
   type        = string
   description = "The default branch or tag for your GitOps manifests"
 }
-
-variable "prune" {
-  type        = bool
-  default     = true
-  description = "Enable Garbage collection"
-}
