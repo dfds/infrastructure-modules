@@ -1102,7 +1102,6 @@ variable "use_worker_nat_gateway" {
   description = "Whether to use NAT Gateway for worker nodes"
 }
 
-
 # --------------------------------------------------
 # KEDA
 # --------------------------------------------------

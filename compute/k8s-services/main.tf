@@ -1014,3 +1014,25 @@ module "karpenter" {
     module.platform_fluxcd
   ]
 }
+
+# --------------------------------------------------
+# Kyverno
+# --------------------------------------------------
+
+module "kyverno" {
+  source                  = "../../_sub/compute/kyverno"
+  cluster_name            = var.eks_cluster_name
+  repo_owner              = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref    = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [
+    module.platform_fluxcd
+  ]
+}
