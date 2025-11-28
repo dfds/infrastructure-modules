@@ -20,7 +20,7 @@ spec:
       kubernetes:
         enabled: true # Experimental
     serviceMonitor:
-      create: true
+      create: false
       labels:
         scrape-service-metrics: "true"
     grafana:
