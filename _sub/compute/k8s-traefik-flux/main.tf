@@ -35,10 +35,8 @@ resource "github_repository_file" "traefik_helm_patch" {
   content = templatefile("${path.module}/values/helm-patch.yaml", {
     deploy_name            = var.deploy_name
     namespace              = var.namespace
-    helm_chart_version     = var.helm_chart_version
     http_nodeport          = var.http_nodeport
     admin_nodeport         = var.admin_nodeport
-    additional_args        = var.additional_args
     replicas               = var.replicas
     dashboard_ingress_host = var.dashboard_ingress_host
   })

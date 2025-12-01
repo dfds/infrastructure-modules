@@ -334,14 +334,8 @@ variable "atlantis_resources_requests_memory" {
 # --------------------------------------------------
 
 # Using the variant variables one can perform a blue/green update on Traefik,
-# routing traffic gradually to a new version and then decomissioning an older
+# routing traffic gradually to a new version and then decommissioning an older
 # version without downtime.
-
-variable "traefik_blue_variant_helm_chart_version" {
-  type        = string
-  description = "Helm Chart version to be used to deploy Traefik"
-  default     = ""
-}
 
 variable "traefik_blue_variant_http_nodeport" {
   type        = number
@@ -353,12 +347,6 @@ variable "traefik_blue_variant_admin_nodeport" {
   type        = number
   description = "Nodeport used by ALB's to connect to the Traefik instance admin page"
   default     = 31001
-}
-
-variable "traefik_blue_variant_additional_args" {
-  type        = list(any)
-  description = "Pass arguments to the additionalArguments node in the Traefik Helm chart"
-  default     = ["--metrics.prometheus"]
 }
 
 variable "traefik_blue_variant_deploy" {
@@ -374,12 +362,6 @@ variable "traefik_blue_variant_weight" {
 
 # Green variant
 
-variable "traefik_green_variant_helm_chart_version" {
-  type        = string
-  description = "Helm Chart version to be used to deploy the Traefik green variant"
-  default     = ""
-}
-
 variable "traefik_green_variant_http_nodeport" {
   type        = number
   description = "Nodeport used by ALB's to connect to the Traefik green variant instance"
@@ -390,12 +372,6 @@ variable "traefik_green_variant_admin_nodeport" {
   type        = number
   description = "Nodeport used by ALB's to connect to the Traefik green variant instance admin page"
   default     = 32001
-}
-
-variable "traefik_green_variant_additional_args" {
-  type        = list(any)
-  description = "Pass arguments to the additionalArguments node in the Traefik Helm chart for the green variant"
-  default     = ["--metrics.prometheus"]
 }
 
 variable "traefik_green_variant_deploy" {
