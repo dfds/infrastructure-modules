@@ -562,16 +562,6 @@ variable "velero_cron_schedule_offsite_ttl" {
   description = "Time to live for the scheduled offsite backup."
 }
 
-
-# --------------------------------------------------
-# Subnet Exporter
-# --------------------------------------------------
-variable "subnet_exporter_deploy" {
-  type        = bool
-  default     = true
-  description = "Feature toggle for Subnet Exporter module"
-}
-
 # --------------------------------------------------
 # Inactivity based clean up for sandboxes
 # --------------------------------------------------
