@@ -643,26 +643,6 @@ module "velero" {
   depends_on = [module.platform_fluxcd, module.external_snapshotter]
 }
 
-
-# --------------------------------------------------
-# aws-subnet-exporter
-# --------------------------------------------------
-
-module "aws_subnet_exporter" {
-  source         = "../../_sub/compute/k8s-subnet-exporter"
-  count          = var.subnet_exporter_deploy ? 1 : 0
-  namespace_name = var.grafana_deploy ? "grafana" : "monitoring"
-  aws_account_id = var.aws_workload_account_id
-  aws_region     = var.aws_region
-  image_tag      = "0.3"
-  oidc_issuer    = local.oidc_issuer
-  cluster_name   = var.eks_cluster_name
-  tolerations    = var.observability_tolerations
-  affinity       = var.observability_affinity
-
-  depends_on = [module.grafana]
-}
-
 # --------------------------------------------------
 # Inactivity based clean up for sandboxes
 # --------------------------------------------------
@@ -1037,13 +1017,13 @@ module "karpenter" {
 # --------------------------------------------------
 
 module "kyverno" {
-  source                  = "../../_sub/compute/kyverno"
-  cluster_name            = var.eks_cluster_name
-  repo_owner              = var.fluxcd_bootstrap_repo_owner
-  repo_name               = var.fluxcd_bootstrap_repo_name
-  repo_branch             = var.fluxcd_bootstrap_repo_branch
-  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref    = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  source               = "../../_sub/compute/kyverno"
+  cluster_name         = var.eks_cluster_name
+  repo_owner           = var.fluxcd_bootstrap_repo_owner
+  repo_name            = var.fluxcd_bootstrap_repo_name
+  repo_branch          = var.fluxcd_bootstrap_repo_branch
+  gitops_apps_repo_url = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
 
   providers = {
     github = github.fluxcd
