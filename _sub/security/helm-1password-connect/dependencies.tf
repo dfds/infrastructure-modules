@@ -44,8 +44,8 @@ spec:
   prune: ${var.prune}
   postBuild:
     substitute:
-      fluxcd_aws_region: ${var.aws_region}
-      fluxcd_aws_workload_account_id: "${var.workload_account_id}"
+      flux_aws_region: ${var.aws_region}
+      flux_workload_account_id: "${var.workload_account_id}"
 YAML
 
   helm_install = <<YAML
