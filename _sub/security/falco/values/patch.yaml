@@ -29,8 +29,8 @@ spec:
     webserver:
       prometheus_metrics_enabled: true
     customRules:
-        falco_custom_rules.yaml: |-
-          ${custom_rules}
+      falco_custom_rules.yaml: |-
+        ${custom_rules}
     falcosidekick:
       enabled: true
       webui:
@@ -41,7 +41,7 @@ spec:
           channel: "${slack_alert_channel_name}"
           minimumpriority: "${slack_alert_minimum_priority}"
       serviceMonitor:
-        enabled: true
+        enabled: false
         additionalLabels:
           scrape-service-metrics: "true"
     falco:
