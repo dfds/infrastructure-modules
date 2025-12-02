@@ -29,8 +29,8 @@ spec:
     webserver:
       prometheus_metrics_enabled: true
     customRules:
-      falco_custom_rules.yaml: |-
-        ${custom_rules}
+        falco_custom_rules.yaml: |-
+          ${custom_rules}
     falcosidekick:
       enabled: true
       webui:
