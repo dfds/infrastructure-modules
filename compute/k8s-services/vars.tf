@@ -387,22 +387,6 @@ variable "traefik_green_variant_weight" {
 }
 
 # --------------------------------------------------
-# Blackbox Exporter
-# --------------------------------------------------
-
-variable "blackbox_exporter_helm_chart_version" {
-  type        = string
-  description = "Helm Chart version to be used to deploy Traefik"
-  default     = ""
-}
-
-variable "blackbox_exporter_monitoring_targets" {
-  type        = list(object({ name = string, url = string, module = string }))
-  description = "Complex object of what to monitor with Blackbox Exporter"
-  default     = []
-}
-
-# --------------------------------------------------
 # Velero - requires that s3-bucket-velero module
 # is already applied through Terragrunt.
 # --------------------------------------------------
