@@ -81,19 +81,9 @@ variable "aws_region" {
 # Atlantis variables
 # --------------------------------------------------
 
-variable "chart_version" {
+variable "eks_fqdn" {
   type        = string
-  description = "The Helm Chart version that should be used"
-}
-
-variable "image_tag" {
-  type        = string
-  description = "Tag of the Atlantis image to use"
-}
-
-variable "ingress_hostname" {
-  type        = string
-  description = "The hostname for the Atlantis ingress"
+  description = "The FQDN for the EKS cluster"
 }
 
 variable "resources_requests_cpu" {
@@ -104,9 +94,4 @@ variable "resources_requests_cpu" {
 variable "resources_requests_memory" {
   type        = string
   description = "Memory resources requests size"
-}
-
-variable "storage_size" {
-  type        = string
-  description = "Size of the persistent volume"
 }
