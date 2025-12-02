@@ -29,10 +29,10 @@ spec:
     webserver:
       prometheus_metrics_enabled: true
     customRules:
-        falco_custom_rules.yaml: |-
-          ${custom_rules}
+      falco_custom_rules.yaml: |-
+        ${custom_rules}
     falcosidekick:
-      enabled: true
+      enabled:
       webui:
         enabled: true
       config:
@@ -41,10 +41,10 @@ spec:
           channel: "${slack_alert_channel_name}"
           minimumpriority: "${slack_alert_minimum_priority}"
       serviceMonitor:
-        enabled: true
+        enabled: false
         additionalLabels:
           scrape-service-metrics: "true"
     falco:
       program_output:
         enabled: ${stream_enabled}
-        program: "jq '{channel: \"${stream_channel_name}\", text: .output}' | curl -d @- -X POST ${stream_webhook_url}"
+        program: 'jq ''{channel: "${stream_channel_name}", text: .output}'' | curl -d @- -X POST ${stream_webhook_url}'
