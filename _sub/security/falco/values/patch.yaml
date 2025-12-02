@@ -47,4 +47,4 @@ spec:
     falco:
       program_output:
         enabled: ${stream_enabled}
-        program: 'jq ''{channel: "${stream_channel_name}", text: .output}'' | curl -d @- -X POST ${stream_webhook_url}'
+        program: "jq '{channel: \"${stream_channel_name}\", text: .output}' | curl -d @- -X POST ${stream_webhook_url}"
