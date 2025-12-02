@@ -148,38 +148,6 @@ POLICY
 }
 
 # --------------------------------------------------
-# Blackbox Exporter
-# --------------------------------------------------
-
-locals {
-  blackbox_exporter_monitoring_atlantis = var.atlantis_deploy ? [{
-    "name"   = "atlantis"
-    "url"    = "http://atlantis.atlantis/healthz"
-    "module" = "http_2xx"
-  }] : []
-
-  blackbox_exporter_monitoring_traefik_blue_variant = var.traefik_blue_variant_deploy ? [{
-    "name"   = "traefik-blue-variant"
-    "url"    = "http://traefik-blue-variant.traefik-blue-variant:8080/ping"
-    "module" = "http_2xx"
-  }] : []
-
-  blackbox_exporter_monitoring_traefik_green_variant = var.traefik_green_variant_deploy ? [{
-    "name"   = "traefik-green-variant"
-    "url"    = "http://traefik-green-variant.traefik-green-variant:8080/ping"
-    "module" = "http_2xx"
-  }] : []
-
-
-  blackbox_exporter_monitoring_targets = concat(
-    local.blackbox_exporter_monitoring_atlantis,
-    local.blackbox_exporter_monitoring_traefik_blue_variant,
-    local.blackbox_exporter_monitoring_traefik_green_variant,
-    var.blackbox_exporter_monitoring_targets
-  )
-}
-
-# --------------------------------------------------
 # Flux CD
 # --------------------------------------------------
 

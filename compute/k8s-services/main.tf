@@ -551,30 +551,6 @@ module "atlantis_github_configuration" {
 }
 
 # --------------------------------------------------
-# Blackbox Exporter
-# --------------------------------------------------
-
-module "blackbox_exporter_flux_manifests" {
-  source               = "../../_sub/monitoring/blackbox-exporter"
-  count                = var.grafana_deploy ? 1 : 0
-  cluster_name         = var.eks_cluster_name
-  chart_version        = var.blackbox_exporter_helm_chart_version
-  github_owner         = var.fluxcd_bootstrap_repo_owner
-  repo_name            = var.fluxcd_bootstrap_repo_name
-  repo_branch          = var.fluxcd_bootstrap_repo_branch
-  monitoring_targets   = local.blackbox_exporter_monitoring_targets
-  gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
-  prune                = var.fluxcd_prune
-
-  providers = {
-    github = github.fluxcd
-  }
-
-  depends_on = [module.grafana, module.platform_fluxcd]
-}
-
-# --------------------------------------------------
 # External-Snapshotter adds support for snapshot.storage.k8s.io/v1
 # https://github.com/kubernetes-csi/external-snapshotter/tree/master
 # --------------------------------------------------
