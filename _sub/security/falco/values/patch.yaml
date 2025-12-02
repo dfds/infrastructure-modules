@@ -32,7 +32,7 @@ spec:
       falco_custom_rules.yaml: |-
         ${custom_rules}
     falcosidekick:
-      enabled:
+      enabled: true
       webui:
         enabled: true
       config:
