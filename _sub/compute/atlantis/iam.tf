@@ -11,7 +11,7 @@ data "aws_iam_policy_document" "ssm" {
   statement {
     actions   = ["ssm:GetParameter*", "ssm:DescribeParameters", "tag:GetResources"]
     effect    = "Allow"
-    resources = ["arn:aws:ssm:${var.aws_region}:${var.workload_account_id}:parameter*"]
+    resources = ["arn:aws:ssm:${data.aws_region.this}:${data.aws_caller_identity.this}:parameter*"]
   }
 }
 
@@ -31,14 +31,14 @@ data "aws_iam_policy_document" "trust" {
       type = "Federated"
 
       identifiers = [
-        "arn:aws:iam::${var.workload_account_id}:oidc-provider/${var.oidc_issuer}",
+        "arn:aws:iam::${data.aws_caller_identity.this}:oidc-provider/${data.eks_eks_cluster.this.identity[0].oidc.issuer}",
       ]
     }
 
     condition {
       test     = "StringEquals"
       values   = ["system:serviceaccount:atlantis:${local.service_account}"]
-      variable = "${var.oidc_issuer}:sub"
+      variable = "${data.eks_eks_cluster.this.identity[0].oidc.issuer}:sub"
     }
   }
 }

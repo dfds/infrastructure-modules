@@ -2,6 +2,14 @@ data "github_repository" "main" {
   full_name = "${var.repo_owner}/${var.repo_name}"
 }
 
+data "aws_region" "this" {}
+
+data "aws_caller_identity" "this" {}
+
+data "aws_eks_cluster" "this" {
+  name = var.cluster_name
+}
+
 locals {
   deploy_name     = "atlantis"
   service_account = local.deploy_name
