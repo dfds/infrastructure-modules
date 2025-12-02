@@ -100,17 +100,6 @@ inputs = {
   atlantis_github_username            = "devex-sa"
   atlantis_github_repositories        = ["dfds/qa-dummy-atlantis"]
 
-  # --------------------------------------------------
-  # Blackbox Exporter
-  # --------------------------------------------------
-
-  blackbox_exporter_monitoring_targets = [
-    {
-      "name"   = "example"
-      "url"    = "https://example.com/"
-      "module" = "http_2xx"
-    }
-  ]
 
   # --------------------------------------------------
   # Velero - requires that s3-bucket-velero module
@@ -131,7 +120,6 @@ inputs = {
   velero_cron_schedule_offsite_ttl = "48h"
   velero_snapshots_enabled = true
   velero_node_agent_enabled = true
-
 
   # --------------------------------------------------
   # Grafana Agent for Kubernetes monitoring
