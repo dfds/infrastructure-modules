@@ -1,45 +1,15 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: ${deploy_name}
+  name: atlantis
   namespace: atlantis
 spec:
-  serviceAccountName: helm-controller
-  chart:
-    spec:
-      version: "${chart_version}"
   values:
     basicAuth:
-      username: ${deploy_name}
+      username: atlantis
       password: ${basic_auth_password}
-    extraVolumeMounts:
-      - mountPath: /kubeconfigs
-        name: kubeconfigs
-        readOnly: true
-    extraVolumes:
-      - name: kubeconfigs
-        secret:
-          defaultMode: 420
-          secretName: kubeconfigs # pragma: allowlist secret
     github:
       secret: ${github_secret}
       token: ${github_token}
       user: ${github_username}
-    image:
-      tag: ${image_tag}
-    ingress:
-      host: ${ingress_hostname}
     orgAllowlist: ${org_allowlist}
-    resources:
-      limits:
-        memory: ${resources_requests_memory}
-      requests:
-        cpu: ${resources_requests_cpu}
-        memory: ${resources_requests_memory}
-    volumeClaim:
-      dataStorage: ${storage_size}
-    serviceAccount:
-      name: ${service_account_name}
-      annotations:
-        eks.amazonaws.com/role-arn: arn:aws:iam::${workload_account_id}:role/${iam_role_name}
-        eks.amazonaws.com/sts-regional-endpoints: "true"

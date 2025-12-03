@@ -501,23 +501,17 @@ module "platform_fluxcd" {
 # Atlantis
 # --------------------------------------------------
 
-locals {
-  atlantis_ingress = format("atlantis.%s.%s", var.eks_cluster_name, var.workload_dns_zone_name)
-}
-
 module "atlantis_deployment" {
   source                    = "../../_sub/compute/atlantis"
   count                     = var.atlantis_deploy ? 1 : 0
   aws_region                = local.aws_region
-  chart_version             = var.atlantis_chart_version
   cluster_name              = var.eks_cluster_name
   github_repositories       = sort(var.atlantis_github_repositories)
   github_token              = var.atlantis_github_token
   github_username           = var.atlantis_github_username
   gitops_apps_repo_ref      = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   gitops_apps_repo_url      = local.fluxcd_apps_repo_url
-  image_tag                 = var.atlantis_image_tag
-  ingress_hostname          = local.atlantis_ingress
+  eks_fqdn                  = local.eks_fqdn
   oidc_issuer               = local.oidc_issuer
   prune                     = var.fluxcd_prune
   repo_branch               = var.fluxcd_bootstrap_repo_branch
@@ -525,7 +519,6 @@ module "atlantis_deployment" {
   repo_owner                = var.fluxcd_bootstrap_repo_owner
   resources_requests_cpu    = var.atlantis_resources_requests_cpu
   resources_requests_memory = var.atlantis_resources_requests_memory
-  storage_size              = var.atlantis_data_storage
   workload_account_id       = var.aws_workload_account_id
 
   depends_on = [module.platform_fluxcd]
@@ -540,7 +533,7 @@ module "atlantis_github_configuration" {
   count               = var.atlantis_deploy ? 1 : 0
   dashboard_password  = module.atlantis_deployment[0].dashboard_password
   github_repositories = sort(var.atlantis_github_repositories)
-  ingress_hostname    = local.atlantis_ingress
+  ingress_hostname    = format("atlantis.%s", local.eks_fqdn)
   webhook_secret      = module.atlantis_deployment[0].webhook_secret
 
   depends_on = [module.atlantis_deployment]

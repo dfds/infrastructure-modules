@@ -299,24 +299,6 @@ variable "atlantis_github_repositories" {
   default     = []
 }
 
-variable "atlantis_chart_version" {
-  type        = string
-  description = "Version of the helm chart to deploy"
-  default     = ""
-}
-
-variable "atlantis_image_tag" {
-  type        = string
-  description = "Tag of the Atlantis image to use"
-  default     = "latest"
-}
-
-variable "atlantis_data_storage" {
-  type        = string
-  description = "Size of the persistent volume"
-  default     = "5Gi"
-}
-
 variable "atlantis_resources_requests_cpu" {
   type        = string
   default     = "100m"

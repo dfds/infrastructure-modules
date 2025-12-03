@@ -7,10 +7,14 @@ resource "github_repository_file" "helm" {
   branch     = local.repo_branch
   file       = "${local.cluster_repo_path}/${local.app_install_name}-helm.yaml"
   content = templatefile("${path.module}/values/app-config.yaml", {
-    deploy_name      = local.deploy_name
-    app_install_name = local.app_install_name
-    helm_repo_path   = local.helm_repo_path
-    prune            = var.prune
+    app_install_name    = local.app_install_name
+    helm_repo_path      = local.helm_repo_path
+    prune               = var.prune
+    deploy_name         = local.deploy_name
+    eks_fqdn            = var.eks_fqdn
+    resource_cpu        = var.resources_requests_cpu
+    resource_memory     = var.resources_requests_memory
+    workload_account_id = var.workload_account_id
   })
   overwrite_on_create = true
 }
@@ -32,21 +36,11 @@ resource "github_repository_file" "patch" {
   branch     = local.repo_branch
   file       = "${local.helm_repo_path}/patch.yaml"
   content = templatefile("${path.module}/values/patch.yaml", {
-    basic_auth_password       = random_password.password.result
-    chart_version             = var.chart_version
-    deploy_name               = local.deploy_name
-    github_secret             = random_password.webhook.result
-    github_token              = var.github_token
-    github_username           = var.github_username
-    iam_role_name             = local.iam_role_name
-    image_tag                 = var.image_tag
-    ingress_hostname          = var.ingress_hostname
-    org_allowlist             = join(",", local.fully_qualified_repository_names)
-    resources_requests_cpu    = var.resources_requests_cpu
-    resources_requests_memory = var.resources_requests_memory
-    service_account_name      = local.service_account
-    storage_size              = var.storage_size
-    workload_account_id       = var.workload_account_id
+    basic_auth_password = random_password.password.result
+    github_secret       = random_password.webhook.result
+    github_token        = var.github_token
+    github_username     = var.github_username
+    org_allowlist       = join(",", local.fully_qualified_repository_names)
   })
   overwrite_on_create = true
 }

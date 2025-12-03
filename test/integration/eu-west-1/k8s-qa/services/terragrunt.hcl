@@ -94,21 +94,11 @@ inputs = {
   # Atlantis
   # --------------------------------------------------
 
-  atlantis_deploy       = true
-  atlantis_ingress      = "atlantis.qa.qa.dfds.cloud"
-  atlantis_data_storage = "5Gi"
-
-  atlantis_resources_requests_cpu    = "10m"
-  atlantis_resources_limits_cpu      = "10m"
-  atlantis_resources_requests_memory = "512Mi"
-
-  atlantis_github_username     = "devex-sa"
-  atlantis_github_repositories = ["dfds/qa-dummy-atlantis"]
-  atlantis_github_owner        = "dfds"
-  atlantis_webhook_events      = ["issue_comment", "pull_request", "pull_request_review", "push"]
-  atlantis_chart_version       = "5.17.2"
-  atlantis_image_tag           = "2.1.0"
-  atlantis_add_secret_volumes  = true
+  atlantis_deploy                     = true
+  atlantis_resources_requests_cpu     = "10m"
+  atlantis_resources_requests_memory  = "512Mi"
+  atlantis_github_username            = "devex-sa"
+  atlantis_github_repositories        = ["dfds/qa-dummy-atlantis"]
 
 
   # --------------------------------------------------
