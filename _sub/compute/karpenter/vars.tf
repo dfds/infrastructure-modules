@@ -26,7 +26,6 @@ variable "apps_repo_ref" {
 }
 
 variable "is_sandbox" {
-  type = bool
+  type        = bool
   description = "Is the cluster sandbox/non-prod"
 }
-

@@ -15,7 +15,7 @@ if [ "$ACTION" = "apply-shared" ]; then
 	WORKDIR="${BASEPATH}/${SUBPATH}"
 
 	# Apply the configuration
-	terragrunt apply --all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve
+	terragrunt apply --all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve --provider-cache
 fi
 
 if [ "$ACTION" = "apply-cluster" ]; then
@@ -24,7 +24,7 @@ if [ "$ACTION" = "apply-cluster" ]; then
 	WORKDIR="${BASEPATH}/${REGION}/k8s-${CLUSTERNAME}"
 
 	# Apply the configuration
-	terragrunt apply --all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve
+	terragrunt apply --all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve --provider-cache
 fi
 
 if [ "$ACTION" = "test-build" ]; then
@@ -75,7 +75,7 @@ if [ "$ACTION" = "destroy-cluster" ]; then
 	fi
 
 	# Destroy resources
-	terragrunt destroy --all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve
+	terragrunt destroy --all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve --provider-cache
 fi
 
 if [ "$ACTION" = "destroy-public-bucket" ]; then
@@ -84,7 +84,7 @@ if [ "$ACTION" = "destroy-public-bucket" ]; then
 	WORKDIR="${BASEPATH}/${SUBPATH}"
 
 	# Destroy resources
-	terragrunt destroy --all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve
+	terragrunt destroy --all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve --provider-cache
 fi
 
 if [ "$ACTION" = "destroy-velero-bucket" ]; then
@@ -94,5 +94,5 @@ if [ "$ACTION" = "destroy-velero-bucket" ]; then
 	WORKDIR="${BASEPATH}/${SUBPATH}"
 
 	# Destroy resources
-	terragrunt destroy --all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve
+	terragrunt destroy --all --working-dir "$WORKDIR" --source-update --non-interactive -input=false -auto-approve --provider-cache
 fi

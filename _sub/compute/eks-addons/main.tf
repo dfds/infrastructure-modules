@@ -12,12 +12,12 @@ resource "aws_eks_addon" "vpc-cni" {
 }
 
 resource "aws_eks_addon" "coredns" {
-  cluster_name                = var.cluster_name
-  addon_name                  = "coredns"
-  addon_version               = local.coredns_version
+  cluster_name  = var.cluster_name
+  addon_name    = "coredns"
+  addon_version = local.coredns_version
   configuration_values = jsonencode({
     autoScaling = {
-      enabled = true
+      enabled     = true
       minReplicas = 2
       maxReplicas = 5
     }
