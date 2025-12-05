@@ -34,12 +34,12 @@ locals {
     },
   ]
   priority_classes = concat(local.priority_classes_v0, local.priority_classes_v1)
-  global_default = "low"
+  global_default   = "low"
 }
 
 
 resource "kubernetes_priority_class" "class" {
-  for_each = {for pc in local.priority_classes : pc.name => pc}
+  for_each = { for pc in local.priority_classes : pc.name => pc }
   metadata {
     name = each.value.name
   }
