@@ -47,16 +47,16 @@ data "aws_ami" "this" {
 }
 
 locals {
-  ami_defined_cluster_version = reverse(split("-", data.aws_ami.this.name))[1] # cluster version from AMI name, e.g. "amazon-eks-node-al2023-x86_64-standard-1.33-v20251016" -> 1.33
-  cluster_version_gt_133 = (tonumber(split(".", local.ami_defined_cluster_version)[0]) == 1 && tonumber(split(".", local.ami_defined_cluster_version)[1]) >= 34) || tonumber(split(".", local.ami_defined_cluster_version)[0]) >= 2 # versions above 1.33 uses containerd v2, which uses different syntaxt for image registry auth
+  ami_defined_cluster_version = reverse(split("-", data.aws_ami.this.name))[1]                                                                                                                                                           # cluster version from AMI name, e.g. "amazon-eks-node-al2023-x86_64-standard-1.33-v20251016" -> 1.33
+  cluster_version_gt_133      = (tonumber(split(".", local.ami_defined_cluster_version)[0]) == 1 && tonumber(split(".", local.ami_defined_cluster_version)[1]) >= 34) || tonumber(split(".", local.ami_defined_cluster_version)[0]) >= 2 # versions above 1.33 uses containerd v2, which uses different syntaxt for image registry auth
 
   ami_date = tonumber(trim(reverse(split("-", data.aws_ami.this.name))[0], "v")) # extracts the date from the AMI name, e.g. "amazon-eks-node-al2023-x86_64-standard-1.33-v20251016" -> 20251016
 
   cluster_version_containerdv2_cuttoff_date = {
-    "1.33"    = 20251016
-    "1.32"    = 20251023
-    "1.31"    = 20251030
-    "1.30"    = 20251106
+    "1.33" = 20251016
+    "1.32" = 20251023
+    "1.31" = 20251030
+    "1.30" = 20251106
   } # dates containerd v2 will be backported to EKS Optimized AL2023 AMIs (https://github.com/awslabs/amazon-eks-ami/issues/2470#issue-3514989135)
 
   ami_using_containerd_v2 = local.cluster_version_gt_133 || local.ami_date >= lookup(local.cluster_version_containerdv2_cuttoff_date, local.ami_defined_cluster_version, 99999999) # first portion checks if cluster version is > 1.33, second portion checks if AMI date is >= cuttoff date for the cluster version
