@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: dfds/infrastructure-modules
           ref: master
@@ -76,7 +76,7 @@ jobs:
     if: github.ref != 'refs/heads/master' && github.event.pull_request.draft == false
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
@@ -103,7 +103,7 @@ jobs:
     needs: build_test_master
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: dfds/infrastructure-modules
           ref: master
@@ -184,7 +184,7 @@ jobs:
     if: github.ref != 'refs/heads/master' && github.event.pull_request.draft == false
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Install Terragrunt and OpenTofu
         env:
