@@ -18,12 +18,11 @@ import (
 	"sync"
 	"time"
 
+	collogpb "go.opentelemetry.io/proto/otlp/collector/logs/v1"
+	logpb "go.opentelemetry.io/proto/otlp/logs/v1"
 	"google.golang.org/protobuf/proto"
 
 	"go.opentelemetry.io/otel"
-	collogpb "go.opentelemetry.io/proto/otlp/collector/logs/v1"
-	logpb "go.opentelemetry.io/proto/otlp/logs/v1"
-
 	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp/internal/retry"
 )
 
@@ -44,20 +43,23 @@ func newNoopClient() *client {
 
 // newHTTPClient creates a new HTTP log client.
 func newHTTPClient(cfg config) (*client, error) {
-	hc := &http.Client{
-		Transport: ourTransport,
-		Timeout:   cfg.timeout.Value,
-	}
-
-	if cfg.tlsCfg.Value != nil || cfg.proxy.Value != nil {
-		clonedTransport := ourTransport.Clone()
-		hc.Transport = clonedTransport
-
-		if cfg.tlsCfg.Value != nil {
-			clonedTransport.TLSClientConfig = cfg.tlsCfg.Value
+	hc := cfg.httpClient
+	if hc == nil {
+		hc = &http.Client{
+			Transport: ourTransport,
+			Timeout:   cfg.timeout.Value,
 		}
-		if cfg.proxy.Value != nil {
-			clonedTransport.Proxy = cfg.proxy.Value
+
+		if cfg.tlsCfg.Value != nil || cfg.proxy.Value != nil {
+			clonedTransport := ourTransport.Clone()
+			hc.Transport = clonedTransport
+
+			if cfg.tlsCfg.Value != nil {
+				clonedTransport.TLSClientConfig = cfg.tlsCfg.Value
+			}
+			if cfg.proxy.Value != nil {
+				clonedTransport.Proxy = cfg.proxy.Value
+			}
 		}
 	}
 
@@ -149,10 +151,15 @@ func (c *httpClient) uploadLogs(ctx context.Context, data []*logpb.ResourceLogs)
 		if err != nil {
 			return err
 		}
+		if resp != nil && resp.Body != nil {
+			defer func() {
+				if err := resp.Body.Close(); err != nil {
+					otel.Handle(err)
+				}
+			}()
+		}
 
-		var rErr error
-		switch sc := resp.StatusCode; {
-		case sc >= 200 && sc <= 299:
+		if sc := resp.StatusCode; sc >= 200 && sc <= 299 {
 			// Success, do not retry.
 
 			// Read the partial success message, if any.
@@ -180,43 +187,39 @@ func (c *httpClient) uploadLogs(ctx context.Context, data []*logpb.ResourceLogs)
 				}
 			}
 			return nil
-		case sc == http.StatusTooManyRequests,
-			sc == http.StatusBadGateway,
-			sc == http.StatusServiceUnavailable,
-			sc == http.StatusGatewayTimeout:
-			// Retry-able failure.
-			rErr = newResponseError(resp.Header, nil)
-
-			// server may return a message with the response
-			// body, so we read it to include in the error
-			// message to be returned. It will help in
-			// debugging the actual issue.
-			var respData bytes.Buffer
-			if _, err := io.Copy(&respData, resp.Body); err != nil {
-				_ = resp.Body.Close()
-				return err
-			}
-
-			// overwrite the error message with the response body
-			// if it is not empty
-			if respStr := strings.TrimSpace(respData.String()); respStr != "" {
-				// Include response for context.
-				e := errors.New(respStr)
-				rErr = newResponseError(resp.Header, e)
-			}
-		default:
-			rErr = fmt.Errorf("failed to send logs to %s: %s", request.URL, resp.Status)
 		}
+		// Error cases.
 
-		if err := resp.Body.Close(); err != nil {
+		// server may return a message with the response
+		// body, so we read it to include in the error
+		// message to be returned. It will help in
+		// debugging the actual issue.
+		var respData bytes.Buffer
+		if _, err := io.Copy(&respData, resp.Body); err != nil {
 			return err
 		}
-		return rErr
+		respStr := strings.TrimSpace(respData.String())
+		if respStr == "" {
+			respStr = "(empty)"
+		}
+		bodyErr := fmt.Errorf("body: %s", respStr)
+
+		switch resp.StatusCode {
+		case http.StatusTooManyRequests,
+			http.StatusBadGateway,
+			http.StatusServiceUnavailable,
+			http.StatusGatewayTimeout:
+			// Retryable failure.
+			return newResponseError(resp.Header, bodyErr)
+		default:
+			// Non-retryable failure.
+			return fmt.Errorf("failed to send logs to %s: %s (%w)", request.URL, resp.Status, bodyErr)
+		}
 	})
 }
 
 var gzPool = sync.Pool{
-	New: func() interface{} {
+	New: func() any {
 		w := gzip.NewWriter(io.Discard)
 		return w
 	},
@@ -228,7 +231,7 @@ func (c *httpClient) newRequest(ctx context.Context, body []byte) (request, erro
 
 	switch c.compression {
 	case NoCompression:
-		r.ContentLength = (int64)(len(body))
+		r.ContentLength = int64(len(body))
 		req.bodyReader = bodyReader(body)
 	case GzipCompression:
 		// Ensure the content length is not used.
@@ -309,7 +312,7 @@ func (e retryableError) Unwrap() error {
 	return e.err
 }
 
-func (e retryableError) As(target interface{}) bool {
+func (e retryableError) As(target any) bool {
 	if e.err == nil {
 		return false
 	}
