@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Install Terragrunt and OpenTofu
         uses: gruntwork-io/terragrunt-action@v3
@@ -81,7 +81,7 @@ jobs:
       image: dfdsdk/aws-nuke:0.0.36
     steps:
       - name: Checkout Nuke config
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: dfds/qa-nuke-config
           ref: main
