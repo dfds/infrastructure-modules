@@ -3,7 +3,7 @@ module go.dfds.cloud/infrastructure-modules/test/integration/suite
 go 1.25.0
 
 require (
-	github.com/fluxcd/pkg/apis/meta v1.22.0
+	github.com/fluxcd/pkg/apis/meta v1.23.0
 	github.com/stretchr/testify v1.11.1
 	github.com/traefik/traefik/v3 v3.6.3
 	k8s.io/api v0.34.2
@@ -14,7 +14,6 @@ require (
 )
 
 require (
-	github.com/aws/aws-sdk-go v1.44.327 // indirect
 	github.com/aws/smithy-go v1.23.2 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
