@@ -3,11 +3,6 @@ variable "cluster_name" {
   description = "The name of the EKS cluster"
 }
 
-variable "chart_version" {
-  type        = string
-  description = "The helm chart version"
-}
-
 variable "repo_owner" {
   type        = string
   description = "Name of the Github owner (previously: organization)"

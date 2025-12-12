@@ -33,17 +33,16 @@ resource "github_repository_file" "extdns_helm_patch" {
   branch     = local.repo_branch
   file       = "${local.helm_repo_path}/patch.yaml"
   content = templatefile("${path.module}/values/helm-patch.yaml", {
-    deploy_name        = var.deploy_name
-    namespace          = var.namespace
-    helm_chart_version = var.helm_chart_version
-    region             = var.cluster_region
-    role_arn           = var.role_arn
-    cluster            = var.cluster_name
-    deletion_policy    = var.deletion_policy_override
-    zone_ids           = var.zone_ids
-    txt_owner_id       = local.txt_owner_id
-    is_debug_mode      = var.is_debug_mode
-    assume_role_arn    = var.assume_role_arn
+    deploy_name     = var.deploy_name
+    namespace       = var.namespace
+    region          = var.cluster_region
+    role_arn        = var.role_arn
+    cluster         = var.cluster_name
+    deletion_policy = var.deletion_policy_override
+    zone_ids        = var.zone_ids
+    txt_owner_id    = local.txt_owner_id
+    is_debug_mode   = var.is_debug_mode
+    assume_role_arn = var.assume_role_arn
   })
   overwrite_on_create = true
 }

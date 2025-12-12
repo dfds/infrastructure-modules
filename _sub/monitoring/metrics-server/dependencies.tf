@@ -47,14 +47,5 @@ YAML
     kind: Kustomization
     resources:
       - ${var.gitops_apps_repo_url}/apps/${local.deploy_name}?ref=${var.gitops_apps_repo_ref}
-    patches:
-      - target:
-          kind: HelmRelease
-          name: metrics-server
-          namespace: metrics-server
-        patch: |-
-          - op: replace
-            path: /spec/chart/spec/version
-            value: "${var.chart_version}"
     YAML
 }

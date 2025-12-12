@@ -71,31 +71,6 @@ variable "helm_repo_name" {
   description = "The name of the Helm repo with the Velero Helm chart"
 }
 
-variable "helm_chart_version" {
-  type        = string
-  description = "The Velero Helm chart version to install"
-  validation {
-    condition = (
-      # major
-      tonumber(split(".", var.helm_chart_version)[0]) > 10 ||
-
-      # minor
-      (
-        tonumber(split(".", var.helm_chart_version)[0]) == 10 &&
-        tonumber(split(".", var.helm_chart_version)[1]) > 1
-      ) ||
-
-      # patch
-      (
-        tonumber(split(".", var.helm_chart_version)[0]) == 10 &&
-        tonumber(split(".", var.helm_chart_version)[1]) == 1 &&
-        tonumber(split(".", var.helm_chart_version)[2]) >= 0
-      )
-    )
-    error_message = "Velero helm chart version must be 10.1.0 or higher."
-  }
-}
-
 variable "image_tag" {
   type        = string
   default     = ""

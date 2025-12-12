@@ -159,26 +159,6 @@ variable "cloudwatch_alarm_log_anomaly_deploy" {
 }
 
 # --------------------------------------------------
-# Goldpinger
-# --------------------------------------------------
-
-variable "goldpinger_chart_version" {
-  type        = string
-  description = "Goldpinger helm chart version"
-  default     = ""
-}
-
-# --------------------------------------------------
-# Metrics-Server
-# --------------------------------------------------
-
-variable "metrics_server_helm_chart_version" {
-  type        = string
-  description = "The helm chart version"
-  default     = ""
-}
-
-# --------------------------------------------------
 # Flux CD
 # --------------------------------------------------
 
@@ -395,12 +375,6 @@ variable "velero_log_level" {
   }
 }
 
-variable "velero_helm_chart_version" {
-  type        = string
-  default     = ""
-  description = "The Velero Helm chart version to install"
-}
-
 variable "velero_image_tag" {
   type        = string
   default     = ""
@@ -548,12 +522,6 @@ variable "grafana_deploy" {
   description = "Feature toggle for Grafana module"
 }
 
-variable "grafana_agent_chart_version" {
-  type        = string
-  description = "Grafana Agent helm chart version"
-  default     = ""
-}
-
 variable "grafana_agent_api_token" {
   type        = string
   description = "The token to authenticate request to a Grafana Cloud stack"
@@ -655,16 +623,6 @@ variable "observability_affinity" {
 }
 
 # --------------------------------------------------
-# External Secrets
-# --------------------------------------------------
-
-variable "external_secrets_helm_chart_version" {
-  type        = string
-  description = "External Secrets helm chart version"
-  default     = ""
-}
-
-# --------------------------------------------------
 # External Secrets with SSM
 # --------------------------------------------------
 
@@ -694,12 +652,6 @@ variable "external_dns_deploy" {
   type        = string
   default     = false
   description = "Feature toggle for External DNS module"
-}
-
-variable "external_dns_helm_chart_version" {
-  type        = string
-  description = "External DNS helm chart version"
-  default     = ""
 }
 
 variable "external_dns_traefik_alb_anon_core_alias" {
@@ -775,12 +727,6 @@ variable "onepassword_token_for_atlantis" {
   description = "The 1Password Connect tokens to be stored in SSM if Atlantis is enabled"
 }
 
-variable "onepassword_connect_chart_version" {
-  type        = string
-  default     = ""
-  description = "The 1Password Connect helm chart version"
-}
-
 # --------------------------------------------------
 # Nvidia device plugin
 # --------------------------------------------------
@@ -789,12 +735,6 @@ variable "deploy_nvidia_device_plugin" {
   type        = bool
   default     = false
   description = "Whether to deploy NVIDIA device plugin. This needs to be set to `true` when GPU based workloads needs to be enabled."
-}
-
-variable "nvidia_chart_version" {
-  type        = string
-  description = "Nvidia device plugin helm chart version"
-  default     = ""
 }
 
 variable "nvidia_namespace" {
@@ -834,12 +774,6 @@ variable "github_arc_ss_controller_deploy" {
   description = "Feature toggle for Github ARC SS Controller"
 }
 
-variable "github_arc_ss_controller_helm_chart_version" {
-  type        = string
-  description = "Github ARC SS Controller helm chart version"
-  default     = ""
-}
-
 # --------------------------------------------------
 # Github ARC Runners
 # --------------------------------------------------
@@ -848,12 +782,6 @@ variable "github_arc_runners_deploy" {
   type        = string
   default     = false
   description = "Feature toggle for Github ARC Runners"
-}
-
-variable "github_arc_runners_helm_chart_version" {
-  type        = string
-  description = "Github ARC Runners helm chart version"
-  default     = ""
 }
 
 variable "github_arc_runners_github_config_url" {
@@ -908,12 +836,6 @@ variable "druid_operator_deploy" {
   default     = true
 }
 
-variable "druid_operator_chart_version" {
-  type        = string
-  description = "Druid Operator helm chart version"
-  default     = ""
-}
-
 # --------------------------------------------------
 # Trivy Operator
 # --------------------------------------------------
@@ -922,12 +844,6 @@ variable "trivy_operator_deploy" {
   type        = bool
   description = "Deploy Trivy Operator helm chart switch"
   default     = false
-}
-
-variable "trivy_operator_chart_version" {
-  type        = string
-  description = "Trivy Operator helm chart version"
-  default     = ""
 }
 
 variable "trivy_operator_resources_requests_cpu" {
@@ -968,12 +884,6 @@ variable "falco_deploy_name" {
   type        = string
   description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
   default     = "falco"
-}
-
-variable "falco_chart_version" {
-  type        = string
-  description = "Falco helm chart version"
-  default     = ""
 }
 
 variable "falco_namespace" {
@@ -1042,19 +952,4 @@ variable "keda_deploy" {
   type        = bool
   description = "Deploy KEDA helm chart switch"
   default     = true
-}
-
-variable "keda_chart_version" {
-  type        = string
-  description = "KEDA helm chart version"
-  default     = ""
-}
-
-# --------------------------------------------------
-# AWS Load Balancer Controller
-# --------------------------------------------------
-variable "aws_lb_controller_helm_chart_version" {
-  type        = string
-  description = "AWS Load Balancer Controller helm chart version"
-  default     = "1.14.1"
 }

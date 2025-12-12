@@ -33,12 +33,11 @@ resource "github_repository_file" "helm_patch" {
   branch     = local.repo_branch
   file       = "${local.helm_repo_path}/patch.yaml"
   content = templatefile("${path.module}/values/helm-patch.yaml", {
-    deploy_name        = local.deploy_name
-    namespace          = local.namespace
-    helm_chart_version = var.helm_chart_version
-    region             = var.cluster_region
-    role_arn           = var.role_arn
-    cluster            = var.cluster_name
+    deploy_name = local.deploy_name
+    namespace   = local.namespace
+    region      = var.cluster_region
+    role_arn    = var.role_arn
+    cluster     = var.cluster_name
   })
   overwrite_on_create = true
 }

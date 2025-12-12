@@ -68,9 +68,6 @@ metadata:
   namespace: ${var.namespace}
 spec:
   serviceAccountName: helm-controller
-  chart:
-    spec:
-      version: ${var.helm_chart_version}
   values:
     githubConfigUrl: ${var.github_config_url}
     githubConfigSecret: ${var.github_config_secret}

@@ -49,25 +49,5 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - "${var.gitops_apps_repo_url}/apps/${local.deploy_name}?ref=${var.gitops_apps_repo_ref}"
-patches:
-  - path: patch.yaml
-    target:
-      kind: HelmRelease
-      name: ${local.deploy_name}
-      namespace: external-secrets
 YAML
-
-  helm_patch = <<YAML
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: ${local.deploy_name}
-  namespace: external-secrets
-spec:
-  serviceAccountName: helm-controller
-  chart:
-    spec:
-      version: ${var.helm_chart_version}
-YAML
-
 }

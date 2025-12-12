@@ -87,7 +87,6 @@ module "traefik_green_variant_manifests" {
 module "lb_controller_flux_manifests" {
   source               = "../../_sub/network/aws-lb-controller"
   cluster_name         = var.eks_cluster_name
-  helm_chart_version   = var.aws_lb_controller_helm_chart_version
   github_owner         = var.fluxcd_bootstrap_repo_owner
   repo_name            = var.fluxcd_bootstrap_repo_name
   repo_branch          = var.fluxcd_bootstrap_repo_branch
@@ -279,7 +278,6 @@ module "external_dns_flux_manifests" {
   cluster_name             = var.eks_cluster_name
   deploy_name              = "external-dns"
   namespace                = "external-dns"
-  helm_chart_version       = var.external_dns_helm_chart_version
   github_owner             = var.fluxcd_bootstrap_repo_owner
   repo_name                = var.fluxcd_bootstrap_repo_name
   repo_branch              = var.fluxcd_bootstrap_repo_branch
@@ -427,7 +425,6 @@ module "goldpinger" {
   repo_branch          = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
-  chart_version        = var.goldpinger_chart_version
   prune                = var.fluxcd_prune
 
   depends_on = [module.grafana, module.platform_fluxcd]
@@ -450,7 +447,6 @@ module "metrics_server" {
   repo_branch          = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
-  chart_version        = var.metrics_server_helm_chart_version
   prune                = var.fluxcd_prune
 
   depends_on = [module.platform_fluxcd]
@@ -578,7 +574,6 @@ module "velero" {
   log_level                           = var.velero_log_level
   repo_name                           = var.fluxcd_bootstrap_repo_name
   repo_branch                         = var.fluxcd_bootstrap_repo_branch
-  helm_chart_version                  = var.velero_helm_chart_version
   image_tag                           = var.velero_image_tag
   plugin_for_aws_version              = var.velero_plugin_for_aws_version
   plugin_for_azure_version            = var.velero_plugin_for_azure_version
@@ -646,7 +641,6 @@ module "grafana" {
   repo_branch                   = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_ref          = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   gitops_apps_repo_url          = local.fluxcd_apps_repo_url
-  chart_version                 = var.grafana_agent_chart_version
   api_token                     = var.grafana_agent_api_token
   prometheus_url                = var.grafana_agent_prometheus_url
   prometheus_username           = var.grafana_agent_prometheus_username
@@ -677,7 +671,6 @@ module "grafana" {
 module "external_secrets" {
   source               = "../../_sub/security/external-secrets"
   cluster_name         = var.eks_cluster_name
-  helm_chart_version   = var.external_secrets_helm_chart_version
   github_owner         = var.fluxcd_bootstrap_repo_owner
   repo_name            = var.fluxcd_bootstrap_repo_name
   repo_branch          = var.fluxcd_bootstrap_repo_branch
@@ -758,7 +751,6 @@ module "onepassword_connect" {
   aws_region           = local.aws_region
   credentials_json     = var.onepassword_credentials_json
   token_for_atlantis   = var.onepassword_token_for_atlantis
-  chart_version        = var.onepassword_connect_chart_version
 
   providers = {
     github = github.fluxcd
@@ -780,7 +772,6 @@ module "eks_nvidia_device_plugin" {
   cluster_name         = var.eks_cluster_name
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
-  chart_version        = var.nvidia_chart_version
   namespace            = var.nvidia_namespace
   tolerations          = var.nvidia_device_plugin_tolerations
   affinity             = var.nvidia_device_plugin_affinity
@@ -802,7 +793,6 @@ module "github_arc_ss_controller" {
   cluster_name         = var.eks_cluster_name
   deploy_name          = "arc"
   namespace            = "arc-systems"
-  helm_chart_version   = var.github_arc_ss_controller_helm_chart_version
   github_owner         = var.fluxcd_bootstrap_repo_owner
   repo_name            = var.fluxcd_bootstrap_repo_name
   repo_branch          = var.fluxcd_bootstrap_repo_branch
@@ -827,7 +817,6 @@ module "github_arc_runners" {
   cluster_name          = var.eks_cluster_name
   deploy_name           = "arc-runner-set"
   namespace             = "arc-runners"
-  helm_chart_version    = var.github_arc_runners_helm_chart_version
   github_owner          = var.fluxcd_bootstrap_repo_owner
   repo_name             = var.fluxcd_bootstrap_repo_name
   repo_branch           = var.fluxcd_bootstrap_repo_branch
@@ -857,7 +846,6 @@ module "druid_operator" {
   source               = "../../_sub/compute/druid-operator"
   count                = var.druid_operator_deploy ? 1 : 0
   cluster_name         = var.eks_cluster_name
-  chart_version        = var.druid_operator_chart_version
   repo_owner           = var.fluxcd_bootstrap_repo_owner
   repo_name            = var.fluxcd_bootstrap_repo_name
   repo_branch          = var.fluxcd_bootstrap_repo_branch
@@ -881,7 +869,6 @@ module "trivy_operator" {
   source                         = "../../_sub/compute/trivy-operator"
   count                          = var.trivy_operator_deploy ? 1 : 0
   cluster_name                   = var.eks_cluster_name
-  chart_version                  = var.trivy_operator_chart_version
   resources_requests_cpu         = var.trivy_operator_resources_requests_cpu
   resources_requests_memory      = var.trivy_operator_resources_requests_memory
   scan_resources_requests_cpu    = var.trivy_scan_resources_requests_cpu
@@ -912,7 +899,6 @@ module "falco" {
   cluster_name                 = var.eks_cluster_name
   deploy_name                  = var.falco_deploy_name
   namespace                    = var.falco_namespace
-  chart_version                = var.falco_chart_version
   repo_owner                   = var.fluxcd_bootstrap_repo_owner
   repo_name                    = var.fluxcd_bootstrap_repo_name
   repo_branch                  = var.fluxcd_bootstrap_repo_branch
@@ -943,7 +929,6 @@ module "keda" {
   source               = "../../_sub/compute/keda"
   count                = var.keda_deploy ? 1 : 0
   cluster_name         = var.eks_cluster_name
-  chart_version        = var.keda_chart_version
   repo_owner           = var.fluxcd_bootstrap_repo_owner
   repo_name            = var.fluxcd_bootstrap_repo_name
   repo_branch          = var.fluxcd_bootstrap_repo_branch

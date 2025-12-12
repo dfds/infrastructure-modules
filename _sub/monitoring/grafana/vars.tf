@@ -33,11 +33,6 @@ variable "gitops_apps_repo_ref" {
   description = "The default branch or tag for your GitOps manifests"
 }
 
-variable "chart_version" {
-  type        = string
-  description = "Grafana Agent helm chart version"
-}
-
 variable "agent_resource_memory_request" {
   type        = string
   description = "Set resource memory request on Grafana Agent container"

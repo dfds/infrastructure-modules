@@ -32,11 +32,10 @@ resource "github_repository_file" "nvidia_device_plugin_helm_patch" {
   branch     = local.repo_branch
   file       = "${local.helm_repo_path}/patch.yaml"
   content = templatefile("${path.module}/values/patch.yaml", {
-    namespace     = var.namespace
-    chart_version = var.chart_version
-    deploy_name   = var.deploy_name
-    tolerations   = var.tolerations
-    affinity      = var.affinity
+    namespace   = var.namespace
+    deploy_name = var.deploy_name
+    tolerations = var.tolerations
+    affinity    = var.affinity
   })
   overwrite_on_create = true
 }

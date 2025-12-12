@@ -30,12 +30,6 @@ variable "repo_branch" {
   default     = null
 }
 
-variable "helm_chart_version" {
-  type        = string
-  description = "The version of the chart that should be used"
-  default     = ""
-}
-
 variable "gitops_apps_repo_url" {
   type        = string
   default     = ""
