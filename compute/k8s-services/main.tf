@@ -304,6 +304,26 @@ module "external_dns_flux_manifests" {
   depends_on = [module.platform_fluxcd]
 }
 
+module "cert_manager_flux_manifests" {
+  source               = "../../_sub/security/cert-manager"
+  cluster_name         = var.eks_cluster_name
+  deploy_name          = "cert-manager"
+  namespace            = "cert-manager"
+  github_owner         = var.fluxcd_bootstrap_repo_owner
+  repo_name            = var.fluxcd_bootstrap_repo_name
+  repo_branch          = var.fluxcd_bootstrap_repo_branch
+  gitops_apps_repo_url = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  prune                = var.fluxcd_prune
+  cluster_region       = var.aws_region
+  is_debug_mode        = var.cert_manager_is_debug_mode
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
+}
 
 module "external_dns_iam_role_route53_access" {
   source               = "../../_sub/security/iam-role"
