@@ -4,9 +4,6 @@ metadata:
   name: grafana-k8s-monitoring
   namespace: grafana
 spec:
-  chart:
-    spec:
-      version: "${helm_chart_version}"
   values:
     cluster:
       name: ${cluster_name}

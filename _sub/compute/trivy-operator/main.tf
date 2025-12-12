@@ -31,7 +31,6 @@ resource "github_repository_file" "helm_patch" {
   branch     = local.repo_branch
   file       = "${local.helm_repo_path}/patch.yaml"
   content = templatefile("${path.module}/values/patch.yaml", {
-    chart_version                  = var.chart_version
     deploy_name                    = local.deploy_name
     github_token                   = var.github_token
     resources_requests_cpu         = var.resources_requests_cpu

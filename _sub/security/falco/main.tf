@@ -33,7 +33,6 @@ resource "github_repository_file" "helm_patch" {
   file       = "${local.helm_repo_path}/patch.yaml"
   content = templatefile("${path.module}/values/patch.yaml", {
     namespace                    = var.namespace
-    chart_version                = var.chart_version
     deploy_name                  = var.deploy_name
     slack_alert_webhook_url      = var.slack_alert_webhook_url
     slack_alert_channel_name     = var.slack_alert_channel_name
