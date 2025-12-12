@@ -8,11 +8,6 @@ variable "deploy_name" {
   default     = "external-dns"
 }
 
-variable "namespace" {
-  type        = string
-  description = "The namespace in which to deploy Helm resources"
-  default     = "external-dns"
-}
 
 variable "github_owner" {
   type        = string
@@ -28,12 +23,6 @@ variable "repo_branch" {
   type        = string
   description = "Override the default branch of the repo (optional)"
   default     = null
-}
-
-variable "helm_chart_version" {
-  type        = string
-  description = "The version of the Traefik v2 Helm Chart that should be used"
-  default     = ""
 }
 
 variable "gitops_apps_repo_url" {

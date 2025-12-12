@@ -42,7 +42,7 @@ resource "github_repository_file" "certmanager_helm" {
   content = templatefile("${path.module}/values/app-helm.yaml", {
     app_install_name = local.app_install_name
     deploy_name      = var.deploy_name
-    namespace        = var.namespace
+    namespace        = local.namespace
     helm_repo_path   = local.helm_repo_path
     prune            = var.prune
   })
@@ -67,8 +67,7 @@ resource "github_repository_file" "certmanager_helm_patch" {
   file       = "${local.helm_repo_path}/patch.yaml"
   content = templatefile("${path.module}/values/helm-patch.yaml", {
     deploy_name        = var.deploy_name
-    namespace          = var.namespace
-    helm_chart_version = var.helm_chart_version
+    namespace          = local.namespace
     region             = var.cluster_region
     # role_arn           = var.role_arn
     cluster            = var.cluster_name
