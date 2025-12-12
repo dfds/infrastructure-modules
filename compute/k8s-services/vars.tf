@@ -1058,3 +1058,12 @@ variable "aws_lb_controller_helm_chart_version" {
   description = "AWS Load Balancer Controller helm chart version"
   default     = "1.14.1"
 }
+
+# --------------------------------------------------
+# Cert-Manager
+# --------------------------------------------------
+variable "cert_manager_is_debug_mode" {
+  type        = bool
+  description = "Enable debug logging for Cert-Manager"
+  default     = false
+}
