@@ -2,11 +2,6 @@ variable "cluster_name" {
   type = string
 }
 
-variable "deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "external-dns"
-}
 
 
 variable "github_owner" {
@@ -47,9 +42,17 @@ variable "cluster_region" {
   type        = string
   description = "The AWS region the EKS cluster is deployed in"
 }
+variable "domain_name" {
+  type        = string
+  description = "The domain name to be used by cert-manager"
+}
 
-variable "is_debug_mode" {
-  type        = bool
-  description = "If it is set to true then logLevel will be set to debug."
-  default     = false
+variable "acme_email" {
+  type        = string
+  description = "The email address to be used for ACME registration with cert-manager"
+}
+
+variable "iam_role_arn" {
+  type = string
+  description = "The IAM Role ARN to be used by cert-manager for DNS01 challenge"
 }

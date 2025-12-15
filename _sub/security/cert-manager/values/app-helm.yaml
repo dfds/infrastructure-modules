@@ -27,3 +27,8 @@ spec:
     name: flux-system
   path: "./${helm_repo_path}"
   prune: ${prune}
+  postBuild:
+    substitute:
+      flux_cert_manager_domain_name: ${domain_name}
+      flux_cert_manager_acme_email: ${email}
+      flux_cert_manager_iam_role_arn: ${iam_role_arn}

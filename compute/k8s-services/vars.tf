@@ -1062,8 +1062,8 @@ variable "aws_lb_controller_helm_chart_version" {
 # --------------------------------------------------
 # Cert-Manager
 # --------------------------------------------------
-variable "cert_manager_is_debug_mode" {
-  type        = bool
-  description = "Enable debug logging for Cert-Manager"
-  default     = false
+variable "cert_manager_acme_email" {
+  type        = string
+  description = "Email address used for ACME registration"
+  default     = ""
 }
