@@ -15,6 +15,7 @@ resource "github_repository_file" "helm" {
     resource_cpu        = var.resources_requests_cpu
     resource_memory     = var.resources_requests_memory
     workload_account_id = data.aws_caller_identity.this.id
+    cluster_name        = var.cluster_name
   })
   overwrite_on_create = true
 }
