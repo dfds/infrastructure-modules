@@ -325,9 +325,6 @@ module "cert_manager_flux_manifests" {
   depends_on = [module.platform_fluxcd]
 }
 
-output "iam_role_arn_cm" {
-  value = module.cert_manager_role.arn
-}
 
 module "cert_manager_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
