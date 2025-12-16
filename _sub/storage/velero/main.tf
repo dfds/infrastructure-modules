@@ -39,7 +39,6 @@ resource "github_repository_file" "velero_flux_helm_patch_yaml" {
   branch     = data.github_branch.flux_branch.branch
   file       = "${local.helm_repo_path}/patch.yaml"
   content = templatefile("${path.module}/values/patch.yaml", {
-    helm_chart_version                  = var.helm_chart_version
     helm_repo_name                      = var.helm_repo_name
     image_tag                           = var.image_tag
     snapshots_enabled                   = var.snapshots_enabled

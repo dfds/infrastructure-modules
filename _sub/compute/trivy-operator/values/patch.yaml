@@ -4,9 +4,6 @@ metadata:
   name: ${deploy_name}
   namespace: "trivy-system"
 spec:
-  chart:
-    spec:
-      version: "${chart_version}"
   values:
     resources:
       limits:

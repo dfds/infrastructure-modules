@@ -4,10 +4,6 @@ metadata:
   name: ${deploy_name}
   namespace: ${namespace}
 spec:
-  serviceAccountName: helm-controller
-  chart:
-    spec:
-      version: "${chart_version}"
   values:
 %{ if length(affinity) > 0 ~}
     affinity:

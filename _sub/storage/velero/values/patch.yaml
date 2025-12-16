@@ -4,15 +4,6 @@ metadata:
   name: velero
   namespace: flux-system
 spec:
-  serviceAccountName: helm-controller
-  chart:
-    spec:
-      chart: velero
-      version: ${helm_chart_version}
-      sourceRef:
-        kind: HelmRepository
-        name: ${helm_repo_name}
-        namespace: flux-system
   values:
     image:
       repository: velero/velero
@@ -115,7 +106,7 @@ spec:
           volumeSnapshotLocations:
             - "azure-snapshot"
           snapshotMoveData: true
-          excludedNamespaces: 
+          excludedNamespaces:
             - velero
 %{ if length(excluded_namespace_scoped_resources) > 0 ~}
           excludedNamespaceScopedResources:

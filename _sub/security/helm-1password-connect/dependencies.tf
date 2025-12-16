@@ -54,14 +54,5 @@ kind: Kustomization
 namespace: "1password-connect"
 resources:
   - ${var.gitops_apps_repo_url}/apps/${local.deploy_name}?ref=${var.gitops_apps_repo_ref}
-patches:
-  - target:
-      kind: HelmRelease
-      name: 1password-connect
-      namespace: 1password-connect
-    patch: |-
-      - op: replace
-        path: /spec/chart/spec/version
-        value: "${var.chart_version}"
 YAML
 }

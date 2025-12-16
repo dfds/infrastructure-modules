@@ -22,7 +22,6 @@ resource "github_repository_file" "goldpinger_helm_install" {
     gitops_apps_repo_url = var.gitops_apps_repo_url
     deploy_name          = local.deploy_name
     gitops_apps_repo_ref = var.gitops_apps_repo_ref
-    chart_version        = var.chart_version
   })
   overwrite_on_create = true
 }

@@ -103,30 +103,6 @@ inputs = {
   }
 
   # --------------------------------------------------
-  # GPU workloads
-  # --------------------------------------------------
-
-  deploy_nvidia_device_plugin = false
-  nvidia_device_plugin_tolerations = [
-    {
-      key = "dfds.service.gpu"
-      operator = "Exists"
-      effect = "NoSchedule"
-    }
-  ]
-  nvidia_device_plugin_affinity = [
-    {
-      key = "dedicated"
-      operator = "In"
-      values = ["gpu"]
-    }
-  ]
-
-  nvidia_chart_version = "0.14.1"
-  nvidia_namespace = "nvidia-device-plugin"
-  create_nvidia_namespace = false
-
-  # --------------------------------------------------
   # Restore Blaster Configmap
   # --------------------------------------------------
 
