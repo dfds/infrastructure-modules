@@ -500,8 +500,7 @@ module "platform_fluxcd" {
 module "atlantis_deployment" {
   source                    = "../../_sub/compute/atlantis"
   count                     = var.atlantis_deploy ? 1 : 0
-  aws_region                = local.aws_region
-  cluster_name              = var.eks_cluster_name
+  cluster_name              = data.aws_eks_cluster.eks.id
   github_repositories       = sort(var.atlantis_github_repositories)
   github_token              = var.atlantis_github_token
   github_username           = var.atlantis_github_username
@@ -515,7 +514,6 @@ module "atlantis_deployment" {
   repo_owner                = var.fluxcd_bootstrap_repo_owner
   resources_requests_cpu    = var.atlantis_resources_requests_cpu
   resources_requests_memory = var.atlantis_resources_requests_memory
-  workload_account_id       = var.aws_workload_account_id
 
   depends_on = [module.platform_fluxcd]
 
@@ -689,14 +687,10 @@ module "external_secrets" {
 # External Secrets with SSM
 # --------------------------------------------------
 
-locals {
-  aws_region = var.external_secrets_ssm_aws_region != "" ? var.external_secrets_ssm_aws_region : var.aws_region
-}
-
 module "external_secrets_ssm" {
   source              = "../../_sub/security/external-secrets-ssm"
   workload_account_id = var.aws_workload_account_id
-  aws_region          = local.aws_region
+  aws_region          = var.aws_region
   oidc_issuer         = local.oidc_issuer
   cluster_name        = var.eks_cluster_name
   service_account     = var.external_secrets_ssm_service_account
@@ -748,7 +742,7 @@ module "onepassword_connect" {
   prune                = var.fluxcd_prune
   workload_account_id  = var.aws_workload_account_id
   oidc_issuer          = local.oidc_issuer
-  aws_region           = local.aws_region
+  aws_region           = var.aws_region
   credentials_json     = var.onepassword_credentials_json
   token_for_atlantis   = var.onepassword_token_for_atlantis
 

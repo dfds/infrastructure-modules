@@ -638,12 +638,6 @@ variable "external_secrets_ssm_allowed_namespaces" {
   description = "The namespaces that can use IRSA to access external secrets"
 }
 
-variable "external_secrets_ssm_aws_region" {
-  type        = string
-  default     = ""
-  description = "The AWS region to use for the external secrets"
-}
-
 # --------------------------------------------------
 # External DNS
 # --------------------------------------------------

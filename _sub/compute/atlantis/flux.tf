@@ -14,7 +14,7 @@ resource "github_repository_file" "helm" {
     eks_fqdn            = var.eks_fqdn
     resource_cpu        = var.resources_requests_cpu
     resource_memory     = var.resources_requests_memory
-    workload_account_id = var.workload_account_id
+    workload_account_id = data.aws_caller_identity.this.id
   })
   overwrite_on_create = true
 }
