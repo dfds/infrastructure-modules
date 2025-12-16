@@ -1058,3 +1058,12 @@ variable "aws_lb_controller_helm_chart_version" {
   description = "AWS Load Balancer Controller helm chart version"
   default     = "1.14.1"
 }
+
+# --------------------------------------------------
+# Cert-Manager
+# --------------------------------------------------
+variable "cert_manager_acme_email" {
+  type        = string
+  description = "Email address used for ACME registration"
+  default     = ""
+}
