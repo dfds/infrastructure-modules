@@ -84,6 +84,7 @@ resource "github_repository_file" "velero_flux_helm_external_secret" {
   content = templatefile("${path.module}/values/external-secret.yaml", {
     cluster_name                  = var.cluster_name
     azure_credentials_secret_name = var.azure_credentials_secret_name
+    cluster_name                  = var.cluster_name
   })
   overwrite_on_create = true
 }
