@@ -31,14 +31,14 @@ data "aws_iam_policy_document" "trust" {
       type = "Federated"
 
       identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.this.id}:oidc-provider/${var.oidc_issuer}",
+        "arn:aws:iam::${data.aws_caller_identity.this.id}:oidc-provider/${local.oidc_issuer}",
       ]
     }
 
     condition {
       test     = "StringEquals"
-      values   = ["system:serviceaccount:atlantis:${local.service_account}"]
-      variable = "${var.oidc_issuer}:sub"
+      values   = ["system:serviceaccount:atlantis:${local.deploy_name}"]
+      variable = "${local.oidc_issuer}:sub"
     }
   }
 }

@@ -59,15 +59,6 @@ variable "github_username" {
 }
 
 # --------------------------------------------------
-# IRSA variables
-# --------------------------------------------------
-
-variable "oidc_issuer" {
-  type        = string
-  description = "The OIDC isssue for the Kubernetes cluster"
-}
-
-# --------------------------------------------------
 # Atlantis variables
 # --------------------------------------------------
 

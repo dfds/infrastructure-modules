@@ -500,14 +500,13 @@ module "platform_fluxcd" {
 module "atlantis_deployment" {
   source                    = "../../_sub/compute/atlantis"
   count                     = var.atlantis_deploy ? 1 : 0
-  cluster_name              = data.aws_eks_cluster.eks.id
+  cluster_name              = var.eks_cluster_name
   github_repositories       = sort(var.atlantis_github_repositories)
   github_token              = var.atlantis_github_token
   github_username           = var.atlantis_github_username
   gitops_apps_repo_ref      = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   gitops_apps_repo_url      = local.fluxcd_apps_repo_url
   eks_fqdn                  = local.eks_fqdn
-  oidc_issuer               = local.oidc_issuer
   prune                     = var.fluxcd_prune
   repo_branch               = var.fluxcd_bootstrap_repo_branch
   repo_name                 = var.fluxcd_bootstrap_repo_name
