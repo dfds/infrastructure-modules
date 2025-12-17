@@ -75,7 +75,7 @@
         "release:patch"
       ],
       "minimumReleaseAge": "1 days",
-      "automerge": false
+      "automerge": false,
       "ignoreTests": false,
       "matchCurrentVersion": "!/^0/"
     },
@@ -84,7 +84,7 @@
         "major"
       ],
       "minimumReleaseAge": "7 days",
-      "automerge": false
+      "automerge": false,
       "ignoreTests": false,
       "matchCurrentVersion": "!/^0/"
     },
