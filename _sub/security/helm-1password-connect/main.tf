@@ -28,7 +28,7 @@ resource "aws_ssm_parameter" "onepassword_credentials_json" {
 resource "aws_ssm_parameter" "atlantis" {
   #checkov:skip=CKV_AWS_337: Ensure SSM parameters are using KMS CMK
   count = var.token_for_atlantis != "" ? 1 : 0
-  name  = "/atlantis/1password-connect-token"
+  name  = "/eks/${var.cluster_name}/1password-connect-token"
   type  = "SecureString"
   value = var.token_for_atlantis
 }

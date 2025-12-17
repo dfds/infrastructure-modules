@@ -3,9 +3,3 @@ kind: Kustomization
 resources:
   - ${gitops_apps_repo_url}/apps/${deploy_name}?ref=${gitops_apps_repo_ref}
   - kubeconfigs.yaml
-patches:
-  - path: patch.yaml
-    target:
-      group: helm.toolkit.fluxcd.io
-      kind: HelmRelease
-      name: atlantis

@@ -59,25 +59,6 @@ variable "github_username" {
 }
 
 # --------------------------------------------------
-# IRSA variables
-# --------------------------------------------------
-
-variable "oidc_issuer" {
-  type        = string
-  description = "The OIDC isssue for the Kubernetes cluster"
-}
-
-variable "workload_account_id" {
-  type        = string
-  description = "The workload account ID."
-}
-
-variable "aws_region" {
-  type        = string
-  description = "The AWS region"
-}
-
-# --------------------------------------------------
 # Atlantis variables
 # --------------------------------------------------
 
