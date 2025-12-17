@@ -50,7 +50,7 @@ resource "aws_ssm_parameter" "dashboard_password" {
 }
 
 resource "aws_ssm_parameter" "webhook_secret" {
-  name        = "/eks/${var.cluster_name}/${local.deploy_name}-webhook-secret"
+  name        = "/eks/${var.cluster_name}/${local.deploy_name}-github-webhook-secret"
   description = "Secret for mutual trust between Atlantis and GitHub"
   type        = "SecureString"
   value       = random_password.webhook.result
@@ -60,4 +60,18 @@ resource "aws_ssm_parameter" "webhook_secret" {
       overwrite,
     ]
   }
+}
+
+resource "aws_ssm_parameter" "github_username" {
+  name        = "/eks/${var.cluster_name}/${local.deploy_name}-github-username"
+  description = "GitHub username for Atlantis to use"
+  type        = "SecureString"
+  value       = var.github_username
+}
+
+resource "aws_ssm_parameter" "github_token" {
+  name        = "/eks/${var.cluster_name}/${local.deploy_name}-github-token"
+  description = "GitHub token for Atlantis to use"
+  type        = "SecureString"
+  value       = var.github_token
 }
