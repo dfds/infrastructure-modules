@@ -1067,3 +1067,10 @@ variable "cert_manager_acme_email" {
   description = "Email address used for ACME registration"
   default     = ""
 }
+# --------------------------------------------------
+# Treafik with NLB and AWS LB Controller
+# --------------------------------------------------
+variable "traefik_nlb_aws_lb_controller_deploy" {
+  type = bool
+  default = false
+}

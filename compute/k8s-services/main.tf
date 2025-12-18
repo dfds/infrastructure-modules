@@ -345,6 +345,29 @@ module "cert_manager_role" {
   }
 }
 
+module "traefik_nlb_aws_lb_controller_manifests" {
+  source                  = "../../_sub/compute/k8s-traefik-flux-aws-lb-controller"
+  count                   = var.traefik_nlb_aws_lb_controller_deploy ? 1 : 0
+  cluster_name            = var.eks_cluster_name
+  deploy_name             = "traefik-nlb-aws-lb-controller"
+  namespace               = "traefik-nlb-aws-lb-controller"
+  github_owner           = var.fluxcd_bootstrap_repo_owner
+  repo_name              = var.fluxcd_bootstrap_repo_name
+  repo_branch            = var.fluxcd_bootstrap_repo_branch
+
+  gitops_apps_repo_url = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  dashboard_ingress_host  = "traefik-dashboard-lb.${var.workload_dns_zone_name}"
+  prune                   = var.fluxcd_prune
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
+}
+
+
 module "external_dns_iam_role_route53_access" {
   source               = "../../_sub/security/iam-role"
   count                = var.external_dns_deploy && var.external_dns_core_route53_assume_role_arn == "" ? 1 : 0
