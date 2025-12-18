@@ -3,9 +3,6 @@
   "extends": [
     "config:recommended"
   ],
-  "schedule": [
-    "after 6am and before 8am on tuesday"
-  ],
   "branchPrefix": "feature/renovate/",
   "ignorePaths": [
     "test/integration/suite/vendor/**"
@@ -45,55 +42,51 @@
   ],
   "packageRules": [
     {
-      "matchUpdateTypes": [
-        "pin",
-        "digest",
-        "patch",
-        "lockFileMaintenance",
-        "minor",
-        "major"
-      ],
-      "ignoreTests": false,
-      "dependencyDashboard": true,
-      "dependencyDashboardApproval": false
+        "matchUpdateTypes": [
+            "lockFileMaintenance"
+        ],
+        "addLabels": [
+            "lockFile"
+        ],
+        "minimumReleaseAge": "0 days",
+        "automerge": true,
+        "ignoreTests": false,
+        "matchCurrentVersion": "!/^0/"
     },
     {
       "matchUpdateTypes": [
         "pin",
         "digest",
-        "patch",
-        "lockFileMaintenance",
-        "minor"
+        "patch"
       ],
+      "addLabels": [
+        "release:patch"
+      ],
+      "minimumReleaseAge": "0 days",
+      "automerge": true,
+      "ignoreTests": false,
       "matchCurrentVersion": "!/^0/"
     },
     {
       "matchUpdateTypes": [
-        "pin",
-        "digest",
-        "patch",
-        "lockFileMaintenance"
-      ],
-      "addLabels": [
-        "release:patch"
-      ],
-      "automerge": true
-    },
-    {
-      "matchUpdateTypes": [
         "minor"
       ],
       "addLabels": [
         "release:patch"
       ],
-      "automerge": true
+      "minimumReleaseAge": "1 days",
+      "automerge": false,
+      "ignoreTests": false,
+      "matchCurrentVersion": "!/^0/"
     },
     {
       "matchUpdateTypes": [
         "major"
       ],
       "minimumReleaseAge": "7 days",
-      "automerge": false
+      "automerge": false,
+      "ignoreTests": false,
+      "matchCurrentVersion": "!/^0/"
     },
     {
       "description": "Group dependencies affecting the QA environment and it's test resources.",
