@@ -778,46 +778,16 @@ variable "github_arc_runners_deploy" {
   description = "Feature toggle for Github ARC Runners"
 }
 
-variable "github_arc_runners_github_config_url" {
-  type        = string
-  description = "URL of Github organisation or repo for the runners"
-  default     = ""
-}
-
-variable "github_arc_runners_github_config_secret" {
-  type        = string
-  description = "Secret name containing authorisation information for the runners. This is not deployed by this module, consider using external-secrets to deploy it"
-  default     = ""
-}
-
 variable "github_arc_runners_runner_scale_set_name" {
   type        = string
   description = "Name for the runner scale set"
-  default     = ""
+  default     = "dfds-runners"
 }
 
-variable "github_arc_runners_storage_class_name" {
+variable "github_arc_runners_resource_memory" {
   type        = string
-  description = "Name of the storage class to use for the runners persistent volume"
-  default     = "csi-gp3"
-}
-
-variable "github_arc_runners_storage_request_size" {
-  type        = string
-  description = "Size of the persistent volume claim for the runners"
-  default     = "1Gi"
-}
-
-variable "github_arc_runners_min_runners" {
-  type        = number
-  description = "Minimum number of runners to keep running"
-  default     = 0
-}
-
-variable "github_arc_runners_max_runners" {
-  type        = number
-  description = "Maximum number of runners to scale to"
-  default     = 5
+  description = "Memory request for the runner pods"
+  default     = "8Gi"
 }
 
 # --------------------------------------------------
