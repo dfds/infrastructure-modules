@@ -52,3 +52,8 @@ variable "prune" {
   default     = true
   description = "Enable Garbage collection"
 }
+
+variable "ingress_hosts" {
+  type = list(string)
+  description = "The ingress hosts for the services exposed by Traefik."
+}

@@ -31,3 +31,4 @@ spec:
   postBuild:
     substitute:
       flux_traefik_dashboard_ingress_host: ${dashboard_ingress_host}
+      flux_traefik_ingress_hosts: ${ingress_hosts}

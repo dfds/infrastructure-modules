@@ -1074,3 +1074,9 @@ variable "traefik_nlb_aws_lb_controller_deploy" {
   type = bool
   default = false
 }
+
+variable "traefik_nlb_aws_lb_controller_ingress_hosts" {
+  type        = list(string)
+  description = "The ingress hosts for the services exposed by Traefik with NLB and AWS LB Controller."
+  default     = []
+}

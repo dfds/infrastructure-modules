@@ -358,6 +358,7 @@ module "traefik_nlb_aws_lb_controller_manifests" {
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   dashboard_ingress_host  = "traefik-dashboard-lb.${var.workload_dns_zone_name}"
+  ingress_hosts         = var.traefik_nlb_aws_lb_controller_ingress_hosts  #TODO: consider this for later iteration concat(var.external_dns_traefik_alb_anon_core_alias, var.external_dns_traefik_alb_auth_core_alias)
   prune                   = var.fluxcd_prune
 
   providers = {

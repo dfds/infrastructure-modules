@@ -12,6 +12,7 @@ resource "github_repository_file" "traefik_helm" {
     helm_repo_path   = local.helm_repo_path
     prune            = var.prune
     dashboard_ingress_host = var.dashboard_ingress_host
+    ingress_hosts         = join(", ", concat([var.dashboard_ingress_host], var.ingress_hosts))
   })
   overwrite_on_create = true
 }
