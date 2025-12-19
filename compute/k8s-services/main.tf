@@ -805,24 +805,17 @@ module "github_arc_ss_controller" {
 # --------------------------------------------------
 
 module "github_arc_runners" {
-  source                = "../../_sub/compute/github-arc-runners"
-  count                 = var.github_arc_runners_deploy ? 1 : 0
-  cluster_name          = var.eks_cluster_name
-  deploy_name           = "arc-runner-set"
-  namespace             = "arc-runners"
-  github_owner          = var.fluxcd_bootstrap_repo_owner
-  repo_name             = var.fluxcd_bootstrap_repo_name
-  repo_branch           = var.fluxcd_bootstrap_repo_branch
-  gitops_apps_repo_url  = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref  = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
-  prune                 = var.fluxcd_prune
-  github_config_url     = var.github_arc_runners_github_config_url
-  github_config_secret  = var.github_arc_runners_github_config_secret
-  runner_scale_set_name = var.github_arc_runners_runner_scale_set_name
-  storage_class_name    = var.github_arc_runners_storage_class_name
-  storage_request_size  = var.github_arc_runners_storage_request_size
-  min_runners           = var.github_arc_runners_min_runners
-  max_runners           = var.github_arc_runners_max_runners
+  source                 = "../../_sub/compute/github-arc-runners"
+  count                  = var.github_arc_runners_deploy ? 1 : 0
+  cluster_name           = var.eks_cluster_name
+  github_owner           = var.fluxcd_bootstrap_repo_owner
+  repo_name              = var.fluxcd_bootstrap_repo_name
+  repo_branch            = var.fluxcd_bootstrap_repo_branch
+  gitops_apps_repo_url   = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref   = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  prune                  = var.fluxcd_prune
+  runner_scale_set_name  = var.github_arc_runners_runner_scale_set_name
+  runner_resource_memory = var.github_arc_runners_resource_memory
 
   providers = {
     github = github.fluxcd
