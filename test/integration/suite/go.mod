@@ -3,7 +3,7 @@ module go.dfds.cloud/infrastructure-modules/test/integration/suite
 go 1.25.0
 
 require (
-	github.com/fluxcd/pkg/apis/meta v1.23.0
+	github.com/fluxcd/pkg/apis/meta v1.24.0
 	github.com/stretchr/testify v1.11.1
 	github.com/traefik/traefik/v3 v3.6.5
 	k8s.io/api v0.34.3
