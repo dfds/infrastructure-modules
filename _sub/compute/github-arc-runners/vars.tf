@@ -2,18 +2,6 @@ variable "cluster_name" {
   type = string
 }
 
-variable "deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "arc-runner-set"
-}
-
-variable "namespace" {
-  type        = string
-  description = "The namespace in which to deploy Helm resources"
-  default     = "arc-runners"
-}
-
 variable "github_owner" {
   type        = string
   description = "Name of the Github owner (previously: organization)"
@@ -48,59 +36,12 @@ variable "prune" {
   description = "Enable Garbage collection"
 }
 
-variable "github_config_url" {
-  type        = string
-  description = "URL of Github organisation or repo for the runners"
-}
-
-variable "github_config_secret" {
-  type        = string
-  description = "Secret name containing authorisation information for the runners. This is not deployed by this module, consider using external-secrets to deploy it"
-}
-
 variable "runner_scale_set_name" {
   type        = string
   description = "Name for the runner scale set"
 }
 
-variable "storage_class_name" {
-  type        = string
-  description = "Name of the storage class to use for the runners persistent volume"
-  default     = "csi-gp3"
-}
-
-variable "storage_request_size" {
-  type        = string
-  description = "Size of the persistent volume claim for the runners"
-  default     = "1Gi"
-}
-
-variable "controller_deploy_name" {
-  type        = string
-  description = "Name of the controller deployment so we can depend on it before trying to install the runner"
-  default     = "platform-apps-arc-helm"
-}
-
-variable "min_runners" {
-  type        = number
-  description = "Minimum number of runners to keep running"
-  default     = 0
-}
-
-variable "max_runners" {
-  type        = number
-  description = "Maximum number of runners to keep running"
-  default     = 5
-}
-
-variable "runner_memory_request" {
+variable "runner_resource_memory" {
   type        = string
   description = "Memory request for the runner pods"
-  default     = "128Mi"
-}
-
-variable "runner_memory_limit" {
-  type        = string
-  description = "Memory request for the runner pods"
-  default     = "8Gi"
 }
