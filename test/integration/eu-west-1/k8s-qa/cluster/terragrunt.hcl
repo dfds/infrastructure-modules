@@ -29,7 +29,7 @@ inputs = {
   eks_addon_vpccni_prefix_delegation_enabled = true
   eks_addon_most_recent                      = false
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.33","addonName":"vpc-cni"}
-  eks_addon_vpccni_version_override = "v1.20.5-eksbuild.1"
+  eks_addon_vpccni_version_override = "v1.21.1-eksbuild.1"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.33","addonName":"coredns"}
   eks_addon_coredns_version_override = "v1.12.4-eksbuild.1"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.33","addonName":"kube-proxy"}
@@ -37,7 +37,7 @@ inputs = {
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.33","addonName":"aws-efs-csi-driver"}
   eks_addon_awsefscsidriver_version_override = "v2.1.15-eksbuild.1"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.33","addonName":"aws-ebs-csi-driver"}
-  eks_addon_awsebscsidriver_version_override = "v1.53.0-eksbuild.1"
+  eks_addon_awsebscsidriver_version_override = "v1.54.0-eksbuild.1"
 
   enable_worker_nat_gateway                  = true
   use_worker_nat_gateway                     = true
