@@ -123,7 +123,7 @@ jobs:
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_GITHUB_TOKEN }}
           ARM_CLIENT_ID: op://CloudEng-General/Terraform Azure App Service Principal/username
-          ARM_CLIENT_SECRET: op://CloudEng-General/Terraform Azure App Service Principal/password # `pragma: allowlist secret`
+          ARM_CLIENT_SECRET: op://CloudEng-General/Terraform Azure App Service Principal/password
           ARM_SUBSCRIPTION_ID: op://CloudEng-General/Terraform Azure App Service Principal/subscription_id
           ARM_TENANT_ID: op://CloudEng-General/Terraform Azure App Service Principal/tenant_id
           TF_VAR_atlantis_github_token: op://CloudEng-General/Github account devex-sa/Tokens/atlantis-qa
