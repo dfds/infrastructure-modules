@@ -51,19 +51,16 @@ jobs:
         with:
           repository: dfds/infrastructure-modules
           ref: master
+
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: 1.25.5
-      - name: Restore Go build cache
-        uses: actions/cache@v5
-        with:
-          path: ${{ github.workspace }}/.cache/go-build/
-          key: go-${{ runner.os }}-${{ hashFiles('test/integration/suite/go.sum', 'src/qa-test-eks.sh') }}
+          go-version-file: test/integration/suite/go.mod
+          cache-dependency-path: test/integration/suite/go.sum
+
       - name: Build test binary
         run: ./src/qa-test-eks.sh test-build eu-west-1 qa /tmp/test-master.bin
-        env:
-          GOCACHE: ${{ github.workspace }}/.cache/go-build/
+
       - name: Upload test binary
         uses: actions/upload-artifact@v6
         with:
@@ -77,19 +74,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: 1.25.5
-      - name: Restore Go build cache
-        uses: actions/cache@v5
-        with:
-          path: ${{ github.workspace }}/.cache/go-build/
-          key: go-${{ runner.os }}-${{ hashFiles('test/integration/suite/go.sum', 'src/qa-test-eks.sh') }}
+          go-version-file: test/integration/suite/go.mod
+          cache-dependency-path: test/integration/suite/go.sum
+
       - name: Build test binary
         run: ./src/qa-test-eks.sh test-build eu-west-1 qa /tmp/test-feature.bin
-        env:
-          GOCACHE: ${{ github.workspace }}/.cache/go-build/
+
       - name: Upload test binary
         uses: actions/upload-artifact@v6
         with:
