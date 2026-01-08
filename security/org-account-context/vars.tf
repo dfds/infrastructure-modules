@@ -126,6 +126,14 @@ variable "oidc_provider" {
   description = "IAM OIDC Providers for the capability account to trust EKS clusters service accounts"
 }
 
+variable "oidc_provider_cross_cluster" {
+  type = map(object({
+    cluster_oidc_url = string
+    account_id       = string
+  }))
+  description = "Edge case usage of IAM OIDC Providers across clusters. For role trust ONLY."
+}
+
 variable "harden" {
   type    = bool
   default = false
