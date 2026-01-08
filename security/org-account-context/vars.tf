@@ -132,6 +132,7 @@ variable "oidc_provider_cross_cluster" {
     account_id       = string
   }))
   description = "Edge case usage of IAM OIDC Providers across clusters. For role trust ONLY."
+  default     = {}
 }
 
 variable "harden" {
