@@ -58,7 +58,7 @@ data "aws_iam_policy_document" "k8s_janitor_trust" {
 
     condition {
       test     = "StringEquals"
-      values   = ["system:serviceaccount:${kubernetes_namespace.self_service[0].metadata[0].name}:${local.k8s_janitor_serviceaccount_name}"]
+      values   = ["system:serviceaccount:${kubernetes_namespace_v1.self_service[0].metadata[0].name}:${local.k8s_janitor_serviceaccount_name}"]
       variable = "${var.oidc_issuer}:sub"
     }
 

@@ -1,7 +1,3 @@
-# data "aws_caller_identity" "current" {
-#   provider = "aws.core"
-# }
-
 data "aws_iam_policy_document" "assume_role_policy_self" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -58,6 +54,29 @@ data "aws_iam_policy_document" "shared_role_cap_acc" {
 
   dynamic "statement" {
     for_each = var.oidc_provider
+    content {
+      sid     = "AssumeRoleWithWebIdentity4${statement.key}"
+      actions = ["sts:AssumeRoleWithWebIdentity"]
+      effect  = "Allow"
+
+      principals {
+        type = "Federated"
+
+        identifiers = [
+          "arn:aws:iam::${statement.value["account_id"]}:oidc-provider/${trim(statement.value["cluster_oidc_url"], "https://")}",
+        ]
+      }
+
+      condition {
+        test     = "StringEquals"
+        values   = ["system:serviceaccount:${var.capability_root_id}:ssm-shared-platform-secrets"]
+        variable = "${trim(statement.value["cluster_oidc_url"], "https://")}:sub"
+      }
+    }
+  }
+
+  dynamic "statement" {
+    for_each = var.oidc_provider_cross_cluster
     content {
       sid     = "AssumeRoleWithWebIdentity4${statement.key}"
       actions = ["sts:AssumeRoleWithWebIdentity"]
