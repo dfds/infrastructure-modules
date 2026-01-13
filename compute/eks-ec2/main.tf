@@ -265,7 +265,6 @@ module "eks_managed_workers_node_group" {
   disk_size                  = each.value.disk_size
   disk_type                  = each.value.disk_type
   desired_size_per_subnet    = each.value.desired_size_per_subnet
-  gpu_ami                    = each.value.gpu_ami
   taints                     = each.value.taints
   labels                     = each.value.labels
   max_unavailable            = each.value.max_unavailable

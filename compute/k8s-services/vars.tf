@@ -722,43 +722,6 @@ variable "onepassword_token_for_atlantis" {
 }
 
 # --------------------------------------------------
-# Nvidia device plugin
-# --------------------------------------------------
-
-variable "deploy_nvidia_device_plugin" {
-  type        = bool
-  default     = false
-  description = "Whether to deploy NVIDIA device plugin. This needs to be set to `true` when GPU based workloads needs to be enabled."
-}
-
-variable "nvidia_namespace" {
-  type        = string
-  description = "Nvidia device plugin namespace"
-  default     = "nvidia-device-plugin"
-}
-
-variable "nvidia_device_plugin_tolerations" {
-  type = list(object({
-    key      = string
-    operator = string
-    value    = optional(string)
-    effect   = string
-  }))
-  description = "A list of tolerations to apply to the nvidia device plugin deployment"
-  default     = []
-}
-
-variable "nvidia_device_plugin_affinity" {
-  type = list(object({
-    key      = string
-    operator = string
-    values   = list(string)
-  }))
-  description = "A list of affinities to apply to the nvidia device plugin deployment"
-  default     = []
-}
-
-# --------------------------------------------------
 # Github ARC SS Controller
 # --------------------------------------------------
 

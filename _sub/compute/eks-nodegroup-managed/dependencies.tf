@@ -15,25 +15,9 @@ data "aws_ami" "eks-node" {
   owners      = ["602401143452"] # Amazon Account ID
 }
 
-
-data "aws_ami" "eks-gpu-node" {
-  filter {
-    name   = "name"
-    values = ["amazon-eks-node-al2023-x86_64-nvidia-${var.cluster_version}-*"]
-  }
-
-  most_recent = true
-  owners      = ["602401143452"] # Amazon Account ID
-}
-
-locals {
-  # Determine the latest AMI for the specified cluster version using the GPU variant if the 'gpu_ami' is set to true.
-  latest_ami = var.gpu_ami ? data.aws_ami.eks-gpu-node.id : data.aws_ami.eks-node.id
-}
-
 locals {
   # Pins AMI to 'ami_id' if it is set, otherwise, sets to the latest AMI.
-  node_ami = var.ami_id != "" ? var.ami_id : local.latest_ami
+  node_ami = var.ami_id != "" ? var.ami_id : data.aws_ami.eks-node.id
 }
 
 # AMI is using containerd v2 logic

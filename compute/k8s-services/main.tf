@@ -753,30 +753,6 @@ module "onepassword_connect" {
 }
 
 # --------------------------------------------------
-# Nvidia device plugin
-# --------------------------------------------------
-
-module "eks_nvidia_device_plugin" {
-  count                = var.deploy_nvidia_device_plugin ? 1 : 0
-  source               = "../../_sub/compute/nvidia-device-plugin"
-  repo_owner           = var.fluxcd_bootstrap_repo_owner
-  repo_name            = var.fluxcd_bootstrap_repo_name
-  repo_branch          = var.fluxcd_bootstrap_repo_branch
-  cluster_name         = var.eks_cluster_name
-  gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
-  namespace            = var.nvidia_namespace
-  tolerations          = var.nvidia_device_plugin_tolerations
-  affinity             = var.nvidia_device_plugin_affinity
-
-  providers = {
-    github = github.fluxcd
-  }
-
-  depends_on = [module.platform_fluxcd]
-}
-
-# --------------------------------------------------
 # Github ARC SS Controller
 # --------------------------------------------------
 
