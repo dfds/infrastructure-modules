@@ -71,12 +71,6 @@ variable "ami_id" {
   description = "Pins the AMI ID of the nodes to the specified AMI, bypassing AMI updates."
 }
 
-variable "gpu_ami" {
-  type        = bool
-  default     = false
-  description = "Deploys the latest amazon-eks-gpu-node. Note, this field is ignored if ami_id is set."
-}
-
 variable "ec2_ssh_key" {
   type = string
 }

@@ -180,7 +180,6 @@ variable "eks_managed_nodegroups" {
     disk_size                  = optional(number, 128)
     disk_type                  = optional(string, "gp3")
     desired_size_per_subnet    = optional(number, 0)
-    gpu_ami                    = optional(bool, false)
     availability_zones         = optional(list(string), [])
     max_unavailable            = optional(number, null)
     max_unavailable_percentage = optional(number, null)
