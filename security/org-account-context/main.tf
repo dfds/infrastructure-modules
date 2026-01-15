@@ -645,3 +645,47 @@ module "steampipe-audit" {
     aws = aws.workload
   }
 }
+
+# --------------------------------------------------
+# Capability role for IRSA usage from EKS clusters
+# --------------------------------------------------
+
+data "aws_iam_policy_document" "capability_access_from_kubernetes" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${module.org_account.id}:root"]
+    }
+  }
+
+  dynamic "statement" {
+    for_each = var.oidc_provider
+    content {
+      sid     = "AssumeRoleWithWebIdentity4${statement.key}"
+      actions = ["sts:AssumeRoleWithWebIdentity"]
+      effect  = "Allow"
+
+      principals {
+        type = "Federated"
+
+        identifiers = [
+          "arn:aws:iam::${module.org_account.id}:oidc-provider/${trim(statement.value["cluster_oidc_url"], "https://")}",
+        ]
+      }
+
+      condition {
+        test     = "StringEquals"
+        values   = ["system:serviceaccount:${var.capability_root_id}:capability-access"]
+        variable = "${trim(statement.value["cluster_oidc_url"], "https://")}:sub"
+      }
+    }
+  }
+}
+
+resource "aws_iam_role" "capability_access_from_kubernetes" {
+  provider           = aws.workload
+  name               = "CapabilityAccessFromKubernetes"
+  assume_role_policy = data.aws_iam_policy_document.capability_access_from_kubernetes.json
+}
