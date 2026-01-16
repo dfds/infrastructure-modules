@@ -2,8 +2,6 @@ variable "cluster_name" {
   type = string
 }
 
-
-
 variable "github_owner" {
   type        = string
   description = "Name of the Github owner (previously: organization)"
