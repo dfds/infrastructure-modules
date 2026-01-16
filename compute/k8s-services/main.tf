@@ -529,8 +529,6 @@ module "atlantis_github_configuration" {
   ingress_hostname    = format("atlantis.%s", local.eks_fqdn)
   webhook_secret      = module.atlantis_deployment[0].webhook_secret
 
-  depends_on = [module.atlantis_deployment]
-
   providers = {
     github = github.atlantis
   }
