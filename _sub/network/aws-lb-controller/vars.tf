@@ -18,11 +18,6 @@ variable "repo_branch" {
   default     = null
 }
 
-variable "helm_chart_version" {
-  type        = string
-  description = "The version of the Traefik v2 Helm Chart that should be used"
-}
-
 variable "gitops_apps_repo_url" {
   type        = string
   default     = ""

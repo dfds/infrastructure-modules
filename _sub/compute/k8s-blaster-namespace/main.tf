@@ -2,7 +2,7 @@ locals {
 
 }
 
-resource "kubernetes_namespace" "self_service" {
+resource "kubernetes_namespace_v1" "self_service" {
   count = var.deploy ? 1 : 0
 
   metadata {

@@ -73,7 +73,7 @@ inputs = {
   # Flux CD
   # --------------------------------------------------
 
-  fluxcd_apps_repo_branch           = "qa"
+  fluxcd_apps_repo_branch           = "main"
   fluxcd_bootstrap_repo_branch      = "main"
   fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
   fluxcd_version                    = "v2.6.4"
@@ -108,7 +108,6 @@ inputs = {
 
   velero_deploy                               = true
   velero_bucket_arn                           = "arn:aws:s3:::dfds-velero-qa"
-  velero_helm_chart_version                   = "10.1.3"
   velero_plugin_for_aws_version               = "v1.12.1"
   velero_plugin_for_azure_version             = "v1.12.1"
   velero_excluded_namespace_scoped_resources  = ["secrets"]
@@ -126,7 +125,6 @@ inputs = {
   # --------------------------------------------------
 
   grafana_deploy = true
-  grafana_agent_chart_version = "1.4.4"
   grafana_agent_resource_memory_request = "4Gi"
   grafana_agent_resource_memory_limit   = "4Gi"
   grafana_agent_storage_size = "10Gi"
@@ -150,7 +148,6 @@ inputs = {
   # External Secrets
   # --------------------------------------------------
 
-  external_secrets_helm_chart_version = "0.19.2"
   external_secrets_ssm_allowed_namespaces = ["atlantis", "flux-system", "velero"]
 
   # --------------------------------------------------
@@ -158,20 +155,20 @@ inputs = {
   # --------------------------------------------------
 
   github_arc_ss_controller_deploy = true
-  github_arc_ss_controller_helm_chart_version = "0.9.3"
 
   # --------------------------------------------------
-  # Apache Druid Operator
+  # Github ARC SS Runners
   # --------------------------------------------------
 
-  druid_operator_chart_version            = "0.3.7"
+  github_arc_runners_runner_scale_set_name = "dfds-runners-qa"
+  github_arc_runners_resource_memory       = "1Gi"
+
 
   # --------------------------------------------------
   # Trivy Operator
   # --------------------------------------------------
 
   trivy_operator_deploy                     = true
-  trivy_operator_chart_version              = "0.31.0"
   trivy_operator_resources_requests_cpu     = "10m"
   trivy_operator_resources_requests_memory  = "768Mi"
   trivy_scan_resources_requests_cpu         = "10m"
@@ -186,7 +183,6 @@ inputs = {
   # External DNS
   # --------------------------------------------------
   external_dns_deploy                      = true
-  external_dns_helm_chart_version          = "1.19.0"
   external_dns_is_debug_mode               = true
   external_dns_traefik_alb_auth_core_alias = ["test3.qa.dfds.cloud"]
   external_dns_traefik_alb_anon_core_alias = ["test4.qa.dfds.cloud"]

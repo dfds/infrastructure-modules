@@ -2,12 +2,6 @@ variable "cluster_name" {
   type = string
 }
 
-variable "chart_version" {
-  type        = string
-  description = "The Helm Chart version that should be used"
-  default     = ""
-}
-
 variable "deploy_name" {
   type        = string
   description = "Unique identifier of the deployment, only needs override if deploying multiple instances"

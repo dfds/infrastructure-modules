@@ -6,16 +6,16 @@ locals {
   svc_name = var.svc_name == null ? var.app_name : var.svc_name
 }
 
-data "kubernetes_namespace" "this" {
+data "kubernetes_namespace_v1" "this" {
   metadata {
     name = var.namespace
   }
 }
 
-resource "kubernetes_service" "this" {
+resource "kubernetes_service_v1" "this" {
   metadata {
     name      = local.svc_name
-    namespace = data.kubernetes_namespace.this.metadata[0].name
+    namespace = data.kubernetes_namespace_v1.this.metadata[0].name
     labels = {
       k8s-app                = var.app_name
       scrape-service-metrics = "true"

@@ -2,12 +2,6 @@ variable "cluster_name" {
   type = string
 }
 
-variable "chart_version" {
-  type        = string
-  description = "The Helm Chart version that should be used"
-  default     = ""
-}
-
 variable "resources_requests_cpu" {
   type        = string
   description = "CPU resources request size"

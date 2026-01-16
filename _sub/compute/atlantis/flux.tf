@@ -14,7 +14,9 @@ resource "github_repository_file" "helm" {
     eks_fqdn            = var.eks_fqdn
     resource_cpu        = var.resources_requests_cpu
     resource_memory     = var.resources_requests_memory
-    workload_account_id = var.workload_account_id
+    workload_account_id = data.aws_caller_identity.this.id
+    cluster_name        = var.cluster_name
+    org_allowlist       = join(",", local.fully_qualified_repository_names)
   })
   overwrite_on_create = true
 }
@@ -27,20 +29,6 @@ resource "github_repository_file" "install" {
     deploy_name          = local.deploy_name
     gitops_apps_repo_ref = var.gitops_apps_repo_ref
     gitops_apps_repo_url = var.gitops_apps_repo_url
-  })
-  overwrite_on_create = true
-}
-
-resource "github_repository_file" "patch" {
-  repository = var.repo_name
-  branch     = local.repo_branch
-  file       = "${local.helm_repo_path}/patch.yaml"
-  content = templatefile("${path.module}/values/patch.yaml", {
-    basic_auth_password = random_password.password.result
-    github_secret       = random_password.webhook.result
-    github_token        = var.github_token
-    github_username     = var.github_username
-    org_allowlist       = join(",", local.fully_qualified_repository_names)
   })
   overwrite_on_create = true
 }

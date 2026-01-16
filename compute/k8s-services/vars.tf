@@ -159,26 +159,6 @@ variable "cloudwatch_alarm_log_anomaly_deploy" {
 }
 
 # --------------------------------------------------
-# Goldpinger
-# --------------------------------------------------
-
-variable "goldpinger_chart_version" {
-  type        = string
-  description = "Goldpinger helm chart version"
-  default     = ""
-}
-
-# --------------------------------------------------
-# Metrics-Server
-# --------------------------------------------------
-
-variable "metrics_server_helm_chart_version" {
-  type        = string
-  description = "The helm chart version"
-  default     = ""
-}
-
-# --------------------------------------------------
 # Flux CD
 # --------------------------------------------------
 
@@ -395,12 +375,6 @@ variable "velero_log_level" {
   }
 }
 
-variable "velero_helm_chart_version" {
-  type        = string
-  default     = ""
-  description = "The Velero Helm chart version to install"
-}
-
 variable "velero_image_tag" {
   type        = string
   default     = ""
@@ -548,12 +522,6 @@ variable "grafana_deploy" {
   description = "Feature toggle for Grafana module"
 }
 
-variable "grafana_agent_chart_version" {
-  type        = string
-  description = "Grafana Agent helm chart version"
-  default     = ""
-}
-
 variable "grafana_agent_api_token" {
   type        = string
   description = "The token to authenticate request to a Grafana Cloud stack"
@@ -655,16 +623,6 @@ variable "observability_affinity" {
 }
 
 # --------------------------------------------------
-# External Secrets
-# --------------------------------------------------
-
-variable "external_secrets_helm_chart_version" {
-  type        = string
-  description = "External Secrets helm chart version"
-  default     = ""
-}
-
-# --------------------------------------------------
 # External Secrets with SSM
 # --------------------------------------------------
 
@@ -680,12 +638,6 @@ variable "external_secrets_ssm_allowed_namespaces" {
   description = "The namespaces that can use IRSA to access external secrets"
 }
 
-variable "external_secrets_ssm_aws_region" {
-  type        = string
-  default     = ""
-  description = "The AWS region to use for the external secrets"
-}
-
 # --------------------------------------------------
 # External DNS
 # --------------------------------------------------
@@ -694,12 +646,6 @@ variable "external_dns_deploy" {
   type        = string
   default     = false
   description = "Feature toggle for External DNS module"
-}
-
-variable "external_dns_helm_chart_version" {
-  type        = string
-  description = "External DNS helm chart version"
-  default     = ""
 }
 
 variable "external_dns_traefik_alb_anon_core_alias" {
@@ -775,55 +721,6 @@ variable "onepassword_token_for_atlantis" {
   description = "The 1Password Connect tokens to be stored in SSM if Atlantis is enabled"
 }
 
-variable "onepassword_connect_chart_version" {
-  type        = string
-  default     = ""
-  description = "The 1Password Connect helm chart version"
-}
-
-# --------------------------------------------------
-# Nvidia device plugin
-# --------------------------------------------------
-
-variable "deploy_nvidia_device_plugin" {
-  type        = bool
-  default     = false
-  description = "Whether to deploy NVIDIA device plugin. This needs to be set to `true` when GPU based workloads needs to be enabled."
-}
-
-variable "nvidia_chart_version" {
-  type        = string
-  description = "Nvidia device plugin helm chart version"
-  default     = ""
-}
-
-variable "nvidia_namespace" {
-  type        = string
-  description = "Nvidia device plugin namespace"
-  default     = "nvidia-device-plugin"
-}
-
-variable "nvidia_device_plugin_tolerations" {
-  type = list(object({
-    key      = string
-    operator = string
-    value    = optional(string)
-    effect   = string
-  }))
-  description = "A list of tolerations to apply to the nvidia device plugin deployment"
-  default     = []
-}
-
-variable "nvidia_device_plugin_affinity" {
-  type = list(object({
-    key      = string
-    operator = string
-    values   = list(string)
-  }))
-  description = "A list of affinities to apply to the nvidia device plugin deployment"
-  default     = []
-}
-
 # --------------------------------------------------
 # Github ARC SS Controller
 # --------------------------------------------------
@@ -832,12 +729,6 @@ variable "github_arc_ss_controller_deploy" {
   type        = string
   default     = false
   description = "Feature toggle for Github ARC SS Controller"
-}
-
-variable "github_arc_ss_controller_helm_chart_version" {
-  type        = string
-  description = "Github ARC SS Controller helm chart version"
-  default     = ""
 }
 
 # --------------------------------------------------
@@ -850,52 +741,16 @@ variable "github_arc_runners_deploy" {
   description = "Feature toggle for Github ARC Runners"
 }
 
-variable "github_arc_runners_helm_chart_version" {
-  type        = string
-  description = "Github ARC Runners helm chart version"
-  default     = ""
-}
-
-variable "github_arc_runners_github_config_url" {
-  type        = string
-  description = "URL of Github organisation or repo for the runners"
-  default     = ""
-}
-
-variable "github_arc_runners_github_config_secret" {
-  type        = string
-  description = "Secret name containing authorisation information for the runners. This is not deployed by this module, consider using external-secrets to deploy it"
-  default     = ""
-}
-
 variable "github_arc_runners_runner_scale_set_name" {
   type        = string
   description = "Name for the runner scale set"
-  default     = ""
+  default     = "dfds-runners"
 }
 
-variable "github_arc_runners_storage_class_name" {
+variable "github_arc_runners_resource_memory" {
   type        = string
-  description = "Name of the storage class to use for the runners persistent volume"
-  default     = "csi-gp3"
-}
-
-variable "github_arc_runners_storage_request_size" {
-  type        = string
-  description = "Size of the persistent volume claim for the runners"
-  default     = "1Gi"
-}
-
-variable "github_arc_runners_min_runners" {
-  type        = number
-  description = "Minimum number of runners to keep running"
-  default     = 0
-}
-
-variable "github_arc_runners_max_runners" {
-  type        = number
-  description = "Maximum number of runners to scale to"
-  default     = 5
+  description = "Memory request for the runner pods"
+  default     = "8Gi"
 }
 
 # --------------------------------------------------
@@ -908,12 +763,6 @@ variable "druid_operator_deploy" {
   default     = true
 }
 
-variable "druid_operator_chart_version" {
-  type        = string
-  description = "Druid Operator helm chart version"
-  default     = ""
-}
-
 # --------------------------------------------------
 # Trivy Operator
 # --------------------------------------------------
@@ -922,12 +771,6 @@ variable "trivy_operator_deploy" {
   type        = bool
   description = "Deploy Trivy Operator helm chart switch"
   default     = false
-}
-
-variable "trivy_operator_chart_version" {
-  type        = string
-  description = "Trivy Operator helm chart version"
-  default     = ""
 }
 
 variable "trivy_operator_resources_requests_cpu" {
@@ -968,12 +811,6 @@ variable "falco_deploy_name" {
   type        = string
   description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
   default     = "falco"
-}
-
-variable "falco_chart_version" {
-  type        = string
-  description = "Falco helm chart version"
-  default     = ""
 }
 
 variable "falco_namespace" {

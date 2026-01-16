@@ -51,21 +51,18 @@ jobs:
         with:
           repository: dfds/infrastructure-modules
           ref: master
+
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: 1.25.5
-      - name: Restore Go build cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ github.workspace }}/.cache/go-build/
-          key: go-${{ runner.os }}-${{ hashFiles('test/integration/suite/go.sum', 'src/qa-test-eks.sh') }}
+          go-version-file: test/integration/suite/go.mod
+          cache-dependency-path: test/integration/suite/go.sum
+
       - name: Build test binary
         run: ./src/qa-test-eks.sh test-build eu-west-1 qa /tmp/test-master.bin
-        env:
-          GOCACHE: ${{ github.workspace }}/.cache/go-build/
+
       - name: Upload test binary
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: test-master
           path: /tmp/test-master.bin
@@ -77,21 +74,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: 1.25.5
-      - name: Restore Go build cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ github.workspace }}/.cache/go-build/
-          key: go-${{ runner.os }}-${{ hashFiles('test/integration/suite/go.sum', 'src/qa-test-eks.sh') }}
+          go-version-file: test/integration/suite/go.mod
+          cache-dependency-path: test/integration/suite/go.sum
+
       - name: Build test binary
         run: ./src/qa-test-eks.sh test-build eu-west-1 qa /tmp/test-feature.bin
-        env:
-          GOCACHE: ${{ github.workspace }}/.cache/go-build/
+
       - name: Upload test binary
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: test-feature
           path: /tmp/test-feature.bin
@@ -163,7 +157,7 @@ jobs:
       - name: Wait for auto scaling groups's instances to be in service
         run: ./src/wait-for-asgs.sh qa
       - name: Download test binary
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: test-master
           path: /tmp
@@ -241,7 +235,7 @@ jobs:
       - name: Wait for auto scaling groups's instances to be in service
         run: ./src/wait-for-asgs.sh qa
       - name: Download test binary
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: test-feature
           path: /tmp

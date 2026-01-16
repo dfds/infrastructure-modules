@@ -30,7 +30,9 @@ spec:
   prune: ${prune}
   postBuild:
     substitute:
+      flux_atlantis_org_allowlist: "${org_allowlist}"
       flux_atlantis_resource_cpu: ${resource_cpu}
       flux_atlantis_resource_memory: ${resource_memory}
+      flux_cluster_name: ${cluster_name}
       flux_workload_account_id: "${workload_account_id}"
       flux_eks_fqdn: ${eks_fqdn}

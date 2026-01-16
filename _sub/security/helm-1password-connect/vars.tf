@@ -2,11 +2,6 @@ variable "cluster_name" {
   type = string
 }
 
-variable "chart_version" {
-  type        = string
-  description = "The helm chart version"
-}
-
 variable "github_owner" {
   type        = string
   description = "Name of the Github owner (previously: organization)"

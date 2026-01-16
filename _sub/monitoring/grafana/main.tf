@@ -28,7 +28,6 @@ resource "github_repository_file" "grafana_helm_patch" {
   branch     = local.repo_branch
   file       = "${local.helm_repo_path}/patch.yaml"
   content = templatefile("${path.module}/values/patch.yaml", {
-    helm_chart_version            = var.chart_version
     cluster_name                  = var.cluster_name
     agent_resource_memory_request = var.agent_resource_memory_request
     agent_resource_memory_limit   = var.agent_resource_memory_limit

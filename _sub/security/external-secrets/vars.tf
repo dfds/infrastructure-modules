@@ -17,12 +17,6 @@ variable "repo_branch" {
   description = "Override the default branch of the repo (optional)"
 }
 
-variable "helm_chart_version" {
-  type        = string
-  description = "The version of the chart that should be used"
-  default     = ""
-}
-
 variable "gitops_apps_repo_url" {
   type        = string
   description = "The https url for your GitOps manifests"
