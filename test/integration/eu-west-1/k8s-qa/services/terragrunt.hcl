@@ -190,4 +190,6 @@ inputs = {
   external_dns_is_debug_mode               = true
   external_dns_traefik_alb_auth_core_alias = ["test3.qa.dfds.cloud"]
   external_dns_traefik_alb_anon_core_alias = ["test4.qa.dfds.cloud"]
+
+  cert_manager_acme_email = "itbuildsourcedevex@dfds.com"
 }
