@@ -902,5 +902,4 @@ variable "aws_lb_controller_helm_chart_version" {
 variable "cert_manager_acme_email" {
   type        = string
   description = "Email address used for ACME registration"
-  default     = ""
 }
