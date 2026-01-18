@@ -36,10 +36,6 @@ variable "prune" {
   description = "Enable Garbage collection"
 }
 
-variable "cluster_region" {
-  type        = string
-  description = "The AWS region the EKS cluster is deployed in"
-}
 variable "domain_name" {
   type        = string
   description = "The domain name to be used by cert-manager"
