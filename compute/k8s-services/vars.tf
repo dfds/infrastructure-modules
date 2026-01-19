@@ -880,11 +880,3 @@ variable "keda_deploy" {
   description = "Deploy KEDA helm chart switch"
   default     = true
 }
-
-# --------------------------------------------------
-# Cert-Manager
-# --------------------------------------------------
-variable "cert_manager_acme_email" {
-  type        = string
-  description = "Email address used for ACME registration"
-}

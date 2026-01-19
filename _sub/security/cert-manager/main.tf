@@ -12,8 +12,8 @@ resource "github_repository_file" "certmanager_helm" {
     helm_repo_path   = local.helm_repo_path
     prune            = var.prune
     domain_name      = var.domain_name
-    email            = var.acme_email
     iam_role_arn     = var.iam_role_arn
+    cluster_name     = var.cluster_name
   })
   overwrite_on_create = true
 }

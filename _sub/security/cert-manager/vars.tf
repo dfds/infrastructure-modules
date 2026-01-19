@@ -41,11 +41,6 @@ variable "domain_name" {
   description = "The domain name to be used by cert-manager"
 }
 
-variable "acme_email" {
-  type        = string
-  description = "The email address to be used for ACME registration with cert-manager"
-}
-
 variable "iam_role_arn" {
   type = string
   description = "The IAM Role ARN to be used by cert-manager for DNS01 challenge"

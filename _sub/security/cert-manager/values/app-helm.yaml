@@ -30,5 +30,5 @@ spec:
   postBuild:
     substitute:
       flux_cert_manager_domain_name: ${domain_name}
-      flux_cert_manager_acme_email: ${email}
       flux_cert_manager_iam_role_arn: ${iam_role_arn}
+      flux_cert_manager_cluster_name: ${cluster_name}
