@@ -278,3 +278,11 @@ locals {
   k8s_lb_controller_namespace = "aws-lb-controller"
   k8s_lb_controller_sa_name   = "aws-lb-controller"
 }
+
+# --------------------------------------------------
+# Cert-Manager
+# --------------------------------------------------
+locals {
+  k8s_cert_manager_namespace       = "cert-manager"
+  k8s_cert_manager_sa_name         = "cert-manager"
+}
