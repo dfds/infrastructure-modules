@@ -302,6 +302,44 @@ module "external_dns_flux_manifests" {
   depends_on = [module.platform_fluxcd]
 }
 
+module "cert_manager_flux_manifests" {
+  source               = "../../_sub/security/cert-manager"
+  cluster_name         = var.eks_cluster_name
+  github_owner         = var.fluxcd_bootstrap_repo_owner
+  repo_name            = var.fluxcd_bootstrap_repo_name
+  repo_branch          = var.fluxcd_bootstrap_repo_branch
+  gitops_apps_repo_url = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  prune                = var.fluxcd_prune
+  domain_name          = local.core_dns_zone_name
+  iam_role_arn         = module.cert_manager_role.arn
+
+  providers = {
+    github = github.fluxcd
+  }
+
+  depends_on = [module.platform_fluxcd]
+}
+
+
+module "cert_manager_role" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+  version = "6.3.0"
+
+  name                                   = "${var.eks_cluster_name}-cert-manager"
+  policy_name                            = "${var.eks_cluster_name}-cert-manager"
+  attach_cert_manager_policy = true
+  cert_manager_hosted_zone_arns = [
+    data.aws_route53_zone.core[0].arn
+  ]
+
+  oidc_providers = {
+    ex = {
+      provider_arn               = "arn:aws:iam::${data.aws_caller_identity.current_account.account_id}:oidc-provider/${local.oidc_issuer}"
+      namespace_service_accounts = ["${local.k8s_cert_manager_namespace}:${local.k8s_cert_manager_sa_name}"]
+    }
+  }
+}
 
 module "external_dns_iam_role_route53_access" {
   source               = "../../_sub/security/iam-role"
