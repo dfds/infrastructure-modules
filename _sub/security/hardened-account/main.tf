@@ -341,30 +341,6 @@ resource "aws_cloudwatch_event_target" "guard_duty_findings_2" {
   provider = aws.workload_2
 }
 
-module "cloudtrail_s3_local" {
-  source           = "../../../_sub/storage/s3-cloudtrail-bucket"
-  create_s3_bucket = var.harden
-  s3_bucket        = "cloudtrail-local-${var.account_name}"
-  s3_log_bucket    = "cloudtrail-local-log-${var.account_name}"
-
-  providers = {
-    aws = aws.workload
-  }
-}
-
-module "cloudtrail_local" {
-  source           = "../../../_sub/security/cloudtrail-config"
-  s3_bucket        = module.cloudtrail_s3_local.bucket_name
-  deploy           = var.harden
-  trail_name       = "cloudtrail-local-${var.account_name}"
-  create_log_group = var.harden
-  create_kms_key   = var.harden
-
-  providers = {
-    aws = aws.workload
-  }
-}
-
 module "security-bot" {
   source                              = "../../../_sub/security/security-bot"
   deploy                              = var.harden && var.monitoring_slack_channel != null && var.monitoring_slack_token != null
@@ -374,8 +350,6 @@ module "security-bot" {
   lambda_s3_bucket                    = var.security_bot_lambda_s3_bucket
   slack_token                         = var.monitoring_slack_token
   slack_channel                       = var.monitoring_slack_channel
-  cloudwatch_logs_group_name          = module.cloudtrail_local.cloudwatch_logs_group_name
-  cloudwatch_logs_group_arn           = module.cloudtrail_local.cloudwatch_logs_group_arn
   sns_topic_arn_cis_controls          = try(aws_sns_topic.cis_controls[0].arn, null)
   sns_topic_arn_compliance_changes    = try(aws_sns_topic.compliance_changes[0].arn, null)
   sns_topic_arn_guard_duty_findings   = try(aws_sns_topic.guard_duty_findings[0].arn, null)
