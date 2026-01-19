@@ -312,7 +312,6 @@ module "cert_manager_flux_manifests" {
   gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                = var.fluxcd_prune
   domain_name          = local.core_dns_zone_name
-  acme_email           = var.cert_manager_acme_email
   iam_role_arn         = module.cert_manager_role.arn
 
   providers = {
