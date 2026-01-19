@@ -330,7 +330,7 @@ module "cert_manager_role" {
   policy_name                            = "${var.eks_cluster_name}-cert-manager"
   attach_cert_manager_policy = true
   cert_manager_hosted_zone_arns = [
-    data.aws_route53_zone.core[0].arn
+    data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? data.aws_route53_zone.workload.arn : data.aws_route53_zone.core[0].arn
   ]
 
   oidc_providers = {
