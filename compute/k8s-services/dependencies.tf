@@ -78,25 +78,22 @@ locals {
 
 locals {
   traefik_alb_auth_endpoints = concat(
-    var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy ? concat(
+    concat(
       [
         "internal.${local.eks_fqdn}"
       ],
       concat(var.traefik_alb_auth_core_alias, var.external_dns_traefik_alb_auth_core_alias)
-    ) : [],
-    var.traefik_blue_variant_deploy && var.traefik_green_variant_deploy ?
+    ),
     [
       "traefik-blue-variant.${local.eks_fqdn}:8443",
       "traefik-green-variant.${local.eks_fqdn}:9443"
-    ] : [],
-    var.traefik_blue_variant_deploy ?
+    ],
     [
       "traefik-blue-variant.${local.eks_fqdn}"
-    ] : [],
-    var.traefik_green_variant_deploy ?
+    ],
     [
       "traefik-green-variant.${local.eks_fqdn}"
-    ] : [],
+    ],
   )
   traefik_alb_auth_appreg_reply_join        = "^${join("$,^", local.traefik_alb_auth_endpoints)}$"
   traefik_alb_auth_appreg_reply_replace_pre = replace(local.traefik_alb_auth_appreg_reply_join, "^", "https://")

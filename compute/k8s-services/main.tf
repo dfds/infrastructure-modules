@@ -38,7 +38,6 @@ module "traefik_crds" {
 
 module "traefik_blue_variant_flux_manifests" {
   source               = "../../_sub/compute/k8s-traefik-flux"
-  count                = var.traefik_blue_variant_deploy ? 1 : 0
   cluster_name         = var.eks_cluster_name
   deploy_name          = "traefik-blue-variant"
   github_owner         = var.fluxcd_bootstrap_repo_owner
@@ -58,7 +57,6 @@ module "traefik_blue_variant_flux_manifests" {
 
 module "traefik_green_variant_manifests" {
   source               = "../../_sub/compute/k8s-traefik-flux"
-  count                = var.traefik_green_variant_deploy ? 1 : 0
   cluster_name         = var.eks_cluster_name
   deploy_name          = "traefik-green-variant"
   github_owner         = var.fluxcd_bootstrap_repo_owner
@@ -144,14 +142,14 @@ module "traefik_alb_auth" {
   access_logs_bucket    = module.traefik_alb_s3_access_logs.name
 
   # Blue variant
-  deploy_blue_variant            = var.traefik_blue_variant_deploy
+  deploy_blue_variant            = true
   blue_variant_target_http_port  = local.traefik_blue_variant_http_nodeport
   blue_variant_target_admin_port = local.traefik_blue_variant_admin_nodeport
   blue_variant_health_check_path = "/ping"
   blue_variant_weight            = var.traefik_blue_variant_weight
 
   # Green variant
-  deploy_green_variant            = var.traefik_green_variant_deploy
+  deploy_green_variant            = true
   green_variant_target_http_port  = local.traefik_green_variant_http_nodeport
   green_variant_target_admin_port = local.traefik_green_variant_admin_nodeport
   green_variant_health_check_path = "/ping"
@@ -160,7 +158,6 @@ module "traefik_alb_auth" {
 
 module "traefik_alb_auth_dns" {
   source       = "../../_sub/network/route53-record"
-  deploy       = (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy) ? true : false
   zone_id      = local.workload_dns_zone_id
   record_name  = ["internal.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
   record_type  = "CNAME"
@@ -170,7 +167,6 @@ module "traefik_alb_auth_dns" {
 
 module "traefik_alb_auth_dns_for_traefik_blue_variant_dashboard" {
   source       = "../../_sub/network/route53-record"
-  deploy       = var.traefik_blue_variant_deploy
   zone_id      = local.workload_dns_zone_id
   record_name  = ["traefik-blue-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
   record_type  = "CNAME"
@@ -180,7 +176,6 @@ module "traefik_alb_auth_dns_for_traefik_blue_variant_dashboard" {
 
 module "traefik_alb_auth_dns_for_traefik_green_variant_dashboard" {
   source       = "../../_sub/network/route53-record"
-  deploy       = var.traefik_green_variant_deploy
   zone_id      = local.workload_dns_zone_id
   record_name  = ["traefik-green-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
   record_type  = "CNAME"
@@ -366,21 +361,21 @@ module "alarm_notifier" {
 
 module "cloudwatch_alarm_alb_5XX_anon" {
   source         = "../../_sub/monitoring/cloudwatch-alarms/alb-5XX/"
-  deploy         = var.cloudwatch_alarm_alb_5XX_deploy && (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy)
+  deploy         = var.cloudwatch_alarm_alb_5XX_deploy
   sns_topic_arn  = module.alarm_notifier.sns_arn
   alb_arn_suffix = module.traefik_alb_anon.alb_arn_suffix
 }
 
 module "cloudwatch_alarm_alb_5XX_auth" {
   source         = "../../_sub/monitoring/cloudwatch-alarms/alb-5XX/"
-  deploy         = var.cloudwatch_alarm_alb_5XX_deploy && (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy)
+  deploy         = var.cloudwatch_alarm_alb_5XX_deploy
   sns_topic_arn  = module.alarm_notifier.sns_arn
   alb_arn_suffix = module.traefik_alb_auth.alb_arn_suffix
 }
 
 module "cloudwatch_alarm_alb_targets_health_anon_blue" {
   source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
-  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_blue_variant_deploy
+  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy
   sns_topic_arn               = module.alarm_notifier.sns_arn
   alb_arn_suffix              = module.traefik_alb_anon.alb_arn_suffix
   alb_arn_target_group_suffix = module.traefik_alb_anon.alb_target_group_arn_suffix_blue
@@ -388,7 +383,7 @@ module "cloudwatch_alarm_alb_targets_health_anon_blue" {
 
 module "cloudwatch_alarm_alb_targets_health_anon_green" {
   source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
-  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_green_variant_deploy
+  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy
   sns_topic_arn               = module.alarm_notifier.sns_arn
   alb_arn_suffix              = module.traefik_alb_anon.alb_arn_suffix
   alb_arn_target_group_suffix = module.traefik_alb_anon.alb_target_group_arn_suffix_green
@@ -396,7 +391,7 @@ module "cloudwatch_alarm_alb_targets_health_anon_green" {
 
 module "cloudwatch_alarm_alb_targets_health_auth_blue" {
   source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
-  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_blue_variant_deploy
+  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy
   sns_topic_arn               = module.alarm_notifier.sns_arn
   alb_arn_suffix              = module.traefik_alb_auth.alb_arn_suffix
   alb_arn_target_group_suffix = module.traefik_alb_auth.alb_target_group_arn_suffix_blue
@@ -404,7 +399,7 @@ module "cloudwatch_alarm_alb_targets_health_auth_blue" {
 
 module "cloudwatch_alarm_alb_targets_health_auth_green" {
   source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
-  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_green_variant_deploy
+  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy
   sns_topic_arn               = module.alarm_notifier.sns_arn
   alb_arn_suffix              = module.traefik_alb_auth.alb_arn_suffix
   alb_arn_target_group_suffix = module.traefik_alb_auth.alb_target_group_arn_suffix_green
@@ -634,7 +629,7 @@ module "velero" {
 # --------------------------------------------------
 
 module "elb_inactivity_cleanup_anon" {
-  count                = data.terraform_remote_state.cluster.outputs.eks_is_sandbox && local.enable_inactivity_cleanup && (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy) ? 1 : 0
+  count                = data.terraform_remote_state.cluster.outputs.eks_is_sandbox && local.enable_inactivity_cleanup ? 1 : 0
   source               = "../../_sub/compute/elb-inactivity-cleanup"
   inactivity_alarm_arn = data.terraform_remote_state.cluster.outputs.eks_inactivity_alarm_arn
   elb_name             = module.traefik_alb_anon.alb_name
@@ -642,7 +637,7 @@ module "elb_inactivity_cleanup_anon" {
 }
 
 module "elb_inactivity_cleanup_auth" {
-  count                = data.terraform_remote_state.cluster.outputs.eks_is_sandbox && local.enable_inactivity_cleanup && (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy) ? 1 : 0
+  count                = data.terraform_remote_state.cluster.outputs.eks_is_sandbox && local.enable_inactivity_cleanup ? 1 : 0
   source               = "../../_sub/compute/elb-inactivity-cleanup"
   inactivity_alarm_arn = data.terraform_remote_state.cluster.outputs.eks_inactivity_alarm_arn
   elb_name             = module.traefik_alb_auth.alb_name

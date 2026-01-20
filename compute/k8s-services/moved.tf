@@ -67,3 +67,23 @@ moved {
   from = module.traefik_alb_auth_appreg[0].random_password.password
   to   = module.traefik_alb_auth_appreg.random_password.password
 }
+
+moved {
+  from = module.traefik_blue_variant_flux_manifests[0].github_repository_file.traefik_helm
+  to   = module.traefik_blue_variant_flux_manifests.github_repository_file.traefik_helm
+}
+
+moved {
+  from = module.traefik_blue_variant_flux_manifests[0].github_repository_file.traefik_helm_install
+  to   = module.traefik_blue_variant_flux_manifests.github_repository_file.traefik_helm_install
+}
+
+moved {
+  from = module.traefik_green_variant_manifests[0].github_repository_file.traefik_helm
+  to   = module.traefik_green_variant_manifests.github_repository_file.traefik_helm
+}
+
+moved {
+  from = module.traefik_green_variant_manifests[0].github_repository_file.traefik_helm_install
+  to   = module.traefik_green_variant_manifests.github_repository_file.traefik_helm_install
+}

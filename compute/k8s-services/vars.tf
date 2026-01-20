@@ -289,23 +289,10 @@ variable "atlantis_resources_requests_memory" {
 # routing traffic gradually to a new version and then decommissioning an older
 # version without downtime.
 
-variable "traefik_blue_variant_deploy" {
-  type    = bool
-  default = true
-}
-
 variable "traefik_blue_variant_weight" {
   type        = number
   description = "The weight of the Traefik instance target groups in the load balancers. Only relevant if there is variant instance deployed."
   default     = 1
-}
-
-# Green variant
-
-variable "traefik_green_variant_deploy" {
-  type        = bool
-  description = "Whether to deploy the Traefik green variant."
-  default     = false
 }
 
 variable "traefik_green_variant_weight" {
