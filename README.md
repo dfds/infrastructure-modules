@@ -1,4 +1,7 @@
 [![QA Pipeline](https://github.com/dfds/infrastructure-modules/actions/workflows/qa.yml/badge.svg)](https://github.com/dfds/infrastructure-modules/actions/workflows/qa.yml)
+[![Gitleaks](https://github.com/dfds/infrastructure-modules/actions/workflows/secret-detection.yml/badge.svg)](https://github.com/dfds/infrastructure-modules/actions/workflows/secret-detection.yml)
+[![Trivy IAC with Quality Gate](https://github.com/dfds/infrastructure-modules/actions/workflows/trivy.yml/badge.svg)](https://github.com/dfds/infrastructure-modules/actions/workflows/trivy.yml)
+[![TFLint](https://github.com/dfds/infrastructure-modules/actions/workflows/tflint.yml/badge.svg)](https://github.com/dfds/infrastructure-modules/actions/workflows/tflint.yml)
 
 # infrastructure-modules
 
