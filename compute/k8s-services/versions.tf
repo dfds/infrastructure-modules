@@ -28,6 +28,7 @@ terraform {
       version = ">= 6.8.0,!=6.8.2"
     }
 
+    # tflint-ignore: terraform_unused_required_providers
     flux = {
       source  = "fluxcd/flux"
       version = ">= 1.7.0"
