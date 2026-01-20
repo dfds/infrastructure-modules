@@ -10,7 +10,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: helm-controller
-    namespace: ${namespace}
+    namespace: ${deploy_name}
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -20,11 +20,11 @@ metadata:
 spec:
   serviceAccountName: kustomize-controller
   interval: 1m0s
-  dependsOn:
-    - name: platform-apps-sources
-    - name: platform-apps-traefik-crds-helm
   sourceRef:
     kind: GitRepository
     name: flux-system
   path: "./${helm_repo_path}"
   prune: ${prune}
+  postBuild:
+    substitute:
+      flux_traefik_dashboard_domain: "${dashboard_domain}"

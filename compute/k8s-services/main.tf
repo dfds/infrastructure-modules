@@ -37,51 +37,43 @@ module "traefik_crds" {
 # --------------------------------------------------
 
 module "traefik_blue_variant_flux_manifests" {
-  source                 = "../../_sub/compute/k8s-traefik-flux"
-  count                  = var.traefik_blue_variant_deploy ? 1 : 0
-  cluster_name           = var.eks_cluster_name
-  deploy_name            = "traefik-blue-variant"
-  namespace              = "traefik-blue-variant"
-  replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
-  http_nodeport          = var.traefik_blue_variant_http_nodeport
-  admin_nodeport         = var.traefik_blue_variant_admin_nodeport
-  github_owner           = var.fluxcd_bootstrap_repo_owner
-  repo_name              = var.fluxcd_bootstrap_repo_name
-  repo_branch            = var.fluxcd_bootstrap_repo_branch
-  dashboard_ingress_host = "traefik-blue-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
-  gitops_apps_repo_url   = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref   = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
-  prune                  = var.fluxcd_prune
+  source               = "../../_sub/compute/k8s-traefik-flux"
+  count                = var.traefik_blue_variant_deploy ? 1 : 0
+  cluster_name         = var.eks_cluster_name
+  deploy_name          = "traefik-blue-variant"
+  github_owner         = var.fluxcd_bootstrap_repo_owner
+  repo_name            = var.fluxcd_bootstrap_repo_name
+  repo_branch          = var.fluxcd_bootstrap_repo_branch
+  dns_zone_name        = var.workload_dns_zone_name
+  gitops_apps_repo_url = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  prune                = var.fluxcd_prune
 
   providers = {
     github = github.fluxcd
   }
 
-  depends_on = [module.platform_fluxcd, module.traefik_crds]
+  depends_on = [module.platform_fluxcd]
 }
 
 module "traefik_green_variant_manifests" {
-  source                 = "../../_sub/compute/k8s-traefik-flux"
-  count                  = var.traefik_green_variant_deploy ? 1 : 0
-  cluster_name           = var.eks_cluster_name
-  deploy_name            = "traefik-green-variant"
-  namespace              = "traefik-green-variant"
-  replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
-  http_nodeport          = var.traefik_green_variant_http_nodeport
-  admin_nodeport         = var.traefik_green_variant_admin_nodeport
-  github_owner           = var.fluxcd_bootstrap_repo_owner
-  repo_name              = var.fluxcd_bootstrap_repo_name
-  repo_branch            = var.fluxcd_bootstrap_repo_branch
-  dashboard_ingress_host = "traefik-green-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
-  gitops_apps_repo_url   = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref   = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
-  prune                  = var.fluxcd_prune
+  source               = "../../_sub/compute/k8s-traefik-flux"
+  count                = var.traefik_green_variant_deploy ? 1 : 0
+  cluster_name         = var.eks_cluster_name
+  deploy_name          = "traefik-green-variant"
+  github_owner         = var.fluxcd_bootstrap_repo_owner
+  repo_name            = var.fluxcd_bootstrap_repo_name
+  repo_branch          = var.fluxcd_bootstrap_repo_branch
+  dns_zone_name        = var.workload_dns_zone_name
+  gitops_apps_repo_url = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  prune                = var.fluxcd_prune
 
   providers = {
     github = github.fluxcd
   }
 
-  depends_on = [module.platform_fluxcd, module.traefik_crds]
+  depends_on = [module.platform_fluxcd]
 }
 
 module "lb_controller_flux_manifests" {
@@ -326,8 +318,8 @@ module "cert_manager_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
   version = "6.3.0"
 
-  name                                   = "${var.eks_cluster_name}-cert-manager"
-  policy_name                            = "${var.eks_cluster_name}-cert-manager"
+  name                       = "${var.eks_cluster_name}-cert-manager"
+  policy_name                = "${var.eks_cluster_name}-cert-manager"
   attach_cert_manager_policy = true
   cert_manager_hosted_zone_arns = [
     data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? data.aws_route53_zone.workload.arn : data.aws_route53_zone.core[0].arn
