@@ -47,3 +47,23 @@ moved {
   from = module.traefik_variant_flux_manifests
   to   = module.traefik_green_variant_manifests
 }
+
+moved {
+  from = module.traefik_alb_auth_appreg[0].azuread_application.app
+  to   = module.traefik_alb_auth_appreg.azuread_application.app
+}
+
+moved {
+  from = module.traefik_alb_auth_appreg[0].azuread_service_principal.sp
+  to   = module.traefik_alb_auth_appreg.azuread_service_principal.sp
+}
+
+moved {
+  from = module.traefik_alb_auth_appreg[0].azuread_service_principal_password.key
+  to   = module.traefik_alb_auth_appreg.azuread_service_principal_password.key
+}
+
+moved {
+  from = module.traefik_alb_auth_appreg[0].random_password.password
+  to   = module.traefik_alb_auth_appreg.random_password.password
+}

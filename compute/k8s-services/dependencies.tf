@@ -105,7 +105,11 @@ locals {
     "$",
     "/oauth2/idpresponse",
   )
-  traefik_alb_auth_appreg_reply_urls = split(",", local.traefik_alb_auth_appreg_reply_replace_end)
+  traefik_alb_auth_appreg_reply_urls   = split(",", local.traefik_alb_auth_appreg_reply_replace_end)
+  traefik_blue_variant_http_nodeport   = 31000
+  traefik_blue_variant_admin_nodeport  = 31001
+  traefik_green_variant_http_nodeport  = 32000
+  traefik_green_variant_admin_nodeport = 32001
 }
 
 locals {
