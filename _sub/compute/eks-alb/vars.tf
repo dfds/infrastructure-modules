@@ -38,13 +38,6 @@ variable "access_logs_enabled" {
 }
 
 # Blue variant
-
-variable "deploy_blue_variant" {
-  type        = bool
-  description = "Whether to deploy a blue variant target group for the listener."
-  default     = true
-}
-
 variable "blue_variant_target_http_port" {
   type = number
 }
@@ -62,13 +55,6 @@ variable "blue_variant_weight" {
 }
 
 # Green variant
-
-variable "deploy_green_variant" {
-  type        = bool
-  description = "Whether to deploy a green variant target group for the listener."
-  default     = false
-}
-
 variable "green_variant_target_http_port" {
   type = number
 }

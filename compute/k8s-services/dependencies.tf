@@ -78,20 +78,11 @@ locals {
 
 locals {
   traefik_alb_auth_endpoints = concat(
-    concat(
-      [
-        "internal.${local.eks_fqdn}"
-      ],
-      concat(var.traefik_alb_auth_core_alias, var.external_dns_traefik_alb_auth_core_alias)
-    ),
+    var.traefik_alb_auth_core_alias,
+    var.external_dns_traefik_alb_auth_core_alias,
     [
-      "traefik-blue-variant.${local.eks_fqdn}:8443",
-      "traefik-green-variant.${local.eks_fqdn}:9443"
-    ],
-    [
-      "traefik-blue-variant.${local.eks_fqdn}"
-    ],
-    [
+      "internal.${local.eks_fqdn}",
+      "traefik-blue-variant.${local.eks_fqdn}",
       "traefik-green-variant.${local.eks_fqdn}"
     ],
   )
@@ -102,11 +93,18 @@ locals {
     "$",
     "/oauth2/idpresponse",
   )
-  traefik_alb_auth_appreg_reply_urls   = split(",", local.traefik_alb_auth_appreg_reply_replace_end)
-  traefik_blue_variant_http_nodeport   = 31000
-  traefik_blue_variant_admin_nodeport  = 31001
-  traefik_green_variant_http_nodeport  = 32000
-  traefik_green_variant_admin_nodeport = 32001
+  traefik_alb_auth_appreg_reply_urls = split(",", local.traefik_alb_auth_appreg_reply_replace_end)
+}
+
+# --------------------------------------------------
+#  Traefik node ports for blue/green deployments
+# --------------------------------------------------
+
+locals {
+  traefik_blue_variant_target_http_port   = 31000
+  traefik_blue_variant_target_admin_port  = 31001
+  traefik_green_variant_target_http_port  = 32000
+  traefik_green_variant_target_admin_port = 32001
 }
 
 locals {

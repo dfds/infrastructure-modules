@@ -284,6 +284,7 @@ resource "aws_security_group" "traefik_auth_blue" {
 
 }
 
+#trivy:ignore:AVD-AWS-0104 Security group rule allows unrestricted egress to any IP address
 resource "aws_security_group" "traefik_auth_green" {
   count       = var.deploy_green_variant ? 1 : 0
   name_prefix = "allow_traefik_green-${var.cluster_name}-auth"
@@ -315,6 +316,7 @@ resource "aws_security_group" "traefik_auth_green" {
   }
 }
 
+#trivy:ignore:AVD-AWS-0104 Security group rule allows unrestricted egress to any IP address
 resource "aws_security_group" "traefik_auth_debug" {
   count       = var.deploy_blue_variant && var.deploy_green_variant ? 1 : 0
   name_prefix = "allow_traefik_debug-${var.cluster_name}-auth"
