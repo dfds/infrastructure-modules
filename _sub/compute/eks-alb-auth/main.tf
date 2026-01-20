@@ -1,5 +1,5 @@
 # Using the variant variables one can perform a blue/green update on Traefik,
-# routing traffic gradually to a new version and then decomissioning an older
+# routing requests gradually to a new version and then decommissioning an older
 # version without downtime.
 
 resource "aws_lb" "traefik_auth" {
