@@ -1,8 +1,8 @@
-[![Build Status](https://dev.azure.com/dfds/DevelopmentExcellence/_apis/build/status/Infrastructure-Modules%20QA?branchName=master)](https://dev.azure.com/dfds/DevelopmentExcellence/_build/latest?definitionId=1656&branchName=master)
+[![QA Pipeline](https://github.com/dfds/infrastructure-modules/actions/workflows/qa.yml/badge.svg)](https://github.com/dfds/infrastructure-modules/actions/workflows/qa.yml)
 
 # infrastructure-modules
 
-Terraform modules for infrastructure
+Terraform modules for AWS infrastructure.
 
 Containers to run this: https://hub.docker.com/u/dfdsdk
 
@@ -49,27 +49,17 @@ network
 ### Find compatible AMI images
 
 ```bash
-EKS_CLUSTER_VERSION=1.28
-REGION=eu-west-1
+EKS_CLUSTER_VERSION=1.34
+AWS_REGION=eu-west-1
 
-# For regular nodes
-aws ssm get-parameter --name /aws/service/eks/optimized-ami/$EKS_CLUSTER_VERSION/amazon-linux-2/recommended/image_id --region $REGION --query "Parameter.Value" --output text
-
-# For GPU nodes:
-aws ssm get-parameter --name /aws/service/eks/optimized-ami/$EKS_CLUSTER_VERSION/amazon-linux-2-gpu/recommended/image_id --region $REGION  --query "Parameter.Value" --output text
+aws ssm get-parameter --name /aws/service/eks/optimized-ami/$EKS_CLUSTER_VERSION/amazon-linux-2023/x86_64/standard/recommended/image_id --region $AWS_REGION --query "Parameter.Value" --output text
 ```
 
 ## Release process
 
 Branch protection is not enabled on this repo. Instead we rely on release tags to ensure we do not commit straight to production.
 
-When creating a new release, it's important to ensure only the intended changes are included, not changes others may have committed to *master* without also creating a release.
-
-Before creating the release, you should compare the commit you want to release against the latest release, and ensure only intended changes are included.
-
-In this example, I am comparing the lastest release (**0.1.35**) against the commit I plan to release (**75bec8f**).
-
-https://github.com/dfds/infrastructure-modules/compare/0.1.35..75bec8f
+Release tags are created automatically when merging to master branch. The release tag is calculated based on labels (release:najor, release:minor, release:patch or norelease). The norelease label is used when updating test cases or the QA environment, but not when updating the modules.
 
 ### Pre-Commit Hooks (Optional)
 
