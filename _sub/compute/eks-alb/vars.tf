@@ -18,8 +18,6 @@ variable "autoscaling_group_ids" {
   type = set(string)
 }
 
-# variable "traefik_k8s_name" {}
-
 variable "alb_certificate_arn" {
   type = string
 }
@@ -30,11 +28,6 @@ variable "nodes_sg_id" {
 
 variable "access_logs_bucket" {
   type = string
-}
-
-variable "access_logs_enabled" {
-  type    = bool
-  default = true
 }
 
 # Blue variant

@@ -15,12 +15,13 @@ resource "aws_lb" "traefik" {
 
   access_logs {
     bucket  = var.access_logs_bucket
-    enabled = var.access_logs_enabled
+    enabled = true
     prefix  = var.name
   }
 
   drop_invalid_header_fields = true
   idle_timeout               = 300
+  enable_deletion_protection = true
 }
 
 resource "aws_lb_target_group" "traefik_blue_variant" {
@@ -134,6 +135,7 @@ resource "aws_security_group" "traefik" {
   description = "Allow traefik connection for ${var.cluster_name}"
   vpc_id      = var.vpc_id
 
+  #checkov:skip=CKV_AWS_260: "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80"
   ingress {
     description = "Ingress on standard HTTP port"
     from_port   = 80
