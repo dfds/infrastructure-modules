@@ -10,7 +10,6 @@ resource "aws_lb" "traefik_auth" {
     [aws_security_group.traefik_auth.id],
     [aws_security_group.traefik_auth_blue.id],
     [aws_security_group.traefik_auth_green.id],
-    [aws_security_group.traefik_auth_debug.id],
   )
   subnets = var.subnet_ids
 
