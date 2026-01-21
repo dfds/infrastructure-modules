@@ -27,4 +27,4 @@ spec:
   prune: ${prune}
   postBuild:
     substitute:
-      flux_traefik_dashboard_domain: "${dashboard_domain}"
+      flux_eks_fqdn: "${eks_fqdn}"

@@ -142,14 +142,12 @@ module "traefik_alb_auth" {
   access_logs_bucket    = module.traefik_alb_s3_access_logs.name
 
   # Blue variant
-  deploy_blue_variant            = true
   blue_variant_target_http_port  = local.traefik_blue_variant_target_http_port
   blue_variant_target_admin_port = local.traefik_blue_variant_target_admin_port
   blue_variant_health_check_path = "/ping"
   blue_variant_weight            = var.traefik_blue_variant_weight
 
   # Green variant
-  deploy_green_variant            = true
   green_variant_target_http_port  = local.traefik_green_variant_target_http_port
   green_variant_target_admin_port = local.traefik_green_variant_target_admin_port
   green_variant_health_check_path = "/ping"

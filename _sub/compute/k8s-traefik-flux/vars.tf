@@ -26,9 +26,9 @@ variable "repo_branch" {
   description = "Override the default branch of the repo (optional)"
 }
 
-variable "dns_zone_name" {
+variable "eks_fqdn" {
   type        = string
-  description = "The workload DNS zone name."
+  description = "The FQDN for the EKS cluster"
 }
 
 variable "gitops_apps_repo_url" {

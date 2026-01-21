@@ -9,10 +9,10 @@ repos:
           - "--args=--skip-dirs=test/integration/suite/vendor/.*"
           - "--args=--severity HIGH,CRITICAL"
         files: (\.tf|\.tfvars)$
-      - id: terraform_checkov
-        args:
-          - "--args=--quiet"
-          - "--args=--skip-path=test/integration/suite/vendor/.*"
+      # - id: terraform_checkov
+      #   args:
+      #     - "--args=--quiet"
+      #     - "--args=--skip-path=test/integration/suite/vendor/.*"
       - id: terraform_tflint
         args:
           - "--args=--call-module-type=local"

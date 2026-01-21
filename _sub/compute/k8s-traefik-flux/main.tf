@@ -9,7 +9,7 @@ resource "github_repository_file" "traefik_helm" {
     app_install_name = local.app_install_name
     deploy_name      = var.deploy_name
     helm_repo_path   = local.helm_repo_path
-    dashboard_domain = local.dashboard_domain
+    eks_fqdn         = var.eks_fqdn
     prune            = var.prune
   })
   overwrite_on_create = true
