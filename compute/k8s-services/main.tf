@@ -43,7 +43,7 @@ module "traefik_blue_variant_flux_manifests" {
   github_owner         = var.fluxcd_bootstrap_repo_owner
   repo_name            = var.fluxcd_bootstrap_repo_name
   repo_branch          = var.fluxcd_bootstrap_repo_branch
-  eks_fqdn             = var.workload_dns_zone_name
+  eks_fqdn             = local.eks_fqdn
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                = var.fluxcd_prune
@@ -62,7 +62,7 @@ module "traefik_green_variant_manifests" {
   github_owner         = var.fluxcd_bootstrap_repo_owner
   repo_name            = var.fluxcd_bootstrap_repo_name
   repo_branch          = var.fluxcd_bootstrap_repo_branch
-  eks_fqdn             = var.workload_dns_zone_name
+  eks_fqdn             = local.eks_fqdn
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                = var.fluxcd_prune
