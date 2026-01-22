@@ -27,3 +27,8 @@ spec:
     name: flux-system
   path: "./${helm_repo_path}"
   prune: ${prune}
+  postBuild:
+    substitute:
+      flux_aws_lb_controller_role_arn: ${role_arn}
+      flux_cluster_name: ${cluster}
+      flux_aws_region: ${region}
