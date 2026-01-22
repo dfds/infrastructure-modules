@@ -46,3 +46,11 @@ variable "prune" {
   default     = true
   description = "Enable Garbage collection"
 }
+
+variable "target_http_port" {
+  type = number
+}
+
+variable "target_admin_port" {
+  type = number
+}

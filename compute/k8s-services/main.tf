@@ -47,6 +47,8 @@ module "traefik_blue_variant_flux_manifests" {
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                = var.fluxcd_prune
+  target_http_port     = local.traefik_blue_variant_target_http_port
+  target_admin_port    = local.traefik_blue_variant_target_admin_port
 
   providers = {
     github = github.fluxcd
@@ -66,6 +68,8 @@ module "traefik_green_variant_manifests" {
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                = var.fluxcd_prune
+  target_http_port     = local.traefik_green_variant_target_http_port
+  target_admin_port    = local.traefik_green_variant_target_admin_port
 
   providers = {
     github = github.fluxcd

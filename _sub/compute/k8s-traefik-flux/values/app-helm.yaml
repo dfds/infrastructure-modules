@@ -28,3 +28,11 @@ spec:
   postBuild:
     substitute:
       flux_eks_fqdn: "${eks_fqdn}"
+%{ if deploy_name == "traefik-blue-variant" ~}
+      flux_traefik_blue_target_http_port: "${target_http_port}"
+      flux_traefik_blue_target_admin_port: "${target_admin_port}"
+%{ endif ~}
+%{ if deploy_name == "traefik-green-variant" ~}
+      flux_traefik_green_target_http_port: "${target_http_port}"
+      flux_traefik_green_target_admin_port: "${target_admin_port}"
+%{ endif ~}

@@ -6,11 +6,13 @@ resource "github_repository_file" "traefik_helm" {
   branch     = local.repo_branch
   file       = "${local.cluster_repo_path}/${local.app_install_name}-helm.yaml"
   content = templatefile("${path.module}/values/app-helm.yaml", {
-    app_install_name = local.app_install_name
-    deploy_name      = var.deploy_name
-    helm_repo_path   = local.helm_repo_path
-    eks_fqdn         = var.eks_fqdn
-    prune            = var.prune
+    app_install_name  = local.app_install_name
+    deploy_name       = var.deploy_name
+    helm_repo_path    = local.helm_repo_path
+    eks_fqdn          = var.eks_fqdn
+    target_http_port  = var.target_http_port
+    target_admin_port = var.target_admin_port
+    prune             = var.prune
   })
   overwrite_on_create = true
 }
