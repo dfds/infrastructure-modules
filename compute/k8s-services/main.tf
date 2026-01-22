@@ -696,8 +696,6 @@ module "external_secrets_ssm" {
   providers = {
     aws = aws
   }
-
-  depends_on = [module.external_secrets]
 }
 
 # --------------------------------------------------
