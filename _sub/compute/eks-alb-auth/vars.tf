@@ -50,40 +50,49 @@ variable "access_logs_enabled" {
 # Blue variant
 
 variable "blue_variant_target_http_port" {
-  type = number
+  type        = number
+  description = "NodePort value for the 'web' entrypoint in Traefik"
 }
 
 variable "blue_variant_target_admin_port" {
-  type = number
+  type        = number
+  description = "NodePort value for the 'traefik' entrypoint in Traefik"
 }
 
 variable "blue_variant_health_check_path" {
-  type = string
+  type        = string
+  description = "The AWS ALB will call this path on Traefik to evaluate node liveness"
 }
 
 variable "blue_variant_weight" {
-  type = number
+  type        = number
+  description = "The weight of the requests towards the blue variant of Traefik"
 }
 
 # Green variant
 
 variable "green_variant_target_http_port" {
-  type = number
+  type        = number
+  description = "NodePort value for the 'web' entrypoint in Traefik"
 }
 
 variable "green_variant_target_admin_port" {
-  type = number
+  type        = number
+  description = "NodePort value for the 'traefik' entrypoint in Traefik"
 }
 
 variable "green_variant_health_check_path" {
-  type = string
+  type        = string
+  description = "The AWS ALB will call this path on Traefik to evaluate node liveness"
 }
 
 variable "green_variant_weight" {
-  type = number
+  type        = number
+  description = "The weight of the requests towards the green variant of Traefik"
 }
 
 variable "enable_delete_protection" {
-  type    = bool
-  default = true
+  type        = bool
+  default     = true
+  description = "Enable or disable delete protection for the ALB. Not applicable for sandbox environments."
 }

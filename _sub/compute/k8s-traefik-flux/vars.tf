@@ -48,9 +48,11 @@ variable "prune" {
 }
 
 variable "target_http_port" {
-  type = number
+  type        = number
+  description = "NodePort value for the 'web' entrypoint in Traefik"
 }
 
 variable "target_admin_port" {
-  type = number
+  type        = number
+  description = "NodePort value for the 'traefik' entrypoint in Traefik"
 }
