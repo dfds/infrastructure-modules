@@ -21,7 +21,7 @@ resource "aws_lb" "traefik_auth" {
 
   drop_invalid_header_fields = true
   idle_timeout               = 300
-  enable_deletion_protection = true
+  enable_deletion_protection = var.enable_delete_protection
 }
 
 resource "aws_lb_target_group" "traefik_auth_blue_variant" {

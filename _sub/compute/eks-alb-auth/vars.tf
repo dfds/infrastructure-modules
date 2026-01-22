@@ -82,3 +82,8 @@ variable "green_variant_health_check_path" {
 variable "green_variant_weight" {
   type = number
 }
+
+variable "enable_delete_protection" {
+  type    = bool
+  default = true
+}

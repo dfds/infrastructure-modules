@@ -128,18 +128,19 @@ module "traefik_alb_auth_appreg" {
 }
 
 module "traefik_alb_auth" {
-  source                = "../../_sub/compute/eks-alb-auth"
-  name                  = "${var.eks_cluster_name}-traefik-alb-auth"
-  cluster_name          = var.eks_cluster_name
-  vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
-  subnet_ids            = var.use_worker_nat_gateway ? data.terraform_remote_state.cluster.outputs.eks_control_subnet_ids : data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
-  autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
-  alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
-  nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
-  azure_tenant_id       = try(module.traefik_alb_auth_appreg.tenant_id, "")
-  azure_client_id       = try(module.traefik_alb_auth_appreg.client_id, "")
-  azure_client_secret   = try(module.traefik_alb_auth_appreg.application_key, "")
-  access_logs_bucket    = module.traefik_alb_s3_access_logs.name
+  source                   = "../../_sub/compute/eks-alb-auth"
+  name                     = "${var.eks_cluster_name}-traefik-alb-auth"
+  cluster_name             = var.eks_cluster_name
+  vpc_id                   = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
+  subnet_ids               = var.use_worker_nat_gateway ? data.terraform_remote_state.cluster.outputs.eks_control_subnet_ids : data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
+  autoscaling_group_ids    = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
+  alb_certificate_arn      = module.traefik_alb_cert.certificate_arn
+  nodes_sg_id              = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
+  azure_tenant_id          = try(module.traefik_alb_auth_appreg.tenant_id, "")
+  azure_client_id          = try(module.traefik_alb_auth_appreg.client_id, "")
+  azure_client_secret      = try(module.traefik_alb_auth_appreg.application_key, "")
+  access_logs_bucket       = module.traefik_alb_s3_access_logs.name
+  enable_delete_protection = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? false : true
 
   # Blue variant
   blue_variant_target_http_port  = local.traefik_blue_variant_target_http_port
@@ -196,15 +197,16 @@ module "traefik_alb_auth_dns_core_alias" {
 }
 
 module "traefik_alb_anon" {
-  source                = "../../_sub/compute/eks-alb"
-  name                  = "${var.eks_cluster_name}-traefik-alb"
-  cluster_name          = var.eks_cluster_name
-  vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
-  subnet_ids            = data.terraform_remote_state.cluster.outputs.eks_control_subnet_ids
-  autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
-  alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
-  nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
-  access_logs_bucket    = module.traefik_alb_s3_access_logs.name
+  source                   = "../../_sub/compute/eks-alb"
+  name                     = "${var.eks_cluster_name}-traefik-alb"
+  cluster_name             = var.eks_cluster_name
+  vpc_id                   = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
+  subnet_ids               = data.terraform_remote_state.cluster.outputs.eks_control_subnet_ids
+  autoscaling_group_ids    = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
+  alb_certificate_arn      = module.traefik_alb_cert.certificate_arn
+  nodes_sg_id              = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
+  access_logs_bucket       = module.traefik_alb_s3_access_logs.name
+  enable_delete_protection = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? false : true
 
   # Blue variant
   blue_variant_target_http_port  = local.traefik_blue_variant_target_http_port
