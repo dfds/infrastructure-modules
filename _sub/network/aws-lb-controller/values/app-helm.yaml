@@ -29,6 +29,6 @@ spec:
   prune: ${prune}
   postBuild:
     substitute:
-      flux_aws_alb_controller_role_arn: ${role_arn}
+      flux_aws_lb_controller_role_arn: ${role_arn}
       flux_cluster_name: ${cluster}
       flux_aws_region: ${region}
