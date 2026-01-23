@@ -28,8 +28,6 @@ module "traefik_crds" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -56,8 +54,6 @@ module "traefik_blue_variant_flux_manifests" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd, module.traefik_crds]
 }
 
 module "traefik_green_variant_manifests" {
@@ -80,8 +76,6 @@ module "traefik_green_variant_manifests" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd, module.traefik_crds]
 }
 
 module "lb_controller_flux_manifests" {
@@ -98,8 +92,6 @@ module "lb_controller_flux_manifests" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 module "lb_controller_role" {
@@ -298,8 +290,6 @@ module "external_dns_flux_manifests" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 module "cert_manager_flux_manifests" {
@@ -317,8 +307,6 @@ module "cert_manager_flux_manifests" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 
@@ -326,8 +314,8 @@ module "cert_manager_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
   version = "6.3.0"
 
-  name                                   = "${var.eks_cluster_name}-cert-manager"
-  policy_name                            = "${var.eks_cluster_name}-cert-manager"
+  name                       = "${var.eks_cluster_name}-cert-manager"
+  policy_name                = "${var.eks_cluster_name}-cert-manager"
   attach_cert_manager_policy = true
   cert_manager_hosted_zone_arns = [
     data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? data.aws_route53_zone.workload.arn : data.aws_route53_zone.core[0].arn
@@ -445,8 +433,6 @@ module "monitoring_namespace" {
   # deprovisioned from it via Flux. If Flux is removed before the monitoring
   # namespace, the monitoring namespace may be unable to terminated as it will
   # have resources left in it with Flux finalizers which cannot be finalized.
-
-  depends_on = [module.platform_fluxcd]
 }
 
 
@@ -464,8 +450,6 @@ module "goldpinger" {
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                = var.fluxcd_prune
-
-  depends_on = [module.grafana, module.platform_fluxcd]
 
   providers = {
     github = github.fluxcd
@@ -486,8 +470,6 @@ module "metrics_server" {
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                = var.fluxcd_prune
-
-  depends_on = [module.platform_fluxcd]
 
   providers = {
     github = github.fluxcd
@@ -552,8 +534,6 @@ module "atlantis_deployment" {
   resources_requests_cpu    = var.atlantis_resources_requests_cpu
   resources_requests_memory = var.atlantis_resources_requests_memory
 
-  depends_on = [module.platform_fluxcd]
-
   providers = {
     github = github.fluxcd
   }
@@ -589,8 +569,6 @@ module "external_snapshotter" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -636,8 +614,6 @@ module "velero" {
     github = github.fluxcd
     aws    = aws
   }
-
-  depends_on = [module.platform_fluxcd, module.external_snapshotter]
 }
 
 # --------------------------------------------------
@@ -693,8 +669,6 @@ module "grafana" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -714,8 +688,6 @@ module "external_secrets" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -734,8 +706,6 @@ module "external_secrets_ssm" {
   providers = {
     aws = aws
   }
-
-  depends_on = [module.external_secrets]
 }
 
 # --------------------------------------------------
@@ -757,8 +727,6 @@ module "kafka_exporter" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -784,8 +752,6 @@ module "onepassword_connect" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -808,8 +774,6 @@ module "github_arc_ss_controller" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -832,8 +796,6 @@ module "github_arc_runners" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd, module.github_arc_ss_controller]
 }
 
 # --------------------------------------------------
@@ -853,10 +815,6 @@ module "druid_operator" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [
-    module.platform_fluxcd
-  ]
 }
 
 # --------------------------------------------------
@@ -881,10 +839,6 @@ module "trivy_operator" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [
-    module.platform_fluxcd
-  ]
 }
 
 # --------------------------------------------------
@@ -913,10 +867,6 @@ module "falco" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [
-    module.platform_fluxcd
-  ]
 }
 
 # --------------------------------------------------
@@ -936,10 +886,6 @@ module "keda" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [
-    module.platform_fluxcd
-  ]
 }
 
 #--------------------------------------------------
@@ -958,10 +904,6 @@ module "karpenter" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [
-    module.platform_fluxcd
-  ]
 }
 
 # --------------------------------------------------
@@ -980,8 +922,4 @@ module "kyverno" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [
-    module.platform_fluxcd
-  ]
 }

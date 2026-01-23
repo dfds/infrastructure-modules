@@ -40,7 +40,6 @@ spec:
   interval: 1m0s
   dependsOn:
     - name: platform-apps-sources
-    - name: platform-apps-arc-helm
   sourceRef:
     kind: GitRepository
     name: "flux-system"

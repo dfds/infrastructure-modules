@@ -283,6 +283,6 @@ locals {
 # Cert-Manager
 # --------------------------------------------------
 locals {
-  k8s_cert_manager_namespace       = "cert-manager"
-  k8s_cert_manager_sa_name         = "cert-manager"
+  k8s_cert_manager_namespace = "cert-manager"
+  k8s_cert_manager_sa_name   = "cert-manager"
 }
