@@ -29,18 +29,15 @@ subjects:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: "${local.app_install_name}-helm"
-  namespace: "flux-system"
+  name: ${local.app_install_name}-helm
+  namespace: flux-system
 spec:
   serviceAccountName: kustomize-controller
   interval: 1m0s
-  dependsOn:
-    - name: "platform-apps-sources"
-
   sourceRef:
     kind: GitRepository
-    name: "flux-system"
-  path: "./${local.helm_repo_path}"
+    name: flux-system
+  path: ./${local.helm_repo_path}
   prune: ${var.prune}
 YAML
 
@@ -64,7 +61,7 @@ spec:
       sourceRef:
         kind: GitRepository
         name: kafka-exporter
-        namespace: flux-system
+        namespace: ${var.namespace}
   interval: 1m0s
   install:
     remediation:
@@ -88,8 +85,22 @@ YAML
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - sources.yaml
   - ${local.clusters_mapped}
 YAML
 
-
+  app_sources = <<YAML
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: kafka-exporter
+  namespace: ${var.namespace}
+spec:
+  interval: 1h0m0s
+  ref:
+    branch: master
+  timeout: 60s
+  url: https://github.com/dfds/kafka-exporter
+YAML
 }

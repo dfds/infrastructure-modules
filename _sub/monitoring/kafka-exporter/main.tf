@@ -10,6 +10,15 @@ resource "github_repository_file" "kafka-exporter_helm" {
   overwrite_on_create = true
 }
 
+resource "github_repository_file" "kafka-exporter_sources" {
+  count               = length(var.kafka_clusters) > 0 ? 1 : 0
+  repository          = var.repo_name
+  branch              = local.repo_branch
+  file                = "${local.helm_repo_path}/sources.yaml"
+  content             = local.app_sources
+  overwrite_on_create = true
+}
+
 resource "github_repository_file" "kafka-exporter_helm_install" {
   count               = length(var.kafka_clusters) > 0 ? 1 : 0
   repository          = var.repo_name
