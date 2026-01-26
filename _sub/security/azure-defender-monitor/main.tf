@@ -34,7 +34,7 @@ data "aws_iam_policy_document" "azure_defender_monitor_trust" {
         {
           test     = "StringLike"
           variable = "sts:RoleSessionName"
-          values   = ["MicrosoftDefenderForClouds_73a99466-ad05-4221-9f90-e7142aa2f6c1"]
+          values   = ["MicrosoftDefenderForClouds_${var.client_tenant}"]
         }
       ]
       content {

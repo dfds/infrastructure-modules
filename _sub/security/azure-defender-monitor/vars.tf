@@ -1,3 +1,8 @@
+variable "client_tenant" {
+  description = "Client tenant id"
+  type        = string
+}
+
 variable "oidc_client_id_list" {
   description = "List of Client IDs (app ids) that can authenticate to the OIDC provider"
   type        = list(string)

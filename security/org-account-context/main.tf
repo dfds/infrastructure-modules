@@ -697,6 +697,7 @@ resource "aws_iam_role" "capability_access_from_kubernetes" {
 module "azure_defender_monitor" {
   source = "../../_sub/security/azure-defender-monitor"
 
+  client_tenant        = var.azure_client_tenant
   oidc_client_id_list  = var.azure_defender_oidc_client_id_list
   oidc_thumbprint_list = var.azure_defender_oidc_thumbprint_list
 

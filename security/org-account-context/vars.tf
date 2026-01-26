@@ -481,6 +481,11 @@ variable "steampipe_audit_role_name" {
 # Capability role for Azure Defender for Cloud
 # --------------------------------------------------
 
+variable "azure_client_tenant" {
+  description = "Azure client tenant id"
+  type        = string
+}
+
 variable "azure_defender_oidc_client_id_list" {
   description = "List of Client IDs (app ids) that can authenticate to the OIDC provider"
   type        = list(string)
