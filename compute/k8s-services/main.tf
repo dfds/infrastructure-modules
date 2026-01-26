@@ -286,7 +286,8 @@ module "external_dns_flux_manifests" {
   dns_records_anon         = var.external_dns_traefik_alb_anon_core_alias
   dns_records_auth         = var.external_dns_traefik_alb_auth_core_alias
   domain                   = local.core_dns_zone_name
-  zone_ids                 = local.external_dns_zone_ids
+  zone_id_core            = local.core_dns_zone_id
+  zone_id_workload        = local.workload_dns_zone_id
   providers = {
     github = github.fluxcd
   }

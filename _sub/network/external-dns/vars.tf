@@ -100,8 +100,12 @@ variable "domain" {
   description = "The domain for the DNS records"
 }
 
-variable "zone_ids" {
-  type        = list(string)
-  description = "List of Route53 Hosted Zone IDs where external-dns should manage records"
-  default     = []
+variable "zone_id_core" {
+  type = string
+  description = "The Route53 Hosted Zone ID for the core DNS zone"
+}
+
+variable "zone_id_workload" {
+  type = string
+  description = "The Route53 Hosted Zone ID for the workload DNS zone"
 }
