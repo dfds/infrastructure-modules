@@ -476,3 +476,17 @@ variable "steampipe_audit_role_name" {
   description = "Name of the IAM role used by Steampipe for reading resources"
   default     = "steampipe-audit"
 }
+
+# --------------------------------------------------
+# Capability role for Azure Defender for Cloud
+# --------------------------------------------------
+
+variable "azure_defender_oidc_client_id_list" {
+  description = "List of Client IDs (app ids) that can authenticate to the OIDC provider"
+  type        = list(string)
+}
+
+variable "azure_defender_oidc_thumbprint_list" {
+  description = "Thumbprint of OIDC providers server certificate"
+  type        = list(string)
+}
