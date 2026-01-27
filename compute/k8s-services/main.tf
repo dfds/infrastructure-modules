@@ -437,8 +437,6 @@ module "goldpinger" {
   gitops_apps_repo_ref = local.gitops_apps_repo_ref
   prune                = var.fluxcd_prune
 
-  depends_on = [module.grafana]
-
   providers = {
     github = github.fluxcd
   }
@@ -602,8 +600,6 @@ module "velero" {
     github = github.fluxcd
     aws    = aws
   }
-
-  depends_on = [module.external_snapshotter]
 }
 
 # --------------------------------------------------
@@ -786,8 +782,6 @@ module "github_arc_runners" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.github_arc_ss_controller]
 }
 
 # --------------------------------------------------
