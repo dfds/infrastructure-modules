@@ -2,18 +2,6 @@ variable "cluster_name" {
   type = string
 }
 
-variable "deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "external-dns"
-}
-
-variable "namespace" {
-  type        = string
-  description = "The namespace in which to deploy Helm resources"
-  default     = "external-dns"
-}
-
 variable "github_owner" {
   type        = string
   description = "Name of the Github owner (previously: organization)"

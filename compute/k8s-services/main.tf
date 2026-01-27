@@ -268,8 +268,6 @@ module "external_dns_flux_manifests" {
   source                   = "../../_sub/network/external-dns"
   count                    = var.external_dns_deploy ? 1 : 0
   cluster_name             = var.eks_cluster_name
-  deploy_name              = "external-dns"
-  namespace                = "external-dns"
   github_owner             = var.fluxcd_bootstrap_repo_owner
   repo_name                = var.fluxcd_bootstrap_repo_name
   repo_branch              = var.fluxcd_bootstrap_repo_branch
