@@ -278,7 +278,6 @@ module "external_dns_flux_manifests" {
   prune                    = var.fluxcd_prune
   cluster_region           = var.aws_region
   deletion_policy_override = var.external_deletion_policy_override
-  is_debug_mode            = var.external_dns_is_debug_mode
   target_anon              = module.traefik_alb_anon.alb_fqdn
   target_auth              = module.traefik_alb_auth.alb_fqdn
   dns_records_anon         = var.external_dns_traefik_alb_anon_core_alias
