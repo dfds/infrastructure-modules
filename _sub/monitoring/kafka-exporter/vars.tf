@@ -18,12 +18,10 @@ variable "repo_name" {
 variable "repo_branch" {
   type        = string
   description = "Override the default branch of the repo (optional)"
-  default     = null
 }
 
 variable "apps_repo_url" {
   type        = string
-  default     = ""
   description = "The https url for your GitOps manifests"
 }
 
