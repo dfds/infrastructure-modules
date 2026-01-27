@@ -59,12 +59,6 @@ variable "deletion_policy_override" {
   default     = ""
 }
 
-variable "is_debug_mode" {
-  type        = bool
-  description = "If it is set to true then logLevel will be set to debug."
-  default     = false
-}
-
 variable "target_anon" {
   type        = string
   description = "The target DNS name for the public records"
