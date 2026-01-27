@@ -716,7 +716,6 @@ module "kafka_exporter" {
   source         = "../../_sub/monitoring/kafka-exporter"
   count          = length(var.kafka_exporter_clusters) > 0 ? 1 : 0
   cluster_name   = var.eks_cluster_name
-  github_owner   = var.fluxcd_bootstrap_repo_owner
   repo_name      = var.fluxcd_bootstrap_repo_name
   repo_branch    = var.fluxcd_bootstrap_repo_branch
   apps_repo_url  = local.fluxcd_apps_repo_url
