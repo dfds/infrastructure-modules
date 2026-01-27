@@ -691,7 +691,7 @@ variable "kafka_exporter_clusters" {
     id          = string
     environment = string
   }))
-  description = "Map of clusters that will be used to deploy exporters"
+  description = "Map of clusters that will be used to deploy exporters. Empty object or ommitting it will disable the deployment"
   default     = {}
 }
 
