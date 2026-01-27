@@ -714,14 +714,13 @@ module "external_secrets_ssm" {
 
 module "kafka_exporter" {
   source         = "../../_sub/monitoring/kafka-exporter"
-  count          = var.kafka_exporter_deploy ? 1 : 0
+  count          = length(var.kafka_exporter_clusters) > 0 ? 1 : 0
   cluster_name   = var.eks_cluster_name
-  deploy_name    = "kafka-exporter"
-  namespace      = "monitoring"
   github_owner   = var.fluxcd_bootstrap_repo_owner
   repo_name      = var.fluxcd_bootstrap_repo_name
   repo_branch    = var.fluxcd_bootstrap_repo_branch
-  prune          = var.fluxcd_prune
+  apps_repo_url  = local.fluxcd_apps_repo_url
+  apps_repo_ref  = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   kafka_clusters = var.kafka_exporter_clusters
 
   providers = {

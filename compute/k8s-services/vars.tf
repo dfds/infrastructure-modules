@@ -686,14 +686,11 @@ variable "external_dns_core_route53_assume_role_arn" {
 # kafka-exporter
 # --------------------------------------------------
 
-variable "kafka_exporter_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for kafka-exporter module"
-}
-
 variable "kafka_exporter_clusters" {
-  type        = map(any)
+  type = map(object({
+    id          = string
+    environment = string
+  }))
   description = "Map of clusters that will be used to deploy exporters"
   default     = {}
 }
