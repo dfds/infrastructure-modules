@@ -14,9 +14,8 @@ resource "github_repository_file" "extdns_helm" {
     region              = var.cluster_region
     core_zone_id     = var.zone_id_core
     workload_zone_id = var.zone_id_workload
-    role_arn            = var.role_arn
-    assume_role_arn = var.assume_role_arn
-    txt_owner_id    = local.txt_owner_id
+    cluster_name    = var.cluster_name
+    workload_account_id = data.aws_caller_identity.this.id
   })
   overwrite_on_create = true
 }

@@ -53,22 +53,11 @@ variable "cluster_region" {
   description = "The AWS region the EKS cluster is deployed in"
 }
 
-variable "role_arn" {
-  type        = string
-  description = "The ARN of the role to be used by external-dns"
-}
-
-variable "assume_role_arn" {
-  type        = string
-  description = "The ARN of the role to be assumed by external-dns to manage DNS records in other AWS accounts"
-}
-
 variable "deletion_policy_override" {
   type        = string
   description = "Explictly set the deletion policy for the external-dns helm release. Options are: 'sync' and 'upsert-only'. if not set, the default behavior of external-dns is set by the helm chart"
   default     = ""
 }
-
 
 variable "is_debug_mode" {
   type        = bool

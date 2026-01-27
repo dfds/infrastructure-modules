@@ -179,7 +179,7 @@ locals {
   external_dns_namespace_name                             = "external-dns"
   external_dns_serviceaccount_name                        = "external-dns"
   external_dns_role_assume_policy_name                    = "assume-role-external-dns"
-  external_dns_role_name_cross_account                    = "${var.eks_cluster_name}-external-dns-route53-access"
+  external_dns_role_name_cross_account                    = "eks-${var.eks_cluster_name}-external-dns-route53-access"
   external_dns_role_name_cross_account_assume_policy_name = "allowExternalDNSUpdates"
 }
 

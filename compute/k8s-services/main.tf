@@ -277,8 +277,6 @@ module "external_dns_flux_manifests" {
   gitops_apps_repo_ref     = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                    = var.fluxcd_prune
   cluster_region           = var.aws_region
-  role_arn                 = module.external_dns_iam_role_assume[0].arn
-  assume_role_arn          = var.external_dns_core_route53_assume_role_arn != "" ? var.external_dns_core_route53_assume_role_arn : module.external_dns_iam_role_route53_access[0].arn
   deletion_policy_override = var.external_deletion_policy_override
   is_debug_mode            = var.external_dns_is_debug_mode
   target_anon              = module.traefik_alb_anon.alb_fqdn
