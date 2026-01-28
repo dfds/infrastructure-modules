@@ -9,7 +9,3 @@ provider "aws" {
     role_arn = var.aws_assume_role_arn
   }
 }
-
-terraform {
-  backend "s3" {}
-}
