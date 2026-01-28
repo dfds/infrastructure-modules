@@ -256,7 +256,6 @@ module "traefik_alb_anon_dns_core_alias" {
 
 module "external_dns_iam_role_assume" {
   source               = "../../_sub/security/iam-role"
-  count                = var.external_dns_deploy ? 1 : 0
   role_name            = local.external_dns_role_name
   role_description     = "Role for accessing Route53 hosted zone"
   role_policy_name     = local.external_dns_role_assume_policy_name
@@ -266,10 +265,7 @@ module "external_dns_iam_role_assume" {
 
 module "external_dns_flux_manifests" {
   source                   = "../../_sub/network/external-dns"
-  count                    = var.external_dns_deploy ? 1 : 0
   cluster_name             = var.eks_cluster_name
-  deploy_name              = "external-dns"
-  namespace                = "external-dns"
   github_owner             = var.fluxcd_bootstrap_repo_owner
   repo_name                = var.fluxcd_bootstrap_repo_name
   repo_branch              = var.fluxcd_bootstrap_repo_branch
@@ -277,19 +273,26 @@ module "external_dns_flux_manifests" {
   gitops_apps_repo_ref     = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   prune                    = var.fluxcd_prune
   cluster_region           = var.aws_region
-  role_arn                 = module.external_dns_iam_role_assume[0].arn
-  assume_role_arn          = var.external_dns_core_route53_assume_role_arn != "" ? var.external_dns_core_route53_assume_role_arn : module.external_dns_iam_role_route53_access[0].arn
   deletion_policy_override = var.external_deletion_policy_override
-  is_debug_mode            = var.external_dns_is_debug_mode
   target_anon              = module.traefik_alb_anon.alb_fqdn
   target_auth              = module.traefik_alb_auth.alb_fqdn
   dns_records_anon         = var.external_dns_traefik_alb_anon_core_alias
   dns_records_auth         = var.external_dns_traefik_alb_auth_core_alias
   domain                   = local.core_dns_zone_name
-  zone_ids                 = local.external_dns_zone_ids
+  zone_id_core             = local.core_dns_zone_id
+  zone_id_workload         = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? "dummy" : local.workload_dns_zone_id # TODO: This is a temporary fix caused by discrepancy between production and non-production clusters in the way of accessing Core Route53 instance. We need to provide dummy value here for external-dns instance in sandbox clusters to avoid duplicated values error in flux. In sandbox zone_id_core is the same as zone_id_workload!
   providers = {
     github = github.fluxcd
   }
+}
+
+module "external_dns_iam_role_route53_access" {
+  source               = "../../_sub/security/iam-role"
+  role_name            = local.external_dns_role_name_cross_account
+  role_description     = "Role for accessing Route53 hosted zones"
+  role_policy_name     = local.external_dns_role_name_cross_account_assume_policy_name
+  role_policy_document = data.aws_iam_policy_document.external_dns_core_route53_access_policy.json
+  assume_role_policy   = data.aws_iam_policy_document.external_dns_core_route53_access_policy_trust.json
 }
 
 module "cert_manager_flux_manifests" {
@@ -327,16 +330,6 @@ module "cert_manager_role" {
       namespace_service_accounts = ["${local.k8s_cert_manager_namespace}:${local.k8s_cert_manager_sa_name}"]
     }
   }
-}
-
-module "external_dns_iam_role_route53_access" {
-  source               = "../../_sub/security/iam-role"
-  count                = var.external_dns_deploy && var.external_dns_core_route53_assume_role_arn == "" ? 1 : 0
-  role_name            = local.external_dns_role_name_cross_account
-  role_description     = "Role for accessing Route53 hosted zones"
-  role_policy_name     = local.external_dns_role_name_cross_account_assume_policy_name
-  role_policy_document = data.aws_iam_policy_document.external_dns_core_route53_access_policy.json
-  assume_role_policy   = data.aws_iam_policy_document.external_dns_core_route53_access_policy_trust.json
 }
 
 # --------------------------------------------------
