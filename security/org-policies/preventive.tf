@@ -281,4 +281,17 @@ data "aws_iam_policy_document" "preventive" {
       values   = ["2"]
     }
   }
-}
+
+  statement {
+    sid = "DenyBedrock"
+    effect = "Deny"
+    actions = ["bedrock:*"]
+    resources = ["*"]
+
+    condition {
+      test = "ArnNotLike"
+      values = local.bedrock_exempted_principal_arns
+      variable = "aws:PrincipalArn"
+    }
+  }
+} 

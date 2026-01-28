@@ -2,6 +2,12 @@ variable "aws_region" {
   type = string
 }
 
+variable "bedrock_exempted_accounts" {
+  type    = list(string)
+  description = "List of account IDs where bedrock is allowed"
+  default = []
+}
+
 variable "preventive_policy_attach_targets" {
   type = list(string)
 }
