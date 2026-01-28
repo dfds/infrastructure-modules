@@ -11,11 +11,12 @@ resource "github_repository_file" "extdns_helm" {
     namespace        = local.namespace
     helm_repo_path   = local.helm_repo_path
     prune            = var.prune
-    region              = var.cluster_region
+    region           = var.cluster_region
     core_zone_id     = var.zone_id_core
     workload_zone_id = var.zone_id_workload
-    cluster_name    = var.cluster_name
-    workload_account_id = data.aws_caller_identity.this.id
+    cluster_name     = var.cluster_name
+    role_arn         = var.role_arn
+    assume_role_arn  = var.assume_role_arn
   })
   overwrite_on_create = true
 }

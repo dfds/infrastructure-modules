@@ -30,5 +30,6 @@ spec:
       flux_aws_region: ${region}
       flux_external_dns_core_zone_id: ${core_zone_id}
       flux_external_dns_workload_zone_id: ${workload_zone_id}
-      flux_workload_account_id: "${workload_account_id}"
       flux_cluster_name: ${cluster_name}
+      flux_external_dns_role_arn: ${role_arn}
+      flux_external_dns_assume_role_arn: ${assume_role_arn}

@@ -80,3 +80,13 @@ variable "zone_id_workload" {
   type = string
   description = "The Route53 Hosted Zone ID for the workload DNS zone"
 }
+
+variable "role_arn" {
+  type        = string
+  description = "The ARN of the role to be used by external-dns"
+}
+
+variable "assume_role_arn" {
+  type        = string
+  description = "The ARN of the role to be assumed by external-dns to manage DNS records in other AWS accounts"
+}
