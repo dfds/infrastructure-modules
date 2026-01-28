@@ -279,8 +279,8 @@ module "external_dns_flux_manifests" {
   dns_records_anon         = var.external_dns_traefik_alb_anon_core_alias
   dns_records_auth         = var.external_dns_traefik_alb_auth_core_alias
   domain                   = local.core_dns_zone_name
-  zone_id_core             = local.core_dns_zone_id
-  zone_id_workload         = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? "dummy" : local.workload_dns_zone_id # TODO: This is a temporary fix caused by discrepancy between production and non-production clusters in the way of accessing Core Route53 instance. We need to provide dummy value here for external-dns instance in sandbox clusters to avoid duplicated values error in flux. In sandbox zone_id_core is the same as zone_id_workload!
+  zone_id_core             = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? "dummy" : local.core_dns_zone_id # TODO: This is a temporary fix caused by discrepancy between production and non-production clusters in the way of accessing Core Route53 instance. We need to provide dummy value here for external-dns instance in sandbox clusters to avoid duplicated values error in flux. In sandbox zone_id_core is the same as zone_id_workload!
+  zone_id_workload         = local.workload_dns_zone_id
   providers = {
     github = github.fluxcd
   }
