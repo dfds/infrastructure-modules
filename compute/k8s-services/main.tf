@@ -286,6 +286,15 @@ module "external_dns_flux_manifests" {
   }
 }
 
+module "external_dns_iam_role_route53_access" {
+  source               = "../../_sub/security/iam-role"
+  role_name            = local.external_dns_role_name_cross_account
+  role_description     = "Role for accessing Route53 hosted zones"
+  role_policy_name     = local.external_dns_role_name_cross_account_assume_policy_name
+  role_policy_document = data.aws_iam_policy_document.external_dns_core_route53_access_policy.json
+  assume_role_policy   = data.aws_iam_policy_document.external_dns_core_route53_access_policy_trust.json
+}
+
 module "cert_manager_flux_manifests" {
   source               = "../../_sub/security/cert-manager"
   cluster_name         = var.eks_cluster_name
@@ -321,16 +330,6 @@ module "cert_manager_role" {
       namespace_service_accounts = ["${local.k8s_cert_manager_namespace}:${local.k8s_cert_manager_sa_name}"]
     }
   }
-}
-
-module "external_dns_iam_role_route53_access" {
-  source               = "../../_sub/security/iam-role"
-  count                = var.external_dns_deploy && var.external_dns_core_route53_assume_role_arn == "" ? 1 : 0
-  role_name            = local.external_dns_role_name_cross_account
-  role_description     = "Role for accessing Route53 hosted zones"
-  role_policy_name     = local.external_dns_role_name_cross_account_assume_policy_name
-  role_policy_document = data.aws_iam_policy_document.external_dns_core_route53_access_policy.json
-  assume_role_policy   = data.aws_iam_policy_document.external_dns_core_route53_access_policy_trust.json
 }
 
 # --------------------------------------------------
