@@ -256,7 +256,6 @@ module "traefik_alb_anon_dns_core_alias" {
 
 module "external_dns_iam_role_assume" {
   source               = "../../_sub/security/iam-role"
-  count                = var.external_dns_deploy ? 1 : 0
   role_name            = local.external_dns_role_name
   role_description     = "Role for accessing Route53 hosted zone"
   role_policy_name     = local.external_dns_role_assume_policy_name
@@ -266,7 +265,6 @@ module "external_dns_iam_role_assume" {
 
 module "external_dns_flux_manifests" {
   source                   = "../../_sub/network/external-dns"
-  count                    = var.external_dns_deploy ? 1 : 0
   cluster_name             = var.eks_cluster_name
   github_owner             = var.fluxcd_bootstrap_repo_owner
   repo_name                = var.fluxcd_bootstrap_repo_name
