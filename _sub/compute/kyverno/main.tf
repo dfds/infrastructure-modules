@@ -54,9 +54,9 @@ resource "github_repository_file" "policy_reporter_helm" {
   branch     = local.repo_branch
   file       = "${local.cluster_repo_path}/${local.app_install_name}-policy-reporter-helm.yaml"
   content = templatefile("${path.module}/values/policy-reporter.yaml", {
-    app_install_name    = local.app_install_name
-    reporter_repo_path  = local.reporter_repo_path
-    deploy_name         = local.deploy_name
+    app_install_name   = local.app_install_name
+    reporter_repo_path = local.reporter_repo_path
+    deploy_name        = local.deploy_name
   })
   overwrite_on_create = true
 }

@@ -8,7 +8,5 @@ locals {
   repo_branch         = length(var.repo_branch) > 0 ? var.repo_branch : local.default_repo_branch
   cluster_repo_path   = "clusters/${var.cluster_name}"
   helm_repo_path      = "platform-apps/${var.cluster_name}/${local.deploy_name}"
-  policies_repo_path  = "platform-apps/${var.cluster_name}/${local.deploy_name}-policies"
-  reporter_repo_path  = "platform-apps/${var.cluster_name}/policy-reporter"
   app_install_name    = "platform-apps-${local.deploy_name}"
 }
