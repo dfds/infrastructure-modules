@@ -27,6 +27,5 @@ variable "apps_repo_url" {
 
 variable "apps_repo_ref" {
   type        = string
-  default     = "main"
   description = "The default branch or tag for your GitOps manifests"
 }
