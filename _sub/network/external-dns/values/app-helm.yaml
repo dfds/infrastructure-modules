@@ -20,10 +20,16 @@ metadata:
 spec:
   serviceAccountName: kustomize-controller
   interval: 1m0s
-  dependsOn:
-    - name: platform-apps-sources
   sourceRef:
     kind: GitRepository
     name: flux-system
   path: "./${helm_repo_path}"
   prune: ${prune}
+  postBuild:
+    substitute:
+      flux_aws_region: ${region}
+      flux_external_dns_core_zone_id: ${core_zone_id}
+      flux_external_dns_workload_zone_id: ${workload_zone_id}
+      flux_cluster_name: ${cluster_name}
+      flux_external_dns_role_arn: ${role_arn}
+      flux_external_dns_assume_role_arn: ${assume_role_arn}

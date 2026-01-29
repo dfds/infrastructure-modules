@@ -5,10 +5,3 @@ resources:
 %{ if length(dns_records) > 0 ~}
   - dnsendpoints.yaml
 %{ endif ~}
-
-patches:
-  - path: patch.yaml
-    target:
-      kind: HelmRelease
-      name: external-dns
-      namespace: external-dns
