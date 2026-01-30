@@ -38,21 +38,14 @@ inputs = {
   # Load Balancers in front of Traefik
   # --------------------------------------------------
 
-  traefik_alb_auth_deploy     = true # triggers Azure App registration
   traefik_alb_auth_core_alias = ["test1.qa.dfds.cloud"]
-  traefik_alb_anon_deploy     = true
   traefik_alb_anon_core_alias = ["test2.qa.dfds.cloud"]
   # --------------------------------------------------
   # Traefik v2
   # --------------------------------------------------
 
-  # Blue variant
-  traefik_blue_variant_deploy = true
-  traefik_blue_variant_weight = 1
-
-  # Green variant
-  traefik_green_variant_deploy = true
-  traefik_green_variant_weight = 0
+  traefik_blue_variant_weight   = 1
+  traefik_green_variant_weight  = 0
 
   # --------------------------------------------------
   # Blaster
@@ -73,7 +66,7 @@ inputs = {
   # Flux CD
   # --------------------------------------------------
 
-  fluxcd_apps_repo_branch           = "main"
+  fluxcd_apps_repo_branch           = "feature/reorganize-traefik"
   fluxcd_bootstrap_repo_branch      = "main"
   fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
   fluxcd_version                    = "v2.6.4"
