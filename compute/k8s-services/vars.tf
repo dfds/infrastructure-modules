@@ -595,12 +595,6 @@ variable "external_secrets_ssm_allowed_namespaces" {
 # External DNS
 # --------------------------------------------------
 
-variable "external_dns_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for External DNS module"
-}
-
 variable "external_dns_traefik_alb_anon_core_alias" {
   description = "A list of aliases/alternative names to be managed by External DNS in the *parent* domain. E.g. 'prettyurl.company.tld'"
   type        = list(string)

@@ -179,13 +179,8 @@ locals {
   external_dns_namespace_name                             = "external-dns"
   external_dns_serviceaccount_name                        = "external-dns"
   external_dns_role_assume_policy_name                    = "assume-role-external-dns"
-  external_dns_role_name_cross_account                    = "${var.eks_cluster_name}-external-dns-route53-access"
+  external_dns_role_name_cross_account                    = "eks-${var.eks_cluster_name}-external-dns-route53-access"
   external_dns_role_name_cross_account_assume_policy_name = "allowExternalDNSUpdates"
-
-  external_dns_zone_ids = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? [local.workload_dns_zone_id] : [
-    local.workload_dns_zone_id,
-    local.core_dns_zone_id,
-  ]
 }
 
 data "aws_iam_policy_document" "external_dns_role_assume_policy" {

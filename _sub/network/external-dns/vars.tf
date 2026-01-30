@@ -2,18 +2,6 @@ variable "cluster_name" {
   type = string
 }
 
-variable "deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "external-dns"
-}
-
-variable "namespace" {
-  type        = string
-  description = "The namespace in which to deploy Helm resources"
-  default     = "external-dns"
-}
-
 variable "github_owner" {
   type        = string
   description = "Name of the Github owner (previously: organization)"
@@ -53,27 +41,10 @@ variable "cluster_region" {
   description = "The AWS region the EKS cluster is deployed in"
 }
 
-variable "role_arn" {
-  type        = string
-  description = "The ARN of the role to be used by external-dns"
-}
-
-variable "assume_role_arn" {
-  type        = string
-  description = "The ARN of the role to be assumed by external-dns to manage DNS records in other AWS accounts"
-}
-
 variable "deletion_policy_override" {
   type        = string
   description = "Explictly set the deletion policy for the external-dns helm release. Options are: 'sync' and 'upsert-only'. if not set, the default behavior of external-dns is set by the helm chart"
   default     = ""
-}
-
-
-variable "is_debug_mode" {
-  type        = bool
-  description = "If it is set to true then logLevel will be set to debug."
-  default     = false
 }
 
 variable "target_anon" {
@@ -100,8 +71,22 @@ variable "domain" {
   description = "The domain for the DNS records"
 }
 
-variable "zone_ids" {
-  type        = list(string)
-  description = "List of Route53 Hosted Zone IDs where external-dns should manage records"
-  default     = []
+variable "zone_id_core" {
+  type = string
+  description = "The Route53 Hosted Zone ID for the core DNS zone"
+}
+
+variable "zone_id_workload" {
+  type = string
+  description = "The Route53 Hosted Zone ID for the workload DNS zone"
+}
+
+variable "role_arn" {
+  type        = string
+  description = "The ARN of the role to be used by external-dns"
+}
+
+variable "assume_role_arn" {
+  type        = string
+  description = "The ARN of the role to be assumed by external-dns to manage DNS records in other AWS accounts"
 }
