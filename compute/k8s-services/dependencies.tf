@@ -78,25 +78,13 @@ locals {
 
 locals {
   traefik_alb_auth_endpoints = concat(
-    var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy ? concat(
-      [
-        "internal.${local.eks_fqdn}"
-      ],
-      concat(var.traefik_alb_auth_core_alias, var.external_dns_traefik_alb_auth_core_alias)
-    ) : [],
-    var.traefik_blue_variant_deploy && var.traefik_green_variant_deploy ?
+    var.traefik_alb_auth_core_alias,
+    var.external_dns_traefik_alb_auth_core_alias,
     [
-      "traefik-blue-variant.${local.eks_fqdn}:8443",
-      "traefik-green-variant.${local.eks_fqdn}:9443"
-    ] : [],
-    var.traefik_blue_variant_deploy ?
-    [
-      "traefik-blue-variant.${local.eks_fqdn}"
-    ] : [],
-    var.traefik_green_variant_deploy ?
-    [
+      "internal.${local.eks_fqdn}",
+      "traefik-blue-variant.${local.eks_fqdn}",
       "traefik-green-variant.${local.eks_fqdn}"
-    ] : [],
+    ],
   )
   traefik_alb_auth_appreg_reply_join        = "^${join("$,^", local.traefik_alb_auth_endpoints)}$"
   traefik_alb_auth_appreg_reply_replace_pre = replace(local.traefik_alb_auth_appreg_reply_join, "^", "https://")
@@ -106,6 +94,17 @@ locals {
     "/oauth2/idpresponse",
   )
   traefik_alb_auth_appreg_reply_urls = split(",", local.traefik_alb_auth_appreg_reply_replace_end)
+}
+
+# --------------------------------------------------
+#  Traefik node ports for blue/green deployments
+# --------------------------------------------------
+
+locals {
+  traefik_blue_variant_target_http_port   = 31000
+  traefik_blue_variant_target_admin_port  = 31001
+  traefik_green_variant_target_http_port  = 32000
+  traefik_green_variant_target_admin_port = 32001
 }
 
 locals {
@@ -153,6 +152,7 @@ POLICY
 
 locals {
   fluxcd_apps_repo_url = "${var.fluxcd_apps_git_provider_url}${var.fluxcd_apps_repo_owner}/${var.fluxcd_apps_repo_name}"
+  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
 }
 
 # --------------------------------------------------

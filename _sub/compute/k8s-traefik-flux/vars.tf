@@ -4,29 +4,11 @@ variable "cluster_name" {
 
 variable "deploy_name" {
   type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "traefik"
-}
-
-variable "namespace" {
-  type        = string
-  description = "The namespace in which to deploy Helm resources"
-  default     = "traefik"
-}
-
-variable "replicas" {
-  description = "The number of Traefik pods to spawn"
-  type        = number
-}
-
-variable "http_nodeport" {
-  description = "Nodeport used by ALB's to connect to the Traefik instance"
-  type        = number
-}
-
-variable "admin_nodeport" {
-  description = "Nodeport used by ALB's to connect to the Traefik instance admin page"
-  type        = number
+  description = "Unique identifier for blue/green deployments"
+  validation {
+    condition     = contains(["traefik-blue-variant", "traefik-green-variant"], var.deploy_name)
+    error_message = "The deploy_name must be either 'traefik-blue-variant' or 'traefik-green-variant'."
+  }
 }
 
 variable "github_owner" {
@@ -42,23 +24,20 @@ variable "repo_name" {
 variable "repo_branch" {
   type        = string
   description = "Override the default branch of the repo (optional)"
-  default     = null
 }
 
-variable "dashboard_ingress_host" {
+variable "eks_fqdn" {
   type        = string
-  description = "The alb auth dns name for accessing Traefik."
+  description = "The FQDN for the EKS cluster"
 }
 
 variable "gitops_apps_repo_url" {
   type        = string
-  default     = ""
   description = "The https url for your GitOps manifests"
 }
 
 variable "gitops_apps_repo_ref" {
   type        = string
-  default     = "main"
   description = "The default branch or tag for your GitOps manifests"
 }
 
@@ -66,4 +45,14 @@ variable "prune" {
   type        = bool
   default     = true
   description = "Enable Garbage collection"
+}
+
+variable "target_http_port" {
+  type        = number
+  description = "NodePort value for the 'web' entrypoint in Traefik"
+}
+
+variable "target_admin_port" {
+  type        = number
+  description = "NodePort value for the 'traefik' entrypoint in Traefik"
 }
