@@ -66,7 +66,7 @@ inputs = {
   # Flux CD
   # --------------------------------------------------
 
-  fluxcd_apps_repo_branch           = "feature/reorganize-traefik"
+  fluxcd_apps_repo_branch           = "main"
   fluxcd_bootstrap_repo_branch      = "main"
   fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
   fluxcd_version                    = "v2.6.4"
