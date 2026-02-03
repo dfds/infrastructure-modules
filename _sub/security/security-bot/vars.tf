@@ -32,11 +32,13 @@ variable "slack_channel" {
 variable "cloudwatch_logs_group_name" {
   type        = string
   description = "The name of the CloudWatch log group containing the CloudTrail events triggering the alarms."
+  default = ""
 }
 
 variable "cloudwatch_logs_group_arn" {
   type        = string
   description = "The arn of the CloudWatch log group containing the CloudTrail events triggering the alarms."
+  default = ""
 }
 
 variable "sns_topic_arn_cis_controls" {
