@@ -312,103 +312,15 @@ variable "velero_deploy" {
   description = "Should Velero Helm chart be deployed?"
 }
 
-variable "velero_cron_schedule" {
-  type        = string
-  default     = "0 0 * * *"
-  description = "Cron-formatted scheduled time for the Velero backup."
-}
-
-variable "velero_log_level" {
-  type        = string
-  default     = "info"
-  description = "Velero log level."
-  validation {
-    condition     = contains(["info", "debug", "warning", "error", "fatal", "panic"], var.velero_log_level)
-    error_message = "Invalid value for log_level. Valid values: info, debug, warning, error, fatal, panic."
-  }
-}
-
-variable "velero_image_tag" {
-  type        = string
-  default     = ""
-  description = "Override the image tag in the Helm chart with a custom version"
-}
-
-variable "velero_plugin_for_aws_version" {
-  type        = string
-  default     = "v1.14.1"
-  description = "The version of velero-plugin-for-aws to use as initContainer"
-  validation {
-    condition     = can(regex("^v(\\d+\\.\\d+)(\\.\\d+)?(-rc\\.\\d+|-beta\\.\\d+)?$", var.velero_plugin_for_aws_version)) || var.velero_plugin_for_aws_version == ""
-    error_message = "Velero plugin for AWS must specify a version. The version must start with the letter v and followed by a semantic version number."
-  }
-}
-
-variable "velero_plugin_for_azure_version" {
-  type        = string
-  default     = "v1.12.1"
-  description = "The version of velero-plugin-for-azure to use as initContainer"
-  validation {
-    condition     = can(regex("^v(\\d+\\.\\d+)(\\.\\d+)?(-rc\\.\\d+|-beta\\.\\d+)?$", var.velero_plugin_for_azure_version)) || var.velero_plugin_for_azure_version == ""
-    error_message = "Velero plugin for Azure must specify a version. The version must start with the letter v and followed by a semantic version number."
-  }
-}
-
-variable "velero_snapshots_enabled" {
-  type        = bool
-  default     = false
-  description = "Should Velero create snapshot on backups?"
-}
-
-variable "velero_node_agent_enabled" {
-  type        = bool
-  default     = false
-  description = "Should Velero enable the node agent?"
-}
-
-variable "velero_service_account" {
-  type        = string
-  default     = "velero-server"
-  description = "The service account to be used by Velero"
-}
-
 variable "velero_bucket_arn" {
   type        = string
-  default     = null
-  description = "The arn of the S3 bucket that contains the Velero backup. Only used if S3 bucket is in a different account"
-}
-
-variable "velero_excluded_cluster_scoped_resources" {
-  type        = list(string)
-  default     = []
-  description = "List of cluster-scoped resources to exclude from backup"
-}
-
-variable "velero_excluded_namespace_scoped_resources" {
-  type        = list(string)
-  default     = []
-  description = "List of namespace-scoped resources to exclude from backup"
-}
-
-variable "velero_read_only" {
-  type        = bool
-  default     = false
-  description = <<EOF
-    Set to true to access the backup storage location in read-only mode.
-    This is useful for restoring from a backup without modifying the backup storage location.
-EOF
+  description = "The arn of the S3 bucket that contains the Velero backup."
 }
 
 variable "velero_ebs_csi_kms_arn" {
   type        = string
   default     = ""
   description = "The KMS ARN to use for EBS CSI volumes."
-}
-
-variable "velero_enable_azure_storage" {
-  type        = bool
-  default     = true
-  description = "Enable Azure storage for Velero backups"
 }
 
 variable "velero_azure_resource_group_name" {
@@ -437,22 +349,14 @@ variable "velero_azure_bucket_name" {
   description = "The name of the Azure storage container where Velero backups will be stored"
 }
 
-variable "velero_azure_credentials_secret_name" {
+variable "velero_access_mode" {
   type        = string
-  default     = "velero-credentials"
-  description = "The name of the Kubernetes secret containing Azure credentials for Velero"
-}
-
-variable "velero_cron_schedule_offsite" {
-  type        = string
-  default     = "0 2 1 * *"
-  description = "Cron-formatted scheduled time for offsite backups."
-}
-
-variable "velero_cron_schedule_offsite_ttl" {
-  type        = string
-  default     = "8640h"
-  description = "Time to live for the scheduled offsite backup."
+  description = "Access mode for Velero backups. Can be 'ReadWrite' or 'ReadOnly'"
+  default     = "ReadWrite"
+  validation {
+    condition     = contains(["ReadWrite", "ReadOnly"], var.velero_access_mode)
+    error_message = "The access_mode must be either 'ReadWrite' or 'ReadOnly'."
+  }
 }
 
 # --------------------------------------------------
@@ -615,12 +519,6 @@ variable "external_deletion_policy_override" {
     condition     = contains(["", "sync", "upsert-only"], var.external_deletion_policy_override)
     error_message = "Deletion policy must be either '', 'sync', 'upsert-only'."
   }
-}
-
-variable "external_dns_is_debug_mode" {
-  type        = bool
-  description = "Enable debug logging for External DNS"
-  default     = false
 }
 
 variable "external_dns_core_route53_assume_role_arn" {

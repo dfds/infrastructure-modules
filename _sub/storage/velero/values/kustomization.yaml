@@ -7,9 +7,3 @@ resources:
   - external-secret.yaml
   - secret-store.yaml
 %{ endif ~}
-patches:
-  - path: patch.yaml
-    target:
-      kind: HelmRelease
-      name: velero
-      namespace: velero

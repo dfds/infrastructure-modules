@@ -17,7 +17,8 @@ locals {
 }
 
 locals {
+  deploy_name       = "velero"
   cluster_repo_path = "clusters/${var.cluster_name}"
-  helm_repo_path    = "platform-apps/${var.cluster_name}/${var.deploy_name}/helm"
-  app_install_name  = "platform-apps-${var.deploy_name}"
+  helm_repo_path    = "platform-apps/${var.cluster_name}/${local.deploy_name}/helm"
+  app_install_name  = "platform-apps-${local.deploy_name}"
 }
