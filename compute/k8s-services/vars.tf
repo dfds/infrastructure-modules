@@ -325,20 +325,20 @@ variable "velero_ebs_csi_kms_arn" {
 
 variable "velero_azure_resource_group_name" {
   type        = string
-  default     = ""
+  default     = "DUMMY"
   description = "The name of the Azure resource group where the storage account is located"
 }
 
 variable "velero_azure_storage_account_name" {
   type        = string
-  default     = ""
+  default     = "DUMMY"
   description = "The name of the Azure storage account where the Velero backups will be stored"
 
 }
 
 variable "velero_azure_subscription_id" {
   type        = string
-  default     = ""
+  default     = "DUMMY"
   description = "The Azure subscription ID where the storage account is located"
 
 }
@@ -357,6 +357,18 @@ variable "velero_access_mode" {
     condition     = contains(["ReadWrite", "ReadOnly"], var.velero_access_mode)
     error_message = "The access_mode must be either 'ReadWrite' or 'ReadOnly'."
   }
+}
+
+variable "velero_cluster_backup_disabled" {
+  type        = bool
+  default     = false
+  description = "Disable cluster-scoped resource backups"
+}
+
+variable "velero_cluster_backup_offsite_disabled" {
+  type        = bool
+  default     = false
+  description = "Disable offsite backups for cluster-scoped resources"
 }
 
 # --------------------------------------------------

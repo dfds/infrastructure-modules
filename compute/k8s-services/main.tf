@@ -558,25 +558,27 @@ module "external_snapshotter" {
 # --------------------------------------------------
 
 module "velero" {
-  source                     = "../../_sub/storage/velero"
-  count                      = var.velero_deploy ? 1 : 0
-  access_mode                = var.velero_access_mode
-  aws_region                 = var.aws_region
-  azure_bucket_name          = var.velero_azure_bucket_name
-  azure_resource_group_name  = var.velero_azure_resource_group_name
-  azure_storage_account_name = var.velero_azure_storage_account_name
-  azure_subscription_id      = var.velero_azure_subscription_id
-  bucket_arn                 = var.velero_bucket_arn
-  cluster_name               = var.eks_cluster_name
-  ebs_csi_kms_arn            = var.velero_ebs_csi_kms_arn
-  gitops_apps_repo_ref       = local.gitops_apps_repo_ref
-  gitops_apps_repo_url       = local.fluxcd_apps_repo_url
-  oidc_issuer                = local.oidc_issuer
-  prune                      = var.fluxcd_prune
-  repo_branch                = var.fluxcd_bootstrap_repo_branch
-  repo_name                  = var.fluxcd_bootstrap_repo_name
-  velero_ssm_role_arn        = module.external_secrets_ssm.ssm_iam_role_arn
-  workload_account_id        = var.aws_workload_account_id
+  source                          = "../../_sub/storage/velero"
+  count                           = var.velero_deploy ? 1 : 0
+  access_mode                     = var.velero_access_mode
+  aws_region                      = var.aws_region
+  azure_bucket_name               = var.velero_azure_bucket_name
+  azure_resource_group_name       = var.velero_azure_resource_group_name
+  azure_storage_account_name      = var.velero_azure_storage_account_name
+  azure_subscription_id           = var.velero_azure_subscription_id
+  bucket_arn                      = var.velero_bucket_arn
+  cluster_backup_disabled         = var.velero_cluster_backup_disabled
+  cluster_backup_offsite_disabled = var.velero_cluster_backup_offsite_disabled
+  cluster_name                    = var.eks_cluster_name
+  ebs_csi_kms_arn                 = var.velero_ebs_csi_kms_arn
+  gitops_apps_repo_ref            = local.gitops_apps_repo_ref
+  gitops_apps_repo_url            = local.fluxcd_apps_repo_url
+  oidc_issuer                     = local.oidc_issuer
+  prune                           = var.fluxcd_prune
+  repo_branch                     = var.fluxcd_bootstrap_repo_branch
+  repo_name                       = var.fluxcd_bootstrap_repo_name
+  velero_ssm_role_arn             = module.external_secrets_ssm.ssm_iam_role_arn
+  workload_account_id             = var.aws_workload_account_id
 
   providers = {
     github = github.fluxcd
