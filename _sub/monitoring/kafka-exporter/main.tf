@@ -1,5 +1,5 @@
 locals {
-  kustomization_path = "./platform-apps/${var.cluster_name}/kafka-exporter"
+  kustomization_path = "platform-apps/${var.cluster_name}/kafka-exporter"
 }
 
 resource "github_repository_file" "apps" {
