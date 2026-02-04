@@ -489,7 +489,6 @@ module "eks_version_endpoint" {
 # --------------------------------------------------
 # Karpenter prerequisites (not Karpenter itself)
 # --------------------------------------------------
-
 module "karpenter" {
   source                        = "terraform-aws-modules/eks/aws//modules/karpenter"
   version                       = "21.8.0"
@@ -505,6 +504,53 @@ module "karpenter" {
     AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore" # Enable SSM core functionality
   }
   depends_on = [module.eks_cluster]
+}
+
+# Controller KMS access policy required for EBS encryption support (see https://karpenter.sh/docs/troubleshooting/#node-terminates-before-ready-on-failed-encrypted-ebs-volume)
+data "aws_caller_identity" "current" {}
+
+data "aws_iam_policy_document" "karpenter_controller_kms_access" {
+  statement {
+    sid    = "KarpenterControllerKMSAccessRequiredForEBSEncryption"
+    effect = "Allow"
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:CreateGrant",
+      "kms:DescribeKey",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "kms:ViaService"
+      values   = ["ec2.${var.aws_region}.amazonaws.com"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "kms:CallerAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+  }
+
+  statement {
+    sid    = "KarpenterControllerKMSMetadataAccess"
+    effect = "Allow"
+    actions = [
+      "kms:Describe*",
+      "kms:Get*",
+      "kms:List*",
+      "kms:RevokeGrant",
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_role_policy" "karpenter_controller_kms_access" {
+  name   = "KarpenterControllerKMSAccess"
+  role   = module.karpenter.iam_role_name
+  policy = data.aws_iam_policy_document.karpenter_controller_kms_access.json
 }
 
 # Required service linked role for spot instances (in some accounts this is already provisioned)
