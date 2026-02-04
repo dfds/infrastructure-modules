@@ -150,7 +150,7 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "velero_role" {
-  name               = var.velero_iam_role_name
+  name               = local.velero_iam_role_name
   description        = "Used by IRSA for Velero"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }

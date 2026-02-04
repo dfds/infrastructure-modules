@@ -13,7 +13,8 @@ data "github_branch" "flux_branch" {
 
 # This is to support both buckets owned by the same AWS account or another account.
 locals {
-  bucket_name = split(":", var.bucket_arn)[5]
+  bucket_name          = split(":", var.bucket_arn)[5]
+  velero_iam_role_name = "VeleroBackup"
 }
 
 locals {

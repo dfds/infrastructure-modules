@@ -39,12 +39,6 @@ variable "prune" {
   description = "Enable Garbage collection"
 }
 
-variable "velero_iam_role_name" {
-  type        = string
-  default     = "VeleroBackup"
-  description = "Velero role for S3 actions"
-}
-
 variable "oidc_issuer" {
   type        = string
   description = "The OIDC issuer for the Kubernetes cluster"
@@ -69,7 +63,6 @@ variable "ebs_csi_kms_arn" {
   default     = ""
   description = "The ARN of the KMS key used for EBS CSI encryption"
 }
-
 
 variable "azure_resource_group_name" {
   type        = string
