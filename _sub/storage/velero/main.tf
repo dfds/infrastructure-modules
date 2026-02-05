@@ -12,22 +12,20 @@ resource "github_repository_file" "velero_flux_helm_path" {
   branch     = data.github_branch.flux_branch.branch
   file       = "${local.cluster_repo_path}/${local.app_install_name}-helm.yaml"
   content = templatefile("${path.module}/values/app-config.yaml", {
-    app_install_name                = local.app_install_name
-    helm_repo_path                  = local.helm_repo_path
-    deploy_name                     = local.deploy_name
-    access_mode                     = var.access_mode
-    aws_region                      = var.aws_region
-    azure_bucket_name               = var.azure_bucket_name
-    azure_resource_group            = var.azure_resource_group_name
-    azure_storage_account           = var.azure_storage_account_name
-    azure_subscription_id           = var.azure_subscription_id
-    bucket_name                     = local.bucket_name
-    cluster_backup_disabled         = var.cluster_backup_disabled
-    cluster_backup_offsite_disabled = var.cluster_backup_offsite_disabled
-    cluster_name                    = var.cluster_name
-    external_secrets_ssm_role_arn   = var.ssm_role_arn
-    iam_role_arn                    = aws_iam_role.velero_role.arn
-    prune                           = var.prune
+    app_install_name              = local.app_install_name
+    helm_repo_path                = local.helm_repo_path
+    deploy_name                   = local.deploy_name
+    access_mode                   = var.access_mode
+    aws_region                    = var.aws_region
+    azure_bucket_name             = var.azure_bucket_name
+    azure_resource_group          = var.azure_resource_group_name
+    azure_storage_account         = var.azure_storage_account_name
+    azure_subscription_id         = var.azure_subscription_id
+    bucket_name                   = local.bucket_name
+    cluster_name                  = var.cluster_name
+    external_secrets_ssm_role_arn = var.ssm_role_arn
+    iam_role_arn                  = aws_iam_role.velero_role.arn
+    prune                         = var.prune
   })
   overwrite_on_create = true
 }
