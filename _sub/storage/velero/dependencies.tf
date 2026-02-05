@@ -15,8 +15,6 @@ data "github_branch" "flux_branch" {
 locals {
   bucket_name          = split(":", var.bucket_arn)[5]
   velero_iam_role_name = "VeleroBackup"
-  enable_azure_backup  = var.cluster_backup_offsite_disabled ? false : true
-  patch_file           = local.enable_azure_backup ? "patch.json" : "nopatch.json"
 }
 
 locals {

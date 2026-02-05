@@ -15,7 +15,7 @@ variable "repo_branch" {
 
 variable "bucket_arn" {
   type        = string
-  description = "The arn of the S3 bucket that contains the Velero backup. Only used if S3 bucket is in a different account"
+  description = "The arn of the S3 bucket that contains the Velero backup."
 }
 
 variable "aws_region" {
@@ -84,15 +84,8 @@ variable "azure_bucket_name" {
   description = "The name of the Azure storage container where Velero backups will be stored"
 }
 
-variable "enable_azure_storage_external_secret" {
-  type        = bool
-  default     = true
-  description = "Enable creating an ExternalSecret for Azure credentials"
-}
-
 variable "velero_ssm_role_arn" {
   type        = string
-  default     = ""
   description = "The IAM role for the Velero service account to assume for accessing AWS SSM Parameter Store"
 }
 
