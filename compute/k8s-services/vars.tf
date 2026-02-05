@@ -357,17 +357,6 @@ variable "velero_access_mode" {
   }
 }
 
-variable "velero_cluster_backup_disabled" {
-  type        = bool
-  default     = false
-  description = "Disable cluster-scoped resource backups"
-}
-
-variable "velero_cluster_backup_offsite_disabled" {
-  type        = bool
-  default     = false
-  description = "Disable offsite backups for cluster-scoped resources"
-}
 
 # --------------------------------------------------
 # Inactivity based clean up for sandboxes

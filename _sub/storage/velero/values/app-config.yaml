@@ -38,6 +38,4 @@ spec:
       flux_velero_azure_resource_group: ${azure_resource_group}
       flux_velero_azure_storage_account: ${azure_storage_account}
       flux_velero_azure_subscription_id: ${azure_subscription_id}
-      flux_velero_cluster_backup_disabled: "${cluster_backup_disabled}"
-      flux_velero_cluster_backup_offsite_disabled: "${cluster_backup_offsite_disabled}"
       flux_velero_iam_role_arn: ${iam_role_arn}

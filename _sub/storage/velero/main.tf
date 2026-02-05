@@ -25,7 +25,7 @@ resource "github_repository_file" "velero_flux_helm_path" {
     cluster_backup_disabled         = var.cluster_backup_disabled
     cluster_backup_offsite_disabled = var.cluster_backup_offsite_disabled
     cluster_name                    = var.cluster_name
-    external_secrets_ssm_role_arn   = var.velero_ssm_role_arn
+    external_secrets_ssm_role_arn   = var.ssm_role_arn
     iam_role_arn                    = aws_iam_role.velero_role.arn
     prune                           = var.prune
   })

@@ -84,19 +84,7 @@ variable "azure_bucket_name" {
   description = "The name of the Azure storage container where Velero backups will be stored"
 }
 
-variable "velero_ssm_role_arn" {
+variable "ssm_role_arn" {
   type        = string
-  description = "The IAM role for the Velero service account to assume for accessing AWS SSM Parameter Store"
-}
-
-variable "cluster_backup_disabled" {
-  type        = bool
-  default     = false
-  description = "Disable cluster-scoped resource backups"
-}
-
-variable "cluster_backup_offsite_disabled" {
-  type        = bool
-  default     = false
-  description = "Disable offsite backups for cluster-scoped resources"
+  description = "The IAM role for the service account to assume for accessing AWS SSM Parameter Store"
 }
