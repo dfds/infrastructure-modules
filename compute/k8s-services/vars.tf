@@ -333,14 +333,12 @@ variable "velero_azure_storage_account_name" {
   type        = string
   default     = "DUMMY"
   description = "The name of the Azure storage account where the Velero backups will be stored"
-
 }
 
 variable "velero_azure_subscription_id" {
   type        = string
   default     = "DUMMY"
   description = "The Azure subscription ID where the storage account is located"
-
 }
 
 variable "velero_azure_bucket_name" {
@@ -503,8 +501,8 @@ variable "external_secrets_ssm_service_account" {
 
 variable "external_secrets_ssm_allowed_namespaces" {
   type        = list(string)
-  default     = ["atlantis", "flux-system"]
-  description = "The namespaces that can use IRSA to access external secrets"
+  default     = ["arc-runners", "atlantis", "flux-system", "velero"]
+  description = "The namespaces that can use IRSA to access external secrets for infrastructure deployments."
 }
 
 # --------------------------------------------------

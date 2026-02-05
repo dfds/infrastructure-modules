@@ -40,3 +40,4 @@ spec:
       flux_velero_cluster_backup_disabled: "${cluster_backup_disabled}"
       flux_velero_cluster_backup_offsite_disabled: "${cluster_backup_offsite_disabled}"
       flux_velero_iam_role_arn: ${iam_role_arn}
+      flux_velero_patch_file: ${patch_file}
