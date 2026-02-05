@@ -689,19 +689,3 @@ resource "aws_iam_role" "capability_access_from_kubernetes" {
   name               = "CapabilityAccessFromKubernetes"
   assume_role_policy = data.aws_iam_policy_document.capability_access_from_kubernetes.json
 }
-
-# --------------------------------------------------
-# Capability role for Azure Defender for Cloud
-# --------------------------------------------------
-
-module "azure_defender_monitor" {
-  source = "../../_sub/security/azure-defender-monitor"
-
-  client_tenant        = var.azure_client_tenant
-  oidc_client_id_list  = var.azure_defender_oidc_client_id_list
-  oidc_thumbprint_list = var.azure_defender_oidc_thumbprint_list
-
-  providers = {
-    aws = aws.workload
-  }
-}

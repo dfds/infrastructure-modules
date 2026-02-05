@@ -10,7 +10,6 @@ on:
       - test/integration/suite/**
 jobs:
   vendoring:
-    if: startsWith(github.head_ref, 'feature/renovate/')
     runs-on: ubuntu-latest
     defaults:
       run:
