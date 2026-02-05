@@ -31,7 +31,7 @@ spec:
     substitute:
       flux_aws_region: ${aws_region}
       flux_cluster_name: ${cluster_name}
-      flux_external_secrets_ssm_role_arn: ${velero_ssm_role_arn}
+      flux_external_secrets_ssm_role_arn: ${external_secrets_ssm_role_arn}
       flux_velero_access_mode: ${access_mode}
       flux_velero_aws_bucket_name: ${bucket_name}
       flux_velero_azure_bucket_name: ${azure_bucket_name}
