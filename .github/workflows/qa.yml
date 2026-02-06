@@ -110,7 +110,7 @@ jobs:
           github_token: ${{ secrets.SHARED_WORKFLOW_HOUSEKEEPING }}
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v5
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ secrets.AWS_QA_ROLE_TO_ASSUME }}
           role-session-name: run-qa-pipeline
@@ -188,7 +188,7 @@ jobs:
           github_token: ${{ secrets.SHARED_WORKFLOW_HOUSEKEEPING }}
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v5
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ secrets.AWS_QA_ROLE_TO_ASSUME }}
           role-session-name: run-qa-pipeline
