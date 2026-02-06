@@ -86,20 +86,10 @@ variable "alb_access_logs_sse_algorithm" {
 # Load Balancers in front of Traefik
 # --------------------------------------------------
 
-variable "traefik_alb_anon_deploy" {
-  type    = bool
-  default = false
-}
-
 variable "traefik_alb_anon_core_alias" {
   description = "A list of aliases/alternative names in the *parent* domain, the certificate should also be valid for. E.g. 'prettyurl.company.tld'"
   type        = list(string)
   default     = []
-}
-
-variable "traefik_alb_auth_deploy" {
-  type    = bool
-  default = false
 }
 
 variable "traefik_alb_auth_core_alias" {
@@ -299,47 +289,10 @@ variable "atlantis_resources_requests_memory" {
 # routing traffic gradually to a new version and then decommissioning an older
 # version without downtime.
 
-variable "traefik_blue_variant_http_nodeport" {
-  type        = number
-  description = "Nodeport used by ALB's to connect to the Traefik instance"
-  default     = 31000
-}
-
-variable "traefik_blue_variant_admin_nodeport" {
-  type        = number
-  description = "Nodeport used by ALB's to connect to the Traefik instance admin page"
-  default     = 31001
-}
-
-variable "traefik_blue_variant_deploy" {
-  type    = bool
-  default = true
-}
-
 variable "traefik_blue_variant_weight" {
   type        = number
   description = "The weight of the Traefik instance target groups in the load balancers. Only relevant if there is variant instance deployed."
   default     = 1
-}
-
-# Green variant
-
-variable "traefik_green_variant_http_nodeport" {
-  type        = number
-  description = "Nodeport used by ALB's to connect to the Traefik green variant instance"
-  default     = 32000
-}
-
-variable "traefik_green_variant_admin_nodeport" {
-  type        = number
-  description = "Nodeport used by ALB's to connect to the Traefik green variant instance admin page"
-  default     = 32001
-}
-
-variable "traefik_green_variant_deploy" {
-  type        = bool
-  description = "Whether to deploy the Traefik green variant."
-  default     = false
 }
 
 variable "traefik_green_variant_weight" {
@@ -680,15 +633,12 @@ variable "external_dns_core_route53_assume_role_arn" {
 # kafka-exporter
 # --------------------------------------------------
 
-variable "kafka_exporter_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for kafka-exporter module"
-}
-
 variable "kafka_exporter_clusters" {
-  type        = map(any)
-  description = "Map of clusters that will be used to deploy exporters"
+  type = map(object({
+    id          = string
+    environment = string
+  }))
+  description = "Map of clusters that will be used to deploy exporters. Empty object or ommitting it will disable the deployment"
   default     = {}
 }
 

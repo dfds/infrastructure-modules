@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: karpenter-test
+  name: karpenter-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: karpenter-test
+  template:
+    metadata:
+      labels:
+        app: karpenter-test
+    spec:
+      containers:
+        - image: nginx:latest
+          name: nginx
+      tolerations:
+        - key: "dfds.com/karpenter"
+          operator: "Exists"
+          effect: "NoSchedule"
+        - key: "dfds.com/nodegroup-instance-spot"
+          operator: "Exists"
+          effect: "NoSchedule"
+      nodeSelector:
+        dfds.com/nodegroup-purpose: general
