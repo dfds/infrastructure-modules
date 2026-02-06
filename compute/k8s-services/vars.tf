@@ -325,19 +325,19 @@ variable "velero_ebs_csi_kms_arn" {
 
 variable "velero_azure_resource_group_name" {
   type        = string
-  default     = "DUMMY"
+  default     = ""
   description = "The name of the Azure resource group where the storage account is located"
 }
 
 variable "velero_azure_storage_account_name" {
   type        = string
-  default     = "DUMMY"
+  default     = ""
   description = "The name of the Azure storage account where the Velero backups will be stored"
 }
 
 variable "velero_azure_subscription_id" {
   type        = string
-  default     = "DUMMY"
+  default     = ""
   description = "The Azure subscription ID where the storage account is located"
 }
 
@@ -349,7 +349,7 @@ variable "velero_azure_bucket_name" {
 
 variable "velero_access_mode" {
   type        = string
-  description = "Access mode for Velero backups. Can be 'ReadWrite' or 'ReadOnly'"
+  description = "Access mode for Velero backups. Can be 'ReadWrite' or 'ReadOnly'. The latter is only used for disaster recovery standby clusters."
   default     = "ReadWrite"
   validation {
     condition     = contains(["ReadWrite", "ReadOnly"], var.velero_access_mode)
