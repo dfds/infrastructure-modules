@@ -90,7 +90,7 @@ module "lb_controller_flux_manifests" {
 
 module "lb_controller_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
-  version = "6.2.3"
+  version = "6.4.0"
 
   name                                   = "${var.eks_cluster_name}-lb-controller"
   policy_name                            = "${var.eks_cluster_name}-lb-controller"
@@ -303,7 +303,7 @@ module "cert_manager_flux_manifests" {
 
 module "cert_manager_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
-  version = "6.3.0"
+  version = "6.4.0"
 
   name                       = "${var.eks_cluster_name}-cert-manager"
   policy_name                = "${var.eks_cluster_name}-cert-manager"
