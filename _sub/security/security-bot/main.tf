@@ -41,7 +41,6 @@ data "aws_iam_policy_document" "sqs_policy" {
       variable = "aws:SourceArn"
 
       values = [
-        var.sns_topic_arn_cis_controls,
         var.sns_topic_arn_compliance_changes,
         var.sns_topic_arn_guard_duty_findings,
         var.sns_topic_arn_guard_duty_findings_2
@@ -55,13 +54,6 @@ resource "aws_sqs_queue_policy" "sqs" {
   queue_url = aws_sqs_queue.queue[0].id
 
   policy = data.aws_iam_policy_document.sqs_policy[0].json
-}
-
-resource "aws_sns_topic_subscription" "cis_controls" {
-  count     = var.deploy ? 1 : 0
-  topic_arn = var.sns_topic_arn_cis_controls
-  protocol  = "sqs"
-  endpoint  = aws_sqs_queue.queue[0].arn
 }
 
 resource "aws_sns_topic_subscription" "compliance_changes" {
@@ -223,19 +215,6 @@ data "aws_iam_policy_document" "lambda" {
   }
 
   statement {
-    sid    = "CloudTrailLogs"
-    effect = "Allow"
-    actions = [
-      "logs:FilterLogEvents",
-    ]
-
-    resources = [
-      var.cloudwatch_logs_group_arn,
-      "${var.cloudwatch_logs_group_arn}:log-stream:"
-    ]
-  }
-
-  statement {
     sid    = "ReadSSMParams"
     effect = "Allow"
     actions = [
@@ -325,8 +304,6 @@ resource "aws_lambda_function" "bot" {
       AWS_ACCOUNT_NAME                    = var.account_name
       SLACK_TOKEN                         = aws_ssm_parameter.slack_token[0].name
       SLACK_CHANNEL                       = var.slack_channel
-      CLOUD_WATCH_LOGS_GROUP_NAME         = var.cloudwatch_logs_group_name
-      SNS_TOPIC_ARN_CIS_CONTROLS          = var.sns_topic_arn_cis_controls
       SNS_TOPIC_ARN_COMPLIANCE_CHANGES    = var.sns_topic_arn_compliance_changes
       SNS_TOPIC_ARN_GUARD_DUTY_FINDINGS   = var.sns_topic_arn_guard_duty_findings
       SNS_TOPIC_ARN_GUARD_DUTY_FINDINGS_2 = var.sns_topic_arn_guard_duty_findings_2
