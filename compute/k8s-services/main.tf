@@ -22,14 +22,12 @@ module "traefik_crds" {
   repo_name            = var.fluxcd_bootstrap_repo_name
   repo_branch          = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  gitops_apps_repo_ref = local.gitops_apps_repo_ref
   prune                = var.fluxcd_prune
 
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -37,51 +35,41 @@ module "traefik_crds" {
 # --------------------------------------------------
 
 module "traefik_blue_variant_flux_manifests" {
-  source                 = "../../_sub/compute/k8s-traefik-flux"
-  count                  = var.traefik_blue_variant_deploy ? 1 : 0
-  cluster_name           = var.eks_cluster_name
-  deploy_name            = "traefik-blue-variant"
-  namespace              = "traefik-blue-variant"
-  replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
-  http_nodeport          = var.traefik_blue_variant_http_nodeport
-  admin_nodeport         = var.traefik_blue_variant_admin_nodeport
-  github_owner           = var.fluxcd_bootstrap_repo_owner
-  repo_name              = var.fluxcd_bootstrap_repo_name
-  repo_branch            = var.fluxcd_bootstrap_repo_branch
-  dashboard_ingress_host = "traefik-blue-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
-  gitops_apps_repo_url   = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref   = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
-  prune                  = var.fluxcd_prune
+  source               = "../../_sub/compute/k8s-traefik-flux"
+  cluster_name         = var.eks_cluster_name
+  deploy_name          = "traefik-blue-variant"
+  github_owner         = var.fluxcd_bootstrap_repo_owner
+  repo_name            = var.fluxcd_bootstrap_repo_name
+  repo_branch          = var.fluxcd_bootstrap_repo_branch
+  eks_fqdn             = local.eks_fqdn
+  gitops_apps_repo_url = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref = local.gitops_apps_repo_ref
+  prune                = var.fluxcd_prune
+  target_http_port     = local.traefik_blue_variant_target_http_port
+  target_admin_port    = local.traefik_blue_variant_target_admin_port
 
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd, module.traefik_crds]
 }
 
 module "traefik_green_variant_manifests" {
-  source                 = "../../_sub/compute/k8s-traefik-flux"
-  count                  = var.traefik_green_variant_deploy ? 1 : 0
-  cluster_name           = var.eks_cluster_name
-  deploy_name            = "traefik-green-variant"
-  namespace              = "traefik-green-variant"
-  replicas               = length(data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids)
-  http_nodeport          = var.traefik_green_variant_http_nodeport
-  admin_nodeport         = var.traefik_green_variant_admin_nodeport
-  github_owner           = var.fluxcd_bootstrap_repo_owner
-  repo_name              = var.fluxcd_bootstrap_repo_name
-  repo_branch            = var.fluxcd_bootstrap_repo_branch
-  dashboard_ingress_host = "traefik-green-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"
-  gitops_apps_repo_url   = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref   = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
-  prune                  = var.fluxcd_prune
+  source               = "../../_sub/compute/k8s-traefik-flux"
+  cluster_name         = var.eks_cluster_name
+  deploy_name          = "traefik-green-variant"
+  github_owner         = var.fluxcd_bootstrap_repo_owner
+  repo_name            = var.fluxcd_bootstrap_repo_name
+  repo_branch          = var.fluxcd_bootstrap_repo_branch
+  eks_fqdn             = local.eks_fqdn
+  gitops_apps_repo_url = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref = local.gitops_apps_repo_ref
+  prune                = var.fluxcd_prune
+  target_http_port     = local.traefik_green_variant_target_http_port
+  target_admin_port    = local.traefik_green_variant_target_admin_port
 
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd, module.traefik_crds]
 }
 
 module "lb_controller_flux_manifests" {
@@ -93,13 +81,11 @@ module "lb_controller_flux_manifests" {
   cluster_region       = var.aws_region
   role_arn             = module.lb_controller_role.arn
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  gitops_apps_repo_ref = local.gitops_apps_repo_ref
 
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 module "lb_controller_role" {
@@ -120,7 +106,6 @@ module "lb_controller_role" {
 
 module "traefik_alb_cert" {
   source              = "../../_sub/network/acm-certificate-san"
-  deploy              = var.traefik_alb_anon_deploy || var.traefik_alb_auth_deploy ? true : false
   domain_name         = "*.${local.eks_fqdn}"
   dns_zone_name       = var.workload_dns_zone_name
   core_alias          = concat(var.traefik_alb_auth_core_alias, var.traefik_alb_anon_core_alias, var.external_dns_traefik_alb_anon_core_alias, var.external_dns_traefik_alb_auth_core_alias)
@@ -131,7 +116,6 @@ module "traefik_alb_cert" {
 
 module "traefik_alb_auth_appreg" {
   source               = "../../_sub/security/azure-app-registration"
-  count                = var.traefik_alb_auth_deploy ? 1 : 0
   name                 = "Kubernetes EKS ${local.eks_fqdn} cluster"
   identifier_uris      = var.alb_az_app_registration_identifier_urls != null ? var.alb_az_app_registration_identifier_urls : ["https://${local.eks_fqdn}"]
   homepage_url         = "https://${local.eks_fqdn}"
@@ -140,37 +124,35 @@ module "traefik_alb_auth_appreg" {
 }
 
 module "traefik_alb_auth" {
-  source                = "../../_sub/compute/eks-alb-auth"
-  name                  = "${var.eks_cluster_name}-traefik-alb-auth"
-  cluster_name          = var.eks_cluster_name
-  vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
-  subnet_ids            = var.use_worker_nat_gateway ? data.terraform_remote_state.cluster.outputs.eks_control_subnet_ids : data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
-  autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
-  alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
-  nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
-  azure_tenant_id       = try(module.traefik_alb_auth_appreg[0].tenant_id, "")
-  azure_client_id       = try(module.traefik_alb_auth_appreg[0].client_id, "")
-  azure_client_secret   = try(module.traefik_alb_auth_appreg[0].application_key, "")
-  access_logs_bucket    = module.traefik_alb_s3_access_logs.name
+  source                   = "../../_sub/compute/eks-alb-auth"
+  name                     = "${var.eks_cluster_name}-traefik-alb-auth"
+  cluster_name             = var.eks_cluster_name
+  vpc_id                   = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
+  subnet_ids               = var.use_worker_nat_gateway ? data.terraform_remote_state.cluster.outputs.eks_control_subnet_ids : data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
+  autoscaling_group_ids    = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
+  alb_certificate_arn      = module.traefik_alb_cert.certificate_arn
+  nodes_sg_id              = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
+  azure_tenant_id          = try(module.traefik_alb_auth_appreg.tenant_id, "")
+  azure_client_id          = try(module.traefik_alb_auth_appreg.client_id, "")
+  azure_client_secret      = try(module.traefik_alb_auth_appreg.application_key, "")
+  access_logs_bucket       = module.traefik_alb_s3_access_logs.name
+  enable_delete_protection = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? false : true
 
   # Blue variant
-  deploy_blue_variant            = var.traefik_alb_auth_deploy && var.traefik_blue_variant_deploy
-  blue_variant_target_http_port  = var.traefik_blue_variant_http_nodeport
-  blue_variant_target_admin_port = var.traefik_blue_variant_admin_nodeport
+  blue_variant_target_http_port  = local.traefik_blue_variant_target_http_port
+  blue_variant_target_admin_port = local.traefik_blue_variant_target_admin_port
   blue_variant_health_check_path = "/ping"
   blue_variant_weight            = var.traefik_blue_variant_weight
 
   # Green variant
-  deploy_green_variant            = var.traefik_alb_auth_deploy && var.traefik_green_variant_deploy
-  green_variant_target_http_port  = var.traefik_green_variant_http_nodeport
-  green_variant_target_admin_port = var.traefik_green_variant_admin_nodeport
+  green_variant_target_http_port  = local.traefik_green_variant_target_http_port
+  green_variant_target_admin_port = local.traefik_green_variant_target_admin_port
   green_variant_health_check_path = "/ping"
   green_variant_weight            = var.traefik_green_variant_weight
 }
 
 module "traefik_alb_auth_dns" {
   source       = "../../_sub/network/route53-record"
-  deploy       = (var.traefik_alb_auth_deploy && (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy)) ? true : false
   zone_id      = local.workload_dns_zone_id
   record_name  = ["internal.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
   record_type  = "CNAME"
@@ -180,7 +162,6 @@ module "traefik_alb_auth_dns" {
 
 module "traefik_alb_auth_dns_for_traefik_blue_variant_dashboard" {
   source       = "../../_sub/network/route53-record"
-  deploy       = (var.traefik_blue_variant_deploy && var.traefik_alb_auth_deploy) ? true : false
   zone_id      = local.workload_dns_zone_id
   record_name  = ["traefik-blue-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
   record_type  = "CNAME"
@@ -190,7 +171,6 @@ module "traefik_alb_auth_dns_for_traefik_blue_variant_dashboard" {
 
 module "traefik_alb_auth_dns_for_traefik_green_variant_dashboard" {
   source       = "../../_sub/network/route53-record"
-  deploy       = (var.traefik_green_variant_deploy && var.traefik_alb_auth_deploy) ? true : false
   zone_id      = local.workload_dns_zone_id
   record_name  = ["traefik-green-variant.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
   record_type  = "CNAME"
@@ -200,7 +180,7 @@ module "traefik_alb_auth_dns_for_traefik_green_variant_dashboard" {
 
 module "traefik_alb_auth_dns_core_alias" {
   source       = "../../_sub/network/route53-record"
-  deploy       = var.traefik_alb_auth_deploy ? length(var.traefik_alb_auth_core_alias) >= 1 : false
+  deploy       = length(var.traefik_alb_auth_core_alias) >= 1 ? true : false
   zone_id      = local.core_dns_zone_id
   record_name  = var.traefik_alb_auth_core_alias
   record_type  = "CNAME"
@@ -213,34 +193,32 @@ module "traefik_alb_auth_dns_core_alias" {
 }
 
 module "traefik_alb_anon" {
-  source                = "../../_sub/compute/eks-alb"
-  name                  = "${var.eks_cluster_name}-traefik-alb"
-  cluster_name          = var.eks_cluster_name
-  vpc_id                = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
-  subnet_ids            = data.terraform_remote_state.cluster.outputs.eks_control_subnet_ids
-  autoscaling_group_ids = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
-  alb_certificate_arn   = module.traefik_alb_cert.certificate_arn
-  nodes_sg_id           = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
-  access_logs_bucket    = module.traefik_alb_s3_access_logs.name
+  source                   = "../../_sub/compute/eks-alb"
+  name                     = "${var.eks_cluster_name}-traefik-alb"
+  cluster_name             = var.eks_cluster_name
+  vpc_id                   = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
+  subnet_ids               = data.terraform_remote_state.cluster.outputs.eks_control_subnet_ids
+  autoscaling_group_ids    = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
+  alb_certificate_arn      = module.traefik_alb_cert.certificate_arn
+  nodes_sg_id              = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
+  access_logs_bucket       = module.traefik_alb_s3_access_logs.name
+  enable_delete_protection = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? false : true
 
   # Blue variant
-  deploy_blue_variant            = var.traefik_alb_anon_deploy && var.traefik_blue_variant_deploy
-  blue_variant_target_http_port  = var.traefik_blue_variant_http_nodeport
-  blue_variant_target_admin_port = var.traefik_blue_variant_admin_nodeport
+  blue_variant_target_http_port  = local.traefik_blue_variant_target_http_port
+  blue_variant_target_admin_port = local.traefik_blue_variant_target_admin_port
   blue_variant_health_check_path = "/ping"
   blue_variant_weight            = var.traefik_blue_variant_weight
 
   # Green variant
-  deploy_green_variant            = var.traefik_alb_anon_deploy && var.traefik_green_variant_deploy
-  green_variant_target_http_port  = var.traefik_green_variant_http_nodeport
-  green_variant_target_admin_port = var.traefik_green_variant_admin_nodeport
+  green_variant_target_http_port  = local.traefik_green_variant_target_http_port
+  green_variant_target_admin_port = local.traefik_green_variant_target_admin_port
   green_variant_health_check_path = "/ping"
   green_variant_weight            = var.traefik_green_variant_weight
 }
 
 module "traefik_alb_anon_dns" {
   source       = "../../_sub/network/route53-record"
-  deploy       = var.traefik_alb_anon_deploy
   zone_id      = local.workload_dns_zone_id
   record_name  = ["*.${var.eks_cluster_name}"]
   record_type  = "CNAME"
@@ -250,7 +228,7 @@ module "traefik_alb_anon_dns" {
 
 module "traefik_alb_anon_dns_core_alias" {
   source       = "../../_sub/network/route53-record"
-  deploy       = var.traefik_alb_anon_deploy ? length(var.traefik_alb_anon_core_alias) >= 1 : false
+  deploy       = length(var.traefik_alb_anon_core_alias) >= 1 ? true : false
   zone_id      = local.core_dns_zone_id
   record_name  = var.traefik_alb_anon_core_alias
   record_type  = "CNAME"
@@ -264,7 +242,6 @@ module "traefik_alb_anon_dns_core_alias" {
 
 module "external_dns_iam_role_assume" {
   source               = "../../_sub/security/iam-role"
-  count                = var.external_dns_deploy ? 1 : 0
   role_name            = local.external_dns_role_name
   role_description     = "Role for accessing Route53 hosted zone"
   role_policy_name     = local.external_dns_role_assume_policy_name
@@ -274,43 +251,73 @@ module "external_dns_iam_role_assume" {
 
 module "external_dns_flux_manifests" {
   source                   = "../../_sub/network/external-dns"
-  count                    = var.external_dns_deploy ? 1 : 0
   cluster_name             = var.eks_cluster_name
-  deploy_name              = "external-dns"
-  namespace                = "external-dns"
   github_owner             = var.fluxcd_bootstrap_repo_owner
   repo_name                = var.fluxcd_bootstrap_repo_name
   repo_branch              = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url     = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref     = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  gitops_apps_repo_ref     = local.gitops_apps_repo_ref
   prune                    = var.fluxcd_prune
   cluster_region           = var.aws_region
-  role_arn                 = module.external_dns_iam_role_assume[0].arn
-  assume_role_arn          = var.external_dns_core_route53_assume_role_arn != "" ? var.external_dns_core_route53_assume_role_arn : module.external_dns_iam_role_route53_access[0].arn
   deletion_policy_override = var.external_deletion_policy_override
-  is_debug_mode            = var.external_dns_is_debug_mode
   target_anon              = module.traefik_alb_anon.alb_fqdn
   target_auth              = module.traefik_alb_auth.alb_fqdn
   dns_records_anon         = var.external_dns_traefik_alb_anon_core_alias
   dns_records_auth         = var.external_dns_traefik_alb_auth_core_alias
   domain                   = local.core_dns_zone_name
-  zone_ids                 = local.external_dns_zone_ids
+  zone_id_core             = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? "dummy" : local.core_dns_zone_id # TODO: This is a temporary fix caused by discrepancy between production and non-production clusters in the way of accessing Core Route53 instance. We need to provide dummy value here for external-dns instance in sandbox clusters to avoid duplicated values error in flux. In sandbox zone_id_core is the same as zone_id_workload!
+  zone_id_workload         = local.workload_dns_zone_id
+  role_arn                 = module.external_dns_iam_role_assume.arn
+  assume_role_arn          = var.external_dns_core_route53_assume_role_arn != "" ? var.external_dns_core_route53_assume_role_arn : module.external_dns_iam_role_route53_access.arn
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
-
 
 module "external_dns_iam_role_route53_access" {
   source               = "../../_sub/security/iam-role"
-  count                = var.external_dns_deploy && var.external_dns_core_route53_assume_role_arn == "" ? 1 : 0
   role_name            = local.external_dns_role_name_cross_account
   role_description     = "Role for accessing Route53 hosted zones"
   role_policy_name     = local.external_dns_role_name_cross_account_assume_policy_name
   role_policy_document = data.aws_iam_policy_document.external_dns_core_route53_access_policy.json
   assume_role_policy   = data.aws_iam_policy_document.external_dns_core_route53_access_policy_trust.json
+}
+
+module "cert_manager_flux_manifests" {
+  source               = "../../_sub/security/cert-manager"
+  cluster_name         = var.eks_cluster_name
+  github_owner         = var.fluxcd_bootstrap_repo_owner
+  repo_name            = var.fluxcd_bootstrap_repo_name
+  repo_branch          = var.fluxcd_bootstrap_repo_branch
+  gitops_apps_repo_url = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref = local.gitops_apps_repo_ref
+  prune                = var.fluxcd_prune
+  domain_name          = local.core_dns_zone_name
+  iam_role_arn         = module.cert_manager_role.arn
+
+  providers = {
+    github = github.fluxcd
+  }
+}
+
+
+module "cert_manager_role" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+  version = "6.3.0"
+
+  name                       = "${var.eks_cluster_name}-cert-manager"
+  policy_name                = "${var.eks_cluster_name}-cert-manager"
+  attach_cert_manager_policy = true
+  cert_manager_hosted_zone_arns = [
+    data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? data.aws_route53_zone.workload.arn : data.aws_route53_zone.core[0].arn
+  ]
+
+  oidc_providers = {
+    ex = {
+      provider_arn               = "arn:aws:iam::${data.aws_caller_identity.current_account.account_id}:oidc-provider/${local.oidc_issuer}"
+      namespace_service_accounts = ["${local.k8s_cert_manager_namespace}:${local.k8s_cert_manager_sa_name}"]
+    }
+  }
 }
 
 # --------------------------------------------------
@@ -339,21 +346,21 @@ module "alarm_notifier" {
 
 module "cloudwatch_alarm_alb_5XX_anon" {
   source         = "../../_sub/monitoring/cloudwatch-alarms/alb-5XX/"
-  deploy         = var.cloudwatch_alarm_alb_5XX_deploy && var.traefik_alb_anon_deploy && (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy)
+  deploy         = var.cloudwatch_alarm_alb_5XX_deploy
   sns_topic_arn  = module.alarm_notifier.sns_arn
   alb_arn_suffix = module.traefik_alb_anon.alb_arn_suffix
 }
 
 module "cloudwatch_alarm_alb_5XX_auth" {
   source         = "../../_sub/monitoring/cloudwatch-alarms/alb-5XX/"
-  deploy         = var.cloudwatch_alarm_alb_5XX_deploy && var.traefik_alb_auth_deploy && (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy)
+  deploy         = var.cloudwatch_alarm_alb_5XX_deploy
   sns_topic_arn  = module.alarm_notifier.sns_arn
   alb_arn_suffix = module.traefik_alb_auth.alb_arn_suffix
 }
 
 module "cloudwatch_alarm_alb_targets_health_anon_blue" {
   source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
-  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_alb_anon_deploy && var.traefik_blue_variant_deploy
+  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy
   sns_topic_arn               = module.alarm_notifier.sns_arn
   alb_arn_suffix              = module.traefik_alb_anon.alb_arn_suffix
   alb_arn_target_group_suffix = module.traefik_alb_anon.alb_target_group_arn_suffix_blue
@@ -361,7 +368,7 @@ module "cloudwatch_alarm_alb_targets_health_anon_blue" {
 
 module "cloudwatch_alarm_alb_targets_health_anon_green" {
   source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
-  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_alb_anon_deploy && var.traefik_green_variant_deploy
+  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy
   sns_topic_arn               = module.alarm_notifier.sns_arn
   alb_arn_suffix              = module.traefik_alb_anon.alb_arn_suffix
   alb_arn_target_group_suffix = module.traefik_alb_anon.alb_target_group_arn_suffix_green
@@ -369,7 +376,7 @@ module "cloudwatch_alarm_alb_targets_health_anon_green" {
 
 module "cloudwatch_alarm_alb_targets_health_auth_blue" {
   source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
-  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_alb_auth_deploy && var.traefik_blue_variant_deploy
+  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy
   sns_topic_arn               = module.alarm_notifier.sns_arn
   alb_arn_suffix              = module.traefik_alb_auth.alb_arn_suffix
   alb_arn_target_group_suffix = module.traefik_alb_auth.alb_target_group_arn_suffix_blue
@@ -377,7 +384,7 @@ module "cloudwatch_alarm_alb_targets_health_auth_blue" {
 
 module "cloudwatch_alarm_alb_targets_health_auth_green" {
   source                      = "../../_sub/monitoring/cloudwatch-alarms/alb-targets-health"
-  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy && var.traefik_alb_auth_deploy && var.traefik_green_variant_deploy
+  deploy                      = var.cloudwatch_alarm_alb_targets_health_deploy
   sns_topic_arn               = module.alarm_notifier.sns_arn
   alb_arn_suffix              = module.traefik_alb_auth.alb_arn_suffix
   alb_arn_target_group_suffix = module.traefik_alb_auth.alb_target_group_arn_suffix_green
@@ -407,8 +414,6 @@ module "monitoring_namespace" {
   # deprovisioned from it via Flux. If Flux is removed before the monitoring
   # namespace, the monitoring namespace may be unable to terminated as it will
   # have resources left in it with Flux finalizers which cannot be finalized.
-
-  depends_on = [module.platform_fluxcd]
 }
 
 
@@ -424,10 +429,8 @@ module "goldpinger" {
   repo_name            = var.fluxcd_bootstrap_repo_name
   repo_branch          = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  gitops_apps_repo_ref = local.gitops_apps_repo_ref
   prune                = var.fluxcd_prune
-
-  depends_on = [module.grafana, module.platform_fluxcd]
 
   providers = {
     github = github.fluxcd
@@ -446,10 +449,8 @@ module "metrics_server" {
   repo_name            = var.fluxcd_bootstrap_repo_name
   repo_branch          = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  gitops_apps_repo_ref = local.gitops_apps_repo_ref
   prune                = var.fluxcd_prune
-
-  depends_on = [module.platform_fluxcd]
 
   providers = {
     github = github.fluxcd
@@ -504,7 +505,7 @@ module "atlantis_deployment" {
   github_repositories       = sort(var.atlantis_github_repositories)
   github_token              = var.atlantis_github_token
   github_username           = var.atlantis_github_username
-  gitops_apps_repo_ref      = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  gitops_apps_repo_ref      = local.gitops_apps_repo_ref
   gitops_apps_repo_url      = local.fluxcd_apps_repo_url
   eks_fqdn                  = local.eks_fqdn
   prune                     = var.fluxcd_prune
@@ -513,8 +514,6 @@ module "atlantis_deployment" {
   repo_owner                = var.fluxcd_bootstrap_repo_owner
   resources_requests_cpu    = var.atlantis_resources_requests_cpu
   resources_requests_memory = var.atlantis_resources_requests_memory
-
-  depends_on = [module.platform_fluxcd]
 
   providers = {
     github = github.fluxcd
@@ -545,14 +544,12 @@ module "external_snapshotter" {
   repo_name            = var.fluxcd_bootstrap_repo_name
   repo_branch          = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  gitops_apps_repo_ref = local.gitops_apps_repo_ref
   prune                = var.fluxcd_prune
 
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -561,45 +558,30 @@ module "external_snapshotter" {
 # --------------------------------------------------
 
 module "velero" {
-  source                              = "../../_sub/storage/velero"
-  count                               = var.velero_deploy ? 1 : 0
-  cluster_name                        = var.eks_cluster_name
-  bucket_arn                          = var.velero_bucket_arn
-  cron_schedule                       = var.velero_cron_schedule
-  log_level                           = var.velero_log_level
-  repo_name                           = var.fluxcd_bootstrap_repo_name
-  repo_branch                         = var.fluxcd_bootstrap_repo_branch
-  image_tag                           = var.velero_image_tag
-  plugin_for_aws_version              = var.velero_plugin_for_aws_version
-  plugin_for_azure_version            = var.velero_plugin_for_azure_version
-  snapshots_enabled                   = var.velero_snapshots_enabled
-  node_agent_enabled                  = var.velero_node_agent_enabled
-  gitops_apps_repo_url                = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref                = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
-  prune                               = var.fluxcd_prune
-  service_account                     = var.velero_service_account
-  oidc_issuer                         = local.oidc_issuer
-  workload_account_id                 = var.aws_workload_account_id
-  excluded_cluster_scoped_resources   = var.velero_excluded_cluster_scoped_resources
-  excluded_namespace_scoped_resources = var.velero_excluded_namespace_scoped_resources
-  read_only                           = var.velero_read_only
-  ebs_csi_kms_arn                     = var.velero_ebs_csi_kms_arn
-  enable_azure_storage                = var.velero_enable_azure_storage
-  azure_subscription_id               = var.velero_azure_subscription_id
-  azure_resource_group_name           = var.velero_azure_resource_group_name
-  azure_storage_account_name          = var.velero_azure_storage_account_name
-  azure_bucket_name                   = var.velero_azure_bucket_name
-  azure_credentials_secret_name       = var.velero_azure_credentials_secret_name
-  cron_schedule_offsite               = var.velero_cron_schedule_offsite
-  cron_schedule_offsite_ttl           = var.velero_cron_schedule_offsite_ttl
-  velero_ssm_role_arn                 = module.external_secrets_ssm.ssm_iam_role_arn
+  source                     = "../../_sub/storage/velero"
+  count                      = var.velero_deploy ? 1 : 0
+  access_mode                = var.velero_access_mode
+  aws_region                 = var.aws_region
+  azure_bucket_name          = var.velero_azure_bucket_name
+  azure_resource_group_name  = var.velero_azure_resource_group_name
+  azure_storage_account_name = var.velero_azure_storage_account_name
+  azure_subscription_id      = var.velero_azure_subscription_id
+  bucket_arn                 = var.velero_bucket_arn
+  cluster_name               = var.eks_cluster_name
+  ebs_csi_kms_arn            = var.velero_ebs_csi_kms_arn
+  gitops_apps_repo_ref       = local.gitops_apps_repo_ref
+  gitops_apps_repo_url       = local.fluxcd_apps_repo_url
+  oidc_issuer                = local.oidc_issuer
+  prune                      = var.fluxcd_prune
+  repo_branch                = var.fluxcd_bootstrap_repo_branch
+  repo_name                  = var.fluxcd_bootstrap_repo_name
+  ssm_role_arn               = module.external_secrets_ssm.ssm_iam_role_arn
+  workload_account_id        = var.aws_workload_account_id
 
   providers = {
     github = github.fluxcd
     aws    = aws
   }
-
-  depends_on = [module.platform_fluxcd, module.external_snapshotter]
 }
 
 # --------------------------------------------------
@@ -607,7 +589,7 @@ module "velero" {
 # --------------------------------------------------
 
 module "elb_inactivity_cleanup_anon" {
-  count                = data.terraform_remote_state.cluster.outputs.eks_is_sandbox && local.enable_inactivity_cleanup && var.traefik_alb_anon_deploy && (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy) ? 1 : 0
+  count                = data.terraform_remote_state.cluster.outputs.eks_is_sandbox && local.enable_inactivity_cleanup ? 1 : 0
   source               = "../../_sub/compute/elb-inactivity-cleanup"
   inactivity_alarm_arn = data.terraform_remote_state.cluster.outputs.eks_inactivity_alarm_arn
   elb_name             = module.traefik_alb_anon.alb_name
@@ -615,7 +597,7 @@ module "elb_inactivity_cleanup_anon" {
 }
 
 module "elb_inactivity_cleanup_auth" {
-  count                = data.terraform_remote_state.cluster.outputs.eks_is_sandbox && local.enable_inactivity_cleanup && var.traefik_alb_auth_deploy && (var.traefik_blue_variant_deploy || var.traefik_green_variant_deploy) ? 1 : 0
+  count                = data.terraform_remote_state.cluster.outputs.eks_is_sandbox && local.enable_inactivity_cleanup ? 1 : 0
   source               = "../../_sub/compute/elb-inactivity-cleanup"
   inactivity_alarm_arn = data.terraform_remote_state.cluster.outputs.eks_inactivity_alarm_arn
   elb_name             = module.traefik_alb_auth.alb_name
@@ -634,7 +616,7 @@ module "grafana" {
   github_owner                  = var.fluxcd_bootstrap_repo_owner
   repo_name                     = var.fluxcd_bootstrap_repo_name
   repo_branch                   = var.fluxcd_bootstrap_repo_branch
-  gitops_apps_repo_ref          = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  gitops_apps_repo_ref          = local.gitops_apps_repo_ref
   gitops_apps_repo_url          = local.fluxcd_apps_repo_url
   api_token                     = var.grafana_agent_api_token
   prometheus_url                = var.grafana_agent_prometheus_url
@@ -655,8 +637,6 @@ module "grafana" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -670,14 +650,12 @@ module "external_secrets" {
   repo_name            = var.fluxcd_bootstrap_repo_name
   repo_branch          = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  gitops_apps_repo_ref = local.gitops_apps_repo_ref
   prune                = var.fluxcd_prune
 
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -696,8 +674,6 @@ module "external_secrets_ssm" {
   providers = {
     aws = aws
   }
-
-  depends_on = [module.external_secrets]
 }
 
 # --------------------------------------------------
@@ -706,21 +682,17 @@ module "external_secrets_ssm" {
 
 module "kafka_exporter" {
   source         = "../../_sub/monitoring/kafka-exporter"
-  count          = var.kafka_exporter_deploy ? 1 : 0
+  count          = length(var.kafka_exporter_clusters) > 0 ? 1 : 0
   cluster_name   = var.eks_cluster_name
-  deploy_name    = "kafka-exporter"
-  namespace      = "monitoring"
-  github_owner   = var.fluxcd_bootstrap_repo_owner
   repo_name      = var.fluxcd_bootstrap_repo_name
   repo_branch    = var.fluxcd_bootstrap_repo_branch
-  prune          = var.fluxcd_prune
+  apps_repo_url  = local.fluxcd_apps_repo_url
+  apps_repo_ref  = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
   kafka_clusters = var.kafka_exporter_clusters
 
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -735,7 +707,7 @@ module "onepassword_connect" {
   repo_name            = var.fluxcd_bootstrap_repo_name
   repo_branch          = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  gitops_apps_repo_ref = local.gitops_apps_repo_ref
   prune                = var.fluxcd_prune
   workload_account_id  = var.aws_workload_account_id
   oidc_issuer          = local.oidc_issuer
@@ -746,8 +718,6 @@ module "onepassword_connect" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -764,14 +734,12 @@ module "github_arc_ss_controller" {
   repo_name            = var.fluxcd_bootstrap_repo_name
   repo_branch          = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  gitops_apps_repo_ref = local.gitops_apps_repo_ref
   prune                = var.fluxcd_prune
 
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd]
 }
 
 # --------------------------------------------------
@@ -786,7 +754,7 @@ module "github_arc_runners" {
   repo_name              = var.fluxcd_bootstrap_repo_name
   repo_branch            = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url   = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref   = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  gitops_apps_repo_ref   = local.gitops_apps_repo_ref
   prune                  = var.fluxcd_prune
   runner_scale_set_name  = var.github_arc_runners_runner_scale_set_name
   runner_resource_memory = var.github_arc_runners_resource_memory
@@ -794,8 +762,6 @@ module "github_arc_runners" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [module.platform_fluxcd, module.github_arc_ss_controller]
 }
 
 # --------------------------------------------------
@@ -810,15 +776,11 @@ module "druid_operator" {
   repo_name            = var.fluxcd_bootstrap_repo_name
   repo_branch          = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  gitops_apps_repo_ref = local.gitops_apps_repo_ref
 
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [
-    module.platform_fluxcd
-  ]
 }
 
 # --------------------------------------------------
@@ -838,15 +800,11 @@ module "trivy_operator" {
   repo_name                      = var.fluxcd_bootstrap_repo_name
   repo_branch                    = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url           = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref           = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  gitops_apps_repo_ref           = local.gitops_apps_repo_ref
 
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [
-    module.platform_fluxcd
-  ]
 }
 
 # --------------------------------------------------
@@ -863,7 +821,7 @@ module "falco" {
   repo_name                    = var.fluxcd_bootstrap_repo_name
   repo_branch                  = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url         = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref         = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  gitops_apps_repo_ref         = local.gitops_apps_repo_ref
   slack_alert_webhook_url      = var.falco_slack_alert_webhook_url
   slack_alert_channel_name     = var.falco_slack_alert_channel_name
   slack_alert_minimum_priority = var.falco_slack_alert_minimum_priority
@@ -875,10 +833,6 @@ module "falco" {
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [
-    module.platform_fluxcd
-  ]
 }
 
 # --------------------------------------------------
@@ -893,15 +847,11 @@ module "keda" {
   repo_name            = var.fluxcd_bootstrap_repo_name
   repo_branch          = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  gitops_apps_repo_ref = local.gitops_apps_repo_ref
 
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [
-    module.platform_fluxcd
-  ]
 }
 
 #--------------------------------------------------
@@ -914,16 +864,12 @@ module "karpenter" {
   repo_name     = var.fluxcd_bootstrap_repo_name
   repo_branch   = var.fluxcd_bootstrap_repo_branch
   apps_repo_url = local.fluxcd_apps_repo_url
-  apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  apps_repo_ref = local.gitops_apps_repo_ref
   is_sandbox    = data.terraform_remote_state.cluster.outputs.eks_is_sandbox
 
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [
-    module.platform_fluxcd
-  ]
 }
 
 # --------------------------------------------------
@@ -937,13 +883,9 @@ module "kyverno" {
   repo_name            = var.fluxcd_bootstrap_repo_name
   repo_branch          = var.fluxcd_bootstrap_repo_branch
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  gitops_apps_repo_ref = local.gitops_apps_repo_ref
 
   providers = {
     github = github.fluxcd
   }
-
-  depends_on = [
-    module.platform_fluxcd
-  ]
 }

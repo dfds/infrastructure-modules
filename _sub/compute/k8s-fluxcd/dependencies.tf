@@ -22,14 +22,9 @@ locals {
     }
     "spec" = {
       "serviceAccountName" = "kustomize-controller"
-      "dependsOn" = [
-        {
-          "name" = "platform-apps-sources"
-        }
-      ]
-      "interval" = "1m0s"
-      "path"     = "./apps/flux-monitoring"
-      "prune"    = var.prune
+      "interval"           = "1m0s"
+      "path"               = "./apps/flux-monitoring"
+      "prune"              = var.prune
       "sourceRef" = {
         "kind" = "GitRepository"
         "name" = "platform-apps-git"

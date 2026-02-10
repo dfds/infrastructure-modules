@@ -284,7 +284,6 @@ data "aws_iam_policy_document" "restrictive" {
     sid    = "DenyDisallowedServices"
     effect = "Deny"
     actions = [
-      "bedrock:*",
       "cloud9:*",
       "cloudhsm:*",
       "codeartifact:*",

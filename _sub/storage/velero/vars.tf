@@ -3,12 +3,6 @@ variable "cluster_name" {
   description = "The name of the EKS cluster."
 }
 
-variable "deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "velero"
-}
-
 variable "repo_name" {
   type        = string
   description = "GitHub repository name for writing Flux manifests to."
@@ -16,94 +10,26 @@ variable "repo_name" {
 
 variable "repo_branch" {
   type        = string
-  default     = "main"
   description = "The git branch."
 }
 
 variable "bucket_arn" {
   type        = string
-  description = "The arn of the S3 bucket that contains the Velero backup. Only used if S3 bucket is in a different account"
+  description = "The arn of the S3 bucket that contains the Velero backup."
 }
 
-variable "bucket_region" {
+variable "aws_region" {
   type        = string
-  default     = "eu-west-1"
-  description = "The region in which the S3 bucket that contains the Velero backup has been created"
-}
-
-variable "snapshots_enabled" {
-  type        = bool
-  default     = false
-  description = "Should Velero use snapshot backups?"
-}
-
-variable "node_agent_enabled" {
-  type        = bool
-  default     = false
-  description = "Should Velero deploy the node agent?"
-}
-
-variable "log_level" {
-  type        = string
-  default     = "info"
-  description = "Velero log level."
-  validation {
-    condition     = contains(["info", "debug", "warning", "error", "fatal", "panic"], var.log_level)
-    error_message = "Invalid value for log_level. Valid values: info, debug, warning, error, fatal, panic."
-  }
-}
-
-variable "cron_schedule" {
-  type        = string
-  default     = "0 0 * * *"
-  description = "Cron-formatted scheduled time."
-}
-
-variable "schedules_template_ttl" {
-  type        = string
-  default     = "336h"
-  description = "Time to live for the scheduled backup."
-}
-
-variable "helm_repo_name" {
-  type        = string
-  default     = "vmware-tanzu"
-  description = "The name of the Helm repo with the Velero Helm chart"
-}
-
-variable "image_tag" {
-  type        = string
-  default     = ""
-  description = "Override the image tag in the Helm chart with a custom version"
-}
-
-variable "plugin_for_aws_version" {
-  type        = string
-  description = "The version of velero-plugin-for-aws to use as initContainer"
-  validation {
-    condition     = can(regex("^v(\\d+\\.\\d+)(\\.\\d+)?(-rc\\.\\d+|-beta\\.\\d+)?$", var.plugin_for_aws_version))
-    error_message = "Velero plugin for AWS must specify a version. The version must start with the letter v and followed by a semantic version number."
-  }
-}
-
-variable "plugin_for_azure_version" {
-  type        = string
-  description = "The version of velero-plugin-for-azure to use as initContainer"
-  validation {
-    condition     = can(regex("^v(\\d+\\.\\d+)(\\.\\d+)?(-rc\\.\\d+|-beta\\.\\d+)?$", var.plugin_for_azure_version))
-    error_message = "Velero plugin for Azure must specify a version. The version must start with the letter v and followed by a semantic version number."
-  }
+  description = "The AWS region where the S3 bucket is located"
 }
 
 variable "gitops_apps_repo_url" {
   type        = string
-  default     = ""
   description = "The https url for your GitOps manifests"
 }
 
 variable "gitops_apps_repo_ref" {
   type        = string
-  default     = "main"
   description = "The default branch or tag for your GitOps manifests"
 }
 
@@ -113,49 +39,23 @@ variable "prune" {
   description = "Enable Garbage collection"
 }
 
-variable "velero_iam_role_name" {
-  type        = string
-  default     = "VeleroBackup"
-  description = "Velero role for S3 actions"
-}
-
-variable "service_account" {
-  type        = string
-  default     = "velero-server"
-  description = "The service account to be used by Velero"
-}
-
 variable "oidc_issuer" {
   type        = string
-  default     = null
-  description = "The OIDC isssue for the Kubernetes cluster"
+  description = "The OIDC issuer for the Kubernetes cluster"
 }
 
 variable "workload_account_id" {
   type        = string
-  default     = null
   description = "The workload account ID."
 }
 
-variable "excluded_cluster_scoped_resources" {
-  type        = list(string)
-  default     = []
-  description = "List of cluster-scoped resources to exclude from backup"
-}
-
-variable "excluded_namespace_scoped_resources" {
-  type        = list(string)
-  default     = []
-  description = "List of namespace-scoped resources to exclude from backup"
-}
-
-variable "read_only" {
-  type        = bool
-  default     = false
-  description = <<EOF
-    Set to true to access the backup storage location in read-only mode.
-    This is useful for restoring from a backup without modifying the backup storage location.
-EOF
+variable "access_mode" {
+  type        = string
+  description = "Access mode for Velero backups. Can be 'ReadWrite' or 'ReadOnly'"
+  validation {
+    condition     = contains(["ReadWrite", "ReadOnly"], var.access_mode)
+    error_message = "The access_mode must be either 'ReadWrite' or 'ReadOnly'."
+  }
 }
 
 variable "ebs_csi_kms_arn" {
@@ -164,60 +64,27 @@ variable "ebs_csi_kms_arn" {
   description = "The ARN of the KMS key used for EBS CSI encryption"
 }
 
-variable "enable_azure_storage" {
-  type        = bool
-  default     = false
-  description = "Enable Azure storage for Velero backups"
-}
-
 variable "azure_resource_group_name" {
   type        = string
-  default     = ""
   description = "The name of the Azure resource group where the storage account is located"
 }
 
 variable "azure_storage_account_name" {
   type        = string
-  default     = ""
   description = "The name of the Azure storage account where the Velero backups will be stored"
 }
 
 variable "azure_subscription_id" {
   type        = string
-  default     = ""
   description = "The Azure subscription ID where the storage account is located"
 }
 
 variable "azure_bucket_name" {
   type        = string
-  default     = "velero-backup"
   description = "The name of the Azure storage container where Velero backups will be stored"
 }
 
-variable "azure_credentials_secret_name" {
+variable "ssm_role_arn" {
   type        = string
-  default     = "velero-credentials"
-  description = "The name of the Kubernetes secret containing Azure credentials for Velero"
-}
-
-variable "cron_schedule_offsite" {
-  type        = string
-  description = "Cron-formatted scheduled time for offsite backups."
-}
-
-variable "cron_schedule_offsite_ttl" {
-  type        = string
-  description = "Time to live for the scheduled offsite backup."
-}
-
-variable "enable_azure_storage_external_secret" {
-  type        = bool
-  default     = true
-  description = "Enable creating an ExternalSecret for Azure credentials"
-}
-
-variable "velero_ssm_role_arn" {
-  type        = string
-  default     = ""
-  description = "The IAM role for the Velero service account to assume for accessing AWS SSM Parameter Store"
+  description = "The IAM role for the service account to assume for accessing AWS SSM Parameter Store"
 }

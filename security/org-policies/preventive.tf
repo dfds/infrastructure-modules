@@ -281,4 +281,23 @@ data "aws_iam_policy_document" "preventive" {
       values   = ["2"]
     }
   }
+
+  statement {
+    sid       = "DenyBedrock"
+    effect    = "Deny"
+    actions   = ["bedrock:*"]
+    resources = ["*"]
+
+    condition {
+      test = "ArnNotLike"
+      values = concat(
+        [
+          "arn:aws:iam::*:role/OrgRole",
+          "arn:aws:iam::*:role/aws-config-recorder*"
+        ],
+        formatlist("arn:aws:iam::%s:role/*", var.bedrock_exempted_accounts)
+      )
+      variable = "aws:PrincipalArn"
+    }
+  }
 }

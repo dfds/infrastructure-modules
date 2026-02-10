@@ -10,6 +10,9 @@ resource "github_repository_file" "helm" {
     deploy_name      = local.deploy_name
     namespace        = local.namespace
     helm_repo_path   = local.helm_repo_path
+    region           = var.cluster_region
+    role_arn         = var.role_arn
+    cluster          = var.cluster_name
     prune            = true
   })
   overwrite_on_create = true
@@ -27,21 +30,6 @@ resource "github_repository_file" "helm_install" {
   })
   overwrite_on_create = true
 }
-
-resource "github_repository_file" "helm_patch" {
-  repository = var.repo_name
-  branch     = local.repo_branch
-  file       = "${local.helm_repo_path}/patch.yaml"
-  content = templatefile("${path.module}/values/helm-patch.yaml", {
-    deploy_name = local.deploy_name
-    namespace   = local.namespace
-    region      = var.cluster_region
-    role_arn    = var.role_arn
-    cluster     = var.cluster_name
-  })
-  overwrite_on_create = true
-}
-
 
 # ----------------------------------------------------------------------------------------------------
 # On destroy there might be issue with deleting webhooks because of CRs not being removed in time

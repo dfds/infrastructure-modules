@@ -86,20 +86,10 @@ variable "alb_access_logs_sse_algorithm" {
 # Load Balancers in front of Traefik
 # --------------------------------------------------
 
-variable "traefik_alb_anon_deploy" {
-  type    = bool
-  default = false
-}
-
 variable "traefik_alb_anon_core_alias" {
   description = "A list of aliases/alternative names in the *parent* domain, the certificate should also be valid for. E.g. 'prettyurl.company.tld'"
   type        = list(string)
   default     = []
-}
-
-variable "traefik_alb_auth_deploy" {
-  type    = bool
-  default = false
 }
 
 variable "traefik_alb_auth_core_alias" {
@@ -299,47 +289,10 @@ variable "atlantis_resources_requests_memory" {
 # routing traffic gradually to a new version and then decommissioning an older
 # version without downtime.
 
-variable "traefik_blue_variant_http_nodeport" {
-  type        = number
-  description = "Nodeport used by ALB's to connect to the Traefik instance"
-  default     = 31000
-}
-
-variable "traefik_blue_variant_admin_nodeport" {
-  type        = number
-  description = "Nodeport used by ALB's to connect to the Traefik instance admin page"
-  default     = 31001
-}
-
-variable "traefik_blue_variant_deploy" {
-  type    = bool
-  default = true
-}
-
 variable "traefik_blue_variant_weight" {
   type        = number
   description = "The weight of the Traefik instance target groups in the load balancers. Only relevant if there is variant instance deployed."
   default     = 1
-}
-
-# Green variant
-
-variable "traefik_green_variant_http_nodeport" {
-  type        = number
-  description = "Nodeport used by ALB's to connect to the Traefik green variant instance"
-  default     = 32000
-}
-
-variable "traefik_green_variant_admin_nodeport" {
-  type        = number
-  description = "Nodeport used by ALB's to connect to the Traefik green variant instance admin page"
-  default     = 32001
-}
-
-variable "traefik_green_variant_deploy" {
-  type        = bool
-  description = "Whether to deploy the Traefik green variant."
-  default     = false
 }
 
 variable "traefik_green_variant_weight" {
@@ -359,103 +312,15 @@ variable "velero_deploy" {
   description = "Should Velero Helm chart be deployed?"
 }
 
-variable "velero_cron_schedule" {
-  type        = string
-  default     = "0 0 * * *"
-  description = "Cron-formatted scheduled time for the Velero backup."
-}
-
-variable "velero_log_level" {
-  type        = string
-  default     = "info"
-  description = "Velero log level."
-  validation {
-    condition     = contains(["info", "debug", "warning", "error", "fatal", "panic"], var.velero_log_level)
-    error_message = "Invalid value for log_level. Valid values: info, debug, warning, error, fatal, panic."
-  }
-}
-
-variable "velero_image_tag" {
-  type        = string
-  default     = ""
-  description = "Override the image tag in the Helm chart with a custom version"
-}
-
-variable "velero_plugin_for_aws_version" {
-  type        = string
-  default     = "v1.14.1"
-  description = "The version of velero-plugin-for-aws to use as initContainer"
-  validation {
-    condition     = can(regex("^v(\\d+\\.\\d+)(\\.\\d+)?(-rc\\.\\d+|-beta\\.\\d+)?$", var.velero_plugin_for_aws_version)) || var.velero_plugin_for_aws_version == ""
-    error_message = "Velero plugin for AWS must specify a version. The version must start with the letter v and followed by a semantic version number."
-  }
-}
-
-variable "velero_plugin_for_azure_version" {
-  type        = string
-  default     = "v1.12.1"
-  description = "The version of velero-plugin-for-azure to use as initContainer"
-  validation {
-    condition     = can(regex("^v(\\d+\\.\\d+)(\\.\\d+)?(-rc\\.\\d+|-beta\\.\\d+)?$", var.velero_plugin_for_azure_version)) || var.velero_plugin_for_azure_version == ""
-    error_message = "Velero plugin for Azure must specify a version. The version must start with the letter v and followed by a semantic version number."
-  }
-}
-
-variable "velero_snapshots_enabled" {
-  type        = bool
-  default     = false
-  description = "Should Velero create snapshot on backups?"
-}
-
-variable "velero_node_agent_enabled" {
-  type        = bool
-  default     = false
-  description = "Should Velero enable the node agent?"
-}
-
-variable "velero_service_account" {
-  type        = string
-  default     = "velero-server"
-  description = "The service account to be used by Velero"
-}
-
 variable "velero_bucket_arn" {
   type        = string
-  default     = null
-  description = "The arn of the S3 bucket that contains the Velero backup. Only used if S3 bucket is in a different account"
-}
-
-variable "velero_excluded_cluster_scoped_resources" {
-  type        = list(string)
-  default     = []
-  description = "List of cluster-scoped resources to exclude from backup"
-}
-
-variable "velero_excluded_namespace_scoped_resources" {
-  type        = list(string)
-  default     = []
-  description = "List of namespace-scoped resources to exclude from backup"
-}
-
-variable "velero_read_only" {
-  type        = bool
-  default     = false
-  description = <<EOF
-    Set to true to access the backup storage location in read-only mode.
-    This is useful for restoring from a backup without modifying the backup storage location.
-EOF
+  description = "The arn of the S3 bucket that contains the Velero backup."
 }
 
 variable "velero_ebs_csi_kms_arn" {
   type        = string
   default     = ""
   description = "The KMS ARN to use for EBS CSI volumes."
-}
-
-variable "velero_enable_azure_storage" {
-  type        = bool
-  default     = true
-  description = "Enable Azure storage for Velero backups"
 }
 
 variable "velero_azure_resource_group_name" {
@@ -468,14 +333,12 @@ variable "velero_azure_storage_account_name" {
   type        = string
   default     = ""
   description = "The name of the Azure storage account where the Velero backups will be stored"
-
 }
 
 variable "velero_azure_subscription_id" {
   type        = string
   default     = ""
   description = "The Azure subscription ID where the storage account is located"
-
 }
 
 variable "velero_azure_bucket_name" {
@@ -484,23 +347,16 @@ variable "velero_azure_bucket_name" {
   description = "The name of the Azure storage container where Velero backups will be stored"
 }
 
-variable "velero_azure_credentials_secret_name" {
+variable "velero_access_mode" {
   type        = string
-  default     = "velero-credentials"
-  description = "The name of the Kubernetes secret containing Azure credentials for Velero"
+  description = "Access mode for Velero backups. Can be 'ReadWrite' or 'ReadOnly'. The latter is only used for disaster recovery standby clusters."
+  default     = "ReadWrite"
+  validation {
+    condition     = contains(["ReadWrite", "ReadOnly"], var.velero_access_mode)
+    error_message = "The access_mode must be either 'ReadWrite' or 'ReadOnly'."
+  }
 }
 
-variable "velero_cron_schedule_offsite" {
-  type        = string
-  default     = "0 2 1 * *"
-  description = "Cron-formatted scheduled time for offsite backups."
-}
-
-variable "velero_cron_schedule_offsite_ttl" {
-  type        = string
-  default     = "8640h"
-  description = "Time to live for the scheduled offsite backup."
-}
 
 # --------------------------------------------------
 # Inactivity based clean up for sandboxes
@@ -634,19 +490,13 @@ variable "external_secrets_ssm_service_account" {
 
 variable "external_secrets_ssm_allowed_namespaces" {
   type        = list(string)
-  default     = ["atlantis", "flux-system"]
-  description = "The namespaces that can use IRSA to access external secrets"
+  default     = ["arc-runners", "atlantis", "flux-system", "velero"]
+  description = "The namespaces that can use IRSA to access external secrets for infrastructure deployments."
 }
 
 # --------------------------------------------------
 # External DNS
 # --------------------------------------------------
-
-variable "external_dns_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for External DNS module"
-}
 
 variable "external_dns_traefik_alb_anon_core_alias" {
   description = "A list of aliases/alternative names to be managed by External DNS in the *parent* domain. E.g. 'prettyurl.company.tld'"
@@ -670,12 +520,6 @@ variable "external_deletion_policy_override" {
   }
 }
 
-variable "external_dns_is_debug_mode" {
-  type        = bool
-  description = "Enable debug logging for External DNS"
-  default     = false
-}
-
 variable "external_dns_core_route53_assume_role_arn" {
   type        = string
   description = "The ARN of the role to assume in the core account to manage Route53 records"
@@ -686,15 +530,12 @@ variable "external_dns_core_route53_assume_role_arn" {
 # kafka-exporter
 # --------------------------------------------------
 
-variable "kafka_exporter_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for kafka-exporter module"
-}
-
 variable "kafka_exporter_clusters" {
-  type        = map(any)
-  description = "Map of clusters that will be used to deploy exporters"
+  type = map(object({
+    id          = string
+    environment = string
+  }))
+  description = "Map of clusters that will be used to deploy exporters. Empty object or ommitting it will disable the deployment"
   default     = {}
 }
 
