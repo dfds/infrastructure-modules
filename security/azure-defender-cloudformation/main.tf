@@ -14,6 +14,7 @@ resource "aws_cloudformation_stack_set" "azure_defender" {
 
   permission_model = "SERVICE_MANAGED"
   call_as          = "DELEGATED_ADMIN"
+  capabilities     = ["CAPABILITY_NAMED_IAM"]
 
 }
 
