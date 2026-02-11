@@ -16,6 +16,9 @@ resource "aws_cloudformation_stack_set" "azure_defender" {
   call_as          = "DELEGATED_ADMIN"
   capabilities     = ["CAPABILITY_NAMED_IAM"]
 
+  managed_execution {
+    active = true
+  }
 }
 
 resource "aws_cloudformation_stack_set_instance" "azure_defender" {
