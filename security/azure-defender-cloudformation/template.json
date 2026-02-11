@@ -1,0 +1,92 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Cross Cloud Security Center IAM Role to set read permissions",
+    "Parameters": {
+        "CspmMonitorAwsRoleName": {
+            "Type": "String",
+            "Description": "Provide a role ARN name (Example: CspmMonitorAws) for CSPM offering",
+            "AllowedPattern": "[-_a-zA-Z0-9]+",
+            "Default": "azure-defender-monitor"
+        }
+    },
+    "Conditions": {},
+    "Resources": {
+        "ASCDefendersOIDCIdentityProvider": {
+            "Description": "Identity provider resource using for MDC authentication with the required thumbprint list and the issuer url",
+            "Type": "AWS::IAM::OIDCProvider",
+            "Properties": {
+                "ClientIdList": ["${oidc_client_id}"],
+                "ThumbprintList": ${oidc_thumbprint_list},
+                "Url": "https://sts.windows.net/${aad_tenant_id}/"
+            }
+        },
+        "CspmMonitorAwsRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "Description": "MDC - CSPM ready only role",
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/ReadOnlyAccess"
+                ],
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Federated": {
+                                    "Fn::Sub": "arn:aws:iam::$${AWS::AccountId}:oidc-provider/sts.windows.net/${aad_tenant_id}/"
+                                }
+                            },
+                            "Action": "sts:AssumeRoleWithWebIdentity",
+                            "Condition": {
+                                "StringEquals": {
+                                    "sts.windows.net/${aad_tenant_id}/:aud": "${oidc_client_id}",
+                                    "sts:RoleSessionName": "MicrosoftDefenderForClouds_${client_tenant}"
+                                }
+                            }
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyName": {
+                            "Ref": "CspmMonitorAwsRoleName"
+                        },
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Deny",
+                                    "Action": [
+                                        "consolidatedbilling:*",
+                                        "freetier:*",
+                                        "invoicing:*",
+                                        "payments:*",
+                                        "billing:*",
+                                        "tax:*",
+                                        "cur:*"
+                                    ],
+                                    "Resource": "*"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "RoleName": {
+                    "Ref": "CspmMonitorAwsRoleName"
+                }
+            }
+        }
+    },
+    "Outputs": {
+        "CrossCloudSecurityCenterReadOnlyARN": {
+            "Value": {
+                "Fn::GetAtt": [
+                    "CspmMonitorAwsRole",
+                    "Arn"
+                ]
+            },
+            "Description": "Role ARN for CSPM offering"
+        }
+    }
+}
