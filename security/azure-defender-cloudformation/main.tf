@@ -27,4 +27,11 @@ resource "aws_cloudformation_stack_set_instance" "azure_defender" {
   deployment_targets {
     organizational_unit_ids = local.organizational_unit_ids
   }
+
+  operation_preferences {
+    failure_tolerance_count = 0
+    max_concurrent_percentage = 25
+    concurrency_mode = "SOFT_FAILURE_TOLERANCE"
+    region_concurrency_type = "SEQUENTIAL"
+  }
 }
