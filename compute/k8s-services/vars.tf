@@ -314,6 +314,7 @@ variable "velero_deploy" {
 
 variable "velero_bucket_arn" {
   type        = string
+  default     = ""
   description = "The arn of the S3 bucket that contains the Velero backup."
 }
 
