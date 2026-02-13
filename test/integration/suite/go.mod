@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/fluxcd/pkg/apis/meta v1.25.0
-	github.com/gruntwork-io/terratest v0.55.0
+	github.com/gruntwork-io/terratest v0.56.0
 	github.com/stretchr/testify v1.11.1
 	github.com/traefik/traefik/v3 v3.6.8
 	k8s.io/api v0.35.1
