@@ -332,8 +332,8 @@ github.com/grpc-ecosystem/grpc-gateway/v2/utilities
 # github.com/gruntwork-io/go-commons v0.8.0
 ## explicit; go 1.13
 github.com/gruntwork-io/go-commons/errors
-# github.com/gruntwork-io/terratest v0.55.0
-## explicit; go 1.25.0
+# github.com/gruntwork-io/terratest v0.56.0
+## explicit; go 1.26
 github.com/gruntwork-io/terratest/modules/aws
 github.com/gruntwork-io/terratest/modules/collections
 github.com/gruntwork-io/terratest/modules/environment
