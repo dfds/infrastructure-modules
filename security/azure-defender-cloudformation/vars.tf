@@ -21,9 +21,13 @@ variable "oidc_thumbprint_list" {
   type        = list(string)
 }
 
-variable "ous_list" {
-  description = "A list of the OUs names"
-  type        = list(string)
+variable "ous" {
+  description = "A list of the OUs to deploy the stack set to, with the account filter type and accounts to include in case of 'INTERSECTION', 'DIFFERENCE' or 'UNION' filter types"
+  type = list(object({
+    ou_id               = string
+    account_filter_type = string
+    accounts            = list(string)
+  }))
 }
 
 variable "tags" {
