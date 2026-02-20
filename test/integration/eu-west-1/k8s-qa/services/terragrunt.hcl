@@ -69,7 +69,7 @@ inputs = {
   fluxcd_apps_repo_branch           = "main"
   fluxcd_bootstrap_repo_branch      = "main"
   fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
-  fluxcd_version                    = "v2.6.4"
+  fluxcd_version                    = "v2.7.5"
 
   fluxcd_tenants = [
     {
