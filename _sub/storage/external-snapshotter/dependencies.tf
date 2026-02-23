@@ -4,8 +4,7 @@ data "github_branch" "flux_branch" {
 }
 
 locals {
-  cluster_repo_path    = "clusters/${var.cluster_name}"
-  crd_repo_path        = "platform-apps/${var.cluster_name}/${var.deploy_name}-crd"
-  controller_repo_path = "platform-apps/${var.cluster_name}/${var.deploy_name}-controller"
-  config_repo_path     = "platform-apps/${var.cluster_name}/${var.deploy_name}-config"
+  deploy_name       = "external-snapshotter"
+  cluster_repo_path = "clusters/${var.cluster_name}"
+  deploy_path       = "platform-apps/${var.cluster_name}/${local.deploy_name}"
 }

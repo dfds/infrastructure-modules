@@ -3,12 +3,6 @@ variable "cluster_name" {
   description = "The name of the EKS cluster."
 }
 
-variable "deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "external-snapshotter"
-}
-
 variable "repo_name" {
   type        = string
   description = "GitHub repository name for writing Flux manifests to."
