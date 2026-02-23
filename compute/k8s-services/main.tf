@@ -534,25 +534,6 @@ module "atlantis_github_configuration" {
 }
 
 # --------------------------------------------------
-# External-Snapshotter adds support for snapshot.storage.k8s.io/v1
-# https://github.com/kubernetes-csi/external-snapshotter/tree/master
-# --------------------------------------------------
-
-module "external_snapshotter" {
-  source               = "../../_sub/storage/external-snapshotter"
-  cluster_name         = var.eks_cluster_name
-  repo_name            = var.fluxcd_bootstrap_repo_name
-  repo_branch          = var.fluxcd_bootstrap_repo_branch
-  gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = local.gitops_apps_repo_ref
-  prune                = var.fluxcd_prune
-
-  providers = {
-    github = github.fluxcd
-  }
-}
-
-# --------------------------------------------------
 # Velero - requires that s3-bucket-velero module
 # is already applied through Terragrunt.
 # --------------------------------------------------
