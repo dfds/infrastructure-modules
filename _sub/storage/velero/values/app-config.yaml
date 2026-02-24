@@ -19,8 +19,6 @@ metadata:
   namespace: flux-system
 spec:
   serviceAccountName: kustomize-controller
-  dependsOn:
-    - name: external-snapshotter-config
   interval: 1m0s
   path: "./${helm_repo_path}"
   prune: ${prune}
