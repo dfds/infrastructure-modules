@@ -97,20 +97,6 @@ variable "docker_hub_creds_ssm_path" {
   description = "Docker Hub credentials SSM Parameter Store path"
 }
 
-# ------------------------------------------------------
-# Inactivity based scale down for sandboxes
-# ------------------------------------------------------
-
-variable "enable_scale_to_zero_after_business_hours" {
-  type        = bool
-  default     = true
-  description = "Enables automated scale to zero of EC2 instance after business hours. Only applicable to sandboxes."
-}
-
-variable "scale_to_zero_cron" {
-  type        = string
-  description = "The time when the ASG will be scaled to zero, specified in Unix cron syntax"
-}
 
 variable "vpc_cni_prefix_delegation_enabled" {
   type        = bool

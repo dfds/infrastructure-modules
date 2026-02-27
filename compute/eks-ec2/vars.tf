@@ -108,12 +108,6 @@ variable "eks_managed_worker_subnets" {
   default = []
 }
 
-variable "eks_worker_scale_to_zero_cron" {
-  type        = string
-  description = "The time when the ASG will be scaled to zero, specified in Unix cron syntax"
-  default     = "0 18 * * *"
-}
-
 variable "eks_addon_kubeproxy_version_override" {
   type    = string
   default = ""
@@ -244,12 +238,6 @@ variable "enable_inactivity_cleanup" {
   type        = bool
   default     = true
   description = "Enables automated clean up of EKS resources based on inactivity. Only applicable to sandboxes."
-}
-
-variable "enable_scale_to_zero_after_business_hours" {
-  type        = bool
-  default     = true
-  description = "Enables automated scale to zero of EC2 instance after business hours. Only applicable to sandboxes."
 }
 
 # --------------------------------------------------
