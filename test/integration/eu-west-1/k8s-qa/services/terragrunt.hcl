@@ -161,7 +161,7 @@ inputs = {
   # Trivy Operator
   # --------------------------------------------------
 
-  trivy_operator_deploy                     = true
+  trivy_operator_deploy                     = false # disabled due to security concerns
   trivy_operator_resources_requests_cpu     = "10m"
   trivy_operator_resources_requests_memory  = "768Mi"
   trivy_scan_resources_requests_cpu         = "10m"
