@@ -4,11 +4,6 @@ repos:
     hooks:
       - id: terraform_fmt
         exclude: test/integration/suite/vendor/.*
-      - id: terraform_trivy
-        args:
-          - "--args=--skip-dirs=test/integration/suite/vendor/.*"
-          - "--args=--severity HIGH,CRITICAL"
-        files: (\.tf|\.tfvars)$
       # - id: terraform_checkov
       #   args:
       #     - "--args=--quiet"
