@@ -99,21 +99,6 @@ data "aws_iam_policy_document" "preventive" {
   }
 
   statement {
-    sid    = "DenyDisablingSecurityHub"
-    effect = "Deny"
-    actions = [
-      "securityhub:DeleteInvitations",
-      "securityhub:DisableSecurityHub",
-      "securityhub:DisassociateFromMasterAccount",
-      "securityhub:DeleteMembers",
-      "securityhub:DisassociateMembers",
-      "securityhub:UpdateStandardsControl",
-      "securityhub:BatchUpdateStandardsControlAssociations",
-    ]
-    resources = ["*"]
-  }
-
-  statement {
     sid    = "DenyDisablingMacie"
     effect = "Deny"
     actions = [
