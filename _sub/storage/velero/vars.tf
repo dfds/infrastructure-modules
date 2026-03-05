@@ -88,3 +88,15 @@ variable "ssm_role_arn" {
   type        = string
   description = "The IAM role for the service account to assume for accessing AWS SSM Parameter Store"
 }
+
+variable "server_pod_memory" {
+  type        = string
+  default     = "2Gi"
+  description = "Memory resources request and limit size for Velero server pod"
+}
+
+variable "node_agent_pod_memory" {
+  type        = string
+  default     = "384Mi"
+  description = "Memory resources request and limit size for Velero node agent pods"
+}

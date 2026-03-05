@@ -358,6 +358,18 @@ variable "velero_access_mode" {
   }
 }
 
+variable "velero_server_pod_memory" {
+  type        = string
+  default     = "2Gi"
+  description = "Memory resources request and limit size for Velero server pod"
+}
+
+variable "velero_node_agent_pod_memory" {
+  type        = string
+  default     = "384Mi"
+  description = "Memory resources request and limit size for Velero node agent pods"
+}
+
 
 # --------------------------------------------------
 # Inactivity based clean up for sandboxes
