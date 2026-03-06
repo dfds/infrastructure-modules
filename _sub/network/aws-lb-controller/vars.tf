@@ -39,3 +39,8 @@ variable "role_arn" {
   type        = string
   description = "The ARN of the role to be used by the component"
 }
+
+variable "vpc_id" {
+  type = string
+  description = "VPC ID where the EKS cluster is deployed"
+}

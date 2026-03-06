@@ -82,6 +82,7 @@ module "lb_controller_flux_manifests" {
   role_arn             = module.lb_controller_role.arn
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref = local.gitops_apps_repo_ref
+  vpc_id = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
 
   providers = {
     github = github.fluxcd
