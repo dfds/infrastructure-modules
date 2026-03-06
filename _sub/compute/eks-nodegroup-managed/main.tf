@@ -33,7 +33,7 @@ resource "aws_launch_template" "eks" {
   metadata_options {
     http_endpoint                = "enabled"
     http_tokens                  = "required"
-    hhttp_put_response_hop_limit = 1
+    http_put_response_hop_limit = 1
   }
 
   block_device_mappings {
