@@ -559,6 +559,8 @@ module "velero" {
   repo_name                  = var.fluxcd_bootstrap_repo_name
   ssm_role_arn               = module.external_secrets_ssm.ssm_iam_role_arn
   workload_account_id        = var.aws_workload_account_id
+  server_pod_memory          = var.velero_server_pod_memory
+  node_agent_pod_memory      = var.velero_node_agent_pod_memory
 
   providers = {
     github = github.fluxcd
