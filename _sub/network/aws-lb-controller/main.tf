@@ -13,6 +13,7 @@ resource "github_repository_file" "helm" {
     region           = var.cluster_region
     role_arn         = var.role_arn
     cluster          = var.cluster_name
+    vpc_id           = var.vpc_id
     prune            = true
   })
   overwrite_on_create = true
