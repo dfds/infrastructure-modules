@@ -144,6 +144,20 @@ module "iam_role_ssu_ssm" {
   }
 }
 
+module "iam_role_ssu_irsa_trust_exporter" {
+  source               = "../../_sub/security/iam-role"
+  role_name            = "ssu-irsa-trust-exporter"
+  role_description     = "Allows irsa-trust-exporter to verify IAM role trust relationships"
+  max_session_duration = 28800 # 8 hours
+  assume_role_policy   = data.aws_iam_policy_document.assume_role_policy_irsa_trust_exporter.json
+  role_policy_name     = "ssuIrsaTrustExporter"
+  role_policy_document = module.iam_policies.ssuirsatrustexporter
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
 module "iam_role_vpc_reader" {
   source               = "../../_sub/security/iam-role"
   role_name            = "vpc-reader"

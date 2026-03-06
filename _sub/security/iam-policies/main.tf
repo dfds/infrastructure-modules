@@ -211,6 +211,20 @@ data "aws_iam_policy_document" "ssussm" {
   }
 }
 
+# ssu irsa-trust-exporter
+data "aws_iam_policy_document" "ssu_irsa_trust_exporter" {
+  statement {
+    sid    = "SsoReaderTf"
+    effect = "Allow"
+    actions = [
+      "iam:GetRole"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+}
+
 # VPCReader
 data "aws_iam_policy_document" "vpcreader" {
   statement {

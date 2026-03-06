@@ -31,6 +31,17 @@ data "aws_iam_policy_document" "assume_role_policy_ssuk8s" {
   }
 }
 
+data "aws_iam_policy_document" "assume_role_policy_irsa_trust_exporter" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.ssu_account_id}:role/irsa-trust-exporter"]
+    }
+  }
+}
+
 data "aws_iam_policy_document" "assume_role_policy_selfservice_api" {
   statement {
     actions = ["sts:AssumeRole"]
