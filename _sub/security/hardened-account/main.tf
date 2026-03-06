@@ -6,26 +6,6 @@ data "aws_region" "workload" {
   provider = aws.workload
 }
 
-resource "aws_securityhub_account" "workload" {
-  count                    = var.harden ? 1 : 0
-  enable_default_standards = var.enable_default_standards
-  provider                 = aws.workload
-}
-
-resource "aws_securityhub_standards_subscription" "cis_1_2" {
-  count         = var.harden ? 1 : 0
-  standards_arn = "arn:aws:securityhub:::ruleset/cis-aws-foundations-benchmark/v/1.2.0"
-  provider      = aws.workload
-  depends_on    = [aws_securityhub_account.workload]
-}
-
-resource "aws_securityhub_standards_subscription" "cis_1_4" {
-  count         = var.harden ? 1 : 0
-  standards_arn = "arn:aws:securityhub:${data.aws_region.workload[0].region}::standards/cis-aws-foundations-benchmark/v/1.4.0"
-  provider      = aws.workload
-  depends_on    = [aws_securityhub_account.workload]
-}
-
 resource "aws_sns_topic" "cis_controls" {
   count = var.harden ? 1 : 0
   name  = "cis-control-alarms"
