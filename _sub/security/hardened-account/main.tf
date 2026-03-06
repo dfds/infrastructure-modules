@@ -6,22 +6,6 @@ data "aws_region" "workload" {
   provider = aws.workload
 }
 
-resource "aws_sns_topic" "cis_controls" {
-  count = var.harden ? 1 : 0
-  name  = "cis-control-alarms"
-
-  provider = aws.workload
-}
-
-resource "aws_sns_topic_subscription" "cis_controls" {
-  count     = var.harden && var.monitoring_email != null ? 1 : 0
-  topic_arn = aws_sns_topic.cis_controls[count.index].arn
-  protocol  = "email"
-  endpoint  = var.monitoring_email
-
-  provider = aws.workload
-}
-
 resource "aws_sns_topic" "compliance_changes" {
   count = var.harden ? 1 : 0
   name  = "compliance-change-alarms"
@@ -348,30 +332,6 @@ module "config_s3_local" {
 
   providers = {
     aws = aws.workload
-  }
-}
-
-module "config_local" {
-  source            = "../../../_sub/security/config-config"
-  deploy            = var.harden
-  s3_bucket_name    = module.config_s3_local.bucket_name
-  s3_bucket_arn     = module.config_s3_local.bucket_arn
-  conformance_packs = ["Operational-Best-Practices-for-CIS-AWS-v1.4-Level2"]
-
-  providers = {
-    aws = aws.workload
-  }
-}
-
-module "config_local_2" {
-  source            = "../../../_sub/security/config-config"
-  deploy            = var.harden
-  s3_bucket_name    = module.config_s3_local.bucket_name
-  s3_bucket_arn     = module.config_s3_local.bucket_arn
-  conformance_packs = ["Operational-Best-Practices-for-CIS-AWS-v1.4-Level2"]
-
-  providers = {
-    aws = aws.workload_2
   }
 }
 
