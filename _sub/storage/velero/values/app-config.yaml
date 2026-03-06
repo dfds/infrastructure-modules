@@ -37,3 +37,5 @@ spec:
       flux_velero_azure_storage_account: ${azure_storage_account}
       flux_velero_azure_subscription_id: ${azure_subscription_id}
       flux_velero_iam_role_arn: ${iam_role_arn}
+      flux_velero_server_pod_memory: ${server_pod_memory}
+      flux_velero_node_agent_pod_memory: ${node_agent_pod_memory}

@@ -25,6 +25,8 @@ resource "github_repository_file" "velero_flux_helm_path" {
     cluster_name                  = var.cluster_name
     external_secrets_ssm_role_arn = var.ssm_role_arn
     iam_role_arn                  = aws_iam_role.velero_role.arn
+    server_pod_memory             = var.server_pod_memory
+    node_agent_pod_memory         = var.node_agent_pod_memory
     prune                         = var.prune
   })
   overwrite_on_create = true
