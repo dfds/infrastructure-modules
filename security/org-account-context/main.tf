@@ -158,6 +158,20 @@ module "iam_role_ssu_irsa_trust_exporter" {
   }
 }
 
+module "iam_role_ssu_ecr_pull_compliance_exporter" {
+  source               = "../../_sub/security/iam-role"
+  role_name            = "ssu-ecr-pull-compliance-exporter"
+  role_description     = "Allows ecr-pull-compliance-exporter to verify ECR repository permissions"
+  max_session_duration = 28800 # 8 hours
+  assume_role_policy   = data.aws_iam_policy_document.assume_role_policy_ecr_pull_compliance_exporter.json
+  role_policy_name     = "ssuEcrPullComplianceExporter"
+  role_policy_document = module.iam_policies.ssuecrpullcomplianceexporter
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
 module "iam_role_vpc_reader" {
   source               = "../../_sub/security/iam-role"
   role_name            = "vpc-reader"
