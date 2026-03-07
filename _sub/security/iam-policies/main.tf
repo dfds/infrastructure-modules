@@ -225,6 +225,21 @@ data "aws_iam_policy_document" "ssu_irsa_trust_exporter" {
   }
 }
 
+# ssu ecr-pull-compliance-exporter
+data "aws_iam_policy_document" "ssu_ecr_pull_compliance_exporter" {
+  statement {
+    sid    = "SsoReaderTf"
+    effect = "Allow"
+    actions = [
+      "ecr:GetRepositoryPolicy"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+}
+
+
 # VPCReader
 data "aws_iam_policy_document" "vpcreader" {
   statement {
