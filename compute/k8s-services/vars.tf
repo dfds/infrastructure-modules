@@ -608,16 +608,6 @@ variable "github_arc_runners_resource_memory" {
 }
 
 # --------------------------------------------------
-# Apache Druid Operator
-# --------------------------------------------------
-
-variable "druid_operator_deploy" {
-  type        = bool
-  description = "Deploy druid_operator helm chart switch"
-  default     = true
-}
-
-# --------------------------------------------------
 # Trivy Operator
 # --------------------------------------------------
 
