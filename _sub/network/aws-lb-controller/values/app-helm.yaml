@@ -30,3 +30,4 @@ spec:
       flux_aws_lb_controller_role_arn: ${role_arn}
       flux_cluster_name: ${cluster}
       flux_aws_region: ${region}
+      flux_vpc_id: ${vpc_id}
