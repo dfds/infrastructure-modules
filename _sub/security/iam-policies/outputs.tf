@@ -14,6 +14,10 @@ output "ssuirsatrustexporter" {
   value = data.aws_iam_policy_document.ssu_irsa_trust_exporter.json
 }
 
+output "ssuecrpullcomplianceexporter" {
+  value = data.aws_iam_policy_document.ssu_ecr_pull_compliance_exporter.json
+}
+
 output "vpcreader" {
   value = data.aws_iam_policy_document.vpcreader.json
 }

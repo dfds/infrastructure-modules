@@ -82,6 +82,7 @@ module "lb_controller_flux_manifests" {
   role_arn             = module.lb_controller_role.arn
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref = local.gitops_apps_repo_ref
+  vpc_id = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
 
   providers = {
     github = github.fluxcd
@@ -741,25 +742,6 @@ module "github_arc_runners" {
   prune                  = var.fluxcd_prune
   runner_scale_set_name  = var.github_arc_runners_runner_scale_set_name
   runner_resource_memory = var.github_arc_runners_resource_memory
-
-  providers = {
-    github = github.fluxcd
-  }
-}
-
-# --------------------------------------------------
-# Apache Druid Operator
-# --------------------------------------------------
-
-module "druid_operator" {
-  source               = "../../_sub/compute/druid-operator"
-  count                = var.druid_operator_deploy ? 1 : 0
-  cluster_name         = var.eks_cluster_name
-  repo_owner           = var.fluxcd_bootstrap_repo_owner
-  repo_name            = var.fluxcd_bootstrap_repo_name
-  repo_branch          = var.fluxcd_bootstrap_repo_branch
-  gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = local.gitops_apps_repo_ref
 
   providers = {
     github = github.fluxcd
