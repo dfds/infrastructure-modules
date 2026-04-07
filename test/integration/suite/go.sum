@@ -284,8 +284,8 @@ github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu
 github.com/stretchr/testify v1.11.1/go.mod h1:wZwfW3scLgRK+23gO65QZefKpKQRnfz6sD981Nm4B6U=
 github.com/traefik/paerser v0.2.2 h1:cpzW/ZrQrBh3mdwD/jnp6aXASiUFKOVr6ldP+keJTcQ=
 github.com/traefik/paerser v0.2.2/go.mod h1:7BBDd4FANoVgaTZG+yh26jI6CA2nds7D/4VTEdIsh24=
-github.com/traefik/traefik/v3 v3.6.12 h1:6pe4s7aaDTQs+AsF7KP3sM/xnq7zOVvibRQe5tw9eFo=
-github.com/traefik/traefik/v3 v3.6.12/go.mod h1:CAiMG7xwkYlNbIKsFzvgxSuHCqZ2KI/0DTQVkvS5Nuo=
+github.com/traefik/traefik/v3 v3.6.13 h1:V9181PYI4CU/GQhlGcPoa+ydC1TqGYtjy/6kzgKDv18=
+github.com/traefik/traefik/v3 v3.6.13/go.mod h1:WF4h0C3J4xJhtp/Bs+kjGfoeurxbUuMICuJtdddCfyA=
 github.com/unrolled/render v1.0.2 h1:dGS3EmChQP3yOi1YeFNO/Dx+MbWZhdvhQJTXochM5bs=
 github.com/unrolled/render v1.0.2/go.mod h1:gN9T0NhL4Bfbwu8ann7Ry/TGHYfosul+J0obPf6NBdM=
 github.com/urfave/cli v1.22.2/go.mod h1:Gos4lmkARVdJ6EkW0WaNv/tZAAMe9V7XWyB60NtXRu0=
