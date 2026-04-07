@@ -3,12 +3,12 @@ module go.dfds.cloud/infrastructure-modules/test/integration/suite
 go 1.26
 
 require (
-	github.com/fluxcd/pkg/apis/meta v1.25.0
+	github.com/fluxcd/pkg/apis/meta v1.26.0
 	github.com/gruntwork-io/terratest v0.56.0
 	github.com/stretchr/testify v1.11.1
 	github.com/traefik/traefik/v3 v3.6.13
 	k8s.io/api v0.35.1
-	k8s.io/apimachinery v0.35.1
+	k8s.io/apimachinery v0.35.2
 	k8s.io/client-go v0.35.1
 	sigs.k8s.io/controller-runtime v0.23.1
 	sigs.k8s.io/gateway-api v1.5.1
