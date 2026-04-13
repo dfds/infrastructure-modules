@@ -5,41 +5,15 @@ metadata:
   namespace: ${namespace}
 spec:
   values:
-    driver:
-      enabled: true
-      kind: modern_ebpf
-      modern_ebpf:
-        leastPrivileged: true
-    metrics:
-      enabled: true
-    collectors:
-      kubernetes:
-        enabled: true # Experimental
-    serviceMonitor:
-      create: false
-      labels:
-        scrape-service-metrics: "true"
-    grafana:
-      dashboards:
-        enabled: true
-    webserver:
-      prometheus_metrics_enabled: true
     customRules:
         falco_custom_rules.yaml: |-
           ${custom_rules}
     falcosidekick:
-      enabled: true
-      webui:
-        enabled: true
       config:
         slack:
           webhookurl: "${slack_alert_webhook_url}"
           channel: "${slack_alert_channel_name}"
           minimumpriority: "${slack_alert_minimum_priority}"
-      serviceMonitor:
-        enabled: false
-        additionalLabels:
-          scrape-service-metrics: "true"
     falco:
       program_output:
         enabled: ${stream_enabled}
