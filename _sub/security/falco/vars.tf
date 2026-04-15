@@ -2,18 +2,6 @@ variable "cluster_name" {
   type = string
 }
 
-variable "deploy_name" {
-  type        = string
-  description = "Unique identifier of the deployment, only needs override if deploying multiple instances"
-  default     = "falco"
-}
-
-variable "namespace" {
-  type        = string
-  description = "Namespace to deploy the application into"
-  default     = "falco"
-}
-
 variable "repo_owner" {
   type        = string
   description = "Name of the repo owner (previously: organization)"
@@ -27,18 +15,15 @@ variable "repo_name" {
 variable "repo_branch" {
   type        = string
   description = "Override the default branch of the repo (optional)"
-  default     = "main"
 }
 
 variable "gitops_apps_repo_url" {
   type        = string
-  default     = ""
   description = "The https url for your GitOps manifests"
 }
 
 variable "gitops_apps_repo_ref" {
   type        = string
-  default     = "main"
   description = "The default branch or tag for your GitOps manifests"
 }
 
@@ -50,42 +35,25 @@ variable "prune" {
 
 variable "slack_alert_webhook_url" {
   type        = string
-  default     = ""
   description = "Value for slack webhook url to which to send alerts. If not provided, slack alerts will not be sent"
 }
 
 variable "slack_alert_channel_name" {
   type        = string
-  default     = ""
-  description = "Channel name for slack alerts. Example: #falco-alerts"
-}
-
-variable "slack_alert_minimum_priority" {
-  type        = string
-  default     = "critical"
-  description = "Minimum priority level for slack alerts. Valid options are: "
-}
-
-variable "stream_enabled" {
-  type        = bool
-  default     = false
-  description = "Enable Falco stream output to a specified webhook"
+  description = "Channel name for slack alerts."
 }
 
 variable "stream_webhook_url" {
   type        = string
-  default     = ""
-  description = "Value for webhook url to which to send falco events stream. stream_enabled must be set to true. If not provided, slack stream will not be sent"
+  description = "Value for webhook url to which to send falco events stream. If not provided, slack stream will not be sent"
 }
 
 variable "stream_channel_name" {
   type        = string
-  default     = ""
-  description = "Channel name for falco stream. Example: #falco-stream"
+  description = "Channel name for falco stream."
 }
 
 variable "custom_rules" {
   type        = string
-  default     = ""
   description = "Custom rules to be added to the falco config"
 }

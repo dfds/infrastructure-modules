@@ -1,20 +1,14 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: ${deploy_name}
-  namespace: ${namespace}
+  name: falco
+  namespace: falco
 spec:
   values:
     customRules:
         falco_custom_rules.yaml: |-
           ${custom_rules}
-    falcosidekick:
-      config:
-        slack:
-          webhookurl: "${slack_alert_webhook_url}"
-          channel: "${slack_alert_channel_name}"
-          minimumpriority: "${slack_alert_minimum_priority}"
     falco:
       program_output:
-        enabled: ${stream_enabled}
+        enabled: true
         program: "jq '{channel: \"${stream_channel_name}\", text: .output}' | curl -d @- -X POST ${stream_webhook_url}"
