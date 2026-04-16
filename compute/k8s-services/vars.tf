@@ -645,34 +645,14 @@ variable "trivy_scan_resources_requests_memory" {
 # Falco
 # --------------------------------------------------
 
-variable "falco_deploy" {
-  type        = bool
-  description = "Deploy Falco helm chart switch"
-  default     = false
-}
-
 variable "falco_slack_alert_webhook_url" {
   type        = string
-  default     = "dummy"
-  description = "Value for slack webhook url. If not provided, slack alerts will not be sent"
-}
-
-variable "falco_slack_alert_channel_name" {
-  type        = string
-  default     = ""
-  description = "Channel name for slack alerts."
+  description = "Slack webhook for Falco alerts"
 }
 
 variable "falco_stream_webhook_url" {
   type        = string
-  default     = "dummy"
-  description = "Value for webhook url to which to send falco events stream.  If not provided, slack stream will not be sent"
-}
-
-variable "falco_stream_channel_name" {
-  type        = string
-  default     = ""
-  description = "Channel name for falco stream."
+  description = "Slack webhook for Falco events"
 }
 
 variable "falco_custom_rules" {

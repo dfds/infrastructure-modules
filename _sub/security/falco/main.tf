@@ -6,14 +6,12 @@ resource "github_repository_file" "helm" {
   branch     = local.repo_branch
   file       = "${local.cluster_repo_path}/${local.app_install_name}-helm.yaml"
   content = templatefile("${path.module}/values/app-config.yaml", {
-    app_install_name         = local.app_install_name
-    helm_repo_path           = local.helm_repo_path
-    stream_webhook_url       = var.stream_webhook_url
-    stream_channel_name      = local.stream_channel_name
-    slack_alert_webhook_url  = var.slack_alert_webhook_url
-    slack_alert_channel_name = local.slack_alert_channel_name
-    deploy_name              = local.deploy_name
-    prune                    = var.prune
+    app_install_name        = local.app_install_name
+    helm_repo_path          = local.helm_repo_path
+    stream_webhook_url      = var.stream_webhook_url
+    slack_alert_webhook_url = var.slack_alert_webhook_url
+    deploy_name             = local.deploy_name
+    prune                   = var.prune
   })
   overwrite_on_create = true
 }
@@ -35,9 +33,8 @@ resource "github_repository_file" "helm_patch" {
   branch     = local.repo_branch
   file       = "${local.helm_repo_path}/patch.yaml"
   content = templatefile("${path.module}/values/patch.yaml", {
-    custom_rules        = var.custom_rules
-    stream_webhook_url  = var.stream_webhook_url
-    stream_channel_name = local.stream_channel_name
+    custom_rules       = var.custom_rules
+    stream_webhook_url = var.stream_webhook_url
   })
   overwrite_on_create = true
 }

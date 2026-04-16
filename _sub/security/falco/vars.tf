@@ -38,19 +38,9 @@ variable "slack_alert_webhook_url" {
   description = "Value for slack webhook url to which to send alerts. If not provided, slack alerts will not be sent"
 }
 
-variable "slack_alert_channel_name" {
-  type        = string
-  description = "Channel name for slack alerts."
-}
-
 variable "stream_webhook_url" {
   type        = string
   description = "Value for webhook url to which to send falco events stream. If not provided, slack stream will not be sent"
-}
-
-variable "stream_channel_name" {
-  type        = string
-  description = "Channel name for falco stream."
 }
 
 variable "custom_rules" {

@@ -777,19 +777,16 @@ module "trivy_operator" {
 # --------------------------------------------------
 
 module "falco" {
-  source                   = "../../_sub/security/falco"
-  count                    = var.falco_deploy ? 1 : 0
-  cluster_name             = var.eks_cluster_name
-  repo_owner               = var.fluxcd_bootstrap_repo_owner
-  repo_name                = var.fluxcd_bootstrap_repo_name
-  repo_branch              = var.fluxcd_bootstrap_repo_branch
-  gitops_apps_repo_url     = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref     = local.gitops_apps_repo_ref
-  slack_alert_webhook_url  = var.falco_slack_alert_webhook_url
-  slack_alert_channel_name = var.falco_slack_alert_channel_name
-  stream_webhook_url       = var.falco_stream_webhook_url
-  stream_channel_name      = var.falco_stream_channel_name
-  custom_rules             = var.falco_custom_rules
+  source                  = "../../_sub/security/falco"
+  cluster_name            = var.eks_cluster_name
+  repo_owner              = var.fluxcd_bootstrap_repo_owner
+  repo_name               = var.fluxcd_bootstrap_repo_name
+  repo_branch             = var.fluxcd_bootstrap_repo_branch
+  gitops_apps_repo_url    = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref    = local.gitops_apps_repo_ref
+  slack_alert_webhook_url = var.falco_slack_alert_webhook_url
+  stream_webhook_url      = var.falco_stream_webhook_url
+  custom_rules            = var.falco_custom_rules
 
   providers = {
     github = github.fluxcd

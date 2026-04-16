@@ -87,3 +87,18 @@ moved {
   from = module.traefik_green_variant_manifests[0].github_repository_file.traefik_helm_install
   to   = module.traefik_green_variant_manifests.github_repository_file.traefik_helm_install
 }
+
+moved {
+  from = module.falco[0].github_repository_file.helm
+  to   = module.falco.github_repository_file.helm
+}
+
+moved {
+  from = module.falco[0].github_repository_file.helm_install
+  to   = module.falco.github_repository_file.helm_install
+}
+
+moved {
+  from = module.falco[0].github_repository_file.helm_patch
+  to   = module.falco.github_repository_file.helm_patch
+}

@@ -28,4 +28,3 @@ spec:
   postBuild:
     substitute:
       flux_falco_sidekick_slack_alert_webhookurl: "${slack_alert_webhook_url}"
-      flux_falco_sidekick_slack_alert_channel: "${slack_alert_channel_name}"
