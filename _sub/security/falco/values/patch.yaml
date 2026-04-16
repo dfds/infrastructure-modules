@@ -11,4 +11,4 @@ spec:
     falco:
       program_output:
         enabled: true
-        program: "jq '{channel: \"${stream_channel_name}\", text: .output}' | curl -d @- -X POST ${stream_webhook_url}"
+        program: "jq '{text: .output}' | curl -d @- -X POST ${stream_webhook_url}"
