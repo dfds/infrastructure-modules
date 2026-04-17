@@ -35,12 +35,12 @@ variable "prune" {
 
 variable "slack_alert_webhook_url" {
   type        = string
-  description = "Value for slack webhook url to which to send alerts. If not provided, slack alerts will not be sent"
+  description = "Value for slack webhook url to which to send alerts."
 }
 
 variable "stream_webhook_url" {
   type        = string
-  description = "Value for webhook url to which to send falco events stream. If not provided, slack stream will not be sent"
+  description = "Value for webhook url to which to send falco events stream."
 }
 
 variable "custom_rules" {
