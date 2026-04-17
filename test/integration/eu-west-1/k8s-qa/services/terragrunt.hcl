@@ -66,7 +66,7 @@ inputs = {
   # Flux CD
   # --------------------------------------------------
 
-  fluxcd_apps_repo_branch           = "main"
+  fluxcd_apps_repo_branch           = "feature/falco-reduce-patch" # For PR review process only. Will be revered back to main after merge.
   fluxcd_bootstrap_repo_branch      = "main"
   fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
   fluxcd_version                    = "v2.7.5"
