@@ -152,15 +152,6 @@ module "traefik_alb_auth" {
   green_variant_weight            = var.traefik_green_variant_weight
 }
 
-module "traefik_alb_auth_dns" {
-  source       = "../../_sub/network/route53-record"
-  zone_id      = local.workload_dns_zone_id
-  record_name  = ["internal.${var.eks_cluster_name}.${var.workload_dns_zone_name}"]
-  record_type  = "CNAME"
-  record_ttl   = "900"
-  record_value = "${module.traefik_alb_auth.alb_fqdn}."
-}
-
 module "traefik_alb_auth_dns_for_traefik_blue_variant_dashboard" {
   source       = "../../_sub/network/route53-record"
   zone_id      = local.workload_dns_zone_id
@@ -216,6 +207,12 @@ module "traefik_alb_anon" {
   green_variant_target_admin_port = local.traefik_green_variant_target_admin_port
   green_variant_health_check_path = "/ping"
   green_variant_weight            = var.traefik_green_variant_weight
+
+  workload_dns_zone_name = var.workload_dns_zone_name
+  azure_tenant_id          = try(module.traefik_alb_auth_appreg.tenant_id, "")
+  azure_client_id          = try(module.traefik_alb_auth_appreg.client_id, "")
+  azure_client_secret      = try(module.traefik_alb_auth_appreg.application_key, "")
+
 }
 
 module "traefik_alb_anon_dns" {

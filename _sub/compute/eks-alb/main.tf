@@ -114,6 +114,36 @@ resource "aws_lb_listener" "traefik" {
   }
 }
 
+# This listener rule could potentially replace the eks-alb-auth module
+resource "aws_lb_listener_rule" "oidc" {
+  listener_arn = aws_lb_listener.traefik.arn
+  priority     = 1
+
+  action {
+    type = "authenticate-oidc"
+
+    authenticate_oidc {
+      authorization_endpoint = "https://login.microsoftonline.com/${var.azure_tenant_id}/oauth2/v2.0/authorize"
+      client_id              = var.azure_client_id
+      client_secret          = var.azure_client_secret
+      issuer                 = "https://login.microsoftonline.com/${var.azure_tenant_id}/v2.0"
+      token_endpoint         = "https://login.microsoftonline.com/${var.azure_tenant_id}/oauth2/v2.0/token"
+      user_info_endpoint     = "https://graph.microsoft.com/oidc/userinfo"
+    }
+  }
+
+  condition {
+    host_header {
+      values = ["internal.${var.eks_cluster_name}.${var.workload_dns_zone_name}"] # using only the internal subdomain for demo
+    }
+  }
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.traefik_blue_variant.arn
+  }
+}
+
 resource "aws_lb_listener" "http-to-https" {
   load_balancer_arn = aws_lb.traefik.arn
   port              = "80"
@@ -150,6 +180,15 @@ resource "aws_security_group" "traefik" {
     to_port     = 443
     protocol    = "TCP"
     cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sg tfsec:ignore:aws-ec2-no-public-ingress-sgr
+  }
+
+  # required for OIDC authentication to work, as ALB needs to reach the OIDC provider on the internet
+  egress {
+    description = "Egress on standard HTTPS port"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg tfsec:ignore:aws-ec2-no-public-ingress-sgr tfsec:ignore:aws-ec2-no-public-egress-sgr
   }
 
   tags = {

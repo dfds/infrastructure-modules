@@ -77,3 +77,19 @@ variable "enable_delete_protection" {
   default     = true
   description = "Enable or disable delete protection for the ALB. Not applicable for sandbox environments."
 }
+
+variable "workload_dns_zone_name" {
+  type = string
+}
+
+variable "azure_tenant_id" {
+  type = string
+}
+
+variable "azure_client_id" {
+  type = string
+}
+
+variable "azure_client_secret" {
+  type = string
+}
