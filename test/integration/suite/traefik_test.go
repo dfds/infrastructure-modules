@@ -106,6 +106,16 @@ func DeployTestcase(t *testing.T, clientset *kubernetes.Clientset, testName stri
 								InitialDelaySeconds: 3,
 								PeriodSeconds:       3,
 							},
+							ReadinessProbe: &apiv1.Probe{
+								ProbeHandler: apiv1.ProbeHandler{
+									HTTPGet: &apiv1.HTTPGetAction{
+										Port: intstr.IntOrString{IntVal: 80},
+										Path: "/",
+									},
+								},
+								InitialDelaySeconds: 3,
+								PeriodSeconds:       3,
+							},
 						},
 					},
 				},

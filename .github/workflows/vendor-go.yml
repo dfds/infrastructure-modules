@@ -75,5 +75,4 @@ jobs:
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git add test/integration/suite/
-          git commit -m "Vendoring Go packages again"
-          git push
+          git diff --cached --quiet && echo "No vendor changes to commit" || (git commit -m "Vendoring Go packages again" && git push)
