@@ -50,6 +50,16 @@ variable "replication_destination_bucket_arn" {
   default     = null
 }
 
+variable "blocked_encryption_types" {
+  description = "List of encryption types that are blocked for the S3 bucket"
+  type        = list(string)
+  default     = ["SSE-C"]
+  validation {
+    condition     = alltrue([for t in var.blocked_encryption_types : contains(["SSE-C", "NONE"], t)])
+    error_message = "Blocked encryption types must be either 'SSE-C' or 'NONE'"
+  }
+}
+
 variable "replication_destination_kms_key_arn" {
   type        = string
   description = "The ARN of the KMS key to use for encryption of the destination bucket."

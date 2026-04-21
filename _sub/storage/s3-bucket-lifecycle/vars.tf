@@ -66,6 +66,16 @@ variable "sse_algorithm" {
   }
 }
 
+variable "blocked_encryption_types" {
+  description = "List of encryption types that are blocked for the S3 bucket"
+  type        = list(string)
+  default     = ["SSE-C"]
+  validation {
+    condition     = alltrue([for t in var.blocked_encryption_types : contains(["SSE-C", "NONE"], t)])
+    error_message = "Blocked encryption types must be either 'SSE-C' or 'NONE'"
+  }
+}
+
 variable "versioning_enabled" {
   type        = bool
   description = "Enable S3 bucket versioning."
