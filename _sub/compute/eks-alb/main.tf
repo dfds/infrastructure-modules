@@ -8,8 +8,6 @@ resource "aws_lb" "traefik" {
   load_balancer_type = "application"
   security_groups = concat(
     [aws_security_group.traefik.id],
-    [aws_security_group.traefik_blue.id],
-    [aws_security_group.traefik_green.id]
   )
   subnets = var.subnet_ids
 
@@ -152,59 +150,12 @@ resource "aws_security_group" "traefik" {
     cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sg tfsec:ignore:aws-ec2-no-public-ingress-sgr
   }
 
-  tags = {
-    Name = "${var.cluster_name}-traefik-sg"
-  }
-
-  lifecycle {
-    create_before_destroy = true
-  }
-
-}
-
-resource "aws_security_group" "traefik_blue" {
-  name_prefix = "allow_traefik_blue-${var.cluster_name}"
-  description = "Allow traefik connection related to the blue variant for ${var.cluster_name}"
-  vpc_id      = var.vpc_id
-
-  ingress {
-    description = "Ingress on var.target_admin_port"
-    from_port   = var.blue_variant_target_admin_port
-    to_port     = var.blue_variant_target_admin_port
-    protocol    = "TCP"
-    self        = true
-  }
-
   egress {
     description = "Egress from var.target_http_port to var.target_admin_port"
     from_port   = var.blue_variant_target_http_port
     to_port     = var.blue_variant_target_admin_port
     protocol    = "TCP"
     cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg tfsec:ignore:aws-ec2-no-public-egress-sgr
-  }
-
-  tags = {
-    Name = "${var.cluster_name}-traefik-blue-sg"
-  }
-
-  lifecycle {
-    create_before_destroy = true
-  }
-
-}
-
-#trivy:ignore:AVD-AWS-0104 Security group rule allows unrestricted egress to any IP address
-resource "aws_security_group" "traefik_green" {
-  name_prefix = "allow_traefik_green-${var.cluster_name}"
-  description = "Allow traefik connection related to the green variant for ${var.cluster_name}"
-  vpc_id      = var.vpc_id
-
-  ingress {
-    description = "Ingress on var.green_variant_target_admin_port"
-    from_port   = var.green_variant_target_admin_port
-    to_port     = var.green_variant_target_admin_port
-    protocol    = "TCP"
-    self        = true
   }
 
   egress {
@@ -216,13 +167,12 @@ resource "aws_security_group" "traefik_green" {
   }
 
   tags = {
-    Name = "${var.cluster_name}-traefik-blue-sg"
+    Name = "${var.cluster_name}-traefik-sg"
   }
 
   lifecycle {
     create_before_destroy = true
   }
-
 }
 
 resource "aws_security_group_rule" "allow_traefik_blue" {
