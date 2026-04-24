@@ -4,7 +4,13 @@ resource "aws_eks_addon" "vpc-cni" {
   addon_version = local.vpccni_version
   configuration_values = jsonencode({
     "env" = {
-      "ENABLE_PREFIX_DELEGATION" = tostring(var.vpccni_prefix_delegation_enabled)
+      "ENABLE_PREFIX_DELEGATION"      = tostring(var.vpccni_prefix_delegation_enabled)
+      "NETWORK_POLICY_ENFORCING_MODE" = "standard" # default allow policy, change to "strict" default deny policy (see https://docs.aws.amazon.com/eks/latest/userguide/cni-network-policy-configure.html#cni-network-policy-configure-policy)
+    }
+    "enableNetworkPolicy" = "true" # see https://docs.aws.amazon.com/eks/latest/userguide/cni-network-policy-configure.html#enable-network-policy-parameter
+    "nodeAgent" = {
+      "healthProbeBindAddr" = "8163" # this port must be free on node
+      "metricsBindAddr"     = "8162" # this port must be free on node
     }
   })
   resolve_conflicts_on_create = "OVERWRITE"
