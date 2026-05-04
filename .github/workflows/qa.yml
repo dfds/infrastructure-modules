@@ -44,51 +44,20 @@ jobs:
   build_test_master:
     if: github.event.pull_request.draft == false
     name: Build test binary from master branch
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-        with:
-          repository: dfds/infrastructure-modules
-          ref: master
-
-      - name: Setup Go
-        uses: actions/setup-go@v6
-        with:
-          go-version-file: test/integration/suite/go.mod
-          cache-dependency-path: test/integration/suite/go.sum
-
-      - name: Build test binary
-        run: ./src/qa-test-eks.sh test-build eu-west-1 qa /tmp/test-master.bin
-
-      - name: Upload test binary
-        uses: actions/upload-artifact@v7
-        with:
-          name: test-master
-          path: /tmp/test-master.bin
+    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@master
+    with:
+      test-source-path: test/integration/suite
+      repository: dfds/infrastructure-modules
+      ref: master
+      artifact-name: test-master
 
   build_test_feature:
-    name: Build test binary from feature branch
-    runs-on: ubuntu-latest
     if: github.ref != 'refs/heads/master' && github.event.pull_request.draft == false
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Setup Go
-        uses: actions/setup-go@v6
-        with:
-          go-version-file: test/integration/suite/go.mod
-          cache-dependency-path: test/integration/suite/go.sum
-
-      - name: Build test binary
-        run: ./src/qa-test-eks.sh test-build eu-west-1 qa /tmp/test-feature.bin
-
-      - name: Upload test binary
-        uses: actions/upload-artifact@v7
-        with:
-          name: test-feature
-          path: /tmp/test-feature.bin
+    name: Build test binary from feature branch
+    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@master
+    with:
+      test-source-path: test/integration/suite
+      artifact-name: test-feature
 
   apply_test_master:
     if: github.event.pull_request.draft == false
@@ -163,7 +132,9 @@ jobs:
           name: test-master
           path: /tmp
       - name: Run tests
-        run: ./src/qa-test-eks.sh test-run eu-west-1 qa /tmp/test-master.bin
+        run: ./src/qa-test-eks.sh test-run eu-west-1 qa /tmp/test.bin
+        env:
+          INTEGRATION_DNS_ZONE: "qa.qa.dfds.cloud"
 
       # - name: Send alert if job fails
       #   if: failure()
@@ -242,7 +213,9 @@ jobs:
           name: test-feature
           path: /tmp
       - name: Run tests
-        run: ./src/qa-test-eks.sh test-run eu-west-1 qa /tmp/test-feature.bin
+        run: ./src/qa-test-eks.sh test-run eu-west-1 qa /tmp/test.bin
+        env:
+          INTEGRATION_DNS_ZONE: "qa.qa.dfds.cloud"
 
       - name: Send alert if job fails
         if: failure()

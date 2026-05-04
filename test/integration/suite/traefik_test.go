@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"path/filepath"
 	"testing"
 
 	appsv1 "k8s.io/api/apps/v1"
@@ -14,8 +13,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	intstr "k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/tools/clientcmd"
-	"k8s.io/client-go/util/homedir"
 
 	"github.com/stretchr/testify/assert"
 
@@ -188,12 +185,6 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 
 	// Custom Resources
 
-	kubeconfig := filepath.Join(homedir.HomeDir(), ".kube", "qa.config")
-	cfg, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
-	if err != nil {
-		t.Logf("Error building kubeconfig: %v", err)
-	}
-
 	// Create a new scheme
 	schemeBuilder := &scheme.Builder{GroupVersion: traefikv1alpha1.SchemeGroupVersion}
 	schemeBuilder.Register(&traefikv1alpha1.Middleware{}, &traefikv1alpha1.MiddlewareList{})
@@ -205,7 +196,7 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 	}
 
 	// Create the controller-runtime client for Traefik CRDs
-	k8sClient, err := client.New(cfg, client.Options{Scheme: clientScheme})
+	k8sClient, err := client.New(kubeClientConfig, client.Options{Scheme: clientScheme})
 	if err != nil {
 		t.Logf("Error creating controller-runtime client: %v", err)
 	}
@@ -238,7 +229,7 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 		Spec: traefikv1alpha1.IngressRouteSpec{
 			Routes: []traefikv1alpha1.Route{
 				{
-					Match: "Host(`nginx-test.qa.qa.dfds.cloud`) && PathPrefix(`/test`)",
+					Match: fmt.Sprintf("Host(`nginx-test.%s`) && PathPrefix(`/test`)", cfg.DNSZone),
 					Kind:  "Rule",
 					Services: []traefikv1alpha1.Service{
 						{
@@ -268,7 +259,7 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 	AssertK8sDeployment(t, clientset, "default", deployment.Name, 1)
 
 	// Call the test endpoint
-	resp, err := http.Get("https://nginx-test.qa.qa.dfds.cloud/test")
+	resp, err := http.Get(fmt.Sprintf("https://nginx-test.%s/test", cfg.DNSZone))
 	if err != nil {
 		t.Log(err)
 	}
@@ -297,21 +288,15 @@ func TestTraefikGatewayHTTPRoute(t *testing.T) {
 	deployment, service := DeployTestcase(t, clientset, "httproute")
 
 	// Gateway API Resources
-	kubeconfig := filepath.Join(homedir.HomeDir(), ".kube", "qa.config")
-	cfg, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
-	if err != nil {
-		t.Logf("Error building kubeconfig: %v", err)
-	}
-
 	// Create a new scheme and register Gateway API types
 	clientScheme := runtime.NewScheme()
-	err = gwapiv1.Install(clientScheme)
+	err := gwapiv1.Install(clientScheme)
 	if err != nil {
 		log.Fatalf("Error adding Gateway API to scheme: %v", err)
 	}
 
 	// Create the controller-runtime client with Gateway API scheme
-	k8sClient, err := client.New(cfg, client.Options{Scheme: clientScheme})
+	k8sClient, err := client.New(kubeClientConfig, client.Options{Scheme: clientScheme})
 	if err != nil {
 		t.Logf("Error creating controller-runtime client: %v", err)
 	}
@@ -338,7 +323,7 @@ func TestTraefikGatewayHTTPRoute(t *testing.T) {
 					},
 				},
 			},
-			Hostnames: []gwapiv1.Hostname{"nginx-gw-test.qa.qa.dfds.cloud"},
+			Hostnames: []gwapiv1.Hostname{gwapiv1.Hostname(fmt.Sprintf("nginx-gw-test.%s", cfg.DNSZone))},
 			Rules: []gwapiv1.HTTPRouteRule{
 				{
 					Matches: []gwapiv1.HTTPRouteMatch{
@@ -411,7 +396,7 @@ func TestTraefikGatewayHTTPRoute(t *testing.T) {
 
 
 	// Call the test endpoint
-	resp, err := http.Get("https://nginx-gw-test.qa.qa.dfds.cloud/")
+	resp, err := http.Get(fmt.Sprintf("https://nginx-gw-test.%s/", cfg.DNSZone))
 	if err != nil {
 		t.Logf("HTTP request error: %v", err)
 	}
