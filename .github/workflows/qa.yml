@@ -115,7 +115,6 @@ jobs:
           TF_VAR_velero_azure_resource_group_name: op://CloudEng-General/Azure - Offsite Backup/qa-resource-group-name # pragma: allowlist-secret
           TF_VAR_velero_azure_storage_account_name: op://CloudEng-General/Azure - Offsite Backup/qa-storage-account-name # pragma: allowlist-secret
           TF_VAR_falco_slack_alert_webhook_url: op://CloudEng-General/Slack dfds.slack.com webhooks/hgdm4deysbaryzpqvjg6lbh2xm # pragma: allowlist-secret
-          TF_VAR_falco_stream_webhook_url: op://CloudEng-General/Slack dfds.slack.com webhooks/vhrc25x3njx6h7o3g5aawlhtmm # pragma: allowlist-secret
 
       - name: Provision shared EKS S3 bucket
         run: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket
@@ -198,7 +197,6 @@ jobs:
           TF_VAR_velero_azure_resource_group_name: op://CloudEng-General/Azure - Offsite Backup/qa-resource-group-name # pragma: allowlist-secret
           TF_VAR_velero_azure_storage_account_name: op://CloudEng-General/Azure - Offsite Backup/qa-storage-account-name # pragma: allowlist-secret
           TF_VAR_falco_slack_alert_webhook_url: op://CloudEng-General/Slack dfds.slack.com webhooks/hgdm4deysbaryzpqvjg6lbh2xm # pragma: allowlist-secret
-          TF_VAR_falco_stream_webhook_url: op://CloudEng-General/Slack dfds.slack.com webhooks/vhrc25x3njx6h7o3g5aawlhtmm # pragma: allowlist-secret
 
       - name: Provision shared EKS S3 bucket
         run: ./src/qa-test-eks.sh apply-shared _global/eks-public-s3-bucket

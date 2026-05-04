@@ -785,7 +785,6 @@ module "falco" {
   gitops_apps_repo_url    = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref    = local.gitops_apps_repo_ref
   slack_alert_webhook_url = var.falco_slack_alert_webhook_url
-  stream_webhook_url      = var.falco_stream_webhook_url
   custom_rules            = var.falco_custom_rules
 
   providers = {

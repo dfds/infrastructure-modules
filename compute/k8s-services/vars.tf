@@ -650,11 +650,6 @@ variable "falco_slack_alert_webhook_url" {
   description = "Slack webhook for Falco alerts"
 }
 
-variable "falco_stream_webhook_url" {
-  type        = string
-  description = "Slack webhook for Falco events"
-}
-
 variable "falco_custom_rules" {
   type        = string
   default     = ""
