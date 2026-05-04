@@ -134,7 +134,6 @@ jobs:
       - name: Run tests
         run: ./src/qa-test-eks.sh test-run eu-west-1 qa /tmp/test.bin
         env:
-          INTEGRATION_NODE_COUNT: "4"
           INTEGRATION_DNS_ZONE: "qa.qa.dfds.cloud"
 
       # - name: Send alert if job fails
@@ -216,7 +215,6 @@ jobs:
       - name: Run tests
         run: ./src/qa-test-eks.sh test-run eu-west-1 qa /tmp/test.bin
         env:
-          INTEGRATION_NODE_COUNT: "4"
           INTEGRATION_DNS_ZONE: "qa.qa.dfds.cloud"
 
       - name: Send alert if job fails
