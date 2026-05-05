@@ -66,6 +66,5 @@ variable "podidentity_version_override" {
 
 variable "ebs_csi_snapshotter_memory" {
   type        = string
-  description = "Memory request for the EBS CSI snapshotter container. Default is 512Mi."
-  default     = "512Mi"
+  description = "Memory request for the EBS CSI snapshotter container."
 }
