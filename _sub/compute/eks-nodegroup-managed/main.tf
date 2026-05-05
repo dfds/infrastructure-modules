@@ -31,8 +31,8 @@ resource "aws_launch_template" "eks" {
   }
 
   metadata_options {
-    http_endpoint                = "enabled"
-    http_tokens                  = "required"
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
     http_put_response_hop_limit = 1
   }
 
@@ -40,7 +40,7 @@ resource "aws_launch_template" "eks" {
     device_name = "/dev/xvda"
     ebs {
       volume_size           = var.disk_size
-      volume_type           = var.disk_type
+      volume_type           = "gp3"
       delete_on_termination = true
     }
   }

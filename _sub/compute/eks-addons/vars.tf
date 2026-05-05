@@ -63,3 +63,8 @@ variable "podidentity_version_override" {
   description = "Option to override the version of the eks-pod-identity-agent add-on"
   default     = ""
 }
+
+variable "ebs_csi_snapshotter_memory" {
+  type        = string
+  description = "Memory request for the EBS CSI snapshotter container."
+}
