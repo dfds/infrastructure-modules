@@ -169,6 +169,12 @@ variable "eks_k8s_auth_api_version" {
   default     = "client.authentication.k8s.io/v1beta1"
 }
 
+variable "eks_addon_ebs_csi_snapshotter_memory" {
+  type        = string
+  description = "Memory request for the EBS CSI snapshotter container. Default is 512Mi."
+  default     = "512Mi"
+}
+
 # --------------------------------------------------
 # EKS managed node group
 # --------------------------------------------------
