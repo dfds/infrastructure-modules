@@ -263,7 +263,6 @@ module "eks_managed_workers_node_group" {
   instance_types             = each.value.instance_types
   use_spot_instances         = each.value.use_spot_instances
   disk_size                  = each.value.disk_size
-  disk_type                  = each.value.disk_type
   desired_size_per_subnet    = each.value.desired_size_per_subnet
   taints                     = each.value.taints
   labels                     = each.value.labels
