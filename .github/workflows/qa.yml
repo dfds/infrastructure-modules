@@ -76,7 +76,7 @@ jobs:
           MISE_FETCH_REMOTE_VERSIONS_TIMEOUT: 60s
         uses: gruntwork-io/terragrunt-action@v3
         with:
-          github_token: ${{ secrets.SHARED_WORKFLOW_HOUSEKEEPING }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -157,7 +157,7 @@ jobs:
           MISE_FETCH_REMOTE_VERSIONS_TIMEOUT: 60s
         uses: gruntwork-io/terragrunt-action@v3
         with:
-          github_token: ${{ secrets.SHARED_WORKFLOW_HOUSEKEEPING }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
