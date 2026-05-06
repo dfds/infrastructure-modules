@@ -35,7 +35,7 @@ inputs = {
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"kube-proxy"}
   eks_addon_kubeproxy_version_override = "v1.34.6-eksbuild.5"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"aws-efs-csi-driver"}
-  eks_addon_awsefscsidriver_version_override = "v3.0.0-eksbuild.1"
+  eks_addon_awsefscsidriver_version_override = "v3.1.0-eksbuild.1"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"aws-ebs-csi-driver"}
   eks_addon_awsebscsidriver_version_override = "v1.59.0-eksbuild.1"
 
