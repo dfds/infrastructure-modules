@@ -59,7 +59,7 @@ data "aws_iam_policy_document" "assume_role_policy_ec2_inventory_api" {
 
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${var.ssu_account_id}:role/ssu-ec2-inventory-api"]
+      identifiers = ["arn:aws:iam::${var.ssu_account_id}:role/ec2-inventory-api"]
     }
   }
 }
