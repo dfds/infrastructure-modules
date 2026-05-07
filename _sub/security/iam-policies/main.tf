@@ -248,7 +248,8 @@ data "aws_iam_policy_document" "ssu_ec2_inventory_api" {
       "iam:ListAccountAliases",
       "ec2:DescribeRegions",
       "ec2:DescribeInstances",
-      "ec2:DescribeImages"
+      "ec2:DescribeImages",
+      "ssm:DescribeInstanceInformation"
     ]
     resources = [
       "*"
