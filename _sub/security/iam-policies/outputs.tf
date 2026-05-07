@@ -18,6 +18,10 @@ output "ssuecrpullcomplianceexporter" {
   value = data.aws_iam_policy_document.ssu_ecr_pull_compliance_exporter.json
 }
 
+output "ssuec2inventoryapi" {
+  value = data.aws_iam_policy_document.ssu_ec2_inventory_api.json
+}
+
 output "vpcreader" {
   value = data.aws_iam_policy_document.vpcreader.json
 }
