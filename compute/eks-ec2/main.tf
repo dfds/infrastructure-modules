@@ -263,7 +263,6 @@ module "eks_managed_workers_node_group" {
   instance_types             = each.value.instance_types
   use_spot_instances         = each.value.use_spot_instances
   disk_size                  = each.value.disk_size
-  disk_type                  = each.value.disk_type
   desired_size_per_subnet    = each.value.desired_size_per_subnet
   taints                     = each.value.taints
   labels                     = each.value.labels
@@ -333,6 +332,7 @@ module "eks_addons" {
   eks_openid_connect_provider_url  = module.eks_cluster.eks_openid_connect_provider_url
   efs_fs_id                        = module.efs_fs.id
   ebs_csi_kms_arn                  = var.eks_addon_awsebscsidriver_kms_arn
+  ebs_csi_snapshotter_memory       = var.eks_addon_ebs_csi_snapshotter_memory
 }
 
 module "k8s_priority_class" {

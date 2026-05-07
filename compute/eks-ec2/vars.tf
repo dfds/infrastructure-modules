@@ -169,6 +169,12 @@ variable "eks_k8s_auth_api_version" {
   default     = "client.authentication.k8s.io/v1beta1"
 }
 
+variable "eks_addon_ebs_csi_snapshotter_memory" {
+  type        = string
+  description = "Memory request for the EBS CSI snapshotter container. Default is 512Mi."
+  default     = "512Mi"
+}
+
 # --------------------------------------------------
 # EKS managed node group
 # --------------------------------------------------
@@ -178,7 +184,6 @@ variable "eks_managed_nodegroups" {
     instance_types             = optional(list(string), ["t3.small"])
     use_spot_instances         = optional(bool, false)
     disk_size                  = optional(number, 128)
-    disk_type                  = optional(string, "gp3")
     desired_size_per_subnet    = optional(number, 0)
     availability_zones         = optional(list(string), [])
     max_unavailable            = optional(number, null)

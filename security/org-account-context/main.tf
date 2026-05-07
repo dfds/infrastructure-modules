@@ -172,6 +172,21 @@ module "iam_role_ssu_ecr_pull_compliance_exporter" {
   }
 }
 
+module "iam_role_ssu_ec2_inventory_api" {
+  source               = "../../_sub/security/iam-role"
+  role_name            = "ssu-ec2-inventory-api"
+  role_description     = "Allows ec2-inventory-api to make inventory of EC2 instances"
+  max_session_duration = 28800 # 8 hours
+  assume_role_policy   = data.aws_iam_policy_document.assume_role_policy_ec2_inventory_api.json
+  role_policy_name     = "ssuEc2InventoryApi"
+  role_policy_document = module.iam_policies.ssuec2inventoryapi
+
+  providers = {
+    aws = aws.workload
+  }
+}
+
+
 module "iam_role_vpc_reader" {
   source               = "../../_sub/security/iam-role"
   role_name            = "vpc-reader"
