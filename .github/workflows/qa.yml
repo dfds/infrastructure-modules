@@ -50,6 +50,8 @@ jobs:
       repository: dfds/infrastructure-modules
       ref: master
       artifact-name: test-master
+      runner: dfds-runners
+      container: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/docker-hub/dfdsdk/prime-pipeline:2.2.3
 
   build_test_feature:
     if: github.ref != 'refs/heads/master' && github.event.pull_request.draft == false
@@ -58,11 +60,15 @@ jobs:
     with:
       test-source-path: test/integration/suite
       artifact-name: test-feature
+      runner: dfds-runners
+      container: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/docker-hub/dfdsdk/prime-pipeline:2.2.3
 
   apply_test_master:
     if: github.event.pull_request.draft == false
     name: Provision from master branch
-    runs-on: ubuntu-latest
+    runs-on: dfds-runners
+    container:
+      image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/docker-hub/dfdsdk/prime-pipeline:2.2.3
     needs: build_test_master
     steps:
       - name: Checkout code
@@ -70,13 +76,6 @@ jobs:
         with:
           repository: dfds/infrastructure-modules
           ref: master
-
-      - name: Install Terragrunt and OpenTofu
-        env:
-          MISE_FETCH_REMOTE_VERSIONS_TIMEOUT: 60s
-        uses: gruntwork-io/terragrunt-action@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -145,19 +144,14 @@ jobs:
 
   apply_test_feature:
     name: Apply from feature branch
-    runs-on: ubuntu-latest
+    runs-on: dfds-runners
+    container:
+      image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/docker-hub/dfdsdk/prime-pipeline:2.2.3
     needs: [apply_test_master, build_test_feature]
     if: github.ref != 'refs/heads/master' && github.event.pull_request.draft == false
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-
-      - name: Install Terragrunt and OpenTofu
-        env:
-          MISE_FETCH_REMOTE_VERSIONS_TIMEOUT: 60s
-        uses: gruntwork-io/terragrunt-action@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
