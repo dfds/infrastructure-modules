@@ -249,7 +249,9 @@ data "aws_iam_policy_document" "ssu_ec2_inventory_api" {
       "ec2:DescribeRegions",
       "ec2:DescribeInstances",
       "ec2:DescribeImages",
-      "ssm:DescribeInstanceInformation"
+      "ssm:DescribeInstanceInformation",
+      "ssm:GetInventory",
+      "ssm:ListInventoryEntries"
     ]
     resources = [
       "*"
