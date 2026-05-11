@@ -92,8 +92,7 @@
       "description": "Group dependencies affecting the QA environment and it's test resources.",
       "matchFileNames": [
         "test/integration/**",
-        ".github/**",
-        "mise.toml"
+        ".github/**"
       ],
       "addLabels": [
         "norelease"
