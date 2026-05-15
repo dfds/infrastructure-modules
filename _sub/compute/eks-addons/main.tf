@@ -51,6 +51,19 @@ resource "aws_eks_addon" "aws-ebs-csi-driver" {
     node = {
       metadataSources = "kubernetes" # IMDS is no longer available for AL2023, because of hop limit of 1
     }
+    sidecars = {
+      snapshotter = {
+        resources = {
+          requests = {
+            cpu    = "10m"
+            memory = var.ebs_csi_snapshotter_memory
+          }
+          limits = {
+            memory = var.ebs_csi_snapshotter_memory
+          }
+        }
+      }
+    }
   })
 
   depends_on = [
@@ -197,26 +210,6 @@ resource "aws_iam_role_policy_attachment" "managed-efs-csi-driver-policy" {
 
 # Storage classes
 
-resource "kubernetes_storage_class" "csi-gp2" {
-  metadata {
-    name = "csi-gp2"
-    annotations = {
-      "storageclass.kubernetes.io/is-default-class" = "false"
-    }
-  }
-  storage_provisioner    = "ebs.csi.aws.com"
-  reclaim_policy         = "Delete"
-  volume_binding_mode    = "WaitForFirstConsumer"
-  allow_volume_expansion = "true"
-  parameters = {
-    type = "gp2"
-  }
-
-  depends_on = [
-    aws_eks_addon.aws-ebs-csi-driver
-  ]
-}
-
 resource "kubernetes_storage_class" "csi-gp3" {
   metadata {
     name = "csi-gp3"
@@ -237,6 +230,9 @@ resource "kubernetes_storage_class" "csi-gp3" {
   ]
 }
 
+# This storage class is coming from the EKS addon,
+# but we need to patch it to not be the default storage class,
+# since it uses gp2 which we don't want to use.
 resource "kubernetes_annotations" "gp2-not-default" {
   api_version = "storage.k8s.io/v1"
   kind        = "StorageClass"

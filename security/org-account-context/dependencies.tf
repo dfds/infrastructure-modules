@@ -53,6 +53,17 @@ data "aws_iam_policy_document" "assume_role_policy_ecr_pull_compliance_exporter"
   }
 }
 
+data "aws_iam_policy_document" "assume_role_policy_ec2_inventory_api" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.ssu_account_id}:role/ec2-inventory-api"]
+    }
+  }
+}
+
 data "aws_iam_policy_document" "assume_role_policy_selfservice_api" {
   statement {
     actions = ["sts:AssumeRole"]

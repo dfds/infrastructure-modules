@@ -239,6 +239,25 @@ data "aws_iam_policy_document" "ssu_ecr_pull_compliance_exporter" {
   }
 }
 
+# ssu ec2-inventory-api
+data "aws_iam_policy_document" "ssu_ec2_inventory_api" {
+  statement {
+    sid    = "SsoReaderTf"
+    effect = "Allow"
+    actions = [
+      "iam:ListAccountAliases",
+      "ec2:DescribeRegions",
+      "ec2:DescribeInstances",
+      "ec2:DescribeImages",
+      "ssm:DescribeInstanceInformation",
+      "ssm:GetInventory",
+      "ssm:ListInventoryEntries"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+}
 
 # VPCReader
 data "aws_iam_policy_document" "vpcreader" {

@@ -83,7 +83,7 @@ func SetK8sAnnotation(gvr schema.GroupVersionResource, namespace, name, key, val
 	return nil
 }
 
-func AssertK8sDaemonSet(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberReady int) {
+func AssertK8sDaemonSet(t *testing.T, clientset *kubernetes.Clientset, namespace, name string) {
 	check := func() bool {
 		resp, err := clientset.AppsV1().DaemonSets(namespace).Get(
 			context.Background(), name, metav1.GetOptions{})
@@ -92,18 +92,22 @@ func AssertK8sDaemonSet(t *testing.T, clientset *kubernetes.Clientset, namespace
 			return false
 		}
 
-		// Assertions
-		if int(resp.Status.NumberReady) != numberReady {
-			t.Logf("expecting number ready pods to be %d, found %d",
-				numberReady, resp.Status.NumberReady)
+		desired := resp.Status.DesiredNumberScheduled
+		if desired == 0 {
+			t.Logf("daemonset %q reports 0 desired pods", name)
+			return false
+		}
+		if resp.Status.NumberReady != desired || resp.Status.NumberUnavailable != 0 {
+			t.Logf("expecting %d ready pods and 0 unavailable, found %d ready / %d unavailable",
+				desired, resp.Status.NumberReady, resp.Status.NumberUnavailable)
 			return false
 		}
 		return true
 	}
 
 	assert.Eventuallyf(t, check, defaultEventualTimeout, defaultEventualPeriod,
-		"daemonset %q in namespace %q and %d ready pods not found",
-		name, namespace, numberReady)
+		"daemonset %q in namespace %q not fully ready",
+		name, namespace)
 }
 
 func AssertK8sDeployment(t *testing.T, clientset *kubernetes.Clientset, namespace, name string, numberReady int) {
