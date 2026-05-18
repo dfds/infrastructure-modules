@@ -575,6 +575,12 @@ variable "onepassword_token_for_atlantis" {
   description = "The 1Password Connect tokens to be stored in SSM if Atlantis is enabled"
 }
 
+variable "onepassword_token_for_grafana" {
+  type        = string
+  sensitive   = true
+  default     = ""
+  description = "The 1Password Connect tokens to be stored in SSM if Grafana Agent is deployed"
+}
 # --------------------------------------------------
 # Github ARC SS Controller
 # --------------------------------------------------
