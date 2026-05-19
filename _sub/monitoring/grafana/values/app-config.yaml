@@ -29,3 +29,4 @@ spec:
     substitute:
       flux_cluster_name: ${cluster_name}
       flux_workload_account_id: "${workload_account_id}"
+      flux_grafana_stack: ${grafana_stack}

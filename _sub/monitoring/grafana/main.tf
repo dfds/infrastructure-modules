@@ -9,6 +9,7 @@ resource "github_repository_file" "grafana_helm" {
     prune            = var.prune
     workload_account_id = data.aws_caller_identity.this.id
     cluster_name        = var.cluster_name
+    grafana_stack       = var.grafana_stack
   })
   overwrite_on_create = true
 }

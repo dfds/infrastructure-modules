@@ -12,7 +12,7 @@ data "aws_iam_policy_document" "ssm" {
   statement {
     actions   = ["ssm:GetParameter*", "ssm:DescribeParameters", "tag:GetResources"]
     effect    = "Allow"
-    resources = ["arn:aws:ssm:${data.aws_region.this.region}:${data.aws_caller_identity.this.id}:parameter*"]
+    resources = ["arn:aws:ssm:${data.aws_region.this.region}:${data.aws_caller_identity.this.id}:paramete*"] # TODO: make it more restrictive to only allow access to the specific /eks/<cluster_name>/1password-connect-token-grafana parameter
   }
 }
 

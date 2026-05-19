@@ -155,3 +155,8 @@ variable "open_cost_enabled" {
   description = "Enable scraping cost metrics Grafana Cloud Prometheus or not. Default: false"
   default     = false
 }
+
+variable "grafana_stack" {
+  type        = string
+  description = "The Grafana Cloud stack to use"
+}
