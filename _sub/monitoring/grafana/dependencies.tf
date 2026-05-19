@@ -9,6 +9,9 @@ data "aws_eks_cluster" "this" {
   name = var.cluster_name
 }
 
+data "aws_region" "this" {
+}
+
 locals {
   deploy_name         = "grafana"
   default_repo_branch = data.github_repository.main.default_branch

@@ -1,5 +1,5 @@
 # --------------------------------------------------
-# IAM Roles for ServiceAccounts (IRSA) for Atlantis
+# IAM Roles for ServiceAccounts (IRSA) for Grafana
 # --------------------------------------------------
 
 locals {
@@ -18,7 +18,7 @@ data "aws_iam_policy_document" "ssm" {
 
 resource "aws_iam_policy" "this" {
   name        = "${local.iam_role_name}-policy"
-  description = "Used for IRSA by Atlantis"
+  description = "Used for IRSA by Grafana"
   policy      = data.aws_iam_policy_document.ssm.json
 }
 
@@ -38,7 +38,7 @@ data "aws_iam_policy_document" "trust" {
 
     condition {
       test     = "StringEquals"
-      values   = ["system:serviceaccount:atlantis:${local.deploy_name}"]
+      values   = ["system:serviceaccount:grafana:${local.deploy_name}"]
       variable = "${local.oidc_issuer}:sub"
     }
   }
@@ -46,7 +46,7 @@ data "aws_iam_policy_document" "trust" {
 
 resource "aws_iam_role" "this" {
   name               = local.iam_role_name
-  description        = "Used for IRSA by Atlantis"
+  description        = "Used for IRSA by Grafana"
   assume_role_policy = data.aws_iam_policy_document.trust.json
 }
 
