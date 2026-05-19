@@ -281,10 +281,3 @@ locals {
   k8s_cert_manager_namespace = "cert-manager"
   k8s_cert_manager_sa_name   = "cert-manager"
 }
-
-# --------------------------------------------------
-# Grafana Agent
-# --------------------------------------------------
-locals {
-  grafana_stack = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? "sandbox" : "platform"
-}
