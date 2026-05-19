@@ -7,6 +7,8 @@ resource "github_repository_file" "grafana_helm" {
     helm_repo_path   = local.helm_repo_path
     deploy_name      = local.deploy_name
     prune            = var.prune
+    workload_account_id = data.aws_caller_identity.this.id
+    cluster_name        = var.cluster_name
   })
   overwrite_on_create = true
 }
