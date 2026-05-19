@@ -66,7 +66,7 @@ inputs = {
   # Flux CD
   # --------------------------------------------------
 
-  fluxcd_apps_repo_branch           = "main"
+  fluxcd_apps_repo_branch           = "feature/grafana-read-creds-from-externalsecret" # for testing flux app. TODO: change back to "main" when the PR is merged
   fluxcd_bootstrap_repo_branch      = "main"
   fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
   fluxcd_version                    = "v2.7.5"

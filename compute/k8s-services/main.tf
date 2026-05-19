@@ -698,7 +698,7 @@ module "onepassword_connect" {
   aws_region           = var.aws_region
   credentials_json     = var.onepassword_credentials_json
   token_for_atlantis   = var.onepassword_token_for_atlantis
-  token_for_atlantis   = var.onepassword_token_for_grafana
+  token_for_grafana   = var.onepassword_token_for_grafana
 
   providers = {
     github = github.fluxcd
