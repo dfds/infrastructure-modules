@@ -8,7 +8,7 @@ resource "github_repository_file" "grafana_helm" {
     deploy_name         = local.deploy_name
     prune               = var.prune
     workload_account_id = data.aws_caller_identity.this.id
-    flux_cluster_name   = var.cluster_name
+    cluster_name   = var.cluster_name
     grafana_stack       = var.grafana_stack
   })
   overwrite_on_create = true
@@ -31,7 +31,6 @@ resource "github_repository_file" "grafana_helm_patch" {
   branch     = local.repo_branch
   file       = "${local.helm_repo_path}/patch.yaml"
   content = templatefile("${path.module}/values/patch.yaml", {
-    cluster_name                  = var.cluster_name
     agent_resource_memory_request = var.agent_resource_memory_request
     agent_resource_memory_limit   = var.agent_resource_memory_limit
     tolerations                   = var.tolerations
