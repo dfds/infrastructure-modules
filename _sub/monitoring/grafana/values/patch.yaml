@@ -61,35 +61,6 @@ spec:
               resources:
                 requests:
                   storage: ${storage_size}
-    externalServices:
-      prometheus:
-        host: ${prometheus_url}
-        basicAuth:
-          username: "${prometheus_username}"
-          password: ${api_token}
-      loki:
-        host: ${loki_url}
-        basicAuth:
-          username: ${loki_username}
-          password: ${api_token}
-      tempo:
-        host: ${tempo_url}
-        basicAuth:
-          username: ${tempo_username}
-          password: ${api_token}
-    opencost:
-      enabled: ${open_cost_enabled}
-      opencost:
-        exporter:
-          defaultClusterId: ${cluster_name}
-        prometheus:
-          external:
-            url: ${prometheus_url}/api/prom
-    traces:
-      enabled: ${traces_enabled}
-    metrics:
-      cost:
-        enabled: ${open_cost_enabled}
 %{ if length(tolerations) > 0 ~}
       tolerations:
 %{ for t in tolerations ~}
