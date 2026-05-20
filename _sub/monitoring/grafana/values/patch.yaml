@@ -5,8 +5,6 @@ metadata:
   namespace: grafana
 spec:
   values:
-    cluster:
-      name: ${cluster_name}
     alloy:
       alloy:
         clustering:
