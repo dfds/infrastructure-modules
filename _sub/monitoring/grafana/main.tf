@@ -3,12 +3,12 @@ resource "github_repository_file" "grafana_helm" {
   branch     = local.repo_branch
   file       = "${local.cluster_repo_path}/${local.app_install_name}-helm.yaml"
   content = templatefile("${path.module}/values/app-config.yaml", {
-    app_install_name = local.app_install_name
-    helm_repo_path   = local.helm_repo_path
-    deploy_name      = local.deploy_name
-    prune            = var.prune
+    app_install_name    = local.app_install_name
+    helm_repo_path      = local.helm_repo_path
+    deploy_name         = local.deploy_name
+    prune               = var.prune
     workload_account_id = data.aws_caller_identity.this.id
-    cluster_name        = var.cluster_name
+    flux_cluster_name   = var.cluster_name
     grafana_stack       = var.grafana_stack
   })
   overwrite_on_create = true
@@ -22,7 +22,6 @@ resource "github_repository_file" "grafana_helm_install" {
     gitops_apps_repo_url = var.gitops_apps_repo_url
     deploy_name          = local.deploy_name
     gitops_apps_repo_ref = var.gitops_apps_repo_ref
-    flux_cluster_name    = cluster_name
   })
   overwrite_on_create = true
 }
