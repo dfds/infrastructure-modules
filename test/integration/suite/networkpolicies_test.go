@@ -44,9 +44,12 @@ func TestNetworkPolicies(t *testing.T) {
 	k8s.CreateNamespaceContext(t, t.Context(), options, namespace)
 
 	defer k8s.DeleteNamespaceContext(t, t.Context(), options, namespace)
-	defer k8s.KubectlDeleteFromStringContext(t, t.Context(), options, networkPoliciesTestPod)
-	defer k8s.KubectlDeleteFromStringContext(t, t.Context(), options, networkPoliciesDenyAll)
-	defer k8s.KubectlDeleteFromStringContext(t, t.Context(), options, networkPoliciesAllowIngress)
+
+	// Register resource cleanup in a loop to avoid repetition
+	resources := []string{networkPoliciesTestPod, networkPoliciesDenyAll, networkPoliciesAllowIngress}
+	for _, r := range resources {
+		defer k8s.KubectlDeleteFromStringContext(t, t.Context(), options, r)
+	}
 
 	// Check that there are no network policies in the namespace
 	np, err := k8s.RunKubectlAndGetOutputContextE(t, t.Context(), options, "get", "networkpolicy", "-n", namespace)
@@ -58,19 +61,32 @@ func TestNetworkPolicies(t *testing.T) {
 	k8s.WaitUntilPodAvailableContext(t, t.Context(), options, "networkpolicies-test-pod", 60, 5*time.Second)
 	k8s.WaitUntilPodAvailableContext(t, t.Context(), options, "networkpolicies-test-exec-pod", 60, 5*time.Second)
 
+	podExecName := "networkpolicies-test-exec-pod"
+	podExecContainer := podExecName
+	testURL := "http://networkpolicies-test-service:80"
+
 	// Check test pod with curl from exec pod, should work as there are no network policies
-	k8s.ExecPodContext(t, t.Context(), options, "networkpolicies-test-exec-pod", "networkpolicies-test-exec-pod", "curl", "-sS", "--connect-timeout", "2", "http://networkpolicies-test-service:80")
+	curlFromExecPod(t, options, podExecName, podExecContainer, testURL, true, "Expected curl to succeed with no network policies")
 
 	// Create a network policy that denies all traffic to the test pod
 	k8s.KubectlApplyFromStringContext(t, t.Context(), options, networkPoliciesDenyAll)
 
 	// Check test pod with curl from exec pod, should fail as there is a deny all network policy
-	_, err = k8s.ExecPodContextE(t, t.Context(), options, "networkpolicies-test-exec-pod", "networkpolicies-test-exec-pod", "curl", "-sS", "--connect-timeout", "2", "http://networkpolicies-test-service:80")
-	assert.Error(t, err, "Expected curl to fail due to deny all network policy")
+	curlFromExecPod(t, options, podExecName, podExecContainer, testURL, false, "Expected curl to fail after applying deny all network policy")
 
 	// Create a network policy that allows ingress traffic from the exec pod to the test pod
 	k8s.KubectlApplyFromStringContext(t, t.Context(), options, networkPoliciesAllowIngress)
 
 	// Check test pod with curl from exec pod, should work as there is an allow ingress network policy
-	k8s.ExecPodContext(t, t.Context(), options, "networkpolicies-test-exec-pod", "networkpolicies-test-exec-pod", "curl", "-sS", "--connect-timeout", "2", "http://networkpolicies-test-service:80")
+	curlFromExecPod(t, options, podExecName, podExecContainer, testURL, true, "Expected curl to succeed after allowing ingress network policy")
+}
+
+// curlFromExecPod runs a curl from the exec pod and asserts whether it should succeed.
+func curlFromExecPod(t *testing.T, options *k8s.KubectlOptions, execPod, container, url string, expectSuccess bool, testErrorMessage string) {
+	_, err := k8s.ExecPodContextE(t, t.Context(), options, execPod, container, "curl", "-sS", "--connect-timeout", "2", url)
+	if expectSuccess {
+		assert.NoError(t, err, testErrorMessage)
+	} else {
+		assert.Error(t, err, testErrorMessage)
+	}
 }
