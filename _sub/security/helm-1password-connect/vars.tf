@@ -73,6 +73,5 @@ variable "token_for_atlantis" {
 variable "token_for_grafana" {
   type        = string
   sensitive   = true
-  default     = ""
   description = "The 1Password Connect tokens to be stored in SSM if Grafana agent is deployed"
 }
