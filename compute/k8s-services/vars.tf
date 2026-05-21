@@ -388,7 +388,10 @@ variable "enable_inactivity_cleanup" {
 variable "grafana_deploy" {
   type        = string
   default     = false
-  description = "Feature toggle for Grafana module"
+  description = <<-EOT
+      Feature toggle for Grafana module.
+      Note: The variable `onepassword_token_for_grafana` must be set to deploy the Grafana Agent.
+  EOT
 }
 
 variable "grafana_agent_api_token" {
