@@ -424,7 +424,7 @@ module "monitoring_namespace" {
 
 module "goldpinger" {
   source               = "../../_sub/monitoring/goldpinger"
-  count                = var.grafana_deploy ? 1 : 0
+  count                = local.grafana_deploy ? 1 : 0
   cluster_name         = var.eks_cluster_name
   repo_owner           = var.fluxcd_bootstrap_repo_owner
   repo_name            = var.fluxcd_bootstrap_repo_name
@@ -465,7 +465,7 @@ module "metrics_server" {
 
 module "aws_node_service" {
   source = "../../_sub/monitoring/aws-node"
-  count  = var.grafana_deploy ? 1 : 0
+  count  = local.grafana_deploy ? 1 : 0
 }
 
 # --------------------------------------------------
@@ -486,7 +486,7 @@ module "platform_fluxcd" {
   endpoint                   = data.aws_eks_cluster.eks.endpoint
   token                      = data.aws_eks_cluster_auth.eks.token
   cluster_ca_certificate     = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
-  enable_monitoring          = var.grafana_deploy ? true : false
+  enable_monitoring          = local.grafana_deploy ? true : false
   tenants                    = var.fluxcd_tenants
   source_controller_role_arn = var.fluxcd_source_controller_role_arn
 
@@ -595,7 +595,7 @@ module "elb_inactivity_cleanup_auth" {
 
 module "grafana" {
   source                                 = "../../_sub/monitoring/grafana"
-  count                                  = var.grafana_deploy ? 1 : 0
+  count                                  = local.grafana_deploy ? 1 : 0
   cluster_name                           = var.eks_cluster_name
   github_owner                           = var.fluxcd_bootstrap_repo_owner
   repo_name                              = var.fluxcd_bootstrap_repo_name

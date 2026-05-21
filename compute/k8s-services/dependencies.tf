@@ -281,3 +281,8 @@ locals {
   k8s_cert_manager_namespace = "cert-manager"
   k8s_cert_manager_sa_name   = "cert-manager"
 }
+
+# Grafana Agent
+locals {
+  grafana_deploy = var.grafana_deploy && var.onepassword_token_for_grafana != "" ? true : false
+}
