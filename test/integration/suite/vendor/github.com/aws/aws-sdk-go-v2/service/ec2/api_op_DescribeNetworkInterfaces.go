@@ -20,8 +20,7 @@ import (
 //
 // If you have a large number of network interfaces, the operation fails unless
 // you use pagination or one of the following filters: group-id , mac-address ,
-// private-dns-name , private-ip-address , private-dns-name , subnet-id , or vpc-id
-// .
+// private-dns-name , private-ip-address , subnet-id , or vpc-id .
 //
 // We strongly recommend using only paginated requests. Unpaginated requests are
 // susceptible to throttling and timeouts.
@@ -100,6 +99,9 @@ type DescribeNetworkInterfacesInput struct {
 	//
 	//   - availability-zone - The Availability Zone of the network interface.
 	//
+	//   - availability-zone-id - The ID of the Availability Zone of the network
+	//   interface.
+	//
 	//   - description - The description of the network interface.
 	//
 	//   - group-id - The ID of a security group associated with the network interface.
@@ -109,10 +111,10 @@ type DescribeNetworkInterfacesInput struct {
 	//
 	//   - interface-type - The type of network interface ( api_gateway_managed |
 	//   aws_codestar_connections_managed | branch | ec2_instance_connect_endpoint |
-	//   efa | efa-only | efs | gateway_load_balancer | gateway_load_balancer_endpoint
-	//   | global_accelerator_managed | interface | iot_rules_managed | lambda |
-	//   load_balancer | nat_gateway | network_load_balancer | quicksight |
-	//   transit_gateway | trunk | vpc_endpoint ).
+	//   efa | efa-only | efs | evs | gateway_load_balancer |
+	//   gateway_load_balancer_endpoint | global_accelerator_managed | interface |
+	//   iot_rules_managed | lambda | load_balancer | nat_gateway |
+	//   network_load_balancer | quicksight | transit_gateway | trunk | vpc_endpoint ).
 	//
 	//   - mac-address - The MAC address of the network interface.
 	//
@@ -229,7 +231,7 @@ func (c *Client) addOperationDescribeNetworkInterfacesMiddlewares(stack *middlew
 	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetry(stack, options); err != nil {
+	if err = addRetry(stack, options, c); err != nil {
 		return err
 	}
 	if err = addRawResponseToMetadata(stack); err != nil {
@@ -253,10 +255,10 @@ func (c *Client) addOperationDescribeNetworkInterfacesMiddlewares(stack *middlew
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addTimeOffsetBuild(stack, c); err != nil {
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
-	if err = addUserAgentRetryMode(stack, options); err != nil {
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeNetworkInterfaces(options.Region), middleware.Before); err != nil {
@@ -277,16 +279,13 @@ func (c *Client) addOperationDescribeNetworkInterfacesMiddlewares(stack *middlew
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeStart(stack); err != nil {
+	if err = addInterceptBeforeRetryLoop(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeEnd(stack); err != nil {
+	if err = addInterceptAttempt(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanBuildRequestStart(stack); err != nil {
-		return err
-	}
-	if err = addSpanBuildRequestEnd(stack); err != nil {
+	if err = addInterceptors(stack, options); err != nil {
 		return err
 	}
 	return nil
