@@ -470,12 +470,6 @@ variable "grafana_agent_storage_size" {
   default     = "5Gi"
 }
 
-variable "grafana_stack" {
-  type        = string
-  description = "The Grafana Cloud stack to use"
-  default     = "sandbox"
-}
-
 variable "observability_tolerations" {
   type = list(object({
     key      = string,

@@ -285,4 +285,5 @@ locals {
 # Grafana Agent
 locals {
   grafana_deploy = var.grafana_deploy && var.onepassword_token_for_grafana != "" ? true : false
+  grafana_stack = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? "sandbox" : "platform"
 }

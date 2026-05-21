@@ -617,7 +617,7 @@ module "grafana" {
   tolerations                            = var.observability_tolerations
   agent_replicas                         = var.grafana_agent_replicas
   storage_size                           = var.grafana_agent_storage_size
-  grafana_stack                          = var.grafana_stack
+  grafana_stack                          = local.grafana_stack
   onepassword_access_parameter_store_arn = module.onepassword_connect[0].grafana_token_ssm_parameter_arn
   providers = {
     github = github.fluxcd
