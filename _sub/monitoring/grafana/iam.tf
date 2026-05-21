@@ -54,3 +54,34 @@ resource "aws_iam_role_policy_attachment" "this" {
   role       = aws_iam_role.this.name
   policy_arn = aws_iam_policy.this.arn
 }
+
+
+module "irsa" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+
+  name = "test_grafana_1password" #local.iam_role_name
+
+  oidc_providers = {
+    one = {
+      provider_arn               = "arn:aws:iam::${data.aws_caller_identity.this.id}:oidc-provider/${local.oidc_issuer}"
+      namespace_service_accounts = ["grafana:${local.deploy_name}"]
+    }
+  }
+
+  # external_secrets_secrets_manager_arns = [
+  #   aws_db_instance.database.master_user_secret[0].secret_arn
+  # ]
+
+  external_secrets_secrets_manager_arns = [
+    "arn:aws:ssm:${data.aws_region.this.region}:${data.aws_caller_identity.this.id}:paramete*"
+  ]
+
+  inline_policy_permissions = [
+    {
+      name        = "AllowReadSSMParameters"
+      description = "Allow read access to SSM parameters for Grafana"
+      actions     = ["ssm:GetParameter*", "ssm:DescribeParameters", "tag:GetResources"]
+      resources   = ["arn:aws:ssm:${data.aws_region.this.region}:${data.aws_caller_identity.this.id}:paramete*"] # TODO: make it more restrictive to only allow access to the specific /eks/<cluster_name>/1password-connect-token-grafana parameter
+    }
+  ]
+}
