@@ -58,6 +58,7 @@ resource "aws_iam_role_policy_attachment" "this" {
 
 module "irsa" {
   source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+  version = "6.6.0"
 
   name = "test_grafana_1password" #local.iam_role_name
 
@@ -67,14 +68,6 @@ module "irsa" {
       namespace_service_accounts = ["grafana:${local.deploy_name}"]
     }
   }
-
-  # external_secrets_secrets_manager_arns = [
-  #   aws_db_instance.database.master_user_secret[0].secret_arn
-  # ]
-
-  external_secrets_secrets_manager_arns = [
-    "arn:aws:ssm:${data.aws_region.this.region}:${data.aws_caller_identity.this.id}:paramete*"
-  ]
 
   inline_policy_permissions = [
     {
