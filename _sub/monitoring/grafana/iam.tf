@@ -69,12 +69,12 @@ module "irsa" {
     }
   }
 
-  inline_policy_permissions = {
+  permissions = {
     AllowReadSSMParameters = {
       sid       = "AllowReadSSMParameters"
       actions   = ["ssm:GetParameter*", "ssm:DescribeParameters", "tag:GetResources"]
       effect    = "Allow"
-      resources = ["arn:aws:ssm:${data.aws_region.this.region}:${data.aws_caller_identity.this.id}:paramete*"] # TODO: make it more restrictive to only allow access to the specific /eks/<cluster_name>/1password-connect-token-grafana parameter
+      resources = [var.onepassword_access_parameter_store_arn] # TODO: make it more restrictive to only allow access to the specific /eks/<cluster_name>/1password-connect-token-grafana parameter
     }
   }
 }
