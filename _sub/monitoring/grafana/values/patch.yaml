@@ -22,7 +22,6 @@ spec:
 %{ if length(tolerations) > 0 || length(affinity) > 0 ~}
       controller:
 %{ endif ~}
-    metrics:
 %{ if length(tolerations) > 0 ~}
         tolerations:
 %{ for t in tolerations ~}
@@ -60,6 +59,7 @@ spec:
               resources:
                 requests:
                   storage: ${storage_size}
+    metrics:
 %{ if length(tolerations) > 0 ~}
       tolerations:
 %{ for t in tolerations ~}
