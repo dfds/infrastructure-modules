@@ -2,6 +2,16 @@ data "github_repository" "main" {
   full_name = "${var.github_owner}/${var.repo_name}"
 }
 
+data "aws_caller_identity" "this" {
+}
+
+data "aws_eks_cluster" "this" {
+  name = var.cluster_name
+}
+
+data "aws_region" "this" {
+}
+
 locals {
   deploy_name         = "grafana"
   default_repo_branch = data.github_repository.main.default_branch

@@ -109,6 +109,7 @@ jobs:
           TF_VAR_grafana_agent_tempo_username: op://CloudEng-General/Grafana.com - sandbox/Tempo_Username # pragma: allowlist-secret
           TF_VAR_onepassword_credentials_json: op://CloudEng-General/1Password Connect/nonprod_json # pragma: allowlist-secret
           TF_VAR_onepassword_token_for_atlantis: op://CloudEng-General/1Password Connect/nonprod_atlantis_token # pragma: allowlist-secret
+          TF_VAR_onepassword_token_for_grafana: op://CloudEng-General/1Password Connect/nonprod_grafana_token # pragma: allowlist-secret
           TF_VAR_velero_ebs_csi_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn # pragma: allowlist-secret
           SLACK_WEBHOOK: op://CloudEng-General/Slack dfds.slack.com webhooks/jdm5vktylqnczrlkkbvsveyp5e # pragma: allowlist-secret
           TF_VAR_velero_azure_subscription_id: op://CloudEng-General/Azure - Offsite Backup/qa-subscription-id # pragma: allowlist-secret
@@ -190,6 +191,7 @@ jobs:
           TF_VAR_grafana_agent_tempo_username: op://CloudEng-General/Grafana.com - sandbox/Tempo_Username # pragma: allowlist-secret
           TF_VAR_onepassword_credentials_json: op://CloudEng-General/1Password Connect/nonprod_json # pragma: allowlist-secret
           TF_VAR_onepassword_token_for_atlantis: op://CloudEng-General/1Password Connect/nonprod_atlantis_token # pragma: allowlist-secret
+          TF_VAR_onepassword_token_for_grafana: op://CloudEng-General/1Password Connect/nonprod_grafana_token # pragma: allowlist-secret
           TF_VAR_velero_ebs_csi_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn # pragma: allowlist-secret
           SLACK_WEBHOOK: op://CloudEng-General/Slack dfds.slack.com webhooks/jdm5vktylqnczrlkkbvsveyp5e # pragma: allowlist-secret
           TF_VAR_velero_azure_subscription_id: op://CloudEng-General/Azure - Offsite Backup/qa-subscription-id # pragma: allowlist-secret

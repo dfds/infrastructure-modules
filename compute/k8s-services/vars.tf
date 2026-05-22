@@ -388,7 +388,10 @@ variable "enable_inactivity_cleanup" {
 variable "grafana_deploy" {
   type        = string
   default     = false
-  description = "Feature toggle for Grafana module"
+  description = <<-EOT
+      Feature toggle for Grafana module.
+      Note: The variable `onepassword_token_for_grafana` must be set to deploy the Grafana Agent.
+  EOT
 }
 
 variable "grafana_agent_api_token" {
@@ -575,6 +578,15 @@ variable "onepassword_token_for_atlantis" {
   description = "The 1Password Connect tokens to be stored in SSM if Atlantis is enabled"
 }
 
+variable "onepassword_token_for_grafana" {
+  type        = string
+  sensitive   = true
+  default     = ""
+  description = <<-EOT
+      The 1Password Connect tokens to be stored in SSM.
+      Note: This is required if Grafana Agent is deployed!
+  EOT
+}
 # --------------------------------------------------
 # Github ARC SS Controller
 # --------------------------------------------------
