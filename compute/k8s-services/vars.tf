@@ -386,7 +386,7 @@ variable "enable_inactivity_cleanup" {
 # --------------------------------------------------
 
 variable "grafana_deploy" {
-  type        = string
+  type        = bool
   default     = false
   description = <<-EOT
       Feature toggle for Grafana module.
