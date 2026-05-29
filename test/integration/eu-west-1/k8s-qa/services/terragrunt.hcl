@@ -71,17 +71,7 @@ inputs = {
   fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
   fluxcd_version                    = "v2.7.5"
 
-  fluxcd_tenants = [
-    {
-      namespace = "flux-tenant-test"
-      repositories = [
-        {
-          url = "https://github.com/dfds/flux-tenant-test"
-          branch = "main"
-        }
-      ]
-    }
-  ]
+  fluxcd_tenants = []
 
   # --------------------------------------------------
   # Atlantis
