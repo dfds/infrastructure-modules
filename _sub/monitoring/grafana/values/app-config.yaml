@@ -32,4 +32,5 @@ spec:
       flux_grafana_stack: ${grafana_stack}
       flux_grafana_agent_resource_memory_request: ${agent_resource_memory_request}
       flux_grafana_agent_resource_memory_limit: ${agent_resource_memory_limit}
-      flux_grafana_agent_replicas: ${agent_replicas}
+      flux_grafana_agent_replicas: "${agent_replicas}"
+      flux_grafana_agent_storage_size: ${storage_size}
