@@ -1,10 +1,10 @@
 name: Run Trivy IAC with Quality Gate
 on:
   push:
-    branches: ["master", "main"]
+    branches: ["master"]
   pull_request:
-    branches: ["master", "main"]
+    branches: ["master"]
   workflow_dispatch:
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/security-trivy-iac-check.yaml@master
+    uses: dfds/shared-workflows/.github/workflows/security-trivy-iac-check.yaml@v2.0.1
