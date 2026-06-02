@@ -479,26 +479,6 @@ variable "grafana_agent_storage_size" {
   default     = "5Gi"
 }
 
-variable "observability_tolerations" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    value    = optional(string),
-    effect   = string,
-  }))
-  description = "Tolerations to apply to the cluster-wide observability workloads."
-  default     = []
-}
-
-variable "observability_affinity" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    values   = list(string)
-  }))
-  description = "Affinities to apply to the cluster-wide observability workloads."
-  default     = []
-}
 
 # --------------------------------------------------
 # External Secrets with SSM

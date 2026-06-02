@@ -43,25 +43,6 @@ variable "agent_resource_memory_limit" {
   description = "Set resource memory limits on Grafana Agent container"
 }
 
-variable "tolerations" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    value    = optional(string),
-    effect   = string,
-  }))
-  default = []
-}
-
-variable "affinity" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    values   = list(string)
-  }))
-  default = []
-}
-
 variable "agent_replicas" {
   type        = number
   description = "How many replicas to run Grafana Agent with"
