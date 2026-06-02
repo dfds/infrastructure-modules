@@ -69,7 +69,13 @@ variable "agent_replicas" {
 
 variable "storage_size" {
   type        = string
-  description = "Storage size for Grafana Persistent Volume"
+  description = <<-EOT
+    Storage size for Grafana Persistent Volume.
+    Please note that it is not possible to directly change this value after the initial deployment,
+    so it should be set with care. If you want to change it, you need to first delete the Grafana release and then apply it again with the new value. Default: 5Gi
+    Alternatively, you can use kubectl to edit the PersistentVolumeClaim created for Grafana and change the storage size there,
+    but this approach is not recommended as it may cause issues with the state of the release in Helm.
+  EOT
   default     = "5Gi"
 }
 
