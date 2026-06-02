@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"testing"
+	"time"
 
 	appsv1 "k8s.io/api/apps/v1"
 	apiv1 "k8s.io/api/core/v1"
@@ -25,38 +26,38 @@ import (
 )
 
 func GetTraefikNamespace(clientset *kubernetes.Clientset) *string {
-    ctx := context.TODO()
+	ctx := context.TODO()
 
-    // Get all namespaces
-    namespaces, err := clientset.CoreV1().Namespaces().List(ctx, metav1.ListOptions{})
-    if err != nil {
-        log.Printf("Error listing namespaces: %v", err)
-        return nil
-    }
+	// Get all namespaces
+	namespaces, err := clientset.CoreV1().Namespaces().List(ctx, metav1.ListOptions{})
+	if err != nil {
+		log.Printf("Error listing namespaces: %v", err)
+		return nil
+	}
 
-    // Check for Traefik namespace variants
-    traefikVariants := []string{"traefik-blue-variant", "traefik-green-variant"}
+	// Check for Traefik namespace variants
+	traefikVariants := []string{"traefik-blue-variant", "traefik-green-variant"}
 
-    for _, ns := range namespaces.Items {
-        for _, variant := range traefikVariants {
-            if ns.Name == variant {
-                return &variant
-            }
-        }
-    }
+	for _, ns := range namespaces.Items {
+		for _, variant := range traefikVariants {
+			if ns.Name == variant {
+				return &variant
+			}
+		}
+	}
 
-    return nil
+	return nil
 }
 
 func TestTraefikDeployment(t *testing.T) {
 	clientset := NewK8sClientSet(t)
 	AssertFluxReconciliation(t, clientset)
 	traefikNamespace := GetTraefikNamespace(clientset)
-    if traefikNamespace == nil {
-        t.Fatal("Traefik namespace not found")
-    }
+	if traefikNamespace == nil {
+		t.Fatal("Traefik namespace not found")
+	}
 
-    AssertK8sDeployment(t, clientset, *traefikNamespace, *traefikNamespace, 3)
+	AssertK8sDeployment(t, clientset, *traefikNamespace, *traefikNamespace, 3)
 }
 
 func DeployTestcase(t *testing.T, clientset *kubernetes.Clientset, testName string) (*appsv1.Deployment, *apiv1.Service) {
@@ -258,12 +259,24 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 
 	AssertK8sDeployment(t, clientset, "default", deployment.Name, 1)
 
-	// Call the test endpoint
-	resp, err := http.Get(fmt.Sprintf("https://nginx-test.%s/test", cfg.DNSZone))
-	if err != nil {
-		t.Log(err)
+	// Call the test endpoint with retry
+	var resp *http.Response
+	for i := range 3 {
+		resp, err = http.Get(fmt.Sprintf("https://nginx-test.%s/test", cfg.DNSZone))
+		if err == nil && resp.StatusCode == 200 {
+			break
+		}
+		if err != nil {
+			t.Logf("attempt %d: HTTP request error: %v", i+1, err)
+		} else {
+			t.Logf("attempt %d: unexpected status code: %d", i+1, resp.StatusCode)
+			resp.Body.Close()
+		}
+		time.Sleep(5 * time.Second)
 	}
-	defer resp.Body.Close()
+	if resp != nil {
+		defer resp.Body.Close()
+	}
 	assert.Equal(t, 200, resp.StatusCode)
 
 	// Delete resources
@@ -394,13 +407,24 @@ func TestTraefikGatewayHTTPRoute(t *testing.T) {
 		t.Logf("Error getting Gateway %s/%s: %v", *traefikNamespace, "traefik-gateway", err)
 	}
 
-
-	// Call the test endpoint
-	resp, err := http.Get(fmt.Sprintf("https://nginx-gw-test.%s/", cfg.DNSZone))
-	if err != nil {
-		t.Logf("HTTP request error: %v", err)
+	// Call the test endpoint with retry
+	var resp *http.Response
+	for i := range 3 {
+		resp, err = http.Get(fmt.Sprintf("https://nginx-gw-test.%s/", cfg.DNSZone))
+		if err == nil && resp.StatusCode == 200 {
+			break
+		}
+		if err != nil {
+			t.Logf("attempt %d: HTTP request error: %v", i+1, err)
+		} else {
+			t.Logf("attempt %d: unexpected status code: %d", i+1, resp.StatusCode)
+			resp.Body.Close()
+		}
+		time.Sleep(5 * time.Second)
 	}
-	defer resp.Body.Close()
+	if resp != nil {
+		defer resp.Body.Close()
+	}
 	assert.Equal(t, 200, resp.StatusCode)
 
 	// Delete HTTPRoute
