@@ -49,15 +49,15 @@ resource "aws_autoscaling_attachment" "traefik_auth_blue_variant" {
 
 resource "aws_lb_target_group" "traefik_auth_green_variant" {
   name_prefix          = "g-${substr(var.cluster_name, 0, min(4, length(var.cluster_name)))}"
-  port                 = 8000
+  port                 = local.traefik_deployment_defaults.ports.web
   protocol             = "HTTP"
   vpc_id               = var.vpc_id
   target_type          = "ip"
   deregistration_delay = 300
 
   health_check {
-    path     = var.green_variant_health_check_path
-    port     = 8080
+    path     = local.traefik_deployment_defaults.path
+    port     = local.traefik_deployment_defaults.ports.admin
     protocol = "HTTP"
     matcher  = 200
   }
