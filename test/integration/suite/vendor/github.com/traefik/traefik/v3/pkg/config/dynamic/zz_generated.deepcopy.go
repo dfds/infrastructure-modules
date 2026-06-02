@@ -321,6 +321,11 @@ func (in *ErrorPage) DeepCopyInto(out *ErrorPage) {
 			(*out)[key] = val
 		}
 	}
+	if in.ErrorRequestHeaders != nil {
+		in, out := &in.ErrorRequestHeaders, &out.ErrorRequestHeaders
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
 	return
 }
 
@@ -362,6 +367,11 @@ func (in *ForwardAuth) DeepCopyInto(out *ForwardAuth) {
 		in, out := &in.TLS, &out.TLS
 		*out = new(ClientTLS)
 		(*in).DeepCopyInto(*out)
+	}
+	if in.TrustForwardHeader != nil {
+		in, out := &in.TrustForwardHeader, &out.TrustForwardHeader
+		*out = new(bool)
+		**out = **in
 	}
 	if in.AuthResponseHeaders != nil {
 		in, out := &in.AuthResponseHeaders, &out.AuthResponseHeaders
