@@ -386,9 +386,12 @@ variable "enable_inactivity_cleanup" {
 # --------------------------------------------------
 
 variable "grafana_deploy" {
-  type        = string
+  type        = bool
   default     = false
-  description = "Feature toggle for Grafana module"
+  description = <<-EOT
+      Feature toggle for Grafana module.
+      Note: The variable `onepassword_token_for_grafana` must be set to deploy the Grafana Agent.
+  EOT
 }
 
 variable "grafana_agent_api_token" {
@@ -466,7 +469,13 @@ variable "grafana_agent_replicas" {
 
 variable "grafana_agent_storage_size" {
   type        = string
-  description = "Storage size for Grafana Persistent Volume"
+  description = <<-EOT
+    Storage size for Grafana Persistent Volume.
+    Please note that it is not possible to directly change this value after the initial deployment,
+    so it should be set with care. If you want to change it, you need to first delete the Grafana release and then apply it again with the new value. Default: 5Gi
+    Alternatively, you can use kubectl to edit the PersistentVolumeClaim created for Grafana and change the storage size there,
+    but this approach is not recommended as it may cause issues with the state of the release in Helm.
+  EOT
   default     = "5Gi"
 }
 
@@ -575,6 +584,15 @@ variable "onepassword_token_for_atlantis" {
   description = "The 1Password Connect tokens to be stored in SSM if Atlantis is enabled"
 }
 
+variable "onepassword_token_for_grafana" {
+  type        = string
+  sensitive   = true
+  default     = ""
+  description = <<-EOT
+      The 1Password Connect tokens to be stored in SSM.
+      Note: This is required if Grafana Agent is deployed!
+  EOT
+}
 # --------------------------------------------------
 # Github ARC SS Controller
 # --------------------------------------------------
