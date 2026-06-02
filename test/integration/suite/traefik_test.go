@@ -272,7 +272,7 @@ func TestTraefikIngressRouteAndMiddleware(t *testing.T) {
 			t.Logf("attempt %d: unexpected status code: %d", i+1, resp.StatusCode)
 			resp.Body.Close()
 		}
-		time.Sleep(5 * time.Second)
+		time.Sleep(3 * time.Second)
 	}
 	if resp != nil {
 		defer resp.Body.Close()
@@ -420,7 +420,7 @@ func TestTraefikGatewayHTTPRoute(t *testing.T) {
 			t.Logf("attempt %d: unexpected status code: %d", i+1, resp.StatusCode)
 			resp.Body.Close()
 		}
-		time.Sleep(5 * time.Second)
+		time.Sleep(3 * time.Second)
 	}
 	if resp != nil {
 		defer resp.Body.Close()
