@@ -214,7 +214,7 @@ resource "aws_security_group_rule" "allow_traefik_green" {
   from_port                = each.value
   to_port                  = each.value
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.traefik.id
+  source_security_group_id = aws_security_group.traefik_auth.id
 
   security_group_id = var.nodes_sg_id
 }
