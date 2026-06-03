@@ -612,8 +612,6 @@ module "grafana" {
   traces_enabled                         = var.grafana_agent_traces_enabled
   open_cost_enabled                      = var.grafana_agent_open_cost_enabled
   agent_resource_memory                  = var.grafana_agent_resource_memory
-  affinity                               = var.observability_affinity
-  tolerations                            = var.observability_tolerations
   agent_replicas                         = var.grafana_agent_replicas
   storage_size                           = var.grafana_agent_storage_size
   grafana_stack                          = local.grafana_stack

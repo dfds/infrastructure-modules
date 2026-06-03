@@ -106,21 +106,6 @@ inputs = {
   grafana_agent_resource_memory_limit   = "4Gi"
   grafana_agent_storage_size = "10Gi"
 
-  observability_tolerations = [
-    {
-      key      = "observability.dfds",
-      operator = "Exists",
-      effect   = "NoSchedule",
-    }
-  ]
-  observability_affinity = [
-    {
-      key      = "dedicated",
-      operator = "In",
-      values   = ["observability"],
-    }
-  ]
-
   # --------------------------------------------------
   # External Secrets
   # --------------------------------------------------
