@@ -611,10 +611,7 @@ module "grafana" {
   tempo_username                         = var.grafana_agent_tempo_username
   traces_enabled                         = var.grafana_agent_traces_enabled
   open_cost_enabled                      = var.grafana_agent_open_cost_enabled
-  agent_resource_memory_limit            = var.grafana_agent_resource_memory_limit
-  agent_resource_memory_request          = var.grafana_agent_resource_memory_request
-  affinity                               = var.observability_affinity
-  tolerations                            = var.observability_tolerations
+  agent_resource_memory                  = var.grafana_agent_resource_memory
   agent_replicas                         = var.grafana_agent_replicas
   storage_size                           = var.grafana_agent_storage_size
   grafana_stack                          = local.grafana_stack

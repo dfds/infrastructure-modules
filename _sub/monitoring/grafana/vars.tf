@@ -33,33 +33,9 @@ variable "gitops_apps_repo_ref" {
   description = "The default branch or tag for your GitOps manifests"
 }
 
-variable "agent_resource_memory_request" {
+variable "agent_resource_memory" {
   type        = string
-  description = "Set resource memory request on Grafana Agent container"
-}
-
-variable "agent_resource_memory_limit" {
-  type        = string
-  description = "Set resource memory limits on Grafana Agent container"
-}
-
-variable "tolerations" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    value    = optional(string),
-    effect   = string,
-  }))
-  default = []
-}
-
-variable "affinity" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    values   = list(string)
-  }))
-  default = []
+  description = "Set resource memory request and limits on Grafana Agent container"
 }
 
 variable "agent_replicas" {
@@ -168,6 +144,6 @@ variable "grafana_stack" {
 }
 
 variable "onepassword_access_parameter_store_arn" {
-  type = string
+  type        = string
   description = "The ARN of the SSM parameter for Grafana 1password token"
 }
