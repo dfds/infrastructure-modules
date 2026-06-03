@@ -102,8 +102,7 @@ inputs = {
   # --------------------------------------------------
 
   grafana_deploy = true
-  grafana_agent_resource_memory_request = "4Gi"
-  grafana_agent_resource_memory_limit   = "4Gi"
+  grafana_agent_resource_memory = "4Gi"
   grafana_agent_storage_size = "10Gi"
 
   # --------------------------------------------------
