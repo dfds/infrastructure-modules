@@ -21,7 +21,7 @@ inputs = {
   # --------------------------------------------------
 
   eks_cluster_name                           = "qa"
-  eks_cluster_version                        = "1.34"
+  eks_cluster_version                        = "1.35"
   eks_cluster_cidr_block                     = "10.228.0.0/16"
   eks_cluster_zones                          = 2
   eks_cluster_log_types                      = ["api", "authenticator", "scheduler", "controllerManager"]
@@ -31,9 +31,9 @@ inputs = {
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"vpc-cni"}
   eks_addon_vpccni_version_override = "v1.22.1-eksbuild.2"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"coredns"}
-  eks_addon_coredns_version_override = "v1.13.2-eksbuild.10"
+  eks_addon_coredns_version_override = "v1.14.3-eksbuild.2"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"kube-proxy"}
-  eks_addon_kubeproxy_version_override = "v1.34.6-eksbuild.11"
+  eks_addon_kubeproxy_version_override = "v1.35.3-eksbuild.11"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"aws-efs-csi-driver"}
   eks_addon_awsefscsidriver_version_override = "v3.2.0-eksbuild.1"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"aws-ebs-csi-driver"}
