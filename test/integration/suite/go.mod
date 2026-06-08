@@ -6,7 +6,7 @@ require (
 	github.com/fluxcd/pkg/apis/meta v1.27.0
 	github.com/gruntwork-io/terratest v0.56.0
 	github.com/stretchr/testify v1.11.1
-	github.com/traefik/traefik/v3 v3.6.17
+	github.com/traefik/traefik/v3 v3.7.1
 	k8s.io/api v0.35.4
 	k8s.io/apimachinery v0.36.0
 	k8s.io/client-go v0.35.4
