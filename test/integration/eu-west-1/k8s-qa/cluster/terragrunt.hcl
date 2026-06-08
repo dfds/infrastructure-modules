@@ -94,7 +94,6 @@ inputs = {
       labels = {
         dedicated = "observability"
       }
-      max_pods      = 30
       kube_memory   = "585Mi"
       kube_cpu      = "90m"
       sys_memory    = "585Mi"
