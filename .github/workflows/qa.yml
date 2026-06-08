@@ -44,7 +44,7 @@ jobs:
   build_test_master:
     if: github.event.pull_request.draft == false
     name: Build test binary from master branch
-    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@master
+    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@v2.0.1
     with:
       test-source-path: test/integration/suite
       repository: dfds/infrastructure-modules
@@ -54,7 +54,7 @@ jobs:
   build_test_feature:
     if: github.ref != 'refs/heads/master' && github.event.pull_request.draft == false
     name: Build test binary from feature branch
-    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@master
+    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@v2.0.1
     with:
       test-source-path: test/integration/suite
       artifact-name: test-feature
@@ -109,6 +109,7 @@ jobs:
           TF_VAR_grafana_agent_tempo_username: op://CloudEng-General/Grafana.com - sandbox/Tempo_Username # pragma: allowlist-secret
           TF_VAR_onepassword_credentials_json: op://CloudEng-General/1Password Connect/nonprod_json # pragma: allowlist-secret
           TF_VAR_onepassword_token_for_atlantis: op://CloudEng-General/1Password Connect/nonprod_atlantis_token # pragma: allowlist-secret
+          TF_VAR_onepassword_token_for_grafana: op://CloudEng-General/1Password Connect/nonprod_grafana_token # pragma: allowlist-secret
           TF_VAR_velero_ebs_csi_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn # pragma: allowlist-secret
           SLACK_WEBHOOK: op://CloudEng-General/Slack dfds.slack.com webhooks/jdm5vktylqnczrlkkbvsveyp5e # pragma: allowlist-secret
           TF_VAR_velero_azure_subscription_id: op://CloudEng-General/Azure - Offsite Backup/qa-subscription-id # pragma: allowlist-secret
@@ -136,12 +137,12 @@ jobs:
         env:
           INTEGRATION_DNS_ZONE: "qa.qa.dfds.cloud"
 
-      # - name: Send alert if job fails
-      #   if: failure()
-      #   uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
-      #   with:
-      #     slack_webhook: ${{ env.SLACK_WEBHOOK }}
-      #     slack_message: "QA pipeline failed in master branch"
+      - name: Send alert if job fails
+        if: failure()
+        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@v2.0.1
+        with:
+          slack_webhook: ${{ env.SLACK_WEBHOOK }}
+          slack_message: "QA pipeline failed in master branch"
 
   apply_test_feature:
     name: Apply from feature branch
@@ -190,6 +191,7 @@ jobs:
           TF_VAR_grafana_agent_tempo_username: op://CloudEng-General/Grafana.com - sandbox/Tempo_Username # pragma: allowlist-secret
           TF_VAR_onepassword_credentials_json: op://CloudEng-General/1Password Connect/nonprod_json # pragma: allowlist-secret
           TF_VAR_onepassword_token_for_atlantis: op://CloudEng-General/1Password Connect/nonprod_atlantis_token # pragma: allowlist-secret
+          TF_VAR_onepassword_token_for_grafana: op://CloudEng-General/1Password Connect/nonprod_grafana_token # pragma: allowlist-secret
           TF_VAR_velero_ebs_csi_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn # pragma: allowlist-secret
           SLACK_WEBHOOK: op://CloudEng-General/Slack dfds.slack.com webhooks/jdm5vktylqnczrlkkbvsveyp5e # pragma: allowlist-secret
           TF_VAR_velero_azure_subscription_id: op://CloudEng-General/Azure - Offsite Backup/qa-subscription-id # pragma: allowlist-secret
@@ -219,7 +221,7 @@ jobs:
 
       - name: Send alert if job fails
         if: failure()
-        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@master
+        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@v2.0.1
         with:
           slack_webhook: ${{ env.SLACK_WEBHOOK }}
           slack_message: "QA pipeline failed in feature branch"

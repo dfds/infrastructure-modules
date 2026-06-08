@@ -33,33 +33,9 @@ variable "gitops_apps_repo_ref" {
   description = "The default branch or tag for your GitOps manifests"
 }
 
-variable "agent_resource_memory_request" {
+variable "agent_resource_memory" {
   type        = string
-  description = "Set resource memory request on Grafana Agent container"
-}
-
-variable "agent_resource_memory_limit" {
-  type        = string
-  description = "Set resource memory limits on Grafana Agent container"
-}
-
-variable "tolerations" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    value    = optional(string),
-    effect   = string,
-  }))
-  default = []
-}
-
-variable "affinity" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    values   = list(string)
-  }))
-  default = []
+  description = "Set resource memory request and limits on Grafana Agent container"
 }
 
 variable "agent_replicas" {
@@ -69,7 +45,13 @@ variable "agent_replicas" {
 
 variable "storage_size" {
   type        = string
-  description = "Storage size for Grafana Persistent Volume"
+  description = <<-EOT
+    Storage size for Grafana Persistent Volume.
+    Please note that it is not possible to directly change this value after the initial deployment,
+    so it should be set with care. If you want to change it, you need to first delete the Grafana release and then apply it again with the new value. Default: 5Gi
+    Alternatively, you can use kubectl to edit the PersistentVolumeClaim created for Grafana and change the storage size there,
+    but this approach is not recommended as it may cause issues with the state of the release in Helm.
+  EOT
   default     = "5Gi"
 }
 
@@ -154,4 +136,14 @@ variable "open_cost_enabled" {
   type        = bool
   description = "Enable scraping cost metrics Grafana Cloud Prometheus or not. Default: false"
   default     = false
+}
+
+variable "grafana_stack" {
+  type        = string
+  description = "The Grafana Cloud stack to use"
+}
+
+variable "onepassword_access_parameter_store_arn" {
+  type        = string
+  description = "The ARN of the SSM parameter for Grafana 1password token"
 }

@@ -91,7 +91,7 @@ module "lb_controller_flux_manifests" {
 
 module "lb_controller_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
-  version = "6.4.0"
+  version = "6.6.0"
 
   name                                   = "${var.eks_cluster_name}-lb-controller"
   policy_name                            = "${var.eks_cluster_name}-lb-controller"
@@ -304,7 +304,7 @@ module "cert_manager_flux_manifests" {
 
 module "cert_manager_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
-  version = "6.4.0"
+  version = "6.6.0"
 
   name                       = "${var.eks_cluster_name}-cert-manager"
   policy_name                = "${var.eks_cluster_name}-cert-manager"
@@ -424,7 +424,7 @@ module "monitoring_namespace" {
 
 module "goldpinger" {
   source               = "../../_sub/monitoring/goldpinger"
-  count                = var.grafana_deploy ? 1 : 0
+  count                = local.grafana_deploy ? 1 : 0
   cluster_name         = var.eks_cluster_name
   repo_owner           = var.fluxcd_bootstrap_repo_owner
   repo_name            = var.fluxcd_bootstrap_repo_name
@@ -465,7 +465,7 @@ module "metrics_server" {
 
 module "aws_node_service" {
   source = "../../_sub/monitoring/aws-node"
-  count  = var.grafana_deploy ? 1 : 0
+  count  = local.grafana_deploy ? 1 : 0
 }
 
 # --------------------------------------------------
@@ -486,7 +486,7 @@ module "platform_fluxcd" {
   endpoint                   = data.aws_eks_cluster.eks.endpoint
   token                      = data.aws_eks_cluster_auth.eks.token
   cluster_ca_certificate     = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
-  enable_monitoring          = var.grafana_deploy ? true : false
+  enable_monitoring          = local.grafana_deploy ? true : false
   tenants                    = var.fluxcd_tenants
   source_controller_role_arn = var.fluxcd_source_controller_role_arn
 
@@ -594,30 +594,28 @@ module "elb_inactivity_cleanup_auth" {
 # --------------------------------------------------
 
 module "grafana" {
-  source                        = "../../_sub/monitoring/grafana"
-  count                         = var.grafana_deploy ? 1 : 0
-  cluster_name                  = var.eks_cluster_name
-  github_owner                  = var.fluxcd_bootstrap_repo_owner
-  repo_name                     = var.fluxcd_bootstrap_repo_name
-  repo_branch                   = var.fluxcd_bootstrap_repo_branch
-  gitops_apps_repo_ref          = local.gitops_apps_repo_ref
-  gitops_apps_repo_url          = local.fluxcd_apps_repo_url
-  api_token                     = var.grafana_agent_api_token
-  prometheus_url                = var.grafana_agent_prometheus_url
-  prometheus_username           = var.grafana_agent_prometheus_username
-  loki_url                      = var.grafana_agent_loki_url
-  loki_username                 = var.grafana_agent_loki_username
-  tempo_url                     = var.grafana_agent_tempo_url
-  tempo_username                = var.grafana_agent_tempo_username
-  traces_enabled                = var.grafana_agent_traces_enabled
-  open_cost_enabled             = var.grafana_agent_open_cost_enabled
-  agent_resource_memory_limit   = var.grafana_agent_resource_memory_limit
-  agent_resource_memory_request = var.grafana_agent_resource_memory_request
-  affinity                      = var.observability_affinity
-  tolerations                   = var.observability_tolerations
-  agent_replicas                = var.grafana_agent_replicas
-  storage_size                  = var.grafana_agent_storage_size
-
+  source                                 = "../../_sub/monitoring/grafana"
+  count                                  = local.grafana_deploy ? 1 : 0
+  cluster_name                           = var.eks_cluster_name
+  github_owner                           = var.fluxcd_bootstrap_repo_owner
+  repo_name                              = var.fluxcd_bootstrap_repo_name
+  repo_branch                            = var.fluxcd_bootstrap_repo_branch
+  gitops_apps_repo_ref                   = local.gitops_apps_repo_ref
+  gitops_apps_repo_url                   = local.fluxcd_apps_repo_url
+  api_token                              = var.grafana_agent_api_token
+  prometheus_url                         = var.grafana_agent_prometheus_url
+  prometheus_username                    = var.grafana_agent_prometheus_username
+  loki_url                               = var.grafana_agent_loki_url
+  loki_username                          = var.grafana_agent_loki_username
+  tempo_url                              = var.grafana_agent_tempo_url
+  tempo_username                         = var.grafana_agent_tempo_username
+  traces_enabled                         = var.grafana_agent_traces_enabled
+  open_cost_enabled                      = var.grafana_agent_open_cost_enabled
+  agent_resource_memory                  = var.grafana_agent_resource_memory
+  agent_replicas                         = var.grafana_agent_replicas
+  storage_size                           = var.grafana_agent_storage_size
+  grafana_stack                          = local.grafana_stack
+  onepassword_access_parameter_store_arn = module.onepassword_connect[0].grafana_token_ssm_parameter_arn
   providers = {
     github = github.fluxcd
   }
@@ -698,6 +696,7 @@ module "onepassword_connect" {
   aws_region           = var.aws_region
   credentials_json     = var.onepassword_credentials_json
   token_for_atlantis   = var.onepassword_token_for_atlantis
+  token_for_grafana    = var.onepassword_token_for_grafana
 
   providers = {
     github = github.fluxcd

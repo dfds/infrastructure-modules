@@ -491,7 +491,7 @@ module "eks_version_endpoint" {
 # --------------------------------------------------
 module "karpenter" {
   source                        = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version                       = "21.18.0"
+  version                       = "21.20.0"
   create                        = true
   cluster_name                  = var.eks_cluster_name
   create_access_entry           = true
@@ -503,6 +503,7 @@ module "karpenter" {
   node_iam_role_additional_policies = {
     AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore" # Enable SSM core functionality
   }
+  enable_inline_policy          = true
   depends_on = [module.eks_cluster]
 }
 
