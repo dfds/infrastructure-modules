@@ -121,6 +121,7 @@ inputs = {
   # Github ARC SS Runners
   # --------------------------------------------------
 
+  github_arc_runners_deploy                = true
   github_arc_runners_runner_scale_set_name = "dfds-runners-qa"
   github_arc_runners_resource_memory       = "1Gi"
 
