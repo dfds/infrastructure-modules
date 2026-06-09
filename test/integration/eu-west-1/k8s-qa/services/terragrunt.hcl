@@ -109,7 +109,7 @@ inputs = {
   # External Secrets
   # --------------------------------------------------
 
-  external_secrets_ssm_allowed_namespaces = ["atlantis", "flux-system", "velero"]
+  external_secrets_ssm_allowed_namespaces = ["atlantis", "flux-system", "velero", "arc-runners"]
 
   # --------------------------------------------------
   # Github ARC SS Controller
