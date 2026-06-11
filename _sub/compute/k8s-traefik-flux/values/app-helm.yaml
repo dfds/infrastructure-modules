@@ -24,7 +24,7 @@ spec:
     kind: GitRepository
     name: flux-system
   path: "./${helm_repo_path}"
-  prune: ${prune}
+  prune: true
   postBuild:
     substitute:
       flux_eks_fqdn: "${eks_fqdn}"
@@ -32,7 +32,5 @@ spec:
       flux_traefik_blue_target_http_port: "${target_http_port}"
       flux_traefik_blue_target_admin_port: "${target_admin_port}"
 %{ endif ~}
-%{ if deploy_name == "traefik-green-variant" ~}
-      flux_traefik_green_target_http_port: "${target_http_port}"
-      flux_traefik_green_target_admin_port: "${target_admin_port}"
-%{ endif ~}
+      flux_alb_target_group_arn: "${alb_target_group_arn}"
+      flux_alb_auth_target_group_arn: "${alb_auth_target_group_arn}"
