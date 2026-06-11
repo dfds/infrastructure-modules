@@ -14,7 +14,7 @@ resource "aws_launch_template" "eks" {
     cidr : var.eks_service_cidr,
     max_pods : var.max_pods,
     docker_hub_creds : var.docker_hub_creds_ssm_path,
-    kubelet_memory_reservation : tostring(ceil(255 + (11 * var.max_pods))) + "Mi"
+    kubelet_memory_reservation : "${tostring(ceil(255 + (11 * var.max_pods)))}Mi"
   }))
   key_name               = var.ec2_ssh_key
   update_default_version = true
