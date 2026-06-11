@@ -11,7 +11,6 @@ resource "aws_launch_template" "eks" {
     eks_endpoint : var.eks_endpoint,
     eks_certificate_authority : var.eks_certificate_authority,
     cluster_name : var.cluster_name,
-    worker_inotify_max_user_watches : var.worker_inotify_max_user_watches,
     cidr : var.eks_service_cidr,
     max_pods : var.max_pods,
     docker_hub_creds : var.docker_hub_creds_ssm_path,
