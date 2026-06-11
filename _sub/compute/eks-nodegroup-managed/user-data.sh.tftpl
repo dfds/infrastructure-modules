@@ -36,9 +36,7 @@ spec:
         cidr: ${cidr}
     kubelet:
         config:
-%{ if vpc_cni_prefix_delegation_enabled }
             maxPods: ${max_pods}
-%{ endif ~}
             registryPullQPS: 0
 %{ if kube_cpu != null || kube_memory != null }
             kubeReserved:
