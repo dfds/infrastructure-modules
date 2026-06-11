@@ -151,8 +151,9 @@ POLICY
 # --------------------------------------------------
 
 locals {
-  fluxcd_apps_repo_url = "${var.fluxcd_apps_git_provider_url}${var.fluxcd_apps_repo_owner}/${var.fluxcd_apps_repo_name}"
-  gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  fluxcd_apps_repo_url         = "${var.fluxcd_apps_git_provider_url}${var.fluxcd_apps_repo_owner}/${var.fluxcd_apps_repo_name}"
+  gitops_apps_repo_ref         = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
+  fluxcd_bootstrap_repo_branch = "main"
 }
 
 # --------------------------------------------------
