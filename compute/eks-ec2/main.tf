@@ -254,7 +254,6 @@ module "eks_managed_workers_node_group" {
   eks_endpoint                              = module.eks_cluster.eks_endpoint
   eks_certificate_authority                 = module.eks_cluster.eks_certificate_authority
   eks_service_cidr                          = module.eks_cluster.eks_service_cidr
-  vpc_cni_prefix_delegation_enabled         = var.eks_addon_vpccni_prefix_delegation_enabled
   worker_inotify_max_user_watches           = var.eks_worker_inotify_max_user_watches
 
   # Node group variations
@@ -323,7 +322,6 @@ module "eks_addons" {
   kubeproxy_version_override       = var.eks_addon_kubeproxy_version_override
   coredns_version_override         = var.eks_addon_coredns_version_override
   vpccni_version_override          = var.eks_addon_vpccni_version_override
-  vpccni_prefix_delegation_enabled = var.eks_addon_vpccni_prefix_delegation_enabled
   awsebscsidriver_version_override = var.eks_addon_awsebscsidriver_version_override
   awsefscsidriver_version_override = var.eks_addon_awsefscsidriver_version_override
   podidentity_version_override     = var.eks_addon_podidentity_version_override

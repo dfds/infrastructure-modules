@@ -4,7 +4,7 @@ resource "aws_eks_addon" "vpc-cni" {
   addon_version = local.vpccni_version
   configuration_values = jsonencode({
     "env" = {
-      "ENABLE_PREFIX_DELEGATION" = tostring(var.vpccni_prefix_delegation_enabled)
+      "ENABLE_PREFIX_DELEGATION" = tostring(true)
     }
   })
   resolve_conflicts_on_create = "OVERWRITE"

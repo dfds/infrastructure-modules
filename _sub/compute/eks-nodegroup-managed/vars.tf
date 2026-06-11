@@ -103,12 +103,6 @@ variable "scale_to_zero_cron" {
   description = "The time when the ASG will be scaled to zero, specified in Unix cron syntax"
 }
 
-variable "vpc_cni_prefix_delegation_enabled" {
-  type        = bool
-  description = "Configures the maximum pods limit on the nodes assuming that the prefix delegation feature is enabled on the VPC CNI addon."
-  default     = false
-}
-
 variable "max_unavailable" {
   type        = number
   description = "Desired max number of unavailable worker nodes during node group update."
