@@ -99,11 +99,6 @@ variable "eks_cluster_log_retention_days" {
   default     = 90
 }
 
-variable "eks_worker_inotify_max_user_watches" {
-  type    = number
-  default = 131072 # default t3.large is 8192 which is too low
-}
-
 variable "eks_managed_worker_subnets" {
   type = list(object({
     availability_zone         = string,
@@ -132,12 +127,6 @@ variable "eks_addon_coredns_version_override" {
 variable "eks_addon_vpccni_version_override" {
   type    = string
   default = ""
-}
-
-variable "eks_addon_vpccni_prefix_delegation_enabled" {
-  type        = bool
-  description = "Whether to enable the prefix delegation mode on the VPC CNI EKS addon."
-  default     = false
 }
 
 variable "eks_addon_awsebscsidriver_version_override" {
@@ -200,10 +189,6 @@ variable "eks_managed_nodegroups" {
     })), [])
     labels      = optional(map(string), {})
     max_pods    = optional(number, 110)
-    sys_cpu     = optional(string, null)
-    sys_memory  = optional(string, null)
-    kube_cpu    = optional(string, null)
-    kube_memory = optional(string, null)
   }))
   default = {}
   validation {

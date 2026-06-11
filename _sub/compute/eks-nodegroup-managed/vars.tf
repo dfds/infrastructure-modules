@@ -79,10 +79,6 @@ variable "eks_service_cidr" {
   description = "The CIDR block IPv4 used by the cluster to assign Kubernetes service IP addresses. This is derived from the cluster itself."
 }
 
-variable "worker_inotify_max_user_watches" {
-  type = number
-}
-
 variable "docker_hub_creds_ssm_path" {
   type        = string
   description = "Docker Hub credentials SSM Parameter Store path"
@@ -103,12 +99,6 @@ variable "scale_to_zero_cron" {
   description = "The time when the ASG will be scaled to zero, specified in Unix cron syntax"
 }
 
-variable "vpc_cni_prefix_delegation_enabled" {
-  type        = bool
-  description = "Configures the maximum pods limit on the nodes assuming that the prefix delegation feature is enabled on the VPC CNI addon."
-  default     = false
-}
-
 variable "max_unavailable" {
   type        = number
   description = "Desired max number of unavailable worker nodes during node group update."
@@ -125,28 +115,4 @@ variable "max_pods" {
   type        = number
   description = "Maximum number of Pods that can run on the Kubelet"
   default     = 110
-}
-
-variable "kube_reserved_cpu" {
-  type        = string
-  description = "CPU reserved for kubernetes system components"
-  default     = null
-}
-
-variable "kube_reserved_memory" {
-  type        = string
-  description = "Memory reserved for kubernetes system components"
-  default     = null
-}
-
-variable "system_reserved_cpu" {
-  type        = string
-  description = "CPU reserved for system components"
-  default     = null
-}
-
-variable "system_reserved_memory" {
-  type        = string
-  description = "Memory reserved for system components"
-  default     = null
 }

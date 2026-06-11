@@ -11,15 +11,10 @@ resource "aws_launch_template" "eks" {
     eks_endpoint : var.eks_endpoint,
     eks_certificate_authority : var.eks_certificate_authority,
     cluster_name : var.cluster_name,
-    worker_inotify_max_user_watches : var.worker_inotify_max_user_watches,
-    vpc_cni_prefix_delegation_enabled : var.vpc_cni_prefix_delegation_enabled,
     cidr : var.eks_service_cidr,
     max_pods : var.max_pods,
-    kube_cpu : var.kube_reserved_cpu,
-    kube_memory : var.kube_reserved_memory,
-    sys_cpu : var.system_reserved_cpu,
-    sys_memory : var.system_reserved_memory,
     docker_hub_creds : var.docker_hub_creds_ssm_path,
+    kubelet_memory_reservation : "${tostring(ceil(255 + (11 * var.max_pods)))}Mi"
   }))
   key_name               = var.ec2_ssh_key
   update_default_version = true
