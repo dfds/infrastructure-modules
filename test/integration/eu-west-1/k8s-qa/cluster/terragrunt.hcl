@@ -26,7 +26,6 @@ inputs = {
   eks_cluster_zones                          = 2
   eks_cluster_log_types                      = ["api", "authenticator", "scheduler", "controllerManager"]
 
-  eks_addon_vpccni_prefix_delegation_enabled = true
   eks_addon_most_recent                      = false
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"vpc-cni"}
   eks_addon_vpccni_version_override = "v1.22.1-eksbuild.2"
@@ -68,10 +67,6 @@ inputs = {
       ami_id             = "ami-0275aedb4db249683"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
-      kube_memory                = "1024Mi"
-      kube_cpu                   = "500m"
-      sys_memory                 = "768Mi"
-      sys_cpu                    = "300m"
       labels = {
         "karpenter.sh/controller" = "true" # required for Karpenter
       }
@@ -94,10 +89,6 @@ inputs = {
       labels = {
         dedicated = "observability"
       }
-      kube_memory   = "585Mi"
-      kube_cpu      = "90m"
-      sys_memory    = "585Mi"
-      sys_cpu       = "90m"
     }
   }
 

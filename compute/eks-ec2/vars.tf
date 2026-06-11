@@ -134,12 +134,6 @@ variable "eks_addon_vpccni_version_override" {
   default = ""
 }
 
-variable "eks_addon_vpccni_prefix_delegation_enabled" {
-  type        = bool
-  description = "Whether to enable the prefix delegation mode on the VPC CNI EKS addon."
-  default     = false
-}
-
 variable "eks_addon_awsebscsidriver_version_override" {
   type    = string
   default = ""
@@ -200,10 +194,6 @@ variable "eks_managed_nodegroups" {
     })), [])
     labels      = optional(map(string), {})
     max_pods    = optional(number, 110)
-    sys_cpu     = optional(string, null)
-    sys_memory  = optional(string, null)
-    kube_cpu    = optional(string, null)
-    kube_memory = optional(string, null)
   }))
   default = {}
   validation {

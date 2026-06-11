@@ -103,12 +103,6 @@ variable "scale_to_zero_cron" {
   description = "The time when the ASG will be scaled to zero, specified in Unix cron syntax"
 }
 
-variable "vpc_cni_prefix_delegation_enabled" {
-  type        = bool
-  description = "Configures the maximum pods limit on the nodes assuming that the prefix delegation feature is enabled on the VPC CNI addon."
-  default     = false
-}
-
 variable "max_unavailable" {
   type        = number
   description = "Desired max number of unavailable worker nodes during node group update."
@@ -125,28 +119,4 @@ variable "max_pods" {
   type        = number
   description = "Maximum number of Pods that can run on the Kubelet"
   default     = 110
-}
-
-variable "kube_reserved_cpu" {
-  type        = string
-  description = "CPU reserved for kubernetes system components"
-  default     = null
-}
-
-variable "kube_reserved_memory" {
-  type        = string
-  description = "Memory reserved for kubernetes system components"
-  default     = null
-}
-
-variable "system_reserved_cpu" {
-  type        = string
-  description = "CPU reserved for system components"
-  default     = null
-}
-
-variable "system_reserved_memory" {
-  type        = string
-  description = "Memory reserved for system components"
-  default     = null
 }
