@@ -21,7 +21,7 @@ inputs = {
   # --------------------------------------------------
 
   eks_cluster_name                           = "qa"
-  eks_cluster_version                        = "1.34"
+  eks_cluster_version                        = "1.35"
   eks_cluster_cidr_block                     = "10.228.0.0/16"
   eks_cluster_zones                          = 2
   eks_cluster_log_types                      = ["api", "authenticator", "scheduler", "controllerManager"]
@@ -31,9 +31,9 @@ inputs = {
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"vpc-cni"}
   eks_addon_vpccni_version_override = "v1.22.1-eksbuild.2"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"coredns"}
-  eks_addon_coredns_version_override = "v1.13.2-eksbuild.10"
+  eks_addon_coredns_version_override = "v1.14.3-eksbuild.2"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"kube-proxy"}
-  eks_addon_kubeproxy_version_override = "v1.34.6-eksbuild.11"
+  eks_addon_kubeproxy_version_override = "v1.35.3-eksbuild.11"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"aws-efs-csi-driver"}
   eks_addon_awsefscsidriver_version_override = "v3.2.0-eksbuild.1"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"aws-ebs-csi-driver"}
@@ -63,9 +63,9 @@ inputs = {
       instance_types          = ["m6a.xlarge"]
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
-      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.34-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.34-v20260520
-      ami_id             = "ami-086b479c06ca03ebe"
+      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.35-*"]}]
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.35-v20260529
+      ami_id             = "ami-0275aedb4db249683"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
       kube_memory                = "1024Mi"
@@ -81,9 +81,9 @@ inputs = {
       desired_size_per_subnet = 1
       max_unavailable         = 1
       # This comment configures the renovate bot to automatically update this variable:
-      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.34-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.34-v20260520
-      ami_id             = "ami-086b479c06ca03ebe"
+      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.35-*"]}]
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.35-v20260529
+      ami_id             = "ami-0275aedb4db249683"
       availability_zones = ["eu-west-1c"]
       taints = [
         {
@@ -94,7 +94,6 @@ inputs = {
       labels = {
         dedicated = "observability"
       }
-      max_pods      = 30
       kube_memory   = "585Mi"
       kube_cpu      = "90m"
       sys_memory    = "585Mi"

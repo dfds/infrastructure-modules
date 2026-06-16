@@ -449,16 +449,10 @@ variable "grafana_agent_open_cost_enabled" {
   description = "Enable Open Cost or not. Default: false"
 }
 
-variable "grafana_agent_resource_memory_limit" {
-  type        = string
-  default     = "20Gi"
-  description = "Set resource memory limits on Grafana Agent container"
-}
-
-variable "grafana_agent_resource_memory_request" {
+variable "grafana_agent_resource_memory" {
   type        = string
   default     = "4Gi"
-  description = "Set resource memory request on Grafana Agent container"
+  description = "Set resource memory request and limits on Grafana Agent container"
 }
 
 variable "grafana_agent_replicas" {
@@ -479,26 +473,6 @@ variable "grafana_agent_storage_size" {
   default     = "5Gi"
 }
 
-variable "observability_tolerations" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    value    = optional(string),
-    effect   = string,
-  }))
-  description = "Tolerations to apply to the cluster-wide observability workloads."
-  default     = []
-}
-
-variable "observability_affinity" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    values   = list(string)
-  }))
-  description = "Affinities to apply to the cluster-wide observability workloads."
-  default     = []
-}
 
 # --------------------------------------------------
 # External Secrets with SSM

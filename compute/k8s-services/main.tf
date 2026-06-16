@@ -93,7 +93,7 @@ module "lb_controller_flux_manifests" {
 
 module "lb_controller_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
-  version = "6.6.0"
+  version = "6.6.1"
 
   name                                   = "${var.eks_cluster_name}-lb-controller"
   policy_name                            = "${var.eks_cluster_name}-lb-controller"
@@ -300,7 +300,7 @@ module "cert_manager_flux_manifests" {
 
 module "cert_manager_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
-  version = "6.6.0"
+  version = "6.6.1"
 
   name                       = "${var.eks_cluster_name}-cert-manager"
   policy_name                = "${var.eks_cluster_name}-cert-manager"
@@ -607,10 +607,7 @@ module "grafana" {
   tempo_username                         = var.grafana_agent_tempo_username
   traces_enabled                         = var.grafana_agent_traces_enabled
   open_cost_enabled                      = var.grafana_agent_open_cost_enabled
-  agent_resource_memory_limit            = var.grafana_agent_resource_memory_limit
-  agent_resource_memory_request          = var.grafana_agent_resource_memory_request
-  affinity                               = var.observability_affinity
-  tolerations                            = var.observability_tolerations
+  agent_resource_memory                  = var.grafana_agent_resource_memory
   agent_replicas                         = var.grafana_agent_replicas
   storage_size                           = var.grafana_agent_storage_size
   grafana_stack                          = local.grafana_stack

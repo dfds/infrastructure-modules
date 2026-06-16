@@ -102,30 +102,14 @@ inputs = {
   # --------------------------------------------------
 
   grafana_deploy = true
-  grafana_agent_resource_memory_request = "4Gi"
-  grafana_agent_resource_memory_limit   = "4Gi"
+  grafana_agent_resource_memory = "4Gi"
   grafana_agent_storage_size = "10Gi"
-
-  observability_tolerations = [
-    {
-      key      = "observability.dfds",
-      operator = "Exists",
-      effect   = "NoSchedule",
-    }
-  ]
-  observability_affinity = [
-    {
-      key      = "dedicated",
-      operator = "In",
-      values   = ["observability"],
-    }
-  ]
 
   # --------------------------------------------------
   # External Secrets
   # --------------------------------------------------
 
-  external_secrets_ssm_allowed_namespaces = ["atlantis", "flux-system", "velero"]
+  external_secrets_ssm_allowed_namespaces = ["atlantis", "flux-system", "velero", "arc-runners"]
 
   # --------------------------------------------------
   # Github ARC SS Controller
@@ -137,6 +121,7 @@ inputs = {
   # Github ARC SS Runners
   # --------------------------------------------------
 
+  github_arc_runners_deploy                = true
   github_arc_runners_runner_scale_set_name = "dfds-runners-qa"
   github_arc_runners_resource_memory       = "1Gi"
 
