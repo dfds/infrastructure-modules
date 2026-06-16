@@ -44,8 +44,8 @@ inputs = {
   # Traefik v2
   # --------------------------------------------------
 
-  traefik_blue_variant_weight   = 1
-  traefik_green_variant_weight  = 0
+  traefik_blue_variant_weight   = 0
+  traefik_green_variant_weight  = 1
 
   # --------------------------------------------------
   # Blaster
@@ -66,7 +66,7 @@ inputs = {
   # Flux CD
   # --------------------------------------------------
 
-  fluxcd_apps_repo_branch           = "main"
+  fluxcd_apps_repo_branch           = "add/alb/targetgroupsbindings"
   fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
   fluxcd_bootstrap_repo_branch      = "main"
   fluxcd_version                    = "v2.7.5"
