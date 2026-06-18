@@ -12,7 +12,8 @@ resource "github_repository_file" "traefik_helm" {
     eks_fqdn          = var.eks_fqdn
     target_http_port  = var.target_http_port
     target_admin_port = var.target_admin_port
-    prune             = var.prune
+    alb_target_group_arn = var.alb_target_group_arn
+    alb_auth_target_group_arn = var.alb_auth_target_group_arn
   })
   overwrite_on_create = true
 }

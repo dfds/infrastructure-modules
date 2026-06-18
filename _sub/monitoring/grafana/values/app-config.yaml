@@ -30,3 +30,6 @@ spec:
       flux_cluster_name: ${cluster_name}
       flux_workload_account_id: "${workload_account_id}"
       flux_grafana_stack: ${grafana_stack}
+      flux_grafana_agent_resource_memory: ${agent_resource_memory}
+      flux_grafana_agent_replicas: "${agent_replicas}"
+      flux_grafana_agent_storage_size: ${storage_size}

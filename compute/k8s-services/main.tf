@@ -44,9 +44,10 @@ module "traefik_blue_variant_flux_manifests" {
   eks_fqdn             = local.eks_fqdn
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref = local.gitops_apps_repo_ref
-  prune                = var.fluxcd_prune
   target_http_port     = local.traefik_blue_variant_target_http_port
   target_admin_port    = local.traefik_blue_variant_target_admin_port
+  alb_target_group_arn = module.traefik_alb_anon.alb_target_group_arn_blue
+  alb_auth_target_group_arn = module.traefik_alb_auth.alb_target_group_arn_blue
 
   providers = {
     github = github.fluxcd
@@ -63,9 +64,10 @@ module "traefik_green_variant_manifests" {
   eks_fqdn             = local.eks_fqdn
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref = local.gitops_apps_repo_ref
-  prune                = var.fluxcd_prune
   target_http_port     = local.traefik_green_variant_target_http_port
   target_admin_port    = local.traefik_green_variant_target_admin_port
+  alb_target_group_arn = module.traefik_alb_anon.alb_target_group_arn_green
+  alb_auth_target_group_arn = module.traefik_alb_auth.alb_target_group_arn_green
 
   providers = {
     github = github.fluxcd
@@ -91,7 +93,7 @@ module "lb_controller_flux_manifests" {
 
 module "lb_controller_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
-  version = "6.6.0"
+  version = "6.6.1"
 
   name                                   = "${var.eks_cluster_name}-lb-controller"
   policy_name                            = "${var.eks_cluster_name}-lb-controller"
@@ -146,9 +148,6 @@ module "traefik_alb_auth" {
   blue_variant_weight            = var.traefik_blue_variant_weight
 
   # Green variant
-  green_variant_target_http_port  = local.traefik_green_variant_target_http_port
-  green_variant_target_admin_port = local.traefik_green_variant_target_admin_port
-  green_variant_health_check_path = "/ping"
   green_variant_weight            = var.traefik_green_variant_weight
 }
 
@@ -212,9 +211,6 @@ module "traefik_alb_anon" {
   blue_variant_weight            = var.traefik_blue_variant_weight
 
   # Green variant
-  green_variant_target_http_port  = local.traefik_green_variant_target_http_port
-  green_variant_target_admin_port = local.traefik_green_variant_target_admin_port
-  green_variant_health_check_path = "/ping"
   green_variant_weight            = var.traefik_green_variant_weight
 }
 
@@ -304,7 +300,7 @@ module "cert_manager_flux_manifests" {
 
 module "cert_manager_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
-  version = "6.6.0"
+  version = "6.6.1"
 
   name                       = "${var.eks_cluster_name}-cert-manager"
   policy_name                = "${var.eks_cluster_name}-cert-manager"
@@ -585,7 +581,7 @@ module "elb_inactivity_cleanup_auth" {
   source               = "../../_sub/compute/elb-inactivity-cleanup"
   inactivity_alarm_arn = data.terraform_remote_state.cluster.outputs.eks_inactivity_alarm_arn
   elb_name             = module.traefik_alb_auth.alb_name
-  elb_arn              = module.traefik_alb_auth.alb_arn
+  elb_arn               = module.traefik_alb_auth.alb_arn
 }
 
 
@@ -611,10 +607,7 @@ module "grafana" {
   tempo_username                         = var.grafana_agent_tempo_username
   traces_enabled                         = var.grafana_agent_traces_enabled
   open_cost_enabled                      = var.grafana_agent_open_cost_enabled
-  agent_resource_memory_limit            = var.grafana_agent_resource_memory_limit
-  agent_resource_memory_request          = var.grafana_agent_resource_memory_request
-  affinity                               = var.observability_affinity
-  tolerations                            = var.observability_tolerations
+  agent_resource_memory                  = var.grafana_agent_resource_memory
   agent_replicas                         = var.grafana_agent_replicas
   storage_size                           = var.grafana_agent_storage_size
   grafana_stack                          = local.grafana_stack
