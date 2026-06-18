@@ -49,14 +49,15 @@ resource "aws_autoscaling_attachment" "traefik_auth_blue_variant" {
 
 resource "aws_lb_target_group" "traefik_auth_green_variant" {
   name_prefix          = "g-${substr(var.cluster_name, 0, min(4, length(var.cluster_name)))}"
-  port                 = var.green_variant_target_http_port
+  port                 = local.traefik_deployment_defaults.ports.web
   protocol             = "HTTP"
   vpc_id               = var.vpc_id
+  target_type          = "ip"
   deregistration_delay = 300
 
   health_check {
-    path     = var.green_variant_health_check_path
-    port     = var.green_variant_target_admin_port
+    path     = local.traefik_deployment_defaults.path
+    port     = local.traefik_deployment_defaults.ports.admin
     protocol = "HTTP"
     matcher  = 200
   }
@@ -64,12 +65,6 @@ resource "aws_lb_target_group" "traefik_auth_green_variant" {
   lifecycle {
     create_before_destroy = true
   }
-}
-
-resource "aws_autoscaling_attachment" "traefik_auth_green_variant" {
-  for_each               = var.autoscaling_group_ids
-  autoscaling_group_name = each.key
-  lb_target_group_arn    = aws_lb_target_group.traefik_auth_green_variant.arn
 }
 
 resource "aws_lb_listener" "traefik_auth" {
@@ -179,12 +174,16 @@ resource "aws_security_group" "traefik_auth" {
     cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg #tfsec:ignore:aws-ec2-no-public-egress-sgr
   }
 
-  egress {
-    description = "Egress from var.green_variant_target_http_port to var.green_variant_target_admin_port"
-    from_port   = var.green_variant_target_http_port
-    to_port     = var.green_variant_target_admin_port
-    protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg
+  dynamic "egress" {
+    for_each = local.traefik_deployment_defaults.ports
+
+    content {
+      description = "Egress on ${egress.key} port ${tostring(egress.value)} for the Traefik green variant."
+      from_port   = egress.value
+      to_port     = egress.value
+      protocol    = "TCP"
+      cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg
+    }
   }
 
   tags = {
@@ -208,11 +207,12 @@ resource "aws_security_group_rule" "allow_traefik_auth_blue" {
   security_group_id = var.nodes_sg_id
 }
 
-resource "aws_security_group_rule" "allow_traefik_auth_green" {
-  description              = "Ingress on HTTP port for the Traefik green variant."
+resource "aws_security_group_rule" "allow_traefik_green" {
+  for_each = local.traefik_deployment_defaults.ports
+  description              = "Ingress on ${each.key} port ${tostring(each.value)} for the Traefik green variant."
   type                     = "ingress"
-  from_port                = var.green_variant_target_http_port
-  to_port                  = var.green_variant_target_admin_port
+  from_port                = each.value
+  to_port                  = each.value
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.traefik_auth.id
 

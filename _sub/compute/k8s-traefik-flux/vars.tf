@@ -41,12 +41,6 @@ variable "gitops_apps_repo_ref" {
   description = "The default branch or tag for your GitOps manifests"
 }
 
-variable "prune" {
-  type        = bool
-  default     = true
-  description = "Enable Garbage collection"
-}
-
 variable "target_http_port" {
   type        = number
   description = "NodePort value for the 'web' entrypoint in Traefik"
@@ -55,4 +49,14 @@ variable "target_http_port" {
 variable "target_admin_port" {
   type        = number
   description = "NodePort value for the 'traefik' entrypoint in Traefik"
+}
+
+variable "alb_auth_target_group_arn" {
+  type        = string
+  description = "The ARN of the Traefik auth target group"
+}
+
+variable "alb_target_group_arn" {
+  type        = string
+  description = "The ARN of the Traefik target group"
 }

@@ -503,6 +503,7 @@ module "karpenter" {
   node_iam_role_additional_policies = {
     AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore" # Enable SSM core functionality
   }
+  enable_inline_policy          = true
   depends_on = [module.eks_cluster]
 }
 
