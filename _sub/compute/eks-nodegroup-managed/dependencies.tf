@@ -19,3 +19,7 @@ locals {
   # Pins AMI to 'ami_id' if it is set, otherwise, sets to the latest AMI.
   node_ami = var.ami_id != "" ? var.ami_id : data.aws_ami.eks-node.id
 }
+
+locals {
+  max_pod = 110
+}

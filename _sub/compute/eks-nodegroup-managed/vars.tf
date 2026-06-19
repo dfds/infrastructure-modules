@@ -114,9 +114,3 @@ variable "max_unavailable_percentage" {
   description = "Desired max percentage of unavailable worker nodes during node group update."
   default     = null
 }
-
-variable "max_pods" {
-  type        = number
-  description = "Maximum number of Pods that can run on the Kubelet"
-  default     = 110
-}
