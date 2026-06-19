@@ -21,5 +21,5 @@ locals {
 }
 
 locals {
-  max_pod = 110
+  max_pods = 110
 }
