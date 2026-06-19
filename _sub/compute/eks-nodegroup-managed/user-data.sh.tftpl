@@ -26,16 +26,16 @@ Content-Type: application/node.eks.aws
 apiVersion: node.eks.aws/v1alpha1
 kind: NodeConfig
 spec:
-    cluster:
-        name: ${cluster_name}
-        apiServerEndpoint: ${eks_endpoint}
-        certificateAuthority: ${eks_certificate_authority}
-        cidr: ${cidr}
-    kubelet:
-        config:
-            maxPods: ${max_pods}
-            registryPullQPS: 0
-            kubeReserved:
-                memory: ${kubelet_memory_reservation}
+  cluster:
+    name: ${cluster_name}
+    apiServerEndpoint: ${eks_endpoint}
+    certificateAuthority: ${eks_certificate_authority}
+    cidr: ${cidr}
+  kubelet:
+    config:
+      maxPods: ${max_pods}
+      registryPullQPS: 0
+      kubeReserved:
+        memory: ${kubelet_memory_reservation}
 
 --BOUNDARY--

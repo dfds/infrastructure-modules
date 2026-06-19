@@ -188,7 +188,6 @@ variable "eks_managed_nodegroups" {
       effect = string
     })), [])
     labels      = optional(map(string), {})
-    max_pods    = optional(number, 110)
   }))
   default = {}
   validation {
