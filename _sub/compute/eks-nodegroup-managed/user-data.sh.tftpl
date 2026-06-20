@@ -40,5 +40,7 @@ spec:
       registryPullQPS: 0
       kubeReserved:
         memory: ${kubelet_memory_reservation}
+      systemReserved:
+        memory: 200Mi
 
 --BOUNDARY--
