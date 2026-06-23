@@ -44,8 +44,8 @@ inputs = {
   # Traefik v2
   # --------------------------------------------------
 
-  traefik_blue_variant_weight   = 1
-  traefik_green_variant_weight  = 0
+  traefik_blue_variant_weight   = 0
+  traefik_green_variant_weight  = 1
 
   # --------------------------------------------------
   # Blaster
