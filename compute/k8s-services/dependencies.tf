@@ -97,15 +97,8 @@ locals {
 }
 
 # --------------------------------------------------
-#  Traefik node ports for blue/green deployments
+#  OIDC issuer for EKS cluster
 # --------------------------------------------------
-
-locals {
-  traefik_blue_variant_target_http_port   = 31000
-  traefik_blue_variant_target_admin_port  = 31001
-  traefik_green_variant_target_http_port  = 32000
-  traefik_green_variant_target_admin_port = 32001
-}
 
 locals {
   oidc_issuer = trim(data.aws_eks_cluster.eks.identity[0].oidc[0].issuer, "https://")

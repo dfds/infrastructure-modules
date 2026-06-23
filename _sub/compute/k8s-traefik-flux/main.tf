@@ -10,8 +10,6 @@ resource "github_repository_file" "traefik_helm" {
     deploy_name       = var.deploy_name
     helm_repo_path    = local.helm_repo_path
     eks_fqdn          = var.eks_fqdn
-    target_http_port  = var.target_http_port
-    target_admin_port = var.target_admin_port
     alb_target_group_arn = var.alb_target_group_arn
     alb_auth_target_group_arn = var.alb_auth_target_group_arn
   })
