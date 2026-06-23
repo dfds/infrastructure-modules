@@ -24,7 +24,7 @@ resource "aws_lb" "traefik_auth" {
 
 resource "aws_lb_target_group" "traefik_auth_blue_variant" {
   name_prefix          = "b-${substr(var.cluster_name, 0, min(4, length(var.cluster_name)))}"
-  port                 = var.blue_variant_target_http_port
+  port                 = local.traefik_deployment_defaults.ports.web
   protocol             = "HTTP"
   target_type          = "ip"
   vpc_id               = var.vpc_id
