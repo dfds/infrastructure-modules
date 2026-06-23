@@ -71,21 +71,6 @@ variable "blue_variant_weight" {
 
 # Green variant
 
-variable "green_variant_target_http_port" {
-  type        = number
-  description = "NodePort value for the 'web' entrypoint in Traefik"
-}
-
-variable "green_variant_target_admin_port" {
-  type        = number
-  description = "NodePort value for the 'traefik' entrypoint in Traefik"
-}
-
-variable "green_variant_health_check_path" {
-  type        = string
-  description = "The AWS ALB will call this path on Traefik to evaluate node liveness"
-}
-
 variable "green_variant_weight" {
   type        = number
   description = "The weight of the requests towards the green variant of Traefik"

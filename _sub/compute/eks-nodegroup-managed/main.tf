@@ -3,7 +3,7 @@ resource "aws_launch_template" "eks" {
   count = signum(var.desired_size_per_subnet)
 
   image_id      = local.node_ami
-  instance_type = element(var.instance_types, 0)
+  instance_type = null # because instance_type is a list set on node groups
   name_prefix   = "eks-${var.cluster_name}-${var.nodegroup_name}-"
   # Make sure to update the max pod values in the template below using the script
   # `src/produce-eni-max-pods.sh` when updating the EKS VPC CNI addon.
