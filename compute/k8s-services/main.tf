@@ -44,9 +44,10 @@ module "traefik_blue_variant_flux_manifests" {
   eks_fqdn             = local.eks_fqdn
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref = local.gitops_apps_repo_ref
-  prune                = var.fluxcd_prune
   target_http_port     = local.traefik_blue_variant_target_http_port
   target_admin_port    = local.traefik_blue_variant_target_admin_port
+  alb_target_group_arn = module.traefik_alb_anon.alb_target_group_arn_blue
+  alb_auth_target_group_arn = module.traefik_alb_auth.alb_target_group_arn_blue
 
   providers = {
     github = github.fluxcd
@@ -63,9 +64,10 @@ module "traefik_green_variant_manifests" {
   eks_fqdn             = local.eks_fqdn
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref = local.gitops_apps_repo_ref
-  prune                = var.fluxcd_prune
   target_http_port     = local.traefik_green_variant_target_http_port
   target_admin_port    = local.traefik_green_variant_target_admin_port
+  alb_target_group_arn = module.traefik_alb_anon.alb_target_group_arn_green
+  alb_auth_target_group_arn = module.traefik_alb_auth.alb_target_group_arn_green
 
   providers = {
     github = github.fluxcd
@@ -146,9 +148,6 @@ module "traefik_alb_auth" {
   blue_variant_weight            = var.traefik_blue_variant_weight
 
   # Green variant
-  green_variant_target_http_port  = local.traefik_green_variant_target_http_port
-  green_variant_target_admin_port = local.traefik_green_variant_target_admin_port
-  green_variant_health_check_path = "/ping"
   green_variant_weight            = var.traefik_green_variant_weight
 }
 
@@ -212,9 +211,6 @@ module "traefik_alb_anon" {
   blue_variant_weight            = var.traefik_blue_variant_weight
 
   # Green variant
-  green_variant_target_http_port  = local.traefik_green_variant_target_http_port
-  green_variant_target_admin_port = local.traefik_green_variant_target_admin_port
-  green_variant_health_check_path = "/ping"
   green_variant_weight            = var.traefik_green_variant_weight
 }
 
@@ -585,7 +581,7 @@ module "elb_inactivity_cleanup_auth" {
   source               = "../../_sub/compute/elb-inactivity-cleanup"
   inactivity_alarm_arn = data.terraform_remote_state.cluster.outputs.eks_inactivity_alarm_arn
   elb_name             = module.traefik_alb_auth.alb_name
-  elb_arn              = module.traefik_alb_auth.alb_arn
+  elb_arn               = module.traefik_alb_auth.alb_arn
 }
 
 

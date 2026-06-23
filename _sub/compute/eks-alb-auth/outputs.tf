@@ -21,3 +21,13 @@ output "alb_target_group_arn_suffix_blue" {
 output "alb_target_group_arn_suffix_green" {
   value = aws_lb_target_group.traefik_auth_green_variant.arn_suffix
 }
+
+output "alb_target_group_arn_blue" {
+  value = aws_lb_target_group.traefik_auth_blue_variant.arn
+  description = "The ARN of the Traefik blue variant target group."
+}
+
+output "alb_target_group_arn_green" {
+  value = aws_lb_target_group.traefik_auth_green_variant.arn
+  description = "The ARN of the Traefik green variant target group."
+}
