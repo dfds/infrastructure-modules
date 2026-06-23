@@ -23,3 +23,25 @@ locals {
 locals {
   max_pods = 110
 }
+
+data "aws_ec2_instance_type" "this" {
+  for_each = toset(var.instance_types)
+  instance_type = each.value
+}
+
+locals {
+  max_pods_calc = {
+    for instance_type, instance_data in data.aws_ec2_instance_type.this : instance_type => (
+      (instance_data.maximum_network_interfaces * ((instance_data.maximum_ipv4_addresses_per_interface - 1) * 16)) + 2
+    )
+  }
+}
+
+check "instance_types_support_max_pods" {
+ assert {
+    condition     = alltrue([for instance_type, instance_data in local.max_pods_calc : (
+      instance_data >= local.max_pods
+    )])
+    error_message = "One or more instance types is too small and does not support the required max pods of ${local.max_pods}."
+  }
+}
