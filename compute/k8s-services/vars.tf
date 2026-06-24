@@ -166,11 +166,6 @@ variable "fluxcd_bootstrap_repo_name" {
   type = string
 }
 
-variable "fluxcd_bootstrap_repo_branch" {
-  type    = string
-  default = "main"
-}
-
 variable "fluxcd_bootstrap_repo_owner" {
   type    = string
   default = "dfds"
