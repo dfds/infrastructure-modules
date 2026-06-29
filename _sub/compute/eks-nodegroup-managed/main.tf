@@ -12,7 +12,6 @@ resource "aws_launch_template" "eks" {
     eks_certificate_authority : var.eks_certificate_authority,
     cluster_name : var.cluster_name,
     worker_inotify_max_user_watches : var.worker_inotify_max_user_watches,
-    vpc_cni_prefix_delegation_enabled : var.vpc_cni_prefix_delegation_enabled,
     cidr : var.eks_service_cidr,
     max_pods : var.max_pods,
     kube_cpu : var.kube_reserved_cpu,

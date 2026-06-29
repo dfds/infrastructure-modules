@@ -26,7 +26,6 @@ inputs = {
   eks_cluster_zones                          = 2
   eks_cluster_log_types                      = ["api", "authenticator", "scheduler", "controllerManager"]
 
-  eks_addon_vpccni_prefix_delegation_enabled = true
   eks_addon_most_recent                      = false
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"vpc-cni"}
   eks_addon_vpccni_version_override = "v1.22.1-eksbuild.2"
