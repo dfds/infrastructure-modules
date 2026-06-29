@@ -42,6 +42,10 @@ resource "aws_launch_template" "eks" {
   monitoring {
     enabled = true
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_eks_node_group" "group" {
