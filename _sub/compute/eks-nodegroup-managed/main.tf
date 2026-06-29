@@ -88,6 +88,10 @@ resource "aws_eks_node_group" "group" {
     max_size     = local.asg_max_size
     min_size     = local.asg_min_size
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_autoscaling_schedule" "eks" {
