@@ -51,7 +51,8 @@ resource "aws_launch_template" "eks" {
 resource "aws_eks_node_group" "group" {
   count           = signum(var.desired_size_per_subnet)
   cluster_name    = var.cluster_name
-  node_group_name = var.nodegroup_name
+  node_group_name = null # conflicts with node_group_name_prefix
+  node_group_name_prefix = "${var.nodegroup_name}-" # needed for create before destroy lifecycle
   node_role_arn   = var.node_role_arn
   subnet_ids      = var.subnet_ids
   instance_types  = var.instance_types
