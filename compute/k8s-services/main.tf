@@ -44,8 +44,6 @@ module "traefik_blue_variant_flux_manifests" {
   eks_fqdn             = local.eks_fqdn
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref = local.gitops_apps_repo_ref
-  target_http_port     = local.traefik_blue_variant_target_http_port
-  target_admin_port    = local.traefik_blue_variant_target_admin_port
   alb_target_group_arn = module.traefik_alb_anon.alb_target_group_arn_blue
   alb_auth_target_group_arn = module.traefik_alb_auth.alb_target_group_arn_blue
 
@@ -64,8 +62,6 @@ module "traefik_green_variant_manifests" {
   eks_fqdn             = local.eks_fqdn
   gitops_apps_repo_url = local.fluxcd_apps_repo_url
   gitops_apps_repo_ref = local.gitops_apps_repo_ref
-  target_http_port     = local.traefik_green_variant_target_http_port
-  target_admin_port    = local.traefik_green_variant_target_admin_port
   alb_target_group_arn = module.traefik_alb_anon.alb_target_group_arn_green
   alb_auth_target_group_arn = module.traefik_alb_auth.alb_target_group_arn_green
 
@@ -140,15 +136,8 @@ module "traefik_alb_auth" {
   azure_client_secret      = try(module.traefik_alb_auth_appreg.application_key, "")
   access_logs_bucket       = module.traefik_alb_s3_access_logs.name
   enable_delete_protection = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? false : true
-
-  # Blue variant
-  blue_variant_target_http_port  = local.traefik_blue_variant_target_http_port
-  blue_variant_target_admin_port = local.traefik_blue_variant_target_admin_port
-  blue_variant_health_check_path = "/ping"
-  blue_variant_weight            = var.traefik_blue_variant_weight
-
-  # Green variant
-  green_variant_weight            = var.traefik_green_variant_weight
+  blue_variant_weight      = var.traefik_blue_variant_weight
+  green_variant_weight     = var.traefik_green_variant_weight
 }
 
 module "traefik_alb_auth_dns" {
@@ -203,15 +192,8 @@ module "traefik_alb_anon" {
   nodes_sg_id              = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
   access_logs_bucket       = module.traefik_alb_s3_access_logs.name
   enable_delete_protection = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? false : true
-
-  # Blue variant
-  blue_variant_target_http_port  = local.traefik_blue_variant_target_http_port
-  blue_variant_target_admin_port = local.traefik_blue_variant_target_admin_port
-  blue_variant_health_check_path = "/ping"
-  blue_variant_weight            = var.traefik_blue_variant_weight
-
-  # Green variant
-  green_variant_weight            = var.traefik_green_variant_weight
+  blue_variant_weight      = var.traefik_blue_variant_weight
+  green_variant_weight     = var.traefik_green_variant_weight
 }
 
 module "traefik_alb_anon_dns" {
