@@ -102,3 +102,13 @@ moved {
   from = module.falco[0].github_repository_file.helm_patch
   to   = module.falco.github_repository_file.helm_patch
 }
+
+moved {
+  from = module.traefik_alb_anon.aws_security_group_rule.allow_traefik_green
+  to   = module.traefik_alb_anon.aws_security_group_rule.allow_traefik
+}
+
+moved {
+  from = module.traefik_alb_auth.aws_security_group_rule.allow_traefik_green
+  to   = module.traefik_alb_auth.aws_security_group_rule.allow_traefik
+}
