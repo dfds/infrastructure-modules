@@ -24,14 +24,15 @@ resource "aws_lb" "traefik" {
 
 resource "aws_lb_target_group" "traefik_blue_variant" {
   name_prefix          = "b-${substr(var.cluster_name, 0, min(4, length(var.cluster_name)))}"
-  port                 = var.blue_variant_target_http_port
+  port                 = local.traefik_deployment_defaults.ports.web
   protocol             = "HTTP"
+  target_type          = "ip"
   vpc_id               = var.vpc_id
   deregistration_delay = 300
 
   health_check {
-    path     = var.blue_variant_health_check_path
-    port     = var.blue_variant_target_admin_port
+    path     = local.traefik_deployment_defaults.path
+    port     = local.traefik_deployment_defaults.ports.admin
     protocol = "HTTP"
     matcher  = 200
   }
@@ -39,12 +40,6 @@ resource "aws_lb_target_group" "traefik_blue_variant" {
   lifecycle {
     create_before_destroy = true
   }
-}
-
-resource "aws_autoscaling_attachment" "traefik_blue_variant" {
-  for_each               = var.autoscaling_group_ids
-  autoscaling_group_name = each.key
-  lb_target_group_arn    = aws_lb_target_group.traefik_blue_variant.arn
 }
 
 resource "aws_lb_target_group" "traefik_green_variant" {
@@ -145,19 +140,11 @@ resource "aws_security_group" "traefik" {
     cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sg tfsec:ignore:aws-ec2-no-public-ingress-sgr
   }
 
-  egress {
-    description = "Egress from var.target_http_port to var.target_admin_port"
-    from_port   = var.blue_variant_target_http_port
-    to_port     = var.blue_variant_target_admin_port
-    protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sg tfsec:ignore:aws-ec2-no-public-egress-sgr
-  }
-
   dynamic "egress" {
     for_each = local.traefik_deployment_defaults.ports
 
     content {
-      description = "Egress on ${egress.key} port ${tostring(egress.value)} for the Traefik green variant."
+      description = "Egress on ${egress.key} port ${tostring(egress.value)} for the all Traefik variants."
       from_port   = egress.value
       to_port     = egress.value
       protocol    = "TCP"
@@ -174,20 +161,9 @@ resource "aws_security_group" "traefik" {
   }
 }
 
-resource "aws_security_group_rule" "allow_traefik_blue" {
-  description              = "Ingress on HTTP port for the Traefik blue variant."
-  type                     = "ingress"
-  from_port                = var.blue_variant_target_http_port
-  to_port                  = var.blue_variant_target_admin_port
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.traefik.id
-
-  security_group_id = var.nodes_sg_id
-}
-
-resource "aws_security_group_rule" "allow_traefik_green" {
+resource "aws_security_group_rule" "allow_traefik" {
   for_each = local.traefik_deployment_defaults.ports
-  description              = "Ingress on ${each.key} port ${tostring(each.value)} for the Traefik green variant."
+  description              = "Ingress on ${each.key} port ${tostring(each.value)} for all Traefik variants."
   type                     = "ingress"
   from_port                = each.value
   to_port                  = each.value
