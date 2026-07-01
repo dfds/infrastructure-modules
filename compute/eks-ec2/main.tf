@@ -254,7 +254,6 @@ module "eks_managed_workers_node_group" {
   eks_endpoint                              = module.eks_cluster.eks_endpoint
   eks_certificate_authority                 = module.eks_cluster.eks_certificate_authority
   eks_service_cidr                          = module.eks_cluster.eks_service_cidr
-  worker_inotify_max_user_watches           = var.eks_worker_inotify_max_user_watches
 
   # Node group variations
   nodegroup_name             = each.key
