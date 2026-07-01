@@ -79,10 +79,6 @@ variable "eks_service_cidr" {
   description = "The CIDR block IPv4 used by the cluster to assign Kubernetes service IP addresses. This is derived from the cluster itself."
 }
 
-variable "worker_inotify_max_user_watches" {
-  type = number
-}
-
 variable "docker_hub_creds_ssm_path" {
   type        = string
   description = "Docker Hub credentials SSM Parameter Store path"

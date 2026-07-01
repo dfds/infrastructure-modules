@@ -99,11 +99,6 @@ variable "eks_cluster_log_retention_days" {
   default     = 90
 }
 
-variable "eks_worker_inotify_max_user_watches" {
-  type    = number
-  default = 131072 # default t3.large is 8192 which is too low
-}
-
 variable "eks_managed_worker_subnets" {
   type = list(object({
     availability_zone         = string,
