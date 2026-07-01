@@ -114,33 +114,3 @@ variable "max_unavailable_percentage" {
   description = "Desired max percentage of unavailable worker nodes during node group update."
   default     = null
 }
-
-variable "max_pods" {
-  type        = number
-  description = "Maximum number of Pods that can run on the Kubelet"
-  default     = 110
-}
-
-variable "kube_reserved_cpu" {
-  type        = string
-  description = "CPU reserved for kubernetes system components"
-  default     = null
-}
-
-variable "kube_reserved_memory" {
-  type        = string
-  description = "Memory reserved for kubernetes system components"
-  default     = null
-}
-
-variable "system_reserved_cpu" {
-  type        = string
-  description = "CPU reserved for system components"
-  default     = null
-}
-
-variable "system_reserved_memory" {
-  type        = string
-  description = "Memory reserved for system components"
-  default     = null
-}
