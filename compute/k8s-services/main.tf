@@ -466,7 +466,6 @@ module "platform_fluxcd" {
   cluster_ca_certificate     = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
   enable_monitoring          = local.grafana_deploy ? true : false
   tenants                    = var.fluxcd_tenants
-  source_controller_role_arn = var.fluxcd_source_controller_role_arn
 
   providers = {
     github = github.fluxcd

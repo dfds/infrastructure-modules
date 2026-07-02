@@ -14,6 +14,9 @@ terraform {
       source  = "fluxcd/flux"
       version = ">= 1.7.0"
     }
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 6.23.0"
+    }
   }
-
 }
