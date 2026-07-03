@@ -28,10 +28,9 @@ resource "flux_bootstrap_git" "this" {
   path       = local.cluster_target_path
   version    = var.release_tag
   kustomization_override = templatefile("${path.module}/values/flux-system-patch.yaml", {
-    src_ctrl_arn = module.source_controller_irsa.arn
+    src_ctrl_arn = "arn:aws:iam::${data.aws_caller_identity.this.account_id}:role/${local.role_name}" # if module.source_controller_irsa.arn is used here, the provider will produce inconsistent plans and fail on first run
   })
 }
-
 
 # --------------------------------------------------
 # Flux CD Monitoring
@@ -132,10 +131,15 @@ resource "github_repository_file" "tenant_sync" {
   overwrite_on_create = true
 }
 
+# Source controller IAM Role for Service Account (IRSA) to allow Flux to pull images from ECR. Be mindfull of the weak coupling between the IAM role and the flux_bootstrap_git resource due to a bug in the flux provider.
+locals {
+  role_name = "${var.cluster_name}-fluxcd-source-controller-ecr-reader"
+}
+
 module "source_controller_irsa" {
   source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
   version = "6.6.1"
-  name = "${var.cluster_name}-fluxcd-source-controller-ecr-reader"
+  name = local.role_name
   use_name_prefix = false
   oidc_providers = {
     this = {
