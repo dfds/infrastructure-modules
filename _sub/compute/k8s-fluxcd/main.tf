@@ -131,7 +131,8 @@ resource "github_repository_file" "tenant_sync" {
   overwrite_on_create = true
 }
 
-# Source controller IAM Role for Service Account (IRSA) to allow Flux to pull images from ECR. Be mindfull of the weak coupling between the IAM role and the flux_bootstrap_git resource due to a bug in the flux provider.
+# Source controller IAM Role for Service Account (IRSA) to allow Flux to pull images from ECR.
+# Be mindfull of the weak coupling between the IAM role and the flux_bootstrap_git resource due to a bug in the flux provider.
 locals {
   role_name = "${var.cluster_name}-fluxcd-source-controller-ecr-reader"
 }
