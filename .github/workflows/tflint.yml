@@ -15,7 +15,7 @@ jobs:
         os: ["ubuntu-latest"]
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       name: Checkout source code
 
     - uses: actions/cache@v5
