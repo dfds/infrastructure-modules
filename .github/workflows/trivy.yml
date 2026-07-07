@@ -7,4 +7,4 @@ on:
   workflow_dispatch:
 jobs:
   shared:
-    uses: dfds/shared-workflows/.github/workflows/security-trivy-iac-check.yaml@2.0.2
+    uses: dfds/shared-workflows/.github/workflows/security-trivy-iac-check.yaml@2.0.4
