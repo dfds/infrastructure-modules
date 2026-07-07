@@ -370,17 +370,6 @@ variable "velero_node_agent_pod_memory" {
   description = "Memory resources request and limit size for Velero node agent pods"
 }
 
-
-# --------------------------------------------------
-# Inactivity based clean up for sandboxes
-# --------------------------------------------------
-
-variable "enable_inactivity_cleanup" {
-  type        = bool
-  default     = true
-  description = "Enables automated clean up of ELB resources based on inactivity. Only applicable to sandboxes."
-}
-
 # --------------------------------------------------
 # Grafana Agent for Kubernetes monitoring
 # --------------------------------------------------

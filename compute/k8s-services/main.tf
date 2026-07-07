@@ -35,16 +35,16 @@ module "traefik_crds" {
 # --------------------------------------------------
 
 module "traefik_blue_variant_flux_manifests" {
-  source               = "../../_sub/compute/k8s-traefik-flux"
-  cluster_name         = var.eks_cluster_name
-  deploy_name          = "traefik-blue-variant"
-  github_owner         = var.fluxcd_bootstrap_repo_owner
-  repo_name            = var.fluxcd_bootstrap_repo_name
-  repo_branch          = var.fluxcd_bootstrap_repo_branch
-  eks_fqdn             = local.eks_fqdn
-  gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = local.gitops_apps_repo_ref
-  alb_target_group_arn = module.traefik_alb_anon.alb_target_group_arn_blue
+  source                    = "../../_sub/compute/k8s-traefik-flux"
+  cluster_name              = var.eks_cluster_name
+  deploy_name               = "traefik-blue-variant"
+  github_owner              = var.fluxcd_bootstrap_repo_owner
+  repo_name                 = var.fluxcd_bootstrap_repo_name
+  repo_branch               = var.fluxcd_bootstrap_repo_branch
+  eks_fqdn                  = local.eks_fqdn
+  gitops_apps_repo_url      = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref      = local.gitops_apps_repo_ref
+  alb_target_group_arn      = module.traefik_alb_anon.alb_target_group_arn_blue
   alb_auth_target_group_arn = module.traefik_alb_auth.alb_target_group_arn_blue
 
   providers = {
@@ -53,16 +53,16 @@ module "traefik_blue_variant_flux_manifests" {
 }
 
 module "traefik_green_variant_manifests" {
-  source               = "../../_sub/compute/k8s-traefik-flux"
-  cluster_name         = var.eks_cluster_name
-  deploy_name          = "traefik-green-variant"
-  github_owner         = var.fluxcd_bootstrap_repo_owner
-  repo_name            = var.fluxcd_bootstrap_repo_name
-  repo_branch          = var.fluxcd_bootstrap_repo_branch
-  eks_fqdn             = local.eks_fqdn
-  gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = local.gitops_apps_repo_ref
-  alb_target_group_arn = module.traefik_alb_anon.alb_target_group_arn_green
+  source                    = "../../_sub/compute/k8s-traefik-flux"
+  cluster_name              = var.eks_cluster_name
+  deploy_name               = "traefik-green-variant"
+  github_owner              = var.fluxcd_bootstrap_repo_owner
+  repo_name                 = var.fluxcd_bootstrap_repo_name
+  repo_branch               = var.fluxcd_bootstrap_repo_branch
+  eks_fqdn                  = local.eks_fqdn
+  gitops_apps_repo_url      = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref      = local.gitops_apps_repo_ref
+  alb_target_group_arn      = module.traefik_alb_anon.alb_target_group_arn_green
   alb_auth_target_group_arn = module.traefik_alb_auth.alb_target_group_arn_green
 
   providers = {
@@ -545,27 +545,6 @@ module "velero" {
     aws    = aws
   }
 }
-
-# --------------------------------------------------
-# Inactivity based clean up for sandboxes
-# --------------------------------------------------
-
-module "elb_inactivity_cleanup_anon" {
-  count                = data.terraform_remote_state.cluster.outputs.eks_is_sandbox && local.enable_inactivity_cleanup ? 1 : 0
-  source               = "../../_sub/compute/elb-inactivity-cleanup"
-  inactivity_alarm_arn = data.terraform_remote_state.cluster.outputs.eks_inactivity_alarm_arn
-  elb_name             = module.traefik_alb_anon.alb_name
-  elb_arn              = module.traefik_alb_anon.alb_arn
-}
-
-module "elb_inactivity_cleanup_auth" {
-  count                = data.terraform_remote_state.cluster.outputs.eks_is_sandbox && local.enable_inactivity_cleanup ? 1 : 0
-  source               = "../../_sub/compute/elb-inactivity-cleanup"
-  inactivity_alarm_arn = data.terraform_remote_state.cluster.outputs.eks_inactivity_alarm_arn
-  elb_name             = module.traefik_alb_auth.alb_name
-  elb_arn               = module.traefik_alb_auth.alb_arn
-}
-
 
 # --------------------------------------------------
 # Grafana Agent for Kubernetes monitoring
