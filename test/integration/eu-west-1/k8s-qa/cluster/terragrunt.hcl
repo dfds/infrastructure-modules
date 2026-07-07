@@ -46,10 +46,6 @@ inputs = {
   eks_k8s_auth_api_version    = "client.authentication.k8s.io/v1beta1"
 
   eks_is_sandbox = true
-  # Since rebooting the cluster after inactivity at the moment requires first
-  # running `terragrunt apply -target=module.eks_cluster` the QA cluster is
-  # excluded from the inactivity clean up on this step.
-  enable_inactivity_cleanup = false
 
   # --------------------------------------------------
   # Managed nodes
