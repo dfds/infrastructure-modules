@@ -383,61 +383,6 @@ variable "grafana_deploy" {
   EOT
 }
 
-variable "grafana_agent_api_token" {
-  type        = string
-  description = "The token to authenticate request to a Grafana Cloud stack"
-  default     = ""
-  sensitive   = true
-}
-
-variable "grafana_agent_prometheus_url" {
-  type        = string
-  description = "The Prometheus URL in a Grafana Cloud stack"
-  default     = ""
-}
-
-variable "grafana_agent_prometheus_username" {
-  type        = string
-  description = "The username for Prometheus in a Grafana Cloud stack"
-  default     = ""
-}
-
-variable "grafana_agent_loki_url" {
-  type        = string
-  description = "The Loki URL in a Grafana Cloud stack"
-  default     = ""
-}
-
-variable "grafana_agent_loki_username" {
-  type        = string
-  description = "The username for Loki in a Grafana Cloud stack"
-  default     = ""
-}
-
-variable "grafana_agent_tempo_url" {
-  type        = string
-  description = "The Tempo URL in a Grafana Cloud stack"
-  default     = ""
-}
-
-variable "grafana_agent_tempo_username" {
-  type        = string
-  description = "The username for Tempo in a Grafana Cloud stack"
-  default     = ""
-}
-
-variable "grafana_agent_traces_enabled" {
-  type        = bool
-  default     = true
-  description = "Enable traces or not. Default: true"
-}
-
-variable "grafana_agent_open_cost_enabled" {
-  type        = bool
-  default     = false
-  description = "Enable Open Cost or not. Default: false"
-}
-
 variable "grafana_agent_resource_memory" {
   type        = string
   default     = "4Gi"
@@ -493,16 +438,6 @@ variable "external_dns_traefik_alb_auth_core_alias" {
   description = "A list of aliases/alternative names for the login-protected services to be managed by External DNS in the *parent* domain. E.g. 'prettyurl.company.tld'"
   type        = list(string)
   default     = []
-}
-
-variable "external_deletion_policy_override" {
-  type        = string
-  description = "External DNS deletion policy"
-  default     = ""
-  validation {
-    condition     = contains(["", "sync", "upsert-only"], var.external_deletion_policy_override)
-    error_message = "Deletion policy must be either '', 'sync', 'upsert-only'."
-  }
 }
 
 variable "external_dns_core_route53_assume_role_arn" {
