@@ -241,14 +241,8 @@ variable "eks_worker_cur_bucket_arn" {
 }
 
 # ------------------------------------------------------
-# Inactivity based clean up and scale down for sandboxes
+# Scale down for sandboxes
 # ------------------------------------------------------
-
-variable "enable_inactivity_cleanup" {
-  type        = bool
-  default     = true
-  description = "Enables automated clean up of EKS resources based on inactivity. Only applicable to sandboxes."
-}
 
 variable "enable_scale_to_zero_after_business_hours" {
   type        = bool

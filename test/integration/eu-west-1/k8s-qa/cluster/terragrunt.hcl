@@ -28,15 +28,15 @@ inputs = {
 
   eks_addon_most_recent                      = false
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"vpc-cni"}
-  eks_addon_vpccni_version_override = "v1.22.1-eksbuild.2"
+  eks_addon_vpccni_version_override = "v1.22.3-eksbuild.1"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"coredns"}
   eks_addon_coredns_version_override = "v1.14.3-eksbuild.2"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"kube-proxy"}
   eks_addon_kubeproxy_version_override = "v1.35.3-eksbuild.11"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"aws-efs-csi-driver"}
-  eks_addon_awsefscsidriver_version_override = "v3.2.0-eksbuild.1"
+  eks_addon_awsefscsidriver_version_override = "v3.3.0-eksbuild.1"
   # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"aws-ebs-csi-driver"}
-  eks_addon_awsebscsidriver_version_override = "v1.60.1-eksbuild.1"
+  eks_addon_awsebscsidriver_version_override = "v1.62.0-eksbuild.1"
 
   enable_worker_nat_gateway                  = true
   use_worker_nat_gateway                     = true
@@ -46,10 +46,6 @@ inputs = {
   eks_k8s_auth_api_version    = "client.authentication.k8s.io/v1beta1"
 
   eks_is_sandbox = true
-  # Since rebooting the cluster after inactivity at the moment requires first
-  # running `terragrunt apply -target=module.eks_cluster` the QA cluster is
-  # excluded from the inactivity clean up on this step.
-  enable_inactivity_cleanup = false
 
   # --------------------------------------------------
   # Managed nodes
@@ -63,8 +59,8 @@ inputs = {
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.35-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.35-v20260529
-      ami_id             = "ami-0275aedb4db249683"
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.35-v20260625
+      ami_id             = "ami-00a5887728fd8718b"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
       kube_memory                = "1024Mi"
@@ -81,8 +77,8 @@ inputs = {
       max_unavailable         = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.35-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.35-v20260529
-      ami_id             = "ami-0275aedb4db249683"
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.35-v20260625
+      ami_id             = "ami-00a5887728fd8718b"
       availability_zones = ["eu-west-1c"]
       taints = [
         {

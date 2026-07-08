@@ -465,14 +465,6 @@ resource "aws_cloudwatch_metric_alarm" "inactivity" {
   }
 }
 
-module "eks_inactivity_cleanup" {
-  count                = local.enable_inactivity_cleanup ? 1 : 0
-  source               = "../../_sub/compute/eks-inactivity-cleanup"
-  eks_cluster_name     = var.eks_cluster_name
-  eks_cluster_arn      = module.eks_cluster.eks_cluster_arn
-  inactivity_alarm_arn = aws_cloudwatch_metric_alarm.inactivity[0].arn
-}
-
 # --------------------------------------------------
 # GPU workloads
 # --------------------------------------------------
@@ -501,8 +493,8 @@ module "karpenter" {
   node_iam_role_additional_policies = {
     AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore" # Enable SSM core functionality
   }
-  enable_inline_policy          = true
-  depends_on = [module.eks_cluster]
+  enable_inline_policy = true
+  depends_on           = [module.eks_cluster]
 }
 
 # Controller KMS access policy required for EBS encryption support (see https://karpenter.sh/docs/troubleshooting/#node-terminates-before-ready-on-failed-encrypted-ebs-volume)

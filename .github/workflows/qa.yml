@@ -44,7 +44,7 @@ jobs:
   build_test_master:
     if: github.event.pull_request.draft == false
     name: Build test binary from master branch
-    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@v2.0.1
+    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@2.0.4
     with:
       test-source-path: test/integration/suite
       repository: dfds/infrastructure-modules
@@ -54,7 +54,7 @@ jobs:
   build_test_feature:
     if: github.ref != 'refs/heads/master' && github.event.pull_request.draft == false
     name: Build test binary from feature branch
-    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@v2.0.1
+    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@2.0.4
     with:
       test-source-path: test/integration/suite
       artifact-name: test-feature
@@ -66,7 +66,7 @@ jobs:
     needs: build_test_master
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: dfds/infrastructure-modules
           ref: master
@@ -139,7 +139,7 @@ jobs:
 
       - name: Send alert if job fails
         if: failure()
-        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@v2.0.1
+        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@2.0.4
         with:
           slack_webhook: ${{ env.SLACK_WEBHOOK }}
           slack_message: "QA pipeline failed in master branch"
@@ -151,7 +151,7 @@ jobs:
     if: github.ref != 'refs/heads/master' && github.event.pull_request.draft == false
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install Terragrunt and OpenTofu
         env:
@@ -221,7 +221,7 @@ jobs:
 
       - name: Send alert if job fails
         if: failure()
-        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@v2.0.1
+        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@2.0.4
         with:
           slack_webhook: ${{ env.SLACK_WEBHOOK }}
           slack_message: "QA pipeline failed in feature branch"
