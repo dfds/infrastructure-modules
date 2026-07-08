@@ -100,13 +100,6 @@ jobs:
           TF_VAR_docker_hub_password: op://CloudEng-General/Docker Cloud/password # pragma: allowlist-secret
           TF_VAR_eks_addon_awsebscsidriver_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn # pragma: allowlist-secret
           TF_VAR_fluxcd_bootstrap_repo_owner_token: op://CloudEng-General/Github account devex-sa/Tokens/flux-qa # pragma: allowlist-secret
-          TF_VAR_grafana_agent_api_token: op://CloudEng-General/Grafana.com - sandbox/grafana_token # pragma: allowlist-secret
-          TF_VAR_grafana_agent_loki_url: op://CloudEng-General/Grafana.com - sandbox/Loki_URL # pragma: allowlist-secret
-          TF_VAR_grafana_agent_loki_username: op://CloudEng-General/Grafana.com - sandbox/Loki_Username # pragma: allowlist-secret
-          TF_VAR_grafana_agent_prometheus_url: op://CloudEng-General/Grafana.com - sandbox/Prometheus_URL # pragma: allowlist-secret
-          TF_VAR_grafana_agent_prometheus_username: op://CloudEng-General/Grafana.com - sandbox/Prometheus_Username # pragma: allowlist-secret
-          TF_VAR_grafana_agent_tempo_url: op://CloudEng-General/Grafana.com - sandbox/Tempo_URL # pragma: allowlist-secret
-          TF_VAR_grafana_agent_tempo_username: op://CloudEng-General/Grafana.com - sandbox/Tempo_Username # pragma: allowlist-secret
           TF_VAR_onepassword_credentials_json: op://CloudEng-General/1Password Connect/nonprod_json # pragma: allowlist-secret
           TF_VAR_onepassword_token_for_atlantis: op://CloudEng-General/1Password Connect/nonprod_atlantis_token # pragma: allowlist-secret
           TF_VAR_onepassword_token_for_grafana: op://CloudEng-General/1Password Connect/nonprod_grafana_token # pragma: allowlist-secret
@@ -182,13 +175,6 @@ jobs:
           TF_VAR_docker_hub_password: op://CloudEng-General/Docker Cloud/password # pragma: allowlist-secret
           TF_VAR_eks_addon_awsebscsidriver_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn # pragma: allowlist-secret
           TF_VAR_fluxcd_bootstrap_repo_owner_token: op://CloudEng-General/Github account devex-sa/Tokens/flux-qa # pragma: allowlist-secret
-          TF_VAR_grafana_agent_api_token: op://CloudEng-General/Grafana.com - sandbox/grafana_token # pragma: allowlist-secret
-          TF_VAR_grafana_agent_loki_url: op://CloudEng-General/Grafana.com - sandbox/Loki_URL # pragma: allowlist-secret
-          TF_VAR_grafana_agent_loki_username: op://CloudEng-General/Grafana.com - sandbox/Loki_Username # pragma: allowlist-secret
-          TF_VAR_grafana_agent_prometheus_url: op://CloudEng-General/Grafana.com - sandbox/Prometheus_URL # pragma: allowlist-secret
-          TF_VAR_grafana_agent_prometheus_username: op://CloudEng-General/Grafana.com - sandbox/Prometheus_Username # pragma: allowlist-secret
-          TF_VAR_grafana_agent_tempo_url: op://CloudEng-General/Grafana.com - sandbox/Tempo_URL # pragma: allowlist-secret
-          TF_VAR_grafana_agent_tempo_username: op://CloudEng-General/Grafana.com - sandbox/Tempo_Username # pragma: allowlist-secret
           TF_VAR_onepassword_credentials_json: op://CloudEng-General/1Password Connect/nonprod_json # pragma: allowlist-secret
           TF_VAR_onepassword_token_for_atlantis: op://CloudEng-General/1Password Connect/nonprod_atlantis_token # pragma: allowlist-secret
           TF_VAR_onepassword_token_for_grafana: op://CloudEng-General/1Password Connect/nonprod_grafana_token # pragma: allowlist-secret
