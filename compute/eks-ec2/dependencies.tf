@@ -7,13 +7,3 @@ locals {
     "vpc.peering.actor" = "accepter"
   })
 }
-
-# ------------------------------------------------------
-# Scale down for sandboxes
-# ------------------------------------------------------
-
-locals {
-  enable_scale_to_zero_after_business_hours = (
-    var.enable_scale_to_zero_after_business_hours && var.eks_is_sandbox ? true : false
-  )
-}
