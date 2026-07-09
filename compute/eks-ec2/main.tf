@@ -248,7 +248,6 @@ module "eks_managed_workers_node_group" {
   cluster_version                 = var.eks_cluster_version
   node_role_arn                   = module.eks_workers.worker_role_arn
   security_groups                 = [module.eks_workers_security_group.id]
-  scale_to_zero_cron              = var.eks_worker_scale_to_zero_cron
   ec2_ssh_key                     = module.eks_workers_keypair.key_name
   eks_endpoint                    = module.eks_cluster.eks_endpoint
   eks_certificate_authority       = module.eks_cluster.eks_certificate_authority

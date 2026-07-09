@@ -113,12 +113,6 @@ variable "eks_managed_worker_subnets" {
   default = []
 }
 
-variable "eks_worker_scale_to_zero_cron" {
-  type        = string
-  description = "The time when the ASG will be scaled to zero, specified in Unix cron syntax"
-  default     = "0 18 * * *"
-}
-
 variable "eks_addon_kubeproxy_version_override" {
   type    = string
   default = ""
