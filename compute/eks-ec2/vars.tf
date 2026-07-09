@@ -25,7 +25,12 @@ variable "eks_cluster_name" {
 }
 
 variable "eks_cluster_version" {
-  type = string
+  type        = string
+  description = "The Kubernetes version for the EKS cluster. Must be >= 1.34."
+  validation {
+    condition     = tonumber(split(".", var.eks_cluster_version)[0]) > 1 || (tonumber(split(".", var.eks_cluster_version)[0]) == 1 && tonumber(split(".", var.eks_cluster_version)[1]) >= 34)
+    error_message = "eks_cluster_version must be >= 1.34."
+  }
 }
 
 variable "eks_cluster_cidr_block" {
@@ -108,12 +113,6 @@ variable "eks_managed_worker_subnets" {
   default = []
 }
 
-variable "eks_worker_scale_to_zero_cron" {
-  type        = string
-  description = "The time when the ASG will be scaled to zero, specified in Unix cron syntax"
-  default     = "0 18 * * *"
-}
-
 variable "eks_addon_kubeproxy_version_override" {
   type    = string
   default = ""
@@ -127,12 +126,6 @@ variable "eks_addon_coredns_version_override" {
 variable "eks_addon_vpccni_version_override" {
   type    = string
   default = ""
-}
-
-variable "eks_addon_vpccni_prefix_delegation_enabled" {
-  type        = bool
-  description = "Whether to enable the prefix delegation mode on the VPC CNI EKS addon."
-  default     = false
 }
 
 variable "eks_addon_awsebscsidriver_version_override" {
@@ -239,22 +232,6 @@ variable "eks_worker_cur_bucket_arn" {
   type        = string
   default     = null
   description = "S3 ARN for Billing Cost and Usage Report (CUR)"
-}
-
-# ------------------------------------------------------
-# Inactivity based clean up and scale down for sandboxes
-# ------------------------------------------------------
-
-variable "enable_inactivity_cleanup" {
-  type        = bool
-  default     = true
-  description = "Enables automated clean up of EKS resources based on inactivity. Only applicable to sandboxes."
-}
-
-variable "enable_scale_to_zero_after_business_hours" {
-  type        = bool
-  default     = true
-  description = "Enables automated scale to zero of EC2 instance after business hours. Only applicable to sandboxes."
 }
 
 # --------------------------------------------------

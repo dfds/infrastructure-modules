@@ -31,7 +31,6 @@ inputs = {
 
   eks_is_sandbox            = true
   eks_cluster_name          = "qa"
-  enable_inactivity_cleanup = false
   use_worker_nat_gateway    = true
 
   # --------------------------------------------------
@@ -44,8 +43,8 @@ inputs = {
   # Traefik v2
   # --------------------------------------------------
 
-  traefik_blue_variant_weight   = 1
-  traefik_green_variant_weight  = 0
+  traefik_blue_variant_weight   = 0
+  traefik_green_variant_weight  = 1
 
   # --------------------------------------------------
   # Blaster
@@ -109,7 +108,7 @@ inputs = {
   # External Secrets
   # --------------------------------------------------
 
-  external_secrets_ssm_allowed_namespaces = ["atlantis", "flux-system", "velero"]
+  external_secrets_ssm_allowed_namespaces = ["atlantis", "flux-system", "velero", "arc-runners"]
 
   # --------------------------------------------------
   # Github ARC SS Controller
@@ -121,6 +120,7 @@ inputs = {
   # Github ARC SS Runners
   # --------------------------------------------------
 
+  github_arc_runners_deploy                = true
   github_arc_runners_runner_scale_set_name = "dfds-runners-qa"
   github_arc_runners_resource_memory       = "1Gi"
 

@@ -12,7 +12,6 @@ resource "aws_launch_template" "eks" {
     eks_certificate_authority : var.eks_certificate_authority,
     cluster_name : var.cluster_name,
     worker_inotify_max_user_watches : var.worker_inotify_max_user_watches,
-    vpc_cni_prefix_delegation_enabled : var.vpc_cni_prefix_delegation_enabled,
     cidr : var.eks_service_cidr,
     max_pods : var.max_pods,
     kube_cpu : var.kube_reserved_cpu,
@@ -20,7 +19,6 @@ resource "aws_launch_template" "eks" {
     sys_cpu : var.system_reserved_cpu,
     sys_memory : var.system_reserved_memory,
     docker_hub_creds : var.docker_hub_creds_ssm_path,
-    ami_using_containerd_v2 : local.ami_using_containerd_v2
   }))
   key_name               = var.ec2_ssh_key
   update_default_version = true
@@ -92,14 +90,4 @@ resource "aws_eks_node_group" "group" {
     max_size     = local.asg_max_size
     min_size     = local.asg_min_size
   }
-}
-
-resource "aws_autoscaling_schedule" "eks" {
-  count                  = var.enable_scale_to_zero_after_business_hours ? signum(var.desired_size_per_subnet) : 0
-  autoscaling_group_name = aws_eks_node_group.group[0].resources[0].autoscaling_groups[0].name
-  scheduled_action_name  = "Scale to zero"
-  recurrence             = var.scale_to_zero_cron
-  min_size               = local.asg_min_size
-  max_size               = local.asg_max_size
-  desired_capacity       = 0
 }

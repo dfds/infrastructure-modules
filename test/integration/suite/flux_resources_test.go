@@ -43,9 +43,16 @@ func TestFluxResourcesReady(t *testing.T) {
 			if resource != "gitrepository" && resource != "kustomizations" {
 				t.Parallel()
 			}
-			err := k8s.RunKubectlE(t, options, "wait", resource, "--for=condition=Ready", "--all", "-A", "--timeout=5m")
-			if err != nil {
-				t.Fatalf("%s not ready: %v", resource, err)
+			if resource == "helmreleases" {
+				err := k8s.RunKubectlE(t, options, "wait", resource, "--for=condition=Ready", "--all", "-A", "--timeout=10m") // helmreleases can take longer to be ready
+				if err != nil {
+					t.Fatalf("%s not ready: %v", resource, err)
+				}
+			} else {
+				err := k8s.RunKubectlE(t, options, "wait", resource, "--for=condition=Ready", "--all", "-A", "--timeout=5m")
+				if err != nil {
+					t.Fatalf("%s not ready: %v", resource, err)
+				}
 			}
 		})
 	}

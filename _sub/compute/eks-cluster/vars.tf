@@ -3,7 +3,12 @@ variable "cluster_name" {
 }
 
 variable "cluster_version" {
-  type = string
+  type        = string
+  description = "The Kubernetes version for the EKS cluster. Must be >= 1.34."
+  validation {
+    condition     = tonumber(split(".", var.cluster_version)[0]) > 1 || (tonumber(split(".", var.cluster_version)[0]) == 1 && tonumber(split(".", var.cluster_version)[1]) >= 34)
+    error_message = "cluster_version must be >= 1.34."
+  }
 }
 
 variable "cluster_zones" {

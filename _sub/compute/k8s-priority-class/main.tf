@@ -38,7 +38,7 @@ locals {
 }
 
 
-resource "kubernetes_priority_class" "class" {
+resource "kubernetes_priority_class_v1" "class" {
   for_each = { for pc in local.priority_classes : pc.name => pc }
   metadata {
     name = each.value.name

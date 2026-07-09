@@ -8,7 +8,7 @@ locals {
 
 module "irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
-  version = "6.6.0"
+  version = "6.6.1"
 
   name            = "${local.deploy_name}-${var.cluster_name}-irsa"
   use_name_prefix = false
