@@ -244,17 +244,15 @@ module "eks_managed_workers_node_group" {
 
   for_each = var.eks_managed_nodegroups
 
-  cluster_name                              = var.eks_cluster_name
-  cluster_version                           = var.eks_cluster_version
-  enable_scale_to_zero_after_business_hours = local.enable_scale_to_zero_after_business_hours
-  node_role_arn                             = module.eks_workers.worker_role_arn
-  security_groups                           = [module.eks_workers_security_group.id]
-  scale_to_zero_cron                        = var.eks_worker_scale_to_zero_cron
-  ec2_ssh_key                               = module.eks_workers_keypair.key_name
-  eks_endpoint                              = module.eks_cluster.eks_endpoint
-  eks_certificate_authority                 = module.eks_cluster.eks_certificate_authority
-  eks_service_cidr                          = module.eks_cluster.eks_service_cidr
-  worker_inotify_max_user_watches           = var.eks_worker_inotify_max_user_watches
+  cluster_name                    = var.eks_cluster_name
+  cluster_version                 = var.eks_cluster_version
+  node_role_arn                   = module.eks_workers.worker_role_arn
+  security_groups                 = [module.eks_workers_security_group.id]
+  ec2_ssh_key                     = module.eks_workers_keypair.key_name
+  eks_endpoint                    = module.eks_cluster.eks_endpoint
+  eks_certificate_authority       = module.eks_cluster.eks_certificate_authority
+  eks_service_cidr                = module.eks_cluster.eks_service_cidr
+  worker_inotify_max_user_watches = var.eks_worker_inotify_max_user_watches
 
   # Node group variations
   nodegroup_name             = each.key

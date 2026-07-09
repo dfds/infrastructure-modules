@@ -113,12 +113,6 @@ variable "eks_managed_worker_subnets" {
   default = []
 }
 
-variable "eks_worker_scale_to_zero_cron" {
-  type        = string
-  description = "The time when the ASG will be scaled to zero, specified in Unix cron syntax"
-  default     = "0 18 * * *"
-}
-
 variable "eks_addon_kubeproxy_version_override" {
   type    = string
   default = ""
@@ -238,16 +232,6 @@ variable "eks_worker_cur_bucket_arn" {
   type        = string
   default     = null
   description = "S3 ARN for Billing Cost and Usage Report (CUR)"
-}
-
-# ------------------------------------------------------
-# Scale down for sandboxes
-# ------------------------------------------------------
-
-variable "enable_scale_to_zero_after_business_hours" {
-  type        = bool
-  default     = true
-  description = "Enables automated scale to zero of EC2 instance after business hours. Only applicable to sandboxes."
 }
 
 # --------------------------------------------------
