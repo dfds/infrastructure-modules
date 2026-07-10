@@ -413,6 +413,25 @@ module "goldpinger" {
   }
 }
 
+# --------------------------------------------------
+# EKS-version-exporter - only when Grafana is also deployed
+# --------------------------------------------------
+
+module "eks_version_exporter" {
+  source               = "../../_sub/monitoring/eks-version-exporter"
+  count                = local.grafana_deploy ? 1 : 0
+  cluster_name         = var.eks_cluster_name
+  repo_owner           = var.fluxcd_bootstrap_repo_owner
+  repo_name            = var.fluxcd_bootstrap_repo_name
+  repo_branch          = var.fluxcd_bootstrap_repo_branch
+  gitops_apps_repo_url = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref = local.gitops_apps_repo_ref
+  prune                = var.fluxcd_prune
+
+  providers = {
+    github = github.fluxcd
+  }
+}
 
 # --------------------------------------------------
 # Metrics-Server
