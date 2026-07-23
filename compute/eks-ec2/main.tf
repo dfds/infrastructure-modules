@@ -150,7 +150,7 @@ module "eks_workers" {
 module "ssm" {
   source  = "../../_sub/network/vpc-ssm"
   vpc_id  = module.eks_cluster.vpc_id
-  subnets = [for sn in module.eks_managed_workers_subnet.subnets : sn.id]
+  subnets = [for sn in module.eks_managed_workers_subnet.subnets : sn.id if endswith(sn.availability_zone, "a")]
 }
 
 # --------------------------------------------------
