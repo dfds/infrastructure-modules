@@ -150,7 +150,7 @@ module "eks_workers" {
 module "ssm" {
   source  = "../../_sub/network/vpc-ssm"
   vpc_id  = module.eks_cluster.vpc_id
-  subnets = [for sn in module.eks_managed_workers_subnet.subnets : sn.id]
+  subnets = [for sn in module.eks_managed_workers_subnet.subnets : sn.id if endswith(sn.availability_zone, "a")]
 }
 
 # --------------------------------------------------
@@ -244,17 +244,15 @@ module "eks_managed_workers_node_group" {
 
   for_each = var.eks_managed_nodegroups
 
-  cluster_name                              = var.eks_cluster_name
-  cluster_version                           = var.eks_cluster_version
-  enable_scale_to_zero_after_business_hours = local.enable_scale_to_zero_after_business_hours
-  node_role_arn                             = module.eks_workers.worker_role_arn
-  security_groups                           = [module.eks_workers_security_group.id]
-  scale_to_zero_cron                        = var.eks_worker_scale_to_zero_cron
-  ec2_ssh_key                               = module.eks_workers_keypair.key_name
-  eks_endpoint                              = module.eks_cluster.eks_endpoint
-  eks_certificate_authority                 = module.eks_cluster.eks_certificate_authority
-  eks_service_cidr                          = module.eks_cluster.eks_service_cidr
-  worker_inotify_max_user_watches           = var.eks_worker_inotify_max_user_watches
+  cluster_name                    = var.eks_cluster_name
+  cluster_version                 = var.eks_cluster_version
+  node_role_arn                   = module.eks_workers.worker_role_arn
+  security_groups                 = [module.eks_workers_security_group.id]
+  ec2_ssh_key                     = module.eks_workers_keypair.key_name
+  eks_endpoint                    = module.eks_cluster.eks_endpoint
+  eks_certificate_authority       = module.eks_cluster.eks_certificate_authority
+  eks_service_cidr                = module.eks_cluster.eks_service_cidr
+  worker_inotify_max_user_watches = var.eks_worker_inotify_max_user_watches
 
   # Node group variations
   nodegroup_name             = each.key
@@ -460,14 +458,6 @@ resource "aws_cloudwatch_metric_alarm" "inactivity" {
   }
 }
 
-module "eks_inactivity_cleanup" {
-  count                = local.enable_inactivity_cleanup ? 1 : 0
-  source               = "../../_sub/compute/eks-inactivity-cleanup"
-  eks_cluster_name     = var.eks_cluster_name
-  eks_cluster_arn      = module.eks_cluster.eks_cluster_arn
-  inactivity_alarm_arn = aws_cloudwatch_metric_alarm.inactivity[0].arn
-}
-
 # --------------------------------------------------
 # GPU workloads
 # --------------------------------------------------
@@ -496,8 +486,8 @@ module "karpenter" {
   node_iam_role_additional_policies = {
     AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore" # Enable SSM core functionality
   }
-  enable_inline_policy          = true
-  depends_on = [module.eks_cluster]
+  enable_inline_policy = true
+  depends_on           = [module.eks_cluster]
 }
 
 # Controller KMS access policy required for EBS encryption support (see https://karpenter.sh/docs/troubleshooting/#node-terminates-before-ready-on-failed-encrypted-ebs-volume)

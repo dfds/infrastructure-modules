@@ -14,10 +14,6 @@ variable "vpc_id" {
   type = string
 }
 
-variable "autoscaling_group_ids" {
-  type = set(string)
-}
-
 variable "alb_certificate_arn" {
   type = string
 }

@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install Terragrunt and OpenTofu
         uses: gruntwork-io/terragrunt-action@v3
@@ -44,26 +44,19 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_GITHUB_TOKEN }}
-          ARM_CLIENT_ID: op://CloudEng-General/Terraform Azure App Service Principal/username
-          ARM_CLIENT_SECRET: op://CloudEng-General/Terraform Azure App Service Principal/password
-          ARM_SUBSCRIPTION_ID: op://CloudEng-General/Terraform Azure App Service Principal/subscription_id
-          ARM_TENANT_ID: op://CloudEng-General/Terraform Azure App Service Principal/tenant_id
-          TF_VAR_atlantis_github_token: op://CloudEng-General/Github account devex-sa/Tokens/atlantis-qa
-          TF_VAR_docker_hub_password: op://CloudEng-General/Docker Cloud/username
-          TF_VAR_docker_hub_username: op://CloudEng-General/Docker Cloud/password
-          TF_VAR_eks_addon_awsebscsidriver_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn
-          TF_VAR_fluxcd_bootstrap_repo_owner_token: op://CloudEng-General/Github account devex-sa/Tokens/flux-qa
-          TF_VAR_grafana_agent_api_token: op://CloudEng-General/Grafana.com - sandbox/grafana_token
-          TF_VAR_grafana_agent_loki_url: op://CloudEng-General/Grafana.com - sandbox/Loki_URL
-          TF_VAR_grafana_agent_loki_username: op://CloudEng-General/Grafana.com - sandbox/Loki_Username
-          TF_VAR_grafana_agent_prometheus_url: op://CloudEng-General/Grafana.com - sandbox/Prometheus_URL
-          TF_VAR_grafana_agent_prometheus_username: op://CloudEng-General/Grafana.com - sandbox/Prometheus_Username
-          TF_VAR_grafana_agent_tempo_url: op://CloudEng-General/Grafana.com - sandbox/Tempo_URL
-          TF_VAR_grafana_agent_tempo_username: op://CloudEng-General/Grafana.com - sandbox/Tempo_Username
-          TF_VAR_onepassword_credentials_json: op://CloudEng-General/1Password Connect/nonprod_json
-          TF_VAR_onepassword_token_for_atlantis: op://CloudEng-General/1Password Connect/nonprod_atlantis_token
-          TF_VAR_velero_ebs_csi_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn
-          SLACK_WEBHOOK: op://CloudEng-General/Slack dfds.slack.com webhooks/jdm5vktylqnczrlkkbvsveyp5e
+          ARM_CLIENT_ID: op://CloudEng-General/Terraform Azure App Service Principal/username # pragma: allowlist-secret
+          ARM_CLIENT_SECRET: op://CloudEng-General/Terraform Azure App Service Principal/password # pragma: allowlist-secret
+          ARM_SUBSCRIPTION_ID: op://CloudEng-General/Terraform Azure App Service Principal/subscription_id # pragma: allowlist-secret
+          ARM_TENANT_ID: op://CloudEng-General/Terraform Azure App Service Principal/tenant_id # pragma: allowlist-secret
+          TF_VAR_atlantis_github_token: op://CloudEng-General/Github account devex-sa/Tokens/atlantis-qa # pragma: allowlist-secret
+          TF_VAR_docker_hub_password: op://CloudEng-General/Docker Cloud/username # pragma: allowlist-secret
+          TF_VAR_docker_hub_username: op://CloudEng-General/Docker Cloud/password # pragma: allowlist-secret
+          TF_VAR_eks_addon_awsebscsidriver_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn # pragma: allowlist-secret
+          TF_VAR_fluxcd_bootstrap_repo_owner_token: op://CloudEng-General/Github account devex-sa/Tokens/flux-qa # pragma: allowlist-secret
+          TF_VAR_onepassword_credentials_json: op://CloudEng-General/1Password Connect/nonprod_json # pragma: allowlist-secret
+          TF_VAR_onepassword_token_for_atlantis: op://CloudEng-General/1Password Connect/nonprod_atlantis_token # pragma: allowlist-secret
+          TF_VAR_velero_ebs_csi_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn # pragma: allowlist-secret
+          SLACK_WEBHOOK: op://CloudEng-General/Slack dfds.slack.com webhooks/jdm5vktylqnczrlkkbvsveyp5e # pragma: allowlist-secret
 
       - name: Terraform destroy Velero S3 bucket
         run: ./src/qa-test-eks.sh destroy-velero-bucket eu-west-1 _global/s3-bucket-velero
@@ -78,10 +71,10 @@ jobs:
     needs: nuke
     if: always()
     container:
-      image: dfdsdk/aws-nuke:0.0.43
+      image: dfdsdk/aws-nuke:0.0.44
     steps:
       - name: Checkout Nuke config
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: dfds/qa-nuke-config
           ref: main

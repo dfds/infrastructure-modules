@@ -162,7 +162,7 @@ resource "aws_security_group" "traefik" {
 }
 
 resource "aws_security_group_rule" "allow_traefik" {
-  for_each = local.traefik_deployment_defaults.ports
+  for_each                 = local.traefik_deployment_defaults.ports
   description              = "Ingress on ${each.key} port ${tostring(each.value)} for all Traefik variants."
   type                     = "ingress"
   from_port                = each.value

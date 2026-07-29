@@ -20,36 +20,19 @@ inputs = {
   # EKS
   # --------------------------------------------------
 
-  eks_cluster_name                           = "qa"
-  eks_cluster_version                        = "1.35"
-  eks_cluster_cidr_block                     = "10.228.0.0/16"
-  eks_cluster_zones                          = 2
-  eks_cluster_log_types                      = ["api", "authenticator", "scheduler", "controllerManager"]
-
-  eks_addon_most_recent                      = false
-  # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"vpc-cni"}
-  eks_addon_vpccni_version_override = "v1.22.1-eksbuild.2"
-  # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"coredns"}
-  eks_addon_coredns_version_override = "v1.14.3-eksbuild.2"
-  # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"kube-proxy"}
-  eks_addon_kubeproxy_version_override = "v1.35.3-eksbuild.11"
-  # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"aws-efs-csi-driver"}
-  eks_addon_awsefscsidriver_version_override = "v3.2.0-eksbuild.1"
-  # renovate: eksAddonsFilter={"kubernetesVersion":"1.34","addonName":"aws-ebs-csi-driver"}
-  eks_addon_awsebscsidriver_version_override = "v1.60.1-eksbuild.1"
-
-  enable_worker_nat_gateway                  = true
-  use_worker_nat_gateway                     = true
+  eks_cluster_name          = "qa"
+  eks_cluster_version       = "1.35"
+  eks_cluster_cidr_block    = "10.228.0.0/16"
+  eks_cluster_zones         = 2
+  eks_cluster_log_types     = ["api", "authenticator", "scheduler", "controllerManager"]
+  eks_addon_most_recent     = true
+  eks_is_sandbox            = true
+  enable_worker_nat_gateway = true
+  use_worker_nat_gateway    = true
 
   eks_worker_ssh_ip_whitelist = ["193.9.230.0/24"]
   eks_worker_ssh_public_key   = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC2PlxsmewLiLRCQbuATu4yLRsAOMGqaCa/KL3GPo1Wyr19XVVFWseyaVERN1t/xBPlryOikHbfkuNnm8c3mtOop9daEEi2neWMpHqGp/IqHRw5tJiEg50/zauC2kETuG9pLADzs/tVrLlghKHmzv9s6VPEJM7l6hKWF04AdHK2auICRXnOM+by1+gquoDAvL3tytX55Xrx3P+dMB4tpgt/SABVomE6/XiaaxHdntj6pGGl1CYtzC2Md+4K6pXh2mr/pESqXqGxcW6HBUhwYhDEdm1ZEg3WLaFZ2kTjCvIUCPgA7Zo3cq8NQbjw6rsnrqTrsCG7OIRakrWFlxetKvZluVARaJscnQov98iwS7+owGKf+eJ9Fg6O26ewHKX0zuxU/33l1KqGdfGEVfsA+CzRSKr9yj1BvCzqf4yaESZT/D0uNDCWPTC0pmJ02F1/XUvOnDl7cihHHTXTlwRnXBKz7X8xpwUtb/K+yyvUI4KcRmcmxRUFxl3SVuaaXJ1avfb0FOGB07ZO47OQ1/gCkHmzYpu5YtBeVwOAfxOsCX3k1Svqhvpbwg6KdkdSvouXdMFqQ10rtF65E8yiX0pHnDHC3Vgpa/Nw5hZ0fH1MTRDIDf2ZTciARkzGrUtYPu9Yi68X9bcLgfn6cA6HNp/UGhm6YvpoKrkZgX2yJIkphALqTQ== qa"
   eks_k8s_auth_api_version    = "client.authentication.k8s.io/v1beta1"
-
-  eks_is_sandbox = true
-  # Since rebooting the cluster after inactivity at the moment requires first
-  # running `terragrunt apply -target=module.eks_cluster` the QA cluster is
-  # excluded from the inactivity clean up on this step.
-  enable_inactivity_cleanup = false
 
   # --------------------------------------------------
   # Managed nodes
@@ -63,8 +46,8 @@ inputs = {
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.35-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.35-v20260529
-      ami_id             = "ami-0275aedb4db249683"
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.35-v20260625
+      ami_id                     = "ami-00a5887728fd8718b"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
       labels = {
@@ -77,8 +60,8 @@ inputs = {
       max_unavailable         = 1
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.35-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.35-v20260529
-      ami_id             = "ami-0275aedb4db249683"
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.35-v20260625
+      ami_id             = "ami-00a5887728fd8718b"
       availability_zones = ["eu-west-1c"]
       taints = [
         {
