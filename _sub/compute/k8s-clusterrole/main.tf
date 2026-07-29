@@ -1,4 +1,4 @@
-resource "kubernetes_cluster_role" "role" {
+resource "kubernetes_cluster_role_v1" "role" {
   #checkov:skip=CKV_K8S_49: Minimize wildcard use in Roles and ClusterRoles
   metadata {
     name = var.name
@@ -19,14 +19,14 @@ resource "kubernetes_cluster_role" "role" {
   }
 }
 
-resource "kubernetes_cluster_role_binding" "binding" {
+resource "kubernetes_cluster_role_binding_v1" "binding" {
   metadata {
     name = var.name
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"
     kind      = "ClusterRole"
-    name      = kubernetes_cluster_role.role.metadata[0].name
+    name      = kubernetes_cluster_role_v1.role.metadata[0].name
   }
   subject {
     api_group = "rbac.authorization.k8s.io"

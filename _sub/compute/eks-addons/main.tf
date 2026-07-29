@@ -204,7 +204,7 @@ resource "aws_iam_role_policy_attachment" "managed-efs-csi-driver-policy" {
 
 # Storage classes
 
-resource "kubernetes_storage_class" "csi-gp3" {
+resource "kubernetes_storage_class_v1" "csi-gp3" {
   metadata {
     name = "csi-gp3"
     annotations = {
@@ -215,6 +215,7 @@ resource "kubernetes_storage_class" "csi-gp3" {
   reclaim_policy         = "Delete"
   volume_binding_mode    = "WaitForFirstConsumer"
   allow_volume_expansion = "true"
+
   parameters = {
     type = "gp3"
   }
@@ -244,7 +245,7 @@ resource "kubernetes_annotations" "gp2-not-default" {
   ]
 }
 
-resource "kubernetes_storage_class" "csi-efs" {
+resource "kubernetes_storage_class_v1" "csi-efs" {
   metadata {
     name = "csi-efs"
     annotations = {
