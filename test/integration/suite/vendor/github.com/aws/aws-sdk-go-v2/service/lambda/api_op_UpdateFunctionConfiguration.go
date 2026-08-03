@@ -62,6 +62,10 @@ type UpdateFunctionConfigurationInput struct {
 	// This member is required.
 	FunctionName *string
 
+	// Configuration for the capacity provider that manages compute resources for
+	// Lambda functions.
+	CapacityProviderConfig *types.CapacityProviderConfig
+
 	// A dead-letter queue configuration that specifies the queue or topic where
 	// Lambda sends asynchronous events when they fail processing. For more
 	// information, see [Dead-letter queues].
@@ -72,6 +76,10 @@ type UpdateFunctionConfigurationInput struct {
 	// A description of the function.
 	Description *string
 
+	// Configuration settings for durable functions. Allows updating execution timeout
+	// and retention period for functions with durability enabled.
+	DurableConfig *types.DurableConfig
+
 	// Environment variables that are accessible from function code during execution.
 	Environment *types.Environment
 
@@ -81,7 +89,8 @@ type UpdateFunctionConfigurationInput struct {
 	// [Configuring ephemeral storage (console)]: https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-ephemeral-storage
 	EphemeralStorage *types.EphemeralStorage
 
-	// Connection settings for an Amazon EFS file system.
+	// Connection settings for an Amazon EFS file system or an Amazon S3 Files file
+	// system.
 	FileSystemConfigs []types.FileSystemConfig
 
 	// The name of the method within your code that Lambda calls to run your function.
@@ -197,17 +206,28 @@ type UpdateFunctionConfigurationOutput struct {
 	// x86_64 .
 	Architectures []types.Architecture
 
+	// Configuration for the capacity provider that manages compute resources for
+	// Lambda functions.
+	CapacityProviderConfig *types.CapacityProviderConfig
+
 	// The SHA256 hash of the function's deployment package.
 	CodeSha256 *string
 
 	// The size of the function's deployment package, in bytes.
 	CodeSize int64
 
+	// The SHA256 hash of the function configuration.
+	ConfigSha256 *string
+
 	// The function's dead letter queue.
 	DeadLetterConfig *types.DeadLetterConfig
 
 	// The function's description.
 	Description *string
+
+	// The function's durable execution configuration settings, if the function is
+	// configured for durability.
+	DurableConfig *types.DurableConfig
 
 	// The function's [environment variables]. Omitted from CloudTrail logs.
 	//
@@ -220,8 +240,9 @@ type UpdateFunctionConfigurationOutput struct {
 	// [Configuring ephemeral storage (console)]: https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-ephemeral-storage
 	EphemeralStorage *types.EphemeralStorage
 
-	// Connection settings for an [Amazon EFS file system].
+	// Connection settings for an [Amazon EFS file system] or an [Amazon S3 Files file system].
 	//
+	// [Amazon S3 Files file system]: https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html
 	// [Amazon EFS file system]: https://docs.aws.amazon.com/lambda/latest/dg/configuration-filesystem.html
 	FileSystemConfigs []types.FileSystemConfig
 
@@ -344,6 +365,10 @@ type UpdateFunctionConfigurationOutput struct {
 	// you can't invoke or modify the function.
 	StateReasonCode types.StateReasonCode
 
+	// The function's tenant isolation configuration settings. Determines whether the
+	// Lambda function runs on a shared or dedicated infrastructure per unique tenant.
+	TenancyConfig *types.TenancyConfig
+
 	// The amount of time in seconds that Lambda allows a function to run before
 	// stopping it.
 	Timeout *int32
@@ -397,7 +422,7 @@ func (c *Client) addOperationUpdateFunctionConfigurationMiddlewares(stack *middl
 	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetry(stack, options); err != nil {
+	if err = addRetry(stack, options, c); err != nil {
 		return err
 	}
 	if err = addRawResponseToMetadata(stack); err != nil {
@@ -421,10 +446,10 @@ func (c *Client) addOperationUpdateFunctionConfigurationMiddlewares(stack *middl
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addTimeOffsetBuild(stack, c); err != nil {
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
-	if err = addUserAgentRetryMode(stack, options); err != nil {
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateFunctionConfigurationValidationMiddleware(stack); err != nil {
@@ -448,16 +473,13 @@ func (c *Client) addOperationUpdateFunctionConfigurationMiddlewares(stack *middl
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeStart(stack); err != nil {
+	if err = addInterceptBeforeRetryLoop(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeEnd(stack); err != nil {
+	if err = addInterceptAttempt(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanBuildRequestStart(stack); err != nil {
-		return err
-	}
-	if err = addSpanBuildRequestEnd(stack); err != nil {
+	if err = addInterceptors(stack, options); err != nil {
 		return err
 	}
 	return nil
