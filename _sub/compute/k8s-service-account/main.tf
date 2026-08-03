@@ -1,4 +1,4 @@
-resource "kubernetes_service_account" "deploy-user" {
+resource "kubernetes_service_account_v1" "deploy-user" {
   metadata {
     name      = "deploy-user"
     namespace = "kube-system"
@@ -9,7 +9,7 @@ resource "kubernetes_service_account" "deploy-user" {
   provider = kubernetes
 }
 
-resource "kubernetes_cluster_role_binding" "deploy-user" {
+resource "kubernetes_cluster_role_binding_v1" "deploy-user" {
   metadata {
     name = "deploy-user"
   }
@@ -32,10 +32,10 @@ resource "kubernetes_cluster_role_binding" "deploy-user" {
 
 resource "kubernetes_secret_v1" "deploy-token" {
   metadata {
-    generate_name = "${kubernetes_service_account.deploy-user.metadata[0].name}-token-"
-    namespace     = kubernetes_service_account.deploy-user.metadata[0].namespace
+    generate_name = "${kubernetes_service_account_v1.deploy-user.metadata[0].name}-token-"
+    namespace     = kubernetes_service_account_v1.deploy-user.metadata[0].namespace
     annotations = {
-      "kubernetes.io/service-account.name" = kubernetes_service_account.deploy-user.metadata[0].name
+      "kubernetes.io/service-account.name" = kubernetes_service_account_v1.deploy-user.metadata[0].name
     }
   }
 

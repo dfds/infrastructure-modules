@@ -31,7 +31,6 @@ inputs = {
 
   eks_is_sandbox            = true
   eks_cluster_name          = "qa"
-  enable_inactivity_cleanup = false
   use_worker_nat_gateway    = true
 
   # --------------------------------------------------
@@ -44,8 +43,8 @@ inputs = {
   # Traefik v2
   # --------------------------------------------------
 
-  traefik_blue_variant_weight   = 1
-  traefik_green_variant_weight  = 0
+  traefik_blue_variant_weight   = 0
+  traefik_green_variant_weight  = 1
 
   # --------------------------------------------------
   # Blaster
@@ -67,21 +66,11 @@ inputs = {
   # --------------------------------------------------
 
   fluxcd_apps_repo_branch           = "main"
-  fluxcd_bootstrap_repo_branch      = "main"
   fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
+  fluxcd_bootstrap_repo_branch      = "main"
   fluxcd_version                    = "v2.7.5"
 
-  fluxcd_tenants = [
-    {
-      namespace = "flux-tenant-test"
-      repositories = [
-        {
-          url = "https://github.com/dfds/flux-tenant-test"
-          branch = "main"
-        }
-      ]
-    }
-  ]
+  fluxcd_tenants = []
 
   # --------------------------------------------------
   # Atlantis
@@ -112,30 +101,14 @@ inputs = {
   # --------------------------------------------------
 
   grafana_deploy = true
-  grafana_agent_resource_memory_request = "4Gi"
-  grafana_agent_resource_memory_limit   = "4Gi"
+  grafana_agent_resource_memory = "4Gi"
   grafana_agent_storage_size = "10Gi"
-
-  observability_tolerations = [
-    {
-      key      = "observability.dfds",
-      operator = "Exists",
-      effect   = "NoSchedule",
-    }
-  ]
-  observability_affinity = [
-    {
-      key      = "dedicated",
-      operator = "In",
-      values   = ["observability"],
-    }
-  ]
 
   # --------------------------------------------------
   # External Secrets
   # --------------------------------------------------
 
-  external_secrets_ssm_allowed_namespaces = ["atlantis", "flux-system", "velero"]
+  external_secrets_ssm_allowed_namespaces = ["atlantis", "flux-system", "velero", "arc-runners"]
 
   # --------------------------------------------------
   # Github ARC SS Controller
@@ -147,6 +120,7 @@ inputs = {
   # Github ARC SS Runners
   # --------------------------------------------------
 
+  github_arc_runners_deploy                = true
   github_arc_runners_runner_scale_set_name = "dfds-runners-qa"
   github_arc_runners_resource_memory       = "1Gi"
 

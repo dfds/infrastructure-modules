@@ -32,3 +32,11 @@ resource "aws_ssm_parameter" "atlantis" {
   type  = "SecureString"
   value = var.token_for_atlantis
 }
+
+resource "aws_ssm_parameter" "grafana" {
+  #checkov:skip=CKV_AWS_337: Ensure SSM parameters are using KMS CMK
+  count = var.token_for_grafana != "" ? 1 : 0
+  name  = "/eks/${var.cluster_name}/1password-connect-token-grafana"
+  type  = "SecureString"
+  value = var.token_for_grafana
+}

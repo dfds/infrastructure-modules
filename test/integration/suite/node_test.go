@@ -30,28 +30,6 @@ func TestGeneralNodeMaxPod(t *testing.T) {
 	}
 }
 
-func TestObservabilityNodeMaxPod(t *testing.T) {
-	t.Parallel()
-	clientset := NewK8sClientSet(t)
-
-	resp, err := clientset.CoreV1().Nodes().List(context.Background(),
-		metav1.ListOptions{
-			LabelSelector: "eks.amazonaws.com/nodegroup in (observability)",
-		})
-	if err != nil {
-		t.Log(err.Error())
-		return
-	}
-
-	for _, node := range resp.Items {
-		assert.EqualValues(t,
-			// This node group has an overriden value for max pods to avoid
-			// excessive memory reservations by the kubelet to accomodate a
-			// higher limit for pods.
-			30, node.Status.Capacity.Pods().Value(), "observability node %q pods limit does not match", node.Name)
-	}
-}
-
 func TestObservabilityNodeTaints(t *testing.T) {
 	t.Parallel()
 	clientset := NewK8sClientSet(t)

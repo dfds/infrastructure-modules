@@ -370,92 +370,23 @@ variable "velero_node_agent_pod_memory" {
   description = "Memory resources request and limit size for Velero node agent pods"
 }
 
-
-# --------------------------------------------------
-# Inactivity based clean up for sandboxes
-# --------------------------------------------------
-
-variable "enable_inactivity_cleanup" {
-  type        = bool
-  default     = true
-  description = "Enables automated clean up of ELB resources based on inactivity. Only applicable to sandboxes."
-}
-
 # --------------------------------------------------
 # Grafana Agent for Kubernetes monitoring
 # --------------------------------------------------
 
 variable "grafana_deploy" {
-  type        = string
-  default     = false
-  description = "Feature toggle for Grafana module"
-}
-
-variable "grafana_agent_api_token" {
-  type        = string
-  description = "The token to authenticate request to a Grafana Cloud stack"
-  default     = ""
-  sensitive   = true
-}
-
-variable "grafana_agent_prometheus_url" {
-  type        = string
-  description = "The Prometheus URL in a Grafana Cloud stack"
-  default     = ""
-}
-
-variable "grafana_agent_prometheus_username" {
-  type        = string
-  description = "The username for Prometheus in a Grafana Cloud stack"
-  default     = ""
-}
-
-variable "grafana_agent_loki_url" {
-  type        = string
-  description = "The Loki URL in a Grafana Cloud stack"
-  default     = ""
-}
-
-variable "grafana_agent_loki_username" {
-  type        = string
-  description = "The username for Loki in a Grafana Cloud stack"
-  default     = ""
-}
-
-variable "grafana_agent_tempo_url" {
-  type        = string
-  description = "The Tempo URL in a Grafana Cloud stack"
-  default     = ""
-}
-
-variable "grafana_agent_tempo_username" {
-  type        = string
-  description = "The username for Tempo in a Grafana Cloud stack"
-  default     = ""
-}
-
-variable "grafana_agent_traces_enabled" {
-  type        = bool
-  default     = true
-  description = "Enable traces or not. Default: true"
-}
-
-variable "grafana_agent_open_cost_enabled" {
   type        = bool
   default     = false
-  description = "Enable Open Cost or not. Default: false"
+  description = <<-EOT
+      Feature toggle for Grafana module.
+      Note: The variable `onepassword_token_for_grafana` must be set to deploy the Grafana Agent.
+  EOT
 }
 
-variable "grafana_agent_resource_memory_limit" {
-  type        = string
-  default     = "20Gi"
-  description = "Set resource memory limits on Grafana Agent container"
-}
-
-variable "grafana_agent_resource_memory_request" {
+variable "grafana_agent_resource_memory" {
   type        = string
   default     = "4Gi"
-  description = "Set resource memory request on Grafana Agent container"
+  description = "Set resource memory request and limits on Grafana Agent container"
 }
 
 variable "grafana_agent_replicas" {
@@ -466,30 +397,16 @@ variable "grafana_agent_replicas" {
 
 variable "grafana_agent_storage_size" {
   type        = string
-  description = "Storage size for Grafana Persistent Volume"
+  description = <<-EOT
+    Storage size for Grafana Persistent Volume.
+    Please note that it is not possible to directly change this value after the initial deployment,
+    so it should be set with care. If you want to change it, you need to first delete the Grafana release and then apply it again with the new value. Default: 5Gi
+    Alternatively, you can use kubectl to edit the PersistentVolumeClaim created for Grafana and change the storage size there,
+    but this approach is not recommended as it may cause issues with the state of the release in Helm.
+  EOT
   default     = "5Gi"
 }
 
-variable "observability_tolerations" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    value    = optional(string),
-    effect   = string,
-  }))
-  description = "Tolerations to apply to the cluster-wide observability workloads."
-  default     = []
-}
-
-variable "observability_affinity" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    values   = list(string)
-  }))
-  description = "Affinities to apply to the cluster-wide observability workloads."
-  default     = []
-}
 
 # --------------------------------------------------
 # External Secrets with SSM
@@ -521,16 +438,6 @@ variable "external_dns_traefik_alb_auth_core_alias" {
   description = "A list of aliases/alternative names for the login-protected services to be managed by External DNS in the *parent* domain. E.g. 'prettyurl.company.tld'"
   type        = list(string)
   default     = []
-}
-
-variable "external_deletion_policy_override" {
-  type        = string
-  description = "External DNS deletion policy"
-  default     = ""
-  validation {
-    condition     = contains(["", "sync", "upsert-only"], var.external_deletion_policy_override)
-    error_message = "Deletion policy must be either '', 'sync', 'upsert-only'."
-  }
 }
 
 variable "external_dns_core_route53_assume_role_arn" {
@@ -575,6 +482,15 @@ variable "onepassword_token_for_atlantis" {
   description = "The 1Password Connect tokens to be stored in SSM if Atlantis is enabled"
 }
 
+variable "onepassword_token_for_grafana" {
+  type        = string
+  sensitive   = true
+  default     = ""
+  description = <<-EOT
+      The 1Password Connect tokens to be stored in SSM.
+      Note: This is required if Grafana Agent is deployed!
+  EOT
+}
 # --------------------------------------------------
 # Github ARC SS Controller
 # --------------------------------------------------

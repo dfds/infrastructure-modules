@@ -35,18 +35,17 @@ module "traefik_crds" {
 # --------------------------------------------------
 
 module "traefik_blue_variant_flux_manifests" {
-  source               = "../../_sub/compute/k8s-traefik-flux"
-  cluster_name         = var.eks_cluster_name
-  deploy_name          = "traefik-blue-variant"
-  github_owner         = var.fluxcd_bootstrap_repo_owner
-  repo_name            = var.fluxcd_bootstrap_repo_name
-  repo_branch          = var.fluxcd_bootstrap_repo_branch
-  eks_fqdn             = local.eks_fqdn
-  gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = local.gitops_apps_repo_ref
-  prune                = var.fluxcd_prune
-  target_http_port     = local.traefik_blue_variant_target_http_port
-  target_admin_port    = local.traefik_blue_variant_target_admin_port
+  source                    = "../../_sub/compute/k8s-traefik-flux"
+  cluster_name              = var.eks_cluster_name
+  deploy_name               = "traefik-blue-variant"
+  github_owner              = var.fluxcd_bootstrap_repo_owner
+  repo_name                 = var.fluxcd_bootstrap_repo_name
+  repo_branch               = var.fluxcd_bootstrap_repo_branch
+  eks_fqdn                  = local.eks_fqdn
+  gitops_apps_repo_url      = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref      = local.gitops_apps_repo_ref
+  alb_target_group_arn      = module.traefik_alb_anon.alb_target_group_arn_blue
+  alb_auth_target_group_arn = module.traefik_alb_auth.alb_target_group_arn_blue
 
   providers = {
     github = github.fluxcd
@@ -54,18 +53,17 @@ module "traefik_blue_variant_flux_manifests" {
 }
 
 module "traefik_green_variant_manifests" {
-  source               = "../../_sub/compute/k8s-traefik-flux"
-  cluster_name         = var.eks_cluster_name
-  deploy_name          = "traefik-green-variant"
-  github_owner         = var.fluxcd_bootstrap_repo_owner
-  repo_name            = var.fluxcd_bootstrap_repo_name
-  repo_branch          = var.fluxcd_bootstrap_repo_branch
-  eks_fqdn             = local.eks_fqdn
-  gitops_apps_repo_url = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref = local.gitops_apps_repo_ref
-  prune                = var.fluxcd_prune
-  target_http_port     = local.traefik_green_variant_target_http_port
-  target_admin_port    = local.traefik_green_variant_target_admin_port
+  source                    = "../../_sub/compute/k8s-traefik-flux"
+  cluster_name              = var.eks_cluster_name
+  deploy_name               = "traefik-green-variant"
+  github_owner              = var.fluxcd_bootstrap_repo_owner
+  repo_name                 = var.fluxcd_bootstrap_repo_name
+  repo_branch               = var.fluxcd_bootstrap_repo_branch
+  eks_fqdn                  = local.eks_fqdn
+  gitops_apps_repo_url      = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref      = local.gitops_apps_repo_ref
+  alb_target_group_arn      = module.traefik_alb_anon.alb_target_group_arn_green
+  alb_auth_target_group_arn = module.traefik_alb_auth.alb_target_group_arn_green
 
   providers = {
     github = github.fluxcd
@@ -91,7 +89,7 @@ module "lb_controller_flux_manifests" {
 
 module "lb_controller_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
-  version = "6.4.0"
+  version = "6.6.1"
 
   name                                   = "${var.eks_cluster_name}-lb-controller"
   policy_name                            = "${var.eks_cluster_name}-lb-controller"
@@ -130,7 +128,6 @@ module "traefik_alb_auth" {
   cluster_name             = var.eks_cluster_name
   vpc_id                   = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
   subnet_ids               = var.use_worker_nat_gateway ? data.terraform_remote_state.cluster.outputs.eks_control_subnet_ids : data.terraform_remote_state.cluster.outputs.eks_worker_subnet_ids
-  autoscaling_group_ids    = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
   alb_certificate_arn      = module.traefik_alb_cert.certificate_arn
   nodes_sg_id              = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
   azure_tenant_id          = try(module.traefik_alb_auth_appreg.tenant_id, "")
@@ -138,18 +135,8 @@ module "traefik_alb_auth" {
   azure_client_secret      = try(module.traefik_alb_auth_appreg.application_key, "")
   access_logs_bucket       = module.traefik_alb_s3_access_logs.name
   enable_delete_protection = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? false : true
-
-  # Blue variant
-  blue_variant_target_http_port  = local.traefik_blue_variant_target_http_port
-  blue_variant_target_admin_port = local.traefik_blue_variant_target_admin_port
-  blue_variant_health_check_path = "/ping"
-  blue_variant_weight            = var.traefik_blue_variant_weight
-
-  # Green variant
-  green_variant_target_http_port  = local.traefik_green_variant_target_http_port
-  green_variant_target_admin_port = local.traefik_green_variant_target_admin_port
-  green_variant_health_check_path = "/ping"
-  green_variant_weight            = var.traefik_green_variant_weight
+  blue_variant_weight      = var.traefik_blue_variant_weight
+  green_variant_weight     = var.traefik_green_variant_weight
 }
 
 module "traefik_alb_auth_dns" {
@@ -199,23 +186,12 @@ module "traefik_alb_anon" {
   cluster_name             = var.eks_cluster_name
   vpc_id                   = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
   subnet_ids               = data.terraform_remote_state.cluster.outputs.eks_control_subnet_ids
-  autoscaling_group_ids    = data.terraform_remote_state.cluster.outputs.eks_worker_autoscaling_group_ids
   alb_certificate_arn      = module.traefik_alb_cert.certificate_arn
   nodes_sg_id              = data.terraform_remote_state.cluster.outputs.eks_cluster_nodes_sg_id
   access_logs_bucket       = module.traefik_alb_s3_access_logs.name
   enable_delete_protection = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? false : true
-
-  # Blue variant
-  blue_variant_target_http_port  = local.traefik_blue_variant_target_http_port
-  blue_variant_target_admin_port = local.traefik_blue_variant_target_admin_port
-  blue_variant_health_check_path = "/ping"
-  blue_variant_weight            = var.traefik_blue_variant_weight
-
-  # Green variant
-  green_variant_target_http_port  = local.traefik_green_variant_target_http_port
-  green_variant_target_admin_port = local.traefik_green_variant_target_admin_port
-  green_variant_health_check_path = "/ping"
-  green_variant_weight            = var.traefik_green_variant_weight
+  blue_variant_weight      = var.traefik_blue_variant_weight
+  green_variant_weight     = var.traefik_green_variant_weight
 }
 
 module "traefik_alb_anon_dns" {
@@ -251,25 +227,24 @@ module "external_dns_iam_role_assume" {
 }
 
 module "external_dns_flux_manifests" {
-  source                   = "../../_sub/network/external-dns"
-  cluster_name             = var.eks_cluster_name
-  github_owner             = var.fluxcd_bootstrap_repo_owner
-  repo_name                = var.fluxcd_bootstrap_repo_name
-  repo_branch              = var.fluxcd_bootstrap_repo_branch
-  gitops_apps_repo_url     = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref     = local.gitops_apps_repo_ref
-  prune                    = var.fluxcd_prune
-  cluster_region           = var.aws_region
-  deletion_policy_override = var.external_deletion_policy_override
-  target_anon              = module.traefik_alb_anon.alb_fqdn
-  target_auth              = module.traefik_alb_auth.alb_fqdn
-  dns_records_anon         = var.external_dns_traefik_alb_anon_core_alias
-  dns_records_auth         = var.external_dns_traefik_alb_auth_core_alias
-  domain                   = local.core_dns_zone_name
-  zone_id_core             = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? "dummy" : local.core_dns_zone_id # TODO: This is a temporary fix caused by discrepancy between production and non-production clusters in the way of accessing Core Route53 instance. We need to provide dummy value here for external-dns instance in sandbox clusters to avoid duplicated values error in flux. In sandbox zone_id_core is the same as zone_id_workload!
-  zone_id_workload         = local.workload_dns_zone_id
-  role_arn                 = module.external_dns_iam_role_assume.arn
-  assume_role_arn          = var.external_dns_core_route53_assume_role_arn != "" ? var.external_dns_core_route53_assume_role_arn : module.external_dns_iam_role_route53_access.arn
+  source               = "../../_sub/network/external-dns"
+  cluster_name         = var.eks_cluster_name
+  github_owner         = var.fluxcd_bootstrap_repo_owner
+  repo_name            = var.fluxcd_bootstrap_repo_name
+  repo_branch          = var.fluxcd_bootstrap_repo_branch
+  gitops_apps_repo_url = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref = local.gitops_apps_repo_ref
+  prune                = var.fluxcd_prune
+  cluster_region       = var.aws_region
+  target_anon          = module.traefik_alb_anon.alb_fqdn
+  target_auth          = module.traefik_alb_auth.alb_fqdn
+  dns_records_anon     = var.external_dns_traefik_alb_anon_core_alias
+  dns_records_auth     = var.external_dns_traefik_alb_auth_core_alias
+  domain               = local.core_dns_zone_name
+  zone_id_core         = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? "dummy" : local.core_dns_zone_id # TODO: This is a temporary fix caused by discrepancy between production and non-production clusters in the way of accessing Core Route53 instance. We need to provide dummy value here for external-dns instance in sandbox clusters to avoid duplicated values error in flux. In sandbox zone_id_core is the same as zone_id_workload!
+  zone_id_workload     = local.workload_dns_zone_id
+  role_arn             = module.external_dns_iam_role_assume.arn
+  assume_role_arn      = var.external_dns_core_route53_assume_role_arn != "" ? var.external_dns_core_route53_assume_role_arn : module.external_dns_iam_role_route53_access.arn
   providers = {
     github = github.fluxcd
   }
@@ -304,7 +279,7 @@ module "cert_manager_flux_manifests" {
 
 module "cert_manager_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
-  version = "6.4.0"
+  version = "6.6.1"
 
   name                       = "${var.eks_cluster_name}-cert-manager"
   policy_name                = "${var.eks_cluster_name}-cert-manager"
@@ -424,7 +399,7 @@ module "monitoring_namespace" {
 
 module "goldpinger" {
   source               = "../../_sub/monitoring/goldpinger"
-  count                = var.grafana_deploy ? 1 : 0
+  count                = local.grafana_deploy ? 1 : 0
   cluster_name         = var.eks_cluster_name
   repo_owner           = var.fluxcd_bootstrap_repo_owner
   repo_name            = var.fluxcd_bootstrap_repo_name
@@ -438,6 +413,25 @@ module "goldpinger" {
   }
 }
 
+# --------------------------------------------------
+# EKS-version-exporter - only when Grafana is also deployed
+# --------------------------------------------------
+
+module "eks_version_exporter" {
+  source               = "../../_sub/monitoring/eks-version-exporter"
+  count                = local.grafana_deploy ? 1 : 0
+  cluster_name         = var.eks_cluster_name
+  repo_owner           = var.fluxcd_bootstrap_repo_owner
+  repo_name            = var.fluxcd_bootstrap_repo_name
+  repo_branch          = var.fluxcd_bootstrap_repo_branch
+  gitops_apps_repo_url = local.fluxcd_apps_repo_url
+  gitops_apps_repo_ref = local.gitops_apps_repo_ref
+  prune                = var.fluxcd_prune
+
+  providers = {
+    github = github.fluxcd
+  }
+}
 
 # --------------------------------------------------
 # Metrics-Server
@@ -465,7 +459,7 @@ module "metrics_server" {
 
 module "aws_node_service" {
   source = "../../_sub/monitoring/aws-node"
-  count  = var.grafana_deploy ? 1 : 0
+  count  = local.grafana_deploy ? 1 : 0
 }
 
 # --------------------------------------------------
@@ -486,7 +480,7 @@ module "platform_fluxcd" {
   endpoint                   = data.aws_eks_cluster.eks.endpoint
   token                      = data.aws_eks_cluster_auth.eks.token
   cluster_ca_certificate     = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
-  enable_monitoring          = var.grafana_deploy ? true : false
+  enable_monitoring          = local.grafana_deploy ? true : false
   tenants                    = var.fluxcd_tenants
   source_controller_role_arn = var.fluxcd_source_controller_role_arn
 
@@ -569,55 +563,23 @@ module "velero" {
 }
 
 # --------------------------------------------------
-# Inactivity based clean up for sandboxes
-# --------------------------------------------------
-
-module "elb_inactivity_cleanup_anon" {
-  count                = data.terraform_remote_state.cluster.outputs.eks_is_sandbox && local.enable_inactivity_cleanup ? 1 : 0
-  source               = "../../_sub/compute/elb-inactivity-cleanup"
-  inactivity_alarm_arn = data.terraform_remote_state.cluster.outputs.eks_inactivity_alarm_arn
-  elb_name             = module.traefik_alb_anon.alb_name
-  elb_arn              = module.traefik_alb_anon.alb_arn
-}
-
-module "elb_inactivity_cleanup_auth" {
-  count                = data.terraform_remote_state.cluster.outputs.eks_is_sandbox && local.enable_inactivity_cleanup ? 1 : 0
-  source               = "../../_sub/compute/elb-inactivity-cleanup"
-  inactivity_alarm_arn = data.terraform_remote_state.cluster.outputs.eks_inactivity_alarm_arn
-  elb_name             = module.traefik_alb_auth.alb_name
-  elb_arn              = module.traefik_alb_auth.alb_arn
-}
-
-
-# --------------------------------------------------
 # Grafana Agent for Kubernetes monitoring
 # --------------------------------------------------
 
 module "grafana" {
-  source                        = "../../_sub/monitoring/grafana"
-  count                         = var.grafana_deploy ? 1 : 0
-  cluster_name                  = var.eks_cluster_name
-  github_owner                  = var.fluxcd_bootstrap_repo_owner
-  repo_name                     = var.fluxcd_bootstrap_repo_name
-  repo_branch                   = var.fluxcd_bootstrap_repo_branch
-  gitops_apps_repo_ref          = local.gitops_apps_repo_ref
-  gitops_apps_repo_url          = local.fluxcd_apps_repo_url
-  api_token                     = var.grafana_agent_api_token
-  prometheus_url                = var.grafana_agent_prometheus_url
-  prometheus_username           = var.grafana_agent_prometheus_username
-  loki_url                      = var.grafana_agent_loki_url
-  loki_username                 = var.grafana_agent_loki_username
-  tempo_url                     = var.grafana_agent_tempo_url
-  tempo_username                = var.grafana_agent_tempo_username
-  traces_enabled                = var.grafana_agent_traces_enabled
-  open_cost_enabled             = var.grafana_agent_open_cost_enabled
-  agent_resource_memory_limit   = var.grafana_agent_resource_memory_limit
-  agent_resource_memory_request = var.grafana_agent_resource_memory_request
-  affinity                      = var.observability_affinity
-  tolerations                   = var.observability_tolerations
-  agent_replicas                = var.grafana_agent_replicas
-  storage_size                  = var.grafana_agent_storage_size
-
+  source                                 = "../../_sub/monitoring/grafana"
+  count                                  = local.grafana_deploy ? 1 : 0
+  cluster_name                           = var.eks_cluster_name
+  github_owner                           = var.fluxcd_bootstrap_repo_owner
+  repo_name                              = var.fluxcd_bootstrap_repo_name
+  repo_branch                            = var.fluxcd_bootstrap_repo_branch
+  gitops_apps_repo_ref                   = local.gitops_apps_repo_ref
+  gitops_apps_repo_url                   = local.fluxcd_apps_repo_url
+  agent_resource_memory                  = var.grafana_agent_resource_memory
+  agent_replicas                         = var.grafana_agent_replicas
+  storage_size                           = var.grafana_agent_storage_size
+  grafana_stack                          = local.grafana_stack
+  onepassword_access_parameter_store_arn = module.onepassword_connect[0].grafana_token_ssm_parameter_arn
   providers = {
     github = github.fluxcd
   }
@@ -698,6 +660,7 @@ module "onepassword_connect" {
   aws_region           = var.aws_region
   credentials_json     = var.onepassword_credentials_json
   token_for_atlantis   = var.onepassword_token_for_atlantis
+  token_for_grafana    = var.onepassword_token_for_grafana
 
   providers = {
     github = github.fluxcd

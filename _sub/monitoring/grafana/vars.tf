@@ -33,33 +33,9 @@ variable "gitops_apps_repo_ref" {
   description = "The default branch or tag for your GitOps manifests"
 }
 
-variable "agent_resource_memory_request" {
+variable "agent_resource_memory" {
   type        = string
-  description = "Set resource memory request on Grafana Agent container"
-}
-
-variable "agent_resource_memory_limit" {
-  type        = string
-  description = "Set resource memory limits on Grafana Agent container"
-}
-
-variable "tolerations" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    value    = optional(string),
-    effect   = string,
-  }))
-  default = []
-}
-
-variable "affinity" {
-  type = list(object({
-    key      = string,
-    operator = string,
-    values   = list(string)
-  }))
-  default = []
+  description = "Set resource memory request and limits on Grafana Agent container"
 }
 
 variable "agent_replicas" {
@@ -69,89 +45,22 @@ variable "agent_replicas" {
 
 variable "storage_size" {
   type        = string
-  description = "Storage size for Grafana Persistent Volume"
+  description = <<-EOT
+    Storage size for Grafana Persistent Volume.
+    Please note that it is not possible to directly change this value after the initial deployment,
+    so it should be set with care. If you want to change it, you need to first delete the Grafana release and then apply it again with the new value. Default: 5Gi
+    Alternatively, you can use kubectl to edit the PersistentVolumeClaim created for Grafana and change the storage size there,
+    but this approach is not recommended as it may cause issues with the state of the release in Helm.
+  EOT
   default     = "5Gi"
 }
 
-variable "api_token" {
+variable "grafana_stack" {
   type        = string
-  description = "The token to authenticate request to a Grafana Cloud stack"
-  default     = null
-  sensitive   = true
-  validation {
-    condition     = var.api_token != null || can(regex("^(glc\\_)+", var.api_token))
-    error_message = "The value for var.api_token must start with glc_"
-  }
+  description = "The Grafana Cloud stack to use"
 }
 
-variable "prometheus_url" {
+variable "onepassword_access_parameter_store_arn" {
   type        = string
-  description = "The Prometheus URL in a Grafana Cloud stack"
-  default     = null
-  validation {
-    condition     = var.prometheus_url != null || can(regex("^(https:\\/\\/)+", var.prometheus_url))
-    error_message = "The value for var.prometheus_url must start with https://"
-  }
-}
-
-variable "prometheus_username" {
-  type        = string
-  description = "The username for Prometheus in a Grafana Cloud stack"
-  default     = null
-  validation {
-    condition     = var.prometheus_username != null || length(var.prometheus_username) > 0
-    error_message = "The value for var.prometheus_username must be defined"
-  }
-}
-
-variable "loki_url" {
-  type        = string
-  description = "The Loki URL in a Grafana Cloud stack"
-  default     = null
-  validation {
-    condition     = var.loki_url != null || can(regex("^(https:\\/\\/)+", var.loki_url))
-    error_message = "The value for var.loki_url must start with https://"
-  }
-}
-
-variable "loki_username" {
-  type        = string
-  description = "The username for Loki in a Grafana Cloud stack"
-  default     = null
-  validation {
-    condition     = var.loki_username != null || length(var.loki_username) > 0
-    error_message = "The value for var.loki_username must be defined"
-  }
-}
-
-variable "tempo_url" {
-  type        = string
-  description = "The Tempo URL in a Grafana Cloud stack"
-  default     = null
-  validation {
-    condition     = var.tempo_url != null || can(regex("^(https:\\/\\/)+", var.tempo_url))
-    error_message = "The value for var.tempo_url must start with https://"
-  }
-}
-
-variable "tempo_username" {
-  type        = string
-  description = "The username for Tempo in a Grafana Cloud stack"
-  default     = null
-  validation {
-    condition     = var.tempo_username != null || length(var.tempo_username) > 0
-    error_message = "The value for var.tempo_username must be defined"
-  }
-}
-
-variable "traces_enabled" {
-  type        = bool
-  default     = true
-  description = "Enable traces or not. Default: true"
-}
-
-variable "open_cost_enabled" {
-  type        = bool
-  description = "Enable scraping cost metrics Grafana Cloud Prometheus or not. Default: false"
-  default     = false
+  description = "The ARN of the SSM parameter for Grafana 1password token"
 }

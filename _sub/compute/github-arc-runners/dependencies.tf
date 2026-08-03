@@ -48,6 +48,7 @@ spec:
       flux_github_arc_runners_resource_memory: "${var.runner_resource_memory}"
       flux_github_arc_runners_scale_set_name: "${var.runner_scale_set_name}"
       flux_workload_account_id: "${data.aws_caller_identity.this.id}"
+      flux_cluster_name: "${var.cluster_name}"
 YAML
 
   helm_install = <<YAML

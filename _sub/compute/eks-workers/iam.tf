@@ -142,3 +142,19 @@ resource "aws_iam_role_policy" "cur" {
 EOF
 
 }
+
+# Allow nodes to pull new images and tag through ECR pull through cache
+data "aws_iam_policy_document" "allow_ecr_pull_through_cache" {
+  statement {
+    sid = "ECRPullThroughCache"
+    effect = "Allow"
+    actions   = ["ecr:BatchImportUpstreamImage"]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_role_policy" "allow_ecr_pull_through_cache" {
+  name = "eks-${var.cluster_name}-ecr-pull-through-cache"
+  role = aws_iam_role.eks.id
+  policy = data.aws_iam_policy_document.allow_ecr_pull_through_cache.json
+}

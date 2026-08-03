@@ -41,12 +41,6 @@ variable "cluster_region" {
   description = "The AWS region the EKS cluster is deployed in"
 }
 
-variable "deletion_policy_override" {
-  type        = string
-  description = "Explictly set the deletion policy for the external-dns helm release. Options are: 'sync' and 'upsert-only'. if not set, the default behavior of external-dns is set by the helm chart"
-  default     = ""
-}
-
 variable "target_anon" {
   type        = string
   description = "The target DNS name for the public records"
@@ -72,12 +66,12 @@ variable "domain" {
 }
 
 variable "zone_id_core" {
-  type = string
+  type        = string
   description = "The Route53 Hosted Zone ID for the core DNS zone"
 }
 
 variable "zone_id_workload" {
-  type = string
+  type        = string
   description = "The Route53 Hosted Zone ID for the workload DNS zone"
 }
 

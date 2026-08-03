@@ -35,12 +35,6 @@ variable "awsefscsidriver_version_override" {
   default = ""
 }
 
-variable "vpccni_prefix_delegation_enabled" {
-  type        = bool
-  description = "Whether to enable prefix delegation mode on the VPC CNI addon."
-  default     = false
-}
-
 variable "most_recent" {
   type        = bool
   default     = false
