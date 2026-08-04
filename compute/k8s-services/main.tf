@@ -809,3 +809,20 @@ module "kyverno" {
     github = github.fluxcd
   }
 }
+
+# --------------------------------------------------
+# Vertical-pod-autoscaler
+# --------------------------------------------------
+
+module "vertical-pod-autoscaler" {
+  source        = "../../_sub/compute/vertical-pod-autoscaler"
+  cluster_name  = var.eks_cluster_name
+  repo_name     = var.fluxcd_bootstrap_repo_name
+  repo_branch   = var.fluxcd_bootstrap_repo_branch
+  apps_repo_url = local.fluxcd_apps_repo_url
+  apps_repo_ref = local.gitops_apps_repo_ref
+
+  providers = {
+    github = github.fluxcd
+  }
+}
