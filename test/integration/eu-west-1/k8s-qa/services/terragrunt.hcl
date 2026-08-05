@@ -65,7 +65,7 @@ inputs = {
   # Flux CD
   # --------------------------------------------------
 
-  fluxcd_apps_repo_branch           = "main"
+  fluxcd_apps_repo_branch           = "add/vertical-pod-autoscaler"
   fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
   fluxcd_bootstrap_repo_branch      = "main"
   fluxcd_version                    = "v2.7.5"
