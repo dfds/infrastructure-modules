@@ -62,10 +62,6 @@ variable "ami_id" {
   description = "Pins the AMI ID of the nodes to the specified AMI, bypassing AMI updates."
 }
 
-variable "ec2_ssh_key" {
-  type = string
-}
-
 variable "eks_endpoint" {
   type = string
 }

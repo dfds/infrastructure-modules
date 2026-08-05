@@ -20,7 +20,6 @@ resource "aws_launch_template" "eks" {
     sys_memory : var.system_reserved_memory,
     docker_hub_creds : var.docker_hub_creds_ssm_path,
   }))
-  key_name               = var.ec2_ssh_key
   update_default_version = true
 
   network_interfaces {
