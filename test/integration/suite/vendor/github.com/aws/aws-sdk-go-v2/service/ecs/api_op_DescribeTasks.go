@@ -45,8 +45,7 @@ type DescribeTasksInput struct {
 
 	// The short name or full Amazon Resource Name (ARN) of the cluster that hosts the
 	// task or tasks to describe. If you do not specify a cluster, the default cluster
-	// is assumed. This parameter is required. If you do not specify a value, the
-	// default cluster is used.
+	// is assumed.
 	Cluster *string
 
 	// Specifies whether you want to see the resource tags for the task. If TAGS is
@@ -105,7 +104,7 @@ func (c *Client) addOperationDescribeTasksMiddlewares(stack *middleware.Stack, o
 	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetry(stack, options); err != nil {
+	if err = addRetry(stack, options, c); err != nil {
 		return err
 	}
 	if err = addRawResponseToMetadata(stack); err != nil {
@@ -129,10 +128,10 @@ func (c *Client) addOperationDescribeTasksMiddlewares(stack *middleware.Stack, o
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addTimeOffsetBuild(stack, c); err != nil {
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
-	if err = addUserAgentRetryMode(stack, options); err != nil {
+	if err = addCredentialSource(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeTasksValidationMiddleware(stack); err != nil {
@@ -156,16 +155,13 @@ func (c *Client) addOperationDescribeTasksMiddlewares(stack *middleware.Stack, o
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeStart(stack); err != nil {
+	if err = addInterceptBeforeRetryLoop(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeEnd(stack); err != nil {
+	if err = addInterceptAttempt(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanBuildRequestStart(stack); err != nil {
-		return err
-	}
-	if err = addSpanBuildRequestEnd(stack); err != nil {
+	if err = addInterceptors(stack, options); err != nil {
 		return err
 	}
 	return nil
@@ -194,7 +190,7 @@ type TasksRunningWaiterOptions struct {
 	MinDelay time.Duration
 
 	// MaxDelay is the maximum amount of time to delay between retries. If unset or
-	// set to zero, TasksRunningWaiter will use default max delay of 120 seconds. Note
+	// set to zero, TasksRunningWaiter will use default max delay of 600 seconds. Note
 	// that MaxDelay must resolve to value greater than or equal to the MinDelay.
 	MaxDelay time.Duration
 
@@ -224,7 +220,7 @@ type TasksRunningWaiter struct {
 func NewTasksRunningWaiter(client DescribeTasksAPIClient, optFns ...func(*TasksRunningWaiterOptions)) *TasksRunningWaiter {
 	options := TasksRunningWaiterOptions{}
 	options.MinDelay = 6 * time.Second
-	options.MaxDelay = 120 * time.Second
+	options.MaxDelay = 600 * time.Second
 	options.Retryable = tasksRunningStateRetryable
 
 	for _, fn := range optFns {
@@ -258,7 +254,7 @@ func (w *TasksRunningWaiter) WaitForOutput(ctx context.Context, params *Describe
 	}
 
 	if options.MaxDelay <= 0 {
-		options.MaxDelay = 120 * time.Second
+		options.MaxDelay = 600 * time.Second
 	}
 
 	if options.MinDelay > options.MaxDelay {
@@ -427,7 +423,7 @@ type TasksStoppedWaiterOptions struct {
 	MinDelay time.Duration
 
 	// MaxDelay is the maximum amount of time to delay between retries. If unset or
-	// set to zero, TasksStoppedWaiter will use default max delay of 120 seconds. Note
+	// set to zero, TasksStoppedWaiter will use default max delay of 600 seconds. Note
 	// that MaxDelay must resolve to value greater than or equal to the MinDelay.
 	MaxDelay time.Duration
 
@@ -457,7 +453,7 @@ type TasksStoppedWaiter struct {
 func NewTasksStoppedWaiter(client DescribeTasksAPIClient, optFns ...func(*TasksStoppedWaiterOptions)) *TasksStoppedWaiter {
 	options := TasksStoppedWaiterOptions{}
 	options.MinDelay = 6 * time.Second
-	options.MaxDelay = 120 * time.Second
+	options.MaxDelay = 600 * time.Second
 	options.Retryable = tasksStoppedStateRetryable
 
 	for _, fn := range optFns {
@@ -491,7 +487,7 @@ func (w *TasksStoppedWaiter) WaitForOutput(ctx context.Context, params *Describe
 	}
 
 	if options.MaxDelay <= 0 {
-		options.MaxDelay = 120 * time.Second
+		options.MaxDelay = 600 * time.Second
 	}
 
 	if options.MinDelay > options.MaxDelay {
