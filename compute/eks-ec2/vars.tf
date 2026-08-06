@@ -65,14 +65,6 @@ variable "eks_ipam_prefix_size" {
   }
 }
 
-variable "eks_worker_ssh_public_key" {
-  type = string
-}
-
-variable "eks_worker_ssh_ip_whitelist" {
-  type = list(string)
-}
-
 # Optional
 # --------------------------------------------------
 
