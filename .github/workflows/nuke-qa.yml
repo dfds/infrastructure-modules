@@ -53,7 +53,7 @@ jobs:
           TF_VAR_docker_hub_username: op://CloudEng-General/Docker Cloud/password # pragma: allowlist-secret
           TF_VAR_eks_addon_awsebscsidriver_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn # pragma: allowlist-secret
           TF_VAR_fluxcd_bootstrap_repo_owner_token: op://CloudEng-General/Github account devex-sa/Tokens/flux-qa # pragma: allowlist-secret
-          TF_VAR_onepassword_credentials_json: op://CloudEng-General/1Password Connect/nonprod_json # pragma: allowlist-secret
+          TF_VAR_onepassword_credentials_json: op://CloudEng-General/1Password Connect/k8s-hellman-nonprod/hxbc2ougl5gcrgogqlcjyhdabm # pragma: allowlist-secret
           TF_VAR_onepassword_token_for_atlantis: op://CloudEng-General/1Password Connect/nonprod_atlantis_token # pragma: allowlist-secret
           TF_VAR_velero_ebs_csi_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn # pragma: allowlist-secret
           SLACK_WEBHOOK: op://CloudEng-General/Slack dfds.slack.com webhooks/jdm5vktylqnczrlkkbvsveyp5e # pragma: allowlist-secret
