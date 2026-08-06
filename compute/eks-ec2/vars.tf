@@ -181,12 +181,7 @@ variable "eks_managed_nodegroups" {
       value  = optional(string),
       effect = string
     })), [])
-    labels      = optional(map(string), {})
-    max_pods    = optional(number, 110)
-    sys_cpu     = optional(string, null)
-    sys_memory  = optional(string, null)
-    kube_cpu    = optional(string, null)
-    kube_memory = optional(string, null)
+    labels = optional(map(string), {})
   }))
   default = {}
   validation {

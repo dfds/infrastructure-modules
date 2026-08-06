@@ -50,10 +50,6 @@ inputs = {
       ami_id                     = "ami-0b53eae05d51e7bc2"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
-      kube_memory                = "1024Mi"
-      kube_cpu                   = "500m"
-      sys_memory                 = "768Mi"
-      sys_cpu                    = "300m"
       labels = {
         "karpenter.sh/controller" = "true" # required for Karpenter
       }
@@ -76,10 +72,6 @@ inputs = {
       labels = {
         dedicated = "observability"
       }
-      kube_memory = "585Mi"
-      kube_cpu    = "90m"
-      sys_memory  = "585Mi"
-      sys_cpu     = "90m"
     }
   }
 
