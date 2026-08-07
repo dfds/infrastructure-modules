@@ -15,14 +15,14 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: 1.26.3
+          go-version: 1.26.5
 
       - name: Find test suite checksum before vendoring
         id: checksum-before

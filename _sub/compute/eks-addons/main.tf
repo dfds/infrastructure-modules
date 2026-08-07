@@ -4,7 +4,13 @@ resource "aws_eks_addon" "vpc-cni" {
   addon_version = local.vpccni_version
   configuration_values = jsonencode({
     "env" = {
-      "ENABLE_PREFIX_DELEGATION" = tostring(true)
+      "ENABLE_PREFIX_DELEGATION"      = tostring(true)
+      "NETWORK_POLICY_ENFORCING_MODE" = "standard" # default allow policy, change to "strict" default deny policy (see https://docs.aws.amazon.com/eks/latest/userguide/cni-network-policy-configure.html#cni-network-policy-configure-policy)
+    }
+    "enableNetworkPolicy" = "true" # see https://docs.aws.amazon.com/eks/latest/userguide/cni-network-policy-configure.html#enable-network-policy-parameter
+    "nodeAgent" = {
+      "healthProbeBindAddr" = "8163" # this port must be free on node
+      "metricsBindAddr"     = "8162" # this port must be free on node
     }
   })
   resolve_conflicts_on_create = "OVERWRITE"
@@ -204,7 +210,7 @@ resource "aws_iam_role_policy_attachment" "managed-efs-csi-driver-policy" {
 
 # Storage classes
 
-resource "kubernetes_storage_class" "csi-gp3" {
+resource "kubernetes_storage_class_v1" "csi-gp3" {
   metadata {
     name = "csi-gp3"
     annotations = {
@@ -215,6 +221,7 @@ resource "kubernetes_storage_class" "csi-gp3" {
   reclaim_policy         = "Delete"
   volume_binding_mode    = "WaitForFirstConsumer"
   allow_volume_expansion = "true"
+
   parameters = {
     type = "gp3"
   }
@@ -244,7 +251,7 @@ resource "kubernetes_annotations" "gp2-not-default" {
   ]
 }
 
-resource "kubernetes_storage_class" "csi-efs" {
+resource "kubernetes_storage_class_v1" "csi-efs" {
   metadata {
     name = "csi-efs"
     annotations = {

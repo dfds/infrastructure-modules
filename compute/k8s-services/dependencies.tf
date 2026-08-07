@@ -148,16 +148,6 @@ locals {
   gitops_apps_repo_ref = var.fluxcd_apps_repo_tag != "" ? var.fluxcd_apps_repo_tag : var.fluxcd_apps_repo_branch
 }
 
-# --------------------------------------------------
-# Inactivity based clean up for sandboxes
-# --------------------------------------------------
-
-locals {
-  enable_inactivity_cleanup = (
-    var.enable_inactivity_cleanup && data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? true : false
-  )
-}
-
 
 # --------------------------------------------------
 # IAM role for Route53 zone delegation
@@ -278,5 +268,5 @@ locals {
 # Grafana Agent
 locals {
   grafana_deploy = var.grafana_deploy && var.onepassword_token_for_grafana != "" ? true : false
-  grafana_stack = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? "sandbox" : "platform"
+  grafana_stack  = data.terraform_remote_state.cluster.outputs.eks_is_sandbox ? "sandbox" : "platform"
 }
