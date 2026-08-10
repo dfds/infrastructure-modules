@@ -44,7 +44,7 @@ jobs:
   build_test_master:
     if: github.event.pull_request.draft == false && !contains(github.event.pull_request.labels.*.name, 'on-hold')
     name: Build test binary from master branch
-    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@2.0.5
+    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@2.0.6
     with:
       test-source-path: test/integration/suite
       repository: dfds/infrastructure-modules
@@ -54,7 +54,7 @@ jobs:
   build_test_feature:
     if: github.ref != 'refs/heads/master' && github.event.pull_request.draft == false && !contains(github.event.pull_request.labels.*.name, 'on-hold')
     name: Build test binary from feature branch
-    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@2.0.5
+    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@2.0.6
     with:
       test-source-path: test/integration/suite
       artifact-name: test-feature
@@ -132,7 +132,7 @@ jobs:
 
       - name: Send alert if job fails
         if: failure()
-        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@2.0.5
+        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@2.0.6
         with:
           slack_webhook: ${{ env.SLACK_WEBHOOK }}
           slack_message: "QA pipeline failed in master branch"
@@ -207,7 +207,7 @@ jobs:
 
       - name: Send alert if job fails
         if: failure()
-        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@2.0.5
+        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@2.0.6
         with:
           slack_webhook: ${{ env.SLACK_WEBHOOK }}
           slack_message: "QA pipeline failed in feature branch"
