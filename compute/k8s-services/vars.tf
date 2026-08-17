@@ -524,40 +524,6 @@ variable "github_arc_runners_resource_memory" {
 }
 
 # --------------------------------------------------
-# Trivy Operator
-# --------------------------------------------------
-
-variable "trivy_operator_deploy" {
-  type        = bool
-  description = "Deploy Trivy Operator helm chart switch"
-  default     = false
-}
-
-variable "trivy_operator_resources_requests_cpu" {
-  type        = string
-  default     = "100m"
-  description = "CPU resources request size"
-}
-
-variable "trivy_operator_resources_requests_memory" {
-  type        = string
-  default     = "1Gi"
-  description = "Memory resources requests size"
-}
-
-variable "trivy_scan_resources_requests_cpu" {
-  type        = string
-  default     = "100m"
-  description = "CPU resources request size"
-}
-
-variable "trivy_scan_resources_requests_memory" {
-  type        = string
-  default     = "512Mi"
-  description = "Memory resources requests size"
-}
-
-# --------------------------------------------------
 # Falco
 # --------------------------------------------------
 

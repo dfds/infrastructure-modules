@@ -6,4 +6,4 @@ on:
     branches: [ "master"]
 jobs:
   enforce-label:
-    uses: dfds/shared-workflows/.github/workflows/automation-enforce-release-labels.yml@2.0.4
+    uses: dfds/shared-workflows/.github/workflows/automation-enforce-release-labels.yml@2.0.6

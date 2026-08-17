@@ -21,7 +21,7 @@ inputs = {
   # --------------------------------------------------
 
   eks_cluster_name          = "qa"
-  eks_cluster_version       = "1.35"
+  eks_cluster_version       = "1.36"
   eks_cluster_cidr_block    = "10.228.0.0/16"
   eks_cluster_zones         = 2
   eks_cluster_log_types     = ["api", "authenticator", "scheduler", "controllerManager"]
@@ -42,9 +42,9 @@ inputs = {
       instance_types          = ["m6a.xlarge"]
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
-      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.35-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.35-v20260728
-      ami_id                     = "ami-0b53eae05d51e7bc2"
+      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.36-*"]}]
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.36-v20260810
+      ami_id                     = "ami-0a46c14d6d0cd41d6"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
       labels = {
@@ -56,9 +56,9 @@ inputs = {
       desired_size_per_subnet = 1
       max_unavailable         = 1
       # This comment configures the renovate bot to automatically update this variable:
-      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.35-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.35-v20260728
-      ami_id             = "ami-0b53eae05d51e7bc2"
+      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.36-*"]}]
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.36-v20260810
+      ami_id             = "ami-0a46c14d6d0cd41d6"
       availability_zones = ["eu-west-1c"]
       taints = [
         {

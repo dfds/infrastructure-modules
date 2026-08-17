@@ -4,10 +4,10 @@ repos:
     hooks:
       - id: terraform_fmt
         exclude: test/integration/suite/vendor/.*
-      # - id: terraform_checkov
-      #   args:
-      #     - "--args=--quiet"
-      #     - "--args=--skip-path=test/integration/suite/vendor/.*"
+      - id: terraform_checkov
+        args:
+          - "--args=--quiet"
+          - "--args=--skip-path=test/integration/suite/vendor/.*"
       - id: terraform_tflint
         args:
           - "--args=--call-module-type=local"

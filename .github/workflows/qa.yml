@@ -44,7 +44,7 @@ jobs:
   build_test_master:
     if: github.event.pull_request.draft == false && !contains(github.event.pull_request.labels.*.name, 'on-hold')
     name: Build test binary from master branch
-    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@2.0.4
+    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@2.0.6
     with:
       test-source-path: test/integration/suite
       repository: dfds/infrastructure-modules
@@ -54,7 +54,7 @@ jobs:
   build_test_feature:
     if: github.ref != 'refs/heads/master' && github.event.pull_request.draft == false && !contains(github.event.pull_request.labels.*.name, 'on-hold')
     name: Build test binary from feature branch
-    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@2.0.4
+    uses: dfds/shared-workflows/.github/workflows/automation-integration-test-build.yml@2.0.6
     with:
       test-source-path: test/integration/suite
       artifact-name: test-feature
@@ -100,7 +100,7 @@ jobs:
           TF_VAR_docker_hub_password: op://CloudEng-General/Docker Cloud/password # pragma: allowlist-secret
           TF_VAR_eks_addon_awsebscsidriver_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn # pragma: allowlist-secret
           TF_VAR_fluxcd_bootstrap_repo_owner_token: op://CloudEng-General/Github account devex-sa/Tokens/flux-qa # pragma: allowlist-secret
-          TF_VAR_onepassword_credentials_json: op://CloudEng-General/1Password Connect/nonprod_json # pragma: allowlist-secret
+          TF_VAR_onepassword_credentials_json: op://CloudEng-General/1Password Connect/k8s-hellman-nonprod/hxbc2ougl5gcrgogqlcjyhdabm # pragma: allowlist-secret
           TF_VAR_onepassword_token_for_atlantis: op://CloudEng-General/1Password Connect/nonprod_atlantis_token # pragma: allowlist-secret
           TF_VAR_onepassword_token_for_grafana: op://CloudEng-General/1Password Connect/nonprod_grafana_token # pragma: allowlist-secret
           TF_VAR_velero_ebs_csi_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn # pragma: allowlist-secret
@@ -132,7 +132,7 @@ jobs:
 
       - name: Send alert if job fails
         if: failure()
-        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@2.0.4
+        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@2.0.6
         with:
           slack_webhook: ${{ env.SLACK_WEBHOOK }}
           slack_message: "QA pipeline failed in master branch"
@@ -175,7 +175,7 @@ jobs:
           TF_VAR_docker_hub_password: op://CloudEng-General/Docker Cloud/password # pragma: allowlist-secret
           TF_VAR_eks_addon_awsebscsidriver_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn # pragma: allowlist-secret
           TF_VAR_fluxcd_bootstrap_repo_owner_token: op://CloudEng-General/Github account devex-sa/Tokens/flux-qa # pragma: allowlist-secret
-          TF_VAR_onepassword_credentials_json: op://CloudEng-General/1Password Connect/nonprod_json # pragma: allowlist-secret
+          TF_VAR_onepassword_credentials_json: op://CloudEng-General/1Password Connect/k8s-hellman-nonprod/hxbc2ougl5gcrgogqlcjyhdabm # pragma: allowlist-secret
           TF_VAR_onepassword_token_for_atlantis: op://CloudEng-General/1Password Connect/nonprod_atlantis_token # pragma: allowlist-secret
           TF_VAR_onepassword_token_for_grafana: op://CloudEng-General/1Password Connect/nonprod_grafana_token # pragma: allowlist-secret
           TF_VAR_velero_ebs_csi_kms_arn: op://CloudEng-General/Hardened Account EBS Volume Shared KMS Key/arn # pragma: allowlist-secret
@@ -207,7 +207,7 @@ jobs:
 
       - name: Send alert if job fails
         if: failure()
-        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@2.0.4
+        uses: dfds/shared-workflows/.github/actions/automation-slack-notifier@2.0.6
         with:
           slack_webhook: ${{ env.SLACK_WEBHOOK }}
           slack_message: "QA pipeline failed in feature branch"

@@ -89,7 +89,7 @@ module "lb_controller_flux_manifests" {
 
 module "lb_controller_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
-  version = "6.6.1"
+  version = "6.8.0"
 
   name                                   = "${var.eks_cluster_name}-lb-controller"
   policy_name                            = "${var.eks_cluster_name}-lb-controller"
@@ -279,7 +279,7 @@ module "cert_manager_flux_manifests" {
 
 module "cert_manager_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
-  version = "6.6.1"
+  version = "6.8.0"
 
   name                       = "${var.eks_cluster_name}-cert-manager"
   policy_name                = "${var.eks_cluster_name}-cert-manager"
@@ -705,30 +705,6 @@ module "github_arc_runners" {
   prune                  = var.fluxcd_prune
   runner_scale_set_name  = var.github_arc_runners_runner_scale_set_name
   runner_resource_memory = var.github_arc_runners_resource_memory
-
-  providers = {
-    github = github.fluxcd
-  }
-}
-
-# --------------------------------------------------
-# Trivy Operator
-# --------------------------------------------------
-
-module "trivy_operator" {
-  source                         = "../../_sub/compute/trivy-operator"
-  count                          = var.trivy_operator_deploy ? 1 : 0
-  cluster_name                   = var.eks_cluster_name
-  resources_requests_cpu         = var.trivy_operator_resources_requests_cpu
-  resources_requests_memory      = var.trivy_operator_resources_requests_memory
-  scan_resources_requests_cpu    = var.trivy_scan_resources_requests_cpu
-  scan_resources_requests_memory = var.trivy_scan_resources_requests_memory
-  github_token                   = var.fluxcd_bootstrap_repo_owner_token
-  repo_owner                     = var.fluxcd_bootstrap_repo_owner
-  repo_name                      = var.fluxcd_bootstrap_repo_name
-  repo_branch                    = var.fluxcd_bootstrap_repo_branch
-  gitops_apps_repo_url           = local.fluxcd_apps_repo_url
-  gitops_apps_repo_ref           = local.gitops_apps_repo_ref
 
   providers = {
     github = github.fluxcd

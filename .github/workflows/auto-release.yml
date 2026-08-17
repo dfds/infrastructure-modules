@@ -16,4 +16,4 @@ on:
 
 jobs:
   auto-release:
-    uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@2.0.4
+    uses: dfds/shared-workflows/.github/workflows/automation-auto-release.yml@2.0.6
