@@ -125,18 +125,11 @@ module "eks_managed_workers_subnet" {
   subnets      = local.eks_managed_worker_subnets
 }
 
-module "eks_workers_keypair" {
-  source     = "../../_sub/compute/ec2-keypair"
-  name       = "eks-${var.eks_cluster_name}-workers"
-  public_key = var.eks_worker_ssh_public_key
-}
-
 module "eks_workers_security_group" {
   source                   = "../../_sub/network/security-group-eks-node"
   vpc_id                   = module.eks_cluster.vpc_id
   cluster_name             = var.eks_cluster_name
   autoscale_security_group = module.eks_cluster.autoscale_security_group
-  ssh_ip_whitelist         = var.eks_worker_ssh_ip_whitelist
 }
 
 # Is actually only IAM at this point
@@ -244,15 +237,13 @@ module "eks_managed_workers_node_group" {
 
   for_each = var.eks_managed_nodegroups
 
-  cluster_name                    = var.eks_cluster_name
-  cluster_version                 = var.eks_cluster_version
-  node_role_arn                   = module.eks_workers.worker_role_arn
-  security_groups                 = [module.eks_workers_security_group.id]
-  ec2_ssh_key                     = module.eks_workers_keypair.key_name
-  eks_endpoint                    = module.eks_cluster.eks_endpoint
-  eks_certificate_authority       = module.eks_cluster.eks_certificate_authority
-  eks_service_cidr                = module.eks_cluster.eks_service_cidr
-  worker_inotify_max_user_watches = var.eks_worker_inotify_max_user_watches
+  cluster_name              = var.eks_cluster_name
+  cluster_version           = var.eks_cluster_version
+  node_role_arn             = module.eks_workers.worker_role_arn
+  security_groups           = [module.eks_workers_security_group.id]
+  eks_endpoint              = module.eks_cluster.eks_endpoint
+  eks_certificate_authority = module.eks_cluster.eks_certificate_authority
+  eks_service_cidr          = module.eks_cluster.eks_service_cidr
 
   # Node group variations
   nodegroup_name             = each.key
@@ -268,11 +259,6 @@ module "eks_managed_workers_node_group" {
   subnet_ids = length(each.value.availability_zones) == 0 ? module.eks_managed_workers_subnet.subnet_ids : [
     for sn in module.eks_managed_workers_subnet.subnets : sn.id if contains(each.value.availability_zones, sn.availability_zone)
   ]
-  max_pods               = each.value.max_pods
-  kube_reserved_cpu      = each.value.kube_cpu
-  kube_reserved_memory   = each.value.kube_memory
-  system_reserved_cpu    = each.value.sys_cpu
-  system_reserved_memory = each.value.sys_memory
 
   # Docker Hub credentials
   docker_hub_creds_ssm_path = aws_ssm_parameter.dockerhub.name

@@ -62,10 +62,6 @@ variable "ami_id" {
   description = "Pins the AMI ID of the nodes to the specified AMI, bypassing AMI updates."
 }
 
-variable "ec2_ssh_key" {
-  type = string
-}
-
 variable "eks_endpoint" {
   type = string
 }
@@ -77,10 +73,6 @@ variable "eks_certificate_authority" {
 variable "eks_service_cidr" {
   type        = string
   description = "The CIDR block IPv4 used by the cluster to assign Kubernetes service IP addresses. This is derived from the cluster itself."
-}
-
-variable "worker_inotify_max_user_watches" {
-  type = number
 }
 
 variable "docker_hub_creds_ssm_path" {
@@ -101,35 +93,5 @@ variable "max_unavailable" {
 variable "max_unavailable_percentage" {
   type        = number
   description = "Desired max percentage of unavailable worker nodes during node group update."
-  default     = null
-}
-
-variable "max_pods" {
-  type        = number
-  description = "Maximum number of Pods that can run on the Kubelet"
-  default     = 110
-}
-
-variable "kube_reserved_cpu" {
-  type        = string
-  description = "CPU reserved for kubernetes system components"
-  default     = null
-}
-
-variable "kube_reserved_memory" {
-  type        = string
-  description = "Memory reserved for kubernetes system components"
-  default     = null
-}
-
-variable "system_reserved_cpu" {
-  type        = string
-  description = "CPU reserved for system components"
-  default     = null
-}
-
-variable "system_reserved_memory" {
-  type        = string
-  description = "Memory reserved for system components"
   default     = null
 }

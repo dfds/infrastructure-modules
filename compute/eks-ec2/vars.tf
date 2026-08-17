@@ -65,14 +65,6 @@ variable "eks_ipam_prefix_size" {
   }
 }
 
-variable "eks_worker_ssh_public_key" {
-  type = string
-}
-
-variable "eks_worker_ssh_ip_whitelist" {
-  type = list(string)
-}
-
 # Optional
 # --------------------------------------------------
 
@@ -97,11 +89,6 @@ variable "eks_cluster_log_retention_days" {
   type        = number
   description = "Specifies the number of days you want to retain log events in the specified log group. Possible values are: 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653."
   default     = 90
-}
-
-variable "eks_worker_inotify_max_user_watches" {
-  type    = number
-  default = 131072 # default t3.large is 8192 which is too low
 }
 
 variable "eks_managed_worker_subnets" {
@@ -186,12 +173,7 @@ variable "eks_managed_nodegroups" {
       value  = optional(string),
       effect = string
     })), [])
-    labels      = optional(map(string), {})
-    max_pods    = optional(number, 110)
-    sys_cpu     = optional(string, null)
-    sys_memory  = optional(string, null)
-    kube_cpu    = optional(string, null)
-    kube_memory = optional(string, null)
+    labels = optional(map(string), {})
   }))
   default = {}
   validation {
