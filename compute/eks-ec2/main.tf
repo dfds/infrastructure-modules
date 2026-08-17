@@ -262,8 +262,6 @@ module "eks_managed_workers_node_group" {
 
   # Docker Hub credentials
   docker_hub_creds_ssm_path = aws_ssm_parameter.dockerhub.name
-
-  depends_on = [module.eks_cluster]
 }
 
 # --------------------------------------------------
