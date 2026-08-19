@@ -32,6 +32,7 @@ variable "azure_client_id" {
 
 variable "azure_client_secret" {
   type = string
+  sensitive = true
 }
 
 variable "access_logs_bucket" {
