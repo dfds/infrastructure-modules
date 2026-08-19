@@ -367,7 +367,7 @@ module "cloudwatch_agent_config_bucket" {
 }
 
 # --------------------------------------------------
-# Cluster access½
+# Cluster access
 # --------------------------------------------------
 
 module "k8s_cloudengineer_clusterrole_and_binding" {
