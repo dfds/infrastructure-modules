@@ -262,8 +262,6 @@ module "eks_managed_workers_node_group" {
 
   # Docker Hub credentials
   docker_hub_creds_ssm_path = aws_ssm_parameter.dockerhub.name
-
-  depends_on = [module.eks_cluster]
 }
 
 # --------------------------------------------------
@@ -301,7 +299,6 @@ module "efs_fs" {
 
 module "eks_addons" {
   source                           = "../../_sub/compute/eks-addons"
-  depends_on                       = [module.eks_cluster, module.efs_fs]
   cluster_name                     = var.eks_cluster_name
   kubeproxy_version_override       = var.eks_addon_kubeproxy_version_override
   coredns_version_override         = var.eks_addon_coredns_version_override
@@ -467,10 +464,10 @@ module "karpenter" {
   source                        = "terraform-aws-modules/eks/aws//modules/karpenter"
   version                       = "21.24.2"
   create                        = true
-  cluster_name                  = var.eks_cluster_name
+  cluster_name                  = module.eks_cluster.name
   create_access_entry           = true
   node_iam_role_use_name_prefix = false
-  node_iam_role_name            = "karpenter-${var.eks_cluster_name}"
+  node_iam_role_name            = "karpenter-${module.eks_cluster.name}"
   create_iam_role               = true
   namespace                     = "karpenter"
   # Attach additional IAM policies to the Karpenter node IAM role
@@ -478,7 +475,6 @@ module "karpenter" {
     AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore" # Enable SSM core functionality
   }
   enable_inline_policy = true
-  depends_on           = [module.eks_cluster]
 }
 
 # Controller KMS access policy required for EBS encryption support (see https://karpenter.sh/docs/troubleshooting/#node-terminates-before-ready-on-failed-encrypted-ebs-volume)
