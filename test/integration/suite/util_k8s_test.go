@@ -209,8 +209,11 @@ func AssertK8sEvent(t *testing.T, clientset *kubernetes.Clientset, namespace,
 				}
 				// Consecutive similar events could be combined into one event so one must
 				// check the last observed time.
-				// Checking for equal timestamps because the resolution can differ.
-				if !event.DeprecatedLastTimestamp.Time.Equal(emittedAfter) || event.DeprecatedLastTimestamp.Time.Before(emittedAfter) {
+				if event.DeprecatedLastTimestamp.Time.Before(emittedAfter) {
+					// Checking for equal timestamps because the resolution differs.
+					if event.DeprecatedLastTimestamp.Time.Equal(emittedAfter) {
+						return true
+					}
 					continue
 				}
 				return true
