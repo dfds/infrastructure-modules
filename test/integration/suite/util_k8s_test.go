@@ -212,6 +212,7 @@ func AssertK8sEvent(t *testing.T, clientset *kubernetes.Clientset, namespace,
 				if event.DeprecatedLastTimestamp.Time.Before(emittedAfter) {
 					// Checking for equal timestamps because the resolution differs.
 					if event.DeprecatedLastTimestamp.Time.Equal(emittedAfter) {
+						t.Logf("Event timestamp at %s and reconciliation triggered timestamp at %s, was equal", event.DeprecatedLastTimestamp.Time, emittedAfter)
 						return true
 					}
 					continue
