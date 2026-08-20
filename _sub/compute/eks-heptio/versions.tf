@@ -4,15 +4,11 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 6.23.0"
+      version = ">= 6.56.0" # because list s3_buckets is only available in 6.56.0 and later
     }
-    local = {
-      source  = "hashicorp/local"
-      version = ">= 2.6.0"
-    }
-    null = {
-      source  = "hashicorp/null"
-      version = ">= 3.2.1"
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.38.0"
     }
   }
 }

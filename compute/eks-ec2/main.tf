@@ -278,7 +278,6 @@ module "blaster_configmap_bucket" {
 module "eks_heptio" {
   source                      = "../../_sub/compute/eks-heptio"
   cluster_name                = var.eks_cluster_name
-  kubeconfig_path             = local.kubeconfig_path
   eks_endpoint                = module.eks_cluster.eks_endpoint
   eks_certificate_authority   = module.eks_cluster.eks_certificate_authority
   eks_role_arn                = module.eks_workers.worker_role
@@ -451,10 +450,9 @@ resource "aws_cloudwatch_metric_alarm" "inactivity" {
 # --------------------------------------------------
 
 module "eks_version_endpoint" {
-  count           = var.secure_eks_version_endpoint ? 1 : 0
-  source          = "../../_sub/security/eks-version-endpoint"
-  kubeconfig_path = local.kubeconfig_path
-  depends_on      = [module.eks_heptio]
+  count      = var.secure_eks_version_endpoint ? 1 : 0
+  source     = "../../_sub/security/eks-version-endpoint"
+  depends_on = [module.eks_heptio]
 }
 
 # --------------------------------------------------

@@ -31,10 +31,6 @@ variable "blaster_configmap_key" {
   type = string
 }
 
-variable "kubeconfig_path" {
-  type = string
-}
-
 variable "eks_k8s_auth_api_version" {
   description = "The fully qualified version of the client authentication API."
   type        = string

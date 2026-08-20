@@ -15,7 +15,6 @@ data "aws_region" "current" {}
 # --------------------------------------------------
 
 locals {
-  temp_kubeconfig_path = "./kube_${var.cluster_name}.config"
   kubeconfig_admin_template = templatefile(
     "${path.module}/kubeconfig-admin.yaml",
     {
