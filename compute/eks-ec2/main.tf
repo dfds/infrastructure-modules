@@ -462,7 +462,7 @@ module "eks_version_endpoint" {
 # --------------------------------------------------
 module "karpenter" {
   source                        = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version                       = "21.24.2"
+  version                       = "21.25.0"
   create                        = true
   cluster_name                  = module.eks_cluster.name
   create_access_entry           = true
