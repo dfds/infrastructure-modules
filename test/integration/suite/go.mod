@@ -5,6 +5,7 @@ go 1.26.0
 require (
 	github.com/fluxcd/pkg/apis/meta v1.31.0
 	github.com/gruntwork-io/terratest v1.0.1
+	github.com/gruntwork-io/terratest/modules/httphelper/v2 v2.0.0-beta.2
 	github.com/stretchr/testify v1.11.1
 	github.com/traefik/traefik/v3 v3.6.25
 	k8s.io/api v0.36.3
@@ -86,6 +87,7 @@ require (
 	github.com/gorilla/websocket v1.5.4-0.20250319132907-e064f32e3674 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.29.0 // indirect
 	github.com/gruntwork-io/go-commons v0.8.0 // indirect
+	github.com/gruntwork-io/terratest/modules/core/v2 v2.0.0-beta.2 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-version v1.9.0 // indirect
