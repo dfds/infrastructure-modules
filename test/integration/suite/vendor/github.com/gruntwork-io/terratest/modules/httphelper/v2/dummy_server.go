@@ -1,0 +1,97 @@
+package httphelper
+
+import (
+	"context"
+	"fmt"
+	"io"
+	"net"
+	"net/http"
+	"strconv"
+	"sync/atomic"
+
+	"github.com/gruntwork-io/terratest/modules/core/v2/logger"
+	"github.com/gruntwork-io/terratest/modules/core/v2/testing"
+)
+
+// RunDummyServerContext runs a dummy HTTP server on a unique port that will return the given text. Returns the Listener
+// for the server, the port it's listening on, or an error if something went wrong while trying to start the listener.
+// The provided context is used when establishing the network listener. Make sure to call the Close() method on the
+// Listener when you're done!
+func RunDummyServerContext(t testing.TestingT, ctx context.Context, text string) (net.Listener, int) {
+	listener, port, err := RunDummyServerContextE(t, ctx, text)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return listener, port
+}
+
+// RunDummyServerContextE runs a dummy HTTP server on a unique port that will return the given text. Returns the Listener
+// for the server, the port it's listening on, or an error if something went wrong while trying to start the listener.
+// The provided context is used when establishing the network listener. Make sure to call the Close() method on the
+// Listener when you're done!
+func RunDummyServerContextE(t testing.TestingT, ctx context.Context, text string) (net.Listener, int, error) {
+	port := getNextPort()
+
+	server := http.NewServeMux()
+	server.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		_, _ = io.WriteString(w, text)
+	})
+
+	logger.Default.Logf(t, "Starting dummy HTTP server in port %d that will return the text '%s'", port, text)
+
+	listener, err := (&net.ListenConfig{}).Listen(ctx, "tcp", ":"+strconv.Itoa(port))
+	if err != nil {
+		return nil, 0, fmt.Errorf("error listening: %w", err)
+	}
+
+	go func() { _ = http.Serve(listener, server) }()
+
+	return listener, port, nil
+}
+
+// RunDummyServerWithHandlersContext runs a dummy HTTP server on a unique port that will serve the given handlers.
+// Returns the Listener for the server, the port it's listening on, or an error if something went wrong while trying
+// to start the listener. The provided context is used when establishing the network listener. Make sure to call the
+// Close() method on the Listener when you're done!
+func RunDummyServerWithHandlersContext(t testing.TestingT, ctx context.Context, handlers map[string]func(http.ResponseWriter, *http.Request)) (net.Listener, int) {
+	listener, port, err := RunDummyServerWithHandlersContextE(t, ctx, handlers)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return listener, port
+}
+
+// RunDummyServerWithHandlersContextE runs a dummy HTTP server on a unique port that will serve the given handlers.
+// Returns the Listener for the server, the port it's listening on, or an error if something went wrong while trying
+// to start the listener. The provided context is used when establishing the network listener. Make sure to call the
+// Close() method on the Listener when you're done!
+func RunDummyServerWithHandlersContextE(t testing.TestingT, ctx context.Context, handlers map[string]func(http.ResponseWriter, *http.Request)) (net.Listener, int, error) {
+	port := getNextPort()
+
+	server := http.NewServeMux()
+	for path, handler := range handlers {
+		server.HandleFunc(path, handler)
+	}
+
+	logger.Default.Logf(t, "Starting dummy HTTP server in port %d", port)
+
+	listener, err := (&net.ListenConfig{}).Listen(ctx, "tcp", ":"+strconv.Itoa(port))
+	if err != nil {
+		return nil, 0, fmt.Errorf("error listening: %w", err)
+	}
+
+	go func() { _ = http.Serve(listener, server) }()
+
+	return listener, port, nil
+}
+
+// DO NOT ACCESS THIS VARIABLE DIRECTLY. See getNextPort() below.
+var testServerPort int32 = 8080
+
+// Since we run tests in parallel, we need to ensure that each test runs on a different port. This function returns a
+// unique port by atomically incrementing the testServerPort variable.
+func getNextPort() int {
+	return int(atomic.AddInt32(&testServerPort, 1))
+}

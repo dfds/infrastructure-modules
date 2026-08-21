@@ -217,14 +217,9 @@ variable "eks_worker_cur_bucket_arn" {
 }
 
 # --------------------------------------------------
-# GPU workloads
+# EFS automated backup
 # --------------------------------------------------
 
-variable "secure_eks_version_endpoint" {
-  type        = bool
-  default     = true
-  description = "Whether to secure the EKS version endpoint"
-}
 
 variable "efs_automated_backup_enabled" {
   type        = bool
