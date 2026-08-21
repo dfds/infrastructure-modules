@@ -83,7 +83,7 @@ func TestNetworkPolicies(t *testing.T) {
 
 // curlFromExecPod runs a curl from the exec pod and asserts whether it should succeed.
 func curlFromExecPod(t *testing.T, options *k8s.KubectlOptions, execPod, container, url string, expectSuccess bool, testErrorMessage string) {
-	_, err := k8s.ExecPodContextE(t, t.Context(), options, execPod, container, "curl", "-sS", "--connect-timeout", "2", url)
+	_, err := k8s.ExecPodContextE(t, t.Context(), options, execPod, container, "curl", "-sS", "--connect-timeout", "2", "--retry", "3", url)
 	if expectSuccess {
 		assert.NoError(t, err, testErrorMessage)
 	} else {
