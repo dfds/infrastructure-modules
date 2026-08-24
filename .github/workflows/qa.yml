@@ -41,6 +41,45 @@ env:
   TF_IN_AUTOMATION: "true"
 
 jobs:
+  enforce-label:
+    if: github.ref != 'refs/heads/master'
+    name: Enforce PR labels
+    uses: dfds/shared-workflows/.github/workflows/automation-enforce-release-labels.yml@2.0.6
+
+  secret-detection:
+    if: github.ref != 'refs/heads/master'
+    name: Secret detection
+    uses: dfds/shared-workflows/.github/workflows/security-gitleaks.yml@2.0.6
+    secrets: inherit # pragma: allowlist secret
+
+  terraform-lint:
+    if: github.ref != 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+      name: Checkout source code
+
+    - uses: actions/cache@v6
+      name: Cache plugin dir
+      with:
+        path: ~/.tflint.d/plugins
+        key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
+
+    - uses: terraform-linters/setup-tflint@v6
+      name: Setup TFLint
+      with:
+        tflint_version: v0.64.0
+
+    - name: Show version
+      run: tflint --version
+
+    - name: Init TFLint
+      run: tflint --init
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+    - name: Run TFLint
+      run: tflint -f compact --recursive --filter='*.tf'
+
   build_test_master:
     if: github.event.pull_request.draft == false && !contains(github.event.pull_request.labels.*.name, 'on-hold')
     name: Build test binary from master branch
