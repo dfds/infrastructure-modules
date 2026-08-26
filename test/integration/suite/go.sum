@@ -201,6 +201,10 @@ github.com/gruntwork-io/go-commons v0.8.0 h1:k/yypwrPqSeYHevLlEDmvmgQzcyTwrlZGRa
 github.com/gruntwork-io/go-commons v0.8.0/go.mod h1:gtp0yTtIBExIZp7vyIV9I0XQkVwiQZze678hvDXof78=
 github.com/gruntwork-io/terratest v1.0.1 h1:5CCp4Matgw5S42t5VW79mLN3YcaN5cEqNpTprVjuzIQ=
 github.com/gruntwork-io/terratest v1.0.1/go.mod h1:2lK9XvvGJ+GhsvA6tO7LpALWG34nu+1QecgexHKAGZ8=
+github.com/gruntwork-io/terratest/modules/core/v2 v2.0.0-beta.2 h1:vQVT41UDfD4DmxEff60RzBRFo+jRolqzcTf2D804hZo=
+github.com/gruntwork-io/terratest/modules/core/v2 v2.0.0-beta.2/go.mod h1:toDd6sojktUVEqV7nVIzncmEVXqkMgreSa2DhMBMBQk=
+github.com/gruntwork-io/terratest/modules/httphelper/v2 v2.0.0-beta.2 h1:DamFGYZ2KM8TmgmniCu9CRTtznCfXaRGSBshHINWOF4=
+github.com/gruntwork-io/terratest/modules/httphelper/v2 v2.0.0-beta.2/go.mod h1:u2PhwK7Iz5+N4TN2EIt1/xB57MuPv7HFC3QwLaKdJhY=
 github.com/hashicorp/errwrap v1.0.0/go.mod h1:YH+1FKiLXxHSkmPseP+kNlulaMuP3n2brvKWEqk/Jc4=
 github.com/hashicorp/errwrap v1.1.0 h1:OxrOeh75EUXMY8TBjag2fzXGZ40LB6IKw45YeGUDY2I=
 github.com/hashicorp/errwrap v1.1.0/go.mod h1:YH+1FKiLXxHSkmPseP+kNlulaMuP3n2brvKWEqk/Jc4=

@@ -395,6 +395,14 @@ github.com/gruntwork-io/terratest/modules/retry
 github.com/gruntwork-io/terratest/modules/shell
 github.com/gruntwork-io/terratest/modules/ssh
 github.com/gruntwork-io/terratest/modules/testing
+# github.com/gruntwork-io/terratest/modules/core/v2 v2.0.0-beta.2
+## explicit; go 1.26.0
+github.com/gruntwork-io/terratest/modules/core/v2/logger
+github.com/gruntwork-io/terratest/modules/core/v2/retry
+github.com/gruntwork-io/terratest/modules/core/v2/testing
+# github.com/gruntwork-io/terratest/modules/httphelper/v2 v2.0.0-beta.2
+## explicit; go 1.26.0
+github.com/gruntwork-io/terratest/modules/httphelper/v2
 # github.com/hashicorp/errwrap v1.1.0
 ## explicit
 github.com/hashicorp/errwrap
