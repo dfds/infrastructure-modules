@@ -7,7 +7,7 @@ require (
 	github.com/gruntwork-io/terratest v1.0.1
 	github.com/gruntwork-io/terratest/modules/httphelper/v2 v2.0.0-beta.2
 	github.com/stretchr/testify v1.12.1
-	github.com/traefik/traefik/v3 v3.6.25
+	github.com/traefik/traefik/v3 v3.7.12
 	k8s.io/api v0.36.3
 	k8s.io/apimachinery v0.36.3
 	k8s.io/client-go v0.36.3
