@@ -125,18 +125,11 @@ module "eks_managed_workers_subnet" {
   subnets      = local.eks_managed_worker_subnets
 }
 
-module "eks_workers_keypair" {
-  source     = "../../_sub/compute/ec2-keypair"
-  name       = "eks-${var.eks_cluster_name}-workers"
-  public_key = var.eks_worker_ssh_public_key
-}
-
 module "eks_workers_security_group" {
   source                   = "../../_sub/network/security-group-eks-node"
   vpc_id                   = module.eks_cluster.vpc_id
   cluster_name             = var.eks_cluster_name
   autoscale_security_group = module.eks_cluster.autoscale_security_group
-  ssh_ip_whitelist         = var.eks_worker_ssh_ip_whitelist
 }
 
 # Is actually only IAM at this point
@@ -244,15 +237,13 @@ module "eks_managed_workers_node_group" {
 
   for_each = var.eks_managed_nodegroups
 
-  cluster_name                    = var.eks_cluster_name
-  cluster_version                 = var.eks_cluster_version
-  node_role_arn                   = module.eks_workers.worker_role_arn
-  security_groups                 = [module.eks_workers_security_group.id]
-  ec2_ssh_key                     = module.eks_workers_keypair.key_name
-  eks_endpoint                    = module.eks_cluster.eks_endpoint
-  eks_certificate_authority       = module.eks_cluster.eks_certificate_authority
-  eks_service_cidr                = module.eks_cluster.eks_service_cidr
-  worker_inotify_max_user_watches = var.eks_worker_inotify_max_user_watches
+  cluster_name              = var.eks_cluster_name
+  cluster_version           = var.eks_cluster_version
+  node_role_arn             = module.eks_workers.worker_role_arn
+  security_groups           = [module.eks_workers_security_group.id]
+  eks_endpoint              = module.eks_cluster.eks_endpoint
+  eks_certificate_authority = module.eks_cluster.eks_certificate_authority
+  eks_service_cidr          = module.eks_cluster.eks_service_cidr
 
   # Node group variations
   nodegroup_name             = each.key
@@ -268,16 +259,9 @@ module "eks_managed_workers_node_group" {
   subnet_ids = length(each.value.availability_zones) == 0 ? module.eks_managed_workers_subnet.subnet_ids : [
     for sn in module.eks_managed_workers_subnet.subnets : sn.id if contains(each.value.availability_zones, sn.availability_zone)
   ]
-  max_pods               = each.value.max_pods
-  kube_reserved_cpu      = each.value.kube_cpu
-  kube_reserved_memory   = each.value.kube_memory
-  system_reserved_cpu    = each.value.sys_cpu
-  system_reserved_memory = each.value.sys_memory
 
   # Docker Hub credentials
   docker_hub_creds_ssm_path = aws_ssm_parameter.dockerhub.name
-
-  depends_on = [module.eks_cluster]
 }
 
 # --------------------------------------------------
@@ -315,7 +299,6 @@ module "efs_fs" {
 
 module "eks_addons" {
   source                           = "../../_sub/compute/eks-addons"
-  depends_on                       = [module.eks_cluster, module.efs_fs]
   cluster_name                     = var.eks_cluster_name
   kubeproxy_version_override       = var.eks_addon_kubeproxy_version_override
   coredns_version_override         = var.eks_addon_coredns_version_override
@@ -464,27 +447,16 @@ resource "aws_cloudwatch_metric_alarm" "inactivity" {
 }
 
 # --------------------------------------------------
-# GPU workloads
-# --------------------------------------------------
-
-module "eks_version_endpoint" {
-  count           = var.secure_eks_version_endpoint ? 1 : 0
-  source          = "../../_sub/security/eks-version-endpoint"
-  kubeconfig_path = local.kubeconfig_path
-  depends_on      = [module.eks_heptio]
-}
-
-# --------------------------------------------------
 # Karpenter prerequisites (not Karpenter itself)
 # --------------------------------------------------
 module "karpenter" {
   source                        = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version                       = "21.20.0"
+  version                       = "21.25.0"
   create                        = true
-  cluster_name                  = var.eks_cluster_name
+  cluster_name                  = module.eks_cluster.name
   create_access_entry           = true
   node_iam_role_use_name_prefix = false
-  node_iam_role_name            = "karpenter-${var.eks_cluster_name}"
+  node_iam_role_name            = "karpenter-${module.eks_cluster.name}"
   create_iam_role               = true
   namespace                     = "karpenter"
   # Attach additional IAM policies to the Karpenter node IAM role
@@ -492,7 +464,6 @@ module "karpenter" {
     AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore" # Enable SSM core functionality
   }
   enable_inline_policy = true
-  depends_on           = [module.eks_cluster]
 }
 
 # Controller KMS access policy required for EBS encryption support (see https://karpenter.sh/docs/troubleshooting/#node-terminates-before-ready-on-failed-encrypted-ebs-volume)

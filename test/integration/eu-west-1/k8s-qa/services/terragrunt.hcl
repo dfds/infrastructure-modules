@@ -68,7 +68,7 @@ inputs = {
   fluxcd_apps_repo_branch           = "main"
   fluxcd_bootstrap_repo_name        = "platform-manifests-qa"
   fluxcd_bootstrap_repo_branch      = "main"
-  fluxcd_version                    = "v2.7.5"
+  fluxcd_version                    = "v2.9.4"
 
   fluxcd_tenants = []
 
@@ -123,17 +123,6 @@ inputs = {
   github_arc_runners_deploy                = true
   github_arc_runners_runner_scale_set_name = "dfds-runners-qa"
   github_arc_runners_resource_memory       = "1Gi"
-
-
-  # --------------------------------------------------
-  # Trivy Operator
-  # --------------------------------------------------
-
-  trivy_operator_deploy                     = false # disabled due to security concerns
-  trivy_operator_resources_requests_cpu     = "10m"
-  trivy_operator_resources_requests_memory  = "768Mi"
-  trivy_scan_resources_requests_cpu         = "10m"
-  trivy_scan_resources_requests_memory      = "386Mi"
 
   # --------------------------------------------------
   # 1Password Connect

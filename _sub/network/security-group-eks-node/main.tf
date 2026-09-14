@@ -49,15 +49,3 @@ resource "aws_security_group_rule" "eks-cluster-ingress-node-https" {
   to_port                  = 443
   type                     = "ingress"
 }
-
-#Enable SSH access to nodes by tfvars set to 1
-resource "aws_security_group_rule" "ssh-access-to-worker-nodes" {
-  #checkov:skip=CKV_AWS_24: Ensure no security groups allow ingress from 0.0.0.0:0 to port 22
-  description       = "Allow SSH access to worker nodes"
-  cidr_blocks       = var.ssh_ip_whitelist
-  from_port         = 22
-  protocol          = "tcp"
-  security_group_id = aws_security_group.eks-node.id
-  to_port           = 22
-  type              = "ingress"
-}

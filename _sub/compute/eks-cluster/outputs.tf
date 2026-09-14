@@ -33,3 +33,7 @@ output "eks_openid_connect_provider_url" {
 output "eks_service_cidr" {
   value = aws_eks_cluster.eks.kubernetes_network_config[0].service_ipv4_cidr
 }
+
+output "name" {
+  value = aws_eks_cluster.eks.name
+}

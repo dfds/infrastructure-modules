@@ -24,11 +24,11 @@ func TestFluxResourcesReady(t *testing.T) {
 	reconcileAndWait := func(resource string) {
 		namespace := "flux-system"
 		name := "flux-system"
-		err := k8s.RunKubectlE(t, options, "-n", namespace, "annotate", resource, name, fmt.Sprintf("reconcile.fluxcd.io/requestedAt=%s", fmt.Sprintf("%d", time.Now().Unix())), "--overwrite")
+		err := k8s.RunKubectlContextE(t, t.Context(), options, "-n", namespace, "annotate", resource, name, fmt.Sprintf("reconcile.fluxcd.io/requestedAt=%s", fmt.Sprintf("%d", time.Now().Unix())), "--overwrite")
 		if err != nil {
 			t.Fatalf("Failed to trigger flux-system %s reconciliation: %v", resource, err)
 		}
-		err = k8s.RunKubectlE(t, options, "-n", namespace, "wait", resource, name, "--for=condition=Ready", "--timeout=5m")
+		err = k8s.RunKubectlContextE(t, t.Context(), options, "-n", namespace, "wait", resource, name, "--for=condition=Ready", "--timeout=5m")
 		if err != nil {
 			t.Fatalf("Failed flux-system %s reconciliation: %v", resource, err)
 		}
@@ -44,12 +44,12 @@ func TestFluxResourcesReady(t *testing.T) {
 				t.Parallel()
 			}
 			if resource == "helmreleases" {
-				err := k8s.RunKubectlE(t, options, "wait", resource, "--for=condition=Ready", "--all", "-A", "--timeout=10m") // helmreleases can take longer to be ready
+				err := k8s.RunKubectlContextE(t, t.Context(), options, "wait", resource, "--for=condition=Ready", "--all", "-A", "--timeout=10m") // helmreleases can take longer to be ready
 				if err != nil {
 					t.Fatalf("%s not ready: %v", resource, err)
 				}
 			} else {
-				err := k8s.RunKubectlE(t, options, "wait", resource, "--for=condition=Ready", "--all", "-A", "--timeout=5m")
+				err := k8s.RunKubectlContextE(t, t.Context(), options, "wait", resource, "--for=condition=Ready", "--all", "-A", "--timeout=5m")
 				if err != nil {
 					t.Fatalf("%s not ready: %v", resource, err)
 				}

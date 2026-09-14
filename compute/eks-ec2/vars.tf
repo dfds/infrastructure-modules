@@ -26,10 +26,10 @@ variable "eks_cluster_name" {
 
 variable "eks_cluster_version" {
   type        = string
-  description = "The Kubernetes version for the EKS cluster. Must be >= 1.34."
+  description = "The Kubernetes version for the EKS cluster. Must be >= 1.36."
   validation {
-    condition     = tonumber(split(".", var.eks_cluster_version)[0]) > 1 || (tonumber(split(".", var.eks_cluster_version)[0]) == 1 && tonumber(split(".", var.eks_cluster_version)[1]) >= 34)
-    error_message = "eks_cluster_version must be >= 1.34."
+    condition     = tonumber(split(".", var.eks_cluster_version)[0]) > 1 || (tonumber(split(".", var.eks_cluster_version)[0]) == 1 && tonumber(split(".", var.eks_cluster_version)[1]) >= 36)
+    error_message = "eks_cluster_version must be >= 1.36."
   }
 }
 
@@ -65,14 +65,6 @@ variable "eks_ipam_prefix_size" {
   }
 }
 
-variable "eks_worker_ssh_public_key" {
-  type = string
-}
-
-variable "eks_worker_ssh_ip_whitelist" {
-  type = list(string)
-}
-
 # Optional
 # --------------------------------------------------
 
@@ -97,11 +89,6 @@ variable "eks_cluster_log_retention_days" {
   type        = number
   description = "Specifies the number of days you want to retain log events in the specified log group. Possible values are: 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653."
   default     = 90
-}
-
-variable "eks_worker_inotify_max_user_watches" {
-  type    = number
-  default = 131072 # default t3.large is 8192 which is too low
 }
 
 variable "eks_managed_worker_subnets" {
@@ -186,12 +173,7 @@ variable "eks_managed_nodegroups" {
       value  = optional(string),
       effect = string
     })), [])
-    labels      = optional(map(string), {})
-    max_pods    = optional(number, 110)
-    sys_cpu     = optional(string, null)
-    sys_memory  = optional(string, null)
-    kube_cpu    = optional(string, null)
-    kube_memory = optional(string, null)
+    labels = optional(map(string), {})
   }))
   default = {}
   validation {
@@ -235,14 +217,9 @@ variable "eks_worker_cur_bucket_arn" {
 }
 
 # --------------------------------------------------
-# GPU workloads
+# EFS automated backup
 # --------------------------------------------------
 
-variable "secure_eks_version_endpoint" {
-  type        = bool
-  default     = true
-  description = "Whether to secure the EKS version endpoint"
-}
 
 variable "efs_automated_backup_enabled" {
   type        = bool

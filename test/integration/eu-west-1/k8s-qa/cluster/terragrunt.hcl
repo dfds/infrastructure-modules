@@ -21,7 +21,7 @@ inputs = {
   # --------------------------------------------------
 
   eks_cluster_name          = "qa"
-  eks_cluster_version       = "1.35"
+  eks_cluster_version       = "1.36"
   eks_cluster_cidr_block    = "10.228.0.0/16"
   eks_cluster_zones         = 2
   eks_cluster_log_types     = ["api", "authenticator", "scheduler", "controllerManager"]
@@ -29,10 +29,7 @@ inputs = {
   eks_is_sandbox            = true
   enable_worker_nat_gateway = true
   use_worker_nat_gateway    = true
-
-  eks_worker_ssh_ip_whitelist = ["193.9.230.0/24"]
-  eks_worker_ssh_public_key   = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC2PlxsmewLiLRCQbuATu4yLRsAOMGqaCa/KL3GPo1Wyr19XVVFWseyaVERN1t/xBPlryOikHbfkuNnm8c3mtOop9daEEi2neWMpHqGp/IqHRw5tJiEg50/zauC2kETuG9pLADzs/tVrLlghKHmzv9s6VPEJM7l6hKWF04AdHK2auICRXnOM+by1+gquoDAvL3tytX55Xrx3P+dMB4tpgt/SABVomE6/XiaaxHdntj6pGGl1CYtzC2Md+4K6pXh2mr/pESqXqGxcW6HBUhwYhDEdm1ZEg3WLaFZ2kTjCvIUCPgA7Zo3cq8NQbjw6rsnrqTrsCG7OIRakrWFlxetKvZluVARaJscnQov98iwS7+owGKf+eJ9Fg6O26ewHKX0zuxU/33l1KqGdfGEVfsA+CzRSKr9yj1BvCzqf4yaESZT/D0uNDCWPTC0pmJ02F1/XUvOnDl7cihHHTXTlwRnXBKz7X8xpwUtb/K+yyvUI4KcRmcmxRUFxl3SVuaaXJ1avfb0FOGB07ZO47OQ1/gCkHmzYpu5YtBeVwOAfxOsCX3k1Svqhvpbwg6KdkdSvouXdMFqQ10rtF65E8yiX0pHnDHC3Vgpa/Nw5hZ0fH1MTRDIDf2ZTciARkzGrUtYPu9Yi68X9bcLgfn6cA6HNp/UGhm6YvpoKrkZgX2yJIkphALqTQ== qa"
-  eks_k8s_auth_api_version    = "client.authentication.k8s.io/v1beta1"
+  eks_k8s_auth_api_version  = "client.authentication.k8s.io/v1beta1"
 
   # --------------------------------------------------
   # Managed nodes
@@ -45,15 +42,11 @@ inputs = {
       instance_types          = ["m6a.xlarge"]
       desired_size_per_subnet = 1
       # This comment configures the renovate bot to automatically update this variable:
-      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.35-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.35-v20260728
-      ami_id                     = "ami-0b53eae05d51e7bc2"
+      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.36-*"]}]
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.36-v20260818
+      ami_id                     = "ami-013132db29386424a"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
-      kube_memory                = "1024Mi"
-      kube_cpu                   = "500m"
-      sys_memory                 = "768Mi"
-      sys_cpu                    = "300m"
       labels = {
         "karpenter.sh/controller" = "true" # required for Karpenter
       }
@@ -63,9 +56,9 @@ inputs = {
       desired_size_per_subnet = 1
       max_unavailable         = 1
       # This comment configures the renovate bot to automatically update this variable:
-      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.35-*"]}]
-      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.35-v20260728
-      ami_id             = "ami-0b53eae05d51e7bc2"
+      # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.36-*"]}]
+      # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.36-v20260818
+      ami_id             = "ami-013132db29386424a"
       availability_zones = ["eu-west-1c"]
       taints = [
         {
@@ -76,10 +69,6 @@ inputs = {
       labels = {
         dedicated = "observability"
       }
-      kube_memory = "585Mi"
-      kube_cpu    = "90m"
-      sys_memory  = "585Mi"
-      sys_cpu     = "90m"
     }
   }
 

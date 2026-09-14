@@ -9,7 +9,3 @@ variable "cluster_name" {
 variable "autoscale_security_group" {
   type = string
 }
-
-variable "ssh_ip_whitelist" {
-  type = list(string)
-}
