@@ -268,25 +268,15 @@ module "eks_managed_workers_node_group" {
 # OTHER
 # --------------------------------------------------
 
-module "blaster_configmap_bucket" {
-  source          = "../../_sub/storage/s3-bucket"
-  deploy          = length(var.blaster_configmap_bucket) >= 1 ? true : false
-  s3_bucket       = var.blaster_configmap_bucket
-  additional_tags = var.blaster_configmap_bucket_tags
-}
-
 module "eks_heptio" {
-  source                      = "../../_sub/compute/eks-heptio"
-  cluster_name                = var.eks_cluster_name
-  kubeconfig_path             = local.kubeconfig_path
-  eks_endpoint                = module.eks_cluster.eks_endpoint
-  eks_certificate_authority   = module.eks_cluster.eks_certificate_authority
-  eks_role_arn                = module.eks_workers.worker_role
-  blaster_configmap_apply     = length(var.blaster_configmap_bucket) >= 1 ? true : false
-  blaster_configmap_s3_bucket = module.blaster_configmap_bucket.bucket_name
-  blaster_configmap_key       = "configmap_${module.eks_heptio.cluster_name}_blaster.yml"
-  aws_assume_role_arn         = var.aws_assume_role_arn
-  eks_k8s_auth_api_version    = var.eks_k8s_auth_api_version
+  source                    = "../../_sub/compute/eks-heptio"
+  cluster_name              = var.eks_cluster_name
+  kubeconfig_path           = local.kubeconfig_path
+  eks_endpoint              = module.eks_cluster.eks_endpoint
+  eks_certificate_authority = module.eks_cluster.eks_certificate_authority
+  eks_role_arn              = module.eks_workers.worker_role
+  aws_assume_role_arn       = var.aws_assume_role_arn
+  eks_k8s_auth_api_version  = var.eks_k8s_auth_api_version
 }
 
 module "efs_fs" {

@@ -18,19 +18,6 @@ variable "aws_assume_role_arn" {
   type = string
 }
 
-variable "blaster_configmap_apply" {
-  type    = bool
-  default = false
-}
-
-variable "blaster_configmap_s3_bucket" {
-  type = string
-}
-
-variable "blaster_configmap_key" {
-  type = string
-}
-
 variable "kubeconfig_path" {
   type = string
 }

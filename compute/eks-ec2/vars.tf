@@ -183,21 +183,6 @@ variable "eks_managed_nodegroups" {
 }
 
 # --------------------------------------------------
-# Blaster Configmap
-# --------------------------------------------------
-
-variable "blaster_configmap_bucket" {
-  type    = string
-  default = ""
-}
-
-variable "blaster_configmap_bucket_tags" {
-  description = "Add additional tags to s3 bucket"
-  type        = map(string)
-  default     = {}
-}
-
-# --------------------------------------------------
 # Cloudwatch agent setup
 # --------------------------------------------------
 
