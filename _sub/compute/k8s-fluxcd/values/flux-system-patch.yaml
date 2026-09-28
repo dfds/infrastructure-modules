@@ -36,7 +36,6 @@ patches:
       kind: Kustomization
       # trunk-ignore(yamllint/quoted-strings)
       name: "flux-system"
-%{ if src_ctrl_arn != "" }
   - patch: |
       apiVersion: v1
       kind: ServiceAccount
@@ -48,4 +47,3 @@ patches:
     target:
       kind: ServiceAccount
       name: source-controller
-%{ endif ~}
