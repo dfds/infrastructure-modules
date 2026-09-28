@@ -282,7 +282,6 @@ module "eks_heptio" {
   eks_endpoint                = module.eks_cluster.eks_endpoint
   eks_certificate_authority   = module.eks_cluster.eks_certificate_authority
   eks_role_arn                = module.eks_workers.worker_role
-  blaster_configmap_apply     = length(var.blaster_configmap_bucket) >= 1 ? true : false
   blaster_configmap_s3_bucket = module.blaster_configmap_bucket.bucket_name
   blaster_configmap_key       = "configmap_${module.eks_heptio.cluster_name}_blaster.yml"
   aws_assume_role_arn         = var.aws_assume_role_arn
