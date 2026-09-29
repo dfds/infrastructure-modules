@@ -3,7 +3,7 @@ module go.dfds.cloud/infrastructure-modules/test/integration/suite
 go 1.26.0
 
 require (
-	github.com/fluxcd/pkg/apis/meta v1.31.0
+	github.com/fluxcd/pkg/apis/meta v1.32.0
 	github.com/gruntwork-io/terratest v1.0.1
 	github.com/gruntwork-io/terratest/modules/httphelper/v2 v2.0.0-beta.2
 	github.com/stretchr/testify v1.12.1
