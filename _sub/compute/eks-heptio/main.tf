@@ -30,7 +30,7 @@ resource "local_file" "default-configmap" {
 }
 
 resource "null_resource" "enable-workers-default" {
-  count = var.blaster_configmap_apply ? 0 : 1
+  count = length(var.blaster_configmap_s3_bucket) > 0 ? 0 : 1
 
   provisioner "local-exec" {
     command = "kubectl --kubeconfig ${var.kubeconfig_path} apply -f ${local.path_default_configmap}"
@@ -43,7 +43,7 @@ resource "null_resource" "enable-workers-default" {
 }
 
 resource "null_resource" "enable-workers-from-s3" {
-  count = var.blaster_configmap_apply ? 1 : 0
+  count = length(var.blaster_configmap_s3_bucket) > 0 ? 1 : 0
 
   # Terraform does not seem to re-run script, unless a trigger is defined
   triggers = {

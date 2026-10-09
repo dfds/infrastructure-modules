@@ -18,13 +18,10 @@ variable "aws_assume_role_arn" {
   type = string
 }
 
-variable "blaster_configmap_apply" {
-  type    = bool
-  default = false
-}
 
 variable "blaster_configmap_s3_bucket" {
-  type = string
+  description = "The S3 bucket where the blaster configmap is stored. If empty default ConfigMap will be applied. If the bucket or object `var.blaster_configmap_key` specified does not exist, the default ConfigMap will also be used."
+  type        = string
 }
 
 variable "blaster_configmap_key" {
