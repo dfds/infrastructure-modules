@@ -4,9 +4,6 @@
     "local>dfds/renovate-config"
   ],
 
-  "ignorePaths": [
-    "test/integration/suite/vendor/**"
-  ],
   "postUpdateOptions": [
     "gomodTidy",
     "gomodUpdateImportPaths"
