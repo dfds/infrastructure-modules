@@ -89,23 +89,6 @@ variable "tenants" {
   }
 }
 
-variable "tenants" {
-  type = list(object({
-    namespace = string
-    repositories = list(object({
-      url    = string
-      branch = string
-      path   = optional(string, null),
-    }))
-  }))
-  description = "List of tenants' namespaces and repository URLs"
-  default     = []
-  validation {
-    condition     = alltrue([for tenant in var.tenants : length(tenant.repositories) <= 1])
-    error_message = "Each tenant can have at most one repository."
-  }
-}
-
 variable "source_controller_role_arn" {
   type        = string
   default     = ""
