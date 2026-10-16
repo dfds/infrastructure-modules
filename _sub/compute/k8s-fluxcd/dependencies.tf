@@ -59,3 +59,9 @@ spec:
 Place custom manifests in here. Make sure to place them in a folder named after the application
   EOT
 }
+
+data "aws_caller_identity" "this" {}
+
+data "aws_eks_cluster" "this" {
+  name = var.cluster_name
+}
