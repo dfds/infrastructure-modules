@@ -134,14 +134,14 @@ resource "github_repository_file" "tenant_sync" {
 # Source controller IAM Role for Service Account (IRSA) to allow Flux to pull images from ECR.
 # Be mindfull of the weak coupling between the IAM role and the flux_bootstrap_git resource due to a bug in the flux provider.
 locals {
-  role_name = "${var.cluster_name}-fluxcd-source-controller-ecr-reader"
+  role_name = "${var.cluster_name}-flux-src-ctrl-ecr"
 }
 
 module "source_controller_irsa" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
-  version = "6.6.1"
-  name = local.role_name
-  use_name_prefix = false
+  source          = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+  version         = "6.6.1"
+  name            = local.role_name
+  use_name_prefix = true
   oidc_providers = {
     this = {
       provider_arn               = "arn:aws:iam::${data.aws_caller_identity.this.account_id}:oidc-provider/${trim(data.aws_eks_cluster.this.identity[0].oidc[0].issuer, "https://")}"
@@ -156,15 +156,15 @@ module "source_controller_irsa" {
 # Allow Flux to pull new images and tag through ECR pull through cache
 data "aws_iam_policy_document" "allow_ecr_pull_through_cache" {
   statement {
-    sid = "ECRPullThroughCache"
-    effect = "Allow"
+    sid       = "ECRPullThroughCache"
+    effect    = "Allow"
     actions   = ["ecr:BatchImportUpstreamImage"]
     resources = ["*"]
   }
 }
 
 resource "aws_iam_role_policy" "allow_ecr_pull_through_cache" {
-  name = "fluxcd-source-controller-${var.cluster_name}-ecr-pull-through-cache"
-  role = module.source_controller_irsa.name
+  name   = "flux-src-ctrl-${var.cluster_name}-ecr-ptc"
+  role   = module.source_controller_irsa.name
   policy = data.aws_iam_policy_document.allow_ecr_pull_through_cache.json
 }
