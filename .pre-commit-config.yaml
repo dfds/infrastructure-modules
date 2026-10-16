@@ -3,11 +3,9 @@ repos:
     rev: v1.108.1
     hooks:
       - id: terraform_fmt
-        exclude: test/integration/suite/vendor/.*
       - id: terraform_checkov
         args:
           - "--args=--quiet"
-          - "--args=--skip-path=test/integration/suite/vendor/.*"
       - id: terraform_tflint
         args:
           - "--args=--call-module-type=local"
@@ -16,28 +14,20 @@ repos:
     rev: v1.5.0
     hooks:
       - id: detect-secrets
-        exclude: test/integration/suite/vendor/.*
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
-        exclude: test/integration/suite/vendor/.*
       - id: check-added-large-files
-        exclude: test/integration/suite/vendor/.*
       - id: check-merge-conflict
       - id: detect-aws-credentials
-        exclude: test/integration/suite/vendor/.*
         args:
           - "--allow-missing-credentials"
       - id: detect-private-key
       - id: check-executables-have-shebangs
-        exclude: test/integration/suite/vendor/.*
       - id: check-shebang-scripts-are-executable
-        exclude: test/integration/suite/vendor/.*
       - id: check-json
       - id: end-of-file-fixer
-        exclude: test/integration/suite/vendor/.*
       - id: mixed-line-ending
-        exclude: test/integration/suite/vendor/.*
         args:
           - "--fix=lf"

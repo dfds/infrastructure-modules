@@ -35,7 +35,7 @@ if [ "$ACTION" = "test-build" ]; then
 	(cd "${BASEPATH}/suite" && exec go env || true)
 
 	# Build test suite
-	(cd "${BASEPATH}/suite" && exec go test -c -v -vet=off -o $TEST_BINARY_PATH)
+	(cd "${BASEPATH}/suite" && exec go test -mod=readonly -c -v -vet=off -o $TEST_BINARY_PATH)
 fi
 
 if [ "$ACTION" = "test-run" ]; then
