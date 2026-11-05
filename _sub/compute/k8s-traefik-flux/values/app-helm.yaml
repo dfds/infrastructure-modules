@@ -24,6 +24,8 @@ spec:
     kind: GitRepository
     name: flux-system
   path: "./${helm_repo_path}"
+  dependsOn:
+    - name: platform-apps-traefik-crds-helm
   prune: true
   postBuild:
     substitute:
