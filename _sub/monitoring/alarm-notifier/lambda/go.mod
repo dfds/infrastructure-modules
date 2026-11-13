@@ -1,12 +1,12 @@
 module github.com/dfds/infrastructure-modules/slack-alarm-notifier
 
-go 1.25
+go 1.26
 
 require (
 	github.com/aws/aws-lambda-go v1.54.0
 	github.com/google/uuid v1.6.0
 	github.com/sirupsen/logrus v1.10.1
-	github.com/slack-go/slack v0.29.0
+	github.com/slack-go/slack v0.35.0
 )
 
 require (
