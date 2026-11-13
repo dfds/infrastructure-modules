@@ -22,6 +22,6 @@ rule "terraform_documented_outputs" {
 
 plugin "aws" {
     enabled = true
-    version = "0.49.0"
+    version = "0.50.0"
     source  = "github.com/terraform-linters/tflint-ruleset-aws"
 }
