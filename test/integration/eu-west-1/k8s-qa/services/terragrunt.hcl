@@ -44,7 +44,7 @@ inputs = {
   # --------------------------------------------------
 
   traefik_blue_variant_weight   = 0
-  traefik_green_variant_weight  = 1
+  traefik_green_variant_weight  = 10
 
   # --------------------------------------------------
   # Blaster
