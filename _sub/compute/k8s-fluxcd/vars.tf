@@ -88,9 +88,3 @@ variable "tenants" {
     error_message = "Each tenant can have at most one repository listed due to naming collisions flux related resources. This is a bug in the current implementation."
   }
 }
-
-variable "source_controller_role_arn" {
-  type        = string
-  default     = ""
-  description = "The ARN of the IAM role for the source controller. Used for IAM roles for service accounts (IRSA). Optional."
-}
