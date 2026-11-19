@@ -26,7 +26,7 @@ resource "aws_lb_target_group" "traefik_blue_variant" {
   name_prefix          = "b-${substr(var.cluster_name, 0, min(4, length(var.cluster_name)))}"
   port                 = local.traefik_deployment_defaults.ports.web
   protocol             = "HTTP"
-  protocol_version = "HTTP2"
+  protocol_version     = "HTTP2"
   target_type          = "ip"
   vpc_id               = var.vpc_id
   deregistration_delay = 300
@@ -47,7 +47,7 @@ resource "aws_lb_target_group" "traefik_green_variant" {
   name_prefix          = "g-${substr(var.cluster_name, 0, min(4, length(var.cluster_name)))}"
   port                 = local.traefik_deployment_defaults.ports.web
   protocol             = "HTTP"
-  protocol_version = "HTTP2"
+  protocol_version     = "HTTP2"
   target_type          = "ip"
   vpc_id               = var.vpc_id
   deregistration_delay = 300
