@@ -23,6 +23,7 @@ module "postgres" {
   tags                        = var.tags
   ca_cert_identifier          = var.ca_cert_identifier
   apply_immediately           = var.apply_immediately
+  deletion_protection         = var.deletion_protection
 }
 
 module "param_store_pghost" {

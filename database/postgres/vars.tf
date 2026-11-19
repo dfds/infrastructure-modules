@@ -116,3 +116,13 @@ variable "apply_immediately" {
   type        = bool
   default     = true
 }
+
+variable "deletion_protection" {
+  description = <<EOF
+    Specify whether or not to prevent the DB instance from being deleted.
+    Valid Values: .
+    Notes: The database can't be deleted when this value is set to true.
+EOF
+  type        = bool
+  default     = true
+}
