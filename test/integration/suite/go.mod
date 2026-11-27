@@ -8,6 +8,7 @@ require (
 	github.com/gruntwork-io/terratest/modules/httphelper/v2 v2.0.0-beta.2
 	github.com/stretchr/testify v1.12.1
 	github.com/traefik/traefik/v3 v3.6.25
+	golang.org/x/mod v0.37.0
 	k8s.io/api v0.36.3
 	k8s.io/apimachinery v0.36.3
 	k8s.io/client-go v0.36.3
@@ -125,7 +126,6 @@ require (
 	go.yaml.in/yaml/v2 v2.4.4 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/crypto v0.54.0 // indirect
-	golang.org/x/mod v0.37.0 // indirect
 	golang.org/x/sync v0.22.0 // indirect
 	golang.org/x/tools v0.47.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20260526163538-3dc84a4a5aaa // indirect
@@ -155,7 +155,6 @@ require (
 	github.com/json-iterator/go v1.1.13-0.20220915233716-71ac16282d12 // indirect; indirect // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.3-0.20250322232337-35a7c28c31ee // indirect; indirect // indirect
-	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
 	golang.org/x/net v0.57.0 // indirect
 	golang.org/x/oauth2 v0.36.0 // indirect; indirect // indirect
@@ -165,7 +164,6 @@ require (
 	golang.org/x/time v0.15.0 // indirect; indirect // indirect
 	google.golang.org/protobuf v1.36.12-0.20260120151049-f2248ac996af // indirect; indirect // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/klog/v2 v2.140.0 // indirect; indirect // indirect
 	k8s.io/utils v0.0.0-20260319190234-28399d86e0b5 // indirect; indirect // indirect
 	sigs.k8s.io/yaml v1.6.0 // indirect; indirect // indirect
