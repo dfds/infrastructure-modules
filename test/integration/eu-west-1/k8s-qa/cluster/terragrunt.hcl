@@ -30,6 +30,7 @@ inputs = {
   enable_worker_nat_gateway = true
   use_worker_nat_gateway    = true
   eks_k8s_auth_api_version  = "client.authentication.k8s.io/v1beta1"
+  eks_addon_kubeproxy_version_override = "v1.37.0-eksbuild.34"
 
   # --------------------------------------------------
   # Managed nodes
