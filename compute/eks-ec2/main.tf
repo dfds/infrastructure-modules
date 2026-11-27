@@ -311,6 +311,10 @@ module "eks_addons" {
   efs_fs_id                        = module.efs_fs.id
   ebs_csi_kms_arn                  = var.eks_addon_awsebscsidriver_kms_arn
   ebs_csi_snapshotter_memory       = var.eks_addon_ebs_csi_snapshotter_memory
+
+  depends_on = [
+    module.eks_managed_workers_node_group
+  ]
 }
 
 module "k8s_priority_class" {
