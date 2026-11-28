@@ -21,7 +21,7 @@ inputs = {
   # --------------------------------------------------
 
   eks_cluster_name          = "qa"
-  eks_cluster_version       = "1.36"
+  eks_cluster_version       = "1.37"
   eks_cluster_cidr_block    = "10.228.0.0/16"
   eks_cluster_zones         = 2
   eks_cluster_log_types     = ["api", "authenticator", "scheduler", "controllerManager"]
@@ -30,6 +30,7 @@ inputs = {
   enable_worker_nat_gateway = true
   use_worker_nat_gateway    = true
   eks_k8s_auth_api_version  = "client.authentication.k8s.io/v1beta1"
+  eks_addon_kubeproxy_version_override = "v1.37.0-eksbuild.34"
 
   # --------------------------------------------------
   # Managed nodes
