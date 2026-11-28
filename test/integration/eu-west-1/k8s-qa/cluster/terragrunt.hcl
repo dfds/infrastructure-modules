@@ -6,7 +6,7 @@ terraform {
 
 # Include all settings from the root terraform.tfvars file
 include {
-  path = "${find_in_parent_folders("root.hcl")}"
+  path = find_in_parent_folders("root.hcl")
 }
 
 dependencies {
@@ -21,7 +21,7 @@ inputs = {
   # --------------------------------------------------
 
   eks_cluster_name          = "qa"
-  eks_cluster_version       = "1.36"
+  eks_cluster_version       = "1.37"
   eks_cluster_cidr_block    = "10.228.0.0/16"
   eks_cluster_zones         = 2
   eks_cluster_log_types     = ["api", "authenticator", "scheduler", "controllerManager"]
@@ -44,7 +44,7 @@ inputs = {
       # This comment configures the renovate bot to automatically update this variable:
       # amiFilter=[{"Name":"owner-id","Values":["602401143452"]},{"Name":"name","Values":["amazon-eks-node-al2023-x86_64-standard-1.36-*"]}]
       # currentImageName=amazon-eks-node-al2023-x86_64-standard-1.36-v20261112
-      ami_id             = "ami-0098c24d6275cfbe8"
+      ami_id                     = "ami-0098c24d6275cfbe8"
       availability_zones         = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
       max_unavailable_percentage = 50
       labels = {
